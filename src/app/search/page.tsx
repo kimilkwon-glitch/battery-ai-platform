@@ -6,6 +6,11 @@ import { getSearchHref } from "@/lib/battery-search";
 import { getRelatedForQuery } from "@/lib/platform-data";
 import { buildSearchPageResults } from "@/lib/search-page-results";
 
+/** 검색 결과·CTA가 배포 스탬프와 함께 갱신되도록 동적 렌더 */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 export default async function SearchPage({
   searchParams,
 }: {

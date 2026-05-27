@@ -27,7 +27,10 @@ import { getVehicleDetail, getVehicleSlugs } from "@/lib/vehicle-data";
 
 import { Suspense } from "react";
 
-
+/** Git/ISR 캐시로 구버전 HTML이 남지 않도록 항상 동적 렌더 */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export function generateStaticParams() {
 

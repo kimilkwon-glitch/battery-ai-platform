@@ -28,6 +28,7 @@ pnpm-debug.log*
 
 # vercel
 .vercel
+vercel-deployments.json
 
 # typescript
 *.tsbuildinfo

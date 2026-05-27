@@ -3,8 +3,16 @@
  * 프로덕션 HTML 스모크 검증 — BUILD_VERSION·핵심 UX 마커
  * Usage: node scripts/verify-production-evidence.mjs [baseUrl]
  */
+import { readBuildStamp } from "./read-build-stamp.mjs";
+
 const BASE = process.argv[2] ?? "https://battery-ai-platform.vercel.app";
-const VERSION = "BM-UX-REV-20260528-SORENTO-LINK-FIX";
+const VERSION = readBuildStamp();
+const STAMP_ROUTES = [
+  "/",
+  "/batteries/AGM60L",
+  "/vehicle/sorento-mq4?fuel=%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C",
+  "/search?q=%EC%8F%98%EB%A0%8C%ED%86%A0%20MQ4%20%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C",
+];
 
 const EXPECTED_SORENTO_HYBRID_HREF =
   "/vehicle/sorento-mq4?fuel=%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C";
@@ -184,6 +192,21 @@ async function main() {
       if (!ok) failed++;
     } catch (e) {
       console.log(`FAIL  ${c.name}  error: ${e.message}`);
+      failed++;
+    }
+  }
+
+  for (const route of STAMP_ROUTES) {
+    try {
+      const { status, html } = await fetchHtml(route);
+      const stamps = [...new Set(html.match(/BM-UX-REV-[A-Z0-9-]+/g) ?? [])];
+      const ok = status === 200 && stamps.length === 1 && stamps[0] === VERSION;
+      console.log(
+        `${ok ? "PASS" : "FAIL"}  build-stamp-route  (${status}) ${route} → ${stamps.join(", ") || "none"}`,
+      );
+      if (!ok) failed++;
+    } catch (e) {
+      console.log(`FAIL  build-stamp-route  ${route} error: ${e.message}`);
       failed++;
     }
   }

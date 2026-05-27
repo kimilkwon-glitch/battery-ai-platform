@@ -8,7 +8,7 @@ import {
   HUB_VEHICLES,
 } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
-import { BUILD_VERSION } from "@/lib/build-version";
+import { BUILD_STAMP } from "@/lib/build-stamp";
 
 const links = [
   ["차종검색", HUB_VEHICLES],
@@ -37,8 +37,8 @@ export function SiteFooter({ className = "" }: { className?: string }) {
       <p className="mt-3 text-[10px] text-slate-400">
         © {new Date().getFullYear()} {BRAND_NAME}
         <span className="mx-1 text-slate-300">·</span>
-        <span className="font-mono" data-build-version={BUILD_VERSION}>
-          v {BUILD_VERSION}
+        <span className="font-mono" data-build-version={BUILD_STAMP}>
+          v {BUILD_STAMP}
         </span>
       </p>
     </footer>
