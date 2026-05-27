@@ -1,0 +1,25 @@
+name: Vercel Production (GitHub)
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: vercel-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Vercel Production
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: team_xvHwhy5tsTVpLwh8L6Qigr2q
+          vercel-project-id: prj_yYGVQyuf9Wz1wgh3LwvUwIwmKqFQ
+          vercel-args: "--prod"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
