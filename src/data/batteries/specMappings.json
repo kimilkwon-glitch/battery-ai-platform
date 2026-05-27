@@ -1,0 +1,32 @@
+{
+  "57820": {
+    "standardSpec": "DIN74L",
+    "aliases": ["GB57820", "로케트 GB57820", "57820"],
+    "note": "로케트 GB57820 = DIN74L 표준 규격"
+  },
+  "57412": {
+    "standardSpec": "DIN74L",
+    "aliases": ["CMF57412", "쏠라이트 CMF57412", "57412"],
+    "note": "쏠라이트 CMF57412 = DIN74L 표준 규격"
+  },
+  "GB57820": {
+    "standardSpec": "DIN74L",
+    "aliases": ["57820", "DIN74L"],
+    "note": "로케트 DIN H6"
+  },
+  "CMF57412": {
+    "standardSpec": "DIN74L",
+    "aliases": ["57412", "DIN74L"],
+    "note": "쏠라이트 DIN H6"
+  },
+  "AGM80R": {
+    "standardSpec": "AGM80R",
+    "aliases": ["80R", "AGM 80R"],
+    "note": "R단자 AGM — 스타리아 등"
+  },
+  "AGM80L": {
+    "standardSpec": "AGM80L",
+    "aliases": ["80L", "AGM 80L"],
+    "note": "L단자 AGM — ISG 세단"
+  }
+}

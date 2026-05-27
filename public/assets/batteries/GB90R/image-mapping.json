@@ -1,0 +1,53 @@
+{
+  "product": "GB90R",
+  "brand": "ROCKET",
+  "brand_ko": "로케트",
+  "terminal": "R",
+  "path": "/assets/batteries/GB90R/",
+  "mappings": [
+    {
+      "new_filename": "01-main.png",
+      "source_file": "GB90R.png",
+      "role": "대표 썸네일 / 상품카드 / 검색결과"
+    },
+    {
+      "new_filename": "02-product-box.png",
+      "source_file": "GB90R_1.png",
+      "role": "제품+박스 정면 / 상세 상단"
+    },
+    {
+      "new_filename": "03-box-front.png",
+      "source_file": "BTP07590.png",
+      "role": "박스 정면 / 패키지 안내"
+    },
+    {
+      "new_filename": "04-box-angle.png",
+      "source_file": "BTP07594.png",
+      "role": "박스 사선 / 포장 상태"
+    },
+    {
+      "new_filename": "05-product-box-angle.png",
+      "source_file": "BTP07600.png",
+      "role": "제품+박스 사선 / 브랜드/상세 비주얼"
+    },
+    {
+      "new_filename": "06-label-top.png",
+      "source_file": "BTP07603.png",
+      "role": "상단 라벨 / 단자 방향 / 제품 상단 확인"
+    },
+    {
+      "new_filename": "07-front-label.png",
+      "source_file": "BTP07605.png",
+      "role": "정면 라벨 / 제품명·규격 확인"
+    }
+  ],
+  "images": {
+    "main": "/assets/batteries/GB90R/01-main.png",
+    "productBox": "/assets/batteries/GB90R/02-product-box.png",
+    "boxFront": "/assets/batteries/GB90R/03-box-front.png",
+    "boxAngle": "/assets/batteries/GB90R/04-box-angle.png",
+    "productBoxAngle": "/assets/batteries/GB90R/05-product-box-angle.png",
+    "labelTop": "/assets/batteries/GB90R/06-label-top.png",
+    "frontLabel": "/assets/batteries/GB90R/07-front-label.png"
+  }
+}

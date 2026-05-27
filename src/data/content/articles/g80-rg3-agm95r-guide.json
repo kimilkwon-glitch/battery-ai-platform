@@ -1,0 +1,57 @@
+{
+  "id": "g80-rg3-agm95r-guide",
+  "title": "G80 RG3 배터리 확인 — AGM95R 계열 문의가 많습니다",
+  "description": "G80 RG3는 AGM95R 계열 문의가 많지만, 연식·연료·현재 장착 배터리 기준으로 확인하는 것이 안전합니다. 제네시스 계열은 단자 방향 혼동이 생기기 쉬워 사진 확인을 권장합니다.",
+  "category": "차종별 규격",
+  "secondaryCategories": ["오주문 방지"],
+  "vehicleIds": ["g80-rg3", "gv80", "gv70", "g90"],
+  "batteryIds": ["AGM95R", "AGM80R", "AGM105L", "AGM105R"],
+  "tags": ["G80", "G80 RG3", "제네시스", "GV80", "GV70", "G90", "AGM95R", "단자방향"],
+  "status": "published",
+  "createdAt": "2026-05-21",
+  "updatedAt": "2026-05-24",
+  "heroImagePrompt": "Premium sedan battery guide image, luxury sedan silhouette, AGM95R battery card, right terminal direction indicator, clean high-end automotive website style, dark navy and white accents, no text",
+  "imagePrompts": [
+    "고급 세단 실루엣과 AGM95R 배터리 카드가 함께 보이는 프리미엄 배터리 안내 이미지, 텍스트 없음",
+    "제네시스 계열 차량의 단자 방향 확인을 강조하는 배터리 L/R 비교 이미지, 고급스러운 남색 톤",
+    "AGM95R 배터리 제품 카드와 차량 상세페이지가 연결되는 UI 목업 이미지, 깔끔한 웹서비스 스타일",
+    "대형 세단 배터리 교체 전 기존 배터리 라벨을 확인하는 정비 장면, 사실적이고 차분한 색감",
+    "GV80 SUV와 G80 세단 실루엣이 같은 AGM95R 카드로 연결되는 비교 인포그래픽, 로고 없음",
+    "G90 연식별 AGM105L/R 선택을 연상시키는 타임라인과 배터리 카드, 프리미엄 다크 네이비 배경"
+  ],
+  "sections": [
+    {
+      "heading": "G80 RG3는 AGM95R 계열 문의가 많습니다",
+      "body": "G80 RG3(3세대)는 AGM95R/R 계열로 문의가 많지만, 연식·트림·현재 장착 배터리에 따라 달라질 수 있습니다. 대형 세단이라 용량·CCA 여유가 큰 규격이 들어가는 경우가 많고, R단자(플러스 단자 위치)를 맞춰야 케이블 작업이 수월합니다."
+    },
+    {
+      "heading": "제네시스 계열은 단자 방향 혼동이 생기기 쉽습니다",
+      "body": "같은 95Ah 계열이라도 L과 R이 있습니다. AGM95L을 R 차량에 주문하면 현장에서 바로 문제가 드러납니다. 교체 전 기존 배터리 사진으로 +/- 위치를 꼭 확인해 주세요."
+    },
+    {
+      "heading": "GV80은 AGM95R, GV70은 AGM80R 기준으로 볼 수 있습니다",
+      "body": "SUV 계열도 차급에 따라 95R, 80R로 나뉩니다. \"제네시스 배터리\"만으로 검색하면 G80, GV80, GV70이 섞여 나옵니다. 모델명까지 같이 검색하거나 사이트에서 차종별 페이지를 이용하세요."
+    },
+    {
+      "heading": "구형 제네시스 계열은 AGM105L이 들어가는 경우가 있습니다",
+      "body": "DH, EQ900 등 구형 G80/G90은 AGM105L 계열로 확인해야 하는 경우가 있습니다. RG3와 세대가 다르면 규격도 달라지니, 연식·세대를 먼저 구분하는 게 중요합니다."
+    },
+    {
+      "heading": "G90은 연식별로 AGM105L/R 구분이 필요합니다",
+      "body": "G90은 연식·트림에 따라 AGM105L 또는 AGM105R로 갈립니다. 사진 확인이 필요한 차량으로 분류해 두었으며, 라벨 사진을 보내주시면 매장에서도 빠르게 맞출 수 있습니다."
+    }
+  ],
+  "cta": {
+    "label": "G80 RG3 배터리 검색하기",
+    "href": "/search?q=G80+RG3+AGM95R"
+  },
+  "heroImage": "/assets/batteries/AGM95R/01-main.png",
+  "primaryBatteryImage": "/assets/batteries/AGM95R/01-main.png",
+  "sectionImages": [
+    "/assets/batteries/AGM95R/01-main.png",
+    "/assets/batteries/GB80R/01-main.png",
+    "/assets/batteries/AGM105L/01-main.png",
+    "/assets/batteries/AGM95R/06-label-top.png",
+    "/assets/batteries/AGM105L/02-product-box.png"
+  ]
+}

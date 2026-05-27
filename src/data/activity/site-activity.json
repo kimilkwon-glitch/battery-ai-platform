@@ -1,0 +1,163 @@
+{
+  "recentSearches": [
+    {
+      "query": "쏘렌토 MQ4 하이브리드",
+      "matchedVehicle": "쏘렌토 MQ4",
+      "matchedBattery": "AGM60L",
+      "createdAt": "2026-05-25T10:20:00+09:00"
+    },
+    {
+      "query": "그랜저 IG 가솔린",
+      "matchedVehicle": "그랜저 IG",
+      "matchedBattery": "AGM80L",
+      "createdAt": "2026-05-25T09:45:00+09:00"
+    },
+    {
+      "query": "포터2 2020년형",
+      "matchedVehicle": "포터2",
+      "matchedBattery": "100R",
+      "createdAt": "2026-05-24T18:30:00+09:00"
+    },
+    {
+      "query": "스타리아 LPG",
+      "matchedVehicle": "스타리아",
+      "matchedBattery": "AGM80R",
+      "createdAt": "2026-05-24T15:10:00+09:00"
+    },
+    {
+      "query": "G80 RG3",
+      "matchedVehicle": "G80 RG3",
+      "matchedBattery": "AGM95R",
+      "createdAt": "2026-05-24T11:00:00+09:00"
+    }
+  ],
+  "popularVehicles": [
+    {
+      "vehicleId": "sorento-mq4",
+      "displayName": "쏘렌토 MQ4",
+      "reason": "하이브리드 배터리 문의가 많은 차량",
+      "score": 92
+    },
+    {
+      "vehicleId": "grandeur-ig",
+      "displayName": "그랜저 IG",
+      "reason": "연료별 AGM/DIN 확인이 필요한 대표 세단",
+      "score": 90
+    },
+    {
+      "vehicleId": "porter2-new",
+      "displayName": "포터2",
+      "reason": "연식별 90R·100R 구분 문의",
+      "score": 88
+    },
+    {
+      "vehicleId": "staria-us4",
+      "displayName": "스타리아",
+      "reason": "AGM80R 단자 방향 확인 문의",
+      "score": 85
+    },
+    {
+      "vehicleId": "grandeur-gn7",
+      "displayName": "디 올 뉴 그랜저",
+      "reason": "최신 그랜저 배터리 확인",
+      "score": 82
+    }
+  ],
+  "popularBatteries": [
+    {
+      "batteryId": "AGM80L",
+      "displayName": "AGM80L",
+      "reason": "SUV·대형 세단에서 자주 확인되는 규격",
+      "score": 88
+    },
+    {
+      "batteryId": "AGM60L",
+      "displayName": "AGM60L",
+      "reason": "하이브리드·소형 SUV 확인",
+      "score": 86
+    },
+    {
+      "batteryId": "AGM95R",
+      "displayName": "AGM95R",
+      "reason": "대형 SUV·제네시스 계열",
+      "score": 84
+    },
+    {
+      "batteryId": "100R",
+      "displayName": "100R",
+      "reason": "포터2 2020년형 이후 상용차",
+      "score": 80
+    },
+    {
+      "batteryId": "AGM95L",
+      "displayName": "AGM95L",
+      "reason": "팰리세이드·대형 SUV",
+      "score": 78
+    }
+  ],
+  "recentUpdates": [
+    {
+      "title": "쏘렌토 MQ4 하이브리드 AGM60L 반영",
+      "type": "db_update",
+      "createdAt": "2026-05-25T11:00:00+09:00"
+    },
+    {
+      "title": "포터2 2020년 이후 100R 기준 반영",
+      "type": "db_update",
+      "createdAt": "2026-05-25T10:30:00+09:00"
+    },
+    {
+      "title": "스타리아 디젤/LPG AGM80R 반영",
+      "type": "db_update",
+      "createdAt": "2026-05-24T16:00:00+09:00"
+    },
+    {
+      "title": "GV70 AGM80R 단자 방향 안내 보강",
+      "type": "content_update",
+      "createdAt": "2026-05-24T14:00:00+09:00"
+    },
+    {
+      "title": "그랜저 IG 연료별 배터리 카드 정리",
+      "type": "ui_update",
+      "createdAt": "2026-05-23T09:00:00+09:00"
+    }
+  ],
+  "failedSearches": [
+    {
+      "query": "그렌저 밧데리",
+      "suggestion": "그랜저로 검색해보세요",
+      "createdAt": "2026-05-25T12:00:00+09:00"
+    },
+    {
+      "query": "소렌토 하브",
+      "suggestion": "쏘렌토 MQ4 하이브리드로 검색해보세요",
+      "createdAt": "2026-05-24T20:00:00+09:00"
+    }
+  ],
+  "photoReviewVehicles": [
+    {
+      "vehicleId": "g80-rg3",
+      "displayName": "G80 RG3",
+      "reason": "제네시스 계열 — 단자 방향·연식 확인 권장",
+      "href": "/search?q=G80+RG3"
+    },
+    {
+      "vehicleId": "gv80",
+      "displayName": "GV80",
+      "reason": "수입차급 SUV — AGM95R 사진 확인 권장",
+      "href": "/search?q=GV80+AGM95R"
+    },
+    {
+      "vehicleId": "g90",
+      "displayName": "G90",
+      "reason": "연식별 AGM105L/R 구분 필요",
+      "href": "/search?q=G90+AGM105"
+    },
+    {
+      "vehicleId": "bmw-g30",
+      "displayName": "BMW 520i",
+      "reason": "BMS 등록·AGM 규격 사진 확인",
+      "href": "/vehicle/bmw-g30"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+[
+  {
+    "imageId": "img-grandeur-ig",
+    "type": "vehicle",
+    "targetId": "grandeur-ig",
+    "fileName": "grandeur-ig.png",
+    "path": "/assets/cars/hyundai/grandeur-ig.png",
+    "alt": "현대 그랜저 IG",
+    "status": "active",
+    "fallbackPath": "/assets/fallback/vehicle.png",
+    "memo": ""
+  },
+  {
+    "imageId": "img-agm80l",
+    "type": "battery",
+    "targetId": "AGM80L",
+    "fileName": "01-main.png",
+    "path": "/assets/batteries/AGM80L/01-main.png",
+    "alt": "AGM80L 배터리",
+    "status": "active",
+    "fallbackPath": "/assets/fallback/battery.png",
+    "memo": ""
+  },
+  {
+    "imageId": "img-din74l",
+    "type": "battery",
+    "targetId": "DIN74L",
+    "fileName": "01-main.png",
+    "path": "/assets/batteries/GB57820/01-main.png",
+    "alt": "DIN74L 배터리",
+    "status": "active",
+    "fallbackPath": "/assets/fallback/battery.png",
+    "memo": "GB57820 폴더 이미지"
+  }
+]

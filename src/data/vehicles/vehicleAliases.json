@@ -1,0 +1,11 @@
+{
+  "staria": ["스타리아", "staria", "US4", "hyundai_staria"],
+  "grandeur-ig": ["그랜저 IG", "그랜저IG", "grandeur ig", "IG 그랜저"],
+  "k5-dl3": ["K5 DL3", "K5 3세대", "k5 dl3", "기아 K5"],
+  "sorento-mq4": ["쏘렌토 MQ4", "소렌토 MQ4", "Sorento MQ4"],
+  "AGM80R": ["AGM80R", "AGM 80R", "80R"],
+  "AGM80L": ["AGM80L", "AGM 80L", "80L"],
+  "DIN74L": ["DIN74L", "DIN74", "57820", "57412", "GB57820", "CMF57412"],
+  "GB57820": ["GB57820", "57820", "로케트 57820", "DIN74L"],
+  "CMF57412": ["CMF57412", "57412", "쏠라이트 57412", "DIN74L"]
+}

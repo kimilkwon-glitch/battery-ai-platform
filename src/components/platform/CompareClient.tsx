@@ -1,0 +1,396 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import type { BatteryBrandKey } from "@/lib/battery-alias-map";
+import { getBatteryImageSet } from "@/lib/battery-alias-map";
+import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
+import { ConversionActions } from "@/components/common/ConversionActions";
+import { SmartNextActions } from "@/components/common/SmartNextActions";
+import { bm } from "@/lib/design-tokens";
+import {
+  BRAND_COMPARE_LABEL,
+  buildCompareTableRows,
+  compareCautions,
+  compareDefaultVisibleCodes,
+  compareRecommendedPairs,
+  getComparisonDescription,
+  getKeyDiffs,
+  getPickGuideItems,
+} from "@/lib/compare-utils";
+import { batteries, compareHref, getBattery, getVehicleName, type Battery } from "@/lib/platform-data";
+
+function SelectedBatteryCard({
+  battery,
+  imageBrand,
+  side,
+}: {
+  battery: ReturnType<typeof getBattery>;
+  imageBrand: BatteryBrandKey;
+  side: "left" | "right";
+}) {
+  const images = getBatteryImageSet(battery.code, imageBrand);
+  return (
+    <div
+      className={`flex flex-1 flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-[var(--bm-shadow-sm)] ${
+        side === "left" ? "lg:rounded-r-none lg:border-r-0" : "lg:rounded-l-none"
+      }`}
+    >
+      <div className={`relative ${bm.imageBattery} sm:h-[180px]`}>
+        <BatteryThumbnail
+          code={battery.code}
+          imageSet={images?.main ? images : battery.images}
+          role="main"
+          fit={batteryImageFit(battery.code, imageBrand)}
+          ratio="16/9"
+          overlayLabel={false}
+          darkOverlay={false}
+          tall
+          className="h-full rounded-none"
+        />
+      </div>
+      <div className="flex flex-1 flex-col p-4">
+        <p className="text-xl font-black text-blue-700">{battery.code}</p>
+        <p className="mt-1 text-sm font-bold text-slate-700">
+          {battery.capacity} · {battery.cca} · {battery.terminal}타입
+        </p>
+        <p className="mt-2 text-sm font-medium text-slate-500">{battery.pros}</p>
+      </div>
+    </div>
+  );
+}
+
+export function CompareClient({ initial }: { initial: string[] }) {
+  const router = useRouter();
+  const [selected, setSelected] = useState<string[]>(
+    initial.length >= 2 ? initial.slice(0, 2) : ["AGM70L", "AGM80L"],
+  );
+  const [expanded, setExpanded] = useState(false);
+  const [search, setSearch] = useState("");
+  const [imageBrand] = useState<BatteryBrandKey>("rocket");
+
+  const codeA = selected[0] ?? "AGM70L";
+  const codeB = selected[1] ?? "AGM80L";
+  const batA = getBattery(codeA);
+  const batB = getBattery(codeB);
+
+  const selectPair = useCallback(
+    (a: string, b: string) => {
+      setSelected([a, b]);
+      router.replace(compareHref(a, b), { scroll: false });
+    },
+    [router],
+  );
+
+  const toggle = useCallback(
+    (code: string) => {
+      setSelected((prev) => {
+        let next: string[];
+        if (prev.includes(code)) {
+          next = prev.filter((c) => c !== code);
+          if (next.length === 0) return prev;
+        } else if (prev.length < 2) {
+          next = [...prev, code];
+        } else {
+          next = [prev[1], code];
+        }
+        if (next.length >= 2) router.replace(compareHref(...next), { scroll: false });
+        return next.length >= 2 ? next : prev;
+      });
+    },
+    [router],
+  );
+
+  const visibleCodes = useMemo(() => {
+    const defaultSet = new Set<string>(compareDefaultVisibleCodes);
+    selected.forEach((c) => defaultSet.add(c));
+    return batteries.filter((b) => defaultSet.has(b.code));
+  }, [selected]);
+
+  const extraBatteries = useMemo(() => {
+    const defaultSet = new Set<string>(compareDefaultVisibleCodes);
+    return batteries.filter((b) => !defaultSet.has(b.code));
+  }, []);
+
+  const filteredExtra = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return extraBatteries;
+    return extraBatteries.filter(
+      (b) => b.code.toLowerCase().includes(q) || b.type.toLowerCase().includes(q),
+    );
+  }, [extraBatteries, search]);
+
+  const tableRows = buildCompareTableRows(batA, batB);
+  const keyDiffs = getKeyDiffs(batA, batB);
+  const description = getComparisonDescription(batA, batB);
+  const pairLabel = `${codeA} vs ${codeB}`;
+
+  return (
+    <div className="space-y-5">
+      {/* 선택 중인 비교 */}
+      <section className="rounded-xl border border-blue-100 bg-blue-50/40 px-4 py-3">
+        <p className="text-[10px] font-black text-slate-500">비교 중</p>
+        <p className="mt-1 text-sm font-bold text-blue-800">
+          {codeA} · {codeB}
+        </p>
+      </section>
+
+      {/* 추천 조합 */}
+      <section>
+        <p className="mb-2 text-[10px] font-black text-slate-500">추천 비교 조합</p>
+        <div className="flex flex-wrap gap-2">
+        {compareRecommendedPairs.map((pair) => {
+          const active = codeA === pair.a && codeB === pair.b;
+          return (
+            <button
+              type="button"
+              key={pair.label}
+              onClick={() => selectPair(pair.a, pair.b)}
+              className={`rounded-lg border px-3 py-1.5 text-xs font-bold transition ${
+                active
+                  ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+              }`}
+            >
+              {pair.label}
+            </button>
+          );
+        })}
+        </div>
+      </section>
+
+      {/* 비교 요약 — 주인공 */}
+      <section className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm">
+        <div className="border-b border-slate-100 bg-slate-50/40 px-5 py-4">
+          <p className="text-[11px] font-black uppercase tracking-wide text-blue-600">{BRAND_COMPARE_LABEL}</p>
+          <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-900">{pairLabel}</h2>
+          <p className="mt-2 max-w-3xl text-sm font-medium leading-relaxed text-slate-600">{description}</p>
+        </div>
+
+        <div className="relative flex flex-col lg:flex-row">
+          <SelectedBatteryCard battery={batA} imageBrand={imageBrand} side="left" />
+          <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:flex">
+            <span className="flex size-10 items-center justify-center rounded-lg bg-[#1D4ED8] text-xs font-black text-white shadow-md ring-4 ring-white">
+              VS
+            </span>
+          </div>
+          <SelectedBatteryCard battery={batB} imageBrand={imageBrand} side="right" />
+        </div>
+
+        <div className="border-t border-slate-100 bg-slate-50/50 px-5 py-4">
+          <p className="text-sm font-black text-slate-900">핵심 차이</p>
+          <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
+            {keyDiffs.map((d) => (
+              <li key={d} className="flex gap-2 text-sm font-medium text-slate-700">
+                <span className="text-blue-500">·</span>
+                {d}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 비교 테이블 */}
+      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <h2 className="mb-4 text-sm font-black text-slate-900">상세 비교</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[480px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-xs font-black text-slate-400">
+                <th className="pb-3 pr-4">항목</th>
+                <th className="pb-3 pr-4 text-blue-700">{codeA}</th>
+                <th className="pb-3"> {codeB}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableRows.map((row) => (
+                <tr
+                  key={row.label}
+                  className={`border-b border-slate-100 ${row.highlight ? "bg-blue-50/30" : ""} ${row.caution ? "bg-amber-50/40" : ""}`}
+                >
+                  <td className="py-3 pr-4 font-black text-slate-600">{row.label}</td>
+                  <td className="py-3 pr-4">
+                    <CellValue
+                      value={row.a}
+                      showHigher={row.higherSide === "a"}
+                      caution={row.caution}
+                    />
+                  </td>
+                  <td className="py-3">
+                    <CellValue
+                      value={row.b}
+                      showHigher={row.higherSide === "b"}
+                      caution={row.caution}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-3 text-xs font-semibold text-slate-500">
+          {batA.vehicleIds.slice(0, 2).map((id) => (
+            <Link key={id} href={`/vehicle/${id}`} className="text-blue-600 hover:underline">
+              {getVehicleName(id)} ({codeA})
+            </Link>
+          ))}
+          {batB.vehicleIds.slice(0, 2).map((id) => (
+            <Link key={id} href={`/vehicle/${id}`} className="text-blue-600 hover:underline">
+              {getVehicleName(id)} ({codeB})
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* 이럴 때 선택 */}
+      <section className="grid gap-3 sm:grid-cols-2">
+        {[batA, batB].map((b) => (
+          <div key={b.code} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-sm font-black text-blue-700">{b.code} 추천</p>
+            <ul className="mt-2 space-y-1.5">
+              {getPickGuideItems(b).map((item) => (
+                <li key={item} className="flex gap-2 text-sm font-medium text-slate-600">
+                  <span className="text-emerald-500">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 sm:col-span-2">
+          <p className="text-sm font-black text-amber-900">주의</p>
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+            {compareCautions.map((c) => (
+              <li key={c} className="text-sm font-medium text-amber-800">
+                · {c}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 배터리 선택 — 보조 영역 */}
+      <section className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-[11px] font-black text-slate-400">보조 선택</p>
+            <h2 className="text-sm font-black text-slate-900">다른 배터리와 비교하기</h2>
+          </div>
+          <span className="text-xs font-bold text-blue-600">{pairLabel}</span>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {visibleCodes.map((b) => (
+            <PickerCard
+              key={b.code}
+              battery={b}
+              selected={selected.includes(b.code)}
+              imageBrand={imageBrand}
+              onToggle={() => toggle(b.code)}
+            />
+          ))}
+        </div>
+
+        {expanded ? (
+          <div className="mt-3 border-t border-slate-200 pt-3">
+            <input
+              className="mb-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-200"
+              placeholder="규격 검색 (예: CMF, DIN, EV)"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <div className="flex flex-wrap gap-2">
+              {filteredExtra.map((b) => (
+                <PickerCard
+                  key={b.code}
+                  battery={b}
+                  selected={selected.includes(b.code)}
+                  imageBrand={imageBrand}
+                  onToggle={() => toggle(b.code)}
+                />
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-3 w-full rounded-lg border border-slate-200 bg-white py-2.5 text-xs font-black text-slate-600 hover:bg-slate-50"
+        >
+          {expanded ? "접기" : `배터리 더 선택하기 (${extraBatteries.length}개)`}
+        </button>
+      </section>
+
+      <section className={`${bm.card} border-blue-100 bg-gradient-to-br from-[#FAFCFF] to-white p-5`}>
+        <h2 className="text-base font-black text-slate-950">비교 후 다음 단계</h2>
+        <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">
+          두 규격 중 어떤 배터리가 맞는지는 차량 연식·연료·트레이 공간·단자 방향에 따라 달라질 수
+          있습니다. 정확한 확인은 차량 정보 또는 현재 배터리 사진을 기준으로 진행해 주세요.
+        </p>
+        <ConversionActions
+          className="mt-4"
+          primary={{ label: "사진으로 확인", href: "/analysis/photo" }}
+          secondary={{ label: "내 차 기준으로 다시 확인", href: "/vehicles" }}
+          tertiary={{ label: "문의하기", href: "/ai" }}
+        />
+        <Link className={`${bm.btnTertiary} mt-2 inline-flex text-xs`} href="/guide/spec?guide=agm-vs-din">
+          관련 규격 가이드
+        </Link>
+      </section>
+
+      <SmartNextActions
+        context={{ type: "compare", batteryCode: codeA, vehicleId: batA.vehicleIds[0] }}
+        limit={3}
+      />
+    </div>
+  );
+}
+
+function CellValue({
+  value,
+  showHigher,
+  caution,
+}: {
+  value: string;
+  showHigher?: boolean;
+  caution?: boolean;
+}) {
+  return (
+    <span className={`inline-flex flex-wrap items-center gap-1.5 font-semibold ${caution ? "text-amber-800" : "text-slate-800"}`}>
+      {value}
+      {showHigher ? (
+        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-black text-blue-700">높음</span>
+      ) : null}
+    </span>
+  );
+}
+
+function PickerCard({
+  battery,
+  selected,
+  onToggle,
+}: {
+  battery: Battery;
+  selected: boolean;
+  imageBrand: BatteryBrandKey;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`inline-flex max-w-full flex-col rounded-xl border px-3 py-2.5 text-left transition ${
+        selected
+          ? "border-blue-500 bg-blue-600 text-white shadow-sm ring-2 ring-blue-300"
+          : "border-slate-200 bg-white text-slate-900 hover:border-blue-200 hover:bg-blue-50/50"
+      }`}
+    >
+      <span className={`text-sm font-black ${selected ? "text-white" : "text-slate-900"}`}>{battery.code}</span>
+      <span className={`mt-0.5 text-[10px] font-semibold ${selected ? "text-blue-100" : "text-slate-500"}`}>
+        {battery.capacity} · {battery.terminal}
+      </span>
+    </button>
+  );
+}

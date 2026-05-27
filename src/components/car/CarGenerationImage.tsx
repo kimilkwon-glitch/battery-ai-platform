@@ -1,0 +1,79 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { carOriginalFromDisplayUrl } from "@/lib/car-image-url";
+import {
+  CAR_IMAGE_FALLBACK,
+  carHeroSurface,
+  vehicleImageBoxClass,
+  vehicleImageBoxCommercialClass,
+  vehicleImageImgClass,
+  vehicleImageImgCommercialClass,
+} from "./car-card-styles";
+
+type Props = {
+  src: string;
+  alt: string;
+  size?: "compact" | "hero";
+  className?: string;
+  /** 차량 카드 — 포터/봉고 등 가로형 상용차 확대 */
+  commercial?: boolean;
+};
+
+export function CarGenerationImage({ src, alt, size = "compact", className = "", commercial = false }: Props) {
+  const [imgSrc, setImgSrc] = useState(src);
+  const [triedOriginal, setTriedOriginal] = useState(false);
+
+  useEffect(() => {
+    setImgSrc(src);
+    setTriedOriginal(false);
+  }, [src]);
+
+  const handleError = () => {
+    const original = carOriginalFromDisplayUrl(imgSrc);
+    if (original && !triedOriginal) {
+      setTriedOriginal(true);
+      setImgSrc(original);
+      return;
+    }
+    if (imgSrc !== CAR_IMAGE_FALLBACK) {
+      setImgSrc(CAR_IMAGE_FALLBACK);
+    }
+  };
+
+  if (size === "hero") {
+    return (
+      <div
+        className={`flex w-full items-center justify-center ${carHeroSurface} ${className}`}
+        style={{ minHeight: "240px" }}
+      >
+        <img
+          src={imgSrc}
+          alt={alt}
+          loading="lazy"
+          className="max-h-[220px] w-full max-w-full object-contain object-center px-6 py-4 opacity-100 select-none"
+          draggable={false}
+          onError={handleError}
+        />
+      </div>
+    );
+  }
+
+  const imgClass = commercial ? vehicleImageImgCommercialClass : vehicleImageImgClass;
+  const boxClass = commercial ? vehicleImageBoxCommercialClass : vehicleImageBoxClass;
+
+  return (
+    <div className={`${boxClass} ${className}`}>
+      <img
+        src={imgSrc}
+        alt={alt}
+        loading="lazy"
+        className={imgClass}
+        draggable={false}
+        onError={handleError}
+      />
+    </div>
+  );
+}
+
+export default CarGenerationImage;

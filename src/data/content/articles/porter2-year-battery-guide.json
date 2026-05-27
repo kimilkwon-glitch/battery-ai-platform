@@ -1,0 +1,57 @@
+{
+  "id": "porter2-year-battery-guide",
+  "title": "포터2 배터리, 2020년 전후로 90R과 100R을 나눠 봐야 합니다",
+  "description": "포터2는 기본적으로 90R이 많이 쓰이지만, 2020년 이후 연식부터는 100R 기준으로 확인해야 하는 경우가 있습니다.",
+  "category": "연식·연료별 주의",
+  "secondaryCategories": ["오주문 방지"],
+  "vehicleIds": ["porter2-new", "porter2-old"],
+  "batteryIds": ["90R", "100R"],
+  "tags": ["포터2", "봉고", "90R", "100R", "연식", "상용차"],
+  "status": "published",
+  "createdAt": "2026-05-24",
+  "updatedAt": "2026-05-25",
+  "heroImagePrompt": "Clean commercial truck battery guide image, small Korean work truck silhouette, 90R and 100R battery comparison cards, year divider 2019/2020 concept without text, white and blue professional background, no logos",
+  "imagePrompts": [
+    "소형 상용트럭 실루엣과 90R, 100R 배터리 두 개가 비교되는 깔끔한 웹 카드 이미지, 텍스트 없음",
+    "2020년 전후 연식을 기준으로 배터리 규격이 나뉘는 느낌의 타임라인 이미지, 자동차 배터리 가이드용, 파란색 포인트",
+    "작업차 배터리 교체 전 연식과 기존 배터리 라벨을 확인하는 장면, 사실적이고 깔끔한 정비 이미지",
+    "90R 배터리와 100R 배터리가 나란히 놓인 비교형 제품 이미지, 배경은 밝은 회색, 쇼핑몰 스타일",
+    "포터2 작업차 실루엣과 배터리 교체 도구가 함께 있는 상용차 정비 안내 이미지, 로고 없음",
+    "차량등록증 연식 확인을 연상시키는 달력·연도 아이콘과 배터리 카드 UI, 미니멀 인포그래픽"
+  ],
+  "sections": [
+    {
+      "heading": "포터2는 연식을 먼저 봐야 합니다",
+      "body": "포터2는 상용차라 배터리 문의가 정말 많습니다. 그런데 \"포터2 배터리\"만 말하면 90R인지 100R인지 바로 답하기 어렵습니다. 차량등록증 연식, 또는 보험증권·정비 이력에 나온 연식을 먼저 확인해 주세요."
+    },
+    {
+      "heading": "2019년식까지는 90R 기준으로 보는 경우가 많습니다",
+      "body": "2004년부터 이어진 포터2 구형(2019년식까지)은 90R(또는 GB90R) 계열로 맞추는 경우가 많습니다. 매장에서도 \"몇 년식이세요?\"를 제일 먼저 묻는 이유가 여기 있습니다."
+    },
+    {
+      "heading": "2020년 이후는 100R 확인이 필요합니다",
+      "body": "2020년형 이후 포터2는 100R(GB100R) 기준으로 확인해야 하는 경우가 있습니다. 90R과 100R은 크기·단자 위치가 비슷해 보여도 호환되지 않는 경우가 있어, 연식만으로 대충 맞추면 반품·재작업이 생깁니다."
+    },
+    {
+      "heading": "상용차는 추가 전장품 여부도 같이 봐야 합니다",
+      "body": "냉동탑, 작업등, 인버터, 추가 배터리 등 전장품이 붙어 있으면 방전 패턴이 달라집니다. 규격 자체는 같아도, 용량 여유나 교체 주기 안내가 달라질 수 있습니다. \"그냥 똑같은 거\"라고 생각하지 말고, 사용 환경도 같이 말씀해 주시면 좋습니다."
+    },
+    {
+      "heading": "애매하면 기존 배터리 사진이 제일 빠릅니다",
+      "body": "배터리 윗면 라벨에 90R, 100R, GB90R, GB100R처럼 적혀 있습니다. 사진 한 장이면 연식를 몰라도 대부분 바로 판별됩니다. 사이트에서도 포터2 상세 페이지에 연식별 칩을 두어 2019년 이전/2020년 이후를 나눠 볼 수 있습니다."
+    }
+  ],
+  "cta": {
+    "label": "포터2 배터리 확인하기",
+    "href": "/vehicle/porter2-new"
+  },
+  "heroImage": "/assets/batteries/GB100R/01-main.png",
+  "primaryBatteryImage": "/assets/batteries/GB100R/01-main.png",
+  "sectionImages": [
+    "/assets/batteries/GB90R/01-main.png",
+    "/assets/batteries/GB100R/01-main.png",
+    "/assets/batteries/CMF90R/01-main.png",
+    "/assets/batteries/CMF100R/01-main.png",
+    "/assets/batteries/GB100R/06-label-top.png"
+  ]
+}

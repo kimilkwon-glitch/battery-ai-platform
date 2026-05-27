@@ -1,0 +1,26 @@
+{
+  "product": "AGM60L",
+  "folder": "/assets/batteries/AGM60L/",
+  "images": {
+    "main": "/assets/batteries/AGM60L/01-main.png",
+    "productBox": "/assets/batteries/AGM60L/02-product-box.png",
+    "boxFront": "/assets/batteries/AGM60L/03-box-front.png",
+    "boxAngle": "/assets/batteries/AGM60L/04-box-angle.png",
+    "productBoxAngle": "/assets/batteries/AGM60L/05-product-box-angle.png",
+    "labelTop": "/assets/batteries/AGM60L/06-label-top.png",
+    "frontLabel": "/assets/batteries/AGM60L/07-front-label.png"
+  },
+  "usage": {
+    "cardThumbnail": "images.main",
+    "searchResult": "images.main",
+    "compareTable": "images.main or images.frontLabel",
+    "detailHero": "images.productBox or images.productBoxAngle",
+    "packageSection": [
+      "images.boxFront",
+      "images.boxAngle"
+    ],
+    "specSection": "images.labelTop",
+    "productNameCheck": "images.frontLabel",
+    "gallery": "all images"
+  }
+}

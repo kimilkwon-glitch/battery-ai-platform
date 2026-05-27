@@ -1,0 +1,57 @@
+{
+  "id": "staria-agm80r-guide",
+  "title": "스타리아 배터리는 AGM80R 단자 방향을 먼저 확인하세요",
+  "description": "스타리아는 디젤과 LPG 모두 AGM80R 기준으로 확인하는 것이 안전합니다. 특히 L/R 단자 방향을 헷갈리면 오주문으로 이어질 수 있습니다.",
+  "category": "오주문 방지",
+  "secondaryCategories": ["차종별 규격"],
+  "vehicleIds": ["staria-us4"],
+  "batteryIds": ["AGM80R", "AGM80L"],
+  "tags": ["스타리아", "AGM80R", "AGM80L", "단자방향", "디젤", "LPG"],
+  "status": "published",
+  "createdAt": "2026-05-23",
+  "updatedAt": "2026-05-24",
+  "heroImagePrompt": "Modern MPV vehicle silhouette with AGM80R battery card, right terminal direction visual cue, clean Korean battery service website style, blue white background, no text, professional product guide image",
+  "imagePrompts": [
+    "스타리아 느낌의 대형 MPV 실루엣과 AGM80R 배터리 카드가 함께 배치된 깔끔한 이미지, 텍스트 없음",
+    "자동차 배터리 단자 방향 R을 시각적으로 설명하는 제품 비교 이미지, L/R 방향 혼동 방지용, 로고 없음",
+    "AGM80R 배터리 제품이 카드형 UI 안에 표시되고 차량 이미지와 연결되는 웹사이트용 안내 이미지",
+    "디젤과 LPG 연료 아이콘이 같은 AGM80R 배터리 카드로 연결되는 흐름형 인포그래픽, 텍스트 없음",
+    "MPV 엔진룸에서 배터리 단자(+/-) 위치를 확인하는 정비 안내 일러스트, 교육용 스타일",
+    "AGM80L과 AGM80R 두 제품을 좌우로 비교하는 카드 레이아웃, 단자 방향 화살표만으로 구분, 텍스트 없음"
+  ],
+  "sections": [
+    {
+      "heading": "스타리아는 AGM80R 기준으로 확인합니다",
+      "body": "스타리아(US4)는 디젤이든 LPG든 12V 보조배터리는 AGM80R으로 확인하는 경우가 많습니다. \"스타리아 배터리\"라고만 검색하면 AGM80L이 같이 나와 헷갈리기 쉬운데, 스타리아는 R단자 쪽을 먼저 보시면 됩니다."
+    },
+    {
+      "heading": "디젤과 LPG 모두 R단자 기준으로 봅니다",
+      "body": "연료가 다르더라도 12V 규격이 같게 잡히는 경우가 많습니다. 다만 트림·옵션에 따라 예외가 있을 수 있으니, 사이트에서 연료 탭을 눌러 디젤/LPG 각각 카드를 확인해 보세요. 둘 다 AGM80R이면 더 확신을 가지셔도 됩니다."
+    },
+    {
+      "heading": "AGM80L과 AGM80R은 같은 용량처럼 보여도 방향이 다릅니다",
+      "body": "80이라는 숫자는 용량(Ah) 계열을 뜻하고, 뒤의 L/R은 플러스 단자 위치입니다. AGM80L을 R 차량에 넣으면 케이블 길이·클램프 각도가 안 맞아 작업이 어려워집니다. 매장에서 L/R 오주문은 정말 자주 나오는 실수입니다."
+    },
+    {
+      "heading": "단자 방향이 틀리면 장착이 어려워질 수 있습니다",
+      "body": "배터리를 뒤집거나 케이블을 억지로 당기면 단자·퓨즈박스 쪽에 무리가 갑니다. 교체 전에 기존 배터리 사진으로 +/- 위치를 확인하는 게 가장 안전합니다. 사진 확인 안내 기능도 이용해 보세요."
+    },
+    {
+      "heading": "사이트에서는 스타리아 상세페이지에서 바로 AGM80R 카드가 보이게 구성합니다",
+      "body": "Battery Manager 스타리아 페이지에서는 로케트·쏠라이트 AGM80R 이미지 카드와 연료별 안내를 함께 보여줍니다. 배터리 상세 페이지에서도 같은 규격으로 연결된 차량 목록을 확인할 수 있습니다."
+    }
+  ],
+  "cta": {
+    "label": "스타리아 배터리 확인하기",
+    "href": "/vehicle/staria-us4"
+  },
+  "heroImage": "/assets/batteries/CMF80R/01-main.png",
+  "primaryBatteryImage": "/assets/batteries/CMF80R/01-main.png",
+  "sectionImages": [
+    "/assets/batteries/CMF80R/01-main.png",
+    "/assets/batteries/GB80R/01-main.png",
+    "/assets/batteries/CMF80L/01-main.png",
+    "/assets/batteries/CMF80R/06-label-top.png",
+    "/assets/batteries/CMF80R/02-product-box.png"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "_meta": {
+    "description": "대표 규격(normalizedCode) 기준 브랜드별 표기명. 로케트/쏠라이트 라벨 OCR·쇼핑 매칭용.",
+    "operatorNote": "델코/바르타/인피니트 표기 추가 시 동일 키에 필드 확장"
+  },
+  "mappings": {
+    "AGM60L": {
+      "rocket": "AGM60L",
+      "solite": "AGM60L",
+      "description": "하이브리드·소형 SUV AGM",
+      "terminalNote": "L단자"
+    },
+    "AGM70L": {
+      "rocket": "AGM70L",
+      "solite": "AGM70L",
+      "description": "용량업 후보 — 트레이 공간 확인"
+    },
+    "AGM80L": {
+      "rocket": "AGM80L",
+      "solite": "AGM80L",
+      "description": "ISG 세단·SUV 대표 AGM"
+    },
+    "AGM95L": {
+      "rocket": "AGM95L",
+      "solite": "AGM95L",
+      "description": "대형 SUV"
+    },
+    "AGM95R": {
+      "rocket": "AGM95R",
+      "description": "제네시스 R단자 계열"
+    },
+    "AGM80R": {
+      "rocket": "AGM80R",
+      "description": "스타리아 등 R단자 AGM"
+    },
+    "DIN74L": {
+      "rocket": "GB57820",
+      "solite": "CMF57412",
+      "description": "일반 DIN 대체 규격 — AGM과 혼동 주의",
+      "terminalNote": "L단자"
+    },
+    "DIN50L": {
+      "rocket": "GB55066",
+      "solite": "CMF54459",
+      "description": "소형 DIN"
+    },
+    "100R": {
+      "rocket": "GB100R",
+      "solite": "CMF100R",
+      "description": "포터2 2020년 이후 상용차 계열",
+      "terminalNote": "R단자"
+    },
+    "90R": {
+      "rocket": "GB90R",
+      "solite": "CMF90R",
+      "description": "포터2 2019년 이전"
+    },
+    "AGM92Ah": {
+      "rocket": "AGM92Ah",
+      "delkor": "AGM92Ah",
+      "varta": "AGM92Ah",
+      "description": "BMW 등 수입차 IBS/BMS"
+    }
+  }
+}

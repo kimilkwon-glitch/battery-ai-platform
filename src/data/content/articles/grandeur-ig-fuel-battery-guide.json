@@ -1,0 +1,57 @@
+{
+  "id": "grandeur-ig-fuel-battery-guide",
+  "title": "그랜저 IG 배터리, 가솔린·디젤·LPG를 나눠서 확인해야 합니다",
+  "description": "그랜저 IG는 연료에 따라 배터리 규격이 달라질 수 있어, 단순히 그랜저 IG 하나로만 검색하면 정확도가 떨어질 수 있습니다.",
+  "category": "연식·연료별 주의",
+  "secondaryCategories": ["차종별 규격"],
+  "vehicleIds": ["grandeur-ig"],
+  "batteryIds": ["AGM80L", "DIN80L", "DIN90L"],
+  "tags": ["그랜저", "그랜저 IG", "가솔린", "디젤", "LPG", "AGM80L", "DIN"],
+  "status": "published",
+  "createdAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
+  "heroImagePrompt": "Elegant sedan battery guide hero image, modern Korean sedan silhouette, fuel type cards gasoline diesel LPG connected to battery cards, clean blue and white ecommerce UI style, no text",
+  "imagePrompts": [
+    "대형 세단 실루엣과 가솔린 디젤 LPG 선택 카드가 배터리 카드로 이어지는 깔끔한 웹 이미지, 텍스트 없음",
+    "AGM80L 배터리 카드와 DIN 계열 배터리 카드가 차량 연료별로 분리되어 보이는 비교 이미지",
+    "그랜저 IG 같은 중대형 세단의 배터리 확인 과정을 보여주는 정비 안내 이미지, 보닛 열린 차량, 깔끔한 배경",
+    "연료별 배터리 추천 카드 UI 목업 이미지, 모바일 화면 느낌, 파란색 포인트, 텍스트 없음",
+    "LPG 차량 트렁크 근처 배터리 위치를 연상시키는 세단 실루엣 안내 이미지, 로고 없음",
+    "ISG 아이콘과 AGM 배터리가 연결되는 인포그래픽, DIN과 AGM 차이를 시각적으로 구분, 텍스트 없음"
+  ],
+  "sections": [
+    {
+      "heading": "그랜저 IG는 연료를 나눠 봐야 합니다",
+      "body": "그랜저 IG는 가솔린·디젤·LPG 모델이 있어서, \"그랜저 배터리\" 한 마디로는 답이 갈립니다. 연료 종류를 모르면 AGM80L을 주문했다가 LPG 차량이라 DIN 계열이 필요한 경우가 생깁니다."
+    },
+    {
+      "heading": "가솔린과 디젤은 AGM80L 기준으로 확인합니다",
+      "body": "IG 가솔린·디젤 중 ISG가 붙은 트림은 AGM80L로 확인하는 경우가 많습니다. 일반 MF/DIN으로 내리면 충전 제어·시동 반복 문제가 생길 수 있어, ISG 여부도 같이 확인하는 게 좋습니다."
+    },
+    {
+      "heading": "LPG는 DIN80L 또는 DIN90L 계열을 확인해야 합니다",
+      "body": "LPG IG는 AGM이 아니라 DIN80L, DIN90L 쪽으로 잡히는 경우가 있습니다. LPG는 배터리 위치·고정 방식도 조금 달라서, 연료를 LPG로 확인한 뒤 해당 카드를 보는 게 안전합니다."
+    },
+    {
+      "heading": "고객이 보기 쉽게 연료별 카드로 보여주는 것이 좋습니다",
+      "body": "매장에서도 화면을 같이 보면서 \"가솔린 탭 → AGM80L\"처럼 안내합니다. Battery Manager 그랜저 IG 페이지에서도 연료 탭을 누르면 바로 해당 규격 카드가 보이도록 되어 있습니다."
+    },
+    {
+      "heading": "기존 배터리 사진을 확인하면 오주문을 줄일 수 있습니다",
+      "body": "라벨에 AGM80L, DIN80L 등 규격과 L/R 단자가 같이 나옵니다. 연료를 잊었을 때도 사진만 있으면 대부분 해결됩니다. 사진 확인이 필요하다고 나오면 모달 안내를 따라 주세요."
+    }
+  ],
+  "cta": {
+    "label": "그랜저 IG 배터리 확인하기",
+    "href": "/vehicle/grandeur-ig"
+  },
+  "heroImage": "/assets/batteries/AGM80L/01-main.png",
+  "primaryBatteryImage": "/assets/batteries/AGM80L/01-main.png",
+  "sectionImages": [
+    "/assets/batteries/AGM80L/01-main.png",
+    "/assets/batteries/GB58014/01-main.png",
+    "/assets/batteries/GB59042/01-main.png",
+    "/assets/batteries/AGM80L/06-label-top.png",
+    "/assets/batteries/GB58014/02-product-box.png"
+  ]
+}

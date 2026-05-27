@@ -1,0 +1,22 @@
+{
+  "product": "AGM70L",
+  "basePath": "/assets/batteries/AGM70L",
+  "images": {
+    "main": "/assets/batteries/AGM70L/01-main.png",
+    "productBox": "/assets/batteries/AGM70L/02-product-box.png",
+    "boxFront": "/assets/batteries/AGM70L/03-box-front.png",
+    "boxAngle": "/assets/batteries/AGM70L/04-box-angle.png",
+    "productBoxAngle": "/assets/batteries/AGM70L/05-product-box-angle.png",
+    "labelTop": "/assets/batteries/AGM70L/06-label-top.png",
+    "frontLabel": "/assets/batteries/AGM70L/07-front-label.png"
+  },
+  "usage": {
+    "01-main.png": "대표 이미지 / 상품카드 / 검색결과 / 비교 선택 카드",
+    "02-product-box.png": "제품+박스 정면 / 상세 상단 / 구성 안내",
+    "03-box-front.png": "박스 단독 정면 / 패키지 안내",
+    "04-box-angle.png": "박스 사선 / 포장 상태 강조",
+    "05-product-box-angle.png": "제품+박스 사선 / 상세 중간 / 브랜드 허브",
+    "06-label-top.png": "상단 라벨 / AGM70L / 12V / 760CCA / 70Ah / 단자 방향 설명",
+    "07-front-label.png": "정면 라벨 / 제품명·브랜드·규격 확인"
+  }
+}

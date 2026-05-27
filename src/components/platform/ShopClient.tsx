@@ -1,0 +1,571 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { BatteryGallery } from "@/components/BatteryGallery";
+import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
+import { useCart } from "@/components/platform/CartContext";
+import { ShopFindBatteryBar } from "@/components/platform/ShopFindBatteryBar";
+import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
+import { HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
+import { bm } from "@/lib/design-tokens";
+import {
+  BRAND_SHOP_LABEL,
+  badgeToneClass,
+  featuredSpecs,
+  filterShopProducts,
+  findShopProductByCode,
+  getProductMeta,
+  preOrderChecklist,
+  shopBasicFilters,
+  shopDetailFilters,
+  shopPopularComparisons,
+  shopSidebarLinks,
+  specNotationRows,
+  SHOP_PAGE_SIZE,
+  type ShopBasicFilter,
+  type ShopDetailFilter,
+} from "@/lib/shop-hub-data";
+import {
+  compareHref,
+  getBattery,
+  getBrand,
+  getVehicleName,
+  searchHref,
+  serviceHref,
+  shopProducts,
+  type ShopProduct,
+} from "@/lib/platform-data";
+import { getBatteryImageSet } from "@/lib/battery-alias-map";
+
+function ShopHero() {
+  return null;
+}
+
+function FeaturedSpecsSection({ onSelect }: { onSelect: (code: string) => void }) {
+  return (
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <h2 className="text-base font-black text-slate-900">2. 많이 찾는 배터리 상품</h2>
+      <p className="mt-1 text-xs font-semibold text-slate-500">인기 규격 4종 — 추천 용도와 대표 차량을 확인하세요.</p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {featuredSpecs.map((spec) => {
+          const imageSet = getBatteryImageSet(spec.productCode, spec.brandId === "solite" ? "solite" : "rocket");
+          const parsed = parseBatterySpecDisplay(spec.productCode);
+          return (
+            <div
+              key={spec.displayCode}
+              className="flex flex-col overflow-hidden rounded-xl border border-slate-100 bg-slate-50/50 ring-1 ring-slate-100"
+            >
+              <div className="relative h-36 bg-white">
+                <BatteryThumbnail
+                  code={spec.productCode}
+                  imageSet={imageSet?.main ? imageSet : undefined}
+                  role="main"
+                  fit={batteryImageFit(spec.productCode, spec.brandId === "solite" ? "solite" : "rocket")}
+                  ratio="16/9"
+                  overlayLabel={false}
+                  darkOverlay={false}
+                  className="h-full"
+                />
+              </div>
+              <div className="flex flex-1 flex-col p-3">
+                <p className="text-sm font-black text-blue-700">{spec.displayCode}</p>
+                <p className="mt-1 text-[10px] font-bold text-slate-600">
+                  {parsed.typeLabel} · {parsed.seriesLabel}
+                  {parsed.terminalLabel ? ` · ${parsed.terminalLabel}` : ""}
+                </p>
+                <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                  대표 차량: {spec.vehicles.join(", ")}
+                </p>
+                <div className="mt-auto flex flex-col gap-1.5 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => onSelect(spec.productCode)}
+                    className={`${bm.btnPrimary} w-full py-2 text-[10px]`}
+                  >
+                    상품 상세보기
+                  </button>
+                  <Link href={spec.href} className={`${bm.btnSecondary} text-center text-[10px]`}>
+                    내 차 기준 검색
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function SpecNotationGuide() {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between text-left"
+      >
+        <span className="text-xs font-black text-slate-700">규격 표기 안내 (로케트 · 쏠라이트)</span>
+        <span className="text-[10px] font-black text-blue-600">{open ? "접기" : "펼치기"}</span>
+      </button>
+      {open && (
+        <ul className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+          {specNotationRows.map((row) => (
+            <li key={row.label} className="text-xs font-semibold text-slate-600">
+              <span className="font-black text-blue-700">{row.label}</span> — {row.detail}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function ProductCard({
+  product,
+  onDetail,
+  onInquiry,
+  onCompare,
+}: {
+  product: ShopProduct;
+  onDetail: (p: ShopProduct) => void;
+  onInquiry: (p: ShopProduct) => void;
+  onCompare: (p: ShopProduct) => void;
+}) {
+  const b = getBattery(product.batteryCode, product.brandId);
+  const imageSet = product.brandId === "rocket" ? b.images : getBatteryImageSet(product.batteryCode, "solite");
+  const meta = getProductMeta(product);
+  const brand = getBrand(product.brandId);
+
+  return (
+    <article className="flex h-full flex-col overflow-hidden rounded-xl bg-white ring-1 ring-slate-200">
+      <div className="relative h-[180px] shrink-0 bg-slate-50">
+        <BatteryThumbnail
+          code={product.batteryCode}
+          imageSet={imageSet?.main ? imageSet : undefined}
+          role="main"
+          fit={batteryImageFit(product.batteryCode, product.brandId === "solite" ? "solite" : "rocket")}
+          ratio="16/9"
+          overlayLabel={false}
+          darkOverlay={false}
+          className="h-full"
+        />
+      </div>
+
+      <div className="flex flex-1 flex-col p-3">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-sm font-black text-slate-950">{product.batteryCode}</p>
+            <p className="mt-0.5 text-[11px] font-bold text-slate-500">
+              {product.capacity} · {product.cca} · {product.type} · {product.terminal}타입
+            </p>
+          </div>
+          <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-600">
+            {brand.displayName}
+          </span>
+        </div>
+
+        <p className="mt-2 text-[10px] font-semibold text-slate-600">
+          대표 차량: {meta.featuredVehicles.slice(0, 3).join(", ")}
+        </p>
+        <p className="mt-1 text-[10px] font-medium text-slate-500">{meta.usage}</p>
+
+        <div className="mt-2 flex flex-wrap gap-1">
+          {meta.badges.map((badge) => (
+            <span
+              key={badge.label}
+              className={`rounded px-1.5 py-0.5 text-[9px] font-black ring-1 ${badgeToneClass(badge.tone)}`}
+            >
+              {badge.label}
+            </span>
+          ))}
+        </div>
+
+        <p className="mt-2 text-sm font-black text-blue-700">{product.price.toLocaleString()}원</p>
+
+        <div className="mt-auto space-y-2 pt-3">
+          <button
+            type="button"
+            onClick={() => onDetail(product)}
+            className={`${bm.btnPrimary} w-full justify-center py-2.5 text-[11px]`}
+          >
+            상세보기
+          </button>
+          <button
+            type="button"
+            onClick={() => onInquiry(product)}
+            className={`${bm.btnSecondary} w-full justify-center py-2 text-[11px]`}
+          >
+            문의하기
+          </button>
+          <button
+            type="button"
+            onClick={() => onCompare(product)}
+            className={`${bm.btnTertiary} w-full justify-center text-[11px]`}
+          >
+            비교하기
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ShopPageBottom() {
+  return (
+    <div className="space-y-4 border-t border-slate-100 pt-4" data-ux="shop-page-bottom">
+      <section className="rounded-2xl border border-amber-100 bg-[#fdfbf7] p-4 shadow-sm" id="order-check">
+        <h2 className="text-base font-black text-slate-900">주문 전 체크리스트</h2>
+        <p className="mt-1 text-xs font-semibold text-slate-500">오주문을 줄이기 위한 실무 체크 항목입니다.</p>
+        <ul className="mt-3 space-y-2">
+          {preOrderChecklist.map((item) => (
+            <li key={item} className="flex items-start gap-2 text-xs font-semibold text-slate-700">
+              <span className="mt-0.5 text-amber-500">✓</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <h2 className="text-base font-black text-slate-900">많이 비교한 규격</h2>
+        <div className="mt-3 flex flex-col gap-1.5">
+          {shopPopularComparisons.map((c) => (
+            <Link key={c.label} href={c.href} className="text-xs font-bold text-blue-600 hover:underline">
+              {c.label}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <h2 className="text-base font-black text-slate-900">빠른 이동</h2>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {shopSidebarLinks.map((link) => (
+            <Link key={link.label} href={link.href} className="block rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-slate-100 hover:bg-blue-50">
+              <p className="text-xs font-black text-slate-800">{link.label}</p>
+              <p className="text-[10px] font-semibold text-slate-500">{link.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" id="shop-contact">
+        <h2 className="text-base font-black text-slate-900">문의 · 다음 단계</h2>
+        <p className="mt-1 text-xs font-semibold text-slate-500">규격 확인 후 주문·매장 연결</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link href="/ai" className={`${bm.btnPrimary} text-xs`}>
+            규격 문의하기
+          </Link>
+          <Link href="/analysis/photo" className={`${bm.btnSecondary} text-xs`}>
+            사진으로 확인
+          </Link>
+          <Link href="/service-center" className={`${bm.btnTertiary} text-xs`}>
+            매장·출장 안내
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export function ShopClient() {
+  const { add, count } = useCart();
+  const [basicFilter, setBasicFilter] = useState<ShopBasicFilter>("전체");
+  const [detailFilters, setDetailFilters] = useState<Set<ShopDetailFilter>>(new Set());
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(SHOP_PAGE_SIZE);
+  const [detail, setDetail] = useState<ShopProduct | null>(null);
+  const [inquiry, setInquiry] = useState<ShopProduct | null>(null);
+
+  const filtered = useMemo(
+    () => filterShopProducts(shopProducts, basicFilter, detailFilters),
+    [basicFilter, detailFilters],
+  );
+
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
+
+  const toggleDetailFilter = (f: ShopDetailFilter) => {
+    setDetailFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f);
+      else next.add(f);
+      return next;
+    });
+    setVisibleCount(SHOP_PAGE_SIZE);
+  };
+
+  const handleBasicFilter = (f: ShopBasicFilter) => {
+    setBasicFilter(f);
+    setVisibleCount(SHOP_PAGE_SIZE);
+  };
+
+  const scrollToProduct = (code: string) => {
+    const product = findShopProductByCode(code);
+    if (product) {
+      setDetail(product);
+      setBasicFilter("전체");
+      setDetailFilters(new Set());
+    }
+  };
+
+  const handleCompare = (p: ShopProduct) => {
+    const b = getBattery(p.batteryCode, p.brandId);
+    window.location.href = compareHref(p.batteryCode, b.compareWith[0]);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-4">
+        <ShopFindBatteryBar />
+        <section id="shop-products" className="scroll-mt-4">
+          <FeaturedSpecsSection onSelect={scrollToProduct} />
+        </section>
+
+        {/* 필터 */}
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap gap-1.5">
+              {shopBasicFilters.map((f) => (
+                <button
+                  type="button"
+                  key={f}
+                  onClick={() => handleBasicFilter(f)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-black transition ${
+                    basicFilter === f ? "bg-blue-700 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setDetailOpen((v) => !v)}
+                className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-black text-slate-700 hover:bg-slate-50"
+              >
+                상세 필터 {detailOpen ? "▲" : "▼"}
+              </button>
+              <Link href="/shop/cart" className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-black text-white">
+                담은 상품 {count > 0 ? `(${count})` : ""}
+              </Link>
+            </div>
+          </div>
+
+          {detailOpen && (
+            <div className="mt-3 flex flex-wrap gap-1.5 border-t border-slate-100 pt-3">
+              {shopDetailFilters.map((f) => {
+                const active = detailFilters.has(f);
+                return (
+                  <button
+                    type="button"
+                    key={f}
+                    onClick={() => toggleDetailFilter(f)}
+                    className={`rounded-full border px-2.5 py-1 text-[10px] font-black transition ${
+                      active
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-blue-200"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                );
+              })}
+              {detailFilters.size > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDetailFilters(new Set());
+                    setVisibleCount(SHOP_PAGE_SIZE);
+                  }}
+                  className="rounded-full px-2.5 py-1 text-[10px] font-black text-slate-500 hover:text-slate-800"
+                >
+                  초기화
+                </button>
+              )}
+            </div>
+          )}
+
+          <p className="mt-3 text-[11px] font-semibold text-slate-500">
+            {filtered.length}개 규격 · {basicFilter !== "전체" ? `${basicFilter} 필터 적용` : "전체"}
+            {detailFilters.size > 0 ? ` · 상세 ${detailFilters.size}개` : ""}
+          </p>
+        </section>
+
+        {/* 상품 목록 */}
+        <section>
+          <h2 className="mb-1 text-base font-black text-slate-900">전체 배터리 규격</h2>
+          <p className="mb-3 text-[11px] font-semibold text-slate-500">기본 8개만 표시 · 더보기로 전체 확인</p>
+          {visible.length === 0 ? (
+            <div className="rounded-xl bg-white p-8 text-center ring-1 ring-slate-200">
+              <p className="text-sm font-black text-slate-700">조건에 맞는 상품이 없습니다</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setBasicFilter("전체");
+                  setDetailFilters(new Set());
+                }}
+                className="mt-3 rounded-lg bg-blue-700 px-4 py-2 text-xs font-black text-white"
+              >
+                필터 초기화
+              </button>
+            </div>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {visible.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  onDetail={setDetail}
+                  onInquiry={setInquiry}
+                  onCompare={handleCompare}
+                />
+              ))}
+            </div>
+          )}
+
+          {hasMore && (
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((c) => c + SHOP_PAGE_SIZE)}
+                className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-700 shadow-sm hover:bg-slate-50"
+              >
+                더보기 ({filtered.length - visibleCount}개 남음)
+              </button>
+            </div>
+          )}
+        </section>
+
+        <SpecNotationGuide />
+
+        <ShopPageBottom />
+      </div>
+
+      {/* 상세 패널 */}
+      {detail && (() => {
+        const b = getBattery(detail.batteryCode, detail.brandId);
+        const imageSet = detail.brandId === "rocket" ? b.images : getBatteryImageSet(detail.batteryCode, "solite");
+        const meta = getProductMeta(detail);
+        return (
+          <section className="fixed inset-x-0 bottom-0 z-40 max-h-[85vh] overflow-y-auto rounded-t-2xl border border-blue-200 bg-white p-4 shadow-2xl sm:inset-x-auto sm:left-1/2 sm:top-1/2 sm:max-h-[90vh] sm:w-full sm:max-w-2xl sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h3 className="text-base font-black">{detail.batteryCode}</h3>
+                <p className="mt-1 text-xs font-bold text-slate-500">
+                  {detail.capacity} · {detail.cca} · {detail.type} · {detail.terminal}타입 · {getBrand(detail.brandId).displayName}
+                </p>
+              </div>
+              <button type="button" onClick={() => setDetail(null)} className="rounded-lg bg-slate-100 px-3 py-1 text-xs font-black">
+                닫기
+              </button>
+            </div>
+
+            <div className="mt-3 grid gap-4 lg:grid-cols-[1fr_240px]">
+              <BatteryGallery code={detail.batteryCode} imageSet={imageSet?.main ? imageSet : undefined} />
+              <div className="space-y-3">
+                <BatteryThumbnail
+                  code={detail.batteryCode}
+                  imageSet={imageSet?.main ? imageSet : undefined}
+                  role="detail"
+                  fit="contain"
+                  ratio="4/3"
+                  overlayLabel={false}
+                />
+                <div className="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
+                  <p className="text-[10px] font-black text-slate-400">대표 차량</p>
+                  <p className="mt-1 text-xs font-bold text-slate-700">{meta.featuredVehicles.join(", ")}</p>
+                  <p className="mt-2 text-[10px] font-black text-slate-400">추천 용도</p>
+                  <p className="mt-1 text-xs font-semibold text-slate-600">{meta.usage}</p>
+                </div>
+              </div>
+            </div>
+
+            <p className="mt-3 text-xs font-semibold text-amber-800">{detail.caution}</p>
+            <p className="mt-2 text-xs font-bold text-slate-500">
+              연결 차종: {detail.vehicleIds.map(getVehicleName).join(", ")}
+            </p>
+            <p className="mt-2 text-sm font-black text-blue-700">{detail.price.toLocaleString()}원</p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href={searchHref(detail.batteryCode)} className="rounded-lg bg-blue-700 px-4 py-2 text-xs font-black text-white">
+                규격 검색
+              </Link>
+              <Link href={`/analysis/photo?battery=${encodeURIComponent(detail.batteryCode)}`} className="rounded-lg border border-blue-200 px-4 py-2 text-xs font-black text-blue-700">
+                사진 확인
+              </Link>
+              <Link href={compareHref(detail.batteryCode, b.compareWith[0])} className="rounded-lg bg-slate-100 px-4 py-2 text-xs font-black">
+                비교
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  add(detail);
+                  setDetail(null);
+                }}
+                className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-black text-slate-700"
+              >
+                담기
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setInquiry(detail);
+                  setDetail(null);
+                }}
+                className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-black text-white"
+              >
+                문의하기
+              </button>
+            </div>
+          </section>
+        );
+      })()}
+
+      {detail && <button type="button" aria-label="닫기" className="fixed inset-0 z-30 bg-black/40" onClick={() => setDetail(null)} />}
+
+      {/* 문의 모달 */}
+      {inquiry && (
+        <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white p-4 shadow-xl">
+            <h3 className="text-sm font-black">{inquiry.batteryCode} 문의</h3>
+            <p className="mt-1 text-xs font-semibold text-slate-500">
+              {inquiry.capacity} · {inquiry.terminal}타입 · {getBrand(inquiry.brandId).displayName}
+            </p>
+            <textarea
+              className="mt-3 w-full rounded-lg bg-slate-50 p-3 text-sm ring-1 ring-slate-200"
+              rows={4}
+              defaultValue={`${inquiry.batteryCode} · ${inquiry.capacity} · 장착 차종·단자 방향 확인 요청`}
+            />
+            <div className="mt-3 flex gap-2">
+              <button type="button" onClick={() => setInquiry(null)} className="flex-1 rounded-lg bg-slate-100 py-2.5 text-xs font-black">
+                닫기
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  add(inquiry);
+                  setInquiry(null);
+                }}
+                className="flex-1 rounded-lg border border-slate-300 py-2.5 text-xs font-black text-slate-700"
+              >
+                상품 담기
+              </button>
+              <Link
+                href={serviceHref(inquiry.vehicleIds[0], inquiry.batteryCode)}
+                onClick={() => setInquiry(null)}
+                className="flex-1 rounded-lg bg-blue-700 py-2.5 text-center text-xs font-black text-white"
+              >
+                작업 가능점 연결
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}

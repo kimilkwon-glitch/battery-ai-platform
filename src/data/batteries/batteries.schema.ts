@@ -1,0 +1,24 @@
+export type BatteryProduct = {
+  batteryId: string;
+  brand: string;
+  brandSlug: string;
+  productName: string;
+  standardSpec: string;
+  aliases: string[];
+  ah: number;
+  cca: number;
+  terminalPosition: "L" | "R" | string;
+  type: string;
+  size: string;
+  imagePath: string;
+  price: number | null;
+  stockStatus: "in_stock" | "low_stock" | "out_of_stock" | "inquiry" | "unknown";
+  productUrl: string | null;
+  representativeVehicles: string[];
+  cautions: string;
+  returnCondition: string;
+  deliveryAvailable: boolean;
+  installAvailable: boolean;
+  storePickupAvailable: boolean;
+  memo: string;
+};

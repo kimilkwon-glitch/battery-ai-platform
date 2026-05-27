@@ -1,0 +1,234 @@
+[
+  {
+    "contentId": "symptom-winter-discharge",
+    "imagePath": "/assets/content/symptom_winter_discharge.png",
+    "imageFile": "symptom_winter_discharge.png",
+    "imageStatus": "exact",
+    "altText": "겨울철 방전 증상 대표 이미지",
+    "memo": "겨울철 방전 증상 대표 이미지"
+  },
+  {
+    "contentId": "winter-cca",
+    "imagePath": "/assets/content/guide_winter_cca_check.png",
+    "imageFile": "guide_winter_cca_check.png",
+    "imageStatus": "usable",
+    "altText": "CCA/Ah 설명 이미지로 겨울철 CCA 점검에도 임시 사용",
+    "memo": "CCA/Ah 설명 이미지로 겨울철 CCA 점검에도 임시 사용"
+  },
+  {
+    "contentId": "grandeur-ig-fuel-battery-guide",
+    "imagePath": "/assets/content/guide_grandeur_ig_fuel_battery.png",
+    "imageFile": "guide_grandeur_ig_fuel_battery.png",
+    "imageStatus": "usable",
+    "altText": "그랜저 전용은 아니지만 연식/연료 분기 안내로 사용",
+    "memo": "그랜저 전용은 아니지만 연식/연료 분기 안내로 사용"
+  },
+  {
+    "contentId": "admin-brand-001",
+    "imagePath": "/assets/content/guide_brand_spec_code_mapping.png",
+    "imageFile": "guide_brand_spec_code_mapping.png",
+    "imageStatus": "usable",
+    "altText": "브랜드별 표기 차이/코드 해석용 임시 사용",
+    "memo": "브랜드별 표기 차이/코드 해석용 임시 사용"
+  },
+  {
+    "contentId": "symptom-battery-warning-light",
+    "imagePath": "/assets/content/symptom_battery_warning_light.png",
+    "imageFile": "symptom_battery_warning_light.png",
+    "imageStatus": "exact",
+    "altText": "배터리 경고등 점등",
+    "memo": "배터리 경고등 점등"
+  },
+  {
+    "contentId": "symptom-blackbox-drain",
+    "imagePath": "/assets/content/symptom_blackbox_drain.png",
+    "imageFile": "symptom_blackbox_drain.png",
+    "imageStatus": "usable",
+    "altText": "블랙박스/주차중 방전 공통 사용",
+    "memo": "블랙박스/주차중 방전 공통 사용"
+  },
+  {
+    "contentId": "blackbox-cutoff",
+    "imagePath": "/assets/content/guide_blackbox_cutoff.png",
+    "imageFile": "guide_blackbox_cutoff.png",
+    "imageStatus": "usable",
+    "altText": "컷오프 전압 전용은 아니나 주차중 방전 안내로 사용",
+    "memo": "컷오프 전압 전용은 아니나 주차중 방전 안내로 사용"
+  },
+  {
+    "contentId": "photo-analysis-disclaimer",
+    "imagePath": "/assets/content/photo_analysis_disclaimer.png",
+    "imageFile": "photo_analysis_disclaimer.png",
+    "imageStatus": "exact",
+    "altText": "사진분석 안내",
+    "memo": "사진분석 안내"
+  },
+  {
+    "contentId": "symptom-slow-engine-start",
+    "imagePath": "/assets/content/symptom_slow_engine_start.png",
+    "imageFile": "symptom_slow_engine_start.png",
+    "imageStatus": "exact",
+    "altText": "시동 지연/점검 필요",
+    "memo": "시동 지연/점검 필요"
+  },
+  {
+    "contentId": "sorento-mq4-hybrid-agm60l",
+    "imagePath": "/assets/content/guide_sorento_mq4_hybrid_agm60l.png",
+    "imageFile": "guide_sorento_mq4_hybrid_agm60l.png",
+    "imageStatus": "usable",
+    "altText": "쏘렌토 전용은 아니지만 AGM60L 하이브리드 가이드로 사용",
+    "memo": "쏘렌토 전용은 아니지만 AGM60L 하이브리드 가이드로 사용"
+  },
+  {
+    "contentId": "wrong-spec",
+    "imagePath": "/assets/content/caution_wrong_spec.png",
+    "imageFile": "caution_wrong_spec.png",
+    "imageStatus": "usable",
+    "altText": "오주문 대표 사례로 AGM80L/R 사용",
+    "memo": "오주문 대표 사례로 AGM80L/R 사용"
+  },
+  {
+    "contentId": "manufacture-date",
+    "imagePath": "/assets/content/guide_manufacture_date.png",
+    "imageFile": "guide_manufacture_date.png",
+    "imageStatus": "exact",
+    "altText": "제조일자 확인법",
+    "memo": "제조일자 확인법"
+  },
+  {
+    "contentId": "porter2-year-battery-guide",
+    "imagePath": "/assets/content/guide_porter2_90r_100r.png",
+    "imageFile": "guide_porter2_90r_100r.png",
+    "imageStatus": "usable",
+    "altText": "포터2 전용은 아니지만 90R/100R 비교로 사용",
+    "memo": "포터2 전용은 아니지만 90R/100R 비교로 사용"
+  },
+  {
+    "contentId": "symptom-agm-replacement",
+    "imagePath": "/assets/content/symptom_agm_replacement.png",
+    "imageFile": "symptom_agm_replacement.png",
+    "imageStatus": "exact",
+    "altText": "AGM 교체 필요 증상",
+    "memo": "AGM 교체 필요 증상"
+  },
+  {
+    "contentId": "agm-vs-din",
+    "imagePath": "/assets/content/guide_agm_vs_din.png",
+    "imageFile": "guide_agm_vs_din.png",
+    "imageStatus": "usable",
+    "altText": "AGM vs DIN 비교",
+    "memo": "AGM vs DIN 비교"
+  },
+  {
+    "contentId": "agm-sizes",
+    "imagePath": "/assets/content/guide_agm_sizes.png",
+    "imageFile": "guide_agm_sizes.png",
+    "imageStatus": "temporary",
+    "altText": "AGM60/70/80/95L 전용 비교 이미지 추가 제작 권장",
+    "memo": "AGM60/70/80/95L 전용 비교 이미지 추가 제작 권장"
+  },
+  {
+    "contentId": "bms-register",
+    "imagePath": "/assets/content/guide_bms_ibs_register.png",
+    "imageFile": "guide_bms_ibs_register.png",
+    "imageStatus": "exact",
+    "altText": "BMS/IBS 등록",
+    "memo": "BMS/IBS 등록"
+  },
+  {
+    "contentId": "cca-ah",
+    "imagePath": "/assets/content/guide_cca_ah.png",
+    "imageFile": "guide_cca_ah.png",
+    "imageStatus": "exact",
+    "altText": "CCA/Ah 의미",
+    "memo": "CCA/Ah 의미"
+  },
+  {
+    "contentId": "din-sizes",
+    "imagePath": "/assets/content/guide_din_sizes.png",
+    "imageFile": "guide_din_sizes.png",
+    "imageStatus": "temporary",
+    "altText": "DIN50/62/74L 전용 비교 이미지 추가 제작 권장",
+    "memo": "DIN50/62/74L 전용 비교 이미지 추가 제작 권장"
+  },
+  {
+    "contentId": "symptom-ev12v-discharge",
+    "imagePath": "/assets/content/symptom_ev12v_discharge.png",
+    "imageFile": "symptom_ev12v_discharge.png",
+    "imageStatus": "exact",
+    "altText": "EV 12V 문제",
+    "memo": "EV 12V 문제"
+  },
+  {
+    "contentId": "ev-12v",
+    "imagePath": "/assets/content/guide_ev12v.png",
+    "imageFile": "guide_ev12v.png",
+    "imageStatus": "exact",
+    "altText": "EV 12V 보조배터리",
+    "memo": "EV 12V 보조배터리"
+  },
+  {
+    "contentId": "symptom-ibs-bms-error",
+    "imagePath": "/assets/content/symptom_ibs_bms_error.png",
+    "imageFile": "symptom_ibs_bms_error.png",
+    "imageStatus": "temporary",
+    "altText": "IBS 센서 오류 전용 이미지 추가 제작 권장",
+    "memo": "IBS 센서 오류 전용 이미지 추가 제작 권장"
+  },
+  {
+    "contentId": "terminal-lr",
+    "imagePath": "/assets/content/caution_terminal_lr.png",
+    "imageFile": "caution_terminal_lr.png",
+    "imageStatus": "exact",
+    "altText": "L/R 단자 방향",
+    "memo": "L/R 단자 방향"
+  },
+  {
+    "contentId": "admin-photo-guide-001",
+    "imagePath": "/assets/content/photo_guide_how_to_take.png",
+    "imageFile": "photo_guide_how_to_take.png",
+    "imageStatus": "exact",
+    "altText": "라벨/단자 사진 촬영 안내",
+    "memo": "라벨/단자 사진 촬영 안내"
+  },
+  {
+    "contentId": "staria-agm80r-guide",
+    "imagePath": "/assets/content/caution_staria_agm80r.png",
+    "imageFile": "caution_staria_agm80r.png",
+    "imageStatus": "exact",
+    "altText": "스타리아 AGM80R 단자 방향",
+    "memo": "스타리아 AGM80R 단자 방향"
+  },
+  {
+    "contentId": "g80-rg3-agm95r-guide",
+    "imagePath": "/assets/content/guide_g80_rg3_agm95r.png",
+    "imageFile": "guide_g80_rg3_agm95r.png",
+    "imageStatus": "temporary",
+    "altText": "G80 RG3 AGM95R 전용 이미지 추가 제작 권장",
+    "memo": "G80 RG3 AGM95R 전용 이미지 추가 제작 권장"
+  },
+  {
+    "contentId": "admin-caution-001",
+    "imagePath": "/assets/content/caution_agm80l_din74l_wrong_order.png",
+    "imageFile": "caution_agm80l_din74l_wrong_order.png",
+    "imageStatus": "temporary",
+    "altText": "AGM80L vs DIN74L 전용 오주문 이미지 추가 제작 권장",
+    "memo": "AGM80L vs DIN74L 전용 오주문 이미지 추가 제작 권장"
+  },
+  {
+    "contentId": "admin-spec-inquiry-001",
+    "imagePath": "/assets/content/spec_inquiry_guide.png",
+    "imageFile": "spec_inquiry_guide.png",
+    "imageStatus": "missing_fallback",
+    "altText": "규격 문의 전용 이미지 없음 / 현재 파일이 없어 사진 촬영 가이드 이미지로 임시 대체",
+    "memo": "규격 문의 전용 이미지 없음 / 현재 파일이 없어 사진 촬영 가이드 이미지로 임시 대체"
+  },
+  {
+    "contentId": "admin-shopping-001",
+    "imagePath": "/assets/content/shopping_return_condition.png",
+    "imageFile": "shopping_return_condition.png",
+    "imageStatus": "exact",
+    "altText": "반납/미반납 안내",
+    "memo": "반납/미반납 안내"
+  }
+]

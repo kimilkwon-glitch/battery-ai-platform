@@ -1,0 +1,57 @@
+{
+  "id": "sorento-mq4-hybrid-agm60l",
+  "title": "쏘렌토 MQ4 하이브리드 배터리, AGM60L 확인이 먼저입니다",
+  "description": "쏘렌토 MQ4는 가솔린·디젤과 하이브리드의 배터리 규격이 다를 수 있어, 하이브리드 차량은 AGM60L 기준으로 먼저 확인하는 것이 좋습니다.",
+  "category": "차종별 규격",
+  "secondaryCategories": ["연식·연료별 주의"],
+  "vehicleIds": ["sorento-mq4"],
+  "batteryIds": ["AGM60L", "AGM80L"],
+  "tags": ["쏘렌토", "쏘렌토 MQ4", "하이브리드", "AGM60L", "AGM80L"],
+  "status": "published",
+  "createdAt": "2026-05-25",
+  "updatedAt": "2026-05-25",
+  "heroImagePrompt": "Clean Korean automotive service website hero image showing a modern midsize SUV silhouette, an AGM60L car battery card, hybrid vehicle icon, soft blue and white background, no text, professional ecommerce style, realistic but slightly polished, mobile-friendly composition",
+  "imagePrompts": [
+    "쏘렌토 MQ4 하이브리드 차량 실루엣과 AGM60L 배터리 카드가 함께 보이는 깔끔한 안내 이미지, 파란색 포인트, 흰색 배경, 텍스트 없음",
+    "자동차 보닛이 열린 상태에서 12V 보조배터리 위치를 확인하는 느낌의 일러스트, 하이브리드 차량 안내용, 사실적이지만 깔끔한 웹 이미지",
+    "AGM60L 배터리 제품 이미지를 중심으로 하이브리드 아이콘과 체크 표시가 배치된 카드형 이미지, 쇼핑몰 상세페이지 스타일",
+    "가솔린 디젤 하이브리드 세 가지 연료 선택 카드가 나란히 있는 UI용 배경 이미지, 차분한 파랑/회색 톤, 텍스트 없음",
+    "하이브리드 SUV 엔진룸에서 보조배터리 근처를 가리키는 정비사 손짓 실루엣, 교육용 안내 이미지, 로고 없음",
+    "AGM60L과 AGM80L 두 배터리를 나란히 비교하는 제품 카드, 용량 차이를 시각적으로 표현, 텍스트 없음"
+  ],
+  "sections": [
+    {
+      "heading": "쏘렌토 MQ4는 연료부터 확인해야 합니다",
+      "body": "매장에 \"쏘렌토 MQ4 배터리 하나만 주세요\"라고 오시는 분이 꽤 많습니다. 그런데 MQ4는 가솔린, 디젤, 하이브리드에 따라 12V 보조배터리 규격이 달라질 수 있습니다. 차량등록증이나 연료 표시를 먼저 보고, 하이브리드인지 아닌지부터 구분하는 게 제일 빠릅니다."
+    },
+    {
+      "heading": "하이브리드는 AGM60L 기준으로 먼저 봅니다",
+      "body": "쏘렌토 MQ4 하이브리드는 AGM60L로 확인하는 경우가 많습니다. 하이브리드는 시동·전장품 부하 패턴이 가솔린/디젤과 달라서, 용량이 한 단계 작게 잡히는 경우가 있습니다. 사이트에서 하이브리드 탭을 선택하면 AGM60L 카드가 먼저 보이도록 정리해 두었습니다."
+    },
+    {
+      "heading": "가솔린·디젤과 헷갈리면 오주문이 날 수 있습니다",
+      "body": "가솔린·디젤 MQ4는 AGM80L 계열로 보는 경우가 많습니다. 하이브리드에 AGM80L을 넣거나, 반대로 가솔린에 AGM60L을 주문하면 단순히 \"안 맞는다\"로 끝나지 않고, ISG·충전 제어 쪽에서도 문제가 생길 수 있습니다. \"쏘렌토 배터리\"만으로 검색하지 말고, 연료까지 같이 확인해 주세요."
+    },
+    {
+      "heading": "기존 배터리 사진을 보면 정확도가 올라갑니다",
+      "body": "라벨에 AGM60L, AGM80L처럼 용량과 단자 방향(L/R)이 같이 적혀 있습니다. 사진 한 장만 보내주셔도, 매장에서 바로 맞는 규격을 짚어드릴 수 있습니다. 특히 교체 주기가 길어서 연료를 잊어버린 경우, 사진이 제일 확실합니다."
+    },
+    {
+      "heading": "사이트에서는 연료별로 나눠 확인할 수 있게 구성합니다",
+      "body": "Battery Manager에서는 쏘렌토 MQ4 상세 페이지에서 연료 탭으로 가솔린·디젤·하이브리드를 나눠 볼 수 있습니다. 하이브리드면 AGM60L, 가솔린/디젤이면 AGM80L 쪽을 먼저 확인하시면 됩니다. 애매하면 사진 확인 안내를 이용해 주세요."
+    }
+  ],
+  "cta": {
+    "label": "내 차량 배터리 확인하기",
+    "href": "/vehicle/sorento-mq4"
+  },
+  "heroImage": "/assets/batteries/AGM60L/01-main.png",
+  "primaryBatteryImage": "/assets/batteries/AGM60L/01-main.png",
+  "sectionImages": [
+    "/assets/batteries/AGM60L/01-main.png",
+    "/assets/batteries/AGM60L/02-product-box.png",
+    "/assets/batteries/AGM80L/01-main.png",
+    "/assets/batteries/AGM80L/02-product-box.png",
+    "/assets/batteries/AGM60L/06-label-top.png"
+  ]
+}

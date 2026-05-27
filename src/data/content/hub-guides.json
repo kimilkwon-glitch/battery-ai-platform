@@ -1,0 +1,129 @@
+{
+  "_meta": {
+    "description": "플랫폼 허브 가이드 스냅샷 — src/lib/platform-data.ts guides 배열과 동기화",
+    "updatedAt": "2026-05-25"
+  },
+  "guides": [
+    {
+      "id": "agm-vs-din",
+      "title": "AGM vs DIN",
+      "summary": "ISG/IBS 차량은 AGM 유지",
+      "body": "ISG·스마트충전 차량은 AGM/EFB 규격을 유지해야 충전 제어와 수명 관리가 안정적입니다. 일반 DIN으로 내리면 CCA·SOH 저하와 경고가 반복될 수 있습니다.",
+      "category": "배터리 규격 이해",
+      "tags": ["AGM", "DIN", "ISG"],
+      "batteryCodes": ["AGM80L", "DIN74L"],
+      "vehicleIds": ["grandeur-ig", "seltos"],
+      "status": "published"
+    },
+    {
+      "id": "terminal-lr",
+      "title": "L/R 단자 방향",
+      "summary": "오주문 최다 항목",
+      "body": "플러스/마이너스 단자 위치(L/R)가 다르면 케이블 길이와 터미널 클램프가 맞지 않습니다. 교체 전 사진으로 확인하세요.",
+      "category": "오주문 방지",
+      "tags": ["단자", "L/R", "오주문"],
+      "batteryCodes": ["AGM80L", "AGM60L"],
+      "vehicleIds": [],
+      "status": "published"
+    },
+    {
+      "id": "cca-ah",
+      "title": "CCA/Ah 의미",
+      "summary": "저온 시동·용량",
+      "body": "Ah는 저장 용량, CCA는 저온 시동 전류입니다. 겨울철에는 CCA 여유율이 특히 중요합니다.",
+      "category": "배터리 규격 이해",
+      "tags": ["CCA", "Ah"],
+      "batteryCodes": [],
+      "vehicleIds": [],
+      "status": "published"
+    },
+    {
+      "id": "manufacture-date",
+      "title": "제조일자 확인법",
+      "summary": "각인·라벨",
+      "body": "라벨의 제조 주차/월을 확인하고 36개월 이상 경과 시 교체를 검토하세요.",
+      "category": "점검·관리 팁",
+      "tags": ["제조일", "교체시기"],
+      "batteryCodes": [],
+      "vehicleIds": [],
+      "status": "published"
+    },
+    {
+      "id": "ev-12v",
+      "title": "EV 12V 보조배터리",
+      "summary": "EV6·EV9",
+      "body": "전기차 12V는 문잠금·통신·시동 준비에 사용됩니다. 반복 방전 시 대기전류와 충전 이벤트를 함께 점검하세요.",
+      "category": "차종별 규격",
+      "tags": ["EV", "12V"],
+      "batteryCodes": ["EV 12V"],
+      "vehicleIds": ["ev6"],
+      "status": "published"
+    },
+    {
+      "id": "bms-register",
+      "title": "BMS/IBS 등록",
+      "summary": "수입차·현대 일부",
+      "body": "배터리 교체 후 BMS/IBS 등록을 하지 않으면 충전 제어 오차로 신품 수명이 줄 수 있습니다.",
+      "category": "점검·관리 팁",
+      "tags": ["BMS", "IBS"],
+      "batteryCodes": ["AGM92Ah", "AGM80L"],
+      "vehicleIds": ["bmw-g30"],
+      "status": "published"
+    },
+    {
+      "id": "wrong-spec",
+      "title": "오주문 많은 규격",
+      "summary": "AGM80L↔DIN74L",
+      "body": "크기가 비슷해도 AGM과 DIN은 충방전 특성이 다릅니다. ISG 차량에서 DIN 교체는 비권장입니다.",
+      "category": "오주문 방지",
+      "tags": ["AGM80L", "DIN74L", "오주문"],
+      "batteryCodes": ["AGM80L", "DIN74L"],
+      "vehicleIds": ["grandeur-ig"],
+      "status": "published"
+    },
+    {
+      "id": "agm-sizes",
+      "title": "AGM60/70/80/95L 차이",
+      "summary": "용량 단계",
+      "body": "차량 ISG·용량·공간에 따라 AGM60L~95L 중 선택합니다. 업그레이드는 브라켓·CCA를 확인하세요.",
+      "category": "배터리 규격 이해",
+      "tags": ["AGM60L", "AGM70L", "AGM80L", "AGM95L"],
+      "batteryCodes": ["AGM60L", "AGM70L", "AGM80L", "AGM95L"],
+      "vehicleIds": ["seltos", "grandeur-ig"],
+      "status": "published"
+    },
+    {
+      "id": "din-sizes",
+      "title": "DIN60/74/80L 차이",
+      "summary": "일반 차량",
+      "body": "DIN 규격은 H5/H6/H7 등 케이스로 구분됩니다. 순정 Ah와 단자 방향을 맞추세요.",
+      "category": "배터리 규격 이해",
+      "tags": ["DIN74L", "DIN"],
+      "batteryCodes": ["DIN74L"],
+      "vehicleIds": ["k5-dl3"],
+      "status": "published"
+    },
+    {
+      "id": "winter-cca",
+      "title": "겨울철 CCA 점검",
+      "summary": "영하권 시동",
+      "body": "기온이 낮아지면 체감 CCA가 급격히 떨어집니다. 겨울 전 부하 테스트를 권장합니다.",
+      "category": "점검·관리 팁",
+      "tags": ["겨울", "CCA"],
+      "batteryCodes": ["AGM80L"],
+      "vehicleIds": ["grandeur-ig"],
+      "status": "published"
+    },
+    {
+      "id": "blackbox-cutoff",
+      "title": "블랙박스 컷오프",
+      "summary": "12.2V 이상 권장",
+      "body": "주차녹화·상시전원 사용 시 컷오프를 12.2V 이상으로 설정하면 방전 반복을 줄일 수 있습니다.",
+      "category": "점검·관리 팁",
+      "tags": ["블랙박스", "방전"],
+      "batteryCodes": [],
+      "vehicleIds": ["sorento-mq4", "seltos"],
+      "status": "published"
+    }
+  ]
+}

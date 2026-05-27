@@ -1,0 +1,24 @@
+{
+  "product": "AGM95R",
+  "brand": "로케트",
+  "brandKey": "rocket",
+  "note": "ROCKET AGM 95R5 이미지 세트. AGM95L에 연결하지 말 것.",
+  "images": {
+    "main": "/assets/batteries/AGM95R/01-main.png",
+    "productBox": "/assets/batteries/AGM95R/02-product-box.png",
+    "boxFront": "/assets/batteries/AGM95R/03-box-front.png",
+    "boxAngle": "/assets/batteries/AGM95R/04-box-angle.png",
+    "productBoxAngle": "/assets/batteries/AGM95R/05-product-box-angle.png",
+    "labelTop": "/assets/batteries/AGM95R/06-label-top.png",
+    "frontLabel": "/assets/batteries/AGM95R/07-front-label.png"
+  },
+  "mapping": {
+    "AGM95.png": "01-main.png",
+    "BTP08059.png": "02-product-box.png",
+    "BTP07951.png": "03-box-front.png",
+    "BTP07953.png": "04-box-angle.png",
+    "BTP07958.png": "05-product-box-angle.png",
+    "BTP07960.png": "06-label-top.png",
+    "BTP07962.png": "07-front-label.png"
+  }
+}

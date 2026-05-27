@@ -1,0 +1,130 @@
+{
+  "_meta": {
+    "description": "증상진단 룰. 추천 배터리는 차량 DB 우선 — 여기 relatedBatteries는 보조.",
+    "priorityRule": "vehicle-battery-db.json > symptom-rules relatedBatteries"
+  },
+  "rules": [
+    {
+      "symptomId": "slow-engine-start",
+      "symptomName": "시동 늦게 걸림",
+      "description": "CCA 저하, SOH 감소, 단거리 충전 부족 가능성을 확인합니다.",
+      "possibleCauses": [
+        { "title": "배터리 노후", "detail": "SOH 감소와 CCA 저하가 함께 나타나면 시동 성능이 떨어집니다." },
+        { "title": "단거리 충전 부족", "detail": "짧은 주행 반복은 충전 회복 시간을 줄입니다." },
+        { "title": "발전기 충전 이상", "detail": "주행 중 충전 전압이 낮으면 배터리만 교체해도 재발할 수 있습니다." }
+      ],
+      "recommendedChecks": [
+        { "label": "OCV", "value": "12.4V 이상 권장", "detail": "개방 전압" },
+        { "label": "CCA", "value": "부하 테스트", "detail": "저온 시동 전류" },
+        { "label": "SOH", "value": "80% 이하 교체 검토", "detail": "배터리 건강도" }
+      ],
+      "relatedBatteries": ["AGM80L", "AGM60L"],
+      "relatedGuides": ["cca-ah", "winter-cca"],
+      "urgencyLevel": "7일 내",
+      "warningText": "반복 시동 지연은 갑작스런 방전으로 이어질 수 있습니다.",
+      "nextActions": [
+        { "title": "차량별 추천 배터리", "href": "/vehicles" },
+        { "title": "겨울철 CCA 가이드", "href": "/guides?category=점검·관리 팁" },
+        { "title": "규격 비교", "href": "/compare?items=AGM70L,AGM80L" }
+      ],
+      "relatedSymptomIds": ["winter-discharge", "blackbox-drain"]
+    },
+    {
+      "symptomId": "blackbox-drain",
+      "symptomName": "블랙박스 방전",
+      "description": "대기전류, 컷오프 전압, 주차녹화 패턴을 점검합니다.",
+      "possibleCauses": [
+        { "title": "대기전류 증가", "detail": "주차녹화·상시전원 사용 시 방전 반복." },
+        { "title": "컷오프 전압 낮음", "detail": "12.2V 미만 설정 시 깊은 방전." }
+      ],
+      "recommendedChecks": [
+        { "label": "컷오프", "value": "12.2V 이상", "detail": "블랙박스 설정" },
+        { "label": "대기전류", "value": "측정 권장", "detail": "mA 단위" }
+      ],
+      "relatedBatteries": ["AGM95L", "AGM80L"],
+      "relatedGuides": ["blackbox-cutoff"],
+      "urgencyLevel": "48시간 내",
+      "nextActions": [
+        { "title": "증상 상세", "href": "/diagnosis/blackbox-drain" },
+        { "title": "작업 가능점", "href": "/service-center" }
+      ],
+      "relatedSymptomIds": ["slow-engine-start"]
+    },
+    {
+      "symptomId": "winter-discharge",
+      "symptomName": "겨울철 방전",
+      "description": "저온 CCA 성능 저하와 교체 시점을 확인합니다.",
+      "possibleCauses": [
+        { "title": "저온 CCA 저하", "detail": "영하권에서 체감 시동 성능 급감." },
+        { "title": "노후 배터리", "detail": "SOH 80% 이하에서 겨울 증상 악화." }
+      ],
+      "recommendedChecks": [
+        { "label": "CCA", "value": "여유율 확인", "detail": "저온 시동" },
+        { "label": "SOH", "value": "점검", "detail": "교체 시점" }
+      ],
+      "relatedGuides": ["winter-cca"],
+      "urgencyLevel": "점검 권장",
+      "nextActions": [
+        { "title": "CCA 가이드", "href": "/guide/spec?guide=winter-cca" },
+        { "title": "차량 검색", "href": "/search" }
+      ]
+    },
+    {
+      "symptomId": "ev12v-discharge",
+      "symptomName": "EV 12V 배터리 문제",
+      "description": "전기차 보조배터리 SOH, 대기전류, 충전 이벤트를 확인합니다.",
+      "possibleCauses": [
+        { "title": "12V 보조배터리 노후", "detail": "원격 공조·앱 사용 시 부하 증가." },
+        { "title": "충전 이벤트 지연", "detail": "주행 후 12V 충전 회복 시간 부족." }
+      ],
+      "recommendedChecks": [
+        { "label": "12V 전압", "value": "저전압 반복 확인", "detail": "경고 전" },
+        { "label": "SOH", "value": "EV 12V 전용", "detail": "규격 확인" }
+      ],
+      "relatedBatteries": ["EV 12V"],
+      "relatedGuides": ["ev-12v"],
+      "urgencyLevel": "48시간 내",
+      "nextActions": [
+        { "title": "EV6 차량 확인", "href": "/vehicle/ev6" },
+        { "title": "EV 12V Q&A", "href": "/community?q=EV6+12V" }
+      ]
+    },
+    {
+      "symptomId": "agm-replacement",
+      "symptomName": "AGM 교체 필요",
+      "description": "AGM 호환, ISG 차량, BMS 초기화 필요성을 확인합니다.",
+      "possibleCauses": [
+        { "title": "ISG/IBS 차량", "detail": "AGM/EFB 유지 권장." },
+        { "title": "BMS 미등록", "detail": "교체 후 등록 누락 시 경고 반복." }
+      ],
+      "relatedGuides": ["agm-vs-din", "bms-register"],
+      "urgencyLevel": "7일 내",
+      "nextActions": [
+        { "title": "AGM vs DIN", "href": "/guide/spec?guide=agm-vs-din" },
+        { "title": "BMS 가이드", "href": "/guide/spec?guide=bms-register" }
+      ]
+    },
+    {
+      "symptomId": "ibs-bms-error",
+      "symptomName": "IBS/BMS 오류",
+      "description": "IBS 센서 오차, BMS 등록 누락, 충전 제어 오류를 확인합니다.",
+      "urgencyLevel": "즉시",
+      "warningText": "경고등·충전 제어 오류는 배터리만 교체해도 해결되지 않을 수 있습니다.",
+      "nextActions": [
+        { "title": "BMS 등록 가이드", "href": "/guide/spec?guide=bms-register" },
+        { "title": "작업 가능점", "href": "/service-center?symptom=BMS" }
+      ]
+    },
+    {
+      "symptomId": "battery-warning-light",
+      "symptomName": "배터리 경고등",
+      "description": "충전계·IBS/BMS·발전기·배터리 상태를 함께 확인합니다.",
+      "urgencyLevel": "즉시",
+      "warningText": "경고등 지속 시 주행 중 정차 위험이 있습니다.",
+      "nextActions": [
+        { "title": "증상 확인", "href": "/diagnosis" },
+        { "title": "작업 가능점", "href": "/service-center" }
+      ]
+    }
+  ]
+}

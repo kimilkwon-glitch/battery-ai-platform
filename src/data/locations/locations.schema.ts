@@ -1,0 +1,24 @@
+export type ServiceLocation = {
+  locationId: string;
+  name: string;
+  type: "store" | "mobile" | "partner" | "workshop";
+  region: string;
+  address: string;
+  phone: string;
+  businessHours: string;
+  availableDays: string;
+  mobileService: boolean;
+  storeVisit: boolean;
+  agmAvailable: boolean;
+  dinAvailable: boolean;
+  generalAvailable: boolean;
+  largeVehicleAvailable: boolean;
+  ev12vAvailable: boolean;
+  bmsIbsAvailable: boolean;
+  photoCheckAvailable: boolean;
+  supportedSpecs: string[];
+  supportedVehicles: string[];
+  reservationUrl: string | null;
+  isVerifiedPartner: boolean;
+  memo: string;
+};

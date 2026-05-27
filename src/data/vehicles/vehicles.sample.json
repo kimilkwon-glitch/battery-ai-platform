@@ -1,0 +1,31 @@
+[
+  {
+    "vehicleId": "_dev_fallback_only",
+    "manufacturer": "현대",
+    "brandSlug": "hyundai",
+    "vehicleName": "개발용 fallback 차량",
+    "generationName": "",
+    "codeName": "DEV",
+    "yearStart": 0,
+    "yearEnd": 0,
+    "yearLabel": "",
+    "fuelType": "",
+    "trim": "",
+    "mainBatterySpec": "",
+    "mainBatteryId": "",
+    "candidateBatterySpecs": [],
+    "candidateBatteryIds": [],
+    "terminalPosition": "",
+    "batteryType": "",
+    "agmRequired": false,
+    "isgRelated": false,
+    "ev12vRelated": false,
+    "confidence": "needs_photo",
+    "needsCheck": true,
+    "aliases": [],
+    "imageFile": "",
+    "relatedGuideIds": [],
+    "relatedQaIds": [],
+    "notes": "운영 DB·real.json 모두 비어 있을 때만 사용하는 개발용 fallback. UI에 노출되지 않도록 getVehicles에서 필터."
+  }
+]

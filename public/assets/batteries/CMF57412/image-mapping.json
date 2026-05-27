@@ -1,0 +1,52 @@
+{
+  "product": "CMF57412",
+  "brand": "SOLITE",
+  "brand_ko": "쏠라이트",
+  "path_note": "이 ZIP은 압축 해제 시 CMF57412/ 폴더만 바로 나옵니다. 프로젝트에서는 public/assets/batteries/CMF57412/ 위치에 넣으세요.",
+  "mappings": [
+    {
+      "new_filename": "01-main.png",
+      "source_file": "CMF57412_main.png",
+      "role": "대표 썸네일 / 상품카드 / 검색결과"
+    },
+    {
+      "new_filename": "02-product-box.png",
+      "source_file": "BTP08340.png",
+      "role": "제품+박스 정면 / 상세 상단"
+    },
+    {
+      "new_filename": "03-box-front.png",
+      "source_file": "BTP08336.png",
+      "role": "박스 정면 / 패키지 안내"
+    },
+    {
+      "new_filename": "04-box-angle.png",
+      "source_file": "BTP08338.png",
+      "role": "박스 사선 / 포장 상태"
+    },
+    {
+      "new_filename": "05-product-box-angle.png",
+      "source_file": "BTP08342.png",
+      "role": "제품+박스 사선 / 브랜드/상세 비주얼"
+    },
+    {
+      "new_filename": "06-label-top.png",
+      "source_file": "BTP08344.png",
+      "role": "상단 라벨 / 단자 방향 / 제품 상단 확인"
+    },
+    {
+      "new_filename": "07-front-label.png",
+      "source_file": "BTP08346.png",
+      "role": "정면 라벨 / 제품명·규격 확인"
+    }
+  ],
+  "images": {
+    "main": "/assets/batteries/CMF57412/01-main.png",
+    "productBox": "/assets/batteries/CMF57412/02-product-box.png",
+    "boxFront": "/assets/batteries/CMF57412/03-box-front.png",
+    "boxAngle": "/assets/batteries/CMF57412/04-box-angle.png",
+    "productBoxAngle": "/assets/batteries/CMF57412/05-product-box-angle.png",
+    "labelTop": "/assets/batteries/CMF57412/06-label-top.png",
+    "frontLabel": "/assets/batteries/CMF57412/07-front-label.png"
+  }
+}

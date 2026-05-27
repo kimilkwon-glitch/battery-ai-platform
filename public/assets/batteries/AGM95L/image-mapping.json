@@ -1,0 +1,55 @@
+{
+  "product": "AGM95L",
+  "brand": "ROCKET",
+  "brand_ko": "로케트",
+  "terminal": "L",
+  "capacity": "95Ah",
+  "cca": "850CCA",
+  "path": "/assets/batteries/AGM95L/",
+  "mappings": [
+    {
+      "new_filename": "01-main.jpg",
+      "source_file": "104087991364512336_439758210.jpg",
+      "role": "대표 썸네일 / 상품카드 / 검색결과"
+    },
+    {
+      "new_filename": "02-product-box.jpg",
+      "source_file": "BTP08061.jpg",
+      "role": "제품+박스 정면 / 상세 상단"
+    },
+    {
+      "new_filename": "03-box-front.jpg",
+      "source_file": "BTP08055.jpg",
+      "role": "박스 정면 / 패키지 안내"
+    },
+    {
+      "new_filename": "04-box-angle.jpg",
+      "source_file": "BTP08057.jpg",
+      "role": "박스 사선 / 포장 상태"
+    },
+    {
+      "new_filename": "05-product-box-angle.jpg",
+      "source_file": "BTP08061.jpg",
+      "role": "제품+박스 사선 / 브랜드/상세 비주얼"
+    },
+    {
+      "new_filename": "06-label-top.jpg",
+      "source_file": "BTP08063.jpg",
+      "role": "상단 라벨 / 12V·850CCA·95Ah·단자 설명"
+    },
+    {
+      "new_filename": "07-front-label.jpg",
+      "source_file": "BTP08065.jpg",
+      "role": "정면 라벨 / 제품명·규격 확인"
+    }
+  ],
+  "images": {
+    "main": "/assets/batteries/AGM95L/01-main.jpg",
+    "productBox": "/assets/batteries/AGM95L/02-product-box.jpg",
+    "boxFront": "/assets/batteries/AGM95L/03-box-front.jpg",
+    "boxAngle": "/assets/batteries/AGM95L/04-box-angle.jpg",
+    "productBoxAngle": "/assets/batteries/AGM95L/05-product-box-angle.jpg",
+    "labelTop": "/assets/batteries/AGM95L/06-label-top.jpg",
+    "frontLabel": "/assets/batteries/AGM95L/07-front-label.jpg"
+  }
+}
