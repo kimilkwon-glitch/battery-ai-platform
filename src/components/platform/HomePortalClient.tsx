@@ -12,6 +12,7 @@ import {
 } from "@/lib/car-assets";
 import { getBattery, diagnosisHref, guideHref, searchHref, vehicles } from "@/lib/platform-data";
 import { getVehicleCardHints } from "@/lib/vehicle-card-hints";
+import { bm } from "@/lib/design-tokens";
 
 const PREVIEW_PAGE_SIZE = 12;
 const PREVIEW_LOAD_INCREMENT = 12;
@@ -93,18 +94,14 @@ function FilterRow<T extends string>({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="w-16 shrink-0 text-[10px] font-black text-slate-500">{label}</span>
-      <div className="flex flex-wrap gap-1">
+      <span className={bm.filterChipRowLabel}>{label}</span>
+      <div className="flex min-w-0 flex-1 flex-wrap gap-1.5">
         {options.map((opt) => (
           <button
             key={opt}
             type="button"
             onClick={() => onChange(opt)}
-            className={`rounded-full px-2.5 py-1 text-[10px] font-black transition ${
-              value === opt
-                ? "bg-blue-600 text-white shadow-sm"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
+            className={`${bm.filterChip} ${value === opt ? bm.filterChipOn : bm.filterChipOff}`}
           >
             {opt}
           </button>
@@ -210,7 +207,7 @@ export function HomePortalClient() {
               className="rounded-xl border border-slate-200 bg-white px-2 py-3 text-center shadow-sm transition hover:border-blue-300 hover:shadow-md"
             >
               <p className="text-[11px] font-black text-slate-900">{label}</p>
-              <p className="mt-0.5 text-[9px] font-semibold text-slate-500">{desc}</p>
+              <p className={`mt-0.5 ${bm.typoCaption}`}>{desc}</p>
             </Link>
           ))}
         </div>

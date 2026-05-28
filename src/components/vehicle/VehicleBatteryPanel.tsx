@@ -173,8 +173,8 @@ export function VehicleBatteryPanel({
             <div className="mt-4 flex gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {FUEL_TABS.filter((t) => t === "전체" || fuelGroups.some((g) => g.fuelLabel === t)).map((tab) => (
                 <button
-                  className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
-                    fuelTab === tab ? "bg-[var(--bm-primary)] text-white shadow-sm" : `${bm.badge} ${bm.badgeGray}`
+                  className={`${bm.filterChip} shrink-0 whitespace-nowrap ${
+                    fuelTab === tab ? bm.filterChipOn : bm.filterChipOff
                   }`}
                   key={tab}
                   onClick={() => setFuelTab(tab)}
@@ -188,10 +188,8 @@ export function VehicleBatteryPanel({
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {yearChips.map((chip) => (
                   <button
-                    className={`whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-black ring-1 transition ${
-                      yearChip === chip.id
-                        ? "bg-[var(--bm-primary)] text-white ring-[var(--bm-primary)]"
-                        : "bg-white text-slate-700 ring-[var(--bm-border)] hover:ring-blue-200"
+                    className={`${bm.filterChip} whitespace-nowrap ${
+                      yearChip === chip.id ? bm.filterChipOn : bm.filterChipOff
                     }`}
                     key={chip.id}
                     onClick={() => setYearChip(yearChip === chip.id ? null : chip.id)}

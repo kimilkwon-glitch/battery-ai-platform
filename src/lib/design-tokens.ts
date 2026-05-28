@@ -157,6 +157,13 @@ export const bm = {
     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-red-200 bg-[var(--bm-danger-bg)] px-5 text-sm font-black text-red-800 transition motion-safe:hover:border-red-300",
   chipExample:
     "rounded-full border border-[var(--bm-border)] bg-[var(--bm-card)] px-3 py-1.5 text-xs font-bold text-[var(--bm-text)] shadow-[var(--bm-shadow-sm)] transition motion-safe:hover:-translate-y-px motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:shadow-[var(--bm-shadow-sm)]",
+  /** 필터·연식·연료 칩 — badge보다 강조, 카드 CTA보다 작음 */
+  filterChipRowLabel: "w-[4.25rem] shrink-0 text-xs font-semibold text-slate-600 sm:w-16",
+  filterChip:
+    "inline-flex min-h-8 items-center justify-center rounded-full px-2.5 py-1.5 text-xs font-bold leading-none transition sm:px-3",
+  filterChipOn: "bg-blue-600 text-white shadow-sm ring-1 ring-blue-600",
+  filterChipOff:
+    "bg-slate-100 text-slate-700 ring-1 ring-slate-200/90 hover:bg-slate-200",
   tabBtn:
     "shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 ring-1 ring-[var(--bm-border)] bg-[var(--bm-surface-muted)] transition duration-200 motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
   tabBtnActive:

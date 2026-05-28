@@ -30,7 +30,7 @@ function SectionHeader({ kicker, title, desc }: { kicker?: string; title: string
   return (
     <div className="mb-3">
       {kicker ? (
-        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">{kicker}</p>
+        <p className={`${bm.label} !text-slate-500`}>{kicker}</p>
       ) : null}
       <h2 className={`${bm.sectionTitle} mt-0.5`}>{title}</h2>
       {desc ? <p className="mt-0.5 text-xs font-medium text-slate-400">{desc}</p> : null}

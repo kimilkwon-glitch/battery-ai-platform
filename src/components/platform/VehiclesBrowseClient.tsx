@@ -166,15 +166,7 @@ export function VehiclesBrowseClient() {
 
               onClick={() => handleBrandChange(b)}
 
-              className={`rounded-full px-3 py-1.5 text-[11px] font-black transition ${
-
-                brand === b
-
-                  ? "bg-blue-600 text-white shadow-sm"
-
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-
-              }`}
+              className={`${bm.filterChip} ${brand === b ? bm.filterChipOn : bm.filterChipOff}`}
 
             >
 

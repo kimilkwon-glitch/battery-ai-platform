@@ -80,7 +80,7 @@ export function VehicleBatteryHeroCards({
           {yearChips.map((chip) => (
             <span
               key={chip.id}
-              className="rounded-full bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-600 ring-1 ring-slate-200"
+              className={`${bm.filterChip} ${bm.filterChipOff}`}
             >
               {chip.label}
             </span>
