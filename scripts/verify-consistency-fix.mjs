@@ -62,7 +62,7 @@ function assertUnified(codes, expected, label) {
 async function verifyGrandeurChain() {
   const searchPath = "/search?q=" + encodeURIComponent("그랜저 IG 가솔린");
   const vehiclePath = "/vehicle/grandeur-ig?fuel=" + encodeURIComponent("가솔린");
-  const expected = "AGM80L";
+  const expected = "AGM70L";
 
   const searchHtml = await fetchHtml(searchPath);
   const vehicleHtml = await fetchHtml(vehiclePath);
@@ -89,9 +89,9 @@ async function verifyGrandeurChain() {
   ];
 
   const bad =
-    vehicleHtml.includes('data-primary-battery="AGM70L"') ||
-    vehicleHtml.includes("AGM70L 규격 상세") ||
-    searchHtml.includes("/batteries/AGM70L");
+    vehicleHtml.includes('data-primary-battery="AGM80L"') ||
+    vehicleHtml.includes("AGM80L 규격 상세") ||
+    searchHtml.includes('data-primary-battery="AGM80L"');
 
   return {
     name: "grandeur-ig-gasoline-chain",

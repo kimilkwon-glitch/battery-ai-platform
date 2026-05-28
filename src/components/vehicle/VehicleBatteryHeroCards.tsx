@@ -69,7 +69,7 @@ export function VehicleBatteryHeroCards({
             <FuelBatterySpecCard
               key={group.fuelLabel}
               fuelLabel={group.fuelLabel}
-              batteryCode={resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel) || group.primaryBattery}
+              batteryCode={resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel)}
               conditionNote="연료·트림에 따라 예외가 있을 수 있습니다."
               highlighted={highlightFuel === group.fuelLabel}
               showExceptionNote={highlightFuel === group.fuelLabel}

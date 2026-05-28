@@ -21,6 +21,11 @@ type EnrichmentRow = {
 
 const enrichments = (enrichmentJson as { records?: EnrichmentRow[] }).records ?? [];
 
+/** P0 합의 — DB·enrichment·버킷 불일치 시 운영 단일 기준 (검색·상세·CTA 동일) */
+const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
+  "grandeur-ig": { 가솔린: "AGM70L" },
+};
+
 function decodeFuelQueryParam(raw: string | null | undefined): string | null {
   if (!raw) return null;
   try {
@@ -108,6 +113,9 @@ export function resolveVehicleFuelPrimaryBattery(
   options?: { yearChipId?: string | null; fallback?: string | null },
 ): string {
   const fuel = normalizeVehicleFuelParam(fuelRaw);
+  const operator = fuel ? OPERATOR_FUEL_PRIMARY[slug]?.[fuel] : undefined;
+  if (operator) return canonicalBatteryCode(operator);
+
   let recs = getRecordsForSlug(slug);
   recs = filterRecordsByYearChip(slug, recs, options?.yearChipId);
   const fuelRecs = filterRecordsForFuel(recs, fuel);
@@ -117,17 +125,12 @@ export function resolveVehicleFuelPrimaryBattery(
     picked = pickPrimaryBatteryFromRecords(recs);
   }
 
+  if (picked) return canonicalBatteryCode(picked);
+
   const enrich = enrichmentForSlug(slug);
   if (enrich?.primaryBattery && enrichmentMatchesFuel(enrich, fuel)) {
-    const enrichCode = canonicalBatteryCode(enrich.primaryBattery);
-    if (!picked) return enrichCode;
-    if (enrich.status === "confirmed" && canonicalBatteryCode(picked) !== enrichCode) {
-      const enrichVotes = fuelRecs.filter((r) => r.status === "confirmed").length;
-      if (enrichVotes === 0) return enrichCode;
-    }
+    return canonicalBatteryCode(enrich.primaryBattery);
   }
-
-  if (picked) return canonicalBatteryCode(picked);
 
   const fromParam = batteryCodeForFuelParam(fuelRaw);
   if (fromParam) return canonicalBatteryCode(fromParam);

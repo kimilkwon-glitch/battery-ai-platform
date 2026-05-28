@@ -14,8 +14,8 @@ const CASES = [
   { q: "스포티지 NQ5 하이브리드", must: ["AGM60L", "/vehicle/sportage-nq5"], mustNot: ["DIN74R"] },
   {
     q: "그랜저 IG 가솔린",
-    must: ["AGM80L", "search-focus"],
-    mustNot: ["AGM70L 규격 상세", 'data-primary-battery="AGM70L"'],
+    must: ["AGM70L", "search-focus"],
+    mustNot: ['data-primary-battery="AGM80L"', "AGM80L 규격 상세"],
   },
   { q: "그랜저 IG 디젤", must: ["AGM80L"] },
   { q: "쏘렌토 MQ4 하이브리드", must: ["AGM60L", "sorento-mq4"] },

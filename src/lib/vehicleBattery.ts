@@ -924,7 +924,10 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
 export function getVehicleBatteryPageData(slug: string) {
   const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
-  const fuelGroups = groupRecordsByFuel(recs);
+  const fuelGroups = groupRecordsByFuel(recs).map((g) => {
+    const unified = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
+    return unified ? { ...g, primaryBattery: unified } : g;
+  });
   const yearChips = getYearChipsForSlug(slug, recs);
   const relatedVehicles = getRelatedVehicleSlugs(slug);
   const hasConfirmedDb = recs.some(hasConfirmedBatteryData);
