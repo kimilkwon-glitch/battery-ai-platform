@@ -21,9 +21,14 @@ type EnrichmentRow = {
 
 const enrichments = (enrichmentJson as { records?: EnrichmentRow[] }).records ?? [];
 
-/** P0 합의 — DB·enrichment·버킷 불일치 시 운영 단일 기준 (검색·상세·CTA 동일) */
+/** P0 합의 — DB·enrichment·legacy raw 불일치 시 운영 단일 기준 (검색·히어로·CTA·상세표 동일) */
 const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
-  "grandeur-ig": { 가솔린: "AGM70L" },
+  "grandeur-ig": {
+    가솔린: "AGM70L",
+    디젤: "AGM80L",
+    LPG: "DIN80L",
+    하이브리드: "DIN74R",
+  },
 };
 
 function decodeFuelQueryParam(raw: string | null | undefined): string | null {

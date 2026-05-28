@@ -31,7 +31,9 @@ export function VehicleBatteryHeroCards({
 
   const seen = new Set<string>();
   const fuelCards = fuelGroups.filter((g) => {
-    if (!g.primaryBattery || seen.has(g.fuelLabel)) return false;
+    if (seen.has(g.fuelLabel)) return false;
+    const code = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
+    if (!code) return false;
     seen.add(g.fuelLabel);
     return true;
   });

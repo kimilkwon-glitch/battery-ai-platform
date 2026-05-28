@@ -159,13 +159,13 @@ export type BatteryDisplayResolved = {
 };
 
 export function resolveBatteryDisplay(code: string): BatteryDisplayResolved {
-  const familyKey = normalizeBatteryCode(code);
+  const displayCode = productBatteryCode(code) || code.trim().replace(/\s+/g, "").toUpperCase();
+  const familyKey = normalizeBatteryCode(displayCode);
   const aliases = getBatteryAliases(familyKey);
-  const displayCode = familyKey || code.trim().toUpperCase();
   return {
     displayCode,
     familyKey,
-    productCandidates: [...new Set([code.trim(), ...aliases])],
+    productCandidates: [...new Set([code.trim(), displayCode, ...aliases])],
   };
 }
 

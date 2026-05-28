@@ -59,6 +59,13 @@ function assertUnified(codes, expected, label) {
   return { ok, label, expected, actual: uniq, codes };
 }
 
+const GRANDEUR_IG_HERO_EXPECTED = {
+  가솔린: "AGM70L",
+  디젤: "AGM80L",
+  LPG: "DIN80L",
+  하이브리드: "DIN74R",
+};
+
 async function verifyGrandeurChain() {
   const searchPath = "/search?q=" + encodeURIComponent("그랜저 IG 가솔린");
   const vehiclePath = "/vehicle/grandeur-ig?fuel=" + encodeURIComponent("가솔린");
@@ -72,9 +79,15 @@ async function verifyGrandeurChain() {
   const tableCodes = extractAllTableRecommendations(vehicleHtml, "가솔린");
   const batteryHtml = await fetchHtml("/batteries/" + encodeURIComponent(expected));
 
+  const heroFuels = {};
+  for (const [fuel, code] of Object.entries(GRANDEUR_IG_HERO_EXPECTED)) {
+    heroFuels[fuel] = extractFuelHeroCode(vehicleHtml, fuel);
+  }
+
   const chain = {
     searchCard: searchCode,
     vehicleHero: hero,
+    heroFuels,
     footer,
     table: tableCodes,
     batteryTitle: extractBatteryPageTitle(batteryHtml),
@@ -82,16 +95,21 @@ async function verifyGrandeurChain() {
 
   const points = [
     assertUnified([searchCode], expected, "search-card"),
-    assertUnified([hero], expected, "vehicle-hero"),
+    assertUnified([hero], expected, "vehicle-hero-gasoline"),
     assertUnified([footer], expected, "data-primary-battery"),
     assertUnified(tableCodes.length ? tableCodes : [hero], expected, "detail-table"),
     assertUnified([chain.batteryTitle], expected, "battery-detail-h1"),
+    ...Object.entries(GRANDEUR_IG_HERO_EXPECTED).map(([fuel, code]) =>
+      assertUnified([heroFuels[fuel]], code, `vehicle-hero-${fuel}`),
+    ),
   ];
 
   const bad =
     vehicleHtml.includes('data-primary-battery="AGM80L"') ||
     vehicleHtml.includes("AGM80L 규격 상세") ||
-    searchHtml.includes('data-primary-battery="AGM80L"');
+    searchHtml.includes('data-primary-battery="AGM80L"') ||
+    heroFuels["가솔린"] === "AGM80L" ||
+    heroFuels["LPG"] === "DIN90L";
 
   return {
     name: "grandeur-ig-gasoline-chain",
@@ -119,6 +137,7 @@ async function verifyCmf80lChain() {
       h1: extractBatteryPageTitle(html),
       badHref80L: html.includes('href="/batteries/80L"') || html.includes(">/batteries/80L<"),
       badTitle80L: /<h1[^>]*>\s*80L\s*<\/h1>/i.test(html),
+      badImageAlt80L: /Image:\s*80L\s*배터리/i.test(html) || /alt="80L 배터리"/i.test(html),
       hasCMF80L: html.includes("CMF80L"),
     };
   }
@@ -135,6 +154,7 @@ async function verifyCmf80lChain() {
     searchFocus === expected &&
     detailH1 === expected &&
     !results["/batteries/CMF80L"]?.badTitle80L &&
+    !results["/batteries/CMF80L"]?.badImageAlt80L &&
     !results["/batteries/CMF80L"]?.badHref80L &&
     results["/search?q=CMF80L"]?.hasCMF80L &&
     results["/search?q=" + encodeURIComponent("단자 방향 CMF80L")]?.hasCMF80L &&

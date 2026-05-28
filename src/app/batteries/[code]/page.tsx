@@ -18,8 +18,8 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
   if (isRetiredBatterySpec(decoded)) {
     redirect(`/batteries/${encodeURIComponent("DIN74R")}`);
   }
-  const data = getBatteryDetailData(decoded);
-  const displayCode = canonicalBatteryCode(data.code) || data.code;
+  const displayCode = canonicalBatteryCode(decoded) || decoded.trim().toUpperCase();
+  const data = getBatteryDetailData(displayCode);
 
   return (
     <PageShell

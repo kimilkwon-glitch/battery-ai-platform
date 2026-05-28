@@ -1019,7 +1019,10 @@ export function getBatteryDetailData(code: string) {
   if (isRetiredBatterySpec(code)) {
     return getBatteryDetailData("DIN74R");
   }
-  const displayCode = canonicalBatteryCode(code);
+  const displayCode =
+    canonicalBatteryCode(code) ||
+    productBatteryCode(code) ||
+    code.trim().replace(/\s+/g, "").toUpperCase();
   const matchKey = normalizeBatteryCode(displayCode);
   const matching = getRecordsForBattery(matchKey, 48);
   const fitment = getBatteryFitmentVehicles(matchKey, 12);
