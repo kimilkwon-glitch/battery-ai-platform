@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AlertTriangle, BatteryCharging } from "lucide-react";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 import { bm } from "@/lib/design-tokens";
@@ -37,7 +38,10 @@ export function SymptomsHubClient() {
                 <dd className="mt-0.5 font-medium text-slate-600">{s.quickCheck}</dd>
               </div>
             </dl>
-            <p className="mt-2 text-xs font-semibold text-[var(--bm-primary)]">{s.action}</p>
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-blue-800">
+              <BatteryCharging className="size-3.5 shrink-0" strokeWidth={2.5} aria-hidden />
+              {s.action}
+            </p>
             <div className="mt-auto flex flex-wrap gap-2 pt-3">
               <Link className={`${bm.btnNavy} text-[10px]`} href={searchHref(s.searchQuery)}>
                 관련 검색

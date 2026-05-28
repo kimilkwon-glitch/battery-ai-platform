@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MapPin, Phone, Store, Truck } from "lucide-react";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
@@ -14,6 +15,13 @@ const STORE_SLOT: Record<string, () => import("@/lib/media/image-slot-registry")
   "photo-guide": HOME_IMAGE_SLOTS.inspectionGear,
 };
 
+const STORE_ICON: Record<string, typeof Store> = {
+  deokcheon: Store,
+  hakjang: Store,
+  outbound: Truck,
+  "photo-guide": Phone,
+};
+
 export function HomeStoreHub() {
   return (
     <HomeSectionShell rhythm="service" data-section="stores">
@@ -25,19 +33,30 @@ export function HomeStoreHub() {
       <div className="grid gap-3 sm:grid-cols-2">
         {HOME_STORE_CARDS.map((store) => {
           const slotFn = STORE_SLOT[store.id];
+          const Icon = STORE_ICON[store.id] ?? MapPin;
           return (
-            <article className={`${bm.cardInteractive} overflow-hidden`} key={store.id}>
+            <article className={`${bm.cardServiceStore} overflow-hidden`} key={store.id}>
               {slotFn ? (
-                <div className="p-2">
-                  <MediaImageSlot slot={slotFn()} />
+                <div className="border-b border-slate-100 p-2">
+                  <MediaImageSlot slot={slotFn()} compact />
                 </div>
               ) : null}
-              <div className="p-4">
-                <p className="text-sm font-bold text-slate-50">{store.name}</p>
-                <p className="mt-0.5 text-[10px] font-semibold text-sky-300">{store.region}</p>
-                <p className="mt-2 text-xs font-medium text-slate-300">{store.areas}</p>
-                <p className="mt-1 text-[10px] font-medium text-slate-400">{store.scenarios}</p>
-                <Link className={`${bm.btnSecondary} mt-3 inline-flex text-[10px]`} href={store.href}>
+              <div className="p-3.5">
+                <div className="flex items-start gap-2">
+                  <span className="bm-icon-pill" aria-hidden>
+                    <Icon className="size-3.5" strokeWidth={2.5} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold text-slate-900">{store.name}</p>
+                    <p className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold text-blue-700">
+                      <MapPin className="size-3" strokeWidth={2.5} aria-hidden />
+                      {store.region}
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-2 text-xs font-medium text-slate-700">{store.areas}</p>
+                <p className="mt-1 text-[10px] font-medium text-slate-600">{store.scenarios}</p>
+                <Link className={`${bm.btnCardSecondary} mt-2.5 inline-flex text-[10px]`} href={store.href}>
                   안내 보기
                 </Link>
               </div>

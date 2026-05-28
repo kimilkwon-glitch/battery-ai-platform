@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 import { recordSearch, recordVehicleClick } from "@/lib/activity";
 import {
@@ -17,6 +18,8 @@ type Props = {
   inputClassName?: string;
   showButton?: boolean;
   buttonLabel?: string;
+  /** 히어로 검색 CTA — shimmer 1곳만 */
+  shimmerSubmit?: boolean;
 };
 
 export function VehicleSearchBox({
@@ -26,6 +29,7 @@ export function VehicleSearchBox({
   inputClassName = "",
   showButton = false,
   buttonLabel = "검색",
+  shimmerSubmit = false,
 }: Props) {
   const [query, setQuery] = useState(defaultQuery);
   const [open, setOpen] = useState(false);
@@ -154,12 +158,25 @@ export function VehicleSearchBox({
             />
             {dropdown}
           </div>
-          <button
-            className="rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700"
-            type="submit"
-          >
-            {buttonLabel}
-          </button>
+          {shimmerSubmit ? (
+            <ShimmerButton
+              type="submit"
+              background="rgb(37, 99, 235)"
+              shimmerColor="#93c5fd"
+              shimmerDuration="4s"
+              borderRadius="10px"
+              className="h-11 min-h-[44px] px-6 text-sm font-black"
+            >
+              {buttonLabel}
+            </ShimmerButton>
+          ) : (
+            <button
+              className="rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700"
+              type="submit"
+            >
+              {buttonLabel}
+            </button>
+          )}
         </form>
       </div>
     );

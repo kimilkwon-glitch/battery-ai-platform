@@ -121,7 +121,7 @@ export const bm = {
 
   /** 배터리 상품 카드 하단·CTA — 이미지보다 약하게 */
   batteryCardBody:
-    "flex flex-1 flex-col gap-0.5 border-t border-slate-100 px-2 pb-1.5 pt-1",
+    "flex flex-1 flex-col gap-0.5 border-t border-slate-100 px-2.5 pb-2 pt-1.5",
   batteryCardBtnRow: "mt-0.5 flex flex-wrap gap-1",
   btnCardNavy:
     "inline-flex min-h-[34px] items-center justify-center rounded-lg bg-[var(--bm-navy)] px-2.5 py-1 text-[9px] font-black text-white transition motion-safe:hover:bg-slate-800",

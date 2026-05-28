@@ -27,9 +27,9 @@ export function HomeDeliverySection() {
         ))}
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryPack()} />
-        <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryCheck()} />
-        <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryLabel()} />
+        <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryPack()} compact />
+        <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryCheck()} compact />
+        <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryLabel()} compact />
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
         <Link className={`${bm.btnNavy} text-xs`} href="#home-popular-batteries">

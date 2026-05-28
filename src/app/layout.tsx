@@ -5,6 +5,10 @@ import "./globals.css";
 import { BuildVersionStamp } from "@/components/common/BuildVersionStamp";
 import { BRAND_NAME, BRAND_META_DESCRIPTION } from "@/lib/brand";
 import { BUILD_STAMP } from "@/lib/build-stamp";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: `${BRAND_NAME} | 차량별 배터리 규격 검색`,
@@ -22,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="design-system-p2-visual-rhythm1-20260528">
-      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="design-system-p2-visual-rhythm1-20260528">
+    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="design-p2-recovery-icon-button-fix1-20260528" className={cn("font-sans", geist.variable)}>
+      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="design-p2-recovery-icon-button-fix1-20260528">
         <CartProvider>
           {children}
           <BuildVersionStamp />

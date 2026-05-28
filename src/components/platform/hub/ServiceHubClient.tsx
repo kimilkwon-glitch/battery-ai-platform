@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { MapPin, Package, Phone, Store } from "lucide-react";
+import { IconTruckDelivery } from "@tabler/icons-react";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 import { HubBadge } from "@/components/platform/hub/HubBadge";
@@ -8,6 +10,17 @@ import { bm } from "@/lib/design-tokens";
 import { SERVICE_OPTIONS, SERVICE_SCENARIOS } from "@/lib/platform-hub-content";
 import { HUB_ORDER_CHECKLIST, HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
 import { HUB_STORE } from "@/lib/customer-hub-routes";
+
+function ServiceOptionIcon({ title }: { title: string }) {
+  if (title.includes("출장")) {
+    return <IconTruckDelivery className="size-4" stroke={2} aria-hidden />;
+  }
+  if (title.includes("택배")) return <Package className="size-4" strokeWidth={2} aria-hidden />;
+  if (title.includes("매장") || title.includes("직영")) {
+    return <Store className="size-4" strokeWidth={2} aria-hidden />;
+  }
+  return <Phone className="size-4" strokeWidth={2} aria-hidden />;
+}
 
 export function ServiceHubClient() {
   return (
@@ -23,12 +36,22 @@ export function ServiceHubClient() {
       <div className="grid gap-3 sm:grid-cols-2">
         {SERVICE_OPTIONS.map((opt) => (
           <article className={`${bm.cardServiceStore} flex flex-col p-4`} key={opt.title}>
-            <h3 className="text-sm font-bold text-slate-50">{opt.title}</h3>
-            {opt.region ? (
-              <span className={`${bm.badge} ${bm.badgeGray} mt-1.5 w-fit`}>{opt.region}</span>
-            ) : null}
-            <p className="mt-1 text-xs font-medium text-slate-300">{opt.desc}</p>
-            <p className="mt-2 text-[10px] font-semibold leading-relaxed text-slate-400">{opt.when}</p>
+            <div className="flex items-start gap-2">
+              <span className="bm-icon-pill shrink-0" aria-hidden>
+                <ServiceOptionIcon title={opt.title} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-slate-900">{opt.title}</h3>
+                {opt.region ? (
+                  <span className={`${bm.badge} ${bm.badgeBlue} mt-1.5 inline-flex items-center gap-1`}>
+                    <MapPin className="size-3" strokeWidth={2.5} aria-hidden />
+                    {opt.region}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+            <p className="mt-2 text-xs font-medium text-slate-700">{opt.desc}</p>
+            <p className="mt-1.5 text-[10px] font-semibold text-slate-600">{opt.when}</p>
             <Link
               className={`mt-auto pt-3 ${
                 opt.tone === "primary"
@@ -50,10 +73,8 @@ export function ServiceHubClient() {
         <ul className="mt-3 space-y-2">
           {SERVICE_SCENARIOS.map((row) => (
             <li className={`${bm.surfaceMuted} rounded-xl p-3`} key={row.situation}>
-              <p className="text-xs font-bold text-slate-800">{row.situation}</p>
-              <p className="mt-1 text-[11px] font-medium text-slate-600">
-                추천: {row.pick}
-              </p>
+              <p className="text-xs font-bold text-slate-900">{row.situation}</p>
+              <p className="mt-1 text-[11px] font-medium text-slate-700">추천: {row.pick}</p>
               <Link className={`${bm.btnTertiary} mt-2 inline-flex text-[10px]`} href={row.href}>
                 바로가기 →
               </Link>

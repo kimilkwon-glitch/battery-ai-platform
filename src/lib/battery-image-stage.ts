@@ -23,11 +23,11 @@ export function isBatteryStageVariant(v: BatteryImageVariant): v is BatteryImage
 
 /** stage 외곽 — product-card 170px (overflow-hidden은 stage만) */
 export const batteryImageStageHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[170px] min-h-[170px]",
-  cardCompact: "h-[160px] min-h-[160px]",
+  card: "h-[180px] min-h-[180px]",
+  cardCompact: "h-[168px] min-h-[168px]",
   hero: "h-[200px] sm:h-[220px]",
-  search: "h-[170px] min-h-[170px]",
-  compare: "h-[170px] min-h-[170px]",
+  search: "h-[180px] min-h-[180px]",
+  compare: "h-[176px] min-h-[176px]",
 };
 
 export const batteryImageStageInset =
@@ -35,21 +35,21 @@ export const batteryImageStageInset =
 
 /** img height 135~150px — width auto, height 기준 only */
 export const batteryImageStageImgHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[145px] min-h-[145px]",
-  cardCompact: "h-[136px] min-h-[136px]",
+  card: "h-[152px] min-h-[152px]",
+  cardCompact: "h-[142px] min-h-[142px]",
   hero: "h-[176px] sm:h-[196px]",
-  search: "h-[145px] min-h-[145px]",
-  compare: "h-[140px] min-h-[140px]",
+  search: "h-[152px] min-h-[152px]",
+  compare: "h-[148px] min-h-[148px]",
 };
 
 export const batteryImageStageImgMaxWidth = "max-w-[94%]";
 
 /** asset 여백 보정 — stage 높이 확보 후 center scale (잘림 시 scale 낮출 것) */
 export const batteryImageStagePhotoScale: Record<BatteryImageStageVariant, string> = {
-  card: "inline-flex origin-center scale-[1.18]",
-  cardCompact: "inline-flex origin-center scale-[1.14]",
+  card: "inline-flex origin-center scale-[1.22]",
+  cardCompact: "inline-flex origin-center scale-[1.16]",
   hero: "inline-flex origin-center",
-  search: "inline-flex origin-center scale-[1.18]",
+  search: "inline-flex origin-center scale-[1.2]",
   compare: "inline-flex origin-center scale-[1.14]",
 };
 

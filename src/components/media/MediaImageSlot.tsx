@@ -10,16 +10,15 @@ import {
   isPhantomSlotPath,
   resolveImageSlotAssetUrl,
 } from "@/lib/media/resolve-asset-image";
-import { imageSlotPurposeIcon } from "@/lib/media/image-slot-icons";
+import { ImageSlotPurposeIcon } from "@/lib/media/image-slot-icons";
 
 type Props = {
   slot: ImageSlotDefinition;
-  /** 레지스트리 srcPath보다 우선 (실사 연결 시) */
   src?: string | null;
   className?: string;
-  /** tall: 검색 배터리 카드 h-[180px] 고정 */
   tall?: boolean;
-  /** 부모 높이에 맞춤 (차량 리스트 썸네일 등) */
+  /** 카드 내부 — 낮은 고정 높이 */
+  compact?: boolean;
   fillContainer?: boolean;
   priority?: boolean;
   objectFit?: "cover" | "contain";
@@ -33,14 +32,12 @@ function slotUsesContain(slot: ImageSlotDefinition): boolean {
   );
 }
 
-/**
- * 실사 asset 우선 — 없거나 로드 실패 시 placeholder
- */
 export function MediaImageSlot({
   slot,
   src,
   className = "",
   tall = false,
+  compact = false,
   fillContainer = false,
   priority = false,
   objectFit,
@@ -60,9 +57,11 @@ export function MediaImageSlot({
 
   const areaClass = fillContainer
     ? "h-full min-h-0 w-full"
-    : tall
-      ? "h-[180px] w-full"
-      : `${imageSlotRatioClass(slot.ratio)} w-full`;
+    : compact
+      ? "h-[100px] max-h-[112px] w-full"
+      : tall
+        ? "h-[160px] max-h-[180px] w-full"
+        : `${imageSlotRatioClass(slot.ratio)} max-h-[132px] w-full`;
 
   if (!showPlaceholder && resolvedSrc) {
     return (
@@ -85,25 +84,24 @@ export function MediaImageSlot({
     );
   }
 
-  const icon = imageSlotPurposeIcon(slot.purpose, slot.assetKey);
-
   return (
     <div
-      className={`bm-image-slot-pending ${areaClass} ${className}`}
+      className={`bm-image-slot-pending ${compact ? "bm-image-slot-pending--compact" : ""} ${areaClass} ${className}`}
       data-image-slot={slot.assetKey}
       data-image-slot-state="pending"
       aria-label={slot.caption}
     >
-      <div className="bm-image-slot-pending__glow" aria-hidden />
-      <div className="relative flex h-full min-h-[88px] flex-col items-center justify-center gap-2 px-4 py-4 text-center">
-        <span className="bm-image-slot-pending__icon" aria-hidden>
-          {icon}
+      <div className="flex h-full min-h-[72px] flex-row items-center gap-3 px-3 py-2.5 sm:px-4">
+        <span className="bm-image-slot-pending__icon shrink-0" aria-hidden>
+          <ImageSlotPurposeIcon purpose={slot.purpose} assetKey={slot.assetKey} />
         </span>
-        <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-300">
-          {slot.statusLabel}
-        </p>
-        <p className="max-w-[240px] text-xs font-semibold leading-snug text-slate-100">{slot.caption}</p>
-        <p className="max-w-[260px] text-[10px] font-medium leading-relaxed text-slate-400">{slot.hint}</p>
+        <div className="min-w-0 flex-1 text-left">
+          <p className="bm-image-slot-pending__label">{slot.statusLabel}</p>
+          <p className="bm-image-slot-pending__caption mt-0.5 line-clamp-2">{slot.caption}</p>
+          {!compact ? (
+            <p className="bm-image-slot-pending__hint mt-0.5 line-clamp-2">{slot.hint}</p>
+          ) : null}
+        </div>
       </div>
     </div>
   );
