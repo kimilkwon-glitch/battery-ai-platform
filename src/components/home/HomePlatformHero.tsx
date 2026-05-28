@@ -16,17 +16,15 @@ import { bm } from "@/lib/design-tokens";
 
 export function HomePlatformHero() {
   return (
-    <section className={bm.heroPanel} data-home-section="hero">
-      <div className="border-b border-blue-50/80 bg-gradient-to-r from-blue-50/50 to-white px-5 py-2.5 lg:px-7">
-        <p className="text-[11px] font-bold tracking-wide text-[#2563EB]">{BRAND_HERO_LABEL}</p>
+    <section className={bm.heroPanel} data-home-section="hero" data-precision-garage="hero">
+      <div className={bm.heroPanelAccent}>
+        <p className={bm.label}>{BRAND_HERO_LABEL}</p>
       </div>
       <div className="grid gap-0 lg:grid-cols-[1fr_minmax(240px,360px)]">
         <div className="p-5 lg:p-7">
-          <h1 className="text-2xl font-bold leading-[1.25] tracking-[-0.03em] text-[#0F172A] sm:text-[1.75rem]">
-            {HOME_HERO.headline}
-          </h1>
-          <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">{HOME_HERO.subline}</p>
-          <p className="mt-1 text-xs font-medium text-slate-500">{HOME_HERO.tagline}</p>
+          <h1 className={`${bm.titleLg} sm:text-[1.75rem]`}>{HOME_HERO.headline}</h1>
+          <p className={`mt-2 ${bm.textSub}`}>{HOME_HERO.subline}</p>
+          <p className={`mt-1 text-xs font-medium ${bm.muted}`}>{HOME_HERO.tagline}</p>
 
           <VehicleSearchBox
             className="mt-5"
@@ -43,10 +41,10 @@ export function HomePlatformHero() {
                 key={chip.label}
                 className={
                   chip.tone === "primary"
-                    ? "rounded-xl border-2 border-[var(--bm-primary)] bg-blue-50/40 px-3 py-2.5 transition hover:bg-blue-50"
+                    ? "rounded-xl border-2 border-[var(--bm-primary)] bg-blue-50/50 px-3 py-2.5 transition motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[var(--bm-shadow-sm)]"
                     : chip.tone === "secondary"
-                      ? "rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 transition hover:border-slate-300"
-                      : "rounded-xl border border-slate-200 bg-white px-3 py-2.5 transition hover:border-blue-200 hover:bg-blue-50/30"
+                      ? `${bm.surfaceMuted} px-3 py-2.5 transition motion-safe:hover:border-[var(--bm-primary)]/20`
+                      : `${bm.card} px-3 py-2.5 transition motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-accent)]/30`
                 }
                 href={chip.href}
               >
@@ -74,7 +72,7 @@ export function HomePlatformHero() {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link className={`${bm.btnPrimary} text-xs`} href="/vehicles">
+            <Link className={`${bm.btnNavy} text-xs`} href="/vehicles">
               내 차량 기준으로 확인
             </Link>
             <Link className={`${bm.btnSecondary} text-xs`} href={HUB_STORE}>

@@ -5,24 +5,31 @@
   --font-body: "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: "GmarketSans", "Pretendard", system-ui, sans-serif;
   --font-accent: "SCoreDream", "Pretendard", system-ui, sans-serif;
-  --background: #eef3f9;
-  --foreground: #07111f;
+  --background: #f5f7fa;
+  --foreground: #0f172a;
 
-  /* Battery Manager design tokens */
-  --bm-page-bg: #eef3f9;
+  /* Precision Garage Platform */
+  --bm-page-bg: #f5f7fa;
   --bm-card: #ffffff;
+  --bm-surface-soft: rgba(255, 255, 255, 0.82);
+  --bm-surface-muted: #f8fafc;
   --bm-primary: #1d4ed8;
   --bm-primary-hover: #1e40af;
+  --bm-primary-dark: #0f172a;
+  --bm-accent: #06b6d4;
+  --bm-accent-soft: #ecfeff;
   --bm-navy: #0f172a;
   --bm-muted: #64748b;
   --bm-text: #0f172a;
   --bm-border: #e2e8f0;
-  --bm-image-bg: #f5f7fa;
-  --bm-warning-bg: #fffbeb;
+  --bm-image-bg: #eef3f8;
+  --bm-warning-bg: #fff7ed;
   --bm-success-bg: #ecfdf5;
+  --bm-danger-bg: #fef2f2;
   --bm-hero-from: #eef4ff;
   --bm-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --bm-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --bm-shadow-md: 0 6px 20px rgba(15, 23, 42, 0.07);
+  --bm-shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.09);
 }
 
 * {
@@ -200,11 +207,21 @@ table {
 @keyframes page-enter {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main {
+    animation: none;
+  }
+
+  .motion-safe\:hover\:-translate-y-0\.5:hover {
+    transform: none;
   }
 }

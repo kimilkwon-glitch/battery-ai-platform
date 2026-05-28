@@ -94,7 +94,7 @@ export function QnaQuestionCard({
 
   return (
 
-    <article className="group rounded-xl border border-slate-200/90 bg-white transition duration-200 hover:border-slate-300 hover:shadow-sm">
+    <article className={`group ${bm.cardInteractive}`}>
 
       <div
 

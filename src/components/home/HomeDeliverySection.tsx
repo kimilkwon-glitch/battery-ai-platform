@@ -31,7 +31,7 @@ export function HomeDeliverySection() {
         <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryLabel()} />
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Link className={`${bm.btnPrimary} text-xs`} href="#home-popular-batteries">
+        <Link className={`${bm.btnNavy} text-xs`} href="#home-popular-batteries">
           많이 찾는 규격 보기
         </Link>
         <Link className={`${bm.btnSecondary} text-xs`} href={HUB_PHOTO}>

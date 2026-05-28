@@ -1,6 +1,7 @@
 import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
 import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSummary";
+import { bm } from "@/lib/design-tokens";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { SHORT_EXCEPTION_NOTE, vehicleContextLine } from "@/lib/search/battery-recommendation-copy";
 
@@ -30,15 +31,17 @@ export function RecommendedBatteryCard({
 
   return (
     <article
-      className={
-        primary
-          ? "overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-md ring-2 ring-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-          : "overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100 transition duration-200 hover:border-slate-300 hover:shadow-md"
-      }
+      className={primary ? bm.fitmentCardPrimary : bm.fitmentCard}
       data-search-battery-card={primary ? "primary" : "secondary"}
     >
+      {primary ? (
+        <div className="flex flex-wrap items-center gap-2 border-b border-[var(--bm-border)] bg-[var(--bm-hero-from)] px-4 py-2">
+          <span className={`${bm.badge} ${bm.statusRecommended}`}>추천 규격</span>
+          <span className="text-[11px] font-semibold text-[var(--bm-muted)]">DB·차량 매칭 기준 1순위</span>
+        </div>
+      ) : null}
       <div className="grid gap-0 sm:grid-cols-[minmax(148px,220px)_1fr]">
-        <div className="bg-slate-50 p-3 sm:border-r sm:border-slate-100">
+        <div className="bg-[var(--bm-image-bg)] p-3 sm:border-r sm:border-[var(--bm-border)]">
           <BatteryThumbnail
             code={display.code}
             imageSet={display.imageSet ?? undefined}
@@ -51,9 +54,9 @@ export function RecommendedBatteryCard({
           />
         </div>
         <div className="p-4">
-          <h3 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+          <h3 className={bm.specTitle}>
             {display.code}
-            <span className="ml-1.5 text-base font-bold text-slate-500">배터리</span>
+            <span className="ml-1.5 text-base font-bold text-[var(--bm-muted)]">배터리</span>
           </h3>
           {context ? <p className="mt-1 text-xs font-semibold text-slate-600">{context}</p> : null}
           <SearchResultSpecChips
@@ -66,7 +69,7 @@ export function RecommendedBatteryCard({
           ) : null}
         </div>
       </div>
-      <div className="border-t border-slate-100 bg-slate-50/80 px-4 py-3">
+      <div className="border-t border-[var(--bm-border)] bg-[var(--bm-surface-muted)] px-4 py-3">
         <CtaHierarchy ctas={ctas} links={secondaryLinks} />
       </div>
     </article>

@@ -210,21 +210,29 @@ export function PortalPanel({ title, meta, children }: { title: string; meta?: s
   );
 }
 
-export function StatusBadge({ children, tone = "blue" }: { children: ReactNode; tone?: "blue" | "red" | "green" | "dark" | "gray" }) {
-  const className =
+export function StatusBadge({
+  children,
+  tone = "blue",
+}: {
+  children: ReactNode;
+  tone?: "blue" | "red" | "green" | "amber" | "cyan" | "dark" | "gray";
+}) {
+  const toneClass =
     tone === "red"
-      ? "bg-red-50 text-red-600 ring-red-100"
+      ? bm.badgeRed
       : tone === "green"
-        ? "bg-emerald-50 text-emerald-600 ring-emerald-100"
-        : tone === "dark"
-          ? "bg-slate-950 text-white ring-slate-800"
-          : tone === "gray"
-            ? "bg-slate-100 text-slate-600 ring-slate-200"
-            : "bg-blue-50 text-blue-600 ring-blue-100";
+        ? bm.badgeGreen
+        : tone === "amber"
+          ? bm.badgeAmber
+          : tone === "cyan"
+            ? bm.badgeCyan
+            : tone === "dark"
+              ? "bg-[var(--bm-navy)] text-white ring-[var(--bm-navy)]"
+              : tone === "gray"
+                ? bm.badgeGray
+                : bm.badgeBlue;
 
-  return (
-    <span className={`rounded px-1.5 py-0.5 text-[9px] font-medium ring-1 ${className}`}>{children}</span>
-  );
+  return <span className={`${bm.badge} ${toneClass}`}>{children}</span>;
 }
 
 export function MetaInfoRow({ label, value }: { label: string; value: string }) {

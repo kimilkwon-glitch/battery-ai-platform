@@ -52,7 +52,7 @@ export function HomeEvHybridSection() {
         ))}
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Link className={`${bm.btnPrimary} text-xs`} href={batteryDetailHref("EV 12V")}>
+        <Link className={`${bm.btnNavy} text-xs`} href={batteryDetailHref("EV 12V")}>
           EV 12V 상세
         </Link>
         <Link className={`${bm.btnSecondary} text-xs`} href={batteryDetailHref("AGM60L")}>

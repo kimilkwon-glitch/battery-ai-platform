@@ -121,7 +121,7 @@ export function ServiceCenterClient({
           배터리 라벨·단자 방향(L/R) 사진으로 규격을 먼저 확인한 뒤 매장·출장 일정을 안내하는 것이
           안전합니다.
         </p>
-        <Link className={`${bm.btnPrimary} mt-4 inline-flex text-xs`} href={HUB_PHOTO}>
+        <Link className={`${bm.btnNavy} mt-4 inline-flex text-xs`} href={HUB_PHOTO}>
           사진으로 확인
         </Link>
       </section>

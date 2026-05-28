@@ -44,7 +44,7 @@ export function HomeStoreHub() {
           );
         })}
       </div>
-      <Link className={`${bm.btnPrimary} mt-4 inline-flex text-xs`} href={HUB_STORE}>
+      <Link className={`${bm.btnNavy} mt-4 inline-flex text-xs`} href={HUB_STORE}>
         매장·출장 허브
       </Link>
     </section>

@@ -41,8 +41,8 @@ export function SearchResultHero({ data, fallbackCtas }: Props) {
           <h1 className={`${bm.titleLg} mt-1`}>&ldquo;{displayQuery}&rdquo;</h1>
         </header>
         <SearchRecommendationNotes reasons={ux.recommendationReasons} />
-        <div className={`${bm.card} border-slate-200 p-4`}>
-          <p className="text-sm font-black text-slate-900">방전 원인 점검 우선</p>
+        <div className={`${bm.card} ${bm.cardPad}`}>
+          <p className={bm.cardTitle}>방전 원인 점검 우선</p>
           {ux.heroLines.map((line) => (
             <p key={line} className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
               {line}
@@ -65,7 +65,7 @@ export function SearchResultHero({ data, fallbackCtas }: Props) {
           {ux.symptomCauses.map((cause) => (
             <div
               key={cause.title}
-              className="rounded-xl border border-slate-100 bg-slate-50/50 px-3 py-3 transition duration-200 hover:border-slate-200 hover:shadow-sm"
+              className={`${bm.surfaceMuted} px-3 py-3 transition motion-safe:duration-200 motion-safe:hover:border-[var(--bm-primary)]/15 motion-safe:hover:shadow-[var(--bm-shadow-sm)]`}
             >
               <p className="text-sm font-black text-slate-900">{cause.title}</p>
               <p className="mt-1 text-xs font-medium text-slate-500">{cause.hint}</p>

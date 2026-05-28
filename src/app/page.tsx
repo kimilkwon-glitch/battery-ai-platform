@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <main className={bm.pageBg} data-page="home-upgrade-v2">
+    <main className={bm.pageBg} data-page="precision-garage-v1">
       <PortalHeader showSearch />
 
       <div className={`${bm.pageContainerWide} ${bm.sectionGap} py-6`}>

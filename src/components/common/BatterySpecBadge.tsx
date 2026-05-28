@@ -4,6 +4,8 @@ const toneMap = {
   blue: bm.badgeBlue,
   green: bm.badgeGreen,
   amber: bm.badgeAmber,
+  cyan: bm.badgeCyan,
+  red: bm.badgeRed,
   gray: bm.badgeGray,
 } as const;
 

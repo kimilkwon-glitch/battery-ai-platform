@@ -181,7 +181,12 @@ export function BatteryImageCard({
         darkOverlay={false}
       />
       <div className={`px-4 pb-4 ${searchLayout ? "pt-2" : "pt-3"}`}>
-        <p className={`font-black text-slate-950 ${searchLayout ? "text-base leading-snug" : "text-sm"}`}>{titleCode}</p>
+        <p
+          className={`spec-code font-black text-[var(--bm-text)] ${searchLayout ? "text-lg leading-snug sm:text-xl" : "text-sm"}`}
+          data-spec-code
+        >
+          {titleCode}
+        </p>
         {specLine ? (
           <p className={`mt-1 font-medium text-slate-500 ${searchLayout ? "text-xs" : "text-[11px] font-bold"}`}>{specLine}</p>
         ) : null}

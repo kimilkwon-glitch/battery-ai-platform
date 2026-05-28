@@ -79,10 +79,7 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
     { label: "내 차 검색", href: `/search?q=${encodeURIComponent(code)}` },
   ];
   return (
-    <div
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/90 bg-white/95 px-3 py-2.5 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md md:hidden"
-      data-battery-detail-sticky
-    >
+    <div className={bm.stickyMobileBar} data-battery-detail-sticky>
       <div className="mx-auto flex max-w-[1280px] gap-2">
         {actions.map((a, i) => (
           <Link
@@ -122,9 +119,11 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
     >
       {/* A. Hero */}
       <section className={bm.heroPanel}>
-        <div className="border-b border-slate-100 p-4 sm:p-5">
-          <p className={bm.label}>배터리 규격 허브</p>
-          <h1 className={`${bm.titleLg} mt-1`}>{displayCode}</h1>
+        <div className={`${bm.heroPanelAccent} p-4 sm:p-5`}>
+          <p className={bm.label}>배터리 규격 허브 · 구매 전 확신</p>
+          <h1 className={`${bm.specTitle} mt-1`} data-spec-code>
+            {displayCode}
+          </h1>
           <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">{hub.positioning}</p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             <BatterySpecBadge tone="blue">{hub.typeLabel}</BatterySpecBadge>

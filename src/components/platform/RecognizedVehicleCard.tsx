@@ -12,13 +12,10 @@ export function RecognizedVehicleCard({ card }: { card: RecognizedVehicleResult 
   const hasBatteryCard = Boolean(showSpecLine && card.primaryBatteryCode);
 
   return (
-    <section
-      className="rounded-2xl border border-blue-200 bg-gradient-to-br from-[#FAFCFF] to-white p-4 shadow-sm ring-1 ring-blue-100/80"
-      id="recognized-vehicle"
-    >
+    <section className={`${bm.intentSummary} space-y-3`} id="recognized-vehicle">
       <h2 className="text-lg font-black leading-snug text-slate-950 sm:text-xl">{card.title}</h2>
 
-      <div className="mt-3 space-y-1.5 rounded-xl bg-slate-50/90 p-3 ring-1 ring-slate-100">
+      <div className={`${bm.surfaceMuted} mt-1 space-y-1.5 p-3`}>
         <p className="text-xs font-medium text-slate-600">
           인식된 차량: <span className="text-sm font-black text-slate-900">{card.vehicleLabel}</span>
         </p>

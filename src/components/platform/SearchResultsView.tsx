@@ -57,9 +57,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className={`${bm.card} p-4 transition duration-200 hover:shadow-[var(--bm-shadow-sm)]`}>
-      <h2 className="text-sm font-black text-slate-950">{title}</h2>
-      {desc ? <p className="mt-0.5 text-xs font-medium text-slate-500">{desc}</p> : null}
+    <section className={`${bm.card} ${bm.cardPad} motion-safe:transition motion-safe:duration-200 motion-safe:hover:shadow-[var(--bm-shadow-md)]`}>
+      <h2 className={bm.cardTitle}>{title}</h2>
+      {desc ? <p className={`mt-0.5 ${bm.muted} text-xs`}>{desc}</p> : null}
       <div className="mt-3">{children}</div>
     </section>
   );
@@ -146,10 +146,10 @@ export function SearchResultsView({ data }: Props) {
       ) : null}
 
       {!hasHero ? (
-        <div className={`${bm.card} p-4 motion-safe:animate-[page-enter_0.35s_ease-out_forwards]`} id="search-summary">
-          <p className="text-[11px] font-black uppercase tracking-[0.08em] text-slate-500">{data.ux.intentBadge}</p>
-          <h1 className={`${bm.titleLg} mt-1`}>&ldquo;{data.displayQuery || data.query}&rdquo; 검색 결과</h1>
-          <div className="mt-3 space-y-2 rounded-xl bg-slate-50/80 p-3 ring-1 ring-slate-100">
+        <div className={`${bm.intentSummary} motion-safe:animate-[page-enter_0.35s_ease-out_forwards]`} id="search-summary">
+          <p className={bm.intentBadge}>{data.ux.intentBadge}</p>
+          <h1 className={`${bm.titleLg} mt-2`}>&ldquo;{data.displayQuery || data.query}&rdquo; 검색 결과</h1>
+          <div className={`${bm.surfaceMuted} mt-3 space-y-2 p-3`}>
             <p className="text-xs font-medium text-slate-600">
               인식된 차량: {formatList(data.summary.vehicleKeywords, "차량명 추가 입력 권장")}
             </p>

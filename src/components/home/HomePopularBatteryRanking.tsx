@@ -28,7 +28,9 @@ export function HomePopularBatteryRanking() {
               <MediaImageSlot slot={HOME_IMAGE_SLOTS.batteryRank(item.code)} tall />
             </div>
             <div className="flex flex-1 flex-col gap-2 border-t border-slate-100 p-3">
-              <p className="text-base font-bold text-slate-950">{item.code}</p>
+              <p className="spec-code text-base font-black text-[var(--bm-text)]" data-spec-code>
+                {item.code}
+              </p>
               <p className="text-xs font-semibold leading-relaxed text-slate-600">{item.summary}</p>
               <div className="flex flex-wrap gap-1">
                 <span className={`${bm.badge} ${bm.badgeBlue}`}>{item.typeLabel}</span>

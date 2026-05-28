@@ -35,7 +35,7 @@ export function CtaHierarchy({
       {(primary.length > 0 || secondary.length > 0) && (
         <div className="flex flex-wrap gap-2">
           {primary.map((cta) => (
-            <Link key={cta.label} className={`${bm.btnPrimary} inline-flex text-xs`} href={cta.href}>
+            <Link key={cta.label} className={`${bm.btnNavy} inline-flex text-xs`} href={cta.href}>
               {cta.label}
             </Link>
           ))}
