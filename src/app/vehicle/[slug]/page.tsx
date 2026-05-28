@@ -253,6 +253,10 @@ export default async function VehicleDetailPage({
 
           />
 
+
+
+          <VehicleDetailRelatedQna slug={slug} fuelHint={highlightFuel ?? null} />
+
         </section>
 
 
@@ -288,8 +292,6 @@ export default async function VehicleDetailPage({
           />
 
         )}
-
-        <VehicleDetailRelatedQna slug={slug} fuelHint={highlightFuel ?? null} />
 
       </section>
 

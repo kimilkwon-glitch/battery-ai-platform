@@ -3,7 +3,7 @@
  * 사용: node scripts/verify-qna-font-v1.mjs [baseUrl]
  */
 const BASE = (process.argv[2] || process.env.BASE_URL || "http://127.0.0.1:3000").replace(/\/$/, "");
-const STAMP = "BM-UX-REV-20260528-QNA-FONT-V1";
+const STAMP = "BM-UX-REV-20260528-QNA-FONT-V1-FIX1";
 
 const routes = [
   "/",

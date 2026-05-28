@@ -1,11 +1,13 @@
 "use client";
 
 import { RelatedQnaSection } from "@/components/qna/RelatedQnaSection";
+import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 import { getQuestionsForBattery } from "@/lib/qna";
 import { QNA_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 
 export function BatteryDetailRelatedQna({ code }: { code: string }) {
-  const items = getQuestionsForBattery(code, 4);
+  const family = normalizeBatteryCode(code) || code.trim();
+  const items = getQuestionsForBattery(family, 4);
   if (items.length === 0) return null;
 
   const imageSlot = /CMF80L/i.test(code)

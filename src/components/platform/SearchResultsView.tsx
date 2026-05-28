@@ -142,7 +142,7 @@ export function SearchResultsView({ data }: Props) {
       ) : null}
 
       {(data.symptomDiagnosisFirst || data.query) && (data.displayQuery || data.query) ? (
-        <SearchRelatedQna query={data.displayQuery || data.query} />
+        <SearchRelatedQna query={data.displayQuery || data.query} rawQuery={data.query} />
       ) : null}
 
       {!hasHero ? (

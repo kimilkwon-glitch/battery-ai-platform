@@ -5,15 +5,22 @@ import { RelatedQnaSection } from "@/components/qna/RelatedQnaSection";
 import { getQuestionsForSearch } from "@/lib/qna";
 import { QNA_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 
-export function SearchRelatedQna({ query }: { query: string }) {
-  const items = useMemo(() => getQuestionsForSearch(query, 4), [query]);
-  if (!query.trim() || items.length === 0) return null;
+export function SearchRelatedQna({
+  query,
+  rawQuery,
+}: {
+  query: string;
+  rawQuery?: string;
+}) {
+  const items = useMemo(() => getQuestionsForSearch(query, 4, rawQuery), [query, rawQuery]);
+  const matchText = `${query} ${rawQuery ?? ""}`.trim();
+  if (!matchText || items.length === 0) return null;
 
-  const imageSlot = /블랙박스|방전|암전류/.test(query)
+  const imageSlot = /블랙박스|방전|암전류/.test(matchText)
     ? QNA_IMAGE_SLOTS.blackboxCheck()
-    : /포터|90R|100R/.test(query)
+    : /포터|90R|100R/.test(matchText)
       ? QNA_IMAGE_SLOTS.porterInstall()
-      : /하이브리드|EV|보조/.test(query)
+      : /하이브리드|EV|보조/.test(matchText)
         ? QNA_IMAGE_SLOTS.hybridAuxLocation()
         : QNA_IMAGE_SLOTS.labelCheck();
 

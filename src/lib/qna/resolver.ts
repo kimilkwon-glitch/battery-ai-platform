@@ -96,9 +96,11 @@ function scoreQuestion(q: Question, ctx: QnaMatchContext): number {
   return score;
 }
 
+/** fallback ID를 먼저 고정한 뒤, 점수 상위 질문으로 빈 슬롯만 채움 */
 function mergeWithFallbacks(picked: Question[], fallbackIds: string[] | undefined, limit: number): Question[] {
-  const seen = new Set(picked.map((q) => q.id));
-  const out = [...picked];
+  const seen = new Set<string>();
+  const out: Question[] = [];
+
   for (const id of fallbackIds ?? []) {
     if (out.length >= limit) break;
     if (seen.has(id)) continue;
@@ -108,6 +110,14 @@ function mergeWithFallbacks(picked: Question[], fallbackIds: string[] | undefine
       out.push(q);
     }
   }
+
+  for (const q of picked) {
+    if (out.length >= limit) break;
+    if (seen.has(q.id)) continue;
+    seen.add(q.id);
+    out.push(q);
+  }
+
   return out.slice(0, limit);
 }
 
@@ -178,10 +188,18 @@ export function getQuestionsForVehicle(
   return mergeWithFallbacks(picked, fallbackIdsForVehicle(vehicleSlug, fuelHint), limit);
 }
 
-export function getQuestionsForSearch(searchQuery: string, limit = 4): Question[] {
-  if (!searchQuery.trim()) return [];
-  const picked = pickQuestions(questions, { searchQuery, limit });
-  return mergeWithFallbacks(picked, fallbackIdsForSearch(searchQuery), limit);
+export function getQuestionsForSearch(searchQuery: string, limit = 4, altQuery?: string): Question[] {
+  const primary = searchQuery.trim() || altQuery?.trim() || "";
+  if (!primary) return [];
+
+  const picked = pickQuestions(questions, { searchQuery: primary, limit });
+  const fallbackIds = [
+    ...new Set([
+      ...fallbackIdsForSearch(primary),
+      ...(altQuery?.trim() && altQuery.trim() !== primary ? fallbackIdsForSearch(altQuery) : []),
+    ]),
+  ];
+  return mergeWithFallbacks(picked, fallbackIds, limit);
 }
 
 export function getQuestionsForCompare(codes: string[], limit = 4): Question[] {
