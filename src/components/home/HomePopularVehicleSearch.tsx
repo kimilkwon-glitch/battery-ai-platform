@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { MediaImageSlot } from "@/components/media/MediaImageSlot";
+import { VehicleCardImage } from "@/components/media/VehicleCardImage";
 import { HOME_POPULAR_VEHICLES } from "@/lib/home-upgrade-v2-data";
-import { HOME_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { bm } from "@/lib/design-tokens";
 
 export function HomePopularVehicleSearch() {
@@ -24,10 +23,7 @@ export function HomePopularVehicleSearch() {
             key={v.slug}
           >
             <div className="p-2.5">
-              <MediaImageSlot
-                slot={HOME_IMAGE_SLOTS.vehicleQuick(v.slug, v.title)}
-                className="!h-[100px] sm:!h-[110px]"
-              />
+              <VehicleCardImage slug={v.slug} title={v.title} />
             </div>
             <div className="flex flex-1 flex-col gap-1 border-t border-slate-100 px-3 pb-3 pt-2">
               <p className="text-sm font-bold text-slate-950">{v.title}</p>

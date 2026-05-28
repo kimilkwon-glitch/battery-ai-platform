@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
+import { resolveImageSlotAssetUrl } from "@/lib/media/resolve-asset-image";
 import { QnaQuestionCard } from "@/components/platform/QnaQuestionCard";
 import { bm } from "@/lib/design-tokens";
 import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
@@ -48,7 +49,11 @@ export function RelatedQnaSection({
 
       {imageSlot ? (
         <div className="mt-3 max-w-md">
-          <MediaImageSlot slot={imageSlot} />
+          <MediaImageSlot
+            slot={imageSlot}
+            src={resolveImageSlotAssetUrl(imageSlot)}
+            className="max-h-[160px]"
+          />
         </div>
       ) : null}
 

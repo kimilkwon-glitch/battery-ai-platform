@@ -1,11 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   imageSlotRatioClass,
   type ImageSlotDefinition,
 } from "@/lib/media/image-slot-registry";
+import {
+  isPhantomSlotPath,
+  resolveImageSlotAssetUrl,
+} from "@/lib/media/resolve-asset-image";
 
 type Props = {
   slot: ImageSlotDefinition;
@@ -17,10 +21,19 @@ type Props = {
   /** 부모 높이에 맞춤 (차량 리스트 썸네일 등) */
   fillContainer?: boolean;
   priority?: boolean;
+  objectFit?: "cover" | "contain";
 };
 
+function slotUsesContain(slot: ImageSlotDefinition): boolean {
+  return (
+    slot.purpose.includes("battery") ||
+    slot.purpose.includes("product") ||
+    slot.ratio === "4/3"
+  );
+}
+
 /**
- * 실사가 없거나 로드 실패 시 고급 placeholder — 점선·깨진 아이콘 없음
+ * 실사 asset 우선 — 없거나 로드 실패 시 placeholder
  */
 export function MediaImageSlot({
   slot,
@@ -29,9 +42,20 @@ export function MediaImageSlot({
   tall = false,
   fillContainer = false,
   priority = false,
+  objectFit,
 }: Props) {
-  const resolvedSrc = src ?? slot.srcPath;
+  const assetSrc = useMemo(() => resolveImageSlotAssetUrl(slot), [slot]);
+  const explicitSrc = src && !isPhantomSlotPath(src) ? src : null;
+  const registrySrc =
+    slot.srcPath && !isPhantomSlotPath(slot.srcPath) ? slot.srcPath : null;
+  const resolvedSrc = explicitSrc ?? assetSrc ?? registrySrc;
   const [showPlaceholder, setShowPlaceholder] = useState(!resolvedSrc);
+
+  const fit = objectFit ?? (slotUsesContain(slot) ? "contain" : "cover");
+  const imgClass =
+    fit === "contain"
+      ? "object-contain object-center p-2"
+      : "object-cover object-center";
 
   const areaClass = fillContainer
     ? "h-full min-h-0 w-full"
@@ -50,9 +74,10 @@ export function MediaImageSlot({
           src={resolvedSrc}
           alt={slot.caption}
           fill
-          className="object-cover object-center"
+          className={imgClass}
           sizes="(max-width:768px) 100vw, 360px"
           priority={priority}
+          loading={priority ? undefined : "lazy"}
           onError={() => setShowPlaceholder(true)}
         />
       </div>
@@ -66,18 +91,13 @@ export function MediaImageSlot({
       data-image-slot-state="pending"
       aria-label={slot.caption}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(30,41,59,0.06),transparent_55%)]" />
-      <div className="relative flex h-full flex-col items-center justify-center px-4 py-5 text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(30,41,59,0.04),transparent_55%)]" />
+      <div className="relative flex h-full flex-col items-center justify-center px-4 py-4 text-center">
+        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">
           {slot.statusLabel}
         </p>
-        <p className="mt-2 max-w-[240px] text-xs font-bold leading-snug text-slate-700">{slot.caption}</p>
-        <p className="mt-1.5 max-w-[260px] text-[10px] font-medium leading-relaxed text-slate-500">
-          {slot.hint}
-        </p>
-        <p className="mt-2 text-[9px] font-semibold text-slate-400">
-          권장 비율 {slot.ratio.replace("/", ":")}
-        </p>
+        <p className="mt-1.5 max-w-[240px] text-xs font-semibold leading-snug text-slate-600">{slot.caption}</p>
+        <p className="mt-1 max-w-[260px] text-[10px] font-medium leading-relaxed text-slate-500">{slot.hint}</p>
       </div>
     </div>
   );

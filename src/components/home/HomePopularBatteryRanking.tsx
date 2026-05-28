@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { MediaImageSlot } from "@/components/media/MediaImageSlot";
+import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 import {
   HOME_POPULAR_BATTERIES,
   batteryDetailHref,
 } from "@/lib/home-upgrade-v2-data";
-import { HOME_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { bm } from "@/lib/design-tokens";
 
 export function HomePopularBatteryRanking() {
@@ -25,10 +24,7 @@ export function HomePopularBatteryRanking() {
         {HOME_POPULAR_BATTERIES.map((item) => (
           <article className={`${bm.rankCard} flex flex-col`} key={item.code}>
             <div className="p-2.5">
-              <MediaImageSlot
-                slot={HOME_IMAGE_SLOTS.batteryRank(item.code)}
-                className="!h-[120px] sm:!h-[130px]"
-              />
+              <BatteryCardImage code={item.code} />
             </div>
             <div className="flex flex-1 flex-col gap-2 border-t border-slate-100 px-3 pb-3 pt-2">
               <p className="spec-code text-base font-bold text-[var(--bm-text)]" data-spec-code>

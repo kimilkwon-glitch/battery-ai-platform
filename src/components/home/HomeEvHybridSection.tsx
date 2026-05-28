@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SectionHeader } from "@/components/common/SectionHeader";
+import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 import { HOME_EV_HYBRID_ITEMS, batteryDetailHref } from "@/lib/home-upgrade-v2-data";
@@ -22,31 +23,36 @@ export function HomeEvHybridSection() {
       </div>
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {HOME_EV_HYBRID_ITEMS.map((item) => (
-          <article className={`${bm.surfaceMuted} p-3`} key={item.label}>
-            <p className="text-sm font-bold text-slate-900">{item.label}</p>
-            <p className="mt-1 text-[10px] font-semibold text-blue-700">추천 확인: {item.battery}</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Link className={`${bm.btnSecondary} text-[10px]`} href={item.href}>
-                검색 결과
-              </Link>
-              <Link className={`${bm.btnTertiary} text-[10px]`} href={batteryDetailHref(item.battery)}>
-                {item.battery} 상세
-              </Link>
-              {"fuel" in item && item.fuel ? (
-                <Link
-                  className={`${bm.btnGhost} text-[10px]`}
-                  href={buildVehicleDetailHref(item.vehicleSlug, item.fuel)}
-                >
-                  차량 상세
+          <article className={`${bm.surfaceMuted} overflow-hidden`} key={item.label}>
+            <BatteryCardImage code={item.battery} heightClass="h-[88px]" />
+            <div className="p-3">
+              <p className="text-sm font-bold text-slate-900">{item.label}</p>
+              <p className="mt-1 text-[10px] font-semibold text-[var(--bm-primary)]">
+                추천 확인: {item.battery}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Link className={`${bm.btnSecondary} text-[10px]`} href={item.href}>
+                  검색 결과
                 </Link>
-              ) : (
-                <Link
-                  className={`${bm.btnGhost} text-[10px]`}
-                  href={buildVehicleDetailHref(item.vehicleSlug)}
-                >
-                  차량 상세
+                <Link className={`${bm.btnTertiary} text-[10px]`} href={batteryDetailHref(item.battery)}>
+                  {item.battery} 상세
                 </Link>
-              )}
+                {"fuel" in item && item.fuel ? (
+                  <Link
+                    className={`${bm.btnGhost} text-[10px]`}
+                    href={buildVehicleDetailHref(item.vehicleSlug, item.fuel)}
+                  >
+                    차량 상세
+                  </Link>
+                ) : (
+                  <Link
+                    className={`${bm.btnGhost} text-[10px]`}
+                    href={buildVehicleDetailHref(item.vehicleSlug)}
+                  >
+                    차량 상세
+                  </Link>
+                )}
+              </div>
             </div>
           </article>
         ))}

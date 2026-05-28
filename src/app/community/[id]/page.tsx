@@ -9,6 +9,10 @@ import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
 import { getQuestionById, getQuestionsForBattery, getQuestionsForVehicle } from "@/lib/qna";
 import { QNA_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import {
+  getQuestionThumbnailUrl,
+  resolveImageSlotAssetUrl,
+} from "@/lib/media/resolve-asset-image";
+import {
   guideHref,
   searchHref,
   vehicleHref,
@@ -82,7 +86,14 @@ export default async function CommunityQuestionDetailPage({
         </div>
 
         <div className="mt-4 max-w-lg">
-          <MediaImageSlot slot={imageSlotForQuestion(question)} />
+          <MediaImageSlot
+            slot={imageSlotForQuestion(question)}
+            src={
+              getQuestionThumbnailUrl(question) ??
+              resolveImageSlotAssetUrl(imageSlotForQuestion(question))
+            }
+            className="max-h-[200px]"
+          />
         </div>
 
         {batteryCodes.length > 0 ? (

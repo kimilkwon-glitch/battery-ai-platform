@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MediaImageSlot } from "@/components/media/MediaImageSlot";
+import { BatteryImageOrSlot } from "@/components/media/BatteryImageOrSlot";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { BRAND_HERO_LABEL } from "@/lib/brand";
 import { getSearchHref } from "@/lib/battery-search";
@@ -11,7 +11,6 @@ import {
   HOME_HERO_EXAMPLES,
   HOME_SEARCH_TYPE_CHIPS,
 } from "@/lib/home-upgrade-v2-data";
-import { HOME_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { bm } from "@/lib/design-tokens";
 
 export function HomePlatformHero() {
@@ -94,8 +93,12 @@ export function HomePlatformHero() {
           </div>
         </div>
         <div className="order-2 border-t border-[var(--bm-border)] p-4 lg:order-none lg:border-l lg:border-t-0 lg:p-5">
-          <p className="mb-2 text-[10px] font-bold text-[var(--bm-muted)]">매칭 미리보기</p>
-          <MediaImageSlot slot={HOME_IMAGE_SLOTS.heroMatching()} />
+          <p className="mb-2 text-[10px] font-bold text-[var(--bm-muted)]">매칭 미리보기 · AGM80L</p>
+          <BatteryImageOrSlot
+            code="AGM80L"
+            ratio="4/3"
+            className="max-h-[200px] lg:max-h-[240px]"
+          />
         </div>
       </div>
     </section>

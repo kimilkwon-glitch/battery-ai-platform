@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { BatteryImageOrSlot } from "@/components/media/BatteryImageOrSlot";
-import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { SectionHeader } from "@/components/common/SectionHeader";
@@ -16,7 +15,6 @@ import {
 import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
 import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
-import { BATTERY_DETAIL_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import type { HubBadge } from "@/lib/battery-detail/battery-detail-hub-content";
 import { BatteryDetailRelatedQna } from "@/components/battery/BatteryDetailRelatedQna";
@@ -174,16 +172,16 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         <SectionHeader title="사진 슬롯" description="실사 연결 전까지 준비중 표시 — 섹션 유지" />
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           <div>
-            <p className="mb-1.5 text-[10px] font-black text-slate-500">제품 대표</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.product(displayCode)} />
+            <p className="mb-1.5 text-[10px] font-bold text-slate-500">제품 대표</p>
+            <BatteryImageOrSlot code={displayCode} role="main" ratio="4/3" className="min-h-[140px]" />
           </div>
           <div>
-            <p className="mb-1.5 text-[10px] font-black text-slate-500">장착 예시</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.install(displayCode)} />
+            <p className="mb-1.5 text-[10px] font-bold text-slate-500">장착 예시</p>
+            <BatteryImageOrSlot code={displayCode} role="detail" ratio="4/3" className="min-h-[140px]" />
           </div>
           <div>
-            <p className="mb-1.5 text-[10px] font-black text-slate-500">라벨·단자</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.labelTerminal(displayCode)} />
+            <p className="mb-1.5 text-[10px] font-bold text-slate-500">라벨·단자</p>
+            <BatteryImageOrSlot code={displayCode} role="photo" ratio="4/3" className="min-h-[140px]" />
           </div>
         </div>
       </section>

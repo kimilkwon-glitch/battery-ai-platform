@@ -2,9 +2,11 @@
 
 
 
+import Image from "next/image";
 import Link from "next/link";
 
 import { ContentUiIcon } from "@/components/content/ContentUiIcon";
+import { getQuestionThumbnailUrl } from "@/lib/media/resolve-asset-image";
 
 import { BatteryMiniSpecLink } from "@/components/battery/BatteryMiniSpecLink";
 import { extractBatteryCodesFromTags } from "@/lib/battery-tags";
@@ -79,6 +81,7 @@ export function QnaQuestionCard({
 
   const showPhotoCta = question.ctaType === "photo" || /사진|단자|라벨|포터|하이브리드/.test(question.title);
   const showInquiryCta = question.ctaType === "inquiry" || /방전|문의|매장/.test(question.category);
+  const thumbUrl = getQuestionThumbnailUrl(question);
 
   const titleClass = compact
 
@@ -122,7 +125,20 @@ export function QnaQuestionCard({
 
       >
 
-        <ContentUiIcon iconKey={iconKey} size={48} />
+        {thumbUrl ? (
+          <div className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+            <Image
+              alt=""
+              className="object-cover object-center"
+              fill
+              loading="lazy"
+              sizes="48px"
+              src={thumbUrl}
+            />
+          </div>
+        ) : (
+          <ContentUiIcon iconKey={iconKey} size={48} />
+        )}
 
 
 

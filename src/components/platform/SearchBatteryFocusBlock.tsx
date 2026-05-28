@@ -1,5 +1,8 @@
 import Link from "next/link";
+import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
+import { getVehicleImageUrlBySlug } from "@/lib/media/resolve-asset-image";
+import { getVehicleAsset } from "@/lib/car-assets";
 import { RecommendedBatteryCard } from "@/components/platform/RecommendedBatteryCard";
 import {
   SearchResultCoreSummary,
@@ -172,49 +175,64 @@ export function SearchBatteryFocusBlock({
       ) : null}
       <SearchConditionChips chips={ux.conditionChips} />
       {vehicle?.vehicleLabel ? (
-        <MediaImageSlot slot={SEARCH_IMAGE_SLOTS.vehicleCard(vehicle.vehicleLabel)} />
+        <MediaImageSlot
+          slot={SEARCH_IMAGE_SLOTS.vehicleCard(vehicle.vehicleLabel)}
+          src={
+            (vehicle.dbMatchKey && getVehicleAsset(vehicle.dbMatchKey)?.image) ||
+            getVehicleImageUrlBySlug(vehicle.dbMatchKey ?? "") ||
+            null
+          }
+          className="max-h-[140px]"
+        />
       ) : null}
       {summaryRows.length > 0 ? <SearchResultCoreSummary rows={summaryRows} /> : null}
 
       {ux.mode === "spec" && ux.specMeta ? (
-        <div className={`${bm.card} p-4`}>
-          <p className="text-3xl font-black tracking-tight text-slate-950">{ux.specMeta.code}</p>
-          <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-            <div>
-              <dt className="font-bold text-slate-500">타입</dt>
-              <dd className="font-black text-slate-900">{ux.specMeta.type}</dd>
-            </div>
-            <div>
-              <dt className="font-bold text-slate-500">용량</dt>
-              <dd className="font-black text-slate-900">{ux.specMeta.capacity}</dd>
-            </div>
-            <div>
-              <dt className="font-bold text-slate-500">CCA</dt>
-              <dd className="font-black text-slate-900">{ux.specMeta.cca}</dd>
-            </div>
-            <div>
-              <dt className="font-bold text-slate-500">단자</dt>
-              <dd className="font-black text-slate-900">{ux.specMeta.terminal}</dd>
-            </div>
-          </dl>
-          {ux.sampleVehicles.length > 0 ? (
-            <div className="mt-3">
-              <p className="text-[11px] font-black text-slate-500">대표 적용 차량</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {ux.sampleVehicles.map((v) => (
-                  <Link
-                    key={v.href}
-                    className="rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-100 hover:bg-white"
-                    href={v.href}
-                  >
-                    {v.label}
-                  </Link>
-                ))}
+        <div className={`${bm.card} overflow-hidden p-0`}>
+          <div className="border-b border-[var(--bm-border)] bg-[var(--bm-image-bg)] px-4 py-3 sm:px-5">
+            <BatteryCardImage code={ux.specMeta.code} heightClass="h-[120px] sm:h-[140px]" />
+          </div>
+          <div className="p-4 sm:p-5">
+            <p className="spec-code text-2xl font-bold tracking-normal text-slate-950" data-spec-code>
+              {ux.specMeta.code}
+            </p>
+            <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+              <div>
+                <dt className="font-bold text-slate-500">타입</dt>
+                <dd className="font-bold text-slate-900">{ux.specMeta.type}</dd>
               </div>
+              <div>
+                <dt className="font-bold text-slate-500">용량</dt>
+                <dd className="font-bold text-slate-900">{ux.specMeta.capacity}</dd>
+              </div>
+              <div>
+                <dt className="font-bold text-slate-500">CCA</dt>
+                <dd className="font-bold text-slate-900">{ux.specMeta.cca}</dd>
+              </div>
+              <div>
+                <dt className="font-bold text-slate-500">단자</dt>
+                <dd className="font-bold text-slate-900">{ux.specMeta.terminal}</dd>
+              </div>
+            </dl>
+            {ux.sampleVehicles.length > 0 ? (
+              <div className="mt-3">
+                <p className="text-[11px] font-bold text-slate-500">대표 적용 차량</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {ux.sampleVehicles.map((v) => (
+                    <Link
+                      key={v.href}
+                      className="rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-100 hover:bg-white"
+                      href={v.href}
+                    >
+                      {v.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            <div className="mt-4">
+              <SearchUxHeroCtas ctas={ux.heroCtas} />
             </div>
-          ) : null}
-          <div className="mt-4">
-            <SearchUxHeroCtas ctas={ux.heroCtas} />
           </div>
         </div>
       ) : null}
