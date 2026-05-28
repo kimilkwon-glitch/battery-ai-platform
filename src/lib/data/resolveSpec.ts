@@ -1,7 +1,7 @@
 import legacyDbJson from "@/data/vehicle-battery-db.json";
 import specMappingsJson from "@/data/batteries/specMappings.json";
 import { getCanonicalBatteryCode, batteryAliasMap } from "@/lib/battery-alias-map";
-import { normalizeBatteryCode } from "@/lib/batteryNormalize";
+import { normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
 
 type NormalizationRules = Record<string, string>;
 type SpecMappingEntry = { standardSpec: string; aliases: string[]; note?: string };
@@ -37,7 +37,7 @@ export function resolveSpec(input: string): string {
     if (brandCodes.some((c) => norm(c) === key)) return canonical;
   }
 
-  return normalizeBatteryCode(raw);
+  return productBatteryCode(raw) || normalizeBatteryCode(raw);
 }
 
 export function resolveSpecWithMeta(input: string) {

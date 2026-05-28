@@ -1,4 +1,5 @@
-import { normalizeBatteryCode } from "@/lib/batteryNormalize";
+import { normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
+import { batteryCodeForFuelParam } from "@/lib/battery-cta";
 import {
   getRecordsForSlug,
   groupRecordsByFuel,
@@ -57,14 +58,52 @@ function pickConfirmedRecords(
 function codesFromRecords(recs: VehicleBatteryRecord[]): string[] {
   const codes: string[] = [];
   for (const r of recs) {
-    const p = normalizeBatteryCode(r.primaryBattery);
+    const p = productBatteryCode(r.primaryBattery) || normalizeBatteryCode(r.primaryBattery);
     if (p) codes.push(p);
     for (const o of r.batteryOptions) {
-      const c = normalizeBatteryCode(o);
+      const c = productBatteryCode(o) || normalizeBatteryCode(o);
       if (c) codes.push(c);
     }
   }
   return [...new Set(codes)].slice(0, 4);
+}
+
+function applyFuelPrimaryOverride(codes: string[], fuel: string | null): string[] {
+  const fuelCode = batteryCodeForFuelParam(fuel);
+  if (!fuelCode) return codes;
+  const rest = codes.filter((c) => productBatteryCode(c) !== fuelCode);
+  return [fuelCode, ...rest];
+}
+
+function isIceSpecOnHybridSearch(fuel: string | null, primaryCode: string): boolean {
+  if (!fuel || !/하이브|hev/i.test(fuel)) return false;
+  const p = productBatteryCode(primaryCode);
+  return /^DIN/i.test(p);
+}
+
+function resolveHybridCandidateBeforeDb(
+  canonicalKey: string | null,
+  fuel: string | null,
+  displayName: string,
+): ResolvedVehicleBatterySpec | null {
+  if (!canonicalKey?.endsWith("-hybrid")) return null;
+  if (!fuel || !/하이브|hev/i.test(fuel)) return null;
+  const mapHit = mapFallback(canonicalKey, displayName);
+  if (!mapHit) return null;
+  const displayValue = formatDisplayValue(mapHit.codes, false);
+  return {
+    tier: "map",
+    fieldLabel: "추천 규격",
+    displayValue,
+    primaryCodes: mapHit.codes.map((c) => productBatteryCode(c) || c),
+    source: "candidate-map",
+    dbMatchKey: null,
+    dbRecordId: null,
+    dbRecordDisplayName: null,
+    caution: mapHit.entry.caution?.trim() || SECONDARY_PHOTO_NOTE,
+    bodyMessage: null,
+    confidenceLabel: "하이브리드 기준",
+  };
 }
 
 export type DbBatteryLookupResult = {
@@ -175,7 +214,9 @@ function lookupVehicleBatteryByDbQuery(
 }
 
 function formatDisplayValue(codes: string[], useSeriesSuffix: boolean): string {
-  const unique = [...new Set(codes.map(normalizeBatteryCode).filter(Boolean))];
+  const unique = [
+    ...new Set(codes.map((c) => productBatteryCode(c) || normalizeBatteryCode(c)).filter(Boolean)),
+  ];
   if (!unique.length) return "";
   if (!useSeriesSuffix && unique.length === 1) return unique[0]!;
   return `${unique[0]} 계열`;
@@ -244,7 +285,7 @@ export function resolveVehicleBatterySpecForSearch(options: {
   };
 
   if (exactSpec) {
-    const code = normalizeBatteryCode(exactSpec);
+    const code = productBatteryCode(exactSpec) || normalizeBatteryCode(exactSpec);
     return {
       tier: "exact",
       fieldLabel: "검색한 규격",
@@ -272,6 +313,13 @@ export function resolveVehicleBatterySpecForSearch(options: {
     }
   }
 
+  const hybridCandidate = resolveHybridCandidateBeforeDb(canonicalKey, fuel, displayName);
+
+  const evCandidate =
+    canonicalKey === "kia-ev6-cv" || canonicalKey === "hyundai-ioniq5-ne"
+      ? mapFallback(canonicalKey, displayName)
+      : null;
+
   const dbHit =
     lookupVehicleBatteryFromDb({
       canonicalKey,
@@ -281,9 +329,14 @@ export function resolveVehicleBatterySpecForSearch(options: {
     }) ?? (dbQuery ? lookupVehicleBatteryByDbQuery(dbQuery, fuel) : null);
 
   if (dbHit?.codes.length) {
+    let codes = applyFuelPrimaryOverride(dbHit.codes, fuel);
+    const dbPrimary = codes[0] ?? "";
+    if (hybridCandidate && isIceSpecOnHybridSearch(fuel, dbPrimary)) {
+      return hybridCandidate;
+    }
     const singleConfirmed =
-      dbHit.codes.length === 1 && dbHit.record?.status === "confirmed";
-    const displayValue = formatDisplayValue(dbHit.codes, !singleConfirmed);
+      codes.length === 1 && dbHit.record?.status === "confirmed";
+    const displayValue = formatDisplayValue(codes, !singleConfirmed);
     const fieldLabel = singleConfirmed ? "추천 규격" : "대표 확인 후보";
     const isPorterYearSplit =
       canonicalKey === "hyundai-porter2-from2020" || assetId === "porter2-new";
@@ -297,7 +350,7 @@ export function resolveVehicleBatterySpecForSearch(options: {
       tier: "db",
       fieldLabel,
       displayValue,
-      primaryCodes: dbHit.codes,
+      primaryCodes: codes.map((c) => productBatteryCode(c) || c),
       source: "vehicle-battery-db",
       dbMatchKey: dbHit.dbMatchKey,
       dbRecordId: dbHit.record?.id ?? null,
@@ -308,14 +361,15 @@ export function resolveVehicleBatterySpecForSearch(options: {
     };
   }
 
-  const mapHit = mapFallback(canonicalKey, displayName);
+  const mapHit = mapFallback(canonicalKey, displayName) ?? evCandidate;
   if (mapHit) {
-    const displayValue = formatDisplayValue(mapHit.codes, true);
+    const single = mapHit.codes.length === 1;
+    const displayValue = formatDisplayValue(mapHit.codes, !single);
     return {
       tier: "map",
-      fieldLabel: mapHit.entry.candidateLabel,
+      fieldLabel: single ? "추천 규격" : mapHit.entry.candidateLabel,
       displayValue,
-      primaryCodes: mapHit.codes,
+      primaryCodes: mapHit.codes.map((c) => productBatteryCode(c) || c),
       source: "candidate-map",
       dbMatchKey: null,
       dbRecordId: null,

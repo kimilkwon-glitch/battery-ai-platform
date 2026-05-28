@@ -63,6 +63,22 @@ export const vehicleBatteryCandidateMap: Record<string, VehicleBatteryCandidateE
     confidenceLabel: "후보",
     confirmRequired: true,
   },
+  "kia-ev6-cv": {
+    displayName: "기아 EV6",
+    primaryCandidates: ["EV 12V"],
+    candidateLabel: "추천 규격",
+    caution: "EV 보조 12V는 트림·순정 규격 확인이 필요합니다. 사진으로 최종 확인을 권장합니다.",
+    confidenceLabel: "EV 보조배터리",
+    confirmRequired: true,
+  },
+  "hyundai-ioniq5-ne": {
+    displayName: "현대 아이오닉5",
+    primaryCandidates: ["EV 12V"],
+    candidateLabel: "추천 규격",
+    caution: "EV 보조 12V는 트림·순정 규격 확인이 필요합니다. 사진으로 최종 확인을 권장합니다.",
+    confidenceLabel: "EV 보조배터리",
+    confirmRequired: true,
+  },
 };
 
 export { resolveVehicleBatteryCandidates } from "@/lib/search/resolve-vehicle-battery-spec";

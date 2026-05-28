@@ -13,7 +13,7 @@ import {
   queryMentionsKgMobilityBrand,
 } from "@/lib/search/kg-mobility-brand";
 import { vehicleAssetsToSearchRows } from "@/lib/vehicle-search";
-import { isBatteryMatched, normalizeBatteryCode } from "@/lib/batteryNormalize";
+import { isBatteryMatched, normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
 import { resolveSearchVehicleAlias, type SearchVehicleAliasMatch } from "@/lib/search/search-vehicle-aliases";
 import { HUB_PHOTO, HUB_SHOP, HUB_SHOP_ANCHORS, HUB_STORE } from "@/lib/customer-hub-routes";
 import { prependHubCtas } from "@/lib/search/search-hub-cta";
@@ -252,8 +252,9 @@ function specDetailHref(
   hero: SearchHeroResult | null,
 ): string {
   const primary = specTokens[0] ?? specs[0];
-  if (primary && isKnownBatterySpec(normalizeBatteryCode(resolveSpec(primary) || primary))) {
-    return `/batteries/${encodeURIComponent(normalizeBatteryCode(resolveSpec(primary) || primary))}`;
+  if (primary && isKnownBatterySpec(productBatteryCode(resolveSpec(primary) || primary) || normalizeBatteryCode(resolveSpec(primary) || primary))) {
+    const hrefCode = productBatteryCode(resolveSpec(primary) || primary) || normalizeBatteryCode(resolveSpec(primary) || primary);
+    return `/batteries/${encodeURIComponent(hrefCode)}`;
   }
   if (topBattery?.href) return topBattery.href;
   if (hero?.href && !hero.href.includes("#")) return hero.href;
@@ -519,12 +520,17 @@ function filterVehicles(
   alias: SearchVehicleAliasMatch | null,
   vehicleQuery: string,
 ): VehicleSearchRow[] {
+  const blockCrVForEv6 = /\bEV6\b/i.test(query);
+  const blockIceNoiseForIoniq5 = /아이오닉\s*5|아이오닉5|ioniq\s*5|ioniq5/i.test(query);
+
   const scored = rows
     .map((row) => ({
       row,
       score: scoreVehicleRow(row, query, specs, alias, vehicleQuery),
     }))
     .filter(({ score, row }) => {
+      if (blockCrVForEv6 && /\/vehicle\/cr-v\b/i.test(row.href)) return false;
+      if (blockIceNoiseForIoniq5 && /\/vehicle\/cr-v\b/i.test(row.href)) return false;
       if (alias && norm(row.model).includes(norm(alias.label.split(" ")[0]))) return true;
       return score >= MIN_RELEVANCE_SCORE;
     })
@@ -546,7 +552,7 @@ function mapHitToBatteryItem(
   exact = false,
   options?: { unverifiedFit?: boolean },
 ): SearchBatteryItem {
-  const code = normalizeBatteryCode(h.title);
+  const code = productBatteryCode(h.title) || normalizeBatteryCode(h.title);
   let variantNote: string | undefined;
   if (options?.unverifiedFit) {
     variantNote = "차량 적합 여부 확인 필요";
@@ -569,9 +575,10 @@ function syntheticBatteryItem(
   spec: string,
   options?: { unverifiedFit?: boolean; queryOnly?: boolean },
 ): SearchBatteryItem {
-  const code = normalizeBatteryCode(resolveSpec(spec) || spec);
-  const known = isKnownBatterySpec(code);
-  const bat = known ? getBattery(code) : null;
+  const resolved = resolveSpec(spec) || spec;
+  const code = productBatteryCode(resolved) || productBatteryCode(spec) || normalizeBatteryCode(resolved);
+  const known = isKnownBatterySpec(code) || isKnownBatterySpec(normalizeBatteryCode(resolved));
+  const bat = known ? getBattery(code) : getBattery(normalizeBatteryCode(resolved));
   const variantNote = options?.queryOnly
     ? "검색한 규격 · 확인 필요"
     : options?.unverifiedFit
@@ -579,13 +586,14 @@ function syntheticBatteryItem(
       : !known
         ? "확인 필요 규격"
         : undefined;
+  const displayCode = options?.queryOnly ? productBatteryCode(spec) || code : code;
   return {
-    code: options?.queryOnly ? normalizeBatteryCode(spec) : code,
+    code: displayCode,
     subtitle:
       bat
         ? `${bat.type ?? ""} · ${bat.terminal ?? ""} · ${bat.capacity ?? ""}`.replace(/^ · | · $/g, "").trim()
         : "검색어에 포함된 규격",
-    href: known ? `/batteries/${encodeURIComponent(code)}` : "/guides",
+    href: known ? `/batteries/${encodeURIComponent(displayCode)}` : "/guides",
     score: 200,
     variantNote,
   };
@@ -606,23 +614,25 @@ function filterBatteries(
   if (specs.length > 0) {
     const exactItems: SearchBatteryItem[] = [];
     for (const spec of specs) {
-      const n = normalizeBatteryCode(resolveSpec(spec) || spec);
-      const known = isKnownBatterySpec(n);
-      const fitConfirmed = options?.vehicleSlug ? vehicleSpecFitConfirmed(options.vehicleSlug, n) : false;
+      const resolved = resolveSpec(spec) || spec;
+      const nMatch = normalizeBatteryCode(resolved);
+      const nDisplay = productBatteryCode(resolved) || productBatteryCode(spec) || nMatch;
+      const known = isKnownBatterySpec(nMatch) || isKnownBatterySpec(nDisplay);
+      const fitConfirmed = options?.vehicleSlug ? vehicleSpecFitConfirmed(options.vehicleSlug, nMatch) : false;
       const unverifiedFit = Boolean(options?.vehicleSlug) && !fitConfirmed;
-      const hit = hits.find((h) => normalizeBatteryCode(h.title) === n);
+      const hit = hits.find((h) => normalizeBatteryCode(h.title) === nMatch);
       if (hit) {
         exactItems.push(mapHitToBatteryItem(hit, spec, true, { unverifiedFit }));
-        exactCodes.add(n);
+        exactCodes.add(nDisplay);
       } else if (known) {
-        exactItems.push(syntheticBatteryItem(n, { unverifiedFit }));
-        exactCodes.add(n);
+        exactItems.push(syntheticBatteryItem(spec, { unverifiedFit }));
+        exactCodes.add(nDisplay);
       } else {
         exactItems.push(syntheticBatteryItem(spec, { queryOnly: true }));
-        exactCodes.add(normalizeBatteryCode(spec));
+        exactCodes.add(nDisplay);
       }
       if (options?.allowTerminalVariant) {
-        const variant = terminalVariant(n);
+        const variant = terminalVariant(nMatch);
         if (variant && isKnownBatterySpec(variant)) {
           const vHit = hits.find((h) => normalizeBatteryCode(h.title) === variant);
           if (vHit && !exactCodes.has(variant)) {

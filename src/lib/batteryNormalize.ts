@@ -21,6 +21,8 @@ export const BATTERY_ALIAS_MAP: Record<string, string[]> = {
   AGM105L: ["AGM105L", "AGM105", "AGM LN6", "LN6 AGM"],
   AGM105R: ["AGM105R", "AGM105 R", "AGM LN6 R"],
 
+  GB450LS: ["GB450LS", "로케트 GB450LS", "GB450", "EV450LS"],
+
   DIN50L: ["DIN50L", "55066", "DIN50", "50L"],
   DIN62L: ["DIN62L", "56219", "DIN60HL", "DIN60Ah", "DIN60L"],
   DIN74L: ["DIN74L", "57412", "57820", "DIN74"],
@@ -83,6 +85,24 @@ for (const [family, aliases] of Object.entries(BATTERY_ALIAS_MAP)) {
 /** 사이트에서 제거된 규격 — 검색·상세 진입 차단용 */
 export function isRetiredBatterySpec(code: string): boolean {
   return normalizeToken(code) === "DIN72L";
+}
+
+/** UI·href·카드용 — CMF80L, AGM80L, GB450LS 등 prefix 포함 전체 코드 보존 */
+const PREFIXED_PRODUCT_CODE_RE =
+  /^(AGM|DIN|CMF|GB|DF|EFB|MF|EV)(\d+[A-Z]?|[A-Z]?\d+[LR])$/i;
+
+export function productBatteryCode(code: string): string {
+  if (!code?.trim()) return "";
+  const raw = code.trim();
+  if (/^EV\s*12V\s*AGM$/i.test(raw)) return "EV 12V AGM";
+  if (/^EV\s*12V/i.test(raw)) return "EV 12V";
+  let token = normalizeToken(code);
+  token = token.replace(KOREAN_BRAND_PREFIX, "");
+  if (DB_NORM_RULES[token]) token = normalizeToken(DB_NORM_RULES[token]);
+  if (token === "EV12V") return "EV 12V";
+  if (PREFIXED_PRODUCT_CODE_RE.test(token)) return token;
+  const family = normalizeBatteryCode(code);
+  return family || token;
 }
 
 /** 비교·매칭용 family key (100R, AGM80L 등). L/R 유지 */

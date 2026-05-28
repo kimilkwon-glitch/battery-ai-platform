@@ -110,6 +110,8 @@ export const VEHICLE_CANONICAL_REGISTRY: VehicleCanonicalEntry[] = [
     model: "스포티지",
     generation: "NQ5",
     fuel: "하이브리드",
+    assetId: "sportage-nq5",
+    catalogId: "sportage-nq5",
     dbQuery: "스포티지",
     specificity: 100,
     aliases: ["스포티지 NQ5 하이브리드", "스포티지 하이브리드", "스포티지 HEV", "스포티지 하브"],
@@ -234,9 +236,11 @@ export const VEHICLE_CANONICAL_REGISTRY: VehicleCanonicalEntry[] = [
     model: "EV6",
     generation: "CV",
     fuel: "전기",
+    assetId: "ev6",
+    catalogId: "ev6",
     dbQuery: "EV6",
     specificity: 95,
-    aliases: ["EV6 전기", "EV6 CV", "ev6 electric"],
+    aliases: ["EV6", "EV6 보조배터리", "EV6 전기", "EV6 CV", "ev6 electric", "보조배터리 EV6"],
   },
 
   // —— 기타 자주 쓰는 차량 (기존 alias 유지) ——
