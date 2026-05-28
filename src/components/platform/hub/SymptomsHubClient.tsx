@@ -10,7 +10,7 @@ import { searchHref } from "@/lib/platform-data";
 
 export function SymptomsHubClient() {
   return (
-    <div className="space-y-5" data-page="symptoms-hub">
+    <div className="space-y-5 overflow-x-hidden" data-page="symptoms-hub">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
         <p className={bm.intentBadge}>증상 진단 허브</p>
         <SectionHeader

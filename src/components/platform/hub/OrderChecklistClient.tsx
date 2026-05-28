@@ -11,14 +11,14 @@ import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
 
 export function OrderChecklistClient() {
   return (
-    <div className="space-y-5" data-page="order-checklist">
+    <div className="space-y-5 overflow-x-hidden" data-page="order-checklist">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
         <p className={bm.intentBadge}>오주문 방지 센터</p>
         <SectionHeader
           title="배터리 주문 전 확인 체크리스트"
           description="택배·자가장착·전화 문의 전에 확인하면 반품·재주문을 줄일 수 있습니다. DB 매칭 결과와 함께 사용하세요."
         />
-        <ol className="mt-4 space-y-3">
+        <ul className="mt-4 list-none space-y-3 p-0">
           {ORDER_CHECKLIST_ITEMS.map((item, i) => (
             <li
               className={`${bm.surfaceMuted} flex gap-3 rounded-[18px] p-4`}
@@ -36,7 +36,7 @@ export function OrderChecklistClient() {
               </div>
             </li>
           ))}
-        </ol>
+        </ul>
       </section>
 
       <section className={`${bm.card} ${bm.cardPad}`}>

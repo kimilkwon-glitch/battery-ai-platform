@@ -181,6 +181,26 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
   },
 ];
 
+export type PhotoExampleKind = "good" | "bad";
+
+export type PhotoExampleCard = {
+  kind: PhotoExampleKind;
+  title: string;
+  hint: string;
+  icon: "top" | "label" | "terminal" | "tray" | "blur" | "hidden" | "crop";
+};
+
+/** 아이콘형 예시 카드 — 실사 없이 안내만 */
+export const PHOTO_CHECK_EXAMPLES: PhotoExampleCard[] = [
+  { kind: "good", title: "배터리 전체 상단", hint: "트레이·홀드다운이 보이는 각도", icon: "top" },
+  { kind: "good", title: "라벨 확대", hint: "규격 코드·제조일이 선명하게", icon: "label" },
+  { kind: "good", title: "+ / − 단자 방향", hint: "플러스·마이너스 위치가 보일 것", icon: "terminal" },
+  { kind: "good", title: "고정쇠·트레이 주변", hint: "홀 패턴·브래킷 포함", icon: "tray" },
+  { kind: "bad", title: "라벨이 흐림", hint: "빛 반사·초점 불량", icon: "blur" },
+  { kind: "bad", title: "단자 방향이 가려짐", hint: "케이블·커버에 가려진 경우", icon: "hidden" },
+  { kind: "bad", title: "너무 가까움", hint: "규격 코드가 화각 밖으로 잘림", icon: "crop" },
+];
+
 export const PHOTO_CHECK_STEPS = [
   {
     step: 1,
@@ -225,19 +245,30 @@ export const PHOTO_CHECK_STEPS = [
   },
 ];
 
-export const SERVICE_OPTIONS = [
+export type ServiceOption = {
+  title: string;
+  desc: string;
+  href: string;
+  when: string;
+  tone: "primary" | "secondary" | "ghost";
+  region?: string;
+};
+
+export const SERVICE_OPTIONS: ServiceOption[] = [
   {
     title: "덕천점 내방",
     desc: "직영점에서 규격 확인·장착 상담",
     href: `${HUB_STORE}#store-deokcheon`,
-    when: "부산 북구 인근 · 당일 확인 원할 때",
+    when: "북구·동래·금정권 — 덕천·구포·만덕·화명·대저 등",
+    region: "북부 직영",
     tone: "primary" as const,
   },
   {
     title: "학장점 내방",
     desc: "직영점에서 규격 확인·장착 상담",
     href: `${HUB_STORE}#store-hakjang`,
-    when: "부산 금정구 인근",
+    when: "사상구·사하·강서권 — 학장·감전·괘법·주례·엄궁·사하 등",
+    region: "서부 직영",
     tone: "primary" as const,
   },
   {
