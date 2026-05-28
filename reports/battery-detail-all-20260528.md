@@ -56,4 +56,19 @@
 
 ## Production
 
-*(배포 후 아래 섹션 갱신)*
+| 항목 | 값 |
+|------|-----|
+| GitHub main | `07e8456492b79d56b392269df6314f3c204b24d1` |
+| Vercel deployment | `dpl_757SFJ4eRMLRs5Ti5pF6ec1QNLTW` |
+| Production alias | https://battery-ai-platform.vercel.app |
+| 검수 | `verify-battery-detail-all-production.mjs` + `verify-battery-detail-hub.mjs` — **ALL PASS** |
+
+- `/batteries/90R` — fallback 허브 (`data-battery-detail-hub="90R"`), 구버전 로케트/쏠라이트 UI 없음
+- stamp `BM-UX-REV-20260528-BATTERY-DETAIL-ALL` 전 route 확인
+- Git push 후 Vercel 자동 배포 지연 → `vercel deploy --prod` 1회로 production alias 갱신
+
+## 남은 개선 후보
+
+- 규격별 실사 이미지 슬롯 연결
+- fallback 규격의 catalog 용량/CCA 데이터 보강
+- 115D31L은 보조·검색 대응 수준 유지 (주력 추천 비노출)
