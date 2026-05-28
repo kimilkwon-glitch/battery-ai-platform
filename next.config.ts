@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
             key: "Cache-Control",
             value: "private, no-cache, no-store, must-revalidate",
           },
+          {
+            key: "CDN-Cache-Control",
+            value: "no-store",
+          },
+          {
+            key: "Vercel-CDN-Cache-Control",
+            value: "no-store",
+          },
         ],
       },
     ];
