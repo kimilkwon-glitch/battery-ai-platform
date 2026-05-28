@@ -8,7 +8,13 @@ const SYMPTOM_INTENT_RE =
   /방전|완전\s*방전|시동\s*지연|시동\s*안|블랙박스|블박|경고등|전압|12\s*v\s*방전/i;
 const COMPARE_INTENT_RE = /가격\s*비교|비교|\bvs\b|\bVS\b|차이/i;
 const UPGRADE_INTENT_RE = /업그레이드|상향|큰\s*배터리|용량\s*업|검토/i;
-const TERMINAL_INTENT_RE = /단자\s*방향|단자방향|\+단자|플러스|마이너스|\bL\s*\/\s*R\b|좌우/i;
+const TERMINAL_INTENT_RE =
+  /단자\s*방향|단자방향|단자|L\s*타입|R\s*타입|\+단자|플러스\s*위치|마이너스\s*단자|\bL\s*\/\s*R\b|좌우/i;
+
+const OUTBOUND_SERVICE_RE = /출장|출장\s*교체|배터리\s*출장|부산.*배터리.*출장/i;
+const STORE_VISIT_RE = /덕천|학장|매장|지점|방문|내방|교체\s*상담/i;
+const DELIVERY_ORDER_RE = /택배|온라인\s*주문|배송\s*주문/i;
+const PRODUCT_BROWSE_RE = /상품\s*확인|배터리\s*상품|쇼핑|상품\s*보기/i;
 
 export type QueryIntentFlags = {
   photo: boolean;
@@ -58,6 +64,12 @@ export function resolveSearchIntentLabel(
   if (COMPARE_INTENT_RE.test(query)) return "비교 검색";
   if (UPGRADE_INTENT_RE.test(query)) return "업그레이드 검색";
   if (TERMINAL_INTENT_RE.test(query)) return "단자 방향 검색";
+  if (DELIVERY_ORDER_RE.test(query) && /주문|택배|배송/i.test(query)) return "택배 주문 검색";
+  if (PRODUCT_BROWSE_RE.test(query)) return "배터리 상품 검색";
+  if (OUTBOUND_SERVICE_RE.test(query)) return "출장 서비스 검색";
+  if (/덕천/.test(query)) return "덕천점 검색";
+  if (/학장/.test(query)) return "학장점 검색";
+  if (STORE_VISIT_RE.test(query) && /배터리|교체|매장|점/i.test(query)) return "매장 교체 검색";
   if (specTokens.length > 0) return "규격 검색";
   if (options?.hasVehicle || options?.hasAlias) return "차량 검색";
   return "통합검색";

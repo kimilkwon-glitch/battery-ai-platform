@@ -121,11 +121,17 @@ export function buildSearchSummary(
             yearChipId: fitmentOverride?.yearChipId ?? null,
           })
         : "";
-    const primaryBatteryCode = unifiedPrimary
-      ? unifiedPrimary
-      : hasSpecLine
-        ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
+    const hybridSearchPrimary =
+      v.canonicalKey?.endsWith("-hybrid") && batterySpec.primaryCodes[0]
+        ? canonicalBatteryCode(batterySpec.primaryCodes[0])
         : null;
+    const primaryBatteryCode =
+      hybridSearchPrimary ||
+      (unifiedPrimary
+        ? unifiedPrimary
+        : hasSpecLine
+          ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
+          : null);
     const specDisplayResolved = primaryBatteryCode
       ? canonicalBatteryCode(primaryBatteryCode)
       : hasSpecLine && batterySpec.displayValue

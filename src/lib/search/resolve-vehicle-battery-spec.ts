@@ -308,6 +308,9 @@ export function resolveVehicleBatterySpecForSearch(options: {
   }
 
   const hybridCandidate = resolveHybridCandidateBeforeDb(canonicalKey, fuel, displayName);
+  if (hybridCandidate) {
+    return hybridCandidate;
+  }
 
   const evCandidate =
     canonicalKey === "kia-ev6-cv" || canonicalKey === "hyundai-ioniq5-ne"

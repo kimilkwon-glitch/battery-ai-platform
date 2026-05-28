@@ -29,6 +29,8 @@ const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
     LPG: "DIN80L",
     하이브리드: "DIN74R",
   },
+  "sportage-nq5": { 하이브리드: "AGM60L" },
+  "k8-gl3": { 하이브리드: "AGM60L" },
 };
 
 function decodeFuelQueryParam(raw: string | null | undefined): string | null {
