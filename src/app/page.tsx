@@ -7,6 +7,8 @@ import { HomeStoreSection } from "@/components/platform/HomeStoreSection";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { bm } from "@/lib/design-tokens";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <main className={bm.pageBg}>
