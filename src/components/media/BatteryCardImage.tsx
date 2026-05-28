@@ -1,27 +1,35 @@
 "use client";
 
-import { BatteryImageOrSlot } from "@/components/media/BatteryImageOrSlot";
-import { batteryImageFit } from "@/components/BatteryThumbnail";
+import { BatteryImageStage } from "@/components/media/BatteryImageStage";
+import type { BatteryImageStageVariant } from "@/lib/battery-image-stage";
 
 type Props = {
   code: string;
   className?: string;
+  /** @deprecated variant 사용 권장 */
   heightClass?: string;
+  variant?: BatteryImageStageVariant;
+  flushTop?: boolean;
 };
 
-/** 배터리 asset 우선 — 카드용 contain */
+/** 배터리 카드 공통 image stage */
 export function BatteryCardImage({
   code,
   className = "",
-  heightClass = "h-[120px] sm:h-[130px]",
+  heightClass,
+  variant,
+  flushTop = false,
 }: Props) {
+  const resolvedVariant: BatteryImageStageVariant =
+    variant ??
+    (heightClass?.includes("88") || heightClass?.includes("100") ? "cardCompact" : "card");
+
   return (
-    <BatteryImageOrSlot
+    <BatteryImageStage
       code={code}
-      ratio="4/3"
-      tall={false}
-      className={`${heightClass} w-full ${className}`}
-      role="main"
+      variant={resolvedVariant}
+      className={className}
+      flushTop={flushTop}
     />
   );
 }

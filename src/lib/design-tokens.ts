@@ -107,10 +107,14 @@ export const bm = {
   statusCheck: "bg-orange-50/90 text-orange-800 ring-orange-100/70",
   statusWarn: "bg-red-50/90 text-red-700 ring-red-100/80",
 
+  /** 레거시 — 신규 카드는 BatteryImageStage 사용 */
   imageBattery:
     "relative flex h-[180px] w-full items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)]",
   imageBatteryCompact:
     "relative flex h-[140px] w-full items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)] sm:h-[160px]",
+  /** @see battery-image-stage.ts */
+  batteryImageStageBase:
+    "battery-image-stage relative w-full overflow-hidden bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)]/80",
   imageVehicle:
     "relative flex h-[105px] w-[150px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-card)] ring-1 ring-[var(--bm-border)]",
   imageVehicleCommercial:

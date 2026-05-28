@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BatteryImageOrSlot } from "@/components/media/BatteryImageOrSlot";
+import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { SectionHeader } from "@/components/common/SectionHeader";
@@ -144,13 +145,8 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         </div>
 
         <div className="grid gap-0 sm:grid-cols-[minmax(200px,280px)_1fr]">
-          <div className="order-2 border-b border-[var(--bm-border)] p-4 sm:order-none sm:border-b-0 sm:border-r">
-            <BatteryImageOrSlot
-              code={displayCode}
-              ratio="4/3"
-              tall={false}
-              className="mx-auto h-[120px] max-h-[140px] rounded-xl sm:h-auto sm:max-h-none sm:min-h-[160px]"
-            />
+          <div className="order-2 flex items-center border-b border-[var(--bm-border)] p-4 sm:order-none sm:border-b-0 sm:border-r sm:py-5">
+            <BatteryImageStage code={displayCode} variant="hero" className="mx-auto w-full max-w-[280px]" />
           </div>
           <div className="order-1 p-4 sm:order-none sm:p-5">
             <CtaHierarchy

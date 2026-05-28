@@ -22,11 +22,9 @@ export function HomePopularBatteryRanking() {
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {HOME_POPULAR_BATTERIES.map((item) => (
-          <article className={`${bm.rankCard} flex flex-col`} key={item.code}>
-            <div className="p-2.5">
-              <BatteryCardImage code={item.code} />
-            </div>
-            <div className="flex flex-1 flex-col gap-2 border-t border-slate-100 px-3 pb-3 pt-2">
+          <article className={`${bm.rankCard} flex flex-col overflow-hidden`} key={item.code}>
+            <BatteryCardImage code={item.code} flushTop />
+            <div className="flex flex-1 flex-col gap-2 border-t border-slate-100 px-3 pb-3 pt-2.5">
               <p className="spec-code text-base font-bold text-[var(--bm-text)]" data-spec-code>
                 {item.code}
               </p>

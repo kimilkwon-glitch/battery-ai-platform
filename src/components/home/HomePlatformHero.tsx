@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BatteryImageOrSlot } from "@/components/media/BatteryImageOrSlot";
+import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { BRAND_HERO_LABEL } from "@/lib/brand";
 import { getSearchHref } from "@/lib/battery-search";
@@ -94,11 +94,7 @@ export function HomePlatformHero() {
         </div>
         <div className="order-2 border-t border-[var(--bm-border)] p-4 lg:order-none lg:border-l lg:border-t-0 lg:p-5">
           <p className="mb-2 text-[10px] font-bold text-[var(--bm-muted)]">매칭 미리보기 · AGM80L</p>
-          <BatteryImageOrSlot
-            code="AGM80L"
-            ratio="4/3"
-            className="max-h-[200px] lg:max-h-[240px]"
-          />
+          <BatteryImageStage code="AGM80L" variant="hero" className="mx-auto max-w-[300px]" />
         </div>
       </div>
     </section>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import { getBatteryImageSet } from "@/lib/battery-alias-map";
-import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
+import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { ConversionActions } from "@/components/common/ConversionActions";
 import { SmartNextActions } from "@/components/common/SmartNextActions";
 import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
@@ -40,19 +40,13 @@ function SelectedBatteryCard({
         side === "left" ? "lg:rounded-r-none lg:border-r-0" : "lg:rounded-l-none"
       }`}
     >
-      <div className={`relative ${bm.imageBatteryCompact} sm:!h-[180px]`}>
-        <BatteryThumbnail
-          code={battery.code}
-          imageSet={images?.main ? images : battery.images}
-          role="main"
-          fit={batteryImageFit(battery.code, imageBrand)}
-          ratio="16/9"
-          overlayLabel={false}
-          darkOverlay={false}
-          tall
-          className="h-full rounded-none"
-        />
-      </div>
+      <BatteryImageStage
+        code={battery.code}
+        variant="compare"
+        imageSet={images?.main ? images : battery.images}
+        className="rounded-none rounded-t-[22px] ring-0"
+        flushTop
+      />
       <div className="flex flex-1 flex-col p-4">
         <p className={bm.specTitle} data-spec-code>
           {battery.code}

@@ -72,10 +72,9 @@ export function BatteryThumbnail({
   const showGraphic = failed || !src || candidates.length === 0;
 
   const areaClass = tall ? "h-[180px] w-full" : batteryRatioClass[ratio];
-  const imgClass = tall
-    ? "object-contain object-center p-3 scale-[1.08]"
-    : fit === "contain"
-      ? "object-contain object-center p-2"
+  const imgClass =
+    fit === "contain" || tall
+      ? "object-contain object-[center_92%]"
       : "object-cover object-center";
 
   const surfaceClass = surface === "transparent" ? "bg-transparent" : batteryThumbSurface;
@@ -86,6 +85,30 @@ export function BatteryThumbnail({
     >
       {showGraphic ? (
         <BatteryGraphic code={code} />
+      ) : tall || fit === "contain" ? (
+        <div className="absolute inset-0 flex items-end justify-center overflow-hidden px-3 pt-2 pb-3">
+          <div className="relative h-[88%] w-[92%]">
+            <Image
+              key={src}
+              src={src}
+              alt={`${code} 배터리`}
+              fill
+              className={imgClass}
+              sizes="(max-width:768px) 50vw, 320px"
+              loading="lazy"
+              onError={() => {
+                if (index < candidates.length - 1) {
+                  setIndex((i) => i + 1);
+                } else {
+                  setFailed(true);
+                }
+              }}
+            />
+          </div>
+          {darkOverlay ? (
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent" />
+          ) : null}
+        </div>
       ) : (
         <>
           <Image

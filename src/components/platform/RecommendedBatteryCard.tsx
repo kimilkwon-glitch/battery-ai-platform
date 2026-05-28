@@ -1,4 +1,4 @@
-import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
+import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
 import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSummary";
 import { bm } from "@/lib/design-tokens";
@@ -41,17 +41,12 @@ export function RecommendedBatteryCard({
         </div>
       ) : null}
       <div className="grid gap-0 max-sm:grid-rows-[auto_1fr] sm:grid-cols-[minmax(148px,220px)_1fr]">
-        <div className="bg-[var(--bm-image-bg)] p-3 max-sm:max-h-[140px] sm:border-r sm:border-[var(--bm-border)]">
-          <BatteryThumbnail
+        <div className="overflow-hidden p-3 sm:border-r sm:border-[var(--bm-border)]">
+          <BatteryImageStage
             code={display.code}
+            variant="search"
             imageSet={display.imageSet ?? undefined}
-            role="main"
-            fit={batteryImageFit(display.code)}
-            ratio="4/3"
-            tall={false}
-            className="!h-[120px] w-full sm:!h-[160px]"
-            overlayLabel={false}
-            surface="transparent"
+            className="w-full"
           />
         </div>
         <div className="p-4 max-sm:pt-3">
