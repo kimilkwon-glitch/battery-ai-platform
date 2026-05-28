@@ -20,6 +20,10 @@ import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import type { HubBadge } from "@/lib/battery-detail/battery-detail-hub-content";
 import { BatteryDetailRelatedQna } from "@/components/battery/BatteryDetailRelatedQna";
+import { BatterySpecSummary } from "@/components/battery/BatterySpecSummary";
+import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
+import { BatteryKnowledgeCard } from "@/components/battery/BatteryKnowledgeCard";
+import { getDetailKnowledgeBullets, getUpgradeRulesForCode } from "@/lib/battery-knowledge";
 import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 
 type VehicleRow = { slug: string; title: string; brand: string; fuel: string };
@@ -109,6 +113,8 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
   const spec = parseBatterySpecDisplay(displayCode);
   const vehicleCards = mergeFeaturedVehicles(hub.featuredVehicles, vehicles);
   const searchHref = `/search?q=${encodeURIComponent(displayCode)}`;
+  const knowledgeBullets = getDetailKnowledgeBullets(displayCode);
+  const upgradeRules = getUpgradeRulesForCode(displayCode);
   const capacityLabel = specField(spec.capacity);
   const ccaLabel = specField(spec.cca, "차량/브랜드별 확인 필요");
   const terminalLabel = specField(spec.terminalLabel);
@@ -187,6 +193,43 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
           </div>
         </div>
       </section>
+
+      <BatterySpecSummary code={displayCode} />
+
+      {knowledgeBullets.length > 0 ? (
+        <BatteryKnowledgeCard
+          title={`${displayCode} 확인 포인트`}
+          summary={knowledgeBullets[0] ?? hub.positioning}
+          checkPoints={knowledgeBullets.slice(1)}
+          href={
+            /EV|12V/i.test(displayCode)
+              ? "/guides/knowledge/bk-ev-aux-12v"
+              : /R$/i.test(displayCode) || /L$/i.test(displayCode)
+                ? "/guides/knowledge/bk-lr-from-name"
+                : "/guides#battery-knowledge"
+          }
+          compact
+        />
+      ) : null}
+
+      {upgradeRules.length > 0 ? (
+        <section className={`${bm.card} ${bm.cardPad}`}>
+          <SectionHeader title="업그레이드 후보" description="자동 확정 없음 · 차량·사진 확인 필요" />
+          <ul className="mt-2 space-y-2">
+            {upgradeRules.map((r) => (
+              <li className={bm.surfaceMuted + " px-3 py-2.5 text-xs"} key={r.id}>
+                <p className="font-black text-slate-800">
+                  {r.fromCode} → {r.toCode}
+                  <span className="ml-1 font-bold text-slate-500">
+                    ({r.feasibility === "conditional" ? "조건부" : r.feasibility === "possible" ? "검토" : "비권장"})
+                  </span>
+                </p>
+                <p className="mt-0.5 font-medium text-slate-600">{r.summary}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {/* C. Spec cards */}
       <section className={`${bm.card} ${bm.cardPad}`}>
@@ -328,6 +371,8 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
       </section>
 
       <BatteryDetailRelatedQna code={displayCode} />
+
+      <BrandNoteStrip compact />
 
       <PlatformHubLinks title="다음에 확인하기" limit={6} />
 

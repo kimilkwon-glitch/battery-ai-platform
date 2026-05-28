@@ -8,6 +8,8 @@ import { getBatteryImageSet } from "@/lib/battery-alias-map";
 import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { ConversionActions } from "@/components/common/ConversionActions";
 import { SmartNextActions } from "@/components/common/SmartNextActions";
+import { CompareDeepNotePanel } from "@/components/battery/CompareDeepNotePanel";
+import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
 import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
 import { AppIcon } from "@/components/common/AppIcon";
 import { ComparePresetHub } from "@/components/platform/hub/ComparePresetHub";
@@ -213,6 +215,8 @@ export function CompareClient({ initial }: { initial: string[] }) {
         </div>
       </section>
 
+      <CompareDeepNotePanel codeA={codeA} codeB={codeB} />
+
       {/* 비교 테이블 */}
       <section className={`${bm.card} ${bm.cardPad}`}>
         <h2 className={bm.cardTitle}>상세 비교 스펙</h2>
@@ -389,6 +393,8 @@ export function CompareClient({ initial }: { initial: string[] }) {
       </section>
 
       <CompareRelatedQna codes={selected} />
+
+      <BrandNoteStrip compact />
 
       <SmartNextActions
         context={{ type: "compare", batteryCode: codeA, vehicleId: batA.vehicleIds[0] }}

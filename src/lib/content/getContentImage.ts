@@ -1,5 +1,6 @@
 import contentWorkbenchJson from "@/data/admin/contentWorkbench.json";
 import { toCustomerAltText } from "@/lib/content/customerAltText";
+import { SUPPRESS_LEGACY_CONTENT_IMAGES } from "@/lib/media/content-image-policy";
 import type {
   AdminContentItem,
   AdminContentType,
@@ -94,9 +95,9 @@ export function resolveContentCoverImage(contentId: string): {
 
   return {
     showHero,
-    imagePath: meta.imagePath,
+    imagePath: SUPPRESS_LEGACY_CONTENT_IMAGES ? undefined : meta.imagePath,
     altText: toCustomerAltText(meta.altText, meta.title),
-    imageNeeded,
+    imageNeeded: SUPPRESS_LEGACY_CONTENT_IMAGES ? showHero : imageNeeded,
     thumbnailType: meta.thumbnailType,
     imageStatus: meta.imageStatus,
   };

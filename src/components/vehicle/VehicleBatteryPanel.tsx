@@ -11,6 +11,7 @@ import {
   normalizeVehicleFuelParam,
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
+import { getDefaultVehicleFuelKnowledgeBlurb, getVehicleFuelKnowledgeBlurb } from "@/lib/battery-knowledge";
 import {
   getRecordFuelLabel,
   groupRecordsByFuel,
@@ -200,8 +201,16 @@ export function VehicleBatteryPanel({
                 ))}
               </div>
             ) : null}
+            <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
+              {getVehicleFuelKnowledgeBlurb(fuelTab !== "전체" ? fuelTab : fuelCards[0]?.fuelLabel) ??
+                getDefaultVehicleFuelKnowledgeBlurb()}
+            </p>
           </>
-        ) : null}
+        ) : (
+          <p className="mt-2 text-xs font-medium leading-relaxed text-slate-600">
+            {getDefaultVehicleFuelKnowledgeBlurb()}
+          </p>
+        )}
       </div>
 
       {fuelCards.length > 1 && filteredGroups.length > 0 && fuelTab !== "전체" ? (

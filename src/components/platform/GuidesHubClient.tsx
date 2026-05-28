@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { GuideTeaserCard } from "@/components/battery/GuideTeaserCard";
+import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
+import { listContentGuideTeasers } from "@/data/battery/contentGuides";
 import { GuideCard } from "@/components/common/GuideCard";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { bm } from "@/lib/design-tokens";
@@ -166,6 +169,21 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
             가이드 → 규격 상세 → Q&A → 사진 확인 순으로 이어가면 오주문을 줄일 수 있습니다.
           </p>
         </div>
+
+        <section className={`${bm.card} ${bm.cardPad}`} id="battery-knowledge">
+          <SectionHeader
+            label="배터리 기본 안내"
+            title="교체·비교 전 알아두면 좋은 10가지"
+            description="목적형 이미지 슬롯 — 직접 제작한 사진을 나중에 연결할 수 있습니다."
+          />
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            {listContentGuideTeasers().map((g) => (
+              <GuideTeaserCard guide={g} key={g.id} />
+            ))}
+          </div>
+        </section>
+
+        <BrandNoteStrip compact />
 
         {active === "all" ? (
           <>

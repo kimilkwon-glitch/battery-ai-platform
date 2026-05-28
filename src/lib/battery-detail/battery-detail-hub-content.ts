@@ -67,7 +67,7 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
       "하이브리드·EV는 일반 가솔린 배터리와 단순 동일 취급하지 마세요.",
       "보조 12V 위치·규격은 차종별로 다를 수 있습니다.",
       "현재 장착 배터리 라벨(AGM60L 등)을 사진으로 확인하세요.",
-      "단자 L/R 방향을 트레이 기준으로 확인하세요.",
+      "AGM60L은 L타입 — 현재 장착도 L타입·트레이·케이블을 함께 확인하세요.",
     ],
     cautionNotes: [
       "일반 내연기관 메인 배터리처럼 단순 판단하지 마세요.",
@@ -97,7 +97,7 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
     misorderTips: [
       "디젤·대형 SUV는 AGM80L일 수 있습니다.",
       "같은 차종도 연료·ISG 옵션에 따라 규격이 달라집니다.",
-      "AGM70L 라벨과 단자 방향을 사진으로 확인하세요.",
+      "AGM70L은 L타입 — 현재 장착 규격·트레이 여유를 사진으로 확인하세요.",
     ],
     cautionNotes: ["AGM80L과 용량·트레이가 다를 수 있습니다."],
   },

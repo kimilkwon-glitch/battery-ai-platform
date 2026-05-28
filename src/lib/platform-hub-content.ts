@@ -26,8 +26,8 @@ export const ORDER_CHECKLIST_ITEMS: HubCheckItem[] = [
 
 export const ORDER_CHECKLIST_SECTIONS = [
   {
-    title: "단자 방향 (L/R)",
-    body: "100R과 AGM95L처럼 단자 방향이 다르면 단순 대체가 어렵습니다. 플러스 단자 위치는 사진으로 보는 것이 안전합니다.",
+    title: "L/R 단자 방향",
+    body: "100R은 R타입, AGM95L은 L타입 AGM 규격이라 단순 대체 대상이 아닙니다. L/R이 정해진 규격은 이름에서 방향을 알 수 있지만, 트레이·케이블·고정쇠는 사진으로 함께 보세요.",
     badge: "주의",
     tone: "warn" as HubBadgeTone,
     href: compareHref("100R", "AGM95L"),

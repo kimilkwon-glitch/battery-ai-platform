@@ -51,7 +51,7 @@ export function getKeyDiffs(a: Battery, b: Battery): string[] {
   else diffs.push("CCA 유사");
 
   if (a.type !== b.type) diffs.push(`타입은 ${a.type} vs ${b.type}으로 다름`);
-  if (a.terminal !== b.terminal) diffs.push(`단자 방향: ${a.terminal} vs ${b.terminal}`);
+  if (a.terminal !== b.terminal) diffs.push(`단자: ${a.terminal}타입 vs ${b.terminal}타입`);
   if (a.size !== b.size) diffs.push("크기·트레이 공간 확인 필요");
 
   if (a.type === "DIN" || b.type === "DIN") {
@@ -81,7 +81,7 @@ export function getComparisonDescription(a: Battery, b: Battery): string {
   if (a.type !== b.type) parts.push(`타입은 ${a.type} vs ${b.type}으로 다름`);
   else parts.push(`타입 ${a.type} 동일`);
 
-  if (a.terminal !== b.terminal) parts.push(`단자 ${a.terminal} vs ${b.terminal}`);
+  if (a.terminal !== b.terminal) parts.push(`${a.terminal}타입 vs ${b.terminal}타입`);
   if (a.size !== b.size) parts.push("크기·장착 공간 확인 필요");
 
   if (a.type === "DIN" || b.type === "DIN") {
@@ -177,7 +177,7 @@ export function getPickGuideItems(b: Battery): string[] {
 }
 
 export const compareCautions = [
-  "단자 방향 확인",
-  "장착 공간 확인",
-  "BMS/IBS 차량은 학습·등록 여부 확인",
+  "L/R·단자 타입이 다르면 단순 대체 불가",
+  "트레이·고정쇠·케이블 여유 확인",
+  "ISG·BMS 차량은 AGM·등록 여부 확인",
 ] as const;

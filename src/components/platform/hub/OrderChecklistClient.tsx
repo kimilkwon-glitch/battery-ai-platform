@@ -7,6 +7,8 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 import { HubBadge } from "@/components/platform/hub/HubBadge";
 import { bm } from "@/lib/design-tokens";
+import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
+import { UPGRADE_PRINCIPLES } from "@/lib/battery-knowledge";
 import { ORDER_CHECKLIST_ITEMS, ORDER_CHECKLIST_SECTIONS } from "@/lib/platform-hub-content";
 import { HUB_PHOTO_CHECK, HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
 import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
@@ -48,6 +50,20 @@ export function OrderChecklistClient() {
             );
           })}
         </ul>
+      </section>
+
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <SectionHeader title="업그레이드·호환 기준" description="용량만 보지 마세요" iconKey="batterySpec" />
+        <ul className="mt-3 space-y-1.5">
+          {UPGRADE_PRINCIPLES.slice(0, 4).map((p) => (
+            <li key={p} className="text-xs font-medium text-slate-600">
+              · {p}
+            </li>
+          ))}
+        </ul>
+        <Link className={`${bm.btnTertiary} mt-3 inline-flex text-xs`} href="/guides/knowledge/bk-upgrade-conditions">
+          업그레이드 조건 자세히 →
+        </Link>
       </section>
 
       <section className={`${bm.card} ${bm.cardPad}`}>
@@ -94,6 +110,8 @@ export function OrderChecklistClient() {
           </Link>
         </div>
       </section>
+
+      <BrandNoteStrip compact />
 
       <PlatformHubLinks title="관련 안내" limit={4} />
     </div>

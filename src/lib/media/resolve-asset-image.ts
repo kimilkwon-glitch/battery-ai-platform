@@ -10,25 +10,12 @@ import { findBatteryImage } from "@/lib/batteryImages";
 import { getVehicleAsset } from "@/lib/car-assets";
 import type { ImageSlotDefinition } from "@/lib/media/image-slot-registry";
 import { resolveContentCoverImage } from "@/lib/content/getContentImage";
+import { SUPPRESS_LEGACY_CONTENT_IMAGES } from "@/lib/media/content-image-policy";
 
-/** Q&A 슬롯 → contentWorkbench imagePath (public/assets/content) */
-export const QNA_SLOT_CONTENT_PATHS: Record<string, string> = {
-  "qna.symptom.blackbox": "/assets/content/symptom_blackbox_drain.png",
-  "qna.guide.label": "/assets/content/guide_manufacture_date.png",
-  "qna.guide.terminal": "/assets/content/caution_terminal_lr.png",
-  "qna.ev.hybrid-aux": "/assets/content/guide_ev12v.png",
-  "qna.commercial.porter": "/assets/content/guide_porter2_90r_100r.png",
-};
+/** @deprecated 고객 화면에서는 목적형 슬롯만 사용 — 레거시 PNG 경로 비활성 */
+export const QNA_SLOT_CONTENT_PATHS: Record<string, string> = {};
 
-/** 질문 ID → 가이드/증상 콘텐츠 썸네일 (workbench) */
-const QUESTION_CONTENT_IMAGE: Record<string, string> = {
-  "q-blackbox": "/assets/content/symptom_blackbox_drain.png",
-  "q-porter2-year": "/assets/content/guide_porter2_90r_100r.png",
-  "q-sportage-nq5-agm60l": "/assets/content/guide_sorento_mq4_hybrid_agm60l.png",
-  "q-cmf80l": "/assets/content/caution_wrong_spec.png",
-  "q-agm-vs-din": "/assets/content/guide_agm_vs_din.png",
-  "q-ev12v": "/assets/content/guide_ev12v.png",
-};
+const QUESTION_CONTENT_IMAGE: Record<string, string> = {};
 
 function slotPurposeToRole(purpose: string): BatteryImageRole {
   if (purpose.includes("label")) return "photo";
@@ -75,6 +62,7 @@ export function getQuestionThumbnailUrl(question: {
   id: string;
   guideId?: string;
 }): string | null {
+  if (SUPPRESS_LEGACY_CONTENT_IMAGES) return null;
   if (question.guideId) {
     const cover = resolveContentCoverImage(question.guideId);
     if (cover.imagePath) return cover.imagePath;
@@ -84,8 +72,10 @@ export function getQuestionThumbnailUrl(question: {
 
 /** MediaImageSlot·슬롯 레지스트리용 — phantom /media/slots 경로 대신 실제 asset */
 export function resolveImageSlotAssetUrl(slot: ImageSlotDefinition): string | null {
-  const qnaPath = QNA_SLOT_CONTENT_PATHS[slot.assetKey];
-  if (qnaPath) return qnaPath;
+  if (!SUPPRESS_LEGACY_CONTENT_IMAGES) {
+    const qnaPath = QNA_SLOT_CONTENT_PATHS[slot.assetKey];
+    if (qnaPath) return qnaPath;
+  }
 
   const code = batteryCodeFromSlotAssetKey(slot.assetKey);
   if (code) {

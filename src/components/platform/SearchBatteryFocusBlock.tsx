@@ -16,6 +16,7 @@ import { SearchUxIntentBadge } from "@/components/platform/search-ux/SearchUxInt
 import { bm } from "@/lib/design-tokens";
 import { compareHref } from "@/lib/platform-data";
 import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
+import { BatteryKnowledgeCard } from "@/components/battery/BatteryKnowledgeCard";
 import { NO_REGISTERED_SPEC_MESSAGE } from "@/lib/search/battery-recommendation-copy";
 import { isPorter2VehicleContext } from "@/lib/search/fitment-overrides";
 import type { SearchUxPresentation } from "@/lib/search/search-ux-presentation";
@@ -170,6 +171,17 @@ export function SearchBatteryFocusBlock({
     <div className="space-y-3">
       {header}
       <SearchRecommendationNotes reasons={ux.recommendationReasons} />
+      {ux.vehicleFuelBlurb ? (
+        <p className="text-xs font-medium leading-relaxed text-slate-600">{ux.vehicleFuelBlurb}</p>
+      ) : null}
+      {ux.knowledgeCard ? (
+        <BatteryKnowledgeCard
+          title={ux.knowledgeCard.title}
+          summary={ux.knowledgeCard.summary}
+          href={ux.knowledgeCard.href}
+          compact
+        />
+      ) : null}
       {ux.yearBranchHint ? (
         <p className="text-xs font-semibold text-amber-900">{ux.yearBranchHint}</p>
       ) : null}

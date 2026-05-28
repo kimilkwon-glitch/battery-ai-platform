@@ -8,6 +8,7 @@ import { detectCustomerHubFromQuery, hubCtaForQuery } from "@/lib/search/search-
 import type { QueryIntentFlags } from "@/lib/search/search-intent";
 import { resolveSearchIntentLabel } from "@/lib/search/search-intent";
 import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
+import { getKnowledgeCardForSpec, getDefaultVehicleFuelKnowledgeBlurb } from "@/lib/battery-knowledge";
 import { isPorter2VehicleContext } from "@/lib/search/fitment-overrides";
 import type { RecognizedSpecResult } from "@/lib/search/search-summary";
 
@@ -64,6 +65,8 @@ export type SearchUxPresentation = {
   } | null;
   sampleVehicles: { label: string; href: string }[];
   purposeBlurb: string | null;
+  knowledgeCard: { title: string; summary: string; href: string } | null;
+  vehicleFuelBlurb: string | null;
 };
 
 const PHOTO_CTA: SearchUxCta = {
@@ -230,7 +233,7 @@ function buildHeroLines(input: {
     lines.push(`${spec.spec} 규격의 타입·용량·단자를 확인한 뒤 차량 적용 여부를 보세요.`);
   }
   if (mode === "compare" && compareCodes?.length === 2) {
-    lines.push("단순 대체품이 아닐 수 있습니다. 차량 연식·연료·단자 방향을 함께 확인하세요.");
+    lines.push("타입·L/R·용량이 다르면 단순 대체 대상이 아닙니다. 차량·사진 기준으로 확인하세요.");
   }
   if (mode === "symptom") {
     lines.push("방전 원인 후보를 먼저 점검한 뒤, 필요할 때만 규격·차량 정보를 확인하세요.");
@@ -464,7 +467,12 @@ export function buildSearchUxPresentation(
     symptomCauses: mode === "symptom" ? SYMPTOM_CAUSES : [],
     compareNote:
       mode === "compare"
-        ? "타입·용량·CCA·적용 차량이 다를 수 있어 단순 대체로 보지 마세요."
+        ? "용량대가 비슷해도 L/R·배터리 타입·적용 차량군이 다르면 단순 대체로 보지 마세요."
+        : null,
+    knowledgeCard: specCode ? getKnowledgeCardForSpec(specCode) : null,
+    vehicleFuelBlurb:
+      mode === "vehicle" && vehicle?.fuelLabel
+        ? getDefaultVehicleFuelKnowledgeBlurb()
         : null,
     yearBranchHint:
       porter2ContextFromVehicle(query, vehicle) && vehicle?.yearBranchLinks?.length

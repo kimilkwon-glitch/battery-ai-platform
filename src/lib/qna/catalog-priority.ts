@@ -196,10 +196,10 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   },
   {
     id: "q-cmf80l-terminal",
-    question: "CMF80L 단자 방향은 어떻게 확인하나요?",
-    shortAnswer: "라벨 L/R 표기와 +단자 위치 사진으로 볼 수 있습니다.",
+    question: "CMF80L은 L타입인가요? 현재 장착과 맞춰야 하나요?",
+    shortAnswer: "CMF80L은 L타입 규격입니다. 현재 장착 배터리도 L타입인지 함께 보면 안전합니다.",
     answer:
-      "L/R 단자 방향이 다르면 장착이 어려울 수 있습니다. 라벨의 L/R·극성 표기와 엔진룸에서 플러스 단자 위치를 함께 보는 것이 가장 정확합니다.",
+      "CMF80L은 L타입(플러스 단자 위치) 규격으로 안내하는 경우가 많습니다. R타입 차량에 L을 주문하면 케이블·고정쇠가 맞지 않을 수 있어, 라벨·엔진룸 사진으로 현재 장착과 같은 방향인지 확인하세요.",
     category: "단자/규격",
     tags: ["CMF80L", "단자방향", "사진확인"],
     batteryCode: "CMF80L",
@@ -405,10 +405,10 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   },
   {
     id: "q-compare-terminal-photo",
-    question: "비교할 때 단자 방향은 어떻게 확인하나요?",
-    shortAnswer: "라벨 L/R 표기와 +단자 위치 사진으로 볼 수 있습니다.",
+    question: "비교할 때 L/R은 어떻게 보나요?",
+    shortAnswer: "코드에 L/R이 있으면 방향은 알 수 있습니다. 트레이·케이블은 사진으로 확인하세요.",
     answer:
-      "규격 코드만으로 단자 방향을 확정하기는 어렵습니다. 비교 후에도 라벨·엔진룸 사진으로 L/R·극성을 함께 보는 것이 안전합니다.",
+      "AGM60L·100R처럼 규격 이름의 L/R은 단자 방향 정보입니다. 비교 후에도 현재 장착과 같은 L/R인지, 트레이·케이블·고정쇠를 사진으로 확인하는 것이 안전합니다.",
     category: "단자/규격",
     tags: ["단자방향", "비교", "사진확인"],
     relatedGuideId: "terminal-lr",

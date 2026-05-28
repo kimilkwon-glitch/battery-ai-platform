@@ -8,6 +8,7 @@ import { HomePopularVehicleSearch } from "@/components/home/HomePopularVehicleSe
 import { HomeStoreHub } from "@/components/home/HomeStoreHub";
 import { HomeTrendingSection } from "@/components/home/HomeTrendingSection";
 import { HomePopularQna } from "@/components/home/HomePopularQna";
+import { HomeBatteryKnowledgeSection } from "@/components/home/HomeBatteryKnowledgeSection";
 import { HomeOrderGuide } from "@/components/platform/HomeOrderGuide";
 import { HomePlatformTools } from "@/components/home/HomePlatformTools";
 import { SiteFooter } from "@/components/common/SiteFooter";
@@ -32,6 +33,7 @@ export default function Home() {
         <HomeStoreHub />
         <HomePlatformTools />
         <HomePopularQna />
+        <HomeBatteryKnowledgeSection />
         <HomeOrderGuide />
         <SiteFooter />
       </div>
