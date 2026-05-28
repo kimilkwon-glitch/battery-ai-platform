@@ -1,18 +1,16 @@
 "use client";
 
-
-
 import Image from "next/image";
 import Link from "next/link";
-
 import { ContentUiIcon } from "@/components/content/ContentUiIcon";
-import { getQuestionThumbnailUrl } from "@/lib/media/resolve-asset-image";
-
+import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { BatteryMiniSpecLink } from "@/components/battery/BatteryMiniSpecLink";
 import { extractBatteryCodesFromTags } from "@/lib/battery-tags";
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
+import type { ImageSlotDefinition } from "@/lib/media/image-slot-registry";
+import { getQuestionThumbnailUrl, resolveImageSlotAssetUrl } from "@/lib/media/resolve-asset-image";
 import {
   compareHref,
   getBattery,
@@ -21,53 +19,32 @@ import {
   vehicleHref,
   type Question,
 } from "@/lib/platform-data";
-
 import { resolveQuestionContentUiIcon } from "@/lib/content-ui-icons";
-
 import {
-
   getShortAnswer,
-
   inferQuestionType,
-
   pickQuestionDisplayTags,
-
 } from "@/lib/qna-hub-data";
 
-
-
 export function QnaQuestionCard({
-
   question,
-
   open,
-
   onToggle,
-
   compact = false,
-
+  contentImageSlot = null,
 }: {
-
   question: Question;
-
   open: boolean;
-
   onToggle: () => void;
-
   compact?: boolean;
-
   featured?: boolean;
-
+  /** 펼친 상태에서만 섹션/콘텐츠 배너 이미지 */
+  contentImageSlot?: ImageSlotDefinition | null;
 }) {
-
   const type = inferQuestionType(question);
-
   const iconKey = resolveQuestionContentUiIcon(question, type);
-
   const summary = getShortAnswer(question);
-
   const tagChip = pickQuestionDisplayTags(question, type)[0];
-
   const compareTarget = question.batteryCode ? getBattery(question.batteryCode).compareWith[0] : null;
 
   const linkedBatteryCodes = (() => {
@@ -79,153 +56,109 @@ export function QnaQuestionCard({
     return [...codes].slice(0, 4);
   })();
 
-  const showPhotoCta = question.ctaType === "photo" || /사진|단자|라벨|포터|하이브리드/.test(question.title);
-  const showInquiryCta = question.ctaType === "inquiry" || /방전|문의|매장/.test(question.category);
+  const showPhotoCta =
+    question.ctaType === "photo" || /사진|단자|라벨|포터|하이브리드/.test(question.title);
+  const showInquiryCta =
+    question.ctaType === "inquiry" || /방전|문의|매장/.test(question.category);
   const thumbUrl = getQuestionThumbnailUrl(question);
 
   const titleClass = compact
-
     ? "line-clamp-2 text-[15px] font-bold leading-[1.4] tracking-[-0.01em] text-slate-950 sm:text-[16px]"
-
     : "line-clamp-2 text-[16px] font-bold leading-[1.4] tracking-[-0.01em] text-slate-950 sm:text-[17px]";
 
-
-
   const metaLine = [type, tagChip].filter(Boolean).join(" · ");
-
-
+  const iconSize = compact ? 44 : 48;
 
   return (
-
-    <article className={`group ${bm.cardInteractive}`}>
-
+    <article className={`group ${bm.cardInteractive}`} data-qna-card-expanded={open ? "true" : "false"}>
       <div
-
-        className="flex cursor-pointer items-start gap-3 p-3"
-
+        className="flex cursor-pointer items-start gap-2.5 p-3"
         onClick={onToggle}
-
         onKeyDown={(e) => {
-
           if (e.key === "Enter" || e.key === " ") {
-
             e.preventDefault();
-
             onToggle();
-
           }
-
         }}
-
         role="button"
-
         tabIndex={0}
-
         aria-expanded={open}
-
       >
-
-        {thumbUrl ? (
-          <div className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
-            <Image
-              alt=""
-              className="object-cover object-center"
-              fill
-              loading="lazy"
-              sizes="48px"
-              src={thumbUrl}
-            />
-          </div>
-        ) : (
-          <ContentUiIcon iconKey={iconKey} size={48} />
-        )}
-
-
+        <ContentUiIcon iconKey={iconKey} size={iconSize} />
 
         <div className="min-w-0 flex-1">
-
           <h3 className={`font-heading ${titleClass}`}>{question.title}</h3>
 
-
-
           {!open ? (
-
-            <p className="mt-1.5 line-clamp-2 text-xs font-medium leading-snug text-slate-600">{summary}</p>
-
+            <p className="mt-1 line-clamp-1 text-xs font-medium leading-snug text-slate-600">{summary}</p>
           ) : null}
 
           {linkedBatteryCodes.length > 0 ? (
-            <div className="mt-2 flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-1.5 flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
               {linkedBatteryCodes.map((c) => (
                 <BatteryMiniSpecLink key={c} code={c} compact />
               ))}
             </div>
           ) : null}
 
-          <div className="mt-2 flex items-center justify-between gap-2">
-
+          <div className="mt-1.5 flex items-center justify-between gap-2">
             {metaLine ? (
-
               <p className="text-[10px] font-medium text-slate-400">{metaLine}</p>
-
             ) : (
-
               <span />
-
             )}
-
             <span className="shrink-0 whitespace-nowrap text-[11px] font-black text-blue-600">
-
               {open ? "접기" : "답변 보기"} →
-
             </span>
-
           </div>
-
         </div>
-
       </div>
 
-
-
       {open ? (
-
-        <div className="border-t border-slate-100 px-3 pb-3 pt-2.5 sm:pl-[60px]" onClick={(e) => e.stopPropagation()}>
+        <div className="border-t border-slate-100 px-3 pb-3 pt-2 sm:pl-[56px]" onClick={(e) => e.stopPropagation()}>
+          {contentImageSlot ? (
+            <div className="mb-3 max-w-md">
+              <MediaImageSlot
+                slot={contentImageSlot}
+                src={resolveImageSlotAssetUrl(contentImageSlot)}
+                className="max-h-[160px] w-full"
+                objectFit="contain"
+              />
+            </div>
+          ) : thumbUrl ? (
+            <div className="relative mb-3 aspect-[16/10] max-h-[160px] w-full max-w-md overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+              <Image
+                alt=""
+                className="object-contain object-center"
+                fill
+                loading="lazy"
+                sizes="(max-width:640px) 100vw, 360px"
+                src={thumbUrl}
+              />
+            </div>
+          ) : null}
 
           <p className="text-sm font-medium leading-relaxed text-slate-600">{question.answer}</p>
 
           <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold">
-
             {question.vehicleId ? (
-
               <Link className="text-blue-600 hover:underline" href={vehicleHref(question.vehicleId)}>
-
                 관련 차량 보기
-
               </Link>
-
             ) : null}
-
             {question.batteryCode ? (
-
               <Link className="text-blue-600 hover:underline" href={searchHref(question.batteryCode)}>
-
                 관련 배터리 보기
-
               </Link>
-
             ) : null}
-
             {question.batteryCode && compareTarget ? (
-
-              <Link className="text-blue-600 hover:underline" href={compareHref(question.batteryCode, compareTarget)}>
-
+              <Link
+                className="text-blue-600 hover:underline"
+                href={compareHref(question.batteryCode, compareTarget)}
+              >
                 비교 보기
-
               </Link>
-
             ) : null}
-
             {question.guideId ? (
               <Link className="text-blue-600 hover:underline" href={guideHref(question.guideId)}>
                 가이드 보기
@@ -242,23 +175,18 @@ export function QnaQuestionCard({
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {showPhotoCta ? (
-              <Link className={`${bm.btnPrimary} text-[10px] px-3 py-2`} href={HUB_PHOTO}>
+              <Link className={`${bm.btnPrimary} px-3 py-2 text-[10px]`} href={HUB_PHOTO}>
                 사진으로 최종 확인
               </Link>
             ) : null}
             {showInquiryCta || showPhotoCta ? (
-              <Link className={`${bm.btnSecondary} text-[10px] px-3 py-2`} href={HUB_STORE}>
+              <Link className={`${bm.btnSecondary} px-3 py-2 text-[10px]`} href={HUB_STORE}>
                 부산 매장/출장 문의
               </Link>
             ) : null}
           </div>
         </div>
       ) : null}
-
     </article>
-
   );
-
 }
-
-

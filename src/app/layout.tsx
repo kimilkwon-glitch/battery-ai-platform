@@ -22,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="qna-chip-battery-size-fix1-20260528">
-      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="qna-chip-battery-size-fix1-20260528">
+    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="qna-collapse-battery-card-fix1-20260528">
+      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="qna-collapse-battery-card-fix1-20260528">
         <CartProvider>
           {children}
           <BuildVersionStamp />

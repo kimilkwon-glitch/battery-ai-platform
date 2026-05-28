@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { productCardShell } from "@/components/car/car-card-styles";
+import { BatteryHeightImage } from "@/components/media/BatteryProductImage";
 import { getBatteryImageSet } from "@/lib/battery-alias-map";
 import { findBatteryBrandImages } from "@/lib/batteryImages";
 import {
@@ -11,6 +11,7 @@ import {
   batteryImageSetForCode,
   type BatteryImageRole,
 } from "@/lib/battery-image";
+import { batteryImageStageImgMaxWidth } from "@/lib/battery-image-stage";
 import { getBattery } from "@/lib/platform-data";
 
 type BrandTab = "rocket" | "solite";
@@ -46,17 +47,13 @@ function ShowcaseImage({ code, brand }: { code: string; brand: BrandTab }) {
   }
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <Image
-        alt={`${code} ${brand}`}
-        className="max-h-full max-w-full object-contain object-center p-2 transition group-hover:scale-[1.02]"
-        height={168}
-        onError={() => setIndex((i) => (i + 1 < candidates.length ? i + 1 : i))}
-        src={src}
-        unoptimized
-        width={168}
-      />
-    </div>
+    <BatteryHeightImage
+      src={src}
+      alt={`${code} ${brand}`}
+      heightClass="h-[136px] min-h-[136px]"
+      maxWidthClass={batteryImageStageImgMaxWidth}
+      onError={() => setIndex((i) => (i + 1 < candidates.length ? i + 1 : i))}
+    />
   );
 }
 
@@ -118,7 +115,7 @@ export function HomeBatteryShowcaseCard({
           </span>
         ) : null}
 
-        <div className="flex h-[168px] items-center justify-center sm:h-[180px]">
+        <div className="flex h-[160px] min-h-[160px] items-center justify-center">
           <ShowcaseImage brand={brand} code={code} />
         </div>
       </div>

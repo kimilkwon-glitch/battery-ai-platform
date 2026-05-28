@@ -49,6 +49,7 @@ export function BatteryImageStage({
   return (
     <div
       className={`battery-image-stage relative w-full overflow-hidden ${batteryThumbSurface} ring-1 ring-[var(--bm-border)]/80 ${batteryImageStageHeight[variant]} ${radius} ${className}`}
+      style={{ contain: "layout" }}
       data-battery-image-stage={variant}
       data-image-slot={`search.battery.product.${code}`}
       data-image-slot-state={hasPhoto ? "ready" : "placeholder"}

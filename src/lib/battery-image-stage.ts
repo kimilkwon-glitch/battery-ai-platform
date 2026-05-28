@@ -16,27 +16,28 @@ export function isBatteryStageVariant(v: BatteryImageVariant): v is BatteryImage
   return v === "card" || v === "cardCompact" || v === "hero" || v === "search" || v === "compare";
 }
 
-/** stage 외곽 높이 — product-card 약 150px */
+/** stage 외곽 높이 — product-card 160px 전후 (잘림 없이 img가 stage 주인공) */
 export const batteryImageStageHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[150px]",
-  cardCompact: "h-[128px]",
+  card: "h-[160px] min-h-[160px]",
+  cardCompact: "h-[150px] min-h-[150px]",
   hero: "h-[200px] sm:h-[220px]",
-  search: "h-[150px]",
-  compare: "h-[158px]",
+  search: "h-[160px] min-h-[160px]",
+  compare: "h-[160px] min-h-[160px]",
 };
 
-export const batteryImageStageInset = "flex h-full w-full items-center justify-center px-2 py-1";
+export const batteryImageStageInset =
+  "flex h-full w-full items-center justify-center px-1 py-0";
 
-/** 실제 배터리 img — height 기준, width auto (잘림 방지) */
+/** 실제 배터리 img — height 기준 125~140px (width 기준 확대 금지) */
 export const batteryImageStageImgHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[128px]",
-  cardCompact: "h-[110px]",
+  card: "h-[136px] min-h-[136px]",
+  cardCompact: "h-[128px] min-h-[128px]",
   hero: "h-[176px] sm:h-[196px]",
-  search: "h-[128px]",
-  compare: "h-[124px]",
+  search: "h-[136px] min-h-[136px]",
+  compare: "h-[132px] min-h-[132px]",
 };
 
-export const batteryImageStageImgMaxWidth = "max-w-[90%]";
+export const batteryImageStageImgMaxWidth = "max-w-[92%]";
 
 /** height 기준 img class (fill 미사용) */
 export const batteryImageHeightFit = "w-auto object-contain object-center";
@@ -48,12 +49,12 @@ export type BatteryCompactVariantConfig = {
   sizes: string;
 };
 
-/** Q&A 칩 — BatteryMiniSpecLink / QnaChipBatteryImage 전용 */
+/** Q&A 칩 — BatteryMiniSpecLink / QnaChipBatteryImage 전용 (28~34px 박스) */
 export const QNA_CHIP_IMAGE_BOX =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 ring-1 ring-inset ring-slate-200/70";
+  "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 ring-1 ring-inset ring-slate-200/70";
 
-export const QNA_CHIP_IMG_HEIGHT = "h-7";
-export const QNA_CHIP_IMG_MAX_W = "max-w-[34px]";
+export const QNA_CHIP_IMG_HEIGHT = "h-[26px]";
+export const QNA_CHIP_IMG_MAX_W = "max-w-[32px]";
 
 export const batteryImageCompactVariant: Record<BatteryImageCompactVariant, BatteryCompactVariantConfig> = {
   chip: {
@@ -63,10 +64,10 @@ export const batteryImageCompactVariant: Record<BatteryImageCompactVariant, Batt
     sizes: "36px",
   },
   chipMd: {
-    shell: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 ring-1 ring-inset ring-slate-200/70",
-    imgHeight: "h-7",
-    imgMaxWidth: "max-w-[34px]",
-    sizes: "36px",
+    shell: QNA_CHIP_IMAGE_BOX,
+    imgHeight: QNA_CHIP_IMG_HEIGHT,
+    imgMaxWidth: QNA_CHIP_IMG_MAX_W,
+    sizes: "32px",
   },
   mini: {
     shell:

@@ -24,7 +24,7 @@ export function HomeEvHybridSection() {
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {HOME_EV_HYBRID_ITEMS.map((item) => (
           <article className={`${bm.surfaceMuted} flex flex-col overflow-hidden rounded-xl`} key={item.label}>
-            <BatteryCardImage code={item.battery} variant="cardCompact" flushTop />
+            <BatteryCardImage code={item.battery} variant="card" flushTop />
             <div className={`${bm.batteryCardBody} !border-t-0`}>
               <p className="text-xs font-bold leading-snug text-slate-900 sm:text-sm">{item.label}</p>
               <p className="text-[10px] font-semibold leading-snug text-[var(--bm-primary)]">
