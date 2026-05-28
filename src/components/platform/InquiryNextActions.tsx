@@ -58,7 +58,7 @@ export function InquiryNextActions({ actions }: { actions: readonly Action[] }) 
           </span>
           <p className="mt-3 text-sm font-black text-slate-900">{action.title}</p>
           <p className="mt-1 flex-1 text-xs font-medium leading-relaxed text-slate-500">{action.description}</p>
-          <span className="mt-3 text-[11px] font-black text-blue-600">바로가기 →</span>
+          <span className="mt-3 text-xs font-bold text-blue-600">안내 보기 →</span>
         </Link>
       ))}
     </section>

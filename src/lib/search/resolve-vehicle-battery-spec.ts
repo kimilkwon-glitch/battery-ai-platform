@@ -360,7 +360,7 @@ export function resolveVehicleBatterySpecForSearch(options: {
       dbRecordDisplayName: dbHit.record?.displayName ?? null,
       caution,
       bodyMessage: null,
-      confidenceLabel: singleConfirmed ? "DB 확인" : "후보",
+      confidenceLabel: singleConfirmed ? "차종·규격 확인" : "후보",
     };
   }
 

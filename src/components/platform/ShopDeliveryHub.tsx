@@ -67,7 +67,7 @@ export function ShopDeliveryHub({ afterProducts = false }: Props) {
           </ul>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link href={HUB_PHOTO} className={`${bm.btnSecondary} text-xs`}>
-              사진으로 최종 확인
+              사진으로 확인
             </Link>
             <Link href="/vehicles" className={`${bm.btnTertiary} text-xs`}>
               차량 검색
@@ -95,7 +95,7 @@ export function ShopDeliveryHub({ afterProducts = false }: Props) {
           배터리 라벨, 단자 방향, 장착 위치가 보이는 사진을 함께 보내 주세요.
         </p>
         <Link className={`${bm.btnTertiary} mt-3 inline-flex text-xs`} href={HUB_PHOTO}>
-          사진으로 최종 확인
+          사진으로 확인
         </Link>
       </section>
 

@@ -30,9 +30,9 @@ export function HomeDeliverySection() {
                 </span>
                 <p className="text-sm font-bold text-slate-900">{step.title}</p>
               </div>
-              <p className="mt-1 flex-1 text-xs font-medium leading-relaxed text-slate-600">{step.desc}</p>
-              <Link className={`${bm.btnSecondary} mt-3 inline-flex w-fit items-center gap-1 text-[10px]`} href={step.href}>
-                바로가기
+              <p className={`mt-1 flex-1 ${bm.typoCaption}`}>{step.desc}</p>
+              <Link className={`${bm.btnCardSecondary} mt-3 inline-flex w-fit items-center gap-1`} href={step.href}>
+                안내 보기
               </Link>
             </article>
           );
@@ -44,23 +44,23 @@ export function HomeDeliverySection() {
         <MediaImageSlot slot={HOME_IMAGE_SLOTS.deliveryLabel()} compact />
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-xs`} href="#home-popular-batteries">
+        <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-sm`} href="#home-popular-batteries">
           <AppIcon iconKey="batterySpec" size="sm" className="!text-white" />
           많이 찾는 규격 보기
         </Link>
-        <Link className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
+        <Link className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-sm`} href={HUB_PHOTO}>
           <AppIcon iconKey="photoCheck" size="sm" />
-          사진으로 최종 확인
+          사진으로 확인
         </Link>
-        <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_SHOP_ANCHORS.delivery}>
+        <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-sm`} href={HUB_SHOP_ANCHORS.delivery}>
           <AppIcon iconKey="delivery" size="sm" />
           택배 주문 안내
         </Link>
       </div>
-      <p className="mt-3 text-[10px] font-medium text-slate-500">
+      <p className={`mt-3 ${bm.typoCaption}`}>
         대표 규격: {HOME_POPULAR_BATTERIES.slice(0, 4).map((b) => b.code).join(" · ")} 등 —{" "}
         <Link className="font-bold text-blue-700 underline-offset-2 hover:underline" href={HUB_SHOP}>
-          쇼핑 허브
+          택배·쇼핑 안내
         </Link>
       </p>
     </HomeSectionShell>

@@ -45,15 +45,15 @@ export function HomeStoreHub() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-bold text-slate-900">{store.name}</p>
-                    <p className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold text-blue-700">
+                    <p className="mt-0.5 flex items-center gap-1 text-xs font-semibold text-blue-700">
                       <AppIcon iconKey="location" size="xs" strokeWidth={2.5} />
                       {store.region}
                     </p>
                   </div>
                 </div>
                 <p className="mt-2 text-xs font-medium text-slate-700">{store.areas}</p>
-                <p className="mt-1 text-[10px] font-medium text-slate-600">{store.scenarios}</p>
-                <Link className={`${bm.btnCardSecondary} mt-2.5 inline-flex text-[10px]`} href={store.href}>
+                <p className={`mt-1 ${bm.typoCaption}`}>{store.scenarios}</p>
+                <Link className={`${bm.btnCardSecondary} mt-2.5 inline-flex`} href={store.href}>
                   안내 보기
                 </Link>
               </div>
@@ -61,7 +61,7 @@ export function HomeStoreHub() {
           );
         })}
       </div>
-      <Link className={`${bm.btnNavy} mt-4 inline-flex items-center gap-1.5 text-xs`} href={HUB_STORE}>
+      <Link className={`${bm.btnNavy} mt-4 inline-flex items-center gap-1.5 text-sm`} href={HUB_STORE}>
         <AppIcon iconKey="store" size="sm" className="!text-white" />
         매장·출장 안내
       </Link>

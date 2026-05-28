@@ -70,7 +70,7 @@ export function ServiceHubClient() {
               <p className="text-xs font-bold text-slate-900">{row.situation}</p>
               <p className="mt-1 text-[11px] font-medium text-slate-700">{row.pick}</p>
               <Link className={`${bm.btnTertiary} mt-2 inline-flex text-[10px]`} href={row.href}>
-                바로가기 →
+                안내 보기 →
               </Link>
             </li>
           ))}

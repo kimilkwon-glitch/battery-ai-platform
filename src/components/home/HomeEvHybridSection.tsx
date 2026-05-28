@@ -21,7 +21,7 @@ export function HomeEvHybridSection() {
       <SectionHeader
         label="보조 12V"
         title="전기차·하이브리드 보조배터리"
-        description="전기차·하이브리드는 보조 12V 배터리 확인이 중요합니다. EV 12V와 AGM60L은 쓰임이 다릅니다."
+        description="보조 12V 확인이 중요합니다. EV 12V와 AGM60L은 쓰임이 다릅니다."
         iconKey="ev"
       />
       <div className={`${bm.alertInfo} mb-4`}>
@@ -65,7 +65,7 @@ export function HomeEvHybridSection() {
           </CardHorizontalLayout>
         ))}
       </div>
-      <Link className={`${bm.btnGhost} mt-3 inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
+      <Link className={`${bm.btnGhost} mt-3 inline-flex items-center gap-1.5 text-sm`} href={HUB_PHOTO}>
         <AppIcon iconKey="photoCheck" size="sm" />
         사진으로 확인
       </Link>

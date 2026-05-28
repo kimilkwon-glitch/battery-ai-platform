@@ -18,7 +18,7 @@ export function HomePopularVehicleSearch() {
   return (
     <HomeSectionShell rhythm="vehicle" data-section="popular-vehicles">
       <SectionHeader
-        label="차량 매칭"
+        label="차량 검색"
         title="인기 차량 빠른 검색"
         description="같은 차종도 연식·연료에 따라 배터리가 달라질 수 있습니다."
         iconKey="vehicle"

@@ -29,7 +29,7 @@ export function RecognizedVehicleCard({ card }: { card: RecognizedVehicleResult 
             {card.specFieldLabel}:{" "}
             <span className="text-lg font-black text-[var(--bm-primary)]">{card.specDisplay}</span>
             {card.confidenceLabel && card.specTier === "map" ? (
-              <span className="ml-1 text-[10px] font-bold text-amber-700">({card.confidenceLabel})</span>
+              <span className="ml-1 text-xs font-semibold text-amber-700">({card.confidenceLabel})</span>
             ) : null}
           </p>
         ) : null}

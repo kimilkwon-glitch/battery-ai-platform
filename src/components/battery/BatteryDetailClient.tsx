@@ -84,7 +84,7 @@ export function BatteryDetailClient({ code, relatedCodes, vehicles }: Props) {
           <CtaHierarchy
             ctas={[
               { label: "내 차 기준으로 확인", href: `/search?q=${encodeURIComponent(code)}` },
-              { label: "사진으로 최종 확인", href: "/analysis/photo" },
+              { label: "사진으로 확인", href: "/photo-check" },
             ]}
             links={[
               { label: "문의하기", href: "/ai" },

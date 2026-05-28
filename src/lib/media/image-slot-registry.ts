@@ -48,7 +48,7 @@ export const SEARCH_IMAGE_SLOTS = {
   }),
   symptomDiagnosis: (): ImageSlotDefinition => ({
     assetKey: "search.symptom.diagnosis",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "블랙박스 상시전원 / 방전 점검 사진 준비중",
     hint: "증상 진단 카드 보조 — 상시전원·퓨즈·주차 패턴",
     ratio: "16/9",
@@ -57,7 +57,7 @@ export const SEARCH_IMAGE_SLOTS = {
   }),
   symptomCause: (causeId: string, title: string): ImageSlotDefinition => ({
     assetKey: `search.symptom.cause.${causeId}`,
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: `${title} 참고 사진 준비중`,
     hint: "증상 원인 카드 보조 이미지",
     ratio: "16/9",
@@ -66,7 +66,7 @@ export const SEARCH_IMAGE_SLOTS = {
   }),
   serviceOutbound: (): ImageSlotDefinition => ({
     assetKey: "search.service.outbound",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "출장 교체 현장 사진 준비중",
     hint: "문의·출장 CTA 신뢰도 — 현장 작업·차량 앞 교체",
     ratio: "16/9",
@@ -75,7 +75,7 @@ export const SEARCH_IMAGE_SLOTS = {
   }),
   serviceStore: (storeId: string): ImageSlotDefinition => ({
     assetKey: `search.service.store.${storeId}`,
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "매장 전경·작업대 사진 준비중",
     hint: "지점 안내 카드 — 덕천·학장 등 매장 실사",
     ratio: "16/9",
@@ -84,7 +84,7 @@ export const SEARCH_IMAGE_SLOTS = {
   }),
   batteryInstallExample: (code: string): ImageSlotDefinition => ({
     assetKey: `search.battery.install.${code}`,
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "배터리 장착 예시 사진 준비중",
     hint: "고객이 자신 차량 배터리 위치·단자 방향을 이해하도록 돕는 컷",
     ratio: "4/3",
@@ -106,7 +106,7 @@ export const BATTERY_DETAIL_IMAGE_SLOTS = {
   }),
   install: (code: string): ImageSlotDefinition => ({
     assetKey: `battery.detail.install.${code.replace(/\s+/g, "-")}`,
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "차량 장착 예시 사진 준비중",
     hint: `${code} — 엔진룸/트레이 장착 위치·홀 패턴 참고`,
     ratio: "16/9",
@@ -115,7 +115,7 @@ export const BATTERY_DETAIL_IMAGE_SLOTS = {
   }),
   labelTerminal: (code: string): ImageSlotDefinition => ({
     assetKey: `battery.detail.label.${code.replace(/\s+/g, "-")}`,
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "배터리 라벨·단자 확인 사진 준비중",
     hint: "규격 코드·L/R 단자·제조일 — 오주문 방지용",
     ratio: "4/3",
@@ -128,7 +128,7 @@ export const BATTERY_DETAIL_IMAGE_SLOTS = {
 export const QNA_IMAGE_SLOTS = {
   blackboxCheck: (): ImageSlotDefinition => ({
     assetKey: "qna.symptom.blackbox",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "블랙박스 방전 점검 사진 준비중",
     hint: "상시전원·퓨즈·주차 패턴 참고",
     ratio: "16/9",
@@ -137,7 +137,7 @@ export const QNA_IMAGE_SLOTS = {
   }),
   labelCheck: (): ImageSlotDefinition => ({
     assetKey: "qna.guide.label",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "배터리 라벨 확인 사진 준비중",
     hint: "규격 코드·제조일·L/R 단자",
     ratio: "4/3",
@@ -146,7 +146,7 @@ export const QNA_IMAGE_SLOTS = {
   }),
   terminalDirection: (): ImageSlotDefinition => ({
     assetKey: "qna.guide.terminal",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "단자 방향 확인 사진 준비중",
     hint: "플러스 단자 L/R·극성",
     ratio: "4/3",
@@ -155,7 +155,7 @@ export const QNA_IMAGE_SLOTS = {
   }),
   hybridAuxLocation: (): ImageSlotDefinition => ({
     assetKey: "qna.ev.hybrid-aux",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "하이브리드 보조배터리 위치 사진 준비중",
     hint: "엔진룸·트렁크 보조 12V 위치",
     ratio: "16/9",
@@ -164,7 +164,7 @@ export const QNA_IMAGE_SLOTS = {
   }),
   porterInstall: (): ImageSlotDefinition => ({
     assetKey: "qna.commercial.porter",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "포터2 배터리 장착 예시 사진 준비중",
     hint: "90R·100R 트레이·연식 확인",
     ratio: "16/9",
@@ -204,7 +204,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   storeDeokcheon: (): ImageSlotDefinition => ({
     assetKey: "home.store.deokcheon",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "덕천점 매장 사진 준비중",
     hint: "매장 전경·작업대",
     ratio: "16/9",
@@ -213,7 +213,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   storeHakjang: (): ImageSlotDefinition => ({
     assetKey: "home.store.hakjang",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "학장점 매장 사진 준비중",
     hint: "매장 전경·작업대",
     ratio: "16/9",
@@ -222,7 +222,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   outboundField: (): ImageSlotDefinition => ({
     assetKey: "home.service.outbound",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "출장 교체 현장 사진 준비중",
     hint: "현장 작업·차량 앞 교체",
     ratio: "16/9",
@@ -231,7 +231,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   inspectionGear: (): ImageSlotDefinition => ({
     assetKey: "home.service.inspection",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "배터리 점검 장비 사진 준비중",
     hint: "테스터·단자 확인 장비",
     ratio: "4/3",
@@ -240,7 +240,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   deliveryPack: (): ImageSlotDefinition => ({
     assetKey: "home.delivery.pack",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "택배 포장 사진 준비중",
     hint: "출고 포장·박스",
     ratio: "4/3",
@@ -249,7 +249,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   deliveryCheck: (): ImageSlotDefinition => ({
     assetKey: "home.delivery.check",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "출고 전 제품 확인 사진 준비중",
     hint: "라벨·외관 최종 점검",
     ratio: "4/3",
@@ -258,7 +258,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   deliveryLabel: (): ImageSlotDefinition => ({
     assetKey: "home.delivery.label",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "배터리 라벨 확인 사진 준비중",
     hint: "오주문 방지 — 규격 코드 확인",
     ratio: "4/3",
@@ -267,7 +267,7 @@ export const HOME_IMAGE_SLOTS = {
   }),
   symptomBlackbox: (): ImageSlotDefinition => ({
     assetKey: "home.symptom.blackbox",
-    statusLabel: "사진 준비중",
+    statusLabel: "사진 등록 예정",
     caption: "블랙박스 방전 점검 사진 준비중",
     hint: "상시전원·퓨즈·주차 패턴",
     ratio: "16/9",

@@ -40,7 +40,7 @@ export function basisLabelForTier(
   if (tier === "none") return null;
   if (tier === "exact") return "검색 규격";
   if (source === "fitment-override") return "연식·차종 기준";
-  if (tier === "db" || source === "vehicle-battery-db") return "DB 기준";
+  if (tier === "db" || source === "vehicle-battery-db") return "차종·규격 기준";
   if (tier === "map") return "우선 확인 후보";
   return "확인 기준";
 }

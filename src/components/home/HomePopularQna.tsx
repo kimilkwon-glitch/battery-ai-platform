@@ -15,17 +15,17 @@ export function HomePopularQna() {
         <SectionHeader
           label="자주 묻는 질문"
           title="많이 헷갈리는 질문만 먼저 모았습니다"
-          description="포터2 90R/100R, 블랙박스 방전, EV 12V, AGM 차이처럼 주문 전에 막히는 질문입니다."
+          description="포터2 90R/100R, 방전, EV 12V 등 주문 전에 자주 묻는 질문입니다."
           iconKey="qna"
         />
         <div className="mt-3 flex flex-wrap gap-2">
-          <Link className={`${bm.btnGhost} text-[10px]`} href={searchHref("포터2 배터리")}>
+          <Link className={`${bm.btnGhost} text-xs`} href={searchHref("포터2 배터리")}>
             포터2 검색
           </Link>
-          <Link className={`${bm.btnGhost} text-[10px]`} href={searchHref("레이 블랙박스 방전")}>
+          <Link className={`${bm.btnGhost} text-xs`} href={searchHref("레이 블랙박스 방전")}>
             방전 증상
           </Link>
-          <Link className={`${bm.btnGhost} text-[10px]`} href="/community">
+          <Link className={`${bm.btnGhost} text-xs`} href="/community">
             Q&A 전체
           </Link>
         </div>

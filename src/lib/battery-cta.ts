@@ -17,7 +17,7 @@ export const CTA_PRIMARY_LABELS = new Set([
 ]);
 
 export const CTA_SECONDARY_LABELS = new Set([
-  "사진으로 최종 확인",
+  "사진으로 확인",
   "사진으로 확인",
   "사진 보내기",
   "문의하기",

@@ -67,7 +67,7 @@ export type SearchUxPresentation = {
 };
 
 const PHOTO_CTA: SearchUxCta = {
-  label: "사진으로 최종 확인",
+  label: "사진으로 확인",
   href: HUB_PHOTO,
   tier: "ghost",
 };

@@ -66,7 +66,7 @@ export function TrendingTopicsSection({ featured, rest }: { featured: TrendTopic
             <TypeBadge badge={item.badge} />
             <h3 className="mt-2 text-base font-black text-slate-900 group-hover:text-blue-700">{item.label}</h3>
             <p className="mt-1 flex-1 text-sm font-medium text-slate-500">{item.description}</p>
-            <span className="mt-3 text-xs font-black text-blue-600">바로가기 →</span>
+            <span className="mt-3 text-xs font-bold text-blue-600">안내 보기 →</span>
           </Link>
         ))}
       </div>

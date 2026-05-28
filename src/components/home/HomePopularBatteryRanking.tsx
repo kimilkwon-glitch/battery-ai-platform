@@ -25,7 +25,7 @@ export function HomePopularBatteryRanking() {
       <SectionHeader
         label="인기 규격"
         title="많이 찾는 배터리 규격"
-        description="자주 찾는 규격만 모았습니다. 단자 방향·차종 적용은 카드에서 바로 볼 수 있습니다."
+        description="자주 찾는 규격입니다. 단자·차종은 카드에서 확인할 수 있습니다."
         iconKey="batterySpec"
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -54,7 +54,7 @@ export function HomePopularBatteryRanking() {
             <CardInfoActions>
               <Link className={`${bm.btnCardNavy} inline-flex items-center gap-1`} href={batteryDetailHref(item.code)}>
                 <AppIcon iconKey="batterySpec" size="xs" className="!text-white" />
-                규격 상세
+                이 규격 보기
               </Link>
               <Link className={`${bm.btnCardGhost} inline-flex items-center gap-1`} href={HUB_PHOTO}>
                 <AppIcon iconKey="photoCheck" size="xs" />
@@ -64,9 +64,9 @@ export function HomePopularBatteryRanking() {
           </CardHorizontalLayout>
         ))}
       </div>
-      <p className="mt-3 flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
+      <p className={`mt-3 flex items-center gap-1.5 ${bm.typoCaption}`}>
         <AppIcon iconKey="battery" size="sm" />
-        상품 이미지는 좌측 크게 · 규격 정보는 우측에 정리됩니다.
+        사진은 좌측, 규격 정보는 우측에 정리됩니다.
       </p>
     </HomeSectionShell>
   );

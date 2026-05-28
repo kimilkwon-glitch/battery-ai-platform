@@ -182,7 +182,7 @@ export function PhotoAnalysisClient({ initialBattery }: { initialBattery?: strin
           <CtaHierarchy
             ctas={[
               { label: "이 규격 자세히 보기", href: `/batteries/${encodeURIComponent(batteryCode)}` },
-              { label: "사진으로 최종 확인", href: "/analysis/photo" },
+              { label: "사진으로 확인", href: "/photo-check" },
             ]}
             links={[
               { label: "문의하기", href: "/ai" },

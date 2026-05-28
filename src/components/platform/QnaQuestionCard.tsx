@@ -61,8 +61,8 @@ export function QnaQuestionCard({
   const showInquiryCta =
     question.ctaType === "inquiry" || /방전|문의|매장/.test(question.category);
   const titleClass = compact
-    ? "line-clamp-2 text-[15px] font-bold leading-[1.4] tracking-[-0.01em] text-slate-950 sm:text-[16px]"
-    : "line-clamp-2 text-[16px] font-bold leading-[1.4] tracking-[-0.01em] text-slate-950 sm:text-[17px]";
+    ? `line-clamp-2 ${bm.cardTitle} tracking-[-0.01em] text-slate-950`
+    : `line-clamp-2 text-base font-bold leading-snug tracking-[-0.01em] text-slate-950 sm:text-lg`;
 
   const metaLine = [type, tagChip].filter(Boolean).join(" · ");
   const iconSize = compact ? 44 : 48;
@@ -162,12 +162,12 @@ export function QnaQuestionCard({
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {showPhotoCta ? (
-              <Link className={`${bm.btnPrimary} px-3 py-2 text-[10px]`} href={HUB_PHOTO}>
+              <Link className={`${bm.btnPrimary} px-3 py-2 text-xs sm:text-sm`} href={HUB_PHOTO}>
                 사진으로 확인
               </Link>
             ) : null}
             {showInquiryCta || showPhotoCta ? (
-              <Link className={`${bm.btnSecondary} px-3 py-2 text-[10px]`} href={HUB_STORE}>
+              <Link className={`${bm.btnSecondary} px-3 py-2 text-xs sm:text-sm`} href={HUB_STORE}>
                 매장·출장 문의
               </Link>
             ) : null}

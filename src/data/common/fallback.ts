@@ -31,14 +31,14 @@ export const FALLBACK_MESSAGES: Record<
   },
   locationData: {
     title: "작업 가능점 정보 확인 중",
-    body: "선택하신 지역의 작업 가능점 정보가 아직 부족합니다. 규격 문의 또는 사진 분석으로 먼저 확인해 주세요.",
+    body: "선택하신 지역의 작업 가능점 정보가 아직 부족합니다. 규격 문의 또는 사진으로 먼저 확인해 주세요.",
     ctaLabel: "작업 가능점 전체 보기",
     ctaHref: "/service-center",
   },
   guideData: {
     title: "가이드 준비 중",
     body: "해당 주제의 가이드 콘텐츠가 아직 등록되지 않았습니다. 관련 Q&A 또는 규격 비교에서 먼저 확인해 보세요.",
-    ctaLabel: "가이드 허브",
+    ctaLabel: "가이드 모음",
     ctaHref: "/guides",
   },
   qaData: {
@@ -62,7 +62,7 @@ export const FALLBACK_MESSAGES: Record<
   searchEmpty: {
     title: "검색 결과 없음",
     body: "검색 결과가 없습니다. 차량명, 연식, 연료 또는 현재 장착된 배터리 사진으로 다시 확인해 주세요.",
-    ctaLabel: "배터리 사진 분석",
+    ctaLabel: "사진으로 확인",
     ctaHref: "/analysis/photo",
   },
   imageMissing: {
@@ -78,7 +78,7 @@ export const FALLBACK_MESSAGES: Record<
   brandData: {
     title: "브랜드 정보 확인 중",
     body: "해당 브랜드의 상세 정보가 아직 등록되지 않았습니다. 대표 규격 검색으로 확인해 주세요.",
-    ctaLabel: "브랜드 허브",
+    ctaLabel: "브랜드 안내",
     ctaHref: "/brands",
   },
 };

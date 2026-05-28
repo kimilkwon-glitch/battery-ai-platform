@@ -8,7 +8,7 @@ import { CORE_BATTERY_DETAIL_CODES } from "@/lib/battery-detail/core-battery-cod
 export const HOME_HERO = {
   headline: "배터리 주문 전, 차종과 규격부터 맞춰보세요.",
   subline: "차량명이나 규격명을 입력하면 맞는 후보를 먼저 보여드립니다.",
-  tagline: "후보를 본 뒤 헷갈리는 부분은 사진으로 한 번 더 확인하는 것이 안전합니다.",
+  tagline: "규격이 헷갈릴 때는 사진으로 한 번 더 확인하는 것이 안전합니다.",
 } as const;
 
 export const HOME_SEARCH_TYPE_CHIPS = [

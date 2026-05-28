@@ -57,9 +57,9 @@ export function CrossLinkCard({
       <span className="mb-2">
         <IconBadge iconKey={key} size="md" />
       </span>
-      <span className="block text-sm font-black text-[var(--bm-text)]">{title}</span>
-      <span className="mt-1.5 flex-1 text-[11px] font-semibold leading-relaxed text-[var(--bm-muted)]">{description}</span>
-      <span className="mt-3 text-[10px] font-black text-[var(--bm-primary)]">바로가기 →</span>
+      <span className={`block ${bm.cardTitle}`}>{title}</span>
+      <span className={`mt-1.5 flex-1 ${bm.typoCaption}`}>{description}</span>
+      <span className={`mt-3 text-xs font-bold text-[var(--bm-primary)]`}>안내 보기 →</span>
     </a>
   );
 }

@@ -11,7 +11,7 @@ export function HomePlatformTools() {
       <SectionHeader
         label="안내 모음"
         title="검색·비교·증상·주문 전 확인"
-        description="차종 검색부터 규격 비교, 증상 안내, 사진 확인, 매장·택배 안내까지 한 흐름으로 연결됩니다."
+        description="검색·비교·증상·사진 확인·매장·택배 안내를 한 흐름으로 연결합니다."
       />
       <div className="mt-4 grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {PLATFORM_HUB_LINKS.map((link) => (
@@ -19,10 +19,10 @@ export function HomePlatformTools() {
         ))}
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Link className={`${bm.btnNavy} text-xs`} href="/search?q=포터2">
+        <Link className={`${bm.btnNavy} text-sm`} href="/search?q=포터2">
           차종 검색 예시
         </Link>
-        <Link className={`${bm.btnGhost} text-xs`} href="/vehicles">
+        <Link className={`${bm.btnGhost} text-sm`} href="/vehicles">
           차량 목록
         </Link>
       </div>

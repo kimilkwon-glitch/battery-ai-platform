@@ -150,7 +150,7 @@ export function SearchVehicleResults({
 
                 <Link className={`${bm.btnNavy} ml-2`} href={href}>
 
-                  바로가기
+                  차량 보기
 
                 </Link>
 

@@ -14,7 +14,7 @@ export function HomeTrendingSection() {
       <SectionHeader
         label="검색 패턴"
         title="많이 찾는 조건 · 자주 헷갈리는 규격"
-        description="실시간 통계가 아닌, 자주 확인되는 대표 검색 조건입니다."
+        description="자주 확인되는 대표 검색 조건입니다."
         iconKey="trending"
       />
       <div className="mt-3 flex flex-wrap gap-2">
@@ -30,7 +30,7 @@ export function HomeTrendingSection() {
                 <AppIcon iconKey={tagIcon} size="xs" />
                 {item.tag}
               </span>
-              <span className="text-xs font-bold text-slate-900">{item.label}</span>
+              <span className="text-sm font-bold text-slate-900">{item.label}</span>
             </Link>
           );
         })}
@@ -40,7 +40,7 @@ export function HomeTrendingSection() {
         href="/symptoms"
       >
         <IconBadge iconKey="symptom" tone="amber" />
-        <span className="text-xs font-semibold text-amber-950">
+        <span className="text-sm font-semibold text-amber-950">
           시동·방전 증상부터 보기 → 증상별 안내
         </span>
       </Link>
