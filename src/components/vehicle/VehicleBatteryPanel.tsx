@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { bm } from "@/lib/design-tokens";
+import { productBatteryCode } from "@/lib/batteryNormalize";
 import {
   getRecordFuelLabel,
   groupRecordsByFuel,
@@ -241,7 +242,7 @@ export function VehicleBatteryPanel({
                         <td className="px-2 py-2 font-bold">{g.fuelLabel}</td>
                         <td className="px-2 py-2">{r.years ?? "-"}</td>
                         <td className="px-2 py-2 font-black text-[var(--bm-primary)]">
-                          {normalizeBatteryCode(r.primaryBattery)}
+                          {productBatteryCode(r.primaryBattery)}
                         </td>
                         <td className="px-2 py-2 text-slate-500">{recordStatusLabel(r.status)}</td>
                       </tr>

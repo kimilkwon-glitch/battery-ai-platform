@@ -34,7 +34,18 @@ export function BatteryDetailClient({ code, relatedCodes, vehicles }: Props) {
   return (
     <div className="space-y-4">
       <section className={`${bm.card} ${bm.cardPad}`}>
-        <SectionHeader label="배터리 규격" title={code} description={spec ? `${spec.type} · ${spec.terminal} 타입` : undefined} />
+        <SectionHeader
+          label="배터리 규격"
+          title={code}
+          description={
+            spec
+              ? `${spec.type} ${spec.capacityAh ? `${spec.capacityAh}L` : ""} 계열 · ${spec.terminal}타입`.replace(
+                  /\s+/g,
+                  " ",
+                )
+              : undefined
+          }
+        />
         {spec ? (
           <div className="mt-3 flex flex-wrap gap-2">
             {spec.capacityAh ? <BatterySpecBadge tone="blue">{spec.capacityAh}Ah</BatterySpecBadge> : null}

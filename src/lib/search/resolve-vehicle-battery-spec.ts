@@ -1,5 +1,4 @@
 import { normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
-import { batteryCodeForFuelParam } from "@/lib/battery-cta";
 import {
   getRecordsForSlug,
   groupRecordsByFuel,
@@ -66,13 +65,6 @@ function codesFromRecords(recs: VehicleBatteryRecord[]): string[] {
     }
   }
   return [...new Set(codes)].slice(0, 4);
-}
-
-function applyFuelPrimaryOverride(codes: string[], fuel: string | null): string[] {
-  const fuelCode = batteryCodeForFuelParam(fuel);
-  if (!fuelCode) return codes;
-  const rest = codes.filter((c) => productBatteryCode(c) !== fuelCode);
-  return [fuelCode, ...rest];
 }
 
 function isIceSpecOnHybridSearch(fuel: string | null, primaryCode: string): boolean {
@@ -329,7 +321,7 @@ export function resolveVehicleBatterySpecForSearch(options: {
     }) ?? (dbQuery ? lookupVehicleBatteryByDbQuery(dbQuery, fuel) : null);
 
   if (dbHit?.codes.length) {
-    let codes = applyFuelPrimaryOverride(dbHit.codes, fuel);
+    const codes = dbHit.codes.map((c) => productBatteryCode(c) || c);
     const dbPrimary = codes[0] ?? "";
     if (hybridCandidate && isIceSpecOnHybridSearch(fuel, dbPrimary)) {
       return hybridCandidate;

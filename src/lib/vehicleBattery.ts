@@ -4,7 +4,12 @@
 import dbJson from "@/data/vehicle-battery-db.json";
 import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
-import { normalizeBatteryCode, resolveBatteryDisplay, isRetiredBatterySpec } from "@/lib/batteryNormalize";
+import {
+  normalizeBatteryCode,
+  productBatteryCode,
+  resolveBatteryDisplay,
+  isRetiredBatterySpec,
+} from "@/lib/batteryNormalize";
 import {
   expandKgMobilitySearchTerms,
   isKgMobilityBrand,
@@ -228,7 +233,8 @@ function recordMatchesProfile(r: VehicleBatteryRecord, profile: VehicleDbProfile
 
   if (profile.generationTokens.length === 0) return true;
 
-  const hay = norm(`${r.displayName} ${r.detail} ${r.aliases.join(" ")}`);
+  // 세대 토큰은 표시명·상세만 — 공통 alias "IG" 등으로 HG·FL 레코드가 섞이지 않게
+  const hay = norm(`${r.displayName} ${r.detail}`);
   return profile.generationTokens.some((t) => hay.includes(norm(t)));
 }
 
@@ -497,12 +503,50 @@ export function getRecordFuelLabel(record: VehicleBatteryRecord): string {
   return fuelLabel(record.fuel);
 }
 
+function batteryVoteWeight(r: VehicleBatteryRecord): number {
+  let w = 1;
+  if (r.status === "confirmed") w += 12;
+  else if (r.status !== "needs_review") w += 2;
+  if (r.confidence === "high") w += 4;
+  else if (r.confidence === "medium") w += 1;
+  return w;
+}
+
+function ahRankFromCode(code: string): number {
+  const m = code.match(/(\d{2,3})/);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+/** 동일 연료·연식 버킷 — 다수·확정 레코드 우선, 동률이면 용량 큰 규격 */
 function pickPrimaryBattery(recs: VehicleBatteryRecord[]): string {
+  const votes = new Map<string, number>();
   for (const r of recs) {
-    const code = normalizeBatteryCode(r.primaryBattery);
-    if (code) return code;
+    const code = productBatteryCode(r.primaryBattery) || normalizeBatteryCode(r.primaryBattery);
+    if (!code) continue;
+    votes.set(code, (votes.get(code) ?? 0) + batteryVoteWeight(r));
   }
-  return "";
+  if (!votes.size) return "";
+
+  const ranked = [...votes.entries()].sort((a, b) => {
+    if (b[1] !== a[1]) return b[1] - a[1];
+    return ahRankFromCode(b[0]) - ahRankFromCode(a[0]);
+  });
+  return ranked[0]![0];
+}
+
+export function pickRepresentativeBatteryCodes(codes: string[]): string {
+  const votes = new Map<string, number>();
+  for (const raw of codes) {
+    const code = productBatteryCode(raw) || normalizeBatteryCode(raw);
+    if (!code) continue;
+    votes.set(code, (votes.get(code) ?? 0) + 1);
+  }
+  if (!votes.size) return "";
+  const ranked = [...votes.entries()].sort((a, b) => {
+    if (b[1] !== a[1]) return b[1] - a[1];
+    return ahRankFromCode(b[0]) - ahRankFromCode(a[0]);
+  });
+  return ranked[0]![0];
 }
 
 export function hasConfirmedBatteryData(record: VehicleBatteryRecord): boolean {
@@ -918,19 +962,23 @@ export function buildVehicleBatterySummary(
   if (fuelGroups.length === 0) return null;
 
   const lines: VehicleBatterySummaryLine[] = [];
-  const gas = fuelGroups.find((g) => g.fuelLabel === "가솔린");
-  const diesel = fuelGroups.find((g) => g.fuelLabel === "디젤");
+  const gasPrimary = pickRepresentativeBatteryCodes(
+    fuelGroups.filter((g) => g.fuelLabel === "가솔린").map((g) => g.primaryBattery),
+  );
+  const dieselPrimary = pickRepresentativeBatteryCodes(
+    fuelGroups.filter((g) => g.fuelLabel === "디젤").map((g) => g.primaryBattery),
+  );
 
-  if (gas && diesel && gas.primaryBattery === diesel.primaryBattery) {
-    lines.push({ label: "가솔린/디젤", battery: gas.primaryBattery });
+  if (gasPrimary && dieselPrimary && gasPrimary === dieselPrimary) {
+    lines.push({ label: "가솔린/디젤", battery: gasPrimary });
   } else {
-    if (gas) lines.push({ label: "가솔린", battery: gas.primaryBattery });
-    if (diesel) lines.push({ label: "디젤", battery: diesel.primaryBattery });
+    if (gasPrimary) lines.push({ label: "가솔린", battery: gasPrimary });
+    if (dieselPrimary) lines.push({ label: "디젤", battery: dieselPrimary });
   }
 
   for (const g of fuelGroups) {
     if (g.fuelLabel === "가솔린" || g.fuelLabel === "디젤") {
-      if (gas && diesel && gas.primaryBattery === diesel.primaryBattery) continue;
+      if (gasPrimary && dieselPrimary && gasPrimary === dieselPrimary) continue;
     }
     if (!lines.some((l) => l.label === g.fuelLabel)) {
       lines.push({ label: g.fuelLabel, battery: g.primaryBattery });
@@ -947,7 +995,7 @@ export function buildVehicleBatterySummary(
   if (/단자|L\/R|좌\/우/i.test(cautionText)) checkPoints.push("단자 방향");
 
   const representativeBattery =
-    gas?.primaryBattery ?? diesel?.primaryBattery ?? fuelGroups[0]?.primaryBattery ?? "";
+    gasPrimary || dieselPrimary || fuelGroups[0]?.primaryBattery || "";
 
   const verdictNotes: string[] = [];
   if (representativeBattery) verdictNotes.push(`대표 규격 ${representativeBattery}`);
@@ -969,9 +1017,10 @@ export function getBatteryDetailData(code: string) {
   if (isRetiredBatterySpec(code)) {
     return getBatteryDetailData("DIN74R");
   }
-  const canonical = normalizeBatteryCode(code);
-  const matching = getRecordsForBattery(canonical, 48);
-  const fitment = getBatteryFitmentVehicles(canonical, 12);
+  const displayCode = productBatteryCode(code) || normalizeBatteryCode(code);
+  const matchKey = normalizeBatteryCode(displayCode);
+  const matching = getRecordsForBattery(matchKey, 48);
+  const fitment = getBatteryFitmentVehicles(matchKey, 12);
   const vehicles = fitment.map((v) => ({
     slug: v.slug,
     title: v.title,
@@ -979,10 +1028,10 @@ export function getBatteryDetailData(code: string) {
     fuel: fuelLabel(v.fuel),
   }));
   return {
-    code: canonical,
+    code: displayCode,
     records: matching,
     vehicles,
-    relatedCodes: getRelatedBatteryCodes(canonical),
+    relatedCodes: getRelatedBatteryCodes(matchKey),
   };
 }
 

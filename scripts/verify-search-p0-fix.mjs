@@ -12,7 +12,11 @@ const CASES = [
   { q: "EV6 보조배터리", must: ["EV6", "search-focus"], mustNot: ["/vehicle/cr-v", "등록된 차량 규격 정보가 없습니다"] },
   { q: "아이오닉5 배터리", must: ["아이오닉5", "search-focus"], mustNot: ["등록된 차량 규격 정보가 없습니다"] },
   { q: "스포티지 NQ5 하이브리드", must: ["AGM60L", "/vehicle/sportage-nq5"], mustNot: ["DIN74R"] },
-  { q: "그랜저 IG 가솔린", must: ["AGM70L"], mustNot: ["AGM80L 배터리</span>"] },
+  {
+    q: "그랜저 IG 가솔린",
+    must: ["AGM80L", "search-focus"],
+    mustNot: ["AGM70L 규격 상세", 'data-primary-battery="AGM70L"'],
+  },
   { q: "그랜저 IG 디젤", must: ["AGM80L"] },
   { q: "쏘렌토 MQ4 하이브리드", must: ["AGM60L", "sorento-mq4"] },
   { q: "포터2 20년식", must: ["100R", "porter2-new"] },

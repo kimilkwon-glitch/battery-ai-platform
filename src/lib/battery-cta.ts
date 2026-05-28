@@ -1,4 +1,6 @@
 import type { SearchCtaLink } from "@/lib/search/battery-recommendation-copy";
+import { productBatteryCode } from "@/lib/batteryNormalize";
+import { pickRepresentativeBatteryCodes } from "@/lib/vehicleBattery";
 
 export const CTA_PRIMARY_LABELS = new Set([
   "이 규격 자세히 보기",
@@ -31,15 +33,23 @@ function decodeFuelQueryParam(raw: string | null | undefined): string | null {
   }
 }
 
-/** URL fuel 쿼리 → 차량 상세 CTA 대표 규격 (DB 연료별 UX와 동기화) */
+/** URL fuel 쿼리 → 폴백 규격 (DB fuelGroups에 없을 때만) */
 export function batteryCodeForFuelParam(fuel: string | null | undefined): string | null {
   const t = decodeFuelQueryParam(fuel);
   if (!t) return null;
   if (/하이브|hev/i.test(t)) return "AGM60L";
   if (/디젤/i.test(t)) return "AGM80L";
-  if (/가솔|휘발/i.test(t)) return "AGM70L";
   if (/lpg/i.test(t)) return "AGM80L";
   return null;
+}
+
+function normalizeFuelLabelFromQuery(fuel: string): string {
+  if (/하이브|hev/i.test(fuel)) return "하이브리드";
+  if (/디젤/i.test(fuel)) return "디젤";
+  if (/가솔|휘발/i.test(fuel)) return "가솔린";
+  if (/lpg/i.test(fuel)) return "LPG";
+  if (/전기|ev/i.test(fuel)) return "전기";
+  return fuel;
 }
 
 export type FuelGroupBatteryPick = { fuelLabel: string; primaryBattery: string };
@@ -50,26 +60,20 @@ export function resolvePrimaryBatteryForFuelQuery(
   fuelGroups: FuelGroupBatteryPick[],
   fallback?: string,
 ): string {
+  const fuel = decodeFuelQueryParam(fuelRaw);
+  if (fuel && fuelGroups.length) {
+    const normalized = normalizeFuelLabelFromQuery(fuel);
+    const matching = fuelGroups.filter((g) => g.fuelLabel === normalized);
+    const codes = matching.map((g) => g.primaryBattery).filter(Boolean);
+    const picked = pickRepresentativeBatteryCodes(codes);
+    if (picked) return picked;
+  }
+
   const fromParam = batteryCodeForFuelParam(fuelRaw);
   if (fromParam) return fromParam;
 
-  const fuel = decodeFuelQueryParam(fuelRaw);
-  if (fuel && fuelGroups.length) {
-    const normalized =
-      /하이브|hev/i.test(fuel)
-        ? "하이브리드"
-        : /디젤/i.test(fuel)
-          ? "디젤"
-          : /가솔|휘발/i.test(fuel)
-            ? "가솔린"
-            : /lpg/i.test(fuel)
-              ? "LPG"
-              : fuel;
-    const group = fuelGroups.find((g) => g.fuelLabel === normalized);
-    if (group?.primaryBattery) return group.primaryBattery;
-  }
-
-  return fallback ?? "AGM80L";
+  if (fallback) return productBatteryCode(fallback) || fallback;
+  return "AGM80L";
 }
 
 export function buildVehicleDetailHref(

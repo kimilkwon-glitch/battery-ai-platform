@@ -3048,14 +3048,14 @@
       "endYear": 2026,
       "fuel": "가솔린",
       "batteryOptions": [
-        "AGM70L"
+        "AGM80L"
       ],
-      "primaryBattery": "AGM70L",
+      "primaryBattery": "AGM80L",
       "status": "raw",
       "confidence": "medium",
       "source": "최근",
-      "originalProduct": "AGM70L",
-      "rawProduct": "로케트 AGM 70",
+      "originalProduct": "AGM80L",
+      "rawProduct": "로케트 AGM 80",
       "caution": "",
       "aliases": [
         "IG",
@@ -18415,14 +18415,14 @@
       "endYear": 2026,
       "fuel": "가솔린",
       "batteryOptions": [
-        "AGM70L"
+        "AGM80L"
       ],
-      "primaryBattery": "AGM70L",
+      "primaryBattery": "AGM80L",
       "status": "raw",
       "confidence": "medium",
       "source": "카수리",
-      "originalProduct": "AGM70L",
-      "rawProduct": "로케트 AGM 70",
+      "originalProduct": "AGM80L",
+      "rawProduct": "로케트 AGM 80",
       "caution": "",
       "aliases": [
         "IG",

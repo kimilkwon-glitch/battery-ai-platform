@@ -1,4 +1,4 @@
-import { normalizeBatteryCode } from "@/lib/batteryNormalize";
+import { productBatteryCode } from "@/lib/batteryNormalize";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
 
 export type VehicleFuelSpecLine = {
@@ -13,7 +13,7 @@ export function getVehicleFuelSpecLines(slug: string): VehicleFuelSpecLine[] {
   const lines: VehicleFuelSpecLine[] = [];
 
   for (const g of fuelGroups) {
-    const code = normalizeBatteryCode(g.primaryBattery);
+    const code = productBatteryCode(g.primaryBattery);
     if (!code || seen.has(g.fuelLabel)) continue;
     seen.add(g.fuelLabel);
     lines.push({ fuelLabel: g.fuelLabel, code });

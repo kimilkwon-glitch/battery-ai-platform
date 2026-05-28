@@ -23,7 +23,6 @@ function aliasFromVehicleIntent(v: VehicleIntent): SearchVehicleAliasMatch | nul
 import { formatSearchVehicleDisplayLabel } from "@/lib/search/search-vehicle-display";
 import { resolveVehicleBatterySpecForSearch } from "@/lib/search/resolve-vehicle-battery-spec";
 import { resolvePrimaryBatteryCode } from "@/lib/battery-spec-display";
-import { batteryCodeForFuelParam } from "@/lib/battery-cta";
 import { productBatteryCode } from "@/lib/batteryNormalize";
 import {
   basisLabelForTier,
@@ -113,19 +112,15 @@ export function buildSearchSummary(
     });
 
     const hasSpecLine = batterySpec.tier !== "none";
-    let primaryBatteryCode = hasSpecLine
+    const primaryBatteryCode = hasSpecLine
       ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
       : null;
-    const fuelPrimary = batteryCodeForFuelParam(v.fuel);
-    if (fuelPrimary) {
-      primaryBatteryCode = fuelPrimary;
-    }
     const specDisplayResolved =
       hasSpecLine && primaryBatteryCode
-        ? fuelPrimary
-          ? primaryBatteryCode
-          : productBatteryCode(batterySpec.displayValue ?? "") || batterySpec.displayValue
-        : batterySpec.displayValue;
+        ? productBatteryCode(primaryBatteryCode) || primaryBatteryCode
+        : batterySpec.displayValue
+          ? productBatteryCode(batterySpec.displayValue) || batterySpec.displayValue
+          : null;
     const secondaryNote = batterySpec.caution ?? secondaryNoteForTier(batterySpec.tier);
     const basisLabel = basisLabelForTier(batterySpec.tier, batterySpec.source);
 
