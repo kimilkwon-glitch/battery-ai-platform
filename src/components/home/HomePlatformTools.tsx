@@ -9,9 +9,9 @@ export function HomePlatformTools() {
   return (
     <HomeSectionShell rhythm="tools" data-section="platform-tools">
       <SectionHeader
-        label="플랫폼 허브"
-        title="배터리 매칭 플랫폼 전체 도구"
-        description="검색·비교·증상·오주문 방지·사진 확인·매장 안내를 한 흐름으로 연결합니다."
+        label="안내 모음"
+        title="검색·비교·증상·주문 전 확인"
+        description="차종 검색부터 규격 비교, 증상 안내, 사진 확인, 매장·택배 안내까지 한 흐름으로 연결됩니다."
       />
       <div className="mt-4 grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {PLATFORM_HUB_LINKS.map((link) => (

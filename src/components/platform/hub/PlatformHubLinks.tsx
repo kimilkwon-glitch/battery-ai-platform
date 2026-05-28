@@ -4,8 +4,8 @@ import { bm } from "@/lib/design-tokens";
 import { PLATFORM_HUB_LINKS } from "@/lib/platform-hub-routes";
 
 export function PlatformHubLinks({
-  title = "플랫폼 허브",
-  description = "검색·비교·증상·오주문 방지·사진 확인·매장 안내를 한곳에서 이어갑니다.",
+  title = "관련 안내",
+  description = "검색·비교·증상·주문 전 확인·사진 확인·매장 안내를 이어서 볼 수 있습니다.",
   limit = 6,
 }: {
   title?: string;

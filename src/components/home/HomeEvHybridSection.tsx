@@ -21,15 +21,15 @@ export function HomeEvHybridSection() {
       <SectionHeader
         label="보조 12V"
         title="전기차·하이브리드 보조배터리"
-        description="고전압 메인 배터리가 아닙니다. 보조 12V 위치와 규격(EV 12V · AGM60L)을 구분해 확인하세요."
+        description="전기차·하이브리드는 보조 12V 배터리 확인이 중요합니다. EV 12V와 AGM60L은 쓰임이 다릅니다."
         iconKey="ev"
       />
       <div className={`${bm.alertInfo} mb-4`}>
         <p className="text-sm font-medium text-slate-800">
-          하이브리드/전기차는 차종·연식별로 보조 12V 규격이 다릅니다.
+          전기차도 12V 배터리 때문에 시동·전장 문제가 생길 수 있습니다.
         </p>
         <p className="mt-1 text-xs text-slate-700">
-          EV 12V(전기차 보조)와 AGM60L(하이브리드 보조)을 혼동하지 마세요.
+          하이브리드는 메인이 아니라 보조 12V부터 보세요. EV 12V와 AGM60L은 비슷해 보여도 다를 수 있습니다.
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -46,19 +46,19 @@ export function HomeEvHybridSection() {
                 <span className={`${bm.badge} ${bm.badgeBlue}`}>{item.battery}</span>
               </CardInfoBadgeRow>
             </CardInfoStack>
-            <CardInfoActions>
+            <CardInfoActions className="gap-1.5 sm:gap-2">
               <Link className={bm.btnCardSecondary} href={item.href}>
-                검색 결과
+                이 규격으로 보기
               </Link>
-              <Link className={bm.btnCardGhost} href={batteryDetailHref(item.battery)}>
+              <Link className={`${bm.btnCardGhost} hidden sm:inline-flex`} href={batteryDetailHref(item.battery)}>
                 {item.battery} 상세
               </Link>
               {"fuel" in item && item.fuel ? (
                 <Link
-                  className={bm.btnCardGhost}
+                  className={`${bm.btnCardGhost} hidden sm:inline-flex`}
                   href={buildVehicleDetailHref(item.vehicleSlug, item.fuel)}
                 >
-                  차량 상세
+                  차량 기준 보기
                 </Link>
               ) : null}
             </CardInfoActions>
@@ -67,7 +67,7 @@ export function HomeEvHybridSection() {
       </div>
       <Link className={`${bm.btnGhost} mt-3 inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
         <AppIcon iconKey="photoCheck" size="sm" />
-        EV·HEV 보조배터리 사진 확인
+        사진으로 확인
       </Link>
     </HomeSectionShell>
   );

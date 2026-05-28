@@ -8,17 +8,17 @@ import { HubBadge } from "@/components/platform/hub/HubBadge";
 import { bm } from "@/lib/design-tokens";
 import { SERVICE_OPTIONS, SERVICE_SCENARIOS } from "@/lib/platform-hub-content";
 import { HUB_ORDER_CHECKLIST, HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
-import { HUB_STORE } from "@/lib/customer-hub-routes";
+import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { resolveServiceOptionIcon } from "@/lib/icon-map";
 
 export function ServiceHubClient() {
   return (
     <div className={`${bm.hubServicePage} overflow-x-hidden`} data-page="service-hub">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
-        <p className={bm.intentBadge}>이용 방법 선택</p>
+        <p className={bm.intentBadge}>이용 안내</p>
         <SectionHeader
-          title="매장·출장·택배 안내"
-          description="상황에 맞는 방법을 고르세요. 규격이 확실하지 않으면 먼저 검색·사진 확인을 권장합니다."
+          title="시동이 안 걸리면 출장, 규격을 알면 택배"
+          description="지금 당장 시동이 안 걸리면 출장 문의, 규격을 알고 있다면 택배 주문, 헷리면 사진 확인부터 보시면 됩니다. 부산은 가까운 직영점 기준으로 안내드립니다."
           iconKey="store"
         />
       </section>
@@ -68,7 +68,7 @@ export function ServiceHubClient() {
           {SERVICE_SCENARIOS.map((row) => (
             <li className={`${bm.surfaceMuted} rounded-xl p-3`} key={row.situation}>
               <p className="text-xs font-bold text-slate-900">{row.situation}</p>
-              <p className="mt-1 text-[11px] font-medium text-slate-700">추천: {row.pick}</p>
+              <p className="mt-1 text-[11px] font-medium text-slate-700">{row.pick}</p>
               <Link className={`${bm.btnTertiary} mt-2 inline-flex text-[10px]`} href={row.href}>
                 바로가기 →
               </Link>
@@ -81,25 +81,25 @@ export function ServiceHubClient() {
         <div className="flex flex-wrap gap-2">
           <HubBadge label="직영" tone="ok" />
           <HubBadge label="택배" tone="check" />
-          <HubBadge label="사진확인 권장" tone="warn" />
+          <HubBadge label="사진 확인 권장" tone="warn" />
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           <Link className={`${bm.btnGhost} inline-flex items-center gap-1 text-xs`} href={HUB_ORDER_CHECKLIST}>
             <AppIcon iconKey="checklist" size="sm" />
-            오주문 체크리스트
+            주문 전 체크리스트
           </Link>
           <Link className={`${bm.btnGhost} inline-flex items-center gap-1 text-xs`} href={HUB_PHOTO_CHECK}>
             <AppIcon iconKey="photoCheck" size="sm" />
             사진 확인 안내
           </Link>
-          <Link className={`${bm.btnSecondary} inline-flex items-center gap-1 text-xs`} href={HUB_STORE}>
+          <Link className={`${bm.btnSecondary} inline-flex items-center gap-1 text-xs`} href={HUB_STORE_DETAIL}>
             <AppIcon iconKey="store" size="sm" />
-            상세 매장 안내
+            직영점·출장 상세
           </Link>
         </div>
       </section>
 
-      <PlatformHubLinks title="다른 허브" limit={4} />
+      <PlatformHubLinks title="관련 안내" limit={4} />
     </div>
   );
 }

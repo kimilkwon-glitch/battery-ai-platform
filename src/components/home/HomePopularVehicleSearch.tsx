@@ -20,7 +20,7 @@ export function HomePopularVehicleSearch() {
       <SectionHeader
         label="차량 매칭"
         title="인기 차량 빠른 검색"
-        description="연식·연료에 따라 규격이 달라질 수 있습니다 — 카드에서 바로 확인하세요."
+        description="같은 차종도 연식·연료에 따라 배터리가 달라질 수 있습니다."
         iconKey="vehicle"
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -38,7 +38,7 @@ export function HomePopularVehicleSearch() {
               <CardInfoDesc>{v.hint}</CardInfoDesc>
             </CardInfoStack>
             <CardInfoActions>
-              <CardInfoCtaLink>검색·상세 →</CardInfoCtaLink>
+              <CardInfoCtaLink>이 차 기준으로 보기 →</CardInfoCtaLink>
             </CardInfoActions>
           </CardHorizontalLayout>
         ))}

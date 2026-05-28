@@ -264,7 +264,7 @@ export function getNextActions(context: NavContext, limit = MAX_ACTIONS): Action
       break;
     case "symptom":
       pool.push(
-        { title: "증상 진단 허브", description: "전체 증상", href: HUB_SYMPTOMS },
+        { title: "증상별 안내", description: "전체 증상", href: HUB_SYMPTOMS },
         { title: "추천 배터리 확인", description: code, href: batteryDetailHref(code) },
         { title: "사진 확인 안내", description: "보조 검증", href: HUB_PHOTO_CHECK },
         { title: "오주문 방지", description: "체크리스트", href: HUB_ORDER_CHECKLIST },
@@ -329,7 +329,7 @@ export function getNextActions(context: NavContext, limit = MAX_ACTIONS): Action
         { title: "차량별 규격 확인", description: v.displayName, href: vehicleHref(v.id) },
         { title: "배터리 비교", description: `${code} vs ${compareTarget}`, href: compareHref(code, compareTarget) },
         { title: "오주문 방지 체크", description: "주문 전", href: HUB_ORDER_CHECKLIST },
-        { title: "증상 진단 허브", description: s.title, href: HUB_SYMPTOMS },
+        { title: "증상별 안내", description: s.title, href: HUB_SYMPTOMS },
         { title: "사진 확인 안내", description: code, href: HUB_PHOTO_CHECK },
         { title: "매장·택배", description: v.displayName, href: HUB_SERVICE },
       );

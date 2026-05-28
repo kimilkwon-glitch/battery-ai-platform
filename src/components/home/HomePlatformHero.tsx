@@ -22,7 +22,7 @@ export function HomePlatformHero() {
       <div className={`${bm.heroDarkAccent} px-5 py-3 lg:px-7`}>
         <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-sky-200">{BRAND_HERO_LABEL}</p>
         <p className="mt-1 text-[10px] font-semibold text-slate-300">
-          정밀 fitment · 배터리 매칭 플랫폼
+          차종·규격·증상 기준 배터리 안내
         </p>
       </div>
       <div className="grid gap-0 lg:grid-cols-[1fr_minmax(240px,320px)]">
@@ -47,14 +47,14 @@ export function HomePlatformHero() {
           <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
             <Link className={`${bm.btnNavy} flex-1 inline-flex items-center justify-center gap-1.5 text-xs`} href="/vehicles">
               <AppIcon iconKey="vehicle" size="sm" className="!text-white" />
-              내 차량 확인
+              내 차 배터리 찾기
             </Link>
             <Link
               className={`${bm.btnSecondary} flex-1 inline-flex items-center justify-center gap-1.5 text-xs !text-slate-900`}
               href={getSearchHref("AGM80L")}
             >
               <AppIcon iconKey="batterySpec" size="sm" />
-              규격 검색
+              규격명으로 찾기
             </Link>
           </div>
 
@@ -98,7 +98,7 @@ export function HomePlatformHero() {
           <div className="mt-4 hidden flex-wrap gap-2 lg:flex">
             <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-xs`} href="/vehicles">
               <AppIcon iconKey="vehicle" size="sm" className="!text-white" />
-              내 차량 기준으로 확인
+              내 차 배터리 찾기
             </Link>
             <Link
               className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs !bg-white !text-slate-900 hover:!bg-slate-50`}
@@ -112,7 +112,7 @@ export function HomePlatformHero() {
               href={HUB_PHOTO}
             >
               <AppIcon iconKey="photoCheck" size="sm" className="!text-slate-200" />
-              사진으로 최종 확인
+              사진으로 확인
             </Link>
           </div>
         </div>

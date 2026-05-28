@@ -13,7 +13,7 @@ export function HomeOrderGuide() {
         <span className="bm-icon-pill bm-icon-pill--emerald" aria-hidden>
           <AppIcon iconKey="checklist" size="sm" />
         </span>
-        연식·연료·단자 확인 후 주문하세요
+        주문 전 30초, 연식·연료·단자만 먼저 보세요
       </h2>
       <ul className="mt-3 list-none space-y-2 p-0">
         <li className={bm.stepItem}>
@@ -25,7 +25,7 @@ export function HomeOrderGuide() {
         <li className={bm.stepItem}>
           <span className={bm.stepNum}>2</span>
           <p className="text-sm font-medium leading-relaxed text-slate-700">
-            확실하지 않으면 체크리스트와 사진 확인으로 최종 검증하세요.
+            헷갈리면 체크리스트와 사진 확인으로 오주문을 줄일 수 있습니다.
           </p>
         </li>
       </ul>
@@ -40,7 +40,7 @@ export function HomeOrderGuide() {
         </Link>
         <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
           <AppIcon iconKey="photoLabel" size="sm" />
-          사진 분석
+          사진으로 확인
         </Link>
       </div>
     </HomeSectionShell>

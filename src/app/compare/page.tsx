@@ -10,8 +10,8 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
   return (
     <PageShell
       pageLabel="배터리 비교"
-      title="배터리 비교"
-      description={`${selected.join(" vs ")} — 용량, CCA, ISG/BMS, 추천 차종 차이를 확인합니다.`}
+      title="둘 중 뭐가 맞는지 헷갈릴 때"
+      description={`${selected.join(" vs ")} — 용량·단자·장착 차종 차이를 나란히 봅니다.`}
       searchPlaceholder="비교할 배터리 규격 검색"
     >
       <Suspense fallback={<ContentAreaFallback lines={3} />}>

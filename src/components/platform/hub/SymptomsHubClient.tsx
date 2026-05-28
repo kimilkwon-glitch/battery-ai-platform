@@ -16,10 +16,10 @@ export function SymptomsHubClient() {
   return (
     <div className={`${bm.hubSymptom} overflow-x-hidden`} data-page="symptoms-hub">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
-        <p className={bm.intentBadge}>증상 진단 허브</p>
+        <p className={bm.intentBadge}>증상별 안내</p>
         <SectionHeader
-          title="증상으로 배터리 점검 시작하기"
-          description="시동·방전·보조배터리 증상부터 확인하고, DB 검색·사진 확인·문의로 이어갑니다."
+          title="시동이 늦거나 방전됐을 때, 먼저 볼 증상들"
+          description="증상에 맞는 검색·사진 확인·문의로 이어갑니다. 차종·연식·연료도 함께 보는 것이 안전합니다."
           iconKey="symptom"
         />
       </section>
@@ -43,7 +43,7 @@ export function SymptomsHubClient() {
                   <dd className="mt-0.5 font-medium text-slate-700">{s.batteryChance}</dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-slate-400">바로 확인</dt>
+                  <dt className="font-bold text-slate-400">먼저 볼 것</dt>
                   <dd className="mt-0.5 font-medium text-slate-600">{s.quickCheck}</dd>
                 </div>
               </dl>
@@ -56,8 +56,8 @@ export function SymptomsHubClient() {
                   관련 검색
                 </Link>
                 {s.diagnosisSlug ? (
-                  <Link className={`${bm.btnSecondary} text-[10px]`} href={symptomDiagnosisHref(s.diagnosisSlug)}>
-                    단계 확인
+                  <Link className={`${bm.btnSecondary} hidden text-[10px] sm:inline-flex`} href={symptomDiagnosisHref(s.diagnosisSlug)}>
+                    단계별 보기
                   </Link>
                 ) : null}
                 {s.qnaHref ? (
@@ -73,24 +73,21 @@ export function SymptomsHubClient() {
 
       <section className={bm.platformStrip}>
         <p className="text-xs font-medium text-slate-600">
-          증상만으로 최종 규격을 단정하지 않습니다. 차종·연식·연료와 함께 확인하세요.
+          증상만으로 규격을 정하지 않습니다. 차종·연식·연료와 함께 보시면 오주문을 줄일 수 있습니다.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Link className={`${bm.btnGhost} inline-flex items-center gap-1 text-xs`} href={HUB_ORDER_CHECKLIST}>
             <AppIcon iconKey="checklist" size="sm" />
-            오주문 체크리스트
+            주문 전 체크리스트
           </Link>
           <Link className={`${bm.btnGhost} inline-flex items-center gap-1 text-xs`} href={HUB_PHOTO_CHECK}>
             <AppIcon iconKey="photoCheck" size="sm" />
             사진 확인 안내
           </Link>
-          <Link className={`${bm.btnGhost} text-xs`} href="/diagnosis">
-            기존 증상 진단 흐름
-          </Link>
         </div>
       </section>
 
-      <PlatformHubLinks title="연결 허브" limit={4} />
+      <PlatformHubLinks title="관련 안내" limit={4} />
     </div>
   );
 }

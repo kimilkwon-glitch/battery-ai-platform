@@ -5,7 +5,7 @@ import {
   HUB_SERVICE,
   HUB_SYMPTOMS,
 } from "@/lib/platform-hub-routes";
-import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS, HUB_STORE } from "@/lib/customer-hub-routes";
+import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
 
 export type HubBadgeTone = "ok" | "warn" | "check" | "neutral";
 
@@ -17,17 +17,17 @@ export type HubCheckItem = {
 };
 
 export const ORDER_CHECKLIST_ITEMS: HubCheckItem[] = [
-  { title: "차종 확인", body: "모델명·세대(예: 포터2 2020년 이후)를 먼저 확인합니다.", badge: "필수", tone: "check" },
-  { title: "연식 확인", body: "90R/100R처럼 연식에 따라 규격이 바뀌는 차종이 많습니다.", badge: "필수", tone: "check" },
-  { title: "연료·하이브리드·EV", body: "가솔린/디젤/하이브리드/EV 보조 12V는 규격이 다릅니다.", badge: "필수", tone: "warn" },
-  { title: "ISG·BMS 여부", body: "ISG 차량은 AGM·DIN 다운그레이드에 주의합니다.", badge: "주의", tone: "warn" },
-  { title: "현재 배터리 사진·규격", body: "라벨 코드·L/R 단자가 보이는 사진이 가장 정확합니다.", badge: "권장", tone: "ok" },
+  { title: "차량명", body: "모델명·세대(예: 포터2 2020년 이후)를 먼저 봅니다.", badge: "필수", tone: "check" },
+  { title: "연식", body: "같은 차도 연식이 바뀌면 90R·100R처럼 달라질 수 있습니다.", badge: "필수", tone: "check" },
+  { title: "연료·하이브리드·EV", body: "가솔린·디젤·하이브리드·EV 보조 12V는 규격이 다릅니다.", badge: "필수", tone: "warn" },
+  { title: "ISG·BMS", body: "ISG 차량은 AGM·DIN을 잘못 바꾸면 문제가 생길 수 있습니다.", badge: "주의", tone: "warn" },
+  { title: "현재 배터리 사진", body: "라벨 코드·L/R 단자가 보이면 가장 안전합니다.", badge: "권장", tone: "ok" },
 ];
 
 export const ORDER_CHECKLIST_SECTIONS = [
   {
     title: "단자 방향 (L/R)",
-    body: "100R과 AGM95L처럼 단자 방향이 다르면 단순 대체가 어렵습니다. 플러스 단자 위치를 사진으로 확인하세요.",
+    body: "100R과 AGM95L처럼 단자 방향이 다르면 단순 대체가 어렵습니다. 플러스 단자 위치는 사진으로 보는 것이 안전합니다.",
     badge: "주의",
     tone: "warn" as HubBadgeTone,
     href: compareHref("100R", "AGM95L"),
@@ -35,7 +35,7 @@ export const ORDER_CHECKLIST_SECTIONS = [
   },
   {
     title: "AGM · DIN · CMF · 일반",
-    body: "차량 전장·ISG에 맞는 타입인지 확인합니다. DIN을 CMF로, AGM을 일반 MF로 바꾸면 문제가 생길 수 있습니다.",
+    body: "차량 전장·ISG에 맞는 타입인지 봅니다. DIN을 CMF로, AGM을 일반 MF로 바꾸면 문제가 생길 수 있습니다.",
     badge: "확인",
     tone: "check" as HubBadgeTone,
     href: "/guide/spec?guide=agm-vs-din",
@@ -43,7 +43,7 @@ export const ORDER_CHECKLIST_SECTIONS = [
   },
   {
     title: "CMF80L ≠ 80L",
-    body: "표기를 줄이면 다른 규격으로 오주문됩니다. 라벨의 전체 코드를 확인하세요.",
+    body: "표기를 줄이면 다른 규격으로 오주문됩니다. 라벨의 전체 코드를 봅니다.",
     badge: "주의",
     tone: "warn" as HubBadgeTone,
     href: searchHref("CMF80L"),
@@ -82,21 +82,21 @@ export type SymptomHubItem = {
 export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
   {
     id: "slow-start",
-    title: "시동이 늦게 걸림",
+    title: "시동이 평소보다 늦게 걸림",
     causes: "배터리 약화, 터미널 산화, 겨울철 CCA 부족",
     batteryChance: "높음",
-    quickCheck: "시동 전압·경고등·최근 주행 패턴",
-    action: "CCA·용량 확인 후 규격 검색",
+    quickCheck: "시동 전압·경고등·최근 주행",
+    action: "CCA·용량을 보고 규격 검색으로 이어가기",
     searchQuery: "시동 늦게 걸림",
     diagnosisSlug: "slow-engine-start",
   },
   {
     id: "blackbox",
-    title: "블랙박스 방전",
+    title: "블랙박스로 방전",
     causes: "상시전원, 암전류, 배터리 노후",
     batteryChance: "중~높음",
     quickCheck: "상시전원 설정·퓨즈·주차 일수",
-    action: "차종+방전 증상으로 검색",
+    action: "차종과 방전 증상으로 검색",
     searchQuery: "레이 블랙박스 방전",
     diagnosisSlug: "blackbox-drain",
     qnaHref: "/community?q=블랙박스",
@@ -107,7 +107,7 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
     causes: "자연 방전, 악세서리 암전류",
     batteryChance: "중간",
     quickCheck: "주차 기간·경고등·도어 미닫힘",
-    action: "증상+차종 검색 후 점검",
+    action: "증상과 차종으로 검색",
     searchQuery: "장기주차 방전",
     diagnosisSlug: "winter-discharge",
   },
@@ -117,7 +117,7 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
     causes: "배터리 불량, 충전 시스템, 암전류",
     batteryChance: "높음",
     quickCheck: "점프 후 충전 여부·경고등",
-    action: "규격 확인 후 교체 검토",
+    action: "규격을 보고 교체 시점 검토",
     searchQuery: "점프스타트 후 방전",
   },
   {
@@ -136,7 +136,7 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
     causes: "보조 12V 약화, 장기 미사용",
     batteryChance: "높음",
     quickCheck: "HV 시스템 경고·보조배터리 위치",
-    action: "AGM60L 등 보조 규격 확인",
+    action: "보조 12V — AGM60L 등 규격 보기",
     searchQuery: "스포티지 NQ5 하이브리드",
     diagnosisSlug: "agm-replacement",
   },
@@ -146,7 +146,7 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
     causes: "보조 12V 방전, DC-DC 이상 가능",
     batteryChance: "중~높음",
     quickCheck: "12V 경고·충전 상태",
-    action: "EV 12V 규격·차종 확인",
+    action: "EV 12V 규격과 차종 보기",
     searchQuery: "EV6 12V",
     diagnosisSlug: "ev12v-discharge",
   },
@@ -166,7 +166,7 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
     causes: "저전압, 배터리·충전 계통",
     batteryChance: "중간",
     quickCheck: "경고 코드·시동 상태",
-    action: "차종 검색 후 규격 확인",
+    action: "차종 검색으로 규격 보기",
     searchQuery: "배터리 경고등",
     diagnosisSlug: "ibs-bms-error",
   },
@@ -176,7 +176,7 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
     causes: "규격 오류, 단자 방향, BMS 미등록",
     batteryChance: "확인 필요",
     quickCheck: "장착 규격·단자·BMS",
-    action: "오주문 체크리스트 확인",
+    action: "주문 전 체크리스트 보기",
     searchQuery: "배터리 교체 후",
   },
 ];
@@ -206,12 +206,12 @@ export const PHOTO_CHECK_STEPS = [
     step: 1,
     title: "언제 사진 확인이 필요한가",
     items: [
-      "DB 검색 결과가 2개 이상 후보일 때",
+      "검색 결과 후보가 두 개 이상일 때",
       "연식·연료가 불확실할 때",
       "CMF80L / 80L처럼 표기가 헷갈릴 때",
-      "택배 주문·자가장착 전 최종 확인",
+      "택배 주문·자가장착 전",
     ],
-    note: "사진확인은 메인 답변이 아니라 보조 검증입니다. 차종·연식 확인과 함께 쓰세요.",
+    note: "차종·연식을 본 뒤, 라벨·단자 사진으로 한 번 더 보는 보조 단계입니다.",
   },
   {
     step: 2,
@@ -258,7 +258,7 @@ export const SERVICE_OPTIONS: ServiceOption[] = [
   {
     title: "덕천점 내방",
     desc: "직영점에서 규격 확인·장착 상담",
-    href: `${HUB_STORE}#store-deokcheon`,
+    href: HUB_STORE_ANCHORS.deokcheon,
     when: "북구·동래·금정권 — 덕천·구포·만덕·화명·대저 등",
     region: "북부 직영",
     tone: "primary" as const,
@@ -266,7 +266,7 @@ export const SERVICE_OPTIONS: ServiceOption[] = [
   {
     title: "학장점 내방",
     desc: "직영점에서 규격 확인·장착 상담",
-    href: `${HUB_STORE}#store-hakjang`,
+    href: HUB_STORE_ANCHORS.hakjang,
     when: "사상구·사하·강서권 — 학장·감전·괘법·주례·엄궁·사하 등",
     region: "서부 직영",
     tone: "primary" as const,
@@ -274,7 +274,7 @@ export const SERVICE_OPTIONS: ServiceOption[] = [
   {
     title: "부산 출장",
     desc: "현장에서 시동 불가·긴급 교체 상담",
-    href: `${HUB_STORE}#visit`,
+    href: HUB_STORE_ANCHORS.visit,
     when: "지금 당장 시동이 안 걸릴 때",
     tone: "secondary" as const,
   },
@@ -287,7 +287,7 @@ export const SERVICE_OPTIONS: ServiceOption[] = [
   },
   {
     title: "사진 확인 후 상담",
-    desc: "라벨·단자 사진으로 최종 검증",
+    desc: "라벨·단자 사진으로 규격 보조 확인",
     href: HUB_PHOTO,
     when: "규격이 헷갈리거나 처음 주문할 때",
     tone: "ghost" as const,
@@ -295,7 +295,7 @@ export const SERVICE_OPTIONS: ServiceOption[] = [
 ];
 
 export const SERVICE_SCENARIOS = [
-  { situation: "지금 당장 시동이 안 걸림", pick: "출장 또는 가까운 직영점", href: `${HUB_STORE}#visit` },
+  { situation: "지금 당장 시동이 안 걸림", pick: "출장 또는 가까운 직영점", href: HUB_STORE_ANCHORS.visit },
   { situation: "규격을 알고 있음", pick: "택배 주문 + 오주문 체크", href: HUB_ORDER_CHECKLIST },
   { situation: "자가장착 자신 있음", pick: "택배 + 사진 확인", href: HUB_PHOTO_CHECK },
   { situation: "하이브리드/EV", pick: "상담 후 진행 권장", href: searchHref("하이브리드 배터리") },

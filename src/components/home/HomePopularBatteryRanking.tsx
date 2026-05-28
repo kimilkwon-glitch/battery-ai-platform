@@ -23,9 +23,9 @@ export function HomePopularBatteryRanking() {
   return (
     <HomeSectionShell rhythm="catalog" id="home-popular-batteries" data-section="popular-batteries">
       <SectionHeader
-        label="규격 허브"
+        label="인기 규격"
         title="많이 찾는 배터리 규격"
-        description="DB에 등록된 대표 규격 — 상세 허브에서 차량·비교·오주문 방지를 확인하세요."
+        description="자주 찾는 규격만 모았습니다. 단자 방향·차종 적용은 카드에서 바로 볼 수 있습니다."
         iconKey="batterySpec"
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -58,7 +58,7 @@ export function HomePopularBatteryRanking() {
               </Link>
               <Link className={`${bm.btnCardGhost} inline-flex items-center gap-1`} href={HUB_PHOTO}>
                 <AppIcon iconKey="photoCheck" size="xs" />
-                사진확인
+                사진으로 확인
               </Link>
             </CardInfoActions>
           </CardHorizontalLayout>

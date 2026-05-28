@@ -124,7 +124,7 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         <div className={`${bm.heroPanelAccent} p-4 sm:p-5`}>
           <p className={`${bm.label} inline-flex items-center gap-1.5`}>
             <AppIcon iconKey="batterySpec" size="sm" />
-            배터리 규격 허브 · 구매 전 확신
+            배터리 규격 안내
           </p>
           <h1 className={`${bm.specTitle} mt-1`} data-spec-code>
             {displayCode}
@@ -157,7 +157,7 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
             <CtaHierarchy
               ctas={[
                 { label: "택배 주문하기", href: HUB_SHOP_ANCHORS.delivery },
-                { label: "사진으로 최종 확인", href: HUB_PHOTO },
+                { label: "사진으로 확인", href: HUB_PHOTO },
                 { label: "내 차량 기준으로 확인", href: searchHref },
               ]}
               links={[
@@ -248,11 +248,11 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
           <div className={`${bm.surfaceMuted} mt-3 p-4`}>
             <p className="text-sm font-bold text-slate-800">대표 적용 차량 데이터 준비중</p>
             <p className="mt-1 text-xs font-medium text-slate-600">
-              현재 장착 배터리 사진으로 최종 확인하세요.
+              현재 장착 배터리 사진이 있으면 규격 확인이 더 안전합니다.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Link className={`${bm.btnPrimary} text-xs`} href={HUB_PHOTO}>
-                사진으로 최종 확인
+                사진으로 확인
               </Link>
               <Link className={`${bm.btnSecondary} text-xs`} href={searchHref}>
                 차량 검색
@@ -310,7 +310,7 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
           </div>
         ) : null}
         <Link className={`${bm.btnPrimary} mt-4 inline-flex text-xs`} href={HUB_PHOTO}>
-          사진으로 최종 확인
+          사진으로 확인
         </Link>
       </section>
 
@@ -320,7 +320,7 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         <CtaHierarchy
           ctas={[
             { label: "택배 주문하기", href: HUB_SHOP_ANCHORS.delivery },
-            { label: "사진으로 최종 확인", href: HUB_PHOTO },
+            { label: "사진으로 확인", href: HUB_PHOTO },
             { label: "부산 매장/출장 문의", href: HUB_STORE },
           ]}
           links={[{ label: "내 차량 다시 검색", href: searchHref }]}

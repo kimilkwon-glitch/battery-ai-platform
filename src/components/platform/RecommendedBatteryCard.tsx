@@ -42,7 +42,7 @@ export function RecommendedBatteryCard({
       {primary ? (
         <div className="flex flex-wrap items-center gap-2 border-b border-[var(--bm-border)] bg-gradient-to-r from-[var(--bm-hero-from)] to-[var(--bm-accent-soft)]/20 px-4 py-2.5">
           <span className={`${bm.badge} ${bm.statusRecommended}`}>추천</span>
-          <span className="text-[11px] font-semibold text-[var(--bm-muted)]">fitment 판정 · DB 1순위</span>
+          <span className="text-[11px] font-semibold text-[var(--bm-muted)]">추천 · 1순위 후보</span>
         </div>
       ) : null}
       <div className="flex flex-col md:grid md:grid-cols-[44%_56%]">

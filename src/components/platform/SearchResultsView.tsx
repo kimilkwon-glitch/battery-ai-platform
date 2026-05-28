@@ -13,14 +13,15 @@ import { bm } from "@/lib/design-tokens";
 import { getBattery } from "@/lib/platform-data";
 import type { SearchPageResults } from "@/lib/search-page-results";
 import { getSearchHref } from "@/lib/battery-search";
+import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
 
 type Props = {
   data: SearchPageResults;
 };
 
 const FALLBACK_CTAS = [
-  { label: "사진으로 확인", href: "/analysis/photo" },
-  { label: "문의하기", href: "/service-center" },
+  { label: "사진으로 확인", href: HUB_PHOTO },
+  { label: "문의하기", href: HUB_STORE },
   { label: "규격 가이드 보기", href: "/guides" },
   { label: "차량 정보 더 입력", href: "/vehicles" },
 ] as const;
@@ -119,7 +120,7 @@ export function SearchResultsView({ data }: Props) {
   if (!data.query) {
     return (
       <div className={`${bm.card} p-5`}>
-        <p className="text-sm font-bold text-slate-700">차종, 배터리 규격, 증상을 입력해 검색하세요.</p>
+        <p className="text-sm font-bold text-slate-700">차종·규격·증상을 입력하면 맞는 후보를 보여드립니다.</p>
         <p className="mt-2 text-xs font-medium text-slate-500">예시 검색어</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {data.emptySuggestions.map((s) => (

@@ -14,8 +14,8 @@ export function HomePopularQna() {
       <div className="border-b border-slate-200/80 pb-4">
         <SectionHeader
           label="자주 묻는 질문"
-          title="규격·연식·방전 — 바로 답 찾기"
-          description="포터2 90R/100R, 블랙박스 방전, EV 12V, AGM 차이, CMF80L 검색까지 한곳에서 연결합니다."
+          title="많이 헷갈리는 질문만 먼저 모았습니다"
+          description="포터2 90R/100R, 블랙박스 방전, EV 12V, AGM 차이처럼 주문 전에 막히는 질문입니다."
           iconKey="qna"
         />
         <div className="mt-3 flex flex-wrap gap-2">
@@ -26,7 +26,7 @@ export function HomePopularQna() {
             방전 증상
           </Link>
           <Link className={`${bm.btnGhost} text-[10px]`} href="/community">
-            질문 허브
+            Q&A 전체
           </Link>
         </div>
       </div>

@@ -38,7 +38,7 @@ export function VehicleBatterySummaryBox({
       {rep ? <p className="mt-1 text-2xl font-black text-[var(--bm-primary)]">{rep}</p> : null}
       <p className="mt-2 flex items-start gap-1.5 text-[11px] font-medium text-slate-500">
         <AppIcon iconKey="verify" size="xs" className="mt-0.5 shrink-0" />
-        <span>아래 연료별 카드에서 규격·이미지를 확인하세요.</span>
+        <span>아래 연료별 카드에서 규격·이미지를 볼 수 있습니다.</span>
       </p>
     </div>
   );

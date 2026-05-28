@@ -28,7 +28,7 @@ export function ComparePresetHub() {
       <SectionHeader
         label="비교 센터"
         title="헷갈리는 규격 빠른 비교"
-        description="단자 방향·용량·차종 주의가 한눈에 보이도록 정리했습니다."
+        description="비슷해 보여도 단자 방향·타입·장착 차종이 다를 수 있습니다."
         iconKey="compare"
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">

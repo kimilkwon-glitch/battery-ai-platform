@@ -8,7 +8,7 @@ export default function PhotoCheckPage() {
     <PageShell
       pageLabel="사진 확인"
       title="사진 확인 안내"
-      description="라벨·단자·트레이 사진으로 오주문을 줄이는 보조 검증 가이드입니다."
+      description="라벨·단자·트레이 사진으로 오주문을 줄이는 보조 안내입니다."
       searchPlaceholder="차종·규격 검색"
     >
       <PhotoCheckClient />

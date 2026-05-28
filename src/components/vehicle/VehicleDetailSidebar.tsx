@@ -42,7 +42,7 @@ export function VehicleDetailSidebar({
       {!hideBatteryLinks ? (
         <SidebarPanel iconKey="batterySpec" title={multiFuel ? "규격 바로가기" : "이 차량 추천 배터리"}>
           {recommendedBatteries.length === 0 ? (
-            <p className="text-xs font-semibold text-slate-500">상단 연료별 카드에서 확인하세요.</p>
+            <p className="text-xs font-semibold text-slate-500">상단 연료별 카드에서 규격을 볼 수 있습니다.</p>
           ) : multiFuel ? (
             <ul className="space-y-1.5">
               {recommendedBatteries.map((code) => (
@@ -82,7 +82,7 @@ export function VehicleDetailSidebar({
       ) : (
         <SidebarPanel iconKey="batterySpec" title="배터리 확인">
           <p className="text-xs font-semibold text-slate-500">
-            연료별 배터리 카드는 본문 상단에서 확인하세요.
+            연료별 배터리 카드는 본문 상단에 있습니다.
           </p>
         </SidebarPanel>
       )}

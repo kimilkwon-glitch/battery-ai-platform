@@ -8,7 +8,7 @@ export default function ServiceHubPage() {
     <PageShell
       pageLabel="매장·택배"
       title="매장·출장·택배 안내"
-      description="덕천·학장 직영점, 출장, 택배 중 상황에 맞는 이용 방법을 선택합니다."
+      description="시동이 안 걸리면 출장, 규격을 알면 택배. 방문·출장·택배 중 상황에 맞게 고르시면 됩니다."
       searchPlaceholder="차종·규격 검색"
     >
       <ServiceHubClient />

@@ -41,7 +41,7 @@ export function HomeTrendingSection() {
       >
         <IconBadge iconKey="symptom" tone="amber" />
         <span className="text-xs font-semibold text-amber-950">
-          증상(방전·시동지연)부터 확인 → 증상 진단 허브
+          시동·방전 증상부터 보기 → 증상별 안내
         </span>
       </Link>
     </HomeSectionShell>

@@ -18,7 +18,7 @@ export type SearchCtaLink = { label: string; href: string };
 
 export const PRIMARY_BATTERY_CTAS = (code: string): SearchCtaLink[] => [
   { label: "이 규격 자세히 보기", href: `/batteries/${encodeURIComponent(code)}` },
-  { label: "사진으로 최종 확인", href: HUB_PHOTO },
+  { label: "사진으로 확인", href: HUB_PHOTO },
   { label: "문의하기", href: "/ai" },
 ];
 
@@ -55,7 +55,7 @@ export function vehicleContextLine(vehicleLabel: string, fieldLabel: string): st
 
 export function buildNoSpecPrimaryCtas(vehicleLabel: string, query: string): SearchCtaLink[] {
   return [
-    { label: "DB 등록 요청", href: buildDbRegistrationHref(vehicleLabel, query) },
+    { label: "규격 등록 요청", href: buildDbRegistrationHref(vehicleLabel, query) },
     { label: "사진 보내기", href: HUB_PHOTO },
     { label: "문의하기", href: "/ai" },
   ];

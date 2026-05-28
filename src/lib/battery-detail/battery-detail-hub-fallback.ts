@@ -104,21 +104,21 @@ function buildCompareCards(code: string, relatedCodes: string[]): HubCompareCard
 
 function buildMisorderTips(code: string): string[] {
   const tips = [
-    "현재 장착 배터리 라벨·단자 방향을 사진으로 확인하세요.",
+    "현재 장착 배터리 라벨·단자 방향은 사진으로 보는 것이 안전합니다.",
     "연식·연료·옵션에 따라 규격이 달라질 수 있습니다.",
-    "AGM·DIN·CMF·JIS를 무조건 대체 관계로 보지 마세요.",
+    "AGM·DIN·CMF·JIS를 서로 다른 계열로 보는 것이 좋습니다.",
   ];
   if (/^EV\s*12V/i.test(code)) {
-    tips.unshift("고전압 메인 배터리 주문이 아닙니다 — 보조 12V만 확인하세요.");
+    tips.unshift("고전압 메인 배터리가 아닙니다 — 보조 12V만 보시면 됩니다.");
   }
   if (/CMF80L/i.test(code) || normalizeBatteryCode(code) === "80L") {
     tips.unshift("CMF80L은 80L로 축약해 주문하지 마세요.");
   }
   if (/100R|90R/i.test(code)) {
-    tips.unshift("R타입 단자·연식(포터2 90R/100R)을 함께 확인하세요.");
+    tips.unshift("R타입 단자·연식(포터2 90R/100R)을 함께 보세요.");
   }
   if (/^DIN/i.test(code)) {
-    tips.unshift("DIN 트레이·홀 위치·고정 방식을 확인하세요.");
+    tips.unshift("DIN 트레이·홀 위치·고정 방식을 함께 보세요.");
   }
   return tips.slice(0, 6);
 }
@@ -126,10 +126,10 @@ function buildMisorderTips(code: string): string[] {
 function buildCautionNotes(code: string): string[] {
   const notes: string[] = [];
   if (isDeprioritizedBatterySpec(code)) {
-    notes.push("판매 주력 규격이 아닙니다 — 메인 추천보다 사진·차량 확인을 우선하세요.");
+    notes.push("판매 주력 규격이 아닙니다 — 사진·차종 정보를 함께 보는 것이 안전합니다.");
   }
   if (/^EV\s*12V/i.test(code)) {
-    notes.push("EV6·아이오닉5 등은 차종별 보조 12V 규격을 확인하세요.");
+    notes.push("EV6·아이오닉5 등은 차종별 보조 12V 규격이 다를 수 있습니다.");
   }
   return notes;
 }

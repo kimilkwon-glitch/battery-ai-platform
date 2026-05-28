@@ -1,22 +1,26 @@
-/** 고객 목적별 대표 허브 URL — 메뉴·CTA·검색 연결 단일 소스 */
+/** 고객 목적별 대표 URL — 메뉴·CTA·검색 연결 단일 소스 */
 
 export const HUB_SEARCH = "/search";
 export const HUB_VEHICLES = "/vehicles";
 export const HUB_BATTERY = "/guide/spec";
-export const HUB_PHOTO = "/analysis/photo";
-export const HUB_STORE = "/service-center";
+/** 사진 확인 안내 (가이드) */
+export const HUB_PHOTO = "/photo-check";
+/** 매장·출장·택배 안내 */
+export const HUB_STORE = "/service";
+/** 직영점 상세·앵커 (매장 지도·연락) */
+export const HUB_STORE_DETAIL = "/service-center";
 export const HUB_SHOP = "/shop";
 export const HUB_QA = "/community";
 
 export const HUB_STORE_ANCHORS = {
-  stores: `${HUB_STORE}#stores`,
-  regions: `${HUB_STORE}#regions`,
-  visit: `${HUB_STORE}#visit`,
-  consultPrep: `${HUB_STORE}#consult-prep`,
-  photo: `${HUB_STORE}#photo-guide`,
-  contact: `${HUB_STORE}#contact`,
-  deokcheon: `${HUB_STORE}#store-deokcheon`,
-  hakjang: `${HUB_STORE}#store-hakjang`,
+  stores: `${HUB_STORE_DETAIL}#stores`,
+  regions: `${HUB_STORE_DETAIL}#regions`,
+  visit: `${HUB_STORE_DETAIL}#visit`,
+  consultPrep: `${HUB_STORE_DETAIL}#consult-prep`,
+  photo: `${HUB_STORE_DETAIL}#photo-guide`,
+  contact: `${HUB_STORE_DETAIL}#contact`,
+  deokcheon: `${HUB_STORE_DETAIL}#store-deokcheon`,
+  hakjang: `${HUB_STORE_DETAIL}#store-hakjang`,
 } as const;
 
 export const HUB_SHOP_ANCHORS = {
@@ -29,7 +33,7 @@ export const HUB_SHOP_ANCHORS = {
   contact: `${HUB_SHOP}#shop-contact`,
 } as const;
 
-/** 예전 더보기 메뉴 라벨 → 대표 허브(앵커) */
+/** 예전 더보기 메뉴 라벨 → 대표 URL(앵커) */
 export const LEGACY_MENU_HREF: Record<string, string> = {
   "직영점 안내": HUB_STORE_ANCHORS.stores,
   "출장/내방 가능 지역": HUB_STORE_ANCHORS.regions,

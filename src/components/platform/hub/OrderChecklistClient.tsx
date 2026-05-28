@@ -24,10 +24,10 @@ export function OrderChecklistClient() {
   return (
     <div className={`${bm.hubOrder} overflow-x-hidden`} data-page="order-checklist">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
-        <p className={bm.intentBadge}>오주문 방지 센터</p>
+        <p className={bm.intentBadge}>오주문 방지</p>
         <SectionHeader
-          title="배터리 주문 전 확인 체크리스트"
-          description="택배·자가장착·전화 문의 전에 확인하면 반품·재주문을 줄일 수 있습니다. DB 매칭 결과와 함께 사용하세요."
+          title="배터리 주문 전, 딱 세 가지만 먼저 보세요"
+          description="차종·연식·단자 방향만 봐도 실수는 크게 줄어듭니다. 규격을 알아도 L/R 단자가 다르면 장착이 안 될 수 있습니다."
           iconKey="checklist"
         />
         <ul className="mt-4 list-none space-y-3 p-0">
@@ -51,7 +51,7 @@ export function OrderChecklistClient() {
       </section>
 
       <section className={`${bm.card} ${bm.cardPad}`}>
-        <SectionHeader title="꼭 확인할 주제" description="헷갈리기 쉬운 규격·단자·타입" iconKey="terminal" />
+        <SectionHeader title="헷갈리기 쉬운 주제" description="단자·타입·연식" iconKey="terminal" />
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {ORDER_CHECKLIST_SECTIONS.map((s) => (
             <article className={`${bm.cardInteractive} p-4`} key={s.title}>
@@ -70,11 +70,11 @@ export function OrderChecklistClient() {
       </section>
 
       <section className={bm.platformStrip}>
-        <SectionHeader title="다음 행동" description="확인 후 이렇게 이어가세요" iconKey="route" />
+        <SectionHeader title="다음 단계" description="확인 후 이렇게 이어가 보세요" iconKey="route" />
         <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
             <AppIcon iconKey="photoCheck" size="sm" className="!text-white" />
-            사진으로 최종 확인
+            사진으로 확인
           </Link>
           <Link className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs`} href="/compare">
             <AppIcon iconKey="compare" size="sm" />
@@ -82,20 +82,20 @@ export function OrderChecklistClient() {
           </Link>
           <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_SYMPTOMS}>
             <AppIcon iconKey="symptom" size="sm" />
-            증상 진단
+            증상별 안내
           </Link>
-          <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_QA}>
+          <Link className={`${bm.btnGhost} hidden items-center gap-1.5 text-xs sm:inline-flex`} href={HUB_QA}>
             <AppIcon iconKey="qna" size="sm" />
-            Q&A 허브
+            Q&A
           </Link>
           <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_SHOP_ANCHORS.orderCheck}>
             <AppIcon iconKey="delivery" size="sm" />
-            택배 주문 전 확인
+            택배 주문 전 보기
           </Link>
         </div>
       </section>
 
-      <PlatformHubLinks title="다른 허브" limit={4} />
+      <PlatformHubLinks title="관련 안내" limit={4} />
     </div>
   );
 }

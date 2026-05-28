@@ -23,7 +23,7 @@ export function HomeStoreHub() {
       <SectionHeader
         label="부산 직영"
         title="덕천점 · 학장점 · 출장 교체"
-        description="북구·사상권 직영점 기준으로 내방·출장 일정을 안내합니다. 가격·서비스 정책은 동일합니다."
+        description="부산은 가까운 직영점 기준으로 내방·출장을 안내합니다. 덕천·학장 직영점 정책은 동일합니다."
         iconKey="store"
       />
       <div className="grid gap-3 sm:grid-cols-2">
@@ -63,7 +63,7 @@ export function HomeStoreHub() {
       </div>
       <Link className={`${bm.btnNavy} mt-4 inline-flex items-center gap-1.5 text-xs`} href={HUB_STORE}>
         <AppIcon iconKey="store" size="sm" className="!text-white" />
-        매장·출장 허브
+        매장·출장 안내
       </Link>
     </HomeSectionShell>
   );

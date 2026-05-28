@@ -290,7 +290,7 @@ export function photoHref(q?: string, vehicleId?: string) {
   if (q) p.set("battery", q);
   if (vehicleId) p.set("vehicle", vehicleId);
   const s = p.toString();
-  return s ? `/analysis/photo?${s}` : "/analysis/photo";
+  return s ? `/photo-check?${s}` : "/photo-check";
 }
 
 export function serviceHref(vehicleId?: string, battery?: string, symptomId?: string) {
@@ -299,7 +299,7 @@ export function serviceHref(vehicleId?: string, battery?: string, symptomId?: st
   if (battery) p.set("battery", battery);
   if (symptomId) p.set("symptom", symptomId);
   const s = p.toString();
-  return s ? `/service-center?${s}` : "/service-center";
+  return s ? `/service?${s}` : "/service";
 }
 
 export function aiHref(q?: string) {

@@ -372,7 +372,7 @@ export function CompareClient({ initial }: { initial: string[] }) {
 
       <section className={bm.platformStrip}>
         <p className={bm.label}>다음 단계</p>
-        <h2 className={`${bm.titleMd} mt-1`}>비교 후 이렇게 확인하세요</h2>
+        <h2 className={`${bm.titleMd} mt-1`}>비교 후에도 헷갈리면</h2>
         <p className={`mt-2 ${bm.textSub}`}>
           두 규격 중 어떤 배터리가 맞는지는 차량 연식·연료·트레이 공간·단자 방향에 따라 달라질 수
           있습니다. 정확한 확인은 차량 정보 또는 현재 배터리 사진을 기준으로 진행해 주세요.

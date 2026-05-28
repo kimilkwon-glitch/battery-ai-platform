@@ -127,7 +127,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
           </div>
         </Panel>
 
-        <Panel title="플랫폼 허브" iconKey="route">
+        <Panel title="관련 안내" iconKey="route">
           <div className="space-y-1.5">
             <Link className={`${bm.btnNavy} w-full`} href="/order-checklist">
               오주문 방지 체크
