@@ -16,28 +16,42 @@ export function isBatteryStageVariant(v: BatteryImageVariant): v is BatteryImage
   return v === "card" || v === "cardCompact" || v === "hero" || v === "search" || v === "compare";
 }
 
-/** stage 외곽 높이 — product-card 160px 전후 (잘림 없이 img가 stage 주인공) */
+/**
+ * TODO(asset-normalize): 원본 PNG 캔버스 여백이 많으면 CSS만으로 상품 크기 한계.
+ * product-card variant scale은 stage 170px 안에서만 적용 — 잘림 방지용 여유 확보.
+ */
+
+/** stage 외곽 — product-card 170px (overflow-hidden은 stage만) */
 export const batteryImageStageHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[160px] min-h-[160px]",
-  cardCompact: "h-[150px] min-h-[150px]",
+  card: "h-[170px] min-h-[170px]",
+  cardCompact: "h-[160px] min-h-[160px]",
   hero: "h-[200px] sm:h-[220px]",
-  search: "h-[160px] min-h-[160px]",
-  compare: "h-[160px] min-h-[160px]",
+  search: "h-[170px] min-h-[170px]",
+  compare: "h-[170px] min-h-[170px]",
 };
 
 export const batteryImageStageInset =
-  "flex h-full w-full items-center justify-center px-1 py-0";
+  "flex h-full w-full items-center justify-center overflow-visible px-1 py-1";
 
-/** 실제 배터리 img — height 기준 125~140px (width 기준 확대 금지) */
+/** img height 135~150px — width auto, height 기준 only */
 export const batteryImageStageImgHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[136px] min-h-[136px]",
-  cardCompact: "h-[128px] min-h-[128px]",
+  card: "h-[145px] min-h-[145px]",
+  cardCompact: "h-[136px] min-h-[136px]",
   hero: "h-[176px] sm:h-[196px]",
-  search: "h-[136px] min-h-[136px]",
-  compare: "h-[132px] min-h-[132px]",
+  search: "h-[145px] min-h-[145px]",
+  compare: "h-[140px] min-h-[140px]",
 };
 
-export const batteryImageStageImgMaxWidth = "max-w-[92%]";
+export const batteryImageStageImgMaxWidth = "max-w-[94%]";
+
+/** asset 여백 보정 — stage 높이 확보 후 center scale (잘림 시 scale 낮출 것) */
+export const batteryImageStagePhotoScale: Record<BatteryImageStageVariant, string> = {
+  card: "inline-flex origin-center scale-[1.18]",
+  cardCompact: "inline-flex origin-center scale-[1.14]",
+  hero: "inline-flex origin-center",
+  search: "inline-flex origin-center scale-[1.18]",
+  compare: "inline-flex origin-center scale-[1.14]",
+};
 
 /** height 기준 img class (fill 미사용) */
 export const batteryImageHeightFit = "w-auto object-contain object-center";

@@ -50,7 +50,7 @@ function ShowcaseImage({ code, brand }: { code: string; brand: BrandTab }) {
     <BatteryHeightImage
       src={src}
       alt={`${code} ${brand}`}
-      heightClass="h-[136px] min-h-[136px]"
+      heightClass="h-[145px] min-h-[145px]"
       maxWidthClass={batteryImageStageImgMaxWidth}
       onError={() => setIndex((i) => (i + 1 < candidates.length ? i + 1 : i))}
     />
@@ -115,7 +115,7 @@ export function HomeBatteryShowcaseCard({
           </span>
         ) : null}
 
-        <div className="flex h-[160px] min-h-[160px] items-center justify-center">
+        <div className="flex h-[170px] min-h-[170px] items-center justify-center">
           <ShowcaseImage brand={brand} code={code} />
         </div>
       </div>

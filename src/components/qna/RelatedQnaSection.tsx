@@ -5,15 +5,12 @@ import { useMemo, useState } from "react";
 import { QnaQuestionCard } from "@/components/platform/QnaQuestionCard";
 import { bm } from "@/lib/design-tokens";
 import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
-import type { ImageSlotDefinition } from "@/lib/media/image-slot-registry";
 import type { Question } from "@/lib/platform-types";
 
 type Props = {
   title?: string;
   description?: string;
   questions: Question[];
-  /** 펼친 카드에서만 노출 — 접힌 상태 섹션 배너 금지 */
-  imageSlot?: ImageSlotDefinition | null;
   hubHref?: string;
   compact?: boolean;
 };
@@ -22,7 +19,6 @@ export function RelatedQnaSection({
   title = "관련 질문",
   description = "비슷한 고객 질문을 먼저 확인한 뒤, 사진·문의로 이어가세요.",
   questions,
-  imageSlot = null,
   hubHref = "/community",
   compact = true,
 }: Props) {
@@ -54,7 +50,6 @@ export function RelatedQnaSection({
               open={expanded === q.id}
               onToggle={() => setExpanded((prev) => (prev === q.id ? null : q.id))}
               compact={compact}
-              contentImageSlot={expanded === q.id ? imageSlot : null}
             />
           </li>
         ))}

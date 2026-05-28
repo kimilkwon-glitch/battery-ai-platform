@@ -13,6 +13,7 @@ import {
   batteryImageStageImgHeight,
   batteryImageStageImgMaxWidth,
   batteryImageStageInset,
+  batteryImageStagePhotoScale,
   type BatteryImageCompactVariant,
   type BatteryImageStageVariant,
 } from "@/lib/battery-image-stage";
@@ -123,15 +124,17 @@ export function BatteryStagePhoto({
 }) {
   return (
     <div className={batteryImageStageInset}>
-      <BatteryHeightImage
-        src={src}
-        alt={`${code} 배터리`}
-        heightClass={batteryImageStageImgHeight[variant]}
-        maxWidthClass={batteryImageStageImgMaxWidth}
-        onError={() => {
-          if (index < candidates.length - 1) onFail();
-        }}
-      />
+      <div className={batteryImageStagePhotoScale[variant]}>
+        <BatteryHeightImage
+          src={src}
+          alt={`${code} 배터리`}
+          heightClass={batteryImageStageImgHeight[variant]}
+          maxWidthClass={batteryImageStageImgMaxWidth}
+          onError={() => {
+            if (index < candidates.length - 1) onFail();
+          }}
+        />
+      </div>
     </div>
   );
 }

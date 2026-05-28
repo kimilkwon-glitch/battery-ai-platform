@@ -3,7 +3,6 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { RelatedQnaSection } from "@/components/qna/RelatedQnaSection";
 import { bm } from "@/lib/design-tokens";
 import { getHomeFeaturedQuestions } from "@/lib/qna";
-import { QNA_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { searchHref } from "@/lib/platform-data";
 
 export function HomePopularQna() {
@@ -34,7 +33,6 @@ export function HomePopularQna() {
           title="추천 Q&A"
           description=""
           questions={featured}
-          imageSlot={QNA_IMAGE_SLOTS.blackboxCheck()}
           hubHref="/community"
         />
       </div>

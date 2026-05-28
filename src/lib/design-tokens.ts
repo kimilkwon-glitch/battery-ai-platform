@@ -81,11 +81,11 @@ export const bm = {
     "flex flex-1 flex-col gap-0.5 border-t border-slate-100 px-2 pb-1.5 pt-1",
   batteryCardBtnRow: "mt-0.5 flex flex-wrap gap-1",
   btnCardNavy:
-    "inline-flex min-h-[32px] items-center justify-center rounded-lg bg-[var(--bm-navy)] px-2.5 py-1 text-[9px] font-black text-white transition motion-safe:hover:bg-slate-800",
+    "inline-flex min-h-[34px] items-center justify-center rounded-lg bg-[var(--bm-navy)] px-2.5 py-1 text-[9px] font-black text-white transition motion-safe:hover:bg-slate-800",
   btnCardSecondary:
-    "inline-flex min-h-[32px] items-center justify-center rounded-lg border border-[var(--bm-border)] bg-[var(--bm-card)] px-2.5 py-1 text-[9px] font-black text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)]",
+    "inline-flex min-h-[34px] items-center justify-center rounded-lg border border-[var(--bm-border)] bg-[var(--bm-card)] px-2.5 py-1 text-[9px] font-black text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)]",
   btnCardGhost:
-    "inline-flex min-h-[32px] items-center justify-center rounded-lg px-2 py-1 text-[9px] font-bold text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+    "inline-flex min-h-[34px] items-center justify-center rounded-lg px-2 py-1 text-[9px] font-bold text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
   btnWarning:
     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-orange-200 bg-[var(--bm-warning-bg)] px-5 text-sm font-black text-orange-900 transition motion-safe:hover:border-orange-300 motion-safe:hover:bg-orange-50",
   btnDanger:

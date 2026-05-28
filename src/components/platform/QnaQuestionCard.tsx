@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { ContentUiIcon } from "@/components/content/ContentUiIcon";
+import { QnaCollapsedThumb } from "@/components/qna/QnaCollapsedThumb";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { BatteryMiniSpecLink } from "@/components/battery/BatteryMiniSpecLink";
 import { extractBatteryCodesFromTags } from "@/lib/battery-tags";
@@ -10,7 +9,8 @@ import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 import type { ImageSlotDefinition } from "@/lib/media/image-slot-registry";
-import { getQuestionThumbnailUrl, resolveImageSlotAssetUrl } from "@/lib/media/resolve-asset-image";
+import { resolveImageSlotAssetUrl } from "@/lib/media/resolve-asset-image";
+import { resolveQnaExpandedImageSlot } from "@/lib/qna/qna-visual";
 import {
   compareHref,
   getBattery,
@@ -38,12 +38,12 @@ export function QnaQuestionCard({
   onToggle: () => void;
   compact?: boolean;
   featured?: boolean;
-  /** 펼친 상태에서만 섹션/콘텐츠 배너 이미지 */
+  /** @deprecated 질문별 resolveQnaExpandedImageSlot 우선 */
   contentImageSlot?: ImageSlotDefinition | null;
 }) {
   const type = inferQuestionType(question);
-  const iconKey = resolveQuestionContentUiIcon(question, type);
   const summary = getShortAnswer(question);
+  const expandedSlot = contentImageSlot ?? resolveQnaExpandedImageSlot(question);
   const tagChip = pickQuestionDisplayTags(question, type)[0];
   const compareTarget = question.batteryCode ? getBattery(question.batteryCode).compareWith[0] : null;
 
@@ -60,8 +60,6 @@ export function QnaQuestionCard({
     question.ctaType === "photo" || /사진|단자|라벨|포터|하이브리드/.test(question.title);
   const showInquiryCta =
     question.ctaType === "inquiry" || /방전|문의|매장/.test(question.category);
-  const thumbUrl = getQuestionThumbnailUrl(question);
-
   const titleClass = compact
     ? "line-clamp-2 text-[15px] font-bold leading-[1.4] tracking-[-0.01em] text-slate-950 sm:text-[16px]"
     : "line-clamp-2 text-[16px] font-bold leading-[1.4] tracking-[-0.01em] text-slate-950 sm:text-[17px]";
@@ -84,7 +82,7 @@ export function QnaQuestionCard({
         tabIndex={0}
         aria-expanded={open}
       >
-        <ContentUiIcon iconKey={iconKey} size={iconSize} />
+        <QnaCollapsedThumb question={question} size={iconSize} />
 
         <div className="min-w-0 flex-1">
           <h3 className={`font-heading ${titleClass}`}>{question.title}</h3>
@@ -116,24 +114,13 @@ export function QnaQuestionCard({
 
       {open ? (
         <div className="border-t border-slate-100 px-3 pb-3 pt-2 sm:pl-[56px]" onClick={(e) => e.stopPropagation()}>
-          {contentImageSlot ? (
-            <div className="mb-3 max-w-md">
+          {expandedSlot ? (
+            <div className="mb-3 max-w-md" data-qna-expanded-banner={question.id}>
               <MediaImageSlot
-                slot={contentImageSlot}
-                src={resolveImageSlotAssetUrl(contentImageSlot)}
+                slot={expandedSlot}
+                src={resolveImageSlotAssetUrl(expandedSlot)}
                 className="max-h-[160px] w-full"
                 objectFit="contain"
-              />
-            </div>
-          ) : thumbUrl ? (
-            <div className="relative mb-3 aspect-[16/10] max-h-[160px] w-full max-w-md overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
-              <Image
-                alt=""
-                className="object-contain object-center"
-                fill
-                loading="lazy"
-                sizes="(max-width:640px) 100vw, 360px"
-                src={thumbUrl}
               />
             </div>
           ) : null}
