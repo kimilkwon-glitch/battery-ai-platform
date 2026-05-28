@@ -11,6 +11,8 @@ export type RecommendedBatteryCardProps = {
   exceptionNote?: string | null;
   ctas: { label: string; href: string }[];
   secondaryLinks?: { label: string; href: string }[];
+  /** 1순위 정답 카드 — 시각적 계층 강조 */
+  primary?: boolean;
 };
 
 export function RecommendedBatteryCard({
@@ -20,13 +22,21 @@ export function RecommendedBatteryCard({
   exceptionNote = SHORT_EXCEPTION_NOTE,
   ctas,
   secondaryLinks = [],
+  primary = false,
 }: RecommendedBatteryCardProps) {
   const display = parseBatterySpecDisplay(code);
   const context =
     vehicleLabel && fieldLabel ? vehicleContextLine(vehicleLabel, fieldLabel) : null;
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100">
+    <article
+      className={
+        primary
+          ? "overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-md ring-2 ring-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+          : "overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100 transition duration-200 hover:border-slate-300 hover:shadow-md"
+      }
+      data-search-battery-card={primary ? "primary" : "secondary"}
+    >
       <div className="grid gap-0 sm:grid-cols-[minmax(148px,220px)_1fr]">
         <div className="bg-slate-50 p-3 sm:border-r sm:border-slate-100">
           <BatteryThumbnail

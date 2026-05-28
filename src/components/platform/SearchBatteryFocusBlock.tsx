@@ -4,11 +4,17 @@ import {
   SearchResultCoreSummary,
   type CoreSummaryRow,
 } from "@/components/platform/SearchResultCoreSummary";
+import { SearchConditionChips } from "@/components/platform/search-ux/SearchConditionChips";
+import { SearchPhotoVerifyBar } from "@/components/platform/search-ux/SearchPhotoVerifyBar";
+import { SearchRecommendationNotes } from "@/components/platform/search-ux/SearchRecommendationNotes";
+import { SearchUxHeroCtas } from "@/components/platform/search-ux/SearchUxHeroCtas";
+import { SearchUxIntentBadge } from "@/components/platform/search-ux/SearchUxIntentBadge";
 import { bm } from "@/lib/design-tokens";
 import { compareHref } from "@/lib/platform-data";
+import { NO_REGISTERED_SPEC_MESSAGE } from "@/lib/search/battery-recommendation-copy";
+import type { SearchUxPresentation } from "@/lib/search/search-ux-presentation";
 import type { RecognizedSpecResult } from "@/lib/search/search-summary";
 import type { RecognizedVehicleResult } from "@/lib/search-page-results";
-import { NO_REGISTERED_SPEC_MESSAGE } from "@/lib/search/battery-recommendation-copy";
 
 type Props = {
   displayQuery: string;
@@ -17,6 +23,7 @@ type Props = {
   specOnly: RecognizedSpecResult | null;
   terminalTypeLabel?: string | null;
   compareBatteryCodes?: string[] | null;
+  ux: SearchUxPresentation;
 };
 
 export function SearchBatteryFocusBlock({
@@ -26,6 +33,7 @@ export function SearchBatteryFocusBlock({
   specOnly,
   terminalTypeLabel,
   compareBatteryCodes,
+  ux,
 }: Props) {
   const multiCodes =
     vehicle?.candidateBatteryCodes?.length
@@ -35,6 +43,7 @@ export function SearchBatteryFocusBlock({
         : null;
   const code = vehicle?.primaryBatteryCode ?? specOnly?.primaryBatteryCode;
   const hasBattery = Boolean(code) || Boolean(multiCodes?.length);
+  const isCompare = ux.mode === "compare" && Boolean(multiCodes?.length);
 
   const summaryRows: CoreSummaryRow[] = [];
   if (vehicle) {
@@ -73,16 +82,30 @@ export function SearchBatteryFocusBlock({
     });
   }
 
+  const header = (
+    <header>
+      <SearchUxIntentBadge label={intentLabel} />
+      <h1 className={`${bm.titleLg} mt-1`} id="search-focus">
+        &ldquo;{displayQuery}&rdquo;
+      </h1>
+      {ux.heroLines.length > 0 ? (
+        <div className="mt-2 space-y-1">
+          {ux.heroLines.map((line) => (
+            <p key={line} className="text-sm font-medium leading-relaxed text-slate-600">
+              {line}
+            </p>
+          ))}
+        </div>
+      ) : null}
+    </header>
+  );
+
   if (!hasBattery && vehicle?.specTier === "none") {
     return (
       <div className="space-y-3">
-        <header>
-          <p className="text-xs font-bold text-blue-600">{intentLabel}</p>
-          <h1 className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
-            &ldquo;{displayQuery}&rdquo; 검색 결과
-          </h1>
-        </header>
+        {header}
         {summaryRows.length > 0 ? <SearchResultCoreSummary rows={summaryRows} /> : null}
+        <SearchRecommendationNotes reasons={ux.recommendationReasons} />
         <div className={`${bm.card} border-amber-100 bg-amber-50/40 p-4`}>
           <p className="text-sm font-black text-slate-900">
             {vehicle.fallbackMessage ?? NO_REGISTERED_SPEC_MESSAGE}
@@ -91,27 +114,15 @@ export function SearchBatteryFocusBlock({
             {vehicle.ctas.map((cta) => (
               <Link
                 key={`${cta.label}-${cta.href}`}
-                className={`${bm.btnPrimary} inline-flex text-xs`}
+                className={`${bm.btnNavy} inline-flex text-xs`}
                 href={cta.href}
               >
                 {cta.label}
               </Link>
             ))}
           </div>
-          {vehicle.secondaryLinks.length > 0 ? (
-            <div className="mt-2 flex flex-wrap gap-x-3">
-              {vehicle.secondaryLinks.map((link) => (
-                <Link
-                  key={`${link.label}-${link.href}`}
-                  className="text-[11px] font-bold text-slate-500 hover:text-blue-700 hover:underline"
-                  href={link.href}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          ) : null}
         </div>
+        <SearchPhotoVerifyBar cta={ux.photoCta} />
       </div>
     );
   }
@@ -124,83 +135,106 @@ export function SearchBatteryFocusBlock({
   const secondaryLinks = vehicle?.secondaryLinks ?? specOnly?.secondaryLinks ?? [];
   const compareLink =
     multiCodes && multiCodes.length >= 2 ? compareHref(multiCodes[0]!, multiCodes[1]!) : null;
+  const reasonForCard =
+    ux.recommendationReasons[0] ??
+    (vehicle?.candidateBatteryCodes?.length
+      ? "연식 분기 후보를 같은 우선순위로 표시합니다."
+      : null);
 
   return (
-    <div className="space-y-3" id="search-focus">
-      <header>
-        <p className="text-xs font-bold text-blue-600">{intentLabel}</p>
-        <h1 className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
-          &ldquo;{displayQuery}&rdquo; 검색 결과
-        </h1>
-      </header>
-
+    <div className="space-y-3">
+      {header}
+      <SearchRecommendationNotes reasons={ux.recommendationReasons} />
+      {ux.yearBranchHint ? (
+        <p className="text-xs font-semibold text-amber-900">{ux.yearBranchHint}</p>
+      ) : null}
+      <SearchConditionChips chips={ux.conditionChips} />
       {summaryRows.length > 0 ? <SearchResultCoreSummary rows={summaryRows} /> : null}
+
+      {ux.mode === "spec" && ux.specMeta ? (
+        <div className={`${bm.card} p-4`}>
+          <p className="text-3xl font-black tracking-tight text-slate-950">{ux.specMeta.code}</p>
+          <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+            <div>
+              <dt className="font-bold text-slate-500">타입</dt>
+              <dd className="font-black text-slate-900">{ux.specMeta.type}</dd>
+            </div>
+            <div>
+              <dt className="font-bold text-slate-500">용량</dt>
+              <dd className="font-black text-slate-900">{ux.specMeta.capacity}</dd>
+            </div>
+            <div>
+              <dt className="font-bold text-slate-500">CCA</dt>
+              <dd className="font-black text-slate-900">{ux.specMeta.cca}</dd>
+            </div>
+            <div>
+              <dt className="font-bold text-slate-500">단자</dt>
+              <dd className="font-black text-slate-900">{ux.specMeta.terminal}</dd>
+            </div>
+          </dl>
+          {ux.sampleVehicles.length > 0 ? (
+            <div className="mt-3">
+              <p className="text-[11px] font-black text-slate-500">대표 적용 차량</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {ux.sampleVehicles.map((v) => (
+                  <Link
+                    key={v.href}
+                    className="rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-100 hover:bg-white"
+                    href={v.href}
+                  >
+                    {v.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          <div className="mt-4">
+            <SearchUxHeroCtas ctas={ux.heroCtas} />
+          </div>
+        </div>
+      ) : null}
 
       {multiCodes && multiCodes.length >= 2 ? (
         <>
-          {exceptionNote ? (
+          {ux.compareNote || exceptionNote ? (
             <p className="rounded-xl bg-amber-50/80 px-3 py-2 text-xs font-semibold text-amber-950 ring-1 ring-amber-100">
-              {exceptionNote}
+              {ux.compareNote ?? exceptionNote}
             </p>
           ) : null}
           <div className="grid gap-3 sm:grid-cols-2">
             {multiCodes.map((specCode, idx) => (
-              <RecommendedBatteryCard
+              <div
                 key={specCode}
-                code={specCode}
-                fieldLabel={idx === 0 ? "좌측·첫 규격" : "비교 규격"}
-                vehicleLabel={vehicle?.vehicleLabel}
-                exceptionNote={idx === 0 ? null : exceptionNote}
-                ctas={[
-                  { label: `${specCode} 상세`, href: `/batteries/${encodeURIComponent(specCode)}` },
-                ]}
-                secondaryLinks={[]}
-              />
+                className={
+                  idx === 0
+                    ? "motion-safe:animate-[page-enter_0.35s_ease-out_forwards]"
+                    : "motion-safe:animate-[page-enter_0.4s_ease-out_forwards]"
+                }
+              >
+                <RecommendedBatteryCard
+                  code={specCode}
+                  fieldLabel={isCompare ? (idx === 0 ? "좌측 규격" : "우측 규격") : idx === 0 ? "첫 후보" : "비교 규격"}
+                  vehicleLabel={vehicle?.vehicleLabel}
+                  exceptionNote={idx === 0 ? reasonForCard : null}
+                  ctas={[
+                    { label: `${specCode} 상세`, href: `/batteries/${encodeURIComponent(specCode)}` },
+                  ]}
+                  secondaryLinks={[]}
+                  primary={idx === 0}
+                />
+              </div>
             ))}
           </div>
           {compareLink ? (
-            <div className="flex flex-wrap gap-2">
-              <Link className={`${bm.btnPrimary} inline-flex text-xs`} href={compareLink}>
-                규격 비교 보기
-              </Link>
-              {ctas
-                .filter((c) => !/상세/.test(c.label))
-                .slice(0, 2)
-                .map((cta) => (
-                  <Link
-                    key={`${cta.label}-${cta.href}`}
-                    className="inline-flex rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-blue-50 hover:text-blue-700"
-                    href={cta.href}
-                  >
-                    {cta.label}
-                  </Link>
-                ))}
-            </div>
-          ) : null}
-          {vehicle?.yearBranchLinks && vehicle.yearBranchLinks.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {vehicle.yearBranchLinks.map((link) => (
-                <Link
-                  key={`${link.label}-${link.href}`}
-                  className="rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-700 ring-1 ring-slate-200 hover:text-blue-700"
-                  href={link.href}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          ) : secondaryLinks.length > 0 ? (
-            <div className="flex flex-wrap gap-x-3">
-              {secondaryLinks.map((link) => (
-                <Link
-                  key={`${link.label}-${link.href}`}
-                  className="text-[11px] font-bold text-slate-500 hover:text-blue-700 hover:underline"
-                  href={link.href}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+            <SearchUxHeroCtas
+              ctas={[
+                { label: "규격 비교 보기", href: compareLink, tier: "primary" },
+                ...ctas
+                  .filter((c) => !/상세/.test(c.label))
+                  .slice(0, 2)
+                  .map((c) => ({ label: c.label, href: c.href, tier: "secondary" as const })),
+              ]}
+            />
           ) : null}
         </>
       ) : (
@@ -208,11 +242,18 @@ export function SearchBatteryFocusBlock({
           code={code!}
           fieldLabel={fieldLabel}
           vehicleLabel={vehicle?.vehicleLabel}
-          exceptionNote={exceptionNote}
+          exceptionNote={reasonForCard ?? exceptionNote}
           ctas={ctas}
           secondaryLinks={secondaryLinks}
+          primary
         />
       )}
+
+      {ux.heroCtas.length > 0 && ux.mode !== "spec" ? (
+        <SearchUxHeroCtas ctas={ux.heroCtas.filter((c) => c.tier !== "ghost")} />
+      ) : null}
+
+      <SearchPhotoVerifyBar cta={ux.photoCta} />
     </div>
   );
 }

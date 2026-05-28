@@ -46,6 +46,11 @@ import {
   rankQuestionsForVehicleContext,
 } from "@/lib/search/search-vehicle-questions";
 import { computeTopFoldLimits } from "@/lib/search/search-top-fold";
+import {
+  buildSearchUxPresentation,
+  emptySearchUx,
+  type SearchUxPresentation,
+} from "@/lib/search/search-ux-presentation";
 
 const DEFAULT_VISIBLE = 3;
 export type RecognizedVehicleResult = {
@@ -157,6 +162,7 @@ export type SearchPageResults = {
   showSymptomSidebar: boolean;
   symptomDiagnosisFirst: boolean;
   compareBatteryCodes: string[] | null;
+  ux: SearchUxPresentation;
 };
 
 const INSUFFICIENT_MESSAGE =
@@ -384,6 +390,7 @@ function emptyResults(partial?: Partial<SearchPageResults>): SearchPageResults {
     showSymptomSidebar: false,
     symptomDiagnosisFirst: false,
     compareBatteryCodes: null,
+    ux: emptySearchUx(),
     ...partial,
   };
 }
@@ -1193,6 +1200,20 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
       defaultVisible: DEFAULT_VISIBLE,
       deferSecondary: topFold.deferSecondary,
       hadError: false,
+      ux: buildSearchUxPresentation({
+        query,
+        displayQuery,
+        intent,
+        summary,
+        symptomDiagnosisFirst,
+        compareIntent: intentFlags.compare,
+        compareBatteryCodes,
+        recognizedVehicle,
+        recognizedSpec,
+        vehicles: vehiclesForRender,
+        intentMessage,
+        intentFlags,
+      }),
     };
   } catch (err) {
     console.error("[search] buildSearchPageResults failed:", err);
