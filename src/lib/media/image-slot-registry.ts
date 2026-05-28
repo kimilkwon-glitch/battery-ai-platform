@@ -124,6 +124,55 @@ export const BATTERY_DETAIL_IMAGE_SLOTS = {
   }),
 } as const;
 
+/** Q&A·가이드 허브 */
+export const QNA_IMAGE_SLOTS = {
+  blackboxCheck: (): ImageSlotDefinition => ({
+    assetKey: "qna.symptom.blackbox",
+    statusLabel: "사진 준비중",
+    caption: "블랙박스 방전 점검 사진 준비중",
+    hint: "상시전원·퓨즈·주차 패턴 참고",
+    ratio: "16/9",
+    purpose: "qna-blackbox-discharge",
+    srcPath: "/media/slots/qna/blackbox-discharge-check.jpg",
+  }),
+  labelCheck: (): ImageSlotDefinition => ({
+    assetKey: "qna.guide.label",
+    statusLabel: "사진 준비중",
+    caption: "배터리 라벨 확인 사진 준비중",
+    hint: "규격 코드·제조일·L/R 단자",
+    ratio: "4/3",
+    purpose: "qna-label-check",
+    srcPath: "/media/slots/qna/battery-label-check.jpg",
+  }),
+  terminalDirection: (): ImageSlotDefinition => ({
+    assetKey: "qna.guide.terminal",
+    statusLabel: "사진 준비중",
+    caption: "단자 방향 확인 사진 준비중",
+    hint: "플러스 단자 L/R·극성",
+    ratio: "4/3",
+    purpose: "qna-terminal-direction",
+    srcPath: "/media/slots/qna/terminal-direction.jpg",
+  }),
+  hybridAuxLocation: (): ImageSlotDefinition => ({
+    assetKey: "qna.ev.hybrid-aux",
+    statusLabel: "사진 준비중",
+    caption: "하이브리드 보조배터리 위치 사진 준비중",
+    hint: "엔진룸·트렁크 보조 12V 위치",
+    ratio: "16/9",
+    purpose: "qna-hybrid-aux-location",
+    srcPath: "/media/slots/qna/hybrid-aux-location.jpg",
+  }),
+  porterInstall: (): ImageSlotDefinition => ({
+    assetKey: "qna.commercial.porter",
+    statusLabel: "사진 준비중",
+    caption: "포터2 배터리 장착 예시 사진 준비중",
+    hint: "90R·100R 트레이·연식 확인",
+    ratio: "16/9",
+    purpose: "qna-porter-install",
+    srcPath: "/media/slots/qna/porter2-battery-install.jpg",
+  }),
+} as const;
+
 /** 메인 홈 고급화 V2 */
 export const HOME_IMAGE_SLOTS = {
   heroMatching: (): ImageSlotDefinition => ({
@@ -270,5 +319,10 @@ export function listRegisteredImageSlots(): ImageSlotDefinition[] {
     SEARCH_IMAGE_SLOTS.symptomCause("parasitic", "암전류"),
     SEARCH_IMAGE_SLOTS.symptomCause("parking", "장기주차"),
     SEARCH_IMAGE_SLOTS.symptomCause("aging", "배터리 노후"),
+    QNA_IMAGE_SLOTS.blackboxCheck(),
+    QNA_IMAGE_SLOTS.labelCheck(),
+    QNA_IMAGE_SLOTS.terminalDirection(),
+    QNA_IMAGE_SLOTS.hybridAuxLocation(),
+    QNA_IMAGE_SLOTS.porterInstall(),
   ];
 }

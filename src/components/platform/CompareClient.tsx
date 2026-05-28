@@ -8,6 +8,7 @@ import { getBatteryImageSet } from "@/lib/battery-alias-map";
 import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
 import { ConversionActions } from "@/components/common/ConversionActions";
 import { SmartNextActions } from "@/components/common/SmartNextActions";
+import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
 import { bm } from "@/lib/design-tokens";
 import {
   BRAND_COMPARE_LABEL,
@@ -339,6 +340,8 @@ export function CompareClient({ initial }: { initial: string[] }) {
           관련 규격 가이드
         </Link>
       </section>
+
+      <CompareRelatedQna codes={selected} />
 
       <SmartNextActions
         context={{ type: "compare", batteryCode: codeA, vehicleId: batA.vehicleIds[0] }}

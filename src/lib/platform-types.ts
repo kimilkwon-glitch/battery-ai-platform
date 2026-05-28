@@ -65,6 +65,8 @@ export type QuestionType =
   | "상용차"
   | "수입차";
 
+export type QuestionCtaType = "photo" | "inquiry" | "search";
+
 export type Question = {
   id: string;
   title: string;
@@ -82,6 +84,13 @@ export type Question = {
   questionType?: QuestionType;
   updatedAt?: string;
   featured?: boolean;
+  /** Q&A 허브 — 연결 메타 */
+  relatedBatteryCodes?: string[];
+  relatedVehicleSlugs?: string[];
+  relatedSearchQueries?: string[];
+  priority?: number;
+  ctaType?: QuestionCtaType;
+  homeFeatured?: boolean;
 };
 
 export type Brand = {

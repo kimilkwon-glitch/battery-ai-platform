@@ -27,17 +27,23 @@ export type QnaPrimaryFilter =
   | "agm-din"
   | "bms"
   | "upgrade"
-  | "import-ev";
+  | "import-ev"
+  | "ev-hybrid"
+  | "porter"
+  | "photo";
 
 export const QNA_PRIMARY_FILTERS: { key: QnaPrimaryFilter; label: string }[] = [
   { key: "all", label: "전체" },
-  { key: "vehicle", label: "차종 질문" },
+  { key: "vehicle", label: "차량 질문" },
   { key: "battery", label: "배터리 규격" },
   { key: "symptom", label: "방전/시동 문제" },
-  { key: "agm-din", label: "AGM/DIN 호환" },
+  { key: "agm-din", label: "AGM/DIN/CMF" },
+  { key: "ev-hybrid", label: "EV/하이브리드" },
+  { key: "porter", label: "포터/상용" },
+  { key: "photo", label: "사진확인" },
   { key: "bms", label: "BMS/IBS 등록" },
   { key: "upgrade", label: "업그레이드" },
-  { key: "import-ev", label: "수입차/EV 12V" },
+  { key: "import-ev", label: "수입차" },
 ];
 
 export const QNA_SECONDARY_TAGS = [
@@ -109,7 +115,13 @@ export function matchesPrimaryFilter(q: Question, filter: QnaPrimaryFilter): boo
     case "upgrade":
       return type === "업그레이드";
     case "import-ev":
-      return type === "수입차" || type === "EV 12V";
+      return type === "수입차";
+    case "ev-hybrid":
+      return type === "EV 12V" || /하이브리드|EV|12V|보조/.test(text);
+    case "porter":
+      return type === "상용차" || /포터|90R|100R|봉고|상용/.test(text);
+    case "photo":
+      return q.ctaType === "photo" || /사진|단자|라벨|확인/.test(text);
     default:
       return true;
   }
@@ -129,7 +141,9 @@ export function matchesSearchQuery(q: Question, query: string): boolean {
     q.title.toLowerCase().includes(qn) ||
     q.answer.toLowerCase().includes(qn) ||
     q.tags.some((t) => t.toLowerCase().includes(qn)) ||
-    q.category.toLowerCase().includes(qn)
+    q.category.toLowerCase().includes(qn) ||
+    (q.relatedSearchQueries?.some((sq) => sq.toLowerCase().includes(qn) || qn.includes(sq.toLowerCase())) ??
+      false)
   );
 }
 

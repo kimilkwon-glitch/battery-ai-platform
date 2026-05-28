@@ -7,6 +7,7 @@ import { SearchResultHero } from "@/components/platform/search-ux/SearchResultHe
 import { SearchMobileStickyCta } from "@/components/platform/search-ux/SearchMobileStickyCta";
 import { NO_REGISTERED_SPEC_MESSAGE, NO_VEHICLE_MATCH_MESSAGE } from "@/lib/search/battery-recommendation-copy";
 import { SearchVehicleResults } from "@/components/platform/SearchVehicleResults";
+import { SearchRelatedQna } from "@/components/platform/SearchRelatedQna";
 import { bm } from "@/lib/design-tokens";
 import { getBattery } from "@/lib/platform-data";
 import type { SearchPageResults } from "@/lib/search-page-results";
@@ -372,6 +373,8 @@ export function SearchResultsView({ data }: Props) {
             : ""}
         </button>
       ) : null}
+
+      <SearchRelatedQna query={data.displayQuery || data.query} />
 
       {hasHero ? <SearchMobileStickyCta actions={data.ux.mobileSticky} /> : null}
     </div>

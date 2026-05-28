@@ -1,6 +1,6 @@
 /**
  * Battery Manager 1차 폰트 체계 — 로컬 public/fonts only (CDN 없음)
- * body: Pretendard Variable | heading: GmarketSans
+ * body: Pretendard | heading: GmarketSans | accent: S-Core Dream (제한)
  */
 
 @font-face {
@@ -33,4 +33,20 @@
   font-style: normal;
   font-display: swap;
   src: url("/fonts/GmarketSansTTF/GmarketSansTTFBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SCoreDream";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/S-Core_Dream_OTF/SCDream5.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "SCoreDream";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/S-Core_Dream_OTF/SCDream6.otf") format("opentype");
 }

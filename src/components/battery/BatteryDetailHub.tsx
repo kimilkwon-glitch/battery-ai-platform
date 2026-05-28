@@ -19,6 +19,7 @@ import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub
 import { BATTERY_DETAIL_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import type { HubBadge } from "@/lib/battery-detail/battery-detail-hub-content";
+import { BatteryDetailRelatedQna } from "@/components/battery/BatteryDetailRelatedQna";
 
 type VehicleRow = { slug: string; title: string; brand: string; fuel: string };
 
@@ -321,6 +322,8 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
           links={[{ label: "내 차량 다시 검색", href: searchHref }]}
         />
       </section>
+
+      <BatteryDetailRelatedQna code={displayCode} />
 
       <BatteryDetailMobileSticky code={displayCode} />
     </div>

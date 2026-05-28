@@ -118,12 +118,11 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
     <div className="space-y-5">
       <section className={`${bm.heroPanel} p-5 lg:p-6`}>
         <p className="text-[11px] font-black uppercase tracking-[0.08em] text-[#2563EB]">{BRAND_QNA_LABEL}</p>
-        <h1 className="mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-[#0F172A] lg:text-[1.75rem]">
-          배터리 궁금증,
-          <br className="sm:hidden" /> 실제 질문처럼 찾아보세요
+        <h1 className="font-heading mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-[#0F172A] lg:text-[1.75rem]">
+          배터리 매칭 질문 허브
         </h1>
         <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-[#64748B]">
-          차종·규격·증상별로 자주 묻는 배터리 질문을 정리했습니다.
+          차종·규격·증상별 Q&A를 검색하고, 관련 배터리·차량·사진확인·문의로 바로 이어갑니다.
         </p>
 
         <form

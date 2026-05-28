@@ -9,20 +9,15 @@ import { ContentUiIcon } from "@/components/content/ContentUiIcon";
 import { BatteryMiniSpecLink } from "@/components/battery/BatteryMiniSpecLink";
 import { extractBatteryCodesFromTags } from "@/lib/battery-tags";
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
+import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
+import { bm } from "@/lib/design-tokens";
 import {
-
   compareHref,
-
   getBattery,
-
   guideHref,
-
   searchHref,
-
   vehicleHref,
-
   type Question,
-
 } from "@/lib/platform-data";
 
 import { resolveQuestionContentUiIcon } from "@/lib/content-ui-icons";
@@ -76,10 +71,14 @@ export function QnaQuestionCard({
   const linkedBatteryCodes = (() => {
     const codes = new Set<string>();
     if (question.batteryCode) codes.add(normalizeBatteryCode(question.batteryCode));
+    for (const c of question.relatedBatteryCodes ?? []) codes.add(normalizeBatteryCode(c));
     for (const c of extractBatteryCodesFromTags(question.tags)) codes.add(c);
     if (compareTarget) codes.add(normalizeBatteryCode(compareTarget));
     return [...codes].slice(0, 4);
   })();
+
+  const showPhotoCta = question.ctaType === "photo" || /사진|단자|라벨|포터|하이브리드/.test(question.title);
+  const showInquiryCta = question.ctaType === "inquiry" || /방전|문의|매장/.test(question.category);
 
   const titleClass = compact
 
@@ -129,7 +128,7 @@ export function QnaQuestionCard({
 
         <div className="min-w-0 flex-1">
 
-          <h3 className={titleClass}>{question.title}</h3>
+          <h3 className={`font-heading ${titleClass}`}>{question.title}</h3>
 
 
 
@@ -212,19 +211,32 @@ export function QnaQuestionCard({
             ) : null}
 
             {question.guideId ? (
-
               <Link className="text-blue-600 hover:underline" href={guideHref(question.guideId)}>
-
                 가이드 보기
-
               </Link>
-
             ) : null}
-
+            {question.relatedSearchQueries?.slice(0, 2).map((sq) => (
+              <Link className="text-blue-600 hover:underline" href={searchHref(sq)} key={sq}>
+                {sq}
+              </Link>
+            ))}
+            <Link className="font-semibold text-slate-700 hover:underline" href={`/community/${question.id}`}>
+              자세히 보기
+            </Link>
           </div>
-
+          <div className="mt-3 flex flex-wrap gap-2">
+            {showPhotoCta ? (
+              <Link className={`${bm.btnPrimary} text-[10px] px-3 py-2`} href={HUB_PHOTO}>
+                사진으로 최종 확인
+              </Link>
+            ) : null}
+            {showInquiryCta || showPhotoCta ? (
+              <Link className={`${bm.btnSecondary} text-[10px] px-3 py-2`} href={HUB_STORE}>
+                부산 매장/출장 문의
+              </Link>
+            ) : null}
+          </div>
         </div>
-
       ) : null}
 
     </article>

@@ -13,6 +13,7 @@ import { VehicleBatteryHeroCards } from "@/components/vehicle/VehicleBatteryHero
 import { VehicleDetailTabs } from "@/components/vehicle/VehicleDetailTabs";
 
 import { VehicleNavFooter } from "@/components/vehicle/VehicleNavFooter";
+import { VehicleDetailRelatedQna } from "@/components/vehicle/VehicleDetailRelatedQna";
 
 import { bm } from "@/lib/design-tokens";
 
@@ -287,6 +288,8 @@ export default async function VehicleDetailPage({
           />
 
         )}
+
+        <VehicleDetailRelatedQna slug={slug} fuelHint={highlightFuel ?? null} />
 
       </section>
 
