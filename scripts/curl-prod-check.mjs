@@ -27,18 +27,24 @@ for (const p of paths) {
   const stamps = [...new Set(html.match(/BM-UX-REV-[A-Z0-9-]+/g) ?? [])];
   const okStamp = stamps.length === 1 && stamps[0] === STAMP;
   let extraOk = true;
+  const q = decodeURIComponent(p.replace(/^\/search\?q=/, ""));
+
   if (p.includes("sportage-nq5") || p.includes("k8-gl3")) {
     extraOk = /data-fuel-hero="하이브리드"[^>]*data-battery-hero="AGM60L"/.test(html);
-  }
-  if (p.includes("compare")) {
+  } else if (p.includes("/compare")) {
     extraOk = html.includes("100R") && html.includes("AGM95L");
+  } else if (q.includes("레이 블랙박스 방전")) {
+    extraOk =
+      (html.includes("data-search-ux-mode=\"symptom\"") || /방전 증상/.test(html)) &&
+      !/정확히 찾지 못했습니다/.test(html);
+  } else if (q.includes("레이 TAM")) {
+    extraOk = !/포터2는 연식에 따라|2020년 이전 90R · 2020년 이후 100R/.test(html);
+  } else if (q.includes("포터2")) {
+    extraOk = html.includes("90R") && html.includes("100R") && !/정확히 찾지 못했습니다/.test(html);
+  } else if (q.includes("100R vs AGM95L")) {
+    extraOk = html.includes("100R") && html.includes("AGM95L") && html.includes("R타입");
   }
-  if (p.includes("레이")) {
-    extraOk = html.includes("data-search-ux-mode=\"symptom\"") || /방전|증상/.test(html);
-  }
-  if (p.includes("포터2")) {
-    extraOk = html.includes("90R") && html.includes("100R");
-  }
+
   const pass = res.status === 200 && okStamp && extraOk;
   if (!pass) fail++;
   console.log(`${pass ? "PASS" : "FAIL"} ${url}`);
