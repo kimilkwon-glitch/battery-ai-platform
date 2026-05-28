@@ -1,0 +1,52 @@
+{
+  "task": "HOME-UPGRADE-V2",
+  "buildStamp": "BM-UX-REV-20260528-HOME-UPGRADE-V2",
+  "fonts": {
+    "body": "Pretendard",
+    "heading": "GmarketSans",
+    "bodyFile": "/fonts/Pretendard-1.3.9/web/variable/woff2/PretendardVariable.woff2",
+    "headingFiles": [
+      "/fonts/GmarketSansTTF/GmarketSansTTFLight.ttf",
+      "/fonts/GmarketSansTTF/GmarketSansTTFMedium.ttf",
+      "/fonts/GmarketSansTTF/GmarketSansTTFBold.ttf"
+    ],
+    "fontFaceCss": "src/styles/fonts.css",
+    "notApplied": ["SUIT", "Paperlogy", "WantedSans", "Cafe24", "KBO Dia Gothic — 장식·로딩 최소화"]
+  },
+  "localVerify": {
+    "baseUrl": "http://127.0.0.1:3040",
+    "script": "scripts/verify-home-upgrade-v2.mjs",
+    "result": "ALL_PASS"
+  },
+  "imageSlots": [
+    { "key": "home.hero.matching", "ratio": "16/9", "path": "/media/slots/home/hero-matching.jpg" },
+    { "key": "home.battery.rank.*", "ratio": "4/3", "path": "/media/slots/home/battery/{code}-product.jpg" },
+    { "key": "home.vehicle.quick.*", "ratio": "16/9", "path": "/media/slots/home/vehicle/{slug}.jpg" },
+    { "key": "home.store.deokcheon", "ratio": "16/9", "path": "/media/slots/home/store/deokcheon.jpg" },
+    { "key": "home.store.hakjang", "ratio": "16/9", "path": "/media/slots/home/store/hakjang.jpg" },
+    { "key": "home.service.outbound", "ratio": "16/9", "path": "/media/slots/home/service/outbound-field.jpg" },
+    { "key": "home.service.inspection", "ratio": "4/3", "path": "/media/slots/home/service/inspection-gear.jpg" },
+    { "key": "home.delivery.pack", "ratio": "4/3", "path": "/media/slots/home/delivery/pack.jpg" },
+    { "key": "home.delivery.check", "ratio": "4/3", "path": "/media/slots/home/delivery/pre-ship-check.jpg" },
+    { "key": "home.delivery.label", "ratio": "4/3", "path": "/media/slots/home/delivery/label-check.jpg" },
+    { "key": "home.symptom.blackbox", "ratio": "16/9", "path": "/media/slots/home/symptom/blackbox-discharge.jpg" }
+  ],
+  "modifiedFiles": [
+    "build-stamp.json",
+    "src/app/page.tsx",
+    "src/app/layout.tsx",
+    "src/app/globals.css",
+    "src/styles/fonts.css",
+    "src/lib/home-upgrade-v2-data.ts",
+    "src/lib/media/image-slot-registry.ts",
+    "src/components/home/HomePlatformHero.tsx",
+    "src/components/home/HomePopularBatteryRanking.tsx",
+    "src/components/home/HomePopularVehicleSearch.tsx",
+    "src/components/home/HomeEvHybridSection.tsx",
+    "src/components/home/HomeTrendingSection.tsx",
+    "src/components/home/HomeDeliverySection.tsx",
+    "src/components/home/HomeStoreHub.tsx",
+    "scripts/verify-home-upgrade-v2.mjs"
+  ],
+  "production": { "pending": true }
+}

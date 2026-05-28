@@ -1,6 +1,9 @@
 @import "tailwindcss";
+@import "../styles/fonts.css";
 
 :root {
+  --font-body: "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "GmarketSans", "Pretendard", system-ui, sans-serif;
   --background: #eef3f9;
   --foreground: #07111f;
 
@@ -33,11 +36,20 @@ body {
   margin: 0;
   background: var(--bm-page-bg);
   color: var(--foreground);
-  font-family: var(--font-noto-sans-kr), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  line-height: 1.55;
   font-feature-settings: "rlig" 1, "calt" 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+.font-heading {
+  font-family: var(--font-heading);
+  line-height: 1.35;
 }
 
 main {

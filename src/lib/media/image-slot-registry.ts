@@ -124,6 +124,109 @@ export const BATTERY_DETAIL_IMAGE_SLOTS = {
   }),
 } as const;
 
+/** 메인 홈 고급화 V2 */
+export const HOME_IMAGE_SLOTS = {
+  heroMatching: (): ImageSlotDefinition => ({
+    assetKey: "home.hero.matching",
+    statusLabel: "이미지 준비중",
+    caption: "배터리·차량 매칭 메인 비주얼 준비중",
+    hint: "차량 실사 + 배터리 규격 라벨이 함께 보이는 플랫폼 히어로",
+    ratio: "16/9",
+    purpose: "home-hero-visual",
+    srcPath: "/media/slots/home/hero-matching.jpg",
+  }),
+  batteryRank: (code: string): ImageSlotDefinition => ({
+    assetKey: `home.battery.rank.${code.replace(/\s+/g, "-")}`,
+    statusLabel: "이미지 준비중",
+    caption: `${code} 제품 사진 준비중`,
+    hint: "많이 찾는 규격 카드 대표 컷",
+    ratio: "4/3",
+    purpose: "home-battery-rank",
+    srcPath: `/media/slots/home/battery/${code.replace(/\s+/g, "-")}-product.jpg`,
+  }),
+  vehicleQuick: (slug: string, title: string): ImageSlotDefinition => ({
+    assetKey: `home.vehicle.quick.${slug}`,
+    statusLabel: "이미지 준비중",
+    caption: `${title} 대표 이미지 준비중`,
+    hint: "인기 차량 빠른 검색 카드",
+    ratio: "16/9",
+    purpose: "home-vehicle-quick",
+    srcPath: `/media/slots/home/vehicle/${slug}.jpg`,
+  }),
+  storeDeokcheon: (): ImageSlotDefinition => ({
+    assetKey: "home.store.deokcheon",
+    statusLabel: "사진 준비중",
+    caption: "덕천점 매장 사진 준비중",
+    hint: "매장 전경·작업대",
+    ratio: "16/9",
+    purpose: "home-store-deokcheon",
+    srcPath: "/media/slots/home/store/deokcheon.jpg",
+  }),
+  storeHakjang: (): ImageSlotDefinition => ({
+    assetKey: "home.store.hakjang",
+    statusLabel: "사진 준비중",
+    caption: "학장점 매장 사진 준비중",
+    hint: "매장 전경·작업대",
+    ratio: "16/9",
+    purpose: "home-store-hakjang",
+    srcPath: "/media/slots/home/store/hakjang.jpg",
+  }),
+  outboundField: (): ImageSlotDefinition => ({
+    assetKey: "home.service.outbound",
+    statusLabel: "사진 준비중",
+    caption: "출장 교체 현장 사진 준비중",
+    hint: "현장 작업·차량 앞 교체",
+    ratio: "16/9",
+    purpose: "home-outbound-field",
+    srcPath: "/media/slots/home/service/outbound-field.jpg",
+  }),
+  inspectionGear: (): ImageSlotDefinition => ({
+    assetKey: "home.service.inspection",
+    statusLabel: "사진 준비중",
+    caption: "배터리 점검 장비 사진 준비중",
+    hint: "테스터·단자 확인 장비",
+    ratio: "4/3",
+    purpose: "home-inspection-gear",
+    srcPath: "/media/slots/home/service/inspection-gear.jpg",
+  }),
+  deliveryPack: (): ImageSlotDefinition => ({
+    assetKey: "home.delivery.pack",
+    statusLabel: "사진 준비중",
+    caption: "택배 포장 사진 준비중",
+    hint: "출고 포장·박스",
+    ratio: "4/3",
+    purpose: "home-delivery-pack",
+    srcPath: "/media/slots/home/delivery/pack.jpg",
+  }),
+  deliveryCheck: (): ImageSlotDefinition => ({
+    assetKey: "home.delivery.check",
+    statusLabel: "사진 준비중",
+    caption: "출고 전 제품 확인 사진 준비중",
+    hint: "라벨·외관 최종 점검",
+    ratio: "4/3",
+    purpose: "home-delivery-check",
+    srcPath: "/media/slots/home/delivery/pre-ship-check.jpg",
+  }),
+  deliveryLabel: (): ImageSlotDefinition => ({
+    assetKey: "home.delivery.label",
+    statusLabel: "사진 준비중",
+    caption: "배터리 라벨 확인 사진 준비중",
+    hint: "오주문 방지 — 규격 코드 확인",
+    ratio: "4/3",
+    purpose: "home-delivery-label",
+    srcPath: "/media/slots/home/delivery/label-check.jpg",
+  }),
+  symptomBlackbox: (): ImageSlotDefinition => ({
+    assetKey: "home.symptom.blackbox",
+    statusLabel: "사진 준비중",
+    caption: "블랙박스 방전 점검 사진 준비중",
+    hint: "상시전원·퓨즈·주차 패턴",
+    ratio: "16/9",
+    purpose: "home-symptom-blackbox",
+    srcPath: "/media/slots/home/symptom/blackbox-discharge.jpg",
+  }),
+} as const;
+
 /** 레지스트리 전체 목록 (보고·문서용) */
 export function listRegisteredImageSlots(): ImageSlotDefinition[] {
   const coreCodes = [
@@ -133,7 +236,6 @@ export function listRegisteredImageSlots(): ImageSlotDefinition[] {
     "DIN74L",
     "100R",
     "CMF80L",
-    "115D31L",
     "AGM95L",
     "EV 12V",
   ];
@@ -142,7 +244,20 @@ export function listRegisteredImageSlots(): ImageSlotDefinition[] {
     BATTERY_DETAIL_IMAGE_SLOTS.install(code),
     BATTERY_DETAIL_IMAGE_SLOTS.labelTerminal(code),
   ]);
+  const homeSlots = [
+    HOME_IMAGE_SLOTS.heroMatching(),
+    HOME_IMAGE_SLOTS.storeDeokcheon(),
+    HOME_IMAGE_SLOTS.storeHakjang(),
+    HOME_IMAGE_SLOTS.outboundField(),
+    HOME_IMAGE_SLOTS.inspectionGear(),
+    HOME_IMAGE_SLOTS.deliveryPack(),
+    HOME_IMAGE_SLOTS.deliveryCheck(),
+    HOME_IMAGE_SLOTS.deliveryLabel(),
+    HOME_IMAGE_SLOTS.symptomBlackbox(),
+    ...coreCodes.flatMap((code) => [HOME_IMAGE_SLOTS.batteryRank(code)]),
+  ];
   return [
+    ...homeSlots,
     ...detailSlots,
     SEARCH_IMAGE_SLOTS.symptomDiagnosis(),
     SEARCH_IMAGE_SLOTS.serviceOutbound(),

@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR } from "next/font/google";
 import { CartProvider } from "@/components/platform/CartContext";
 import "./globals.css";
-
-const notoSansKr = Noto_Sans_KR({
-  subsets: ["latin"],
-  variable: "--font-noto-sans-kr",
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
 
 import { BuildVersionStamp } from "@/components/common/BuildVersionStamp";
 import { BRAND_NAME, BRAND_META_DESCRIPTION } from "@/lib/brand";
@@ -30,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" data-build-version={BUILD_STAMP}>
-      <body className={`${notoSansKr.variable} antialiased`} data-build-version={BUILD_STAMP}>
+      <body className="antialiased" data-build-version={BUILD_STAMP}>
         <CartProvider>
           {children}
           <BuildVersionStamp />

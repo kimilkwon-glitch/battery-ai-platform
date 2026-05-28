@@ -1,9 +1,12 @@
 ﻿import { PortalHeader } from "@/components/portal";
-import { HomeActivitySection } from "@/components/platform/HomeActivitySection";
-import { HomeHero } from "@/components/platform/HomeHero";
+import { HomeDeliverySection } from "@/components/home/HomeDeliverySection";
+import { HomeEvHybridSection } from "@/components/home/HomeEvHybridSection";
+import { HomePlatformHero } from "@/components/home/HomePlatformHero";
+import { HomePopularBatteryRanking } from "@/components/home/HomePopularBatteryRanking";
+import { HomePopularVehicleSearch } from "@/components/home/HomePopularVehicleSearch";
+import { HomeStoreHub } from "@/components/home/HomeStoreHub";
+import { HomeTrendingSection } from "@/components/home/HomeTrendingSection";
 import { HomeOrderGuide } from "@/components/platform/HomeOrderGuide";
-import { HomeQuickFind } from "@/components/platform/HomeQuickFind";
-import { HomeStoreSection } from "@/components/platform/HomeStoreSection";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { bm } from "@/lib/design-tokens";
 
@@ -11,15 +14,18 @@ export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <main className={bm.pageBg}>
+    <main className={bm.pageBg} data-page="home-upgrade-v2">
       <PortalHeader showSearch />
 
       <div className={`${bm.pageContainerWide} ${bm.sectionGap} py-6`}>
-        <HomeHero />
-        <HomeQuickFind />
-        <HomeActivitySection />
+        <HomePlatformHero />
+        <HomePopularBatteryRanking />
+        <HomePopularVehicleSearch />
+        <HomeEvHybridSection />
+        <HomeTrendingSection />
+        <HomeDeliverySection />
+        <HomeStoreHub />
         <HomeOrderGuide />
-        <HomeStoreSection />
         <SiteFooter />
       </div>
     </main>
