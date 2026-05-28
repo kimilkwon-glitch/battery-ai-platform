@@ -10,8 +10,10 @@ export { batteryCodeForFuelParam } from "@/lib/vehicle-fuel-primary-battery";
 export const CTA_PRIMARY_LABELS = new Set([
   "이 규격 자세히 보기",
   "내 차 기준으로 확인",
+  "내 차량 기준으로 확인",
   "상품 상세보기",
   "해당 규격 보기",
+  "택배 주문하기",
 ]);
 
 export const CTA_SECONDARY_LABELS = new Set([
@@ -19,6 +21,8 @@ export const CTA_SECONDARY_LABELS = new Set([
   "사진으로 확인",
   "사진 보내기",
   "문의하기",
+  "부산 매장/출장 문의",
+  "매장·출장 문의",
 ]);
 
 export function isPrimaryCtaLabel(label: string): boolean {

@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { PageShell } from "@/components/common/PageShell";
@@ -13,6 +14,7 @@ export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
 export default async function BatteryDetailPage({ params }: { params: Promise<{ code: string }> }) {
+  noStore();
   const { code } = await params;
   const decoded = decodeURIComponent(code);
   if (isRetiredBatterySpec(decoded)) {
@@ -25,7 +27,7 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
     <PageShell
       pageLabel={displayCode}
       title={displayCode}
-      description="배터리 규격 · 호환 차량 · 단자 방향 · 비교·가이드"
+      description="배터리 규격 허브 · 호환 차량 · 오주문 방지 · 택배·사진확인 CTA"
       searchPlaceholder={`${displayCode} 호환 차종 검색`}
     >
       <BatteryActivityTracker code={displayCode} />

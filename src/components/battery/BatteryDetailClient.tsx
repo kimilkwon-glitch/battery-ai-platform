@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { BatteryDetailHub } from "@/components/battery/BatteryDetailHub";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { bm } from "@/lib/design-tokens";
+import { isCoreBatteryDetailCode } from "@/lib/battery-detail/core-battery-codes";
 import { getBatteryImageSet, getBatteryDisplaySpec } from "@/lib/battery-alias-map";
 import { findBatteryBrandImages, resolveBatteryImageSetForCode } from "@/lib/batteryImages";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
@@ -19,7 +21,12 @@ type Props = {
   vehicles: { slug: string; title: string; brand: string; fuel: string }[];
 };
 
+/** 핵심 9규격 — 상품형 허브 / 그 외 — 기존 간략 상세 */
 export function BatteryDetailClient({ code, relatedCodes, vehicles }: Props) {
+  if (isCoreBatteryDetailCode(code)) {
+    return <BatteryDetailHub code={code} vehicles={vehicles} />;
+  }
+
   const brandImgs = findBatteryBrandImages(code);
   const rocket =
     getBatteryImageSet(code, "rocket") ??
