@@ -15,6 +15,7 @@ export function BatteryDetailRelatedQna({ code }: { code: string }) {
       questions={items}
       hubHref={`/community?q=${encodeURIComponent(code)}`}
       showPhotoCta={false}
+      contextBatteryCode={family}
     />
   );
 }

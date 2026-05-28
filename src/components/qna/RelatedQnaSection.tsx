@@ -14,6 +14,7 @@ type Props = {
   hubHref?: string;
   compact?: boolean;
   showPhotoCta?: boolean;
+  contextBatteryCode?: string;
 };
 
 export function RelatedQnaSection({
@@ -23,6 +24,7 @@ export function RelatedQnaSection({
   hubHref = "/community",
   compact = true,
   showPhotoCta = true,
+  contextBatteryCode,
 }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -52,6 +54,7 @@ export function RelatedQnaSection({
               open={expanded === q.id}
               onToggle={() => setExpanded((prev) => (prev === q.id ? null : q.id))}
               compact={compact}
+              contextBatteryCode={contextBatteryCode}
             />
           </li>
         ))}

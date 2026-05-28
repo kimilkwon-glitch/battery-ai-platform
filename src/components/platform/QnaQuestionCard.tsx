@@ -25,6 +25,11 @@ import {
   inferQuestionType,
   pickQuestionDisplayTags,
 } from "@/lib/qna-hub-data";
+import {
+  filterQnaBatteryChips,
+  filterQnaSearchQueries,
+  pickQnaCompareTarget,
+} from "@/lib/qna/qna-display-filter";
 
 export function QnaQuestionCard({
   question,
@@ -32,6 +37,7 @@ export function QnaQuestionCard({
   onToggle,
   compact = false,
   contentImageSlot = null,
+  contextBatteryCode,
 }: {
   question: Question;
   open: boolean;
@@ -40,21 +46,37 @@ export function QnaQuestionCard({
   featured?: boolean;
   /** @deprecated 질문별 resolveQnaExpandedImageSlot 우선 */
   contentImageSlot?: ImageSlotDefinition | null;
+  /** 배터리 상세 등 — 칩·비교·검색 링크 필터 기준 */
+  contextBatteryCode?: string;
 }) {
   const type = inferQuestionType(question);
   const summary = getShortAnswer(question);
   const expandedSlot = contentImageSlot ?? resolveQnaExpandedImageSlot(question);
   const tagChip = pickQuestionDisplayTags(question, type)[0];
-  const compareTarget = question.batteryCode ? getBattery(question.batteryCode).compareWith[0] : null;
+  const compareTarget = question.batteryCode
+    ? pickQnaCompareTarget(
+        question.batteryCode,
+        getBattery(question.batteryCode).compareWith,
+        contextBatteryCode,
+      )
+    : null;
 
-  const linkedBatteryCodes = (() => {
-    const codes = new Set<string>();
-    if (question.batteryCode) codes.add(normalizeBatteryCode(question.batteryCode));
-    for (const c of question.relatedBatteryCodes ?? []) codes.add(normalizeBatteryCode(c));
-    for (const c of extractBatteryCodesFromTags(question.tags)) codes.add(c);
-    if (compareTarget) codes.add(normalizeBatteryCode(compareTarget));
-    return [...codes].slice(0, 4);
-  })();
+  const linkedBatteryCodes = filterQnaBatteryChips(
+    contextBatteryCode,
+    (() => {
+      const codes: string[] = [];
+      if (question.batteryCode) codes.push(normalizeBatteryCode(question.batteryCode));
+      for (const c of question.relatedBatteryCodes ?? []) codes.push(normalizeBatteryCode(c));
+      for (const c of extractBatteryCodesFromTags(question.tags)) codes.push(c);
+      if (compareTarget) codes.push(normalizeBatteryCode(compareTarget));
+      return codes;
+    })(),
+  );
+
+  const relatedSearchLinks = filterQnaSearchQueries(
+    contextBatteryCode,
+    question.relatedSearchQueries,
+  ).slice(0, 2);
 
   const showPhotoCta =
     question.ctaType === "photo" || /사진|단자|라벨|포터|하이브리드/.test(question.title);
@@ -151,7 +173,7 @@ export function QnaQuestionCard({
                 가이드 보기
               </Link>
             ) : null}
-            {question.relatedSearchQueries?.slice(0, 2).map((sq) => (
+            {relatedSearchLinks.map((sq) => (
               <Link className="text-blue-600 hover:underline" href={searchHref(sq)} key={sq}>
                 {sq}
               </Link>

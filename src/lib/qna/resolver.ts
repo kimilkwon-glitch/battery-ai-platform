@@ -7,6 +7,7 @@ import {
   VEHICLE_QNA_FALLBACK,
 } from "./fallbacks";
 import { platformQnaQuestions } from "./catalog-questions";
+import { filterQuestionsForBatteryDisplay } from "@/lib/qna/qna-display-filter";
 import type { QnaMatchContext } from "./types";
 
 const questions: Question[] = [...baseQuestions, ...platformQnaQuestions];
@@ -171,8 +172,9 @@ export function getQuestionById(id: string): Question | undefined {
 }
 
 export function getQuestionsForBattery(batteryCode: string, limit = 4): Question[] {
-  const picked = pickQuestions(questions, { batteryCode, limit });
-  return mergeWithFallbacks(picked, fallbackIdsForBattery(batteryCode), limit);
+  const picked = pickQuestions(questions, { batteryCode, limit: limit + 2 });
+  const merged = mergeWithFallbacks(picked, fallbackIdsForBattery(batteryCode), limit + 2);
+  return filterQuestionsForBatteryDisplay(batteryCode, merged).slice(0, limit);
 }
 
 export function getQuestionsForVehicle(
