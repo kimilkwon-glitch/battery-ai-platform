@@ -14,7 +14,7 @@ export const HOME_HERO = {
 export const HOME_SEARCH_TYPE_CHIPS = [
   { label: "차량명 검색", desc: "연식·연료별 추천", href: "/vehicles", tone: "primary" as const },
   { label: "배터리 규격 검색", desc: "AGM · DIN · CMF", href: getSearchHref("AGM70L"), tone: "default" as const },
-  { label: "방전 증상 검색", desc: "블랙박스·주차 방전", href: getSearchHref("레이 블랙박스 방전"), tone: "default" as const },
+  { label: "증상 진단", desc: "방전·시동지연 허브", href: "/symptoms", tone: "default" as const },
   { label: "사진 확인", desc: "라벨·단자 최종 검증", href: HUB_PHOTO, tone: "secondary" as const },
 ] as const;
 

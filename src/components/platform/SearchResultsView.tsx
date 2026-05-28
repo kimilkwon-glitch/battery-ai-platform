@@ -5,6 +5,7 @@ import { useState } from "react";
 import { BatteryImageCard, batteryImageFit } from "@/components/BatteryThumbnail";
 import { SearchResultHero } from "@/components/platform/search-ux/SearchResultHero";
 import { SearchMobileStickyCta } from "@/components/platform/search-ux/SearchMobileStickyCta";
+import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 import { NO_REGISTERED_SPEC_MESSAGE, NO_VEHICLE_MATCH_MESSAGE } from "@/lib/search/battery-recommendation-copy";
 import { SearchVehicleResults } from "@/components/platform/SearchVehicleResults";
 import { SearchRelatedQna } from "@/components/platform/SearchRelatedQna";
@@ -379,6 +380,8 @@ export function SearchResultsView({ data }: Props) {
             : ""}
         </button>
       ) : null}
+
+      <PlatformHubLinks title="검색 후 확인하기" limit={6} />
 
       {hasHero ? <SearchMobileStickyCta actions={data.ux.mobileSticky} /> : null}
     </div>

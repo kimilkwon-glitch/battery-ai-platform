@@ -9,6 +9,8 @@ import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail
 import { ConversionActions } from "@/components/common/ConversionActions";
 import { SmartNextActions } from "@/components/common/SmartNextActions";
 import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
+import { ComparePresetHub } from "@/components/platform/hub/ComparePresetHub";
+import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
 import { bm } from "@/lib/design-tokens";
 import {
   BRAND_COMPARE_LABEL,
@@ -131,6 +133,8 @@ export function CompareClient({ initial }: { initial: string[] }) {
 
   return (
     <div className="space-y-5">
+      <ComparePresetHub />
+
       {/* 선택 중인 비교 */}
       <section className={bm.intentSummary}>
         <p className={bm.intentBadge}>비교 리포트</p>
@@ -360,12 +364,12 @@ export function CompareClient({ initial }: { initial: string[] }) {
         </p>
         <ConversionActions
           className="mt-4"
-          primary={{ label: "사진으로 확인", href: "/analysis/photo" }}
-          secondary={{ label: "내 차 기준으로 다시 확인", href: "/vehicles" }}
-          tertiary={{ label: "문의하기", href: "/ai" }}
+          primary={{ label: "오주문 방지 체크", href: HUB_ORDER_CHECKLIST }}
+          secondary={{ label: "사진 확인 안내", href: "/photo-check" }}
+          tertiary={{ label: "내 차 기준 검색", href: "/vehicles" }}
         />
         <Link className={`${bm.btnTertiary} mt-2 inline-flex text-xs`} href="/guide/spec?guide=agm-vs-din">
-          관련 규격 가이드
+          AGM/DIN 가이드
         </Link>
       </section>
 

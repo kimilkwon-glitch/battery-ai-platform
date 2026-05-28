@@ -8,6 +8,7 @@ import { HomeStoreHub } from "@/components/home/HomeStoreHub";
 import { HomeTrendingSection } from "@/components/home/HomeTrendingSection";
 import { HomePopularQna } from "@/components/home/HomePopularQna";
 import { HomeOrderGuide } from "@/components/platform/HomeOrderGuide";
+import { HomePlatformTools } from "@/components/home/HomePlatformTools";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { bm } from "@/lib/design-tokens";
 
@@ -26,6 +27,7 @@ export default function Home() {
         <HomeTrendingSection />
         <HomeDeliverySection />
         <HomeStoreHub />
+        <HomePlatformTools />
         <HomePopularQna />
         <HomeOrderGuide />
         <SiteFooter />

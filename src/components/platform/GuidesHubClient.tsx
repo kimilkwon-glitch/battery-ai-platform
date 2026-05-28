@@ -115,23 +115,29 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
           </div>
         </Panel>
 
-        <Panel title="빠른 링크">
+        <Panel title="플랫폼 허브">
           <div className="space-y-1.5">
-            <Link className={`${bm.btnNavy} w-full`} href="/vehicles">
-              차량 목록
+            <Link className={`${bm.btnNavy} w-full`} href="/order-checklist">
+              오주문 방지 체크
             </Link>
-            <Link className={`${bm.btnNavy} w-full`} href="/compare">
-              배터리 비교
+            <Link className={`${bm.btnNavy} w-full`} href="/symptoms">
+              증상 진단
             </Link>
-            <Link className={`${bm.btnSecondary} w-full`} href="/search">
-              규격 검색
+            <Link className={`${bm.btnSecondary} w-full`} href="/photo-check">
+              사진 확인 안내
+            </Link>
+            <Link className={`${bm.btnSecondary} w-full`} href="/service">
+              매장·택배
+            </Link>
+            <Link className={`${bm.btnSecondary} w-full`} href="/compare">
+              규격 비교
             </Link>
             <button
               type="button"
               onClick={() => selectCategory("오주문 방지")}
-              className={`${bm.btnSecondary} w-full !border-amber-100 !text-amber-900 hover:!bg-amber-50`}
+              className={`${bm.btnGhost} w-full !text-amber-900`}
             >
-              오주문 방지
+              가이드: 오주문 방지 글
             </button>
           </div>
         </Panel>

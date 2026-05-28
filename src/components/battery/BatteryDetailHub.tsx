@@ -18,6 +18,7 @@ import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import type { HubBadge } from "@/lib/battery-detail/battery-detail-hub-content";
 import { BatteryDetailRelatedQna } from "@/components/battery/BatteryDetailRelatedQna";
+import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 
 type VehicleRow = { slug: string; title: string; brand: string; fuel: string };
 
@@ -326,6 +327,8 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
       </section>
 
       <BatteryDetailRelatedQna code={displayCode} />
+
+      <PlatformHubLinks title="다음에 확인하기" limit={6} />
 
       <BatteryDetailMobileSticky code={displayCode} />
     </div>

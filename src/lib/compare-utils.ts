@@ -12,12 +12,14 @@ export const compareDefaultVisibleCodes = [
 ] as const;
 
 export const compareRecommendedPairs: { label: string; a: string; b: string }[] = [
-  { label: "AGM70L vs AGM80L", a: "AGM70L", b: "AGM80L" },
-  { label: "AGM80L vs DIN74L", a: "AGM80L", b: "DIN74L" },
-  { label: "AGM80L vs AGM95L", a: "AGM80L", b: "AGM95L" },
-  { label: "AGM80L vs AGM95R", a: "AGM80L", b: "AGM95R" },
   { label: "90R vs 100R", a: "CMF90R", b: "CMF100R" },
-  { label: "AGM95L vs AGM105L", a: "AGM95L", b: "AGM105L" },
+  { label: "100R vs AGM95L", a: "100R", b: "AGM95L" },
+  { label: "AGM70L vs AGM80L", a: "AGM70L", b: "AGM80L" },
+  { label: "AGM60L vs EV12V", a: "AGM60L", b: "AGM70L" },
+  { label: "DIN74L vs CMF80L", a: "DIN74L", b: "CMF80L" },
+  { label: "AGM80L vs AGM95L", a: "AGM80L", b: "AGM95L" },
+  { label: "CMF80L vs 100R", a: "CMF80L", b: "100R" },
+  { label: "AGM80L vs DIN74L", a: "AGM80L", b: "DIN74L" },
 ];
 
 export const compareNextActions = [

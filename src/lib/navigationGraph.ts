@@ -5,6 +5,12 @@
 import { getArticleById, getArticlesByVehicleId } from "./content";
 import { getEnrichedServiceCenters } from "./service-center-hub-data";
 import {
+  HUB_ORDER_CHECKLIST,
+  HUB_PHOTO_CHECK,
+  HUB_SERVICE,
+  HUB_SYMPTOMS,
+} from "./platform-hub-routes";
+import {
   aiHref,
   classifySearch,
   communityHref,
@@ -230,10 +236,10 @@ export function getNextActions(context: NavContext, limit = MAX_ACTIONS): Action
       pool.push(
         { title: "적용 차량 보기", description: v.displayName, href: vehicleHref(v.id) },
         { title: "비슷한 규격 비교", description: `${code} vs ${compareTarget}`, href: compareHref(code, compareTarget) },
-        { title: "상품 확인", description: code, href: shopForBattery(code) },
+        { title: "오주문 방지 체크", description: "주문 전 확인", href: HUB_ORDER_CHECKLIST },
+        { title: "사진 확인 안내", description: "라벨·단자", href: HUB_PHOTO_CHECK },
         { title: "Q&A 보기", description: code, href: communityHref(code) },
-        { title: "사진으로 규격 확인", description: "오주문 방지", href: photoHref(code, v.id) },
-        { title: "배터리 규격 검색", description: "호환 차종", href: searchHref(code) },
+        { title: "매장·택배 안내", description: "이용 방법", href: HUB_SERVICE },
       );
       break;
     case "guide":
@@ -258,11 +264,12 @@ export function getNextActions(context: NavContext, limit = MAX_ACTIONS): Action
       break;
     case "symptom":
       pool.push(
+        { title: "증상 진단 허브", description: "전체 증상", href: HUB_SYMPTOMS },
         { title: "추천 배터리 확인", description: code, href: batteryDetailHref(code) },
-        { title: "사진으로 규격 확인", description: "OCR 분석", href: photoHref(code, v.id) },
-        { title: "관련 가이드", description: s.title, href: guideHref(s.guideIds[0]) },
-        { title: "작업 가능점 찾기", description: v.displayName, href: serviceHref(v.id, code, s.id) },
+        { title: "사진 확인 안내", description: "보조 검증", href: HUB_PHOTO_CHECK },
+        { title: "오주문 방지", description: "체크리스트", href: HUB_ORDER_CHECKLIST },
         { title: "배터리 비교", description: compareTarget, href: compareHref(code, compareTarget) },
+        { title: "매장·출장", description: v.displayName, href: HUB_SERVICE },
       );
       break;
     case "photo":
@@ -277,9 +284,10 @@ export function getNextActions(context: NavContext, limit = MAX_ACTIONS): Action
     case "compare":
       pool.push(
         { title: "배터리 상세", description: code, href: batteryDetailHref(code) },
+        { title: "오주문 방지 체크", description: "단자·규격", href: HUB_ORDER_CHECKLIST },
+        { title: "사진 확인 안내", description: "보조 검증", href: HUB_PHOTO_CHECK },
         { title: "차량별 규격 확인", description: v.displayName, href: vehicleHref(v.id) },
-        { title: "상품 확인", description: code, href: shopForBattery(code) },
-        { title: "AGM/DIN 이해", description: "가이드", href: guideHref("agm-vs-din") },
+        { title: "증상 진단", description: "방전·시동", href: HUB_SYMPTOMS },
         { title: "Q&A 보기", description: code, href: communityHref(code) },
       );
       break;
@@ -320,19 +328,30 @@ export function getNextActions(context: NavContext, limit = MAX_ACTIONS): Action
       pool.push(
         { title: "차량별 규격 확인", description: v.displayName, href: vehicleHref(v.id) },
         { title: "배터리 비교", description: `${code} vs ${compareTarget}`, href: compareHref(code, compareTarget) },
-        { title: "사진으로 규격 확인", description: code, href: photoHref(code, v.id) },
-        { title: "증상 확인", description: s.title, href: diagnosisHref(s.id) },
-        { title: "규격 문의", description: "Q&A", href: aiHref(context.query ?? code) },
-        { title: "작업 가능점 찾기", description: v.displayName, href: serviceHref(v.id, code) },
+        { title: "오주문 방지 체크", description: "주문 전", href: HUB_ORDER_CHECKLIST },
+        { title: "증상 진단 허브", description: s.title, href: HUB_SYMPTOMS },
+        { title: "사진 확인 안내", description: code, href: HUB_PHOTO_CHECK },
+        { title: "매장·택배", description: v.displayName, href: HUB_SERVICE },
+      );
+      break;
+    case "home":
+      pool.push(
+        { title: "차종 검색", description: "연식·연료", href: "/vehicles" },
+        { title: "규격 비교", description: "헷갈리는 규격", href: "/compare" },
+        { title: "증상 진단", description: "방전·시동", href: HUB_SYMPTOMS },
+        { title: "오주문 방지", description: "체크리스트", href: HUB_ORDER_CHECKLIST },
+        { title: "사진 확인", description: "보조 검증", href: HUB_PHOTO_CHECK },
+        { title: "Q&A·가이드", description: "고객 질문", href: "/guides" },
       );
       break;
     default:
       pool.push(
         { title: "차량별 규격 확인", description: "차종별 배터리 안내", href: "/vehicles" },
         { title: "배터리 비교", description: "AGM70L vs AGM80L", href: compareHref("AGM70L", "AGM80L") },
-        { title: "사진으로 규격 확인", description: "단자·라벨", href: "/analysis/photo" },
-        { title: "증상 확인", description: "시동·방전", href: "/diagnosis" },
-        { title: "상품 확인", description: "배터리 쇼핑", href: shopHref() },
+        { title: "오주문 방지", description: "체크리스트", href: HUB_ORDER_CHECKLIST },
+        { title: "증상 진단", description: "시동·방전", href: HUB_SYMPTOMS },
+        { title: "사진 확인", description: "안내", href: HUB_PHOTO_CHECK },
+        { title: "매장·택배", description: "이용 안내", href: HUB_SERVICE },
       );
   }
 

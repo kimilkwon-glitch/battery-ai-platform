@@ -1,21 +1,26 @@
 import Link from "next/link";
 import { bm } from "@/lib/design-tokens";
+import { HUB_ORDER_CHECKLIST, HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
+import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 
 export function HomeOrderGuide() {
   return (
     <section className={bm.warningPanel}>
-      <p className="text-[11px] font-black text-amber-800/90">오주문 방지</p>
-      <h2 className={`${bm.titleMd} mt-1`}>연식·연료·현재 배터리 사진 확인 필요</h2>
-      <ul className="mt-3 space-y-2 text-sm font-semibold leading-relaxed text-slate-700">
+      <p className="text-[11px] font-bold text-amber-800/90">오주문 방지</p>
+      <h2 className={`${bm.sectionTitle} mt-1`}>연식·연료·단자 확인 후 주문하세요</h2>
+      <ul className="mt-3 space-y-2 text-sm font-medium leading-relaxed text-slate-700">
         <li>연식·연료·ISG/BMS에 따라 규격이 달라질 수 있습니다.</li>
-        <li>확실하지 않으면 장착 중인 배터리 라벨·단자 사진으로 확인하는 것이 가장 안전합니다.</li>
+        <li>확실하지 않으면 체크리스트와 사진 확인으로 최종 검증하세요.</li>
       </ul>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Link className={`${bm.btnPrimary} justify-center text-xs`} href="/analysis/photo">
-          사진으로 확인
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        <Link className={`${bm.btnNavy} justify-center text-xs`} href={HUB_ORDER_CHECKLIST}>
+          오주문 방지 체크리스트
         </Link>
-        <Link className={`${bm.btnTertiary}`} href="/ai">
-          문의하기
+        <Link className={`${bm.btnSecondary} justify-center text-xs`} href={HUB_PHOTO_CHECK}>
+          사진 확인 안내
+        </Link>
+        <Link className={`${bm.btnGhost} text-xs`} href={HUB_PHOTO}>
+          사진 분석
         </Link>
       </div>
     </section>
