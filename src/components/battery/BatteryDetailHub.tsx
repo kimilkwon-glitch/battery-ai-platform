@@ -23,7 +23,11 @@ import { BatteryDetailRelatedQna } from "@/components/battery/BatteryDetailRelat
 import { BatterySpecSummary } from "@/components/battery/BatterySpecSummary";
 import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
 import { BatteryKnowledgeCard } from "@/components/battery/BatteryKnowledgeCard";
-import { getDetailKnowledgeBullets, getUpgradeRulesForCode } from "@/lib/battery-knowledge";
+import {
+  getDetailKnowledgeBullets,
+  getKnowledgeTopicsForSpec,
+} from "@/lib/battery-knowledge";
+import { UpgradeRuleCard } from "@/components/battery/UpgradeRuleCard";
 import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 
 type VehicleRow = { slug: string; title: string; brand: string; fuel: string };
@@ -114,7 +118,7 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
   const vehicleCards = mergeFeaturedVehicles(hub.featuredVehicles, vehicles);
   const searchHref = `/search?q=${encodeURIComponent(displayCode)}`;
   const knowledgeBullets = getDetailKnowledgeBullets(displayCode);
-  const upgradeRules = getUpgradeRulesForCode(displayCode);
+  const relatedKnowledge = getKnowledgeTopicsForSpec(displayCode);
   const capacityLabel = specField(spec.capacity);
   const ccaLabel = specField(spec.cca, "차량/브랜드별 확인 필요");
   const terminalLabel = specField(spec.terminalLabel);
@@ -212,19 +216,21 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         />
       ) : null}
 
-      {upgradeRules.length > 0 ? (
+      <UpgradeRuleCard code={displayCode} compact />
+
+      {relatedKnowledge.length > 0 ? (
         <section className={`${bm.card} ${bm.cardPad}`}>
-          <SectionHeader title="업그레이드 후보" description="자동 확정 없음 · 차량·사진 확인 필요" />
+          <SectionHeader title="관련 배터리 안내" description="규격 이해용" />
           <ul className="mt-2 space-y-2">
-            {upgradeRules.map((r) => (
-              <li className={bm.surfaceMuted + " px-3 py-2.5 text-xs"} key={r.id}>
-                <p className="font-black text-slate-800">
-                  {r.fromCode} → {r.toCode}
-                  <span className="ml-1 font-bold text-slate-500">
-                    ({r.feasibility === "conditional" ? "조건부" : r.feasibility === "possible" ? "검토" : "비권장"})
-                  </span>
-                </p>
-                <p className="mt-0.5 font-medium text-slate-600">{r.summary}</p>
+            {relatedKnowledge.map((t) => (
+              <li key={t.id}>
+                <Link
+                  className={`block ${bm.cardInteractive} p-3`}
+                  href={`/guides/knowledge/${t.id}`}
+                >
+                  <p className="text-sm font-black text-slate-900">{t.title}</p>
+                  <p className="mt-1 line-clamp-2 text-xs font-medium text-slate-600">{t.hook}</p>
+                </Link>
               </li>
             ))}
           </ul>

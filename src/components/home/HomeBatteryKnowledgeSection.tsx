@@ -4,7 +4,7 @@ import { listContentGuideTeasers } from "@/data/battery/contentGuides";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { bm } from "@/lib/design-tokens";
 
-const HOME_TEASER_COUNT = 4;
+const HOME_TEASER_COUNT = 6;
 
 export function HomeBatteryKnowledgeSection() {
   const teasers = listContentGuideTeasers().slice(0, HOME_TEASER_COUNT);
@@ -22,7 +22,7 @@ export function HomeBatteryKnowledgeSection() {
         ))}
       </div>
       <Link className={`${bm.btnSecondary} mt-4 inline-flex text-xs`} href="/guides#battery-knowledge">
-        기본 안내 10개 모두 보기 →
+        기본 안내 전체 보기 →
       </Link>
     </section>
   );

@@ -179,7 +179,45 @@ export const CONTENT_GUIDES: ContentGuide[] = [
     imageSlotPurpose: "upgrade-tray-fit",
     imageSlotCaption: "트레이·고정쇠·업그레이드 여유 설명 이미지 영역",
   },
+  {
+    id: "bk-din-code-mapping",
+    title: "57412와 57820처럼 숫자 표기가 다른 이유",
+    hook: "브랜드 품번이 다를 뿐, 같은 DIN H6급으로 보는 경우가 많습니다.",
+    paragraphs: [
+      "로케트 GB57820과 쏠라이트 CMF57412는 표준 규격 DIN74L로 연결해 설명하는 경우가 많습니다.",
+      "Ah·치수는 비슷해도 브랜드별 CCA·중량·제조 주차는 제원표·라벨로 확인합니다.",
+      "ISG 차량은 AGM 유지 여부를 먼저 봅니다.",
+    ],
+    checkPoints: ["라벨 숫자", "DIN74L 여부", "ISG·AGM"],
+    ctas: [
+      { label: "DIN74L 보기", href: "/batteries/DIN74L" },
+      { label: "비교", href: "/compare?items=AGM80L,DIN74L" },
+    ],
+    imageSlotPurpose: "din-code-brand-mapping",
+    imageSlotCaption: "57820·57412·DIN 표기 매핑 설명 이미지 영역",
+    relatedBatteryCodes: ["DIN74L", "CMF57412"],
+  },
+  {
+    id: "bk-brand-vs-spec",
+    title: "브랜드보다 먼저 봐야 할 것은 규격입니다",
+    hook: "로케트·쏠라이트·델코·아트라스BX는 선택지, 장착 규격이 기준입니다.",
+    paragraphs: [
+      "같은 AGM80L도 브랜드별 CCA·RC·중량이 조금 다를 수 있습니다.",
+      "L/R·타입·Ah·트레이를 먼저 맞춘 뒤 브랜드를 고르는 순서가 안전합니다.",
+      "제원표 데이터는 상세 페이지에서 브랜드별로 비교할 수 있습니다.",
+    ],
+    checkPoints: ["규격 코드", "L/R·타입", "브랜드별 CCA"],
+    ctas: [
+      { label: "가이드 목록", href: "/guides" },
+      { label: "주문 전 체크", href: "/order-checklist" },
+    ],
+    imageSlotPurpose: "brand-vs-spec-priority",
+    imageSlotCaption: "브랜드·규격 우선순위 안내 이미지 영역",
+  },
 ];
+
+/** @deprecated use CONTENT_GUIDES — alias for batteryGuideContents */
+export const BATTERY_GUIDE_CONTENTS = CONTENT_GUIDES;
 
 const guideById = new Map(CONTENT_GUIDES.map((g) => [g.id, g]));
 

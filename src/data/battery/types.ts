@@ -1,6 +1,74 @@
-export type TerminalLayout = "L" | "R" | null;
+export type TerminalLayout = "L" | "R" | "UNKNOWN";
 
-export type BatteryFamily = "AGM" | "CMF" | "DIN" | "GB" | "EV" | "EFB" | "MF" | "OTHER";
+export type BatteryBrand = "ROCKET" | "SOLITE" | "DELKOR" | "ATLASBX" | "UNKNOWN";
+
+export type BatteryFamily =
+  | "GB"
+  | "CMF"
+  | "DIN"
+  | "AGM"
+  | "EV_12V"
+  | "EV"
+  | "COMMERCIAL"
+  | "OTHER";
+
+export type TerminalPolarity = "-+" | "+-" | "UNKNOWN";
+
+export type TerminalType = "JIS" | "DIN" | "AGM_DIN" | "OTHER" | "UNKNOWN";
+
+export type BatteryDimensionsMm = {
+  length: number;
+  width: number;
+  height: number;
+  totalHeight?: number | null;
+};
+
+/** 브랜드별 실제 제원 (로케트·쏠라이트 제원표 출처) */
+export type BatteryBrandSpec = {
+  code: string;
+  normalizedCode: string;
+  brand: BatteryBrand;
+  productName?: string;
+  aliases: string[];
+  family: BatteryFamily;
+  voltage: number;
+  capacityAh20Hr?: number | null;
+  capacityAh5Hr?: number | null;
+  cca?: number | null;
+  rc?: number | null;
+  weightKg?: number | null;
+  dimensionsMm?: BatteryDimensionsMm | null;
+  terminalLayout?: TerminalLayout;
+  terminalPolarity?: TerminalPolarity;
+  terminalType?: TerminalType;
+  commonUse?: string[];
+  sourceNote?: string;
+  cautionNotes?: string[];
+};
+
+/** normalizedCode 기준 대표 요약 (브랜드 중립) */
+export type NormalizedBatterySummary = {
+  normalizedCode: string;
+  family: BatteryFamily;
+  voltage: number;
+  capacityAh20Hr: number | null;
+  capacityAh5Hr: number | null;
+  cca: number | null;
+  rc: number | null;
+  weightKg: number | null;
+  dimensionsMm: BatteryDimensionsMm | null;
+  terminalLayout: TerminalLayout;
+  terminalPolarity: TerminalPolarity;
+  terminalType: TerminalType;
+  seriesLabel: string | null;
+  commonUse: string[];
+  confusionSpecs: string[];
+  expertMemo: string;
+  brandVarianceNote: string;
+};
+
+/** @deprecated use BatteryFamily — kept for baseSpecs compat */
+export type LegacyBatteryFamily = "AGM" | "CMF" | "DIN" | "GB" | "EV" | "EFB" | "MF" | "OTHER";
 
 export type BaseBatterySpec = {
   code: string;
@@ -30,11 +98,16 @@ export type BaseBatterySpec = {
 export type BatteryKnowledgeTopic = {
   id: string;
   title: string;
+  hook: string;
   summary: string;
+  keyPoints: string[];
+  caution: string;
   body: string;
   checkPoints: string[];
+  relatedSpecs?: string[];
   relatedBatteryCodes?: string[];
   relatedGuideIds?: string[];
+  ctaType?: "vehicle" | "spec" | "photo" | "compare" | "guides";
 };
 
 export type UpgradeRule = {

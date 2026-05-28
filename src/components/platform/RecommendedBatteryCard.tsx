@@ -8,6 +8,7 @@ import {
 import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSummary";
 import { bm } from "@/lib/design-tokens";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
+import { getSpecCardCopy } from "@/lib/battery-knowledge";
 import { SHORT_EXCEPTION_NOTE, vehicleContextLine } from "@/lib/search/battery-recommendation-copy";
 
 export type RecommendedBatteryCardProps = {
@@ -31,6 +32,7 @@ export function RecommendedBatteryCard({
   primary = false,
 }: RecommendedBatteryCardProps) {
   const display = parseBatterySpecDisplay(code);
+  const specCopy = getSpecCardCopy(code);
   const context =
     vehicleLabel && fieldLabel ? vehicleContextLine(vehicleLabel, fieldLabel) : null;
 
@@ -75,6 +77,11 @@ export function RecommendedBatteryCard({
               seriesLabel={display.seriesLabel}
               terminalLabel={display.terminalLabel}
             />
+            {specCopy ? (
+              <CardInfoMeta className="line-clamp-3 text-[11px] font-medium leading-relaxed text-slate-600">
+                {specCopy.primary}
+              </CardInfoMeta>
+            ) : null}
             {exceptionNote ? <CardInfoMeta className="sm:text-[11px]">{exceptionNote}</CardInfoMeta> : null}
           </CardInfoStack>
         </div>

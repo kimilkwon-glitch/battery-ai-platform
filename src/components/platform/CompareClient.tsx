@@ -10,6 +10,13 @@ import { ConversionActions } from "@/components/common/ConversionActions";
 import { SmartNextActions } from "@/components/common/SmartNextActions";
 import { CompareDeepNotePanel } from "@/components/battery/CompareDeepNotePanel";
 import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
+import { SpecComparisonTable } from "@/components/battery/SpecComparisonTable";
+import { UpgradeRuleCard } from "@/components/battery/UpgradeRuleCard";
+import {
+  getBrandSpecsForNormalizedCode,
+  getSpecCardCopy,
+  normalizeSpecCode,
+} from "@/lib/battery-knowledge";
 import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
 import { AppIcon } from "@/components/common/AppIcon";
 import { ComparePresetHub } from "@/components/platform/hub/ComparePresetHub";
@@ -216,6 +223,30 @@ export function CompareClient({ initial }: { initial: string[] }) {
       </section>
 
       <CompareDeepNotePanel codeA={codeA} codeB={codeB} />
+
+      {getBrandSpecsForNormalizedCode(codeA).length > 0 ||
+      getBrandSpecsForNormalizedCode(codeB).length > 0 ? (
+        <section className={`${bm.card} ${bm.cardPad}`}>
+          <h2 className={bm.cardTitle}>브랜드별 제원 (자료 기준)</h2>
+          <p className={`mt-0.5 ${bm.muted} text-xs`}>
+            같은 규격이라도 로케트·쏠라이트 등 CCA·중량·표기명이 조금씩 다를 수 있습니다. 미확인 값은 — 표시.
+          </p>
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            {([codeA, codeB] as const).map((c) => {
+              const specs = getBrandSpecsForNormalizedCode(c);
+              if (!specs.length) return null;
+              return (
+                <div key={c}>
+                  <p className="spec-code mb-2 text-sm font-black text-slate-900">{normalizeSpecCode(c)}</p>
+                  <SpecComparisonTable specs={specs} compact />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      <UpgradeRuleCard code={codeA} compact />
 
       {/* 비교 테이블 */}
       <section className={`${bm.card} ${bm.cardPad}`}>
