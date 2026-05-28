@@ -14,6 +14,7 @@ export function BatteryDetailRelatedQna({ code }: { code: string }) {
       description="같은 규격을 검색하는 고객이 자주 묻는 내용입니다."
       questions={items}
       hubHref={`/community?q=${encodeURIComponent(code)}`}
+      showPhotoCta={false}
     />
   );
 }

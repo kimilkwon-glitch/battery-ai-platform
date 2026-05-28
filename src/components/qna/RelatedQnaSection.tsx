@@ -13,6 +13,7 @@ type Props = {
   questions: Question[];
   hubHref?: string;
   compact?: boolean;
+  showPhotoCta?: boolean;
 };
 
 export function RelatedQnaSection({
@@ -21,6 +22,7 @@ export function RelatedQnaSection({
   questions,
   hubHref = "/community",
   compact = true,
+  showPhotoCta = true,
 }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -59,9 +61,11 @@ export function RelatedQnaSection({
         <Link className={`${bm.btnNavy} w-full text-xs sm:w-auto`} href={hubHref}>
           관련 질문 더보기
         </Link>
-        <Link className={`${bm.btnGhost} w-full text-xs sm:w-auto`} href={HUB_PHOTO}>
-          사진으로 확인
-        </Link>
+        {showPhotoCta ? (
+          <Link className={`${bm.btnGhost} w-full text-xs sm:w-auto`} href={HUB_PHOTO}>
+            사진으로 확인
+          </Link>
+        ) : null}
       </div>
     </section>
   );
