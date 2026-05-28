@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import {
@@ -10,15 +9,43 @@ import {
 } from "@/lib/battery-image";
 import {
   batteryImageCompactVariant,
-  batteryImageProductFit,
+  batteryImageHeightFit,
+  batteryImageStageImgHeight,
+  batteryImageStageImgMaxWidth,
   batteryImageStageInset,
-  batteryImageStageProductSize,
   type BatteryImageCompactVariant,
   type BatteryImageStageVariant,
 } from "@/lib/battery-image-stage";
 import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import type { BatteryImageSet } from "@/lib/battery-alias-map";
 import { batteryThumbSurface } from "@/lib/design-tokens";
+
+/** height 기준 실사 — width auto, object-contain (AGM95L 등 배경 섞임은 asset 정규화 TODO) */
+export function BatteryHeightImage({
+  src,
+  alt,
+  heightClass,
+  maxWidthClass = batteryImageStageImgMaxWidth,
+  onError,
+}: {
+  src: string;
+  alt: string;
+  heightClass: string;
+  maxWidthClass?: string;
+  onError?: () => void;
+}) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      className={`block ${heightClass} ${batteryImageHeightFit} ${maxWidthClass}`}
+      loading="lazy"
+      decoding="async"
+      onError={onError}
+    />
+  );
+}
 
 type CompactProps = {
   code: string;
@@ -28,44 +55,6 @@ type CompactProps = {
   className?: string;
 };
 
-function ProductFill({
-  code,
-  src,
-  candidates,
-  index,
-  onFail,
-  productClass,
-  sizes,
-}: {
-  code: string;
-  src: string;
-  candidates: string[];
-  index: number;
-  onFail: () => void;
-  productClass: string;
-  sizes: string;
-}) {
-  return (
-    <div className={`flex h-full w-full items-center justify-center`}>
-      <div className={productClass}>
-        <Image
-          key={src}
-          src={src}
-          alt={`${code} 배터리`}
-          fill
-          className={batteryImageProductFit}
-          sizes={sizes}
-          loading="lazy"
-          onError={() => {
-            if (index < candidates.length - 1) onFail();
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
-/** Q&A 칩 · mini 썸네일 · 가이드 커버 — 공통 contain 렌더 */
 export function BatteryProductImage({
   code,
   variant,
@@ -85,36 +74,38 @@ export function BatteryProductImage({
 
   return (
     <div
-      className={`battery-product-image ${batteryThumbSurface} ${cfg.shell} ${className}`}
+      className={`battery-product-image ${className}`}
       data-battery-image-variant={variant}
       data-image-slot={`search.battery.product.${code}`}
       data-image-slot-state={hasPhoto ? "ready" : "placeholder"}
     >
       {hasPhoto ? (
-        <div className={`h-full w-full ${cfg.inset} flex items-center justify-center`}>
-          <ProductFill
-            code={code}
+        <div className={cfg.shell}>
+          <BatteryHeightImage
             src={src}
-            candidates={candidates}
-            index={index}
-            productClass={cfg.product}
-            sizes={cfg.sizes}
-            onFail={() => setIndex((i) => i + 1)}
+            alt={`${code} 배터리`}
+            heightClass={cfg.imgHeight}
+            maxWidthClass={cfg.imgMaxWidth}
+            onError={() => {
+              if (index < candidates.length - 1) setIndex((i) => i + 1);
+            }}
           />
         </div>
       ) : (
-        <MediaImageSlot
-          slot={SEARCH_IMAGE_SLOTS.batteryProduct(code)}
-          className="!h-full !w-full !min-h-0 !rounded-none !ring-0"
-          fillContainer
-          objectFit="contain"
-        />
+        <div className={cfg.shell}>
+          <MediaImageSlot
+            slot={SEARCH_IMAGE_SLOTS.batteryProduct(code)}
+            className="!h-auto !max-h-full !w-auto !max-w-full !rounded-none !ring-0"
+            fillContainer={false}
+            objectFit="contain"
+          />
+        </div>
       )}
     </div>
   );
 }
 
-/** stage 내부 사진 영역 — BatteryImageStage 전용 */
+/** 카드 stage 내부 — height 120~128px */
 export function BatteryStagePhoto({
   code,
   src,
@@ -131,15 +122,15 @@ export function BatteryStagePhoto({
   variant: BatteryImageStageVariant;
 }) {
   return (
-    <div className={`flex h-full w-full items-center justify-center ${batteryImageStageInset}`}>
-      <ProductFill
-        code={code}
+    <div className={batteryImageStageInset}>
+      <BatteryHeightImage
         src={src}
-        candidates={candidates}
-        index={index}
-        productClass={batteryImageStageProductSize[variant]}
-        sizes="(max-width:768px) 45vw, 280px"
-        onFail={onFail}
+        alt={`${code} 배터리`}
+        heightClass={batteryImageStageImgHeight[variant]}
+        maxWidthClass={batteryImageStageImgMaxWidth}
+        onError={() => {
+          if (index < candidates.length - 1) onFail();
+        }}
       />
     </div>
   );

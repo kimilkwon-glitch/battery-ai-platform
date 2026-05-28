@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { BatteryBrandBadges } from "@/components/BatteryBrandBadges";
 import { hasRocketBatteryAssets, hasSoliteBatteryAssets, hasBatteryAssets, getCanonicalBatteryCode, type BatteryBrandKey } from "@/lib/battery-alias-map";
@@ -13,11 +12,11 @@ import {
   type BatteryImageRole,
   type BatteryImageSet,
 } from "@/lib/battery-image";
-import { BatteryProductImage } from "@/components/media/BatteryProductImage";
+import { BatteryHeightImage, BatteryProductImage } from "@/components/media/BatteryProductImage";
 import {
-  batteryImageProductFit,
+  batteryImageStageImgHeight,
+  batteryImageStageImgMaxWidth,
   batteryImageStageInset,
-  batteryImageStageProductSize,
 } from "@/lib/battery-image-stage";
 
 function BatteryGraphic({ code }: { code: string }) {
@@ -78,7 +77,6 @@ export function BatteryThumbnail({
   const showGraphic = failed || !src || candidates.length === 0;
 
   const areaClass = tall ? "h-[180px] w-full" : batteryRatioClass[ratio];
-  const imgClass = batteryImageProductFit;
 
   const surfaceClass = surface === "transparent" ? "bg-transparent" : batteryThumbSurface;
 
@@ -90,24 +88,19 @@ export function BatteryThumbnail({
         <BatteryGraphic code={code} />
       ) : (
         <div className={`absolute inset-0 flex items-center justify-center ${batteryImageStageInset}`}>
-          <div className={batteryImageStageProductSize.card}>
-            <Image
-              key={src}
-              src={src}
-              alt={`${code} 배터리`}
-              fill
-              className={imgClass}
-              sizes="(max-width:768px) 50vw, 320px"
-              loading="lazy"
-              onError={() => {
-                if (index < candidates.length - 1) {
-                  setIndex((i) => i + 1);
-                } else {
-                  setFailed(true);
-                }
-              }}
-            />
-          </div>
+          <BatteryHeightImage
+            src={src}
+            alt={`${code} 배터리`}
+            heightClass={batteryImageStageImgHeight.card}
+            maxWidthClass={batteryImageStageImgMaxWidth}
+            onError={() => {
+              if (index < candidates.length - 1) {
+                setIndex((i) => i + 1);
+              } else {
+                setFailed(true);
+              }
+            }}
+          />
           {darkOverlay ? (
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent" />
           ) : null}

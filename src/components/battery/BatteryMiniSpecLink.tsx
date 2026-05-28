@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { BatteryProductImage } from "@/components/media/BatteryProductImage";
+import { QnaChipBatteryImage } from "@/components/battery/QnaChipBatteryImage";
+import { QNA_CHIP_IMAGE_BOX } from "@/lib/battery-image-stage";
 import { getBatteryImageSet } from "@/lib/battery-alias-map";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 
+/** Q&A·가이드 관련 배터리 칩 — QnaChipBatteryImage 직접 연결 */
 export function BatteryMiniSpecLink({
   code,
   label,
@@ -18,20 +20,18 @@ export function BatteryMiniSpecLink({
   return (
     <Link
       href={`/batteries/${encodeURIComponent(code)}`}
-      className={`inline-flex items-center gap-1 rounded-lg bg-white ring-1 ring-slate-200 transition hover:ring-blue-300 ${
-        compact ? "px-1 py-0.5" : "px-1.5 py-1"
-      }`}
+      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2 py-1 transition hover:border-blue-300 hover:ring-1 hover:ring-blue-200"
+      data-qna-battery-chip={code}
     >
-      <BatteryProductImage
-        code={code}
-        variant={compact ? "chip" : "chipMd"}
-        imageSet={imageSet?.main ? imageSet : undefined}
-        role="main"
-      />
-      <span className="min-w-0">
-        <span className="block text-[10px] font-black text-slate-900">{label ?? code}</span>
+      <span className={QNA_CHIP_IMAGE_BOX}>
+        <QnaChipBatteryImage code={code} imageSet={imageSet} role="main" />
+      </span>
+      <span className="min-w-0 leading-none">
+        <span className="block text-[11px] font-bold text-slate-900">{label ?? code}</span>
         {!compact && display.terminalLabel ? (
-          <span className="block text-[9px] font-semibold text-slate-500">{display.typeLabel}</span>
+          <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+            {display.typeLabel}
+          </span>
         ) : null}
       </span>
     </Link>
