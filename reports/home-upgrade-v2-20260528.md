@@ -44,7 +44,12 @@ CSS 변수: `--font-body`, `--font-heading` (`globals.css`)
 
 ## Production
 
-*(배포 후 갱신)*
+| 항목 | 값 |
+|------|-----|
+| GitHub main | `2dc017d` |
+| Vercel deployment | `dpl_J5wx4rL2SymfEj5c3Srggjar6poS` |
+| Alias | https://battery-ai-platform.vercel.app |
+| 검수 | `verify-home-upgrade-v2.mjs` — **ALL PASS** |
 
 ## 남은 개선
 

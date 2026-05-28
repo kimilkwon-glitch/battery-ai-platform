@@ -48,5 +48,10 @@
     "src/components/home/HomeStoreHub.tsx",
     "scripts/verify-home-upgrade-v2.mjs"
   ],
-  "production": { "pending": true }
+  "production": {
+    "githubMainCommit": "2dc017d",
+    "vercelDeploymentId": "dpl_J5wx4rL2SymfEj5c3Srggjar6poS",
+    "alias": "https://battery-ai-platform.vercel.app",
+    "verifyResult": "ALL_PASS"
+  }
 }
