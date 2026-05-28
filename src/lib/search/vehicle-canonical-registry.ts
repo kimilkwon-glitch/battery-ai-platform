@@ -382,9 +382,11 @@ export const VEHICLE_CANONICAL_REGISTRY: VehicleCanonicalEntry[] = [
     model: "봉고3",
     generation: null,
     fuel: null,
+    assetId: "bongo3-truck",
+    catalogId: "bongo3-truck",
     dbQuery: "봉고3",
     specificity: 70,
-    aliases: ["봉고3", "봉고 3"],
+    aliases: ["봉고3", "봉고 3", "Bongo3", "Bongo III"],
   },
   {
     canonicalKey: "hyundai-porter2-from2020",

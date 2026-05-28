@@ -27,9 +27,9 @@ export const SEARCH_SPEC_TOKENS = [
 const TOKEN_SET = new Set(SEARCH_SPEC_TOKENS.map((t) => t.toUpperCase()));
 
 /** 검색어 원문에서 규격 토큰 추출 (표시·요약용, exact match 상단 고정) */
-export function extractQuerySpecTokens(query: string): string[] {
+function extractSpecsFromSegment(segment: string): string[] {
   const found: string[] = [];
-  const compact = query.replace(/\s+/g, "").toUpperCase();
+  const compact = segment.replace(/\s+/g, "").toUpperCase();
 
   for (const token of SEARCH_SPEC_TOKENS) {
     if (compact.includes(token.toUpperCase())) {
@@ -38,7 +38,7 @@ export function extractQuerySpecTokens(query: string): string[] {
   }
 
   const regexHits =
-    query.match(/\b(AGM|DIN|CMF|EFB)\d+[LR]?|\b\d{2,3}D\d+[LR]\b|\b\d{2,3}R\b/gi) ?? [];
+    segment.match(/\b(AGM|DIN|CMF|EFB)\d+[LR]?|\b\d{2,3}D\d+[LR]\b|\b\d{2,3}R\b/gi) ?? [];
   for (const raw of regexHits) {
     const normalized = raw.replace(/\s+/g, "").toUpperCase();
     const canonical =
@@ -53,6 +53,27 @@ export function extractQuerySpecTokens(query: string): string[] {
   }
 
   return [...new Set(found)];
+}
+
+/** 검색어 원문에서 규격 토큰 추출 (표시·요약용, exact match 상단 고정) */
+export function extractQuerySpecTokens(query: string): string[] {
+  return extractSpecsFromSegment(query);
+}
+
+/** "A vs B" 비교 검색 — 좌측 규격을 먼저 유지 */
+export function extractOrderedQuerySpecs(query: string): string[] {
+  const vsSplit = query.split(/\bvs\b/i);
+  if (vsSplit.length < 2) return extractQuerySpecTokens(query);
+
+  const ordered: string[] = [];
+  for (const part of vsSplit) {
+    for (const spec of extractSpecsFromSegment(part)) {
+      if (!ordered.some((s) => s.toUpperCase() === spec.toUpperCase())) {
+        ordered.push(spec);
+      }
+    }
+  }
+  return ordered;
 }
 
 export function hasCompareIntent(query: string): boolean {

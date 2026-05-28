@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   description: BRAND_META_DESCRIPTION,
 };
 
+/** 전 route 동일 build stamp — ISR/정적 HTML에 구버전 stamp 잔류 방지 */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 export default function RootLayout({
   children,
 }: Readonly<{

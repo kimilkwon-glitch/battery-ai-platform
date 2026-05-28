@@ -68,11 +68,10 @@ export default async function VehicleDetailPage({
 
   const displayTitle = batteryPage.profile?.title ?? vehicle.model;
 
+  const highlightFuel = sp.fuel?.trim();
   const showFuelHeroCards =
-
     batteryPage.fuelGroups.length > 0 &&
-
-    (batteryPage.fuelGroups.length > 1 || /porter2/i.test(slug));
+    (batteryPage.fuelGroups.length > 1 || /porter2/i.test(slug) || Boolean(highlightFuel));
 
   const navBatteryCode = resolveVehicleFuelPrimaryBattery(slug, sp.fuel ?? null, {
     yearChipId: sp.year ?? null,

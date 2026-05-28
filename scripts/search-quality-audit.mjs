@@ -3,9 +3,14 @@
  * Production search quality audit — HTML evidence collector
  * Usage: node scripts/search-quality-audit.mjs [baseUrl] [--json-out path]
  */
-import { writeFileSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const EXPECTED_STAMP = JSON.parse(
+  readFileSync(join(__dirname, "../build-stamp.json"), "utf8"),
+).stamp;
 
 const BASE = process.argv[2] ?? "https://battery-ai-platform.vercel.app";
 const jsonOutArg = process.argv.indexOf("--json-out");
@@ -15,7 +20,7 @@ const JSON_OUT =
 const QUERIES = [
   { id: 1, group: "차량", q: "포터2 20년식", expect: { intent: "차량", spec: /100R/, vehicle: /porter2-new/ } },
   { id: 2, group: "차량", q: "포터2 2019", expect: { intent: "차량", spec: /90R/, vehicle: /porter2-old/ } },
-  { id: 3, group: "차량", q: "포터2 배터리", expect: { intent: "차량", spec: /90R|100R/ } },
+  { id: 3, group: "차량", q: "포터2 배터리", expect: { intent: "차량", spec: /90R.*100R|100R.*90R/ } },
   { id: 4, group: "차량", q: "쏘렌토 MQ4 하이브리드", expect: { intent: "차량", primary: "AGM60L", vehicle: /sorento-mq4/ } },
   { id: 5, group: "차량", q: "쏘렌토 MQ4 디젤", expect: { intent: "차량", primary: "AGM80L", vehicle: /sorento-mq4/ } },
   { id: 6, group: "차량", q: "그랜저 IG 가솔린", expect: { intent: "차량", primary: "AGM70L" } },
@@ -27,7 +32,7 @@ const QUERIES = [
   { id: 12, group: "차량", q: "아이오닉5 배터리", expect: { intent: /차량|통합/, ev: true } },
   { id: 13, group: "차량", q: "스타리아 디젤 CMF80L", expect: { intent: /차량|규격/, primary: "CMF80L" } },
   { id: 14, group: "차량", q: "봉고3 DIN74L", expect: { intent: /차량|규격/, primary: "DIN74L" } },
-  { id: 15, group: "차량", q: "레이 블랙박스 방전", expect: { intent: /증상|통합/ } },
+  { id: 15, group: "차량", q: "레이 블랙박스 방전", expect: { intent: /방전 증상|증상 진단|증상/ } },
   { id: 16, group: "규격", q: "AGM70L", expect: { intent: "규격", primary: "AGM70L", batteryCard: true } },
   { id: 17, group: "규격", q: "AGM80L", expect: { intent: "규격", primary: "AGM80L", batteryCard: true } },
   { id: 18, group: "규격", q: "AGM60L", expect: { intent: "규격", primary: "AGM60L", batteryCard: true } },
@@ -44,7 +49,43 @@ const QUERIES = [
   { id: 29, group: "목적", q: "배터리 상품 확인", expect: { purpose: true, shop: true } },
 ];
 
+/** route별 build stamp — HTML footer·layout 단일 소스 검증 */
+const STAMP_ROUTES = [
+  "/",
+  "/search?q=스포티지 NQ5 하이브리드",
+  "/search?q=K8 하이브리드",
+  "/search?q=포터2 배터리",
+  "/search?q=레이 블랙박스 방전",
+  "/search?q=봉고3 DIN74L",
+  "/search?q=100R vs AGM95L",
+  "/vehicle/sportage-nq5?fuel=하이브리드",
+  "/vehicle/k8-gl3?fuel=하이브리드",
+  "/vehicle/porter2-new?year=from2020",
+  "/vehicle/porter2-old?year=to2019",
+  "/batteries/CMF80L",
+];
+
+/** 검색 AGM60L → 상세 fuel hero AGM60L 체인 */
+const HYBRID_CHAIN_CHECKS = [
+  {
+    id: "sportage-nq5-hev",
+    searchQ: "스포티지 NQ5 하이브리드",
+    vehiclePath: "/vehicle/sportage-nq5?fuel=하이브리드",
+    fuel: "하이브리드",
+    code: "AGM60L",
+  },
+  {
+    id: "k8-gl3-hev",
+    searchQ: "K8 하이브리드",
+    vehiclePath: "/vehicle/k8-gl3?fuel=하이브리드",
+    fuel: "하이브리드",
+    code: "AGM60L",
+  },
+];
+
 const INTENT_LABELS = [
+  "방전 증상 검색",
+  "증상 진단 검색",
   "차량 검색",
   "규격 검색",
   "비교 검색",
@@ -161,6 +202,78 @@ function photoIsMainAnswer(ctas, html) {
   return photoPrimary || photoHero;
 }
 
+function extractBuildStamps(html) {
+  return [...new Set(html.match(/BM-UX-REV-[A-Z0-9-]+/g) ?? [])];
+}
+
+/** #fuel-batteries hero 영역 연료·규격 카드 */
+function extractFuelHeroCards(html) {
+  const start = html.indexOf('id="fuel-batteries"');
+  if (start < 0) return { sectionFound: false, cards: [] };
+  const section = html.slice(start, start + 14000);
+  const cards = [];
+  const re = /data-fuel-hero="([^"]+)"[^>]*data-battery-hero="([^"]+)"/gi;
+  let m;
+  while ((m = re.exec(section)) !== null) {
+    cards.push({ fuel: m[1], code: m[2].toUpperCase() });
+  }
+  return { sectionFound: true, cards };
+}
+
+async function fetchHtml(pathOrUrl) {
+  const url = pathOrUrl.startsWith("http") ? pathOrUrl : `${BASE}${pathOrUrl}`;
+  const res = await fetch(url, {
+    headers: { "User-Agent": "BM-Search-Audit/1.0", Accept: "text/html" },
+    redirect: "follow",
+    cache: "no-store",
+  });
+  return { url, status: res.status, html: await res.text() };
+}
+
+async function auditStampRoute(path) {
+  const { url, status, html } = await fetchHtml(path);
+  const stamps = extractBuildStamps(html);
+  const flags = [];
+  if (status !== 200) flags.push("http-error");
+  if (stamps.length === 0) flags.push("stamp-missing");
+  if (stamps.length > 1) flags.push(`stamp-mixed:${stamps.join(",")}`);
+  if (stamps.length === 1 && stamps[0] !== EXPECTED_STAMP) flags.push(`stamp-wrong:${stamps[0]}`);
+  return { path, url, status, stamps, expectedStamp: EXPECTED_STAMP, ok: flags.length === 0, flags };
+}
+
+async function auditHybridChain(item) {
+  const search = await fetchHtml(`/search?q=${encodeURIComponent(item.searchQ)}`);
+  const vehicle = await fetchHtml(item.vehiclePath);
+  const searchStamps = extractBuildStamps(search.html);
+  const vehicleStamps = extractBuildStamps(vehicle.html);
+  const searchFocusAgm =
+    search.html.includes('id="search-focus"') && /\bAGM60L\b/.test(search.html);
+  const hero = extractFuelHeroCards(vehicle.html);
+  const hybridCard = hero.cards.find(
+    (c) => c.fuel === item.fuel && c.code === item.code,
+  );
+  const flags = [];
+  if (search.status !== 200 || vehicle.status !== 200) flags.push("http-error");
+  if (!searchFocusAgm) flags.push("search-missing-agm60l-focus");
+  if (!hero.sectionFound) flags.push("vehicle-hero-section-missing");
+  if (!hybridCard) flags.push(`vehicle-hero-missing-${item.fuel}-${item.code}`);
+  if (searchFocusAgm && !hybridCard) flags.push("search-detail-chain-break");
+  if (searchStamps.some((s) => s !== EXPECTED_STAMP)) flags.push("search-stamp-mismatch");
+  if (vehicleStamps.some((s) => s !== EXPECTED_STAMP)) flags.push("vehicle-stamp-mismatch");
+  return {
+    ...item,
+    searchUrl: search.url,
+    vehicleUrl: vehicle.url,
+    searchFocusAgm60l: searchFocusAgm,
+    fuelHeroCards: hero.cards,
+    hybridHeroOk: Boolean(hybridCard),
+    searchStamps,
+    vehicleStamps,
+    ok: flags.length === 0,
+    flags,
+  };
+}
+
 function snippetAround(html, needle, len = 120) {
   const i = html.indexOf(needle);
   if (i < 0) return null;
@@ -252,7 +365,46 @@ for (const q of QUERIES) {
   await new Promise((r) => setTimeout(r, 200));
 }
 
-const payload = { base: BASE, auditedAt: new Date().toISOString(), results };
+const stampAudit = [];
+for (const path of STAMP_ROUTES) {
+  process.stderr.write(`stamp ${path}\n`);
+  stampAudit.push(await auditStampRoute(path));
+  await new Promise((r) => setTimeout(r, 150));
+}
+
+const hybridChainAudit = [];
+for (const check of HYBRID_CHAIN_CHECKS) {
+  process.stderr.write(`chain ${check.id}\n`);
+  hybridChainAudit.push(await auditHybridChain(check));
+  await new Promise((r) => setTimeout(r, 200));
+}
+
+const searchFlagCount = results.filter((r) => r.flags.length > 0).length;
+const stampFailCount = stampAudit.filter((r) => !r.ok).length;
+const chainFailCount = hybridChainAudit.filter((r) => !r.ok).length;
+
+const payload = {
+  base: BASE,
+  auditedAt: new Date().toISOString(),
+  expectedStamp: EXPECTED_STAMP,
+  results,
+  stampAudit,
+  hybridChainAudit,
+  summary: {
+    searchPass: results.length - searchFlagCount,
+    searchTotal: results.length,
+    stampPass: stampAudit.length - stampFailCount,
+    stampTotal: stampAudit.length,
+    chainPass: hybridChainAudit.length - chainFailCount,
+    chainTotal: hybridChainAudit.length,
+  },
+};
+
+if (stampFailCount > 0 || chainFailCount > 0) {
+  process.stderr.write(
+    `\nSTAMP FAIL ${stampFailCount}/${stampAudit.length} · CHAIN FAIL ${chainFailCount}/${hybridChainAudit.length}\n`,
+  );
+}
 if (JSON_OUT) {
   mkdirSync(dirname(JSON_OUT), { recursive: true });
   writeFileSync(JSON_OUT, JSON.stringify(payload, null, 2), "utf8");

@@ -26,6 +26,10 @@ export const CANONICAL_DB_BRIDGE: Record<string, CanonicalDbBridge> = {
     displayNamePatterns: [/싼타페\s*MX5\s*하이브리드/i],
     fuelHint: "하이브리드",
   },
+  "kia-bongo3": {
+    dbSlugs: ["bongo3-truck"],
+    displayNamePatterns: [/봉고\s*3|봉고3/i],
+  },
   "kia-sportage-nq5-hybrid": {
     dbSlugs: ["sportage-nq5", "seltos-sp2"],
     displayNamePatterns: [/스포티지\s*NQ5\s*하이브리드/i],

@@ -78,6 +78,10 @@ export function FuelBatterySpecCard({
 
       id={highlighted ? "fuel-card-focus" : undefined}
 
+      data-fuel-hero={fuelLabel}
+
+      data-battery-hero={batteryCode}
+
     >
 
       <div className="flex items-center justify-between gap-2 border-b border-slate-100 bg-slate-50/80 px-3 py-2">

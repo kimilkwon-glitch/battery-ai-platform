@@ -9,6 +9,7 @@ import {
   getRecordsForSlug,
   getYearChipsForSlug,
   pickPrimaryBatteryFromRecords,
+  type FuelBatteryGroup,
   type VehicleBatteryRecord,
 } from "@/lib/vehicleBattery";
 
@@ -32,6 +33,77 @@ const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
   "sportage-nq5": { 하이브리드: "AGM60L" },
   "k8-gl3": { 하이브리드: "AGM60L" },
 };
+
+function syntheticFuelGroup(fuelLabel: string, primary: string): FuelBatteryGroup {
+  return {
+    fuel: fuelLabel,
+    fuelLabel,
+    primaryBattery: primary,
+    batteryOptions: [],
+    alternatives: [],
+    records: [],
+    caution: "",
+    needsReview: false,
+    yearSummary: "",
+  };
+}
+
+/** DB 연료 그룹 + operator 연료 — 기존 라벨은 operator 규격으로 덮어씀 */
+export function mergeOperatorFuelGroups(
+  slug: string,
+  fuelGroups: FuelBatteryGroup[],
+): FuelBatteryGroup[] {
+  const operator = OPERATOR_FUEL_PRIMARY[slug];
+  if (!operator) return fuelGroups;
+
+  const byLabel = new Map<string, FuelBatteryGroup>();
+  for (const g of fuelGroups) {
+    const op = operator[g.fuelLabel];
+    byLabel.set(
+      g.fuelLabel,
+      op ? { ...g, primaryBattery: canonicalBatteryCode(op) } : g,
+    );
+  }
+
+  for (const [fuelLabel, code] of Object.entries(operator)) {
+    if (byLabel.has(fuelLabel)) continue;
+    const primary = canonicalBatteryCode(code);
+    if (primary) byLabel.set(fuelLabel, syntheticFuelGroup(fuelLabel, primary));
+  }
+
+  return [...byLabel.values()];
+}
+
+/** 상단 fuel hero 카드 — highlight 연료 우선·operator 누락 시 주입 */
+export function buildFuelHeroCardGroups(
+  slug: string,
+  fuelGroups: FuelBatteryGroup[],
+  highlightFuelRaw?: string | null,
+): FuelBatteryGroup[] {
+  const highlightFuel = normalizeVehicleFuelParam(highlightFuelRaw);
+  const merged = mergeOperatorFuelGroups(slug, fuelGroups);
+
+  let cards = merged.filter((g) => {
+    const code = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
+    return Boolean(code);
+  });
+
+  if (highlightFuel) {
+    const opCode = OPERATOR_FUEL_PRIMARY[slug]?.[highlightFuel];
+    const resolved = resolveVehicleFuelPrimaryBattery(slug, highlightFuel);
+    const code = canonicalBatteryCode(opCode || resolved);
+    if (code && !cards.some((c) => c.fuelLabel === highlightFuel)) {
+      cards = [syntheticFuelGroup(highlightFuel, code), ...cards];
+    }
+    cards = [...cards].sort((a, b) => {
+      if (a.fuelLabel === highlightFuel) return -1;
+      if (b.fuelLabel === highlightFuel) return 1;
+      return 0;
+    });
+  }
+
+  return cards;
+}
 
 function decodeFuelQueryParam(raw: string | null | undefined): string | null {
   if (!raw) return null;

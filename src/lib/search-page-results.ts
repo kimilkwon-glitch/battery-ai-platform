@@ -2,7 +2,7 @@ import type { VehicleSearchRow } from "@/components/platform/SearchVehicleResult
 import { resolveSpec } from "@/lib/data/resolveSpec";
 import { searchAll, type UnifiedSearchResult } from "@/lib/data/searchAll";
 import { batteries, classifySearch, compareHref, getBattery, type SearchIntent } from "@/lib/platform-data";
-import { extractQuerySpecTokens } from "@/lib/search/search-query-specs";
+import { extractOrderedQuerySpecs, extractQuerySpecTokens } from "@/lib/search/search-query-specs";
 import {
   formatSearchVehicleDisplayLabel,
   formatSearchVehicleRowTitle,
@@ -22,6 +22,7 @@ import {
   buildIntentCtas,
   buildIntentMessage,
   detectQueryIntentFlags,
+  isSymptomDiagnosisPrimaryQuery,
   resolveSearchIntentLabel,
   shouldPrioritizeGuidance,
   symptomHrefFromIntent,
@@ -61,6 +62,9 @@ export type RecognizedVehicleResult = {
   candidateDisplay: string | null;
   /** 보조 안내 — 사진 확인 권장 등 */
   confirmNote: string | null;
+  /** 연식 분기 등 복수 후보 (포터2 90R/100R) */
+  candidateBatteryCodes?: string[];
+  yearBranchLinks?: SearchCta[];
   bodyMessage: string | null;
   confidenceLabel: string | null;
   specSource: "vehicle-battery-db" | "fitment-override" | "car-asset-default" | "candidate-map" | null;
@@ -151,6 +155,8 @@ export type SearchPageResults = {
   primarySpec: string | null;
   terminalTypeLabel: string | null;
   showSymptomSidebar: boolean;
+  symptomDiagnosisFirst: boolean;
+  compareBatteryCodes: string[] | null;
 };
 
 const INSUFFICIENT_MESSAGE =
@@ -265,7 +271,8 @@ function specDetailHref(
 }
 
 function buildCompareHref(specTokens: string[], specs: string[]): string | undefined {
-  const codes = (specTokens.length > 0 ? specTokens : specs)
+  const ordered = specTokens.length > 0 ? specTokens : specs;
+  const codes = ordered
     .map((s) => normalizeBatteryCode(resolveSpec(s) || s))
     .filter(Boolean);
   if (codes.length >= 2) return compareHref(codes[0], codes[1]);
@@ -375,6 +382,8 @@ function emptyResults(partial?: Partial<SearchPageResults>): SearchPageResults {
     primarySpec: null,
     terminalTypeLabel: null,
     showSymptomSidebar: false,
+    symptomDiagnosisFirst: false,
+    compareBatteryCodes: null,
     ...partial,
   };
 }
@@ -393,7 +402,7 @@ function norm(s: string): string {
 }
 
 function extractBatterySpecs(query: string): string[] {
-  const fromTokens = extractQuerySpecTokens(query);
+  const fromTokens = extractOrderedQuerySpecs(query);
   const patterns =
     query.match(
       /\b(AGM|DIN|CMF|EFB)\d+[LR]?|\b(AGM|DIN|CMF|EFB)\s+\d+\s*[LR]?|\b\d{2,3}D\d+[LR]\b|\b\d{2,3}[LR]\b/gi,
@@ -411,7 +420,7 @@ function extractBatterySpecs(query: string): string[] {
 }
 
 function summarySpecLabels(query: string, specs: string[]): string[] {
-  const tokens = extractQuerySpecTokens(query);
+  const tokens = extractOrderedQuerySpecs(query);
   return tokens.length > 0 ? tokens : specs;
 }
 
@@ -871,8 +880,9 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
   const baseIntent = classifySearch(query);
   const alias = resolveSearchVehicleAlias(rawQuery ?? "");
   const intentFlags = pipeline.flags;
-  const specTokens = extractQuerySpecTokens(query);
+  const specTokens = extractOrderedQuerySpecs(query);
   const specs = extractBatterySpecs(query);
+  const symptomDiagnosisFirst = isSymptomDiagnosisPrimaryQuery(query, intentFlags);
   const queryHasBatterySpec = specTokens.length > 0 || pipeline.batterySpec.hasSpec;
   const upgradeReviewOnly = isUpgradeReviewWithoutSpecs(query, specTokens);
   const intent = {
@@ -971,7 +981,7 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
       queryHasBatterySpec ? summary.batterySpecs : [],
       vehicleHref,
     );
-    const recognizedVehicle = summaryCards.recognizedVehicle;
+    let recognizedVehicle = summaryCards.recognizedVehicle;
     const recognizedSpec = summaryCards.recognizedSpec;
 
     if (recognizedVehicle?.specDisplay && !queryHasBatterySpec) {
@@ -1044,6 +1054,30 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
     const specHref = specDetailHref(specs, specTokens, batteriesLimited[0], hero);
     const compareLink = buildCompareHref(specTokens, summary.batterySpecs) ?? specHref;
 
+    if (symptomDiagnosisFirst && recognizedVehicle && !queryHasBatterySpec) {
+      recognizedVehicle = {
+        ...recognizedVehicle,
+        primaryBatteryCode: null,
+        specDisplay: null,
+        specLabel: null,
+        candidateDisplay: null,
+        candidateBatteryCodes: undefined,
+        bodyMessage:
+          buildIntentMessage(query, intentFlags, intent) ??
+          "블랙박스 상시전원·장기주차·배터리 노후 여부를 먼저 확인하세요.",
+        guidance: "차종·연식 확인 후 규격을 보조로 안내합니다.",
+        ctas: buildIntentCtas(
+          intentFlags,
+          specHref,
+          recognizedVehicle.href,
+          symptomHrefFromIntent(intent, query),
+          guides[0]?.href,
+          compareLink,
+          query,
+        ),
+      };
+    }
+
     const hasVehicle = Boolean(alias) || summary.vehicleKeywords.length > 0;
     const prioritizeGuidance = shouldPrioritizeGuidance(intentFlags, hasVehicle, purposeKeywords.length);
 
@@ -1065,8 +1099,16 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
           query,
         )
       : buildCtas(specs, specTokens, intentFlags, hero, batteries[0], query);
+    const compareBatteryCodes =
+      intentFlags.compare && summary.batterySpecs.length >= 2
+        ? summary.batterySpecs.slice(0, 2)
+        : null;
     const hasBatteryFocus =
-      Boolean(recognizedVehicle) || Boolean(recognizedSpec?.primaryBatteryCode);
+      !symptomDiagnosisFirst &&
+      (Boolean(recognizedVehicle?.primaryBatteryCode) ||
+        Boolean(recognizedVehicle?.candidateBatteryCodes?.length) ||
+        Boolean(recognizedSpec?.primaryBatteryCode) ||
+        Boolean(compareBatteryCodes?.length));
     const ctas = hasBatteryFocus
       ? []
       : mergeSearchCtas(intentCtas, buildRequiredCtas(intentFlags, compareLink, specHref, query));
@@ -1136,6 +1178,8 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
       primarySpec,
       terminalTypeLabel,
       showSymptomSidebar,
+      symptomDiagnosisFirst,
+      compareBatteryCodes,
       isSparse,
       insufficientMessage,
       missingSpecMessage,

@@ -39,6 +39,7 @@ import {
 } from "@/lib/search/battery-recommendation-copy";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
 import { resolveFitmentOverride } from "@/lib/search/fitment-overrides";
+import { detectQueryIntentFlags, isSymptomDiagnosisPrimaryQuery } from "@/lib/search/search-intent";
 
 export type RecognizedSpecResult = {
   spec: string;
@@ -121,22 +122,50 @@ export function buildSearchSummary(
             yearChipId: fitmentOverride?.yearChipId ?? null,
           })
         : "";
+    const symptomPrimary = isSymptomDiagnosisPrimaryQuery(
+      pipeline.normalizedQuery,
+      detectQueryIntentFlags(pipeline.normalizedQuery),
+    );
+    const multiCodes = batterySpec.primaryCodes
+      .map((c) => canonicalBatteryCode(c))
+      .filter(Boolean);
+    const isMultiCandidate = !exactSpec && multiCodes.length > 1;
     const hybridSearchPrimary =
       v.canonicalKey?.endsWith("-hybrid") && batterySpec.primaryCodes[0]
         ? canonicalBatteryCode(batterySpec.primaryCodes[0])
         : null;
-    const primaryBatteryCode =
-      hybridSearchPrimary ||
-      (unifiedPrimary
-        ? unifiedPrimary
-        : hasSpecLine
-          ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
-          : null);
-    const specDisplayResolved = primaryBatteryCode
-      ? canonicalBatteryCode(primaryBatteryCode)
-      : hasSpecLine && batterySpec.displayValue
-        ? canonicalBatteryCode(batterySpec.displayValue)
-        : null;
+    const primaryBatteryCode = symptomPrimary
+      ? null
+      : isMultiCandidate
+        ? null
+        : hybridSearchPrimary ||
+          (unifiedPrimary
+            ? unifiedPrimary
+            : hasSpecLine
+              ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
+              : null);
+    const specDisplayResolved = isMultiCandidate
+      ? multiCodes.join(" / ")
+      : primaryBatteryCode
+        ? canonicalBatteryCode(primaryBatteryCode)
+        : hasSpecLine && batterySpec.displayValue
+          ? canonicalBatteryCode(batterySpec.displayValue)
+          : null;
+    const porterDual =
+      isMultiCandidate && (v.canonicalKey?.includes("porter2") || v.model === "포터2");
+    const candidateBatteryCodes = isMultiCandidate ? multiCodes : undefined;
+    const yearBranchLinks = porterDual
+      ? [
+          {
+            label: "2020년 이전 · 90R",
+            href: buildVehicleDetailHref("porter2-old", v.fuel, "to2019"),
+          },
+          {
+            label: "2020년 이후 · 100R",
+            href: buildVehicleDetailHref("porter2-new", v.fuel, "from2020"),
+          },
+        ]
+      : undefined;
     const secondaryNote = batterySpec.caution ?? secondaryNoteForTier(batterySpec.tier);
     const basisLabel = basisLabelForTier(batterySpec.tier, batterySpec.source);
 
@@ -159,26 +188,48 @@ export function buildSearchSummary(
       dbRecordDisplayName: batterySpec.dbRecordDisplayName,
       specSource: batterySpec.source,
       primaryBatteryCode,
-      secondaryNote,
+      candidateBatteryCodes,
+      yearBranchLinks,
+      secondaryNote: isMultiCandidate
+        ? (batterySpec.caution ?? "2020년 이전: 90R · 2020년 이후: 100R — 연식 기준 확인이 필요합니다.")
+        : secondaryNote,
       basisLabel,
       fallbackMessage: hasSpecLine ? null : NO_REGISTERED_SPEC_MESSAGE,
-      guidance: secondaryNote ?? NO_REGISTERED_SPEC_MESSAGE,
+      guidance: isMultiCandidate
+        ? (batterySpec.caution ?? "연식 기준 확인 필요")
+        : (secondaryNote ?? NO_REGISTERED_SPEC_MESSAGE),
       href,
-      ctas: primaryBatteryCode
-        ? PRIMARY_BATTERY_CTAS(primaryBatteryCode)
-        : buildNoSpecPrimaryCtas(vehicleLabel, pipeline.normalizedQuery),
-      secondaryLinks: primaryBatteryCode
+      ctas: isMultiCandidate
         ? [
-            {
-              label: "차량 상세 보기",
-              href: buildVehicleDetailHref(
-                detailSlug || effectiveAlias.assetId || "",
-                v.fuel,
-                fitmentOverride?.yearChipId ?? null,
-              ),
-            },
+            { label: "90R 규격 보기", href: "/batteries/90R" },
+            { label: "100R 규격 보기", href: "/batteries/100R" },
+            { label: "사진으로 확인", href: "/analysis/photo" },
           ]
-        : buildNoSpecSecondaryLinks(),
+        : primaryBatteryCode
+          ? PRIMARY_BATTERY_CTAS(primaryBatteryCode)
+          : buildNoSpecPrimaryCtas(vehicleLabel, pipeline.normalizedQuery),
+      secondaryLinks: isMultiCandidate
+        ? (yearBranchLinks ?? [])
+        : primaryBatteryCode || exactSpec
+          ? [
+              ...(exactSpec
+                ? [
+                    {
+                      label: `${codeFromExactSpec(exactSpec)} 규격 상세`,
+                      href: `/batteries/${codeFromExactSpec(exactSpec)}`,
+                    },
+                  ]
+                : []),
+              {
+                label: "차량 상세 보기",
+                href: buildVehicleDetailHref(
+                  detailSlug || effectiveAlias.assetId || "",
+                  v.fuel,
+                  fitmentOverride?.yearChipId ?? null,
+                ),
+              },
+            ]
+          : buildNoSpecSecondaryLinks(),
     };
   }
 

@@ -3,6 +3,7 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { bm } from "@/lib/design-tokens";
 import { getVehicleConditionSpecLines } from "@/lib/vehicle-condition-spec-lines";
 import {
+  buildFuelHeroCardGroups,
   normalizeVehicleFuelParam,
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
@@ -29,16 +30,9 @@ export function VehicleBatteryHeroCards({
   const conditionLines = getVehicleConditionSpecLines(slug);
   const useYearCards = conditionLines.length >= 2 && /porter2/i.test(slug);
 
-  const seen = new Set<string>();
-  const fuelCards = fuelGroups.filter((g) => {
-    if (seen.has(g.fuelLabel)) return false;
-    const code = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
-    if (!code) return false;
-    seen.add(g.fuelLabel);
-    return true;
-  });
+  const fuelCards = buildFuelHeroCardGroups(slug, fuelGroups, highlightFuelRaw);
 
-  if (fuelGroups.length === 0) return null;
+  if (fuelCards.length === 0) return null;
 
   return (
     <section className={`${bm.card} ${bm.cardPad}`} id="fuel-batteries" data-ux="fuel-battery-hero-cards">

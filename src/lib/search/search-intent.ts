@@ -55,12 +55,24 @@ export function detectQueryIntentFlags(query: string): QueryIntentFlags {
 }
 
 /** /search 상단 라벨 — classifySearch와 별도로 검색어 의도 우선 */
+const DISCHARGE_SYMPTOM_RE = /방전|완전\s*방전|시동\s*안|시동\s*지연|블랙박스|블박|장기\s*주차/i;
+
+/** 증상·방전 검색 — 배터리 단일 포커스보다 진단·점검 우선 */
+export function isSymptomDiagnosisPrimaryQuery(
+  query: string,
+  flags: QueryIntentFlags,
+): boolean {
+  if (!flags.symptom) return false;
+  return DISCHARGE_SYMPTOM_RE.test(query);
+}
+
 export function resolveSearchIntentLabel(
   query: string,
   options?: { hasVehicle?: boolean; hasAlias?: boolean },
 ): string {
   const specTokens = extractQuerySpecTokens(query);
-  if (SYMPTOM_INTENT_RE.test(query)) return "증상 검색";
+  if (DISCHARGE_SYMPTOM_RE.test(query) && SYMPTOM_INTENT_RE.test(query)) return "방전 증상 검색";
+  if (SYMPTOM_INTENT_RE.test(query)) return "증상 진단 검색";
   if (COMPARE_INTENT_RE.test(query)) return "비교 검색";
   if (UPGRADE_INTENT_RE.test(query)) return "업그레이드 검색";
   if (TERMINAL_INTENT_RE.test(query)) return "단자 방향 검색";

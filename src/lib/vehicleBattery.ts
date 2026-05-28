@@ -5,7 +5,10 @@ import dbJson from "@/data/vehicle-battery-db.json";
 import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
-import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
+import {
+  mergeOperatorFuelGroups,
+  resolveVehicleFuelPrimaryBattery,
+} from "@/lib/vehicle-fuel-primary-battery";
 import {
   normalizeBatteryCode,
   productBatteryCode,
@@ -924,10 +927,13 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
 export function getVehicleBatteryPageData(slug: string) {
   const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
-  const fuelGroups = groupRecordsByFuel(recs).map((g) => {
-    const unified = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
-    return unified ? { ...g, primaryBattery: unified } : g;
-  });
+  const fuelGroups = mergeOperatorFuelGroups(
+    slug,
+    groupRecordsByFuel(recs).map((g) => {
+      const unified = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
+      return unified ? { ...g, primaryBattery: unified } : g;
+    }),
+  );
   const yearChips = getYearChipsForSlug(slug, recs);
   const relatedVehicles = getRelatedVehicleSlugs(slug);
   const hasConfirmedDb = recs.some(hasConfirmedBatteryData);

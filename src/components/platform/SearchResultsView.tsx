@@ -151,10 +151,18 @@ export function SearchResultsView({ data }: Props) {
   const limit = data.defaultVisible;
 
   const batteryFocus =
-    Boolean(data.recognizedVehicle?.primaryBatteryCode) ||
-    Boolean(data.recognizedSpec?.primaryBatteryCode);
+    !data.symptomDiagnosisFirst &&
+    (Boolean(data.recognizedVehicle?.primaryBatteryCode) ||
+      Boolean(data.recognizedVehicle?.candidateBatteryCodes?.length) ||
+      Boolean(data.recognizedSpec?.primaryBatteryCode) ||
+      Boolean(data.compareBatteryCodes?.length));
   const focusCode =
-    data.recognizedVehicle?.primaryBatteryCode ?? data.recognizedSpec?.primaryBatteryCode ?? null;
+    data.recognizedVehicle?.primaryBatteryCode ??
+    data.recognizedVehicle?.candidateBatteryCodes?.[0] ??
+    data.compareBatteryCodes?.[0] ??
+    data.recognizedSpec?.primaryBatteryCode ??
+    null;
+  const symptomFocus = data.symptomDiagnosisFirst;
 
   const visibleVehicles = vehiclesOpen ? data.vehicles : data.vehicles.slice(0, limit);
 
@@ -228,13 +236,49 @@ export function SearchResultsView({ data }: Props) {
 
     <div className="space-y-3">
 
-      {batteryFocus ? (
+      {symptomFocus ? (
+        <div className="space-y-3" id="search-focus">
+          <header>
+            <p className="text-xs font-bold text-blue-600">{data.intent.label}</p>
+            <h1 className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
+              &ldquo;{data.displayQuery || data.query}&rdquo; 검색 결과
+            </h1>
+          </header>
+          <div className={`${bm.card} border-blue-100 bg-gradient-to-br from-[#FAFCFF] to-white p-4 ring-1 ring-blue-100/80`}>
+            <p className="text-sm font-black text-slate-900">방전 원인 확인</p>
+            <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+              {data.recognizedVehicle?.bodyMessage ??
+                data.intentMessage ??
+                "블랙박스 상시전원·장기주차·배터리 노후 여부를 먼저 확인하세요."}
+            </p>
+            {data.recognizedVehicle?.vehicleLabel ? (
+              <p className="mt-2 text-xs font-semibold text-slate-500">
+                {data.recognizedVehicle.vehicleLabel} — 차종·연식 확인 후 규격을 보조로 안내합니다.
+              </p>
+            ) : null}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(data.recognizedVehicle?.ctas?.length ? data.recognizedVehicle.ctas : ctas)
+                .slice(0, 4)
+                .map((cta) => (
+                  <Link
+                    key={`${cta.label}-${cta.href}`}
+                    className={`${bm.btnPrimary} inline-flex text-xs`}
+                    href={cta.href}
+                  >
+                    {cta.label}
+                  </Link>
+                ))}
+            </div>
+          </div>
+        </div>
+      ) : batteryFocus ? (
         <SearchBatteryFocusBlock
           displayQuery={data.displayQuery || data.query}
           intentLabel={data.intent.label}
           vehicle={data.recognizedVehicle}
           specOnly={data.recognizedSpec}
           terminalTypeLabel={data.terminalTypeLabel}
+          compareBatteryCodes={data.compareBatteryCodes}
         />
       ) : (
         <div className={`${bm.card} p-4`} id="search-summary">
