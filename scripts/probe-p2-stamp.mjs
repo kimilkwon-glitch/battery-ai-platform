@@ -1,4 +1,4 @@
-const STAMP = "BM-UX-REV-20260528-ICON-REGISTRY-CONSISTENCY-FIX1";
+const STAMP = "BM-UX-REV-20260528-ICON-REGISTRY-VEHICLE-DETAIL-FIX1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const routes = [
   "/",
@@ -14,9 +14,11 @@ const routes = [
   "/service",
   "/batteries/AGM60L",
   "/batteries/CMF80L",
+  "/vehicle/grandeur-ig",
+  "/vehicle/porter2-new",
 ];
 
-const cb = "icon-registry-consistency-fix1-20260528";
+const cb = "icon-registry-vehicle-detail-fix1-20260528";
 
 for (const r of routes) {
   const url = `${BASE}${r}?_cb=${cb}&t=${Date.now()}`;

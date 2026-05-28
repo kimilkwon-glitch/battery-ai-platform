@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-
+import { AppIcon } from "@/components/common/AppIcon";
 import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
 
 import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSummary";
@@ -129,29 +129,29 @@ export function FuelBatterySpecCard({
         />
 
         {note ? (
-
-          <p className="mt-2 text-[10px] font-medium leading-snug text-slate-500">{note}</p>
-
+          <p className="mt-2 flex items-start gap-1.5 text-[10px] font-medium leading-snug text-slate-500">
+            {highlighted ? (
+              <AppIcon iconKey="warning" size="xs" className="mt-0.5 shrink-0" />
+            ) : null}
+            <span>{note}</span>
+          </p>
         ) : null}
 
         <div className="mt-auto flex flex-col gap-2 pt-3">
 
           <Link
-
-            className={`${bm.btnPrimary} w-full text-center text-xs`}
-
+            className={`${bm.btnPrimary} inline-flex w-full items-center justify-center gap-1.5 text-xs`}
             href={`/batteries/${encodeURIComponent(batteryCode)}`}
-
           >
-
+            <AppIcon iconKey="batterySpec" size="sm" className="!text-white" />
             해당 규격 보기
-
           </Link>
-
-          <Link className={`${bm.btnSecondary} w-full text-center text-xs`} href="/analysis/photo">
-
+          <Link
+            className={`${bm.btnSecondary} inline-flex w-full items-center justify-center gap-1.5 text-xs`}
+            href="/analysis/photo"
+          >
+            <AppIcon iconKey="photoCheck" size="sm" />
             사진으로 확인
-
           </Link>
 
         </div>

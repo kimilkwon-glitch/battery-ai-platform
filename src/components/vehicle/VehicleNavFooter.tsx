@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import { AppIcon } from "@/components/common/AppIcon";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
 import { bm } from "@/lib/design-tokens";
 import { compareHref, guideHref } from "@/lib/platform-data";
@@ -15,7 +15,10 @@ export function VehicleNavFooter({
 
   return (
     <section className={`${bm.card} ${bm.cardPad}`} data-ux="vehicle-nav-footer" data-primary-battery={batteryCode}>
-      <p className="mb-3 text-xs font-black text-slate-600">다음 단계</p>
+      <p className="mb-3 flex items-center gap-1.5 text-xs font-black text-slate-600">
+        <AppIcon iconKey="route" size="sm" />
+        다음 단계
+      </p>
       <CtaHierarchy
         ctas={[
           { label: `${batteryCode} 규격 상세`, href: specHref },

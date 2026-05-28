@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { AppIcon } from "@/components/common/AppIcon";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { bm } from "@/lib/design-tokens";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
@@ -145,11 +146,15 @@ export function VehicleBatteryPanel({
   if (fuelGroups.length === 0) {
     return (
       <section className={`${bm.card} ${bm.cardPad}`} id="fuel-batteries">
-        <p className="text-sm font-black text-slate-800">배터리 정보 준비 중</p>
+        <p className="flex items-center gap-2 text-sm font-black text-slate-800">
+          <AppIcon iconKey="warning" size="sm" />
+          배터리 정보 준비 중
+        </p>
         <p className="mt-1 text-xs font-semibold text-slate-500">
           아직 등록된 차량 규격 정보가 없습니다. 차량 정보를 보내주시면 확인 후 반영할 수 있습니다.
         </p>
-        <Link className={`${bm.btnPrimary} mt-3 inline-flex text-xs`} href="/ai">
+        <Link className={`${bm.btnPrimary} mt-3 inline-flex items-center gap-1.5 text-xs`} href="/ai">
+          <AppIcon iconKey="phone" size="sm" className="!text-white" />
           DB 등록 요청
         </Link>
       </section>

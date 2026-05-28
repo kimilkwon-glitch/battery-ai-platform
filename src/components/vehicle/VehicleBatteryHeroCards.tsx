@@ -38,6 +38,7 @@ export function VehicleBatteryHeroCards({
     <section className={`${bm.card} ${bm.cardPad}`} id="fuel-batteries" data-ux="fuel-battery-hero-cards">
       <SectionHeader
         label="추천 배터리"
+        iconKey="batterySpec"
         title={`${vehicleTitle} · 연료별 규격`}
         description={
           useYearCards

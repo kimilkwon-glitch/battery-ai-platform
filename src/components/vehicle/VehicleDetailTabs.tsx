@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { AppIcon } from "@/components/common/AppIcon";
 import { GuideCard } from "@/components/common/GuideCard";
 import { bm } from "@/lib/design-tokens";
+import type { IconKey } from "@/lib/icon-map";
 import { VehicleBatteryPanel } from "@/components/vehicle/VehicleBatteryPanel";
 import type { FuelBatteryGroup, VehicleDbProfile, YearChip } from "@/lib/vehicleBattery";
 import type { VehicleDetail } from "@/lib/vehicle-data";
@@ -200,10 +202,21 @@ export function VehicleDetailTabs({
   );
 }
 
-function PanelBlock({ title, children }: { title: string; children: React.ReactNode }) {
+function PanelBlock({
+  title,
+  children,
+  iconKey,
+}: {
+  title: string;
+  children: React.ReactNode;
+  iconKey?: IconKey;
+}) {
   return (
     <section className={`${bm.cardPremium} ${bm.cardPad}`}>
-      <h3 className={`${bm.cardTitle} mb-3`}>{title}</h3>
+      <h3 className={`${bm.cardTitle} mb-3 flex items-center gap-2`}>
+        {iconKey ? <AppIcon iconKey={iconKey} size="sm" /> : null}
+        <span>{title}</span>
+      </h3>
       {children}
     </section>
   );

@@ -1,3 +1,4 @@
+import { AppIcon } from "@/components/common/AppIcon";
 import { Breadcrumb, PortalHeader } from "@/components/portal";
 
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
@@ -153,7 +154,10 @@ export default async function VehicleDetailPage({
 
               <div>
 
-                <p className={bm.label}>차량 배터리 프로필</p>
+                <p className={`${bm.label} inline-flex items-center gap-1.5`}>
+                  <AppIcon iconKey="vehicle" size="sm" />
+                  차량 배터리 프로필
+                </p>
 
                 <h1 className={`${bm.sectionTitleLg} mt-1`}>{displayTitle}</h1>
 
