@@ -198,9 +198,28 @@ export const CONTENT_GUIDES: ContentGuide[] = [
     relatedBatteryCodes: ["DIN74L", "CMF57412"],
   },
   {
+    id: "bk-brand-cca-variance",
+    title: "브랜드별 CCA가 다른 이유",
+    hook: "같은 AGM80L이라도 로케트·델코·아트라스·쏠라이트 제원표 수치가 조금씩 다를 수 있습니다.",
+    paragraphs: [
+      "제조사·제품 라인·시험 조건에 따라 CCA·RC·치수가 달라집니다.",
+      "교체 기준은 브랜드명이 아니라 차량 순정 규격·L/R·타입·트레이입니다.",
+      "4브랜드 제원은 배터리 상세·비교 페이지에서 표로 확인할 수 있습니다.",
+    ],
+    checkPoints: ["순정 Ah·CCA", "L/R·단자 타입", "브랜드별 제원표"],
+    ctas: [
+      { label: "AGM80L 상세", href: "/batteries/AGM80L" },
+      { label: "규격 비교", href: "/compare?items=AGM70L,AGM80L" },
+    ],
+    imageSlotPurpose: "brand-cca-variance",
+    imageSlotCaption: "브랜드별 CCA 차이 설명",
+    relatedBatteryCodes: ["AGM80L", "AGM70L"],
+    tags: ["브랜드", "제원"],
+  },
+  {
     id: "bk-brand-vs-spec",
     title: "브랜드보다 먼저 봐야 할 것은 규격입니다",
-    hook: "로케트·쏠라이트·델코·아트라스BX는 선택지, 장착 규격이 기준입니다.",
+    hook: "로케트·델코·아트라스BX·쏠라이트는 선택지, 장착 규격이 기준입니다.",
     paragraphs: [
       "같은 AGM80L도 브랜드별 CCA·RC·중량이 조금 다를 수 있습니다.",
       "L/R·타입·Ah·트레이를 먼저 맞춘 뒤 브랜드를 고르는 순서가 안전합니다.",

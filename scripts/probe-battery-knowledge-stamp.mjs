@@ -1,4 +1,4 @@
-const STAMP = "BM-UX-REV-20260528-BRAND-SPEC-KNOWLEDGE-DB1";
+const STAMP = "BM-UX-REV-20260528-FOUR-BRAND-BATTERY-SPEC-DB1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const routes = [
   "/",

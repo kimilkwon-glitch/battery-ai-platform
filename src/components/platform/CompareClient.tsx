@@ -13,7 +13,7 @@ import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
 import { SpecComparisonTable } from "@/components/battery/SpecComparisonTable";
 import { UpgradeRuleCard } from "@/components/battery/UpgradeRuleCard";
 import {
-  getBrandSpecsForNormalizedCode,
+  getCustomerBrandSpecs,
   getSpecCardCopy,
   normalizeSpecCode,
 } from "@/lib/battery-knowledge";
@@ -224,8 +224,7 @@ export function CompareClient({ initial }: { initial: string[] }) {
 
       <CompareDeepNotePanel codeA={codeA} codeB={codeB} />
 
-      {getBrandSpecsForNormalizedCode(codeA).length > 0 ||
-      getBrandSpecsForNormalizedCode(codeB).length > 0 ? (
+      {getCustomerBrandSpecs(codeA).length > 0 || getCustomerBrandSpecs(codeB).length > 0 ? (
         <section className={`${bm.card} ${bm.cardPad}`}>
           <h2 className={bm.cardTitle}>브랜드별 제원 (자료 기준)</h2>
           <p className={`mt-0.5 ${bm.muted} text-xs`}>
@@ -233,7 +232,7 @@ export function CompareClient({ initial }: { initial: string[] }) {
           </p>
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             {([codeA, codeB] as const).map((c) => {
-              const specs = getBrandSpecsForNormalizedCode(c);
+              const specs = getCustomerBrandSpecs(c);
               if (!specs.length) return null;
               return (
                 <div key={c}>

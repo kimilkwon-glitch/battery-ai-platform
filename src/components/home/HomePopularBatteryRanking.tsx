@@ -17,6 +17,7 @@ import {
   HOME_POPULAR_BATTERIES,
   batteryDetailHref,
 } from "@/lib/home-upgrade-v2-data";
+import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { bm } from "@/lib/design-tokens";
 
 export function HomePopularBatteryRanking() {
@@ -44,7 +45,9 @@ export function HomePopularBatteryRanking() {
                 title={item.code}
                 titleClassName="spec-code text-[var(--bm-text)]"
               />
-              <CardInfoDesc>{item.summary}</CardInfoDesc>
+              <CardInfoDesc className="line-clamp-2">
+                {getHomeCardCopy(item.code) ?? item.summary}
+              </CardInfoDesc>
               <CardInfoBadgeRow>
                 <span className={`${bm.badge} ${bm.badgeGray}`}>{item.typeLabel}</span>
                 <span className={`${bm.badge} ${bm.badgeGray}`}>{item.terminal}</span>

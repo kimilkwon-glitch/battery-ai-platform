@@ -14,6 +14,8 @@ import { BRAND_NOTES, BRAND_SECTION_LEAD, BRAND_SECTION_TITLE } from "@/data/bat
 import { getUpgradeRulesForCode, UPGRADE_PRINCIPLES } from "@/data/battery/batteryUpgradeRules";
 import {
   getBrandSpecsForNormalizedCode,
+  getCustomerBrandSpecs,
+  getHomeCardCopy,
   getNormalizedBatterySummary,
   getPrimaryBrandSpec,
   getSpecCardCopy,
@@ -41,6 +43,8 @@ export {
   getUpgradeRulesForCode,
   UPGRADE_PRINCIPLES,
   getBrandSpecsForNormalizedCode,
+  getCustomerBrandSpecs,
+  getHomeCardCopy,
   getNormalizedBatterySummary,
   getPrimaryBrandSpec,
   getSpecCardCopy,

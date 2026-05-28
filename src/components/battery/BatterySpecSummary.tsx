@@ -1,10 +1,11 @@
 import Link from "next/link";
 import {
   formatDimensions,
-  getBrandSpecsForNormalizedCode,
+  getCustomerBrandSpecs,
   getNormalizedBatterySummary,
   terminalLayoutLabel,
 } from "@/data/battery/batterySpecIndex";
+import { terminalTypeLabel } from "@/data/battery/spec-helpers";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
@@ -21,8 +22,7 @@ export function BatterySpecSummary({ code, showBrandTable = true }: Props) {
   const summary = getNormalizedBatterySummary(display);
   if (!summary) return null;
 
-  const brandSpecs = getBrandSpecsForNormalizedCode(display);
-  const uniqueBrands = [...new Set(brandSpecs.map((s) => s.brand))];
+  const brandSpecs = getCustomerBrandSpecs(display);
   const dims = formatDimensions(summary.dimensionsMm);
 
   return (
@@ -60,7 +60,7 @@ export function BatterySpecSummary({ code, showBrandTable = true }: Props) {
           <dt className="font-black text-slate-400">단자</dt>
           <dd className="mt-0.5 font-bold text-slate-800">
             {summary.terminalPolarity !== "UNKNOWN" ? `${summary.terminalPolarity} · ` : ""}
-            {summary.terminalType !== "UNKNOWN" ? summary.terminalType : "타입 확인"}
+            {terminalTypeLabel(summary.terminalType)}
           </dd>
         </div>
       </dl>
@@ -74,11 +74,11 @@ export function BatterySpecSummary({ code, showBrandTable = true }: Props) {
         </p>
       ) : null}
 
-      {showBrandTable && uniqueBrands.length > 0 ? (
+      {showBrandTable && brandSpecs.length > 0 ? (
         <div className="mt-4 border-t border-slate-100 pt-4">
           <p className={bm.cardTitle}>브랜드별 제원 비교</p>
           <p className="mt-1 text-[11px] font-medium text-slate-500">
-            로케트·쏠라이트 등 표기와 CCA·중량이 조금씩 다를 수 있습니다.
+            로케트·델코·아트라스BX·쏠라이트 — CCA·RC·높이·표기명이 조금씩 다를 수 있습니다.
           </p>
           <div className="mt-3">
             <SpecComparisonTable specs={brandSpecs} />

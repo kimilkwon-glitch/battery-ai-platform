@@ -5,6 +5,7 @@ export type BatteryBrand = "ROCKET" | "SOLITE" | "DELKOR" | "ATLASBX" | "UNKNOWN
 export type BatteryFamily =
   | "GB"
   | "CMF"
+  | "JIS"
   | "DIN"
   | "AGM"
   | "EV_12V"
@@ -14,7 +15,14 @@ export type BatteryFamily =
 
 export type TerminalPolarity = "-+" | "+-" | "UNKNOWN";
 
-export type TerminalType = "JIS" | "DIN" | "AGM_DIN" | "OTHER" | "UNKNOWN";
+export type TerminalType =
+  | "SMALL"
+  | "STD"
+  | "JIS"
+  | "DIN"
+  | "AGM_DIN"
+  | "OTHER"
+  | "UNKNOWN";
 
 export type BatteryDimensionsMm = {
   length: number;
@@ -23,27 +31,31 @@ export type BatteryDimensionsMm = {
   totalHeight?: number | null;
 };
 
-/** 브랜드별 실제 제원 (로케트·쏠라이트 제원표 출처) */
+/** 브랜드별 실제 제원 (4브랜드 제원표·스크린 출처) */
 export type BatteryBrandSpec = {
   code: string;
   normalizedCode: string;
   brand: BatteryBrand;
-  productName?: string;
+  productName: string;
   aliases: string[];
   family: BatteryFamily;
   voltage: number;
-  capacityAh20Hr?: number | null;
+  capacityAh20Hr: number | null;
   capacityAh5Hr?: number | null;
-  cca?: number | null;
-  rc?: number | null;
-  weightKg?: number | null;
+  cca: number | null;
+  rc: number | null;
   dimensionsMm?: BatteryDimensionsMm | null;
-  terminalLayout?: TerminalLayout;
-  terminalPolarity?: TerminalPolarity;
-  terminalType?: TerminalType;
+  weightKg?: number | null;
+  layoutRaw?: string | null;
+  terminalLayout: TerminalLayout;
+  terminalPolarity: TerminalPolarity;
+  terminalType: TerminalType;
+  holdDown?: string | null;
   commonUse?: string[];
-  sourceNote?: string;
+  sourceNote: string;
   cautionNotes?: string[];
+  /** false면 메인·검색 카드·대표 비교표에서 숨김 (DB·alias용) */
+  exposeToCustomer: boolean;
 };
 
 /** normalizedCode 기준 대표 요약 (브랜드 중립) */

@@ -31,7 +31,7 @@ export const HOME_HERO_EXAMPLES = [
 export const HOME_POPULAR_BATTERIES = [
   {
     code: "AGM60L",
-    summary: "하이브리드·EV 보조 12V에서 자주 찾는 AGM 규격입니다.",
+    summary: "소형·준중형 ISG 차량에서 자주 만나는 작은 AGM 규격입니다.",
     typeLabel: "AGM",
     terminal: "L타입",
     useCase: "HEV·ISG 보조 12V",
@@ -45,7 +45,7 @@ export const HOME_POPULAR_BATTERIES = [
   },
   {
     code: "AGM80L",
-    summary: "SUV·디젤·ISG 차량에서 자주 보이는 대표 AGM 규격입니다.",
+    summary: "스탑앤고·스마트충전 차량에서 자주 보이는 중대형 AGM 규격입니다.",
     typeLabel: "AGM",
     terminal: "L타입",
     useCase: "SUV·디젤 메인",
@@ -59,14 +59,14 @@ export const HOME_POPULAR_BATTERIES = [
   },
   {
     code: "100R",
-    summary: "화물·상용에서 많이 쓰지만 90R과 헷갈리기 쉽습니다.",
+    summary: "상용차에서 많이 쓰이는 R타입 대용량 일반 배터리입니다.",
     typeLabel: "R타입(JIS)",
     terminal: "R타입",
     useCase: "상용·포터2 이후",
   },
   {
     code: "CMF80L",
-    summary: "승용·SUV에서 많이 찾는 보급형 규격입니다.",
+    summary: "일반 충전계통 차량에 쓰이는 80Ah급 L타입 배터리입니다.",
     typeLabel: "CMF",
     terminal: "L타입",
     useCase: "중대형 CMF",

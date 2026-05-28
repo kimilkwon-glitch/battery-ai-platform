@@ -17,6 +17,8 @@ import { bm } from "@/lib/design-tokens";
 import { compareHref } from "@/lib/platform-data";
 import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
 import { BatteryKnowledgeCard } from "@/components/battery/BatteryKnowledgeCard";
+import { BatterySpecMiniCard } from "@/components/battery/BatterySpecMiniCard";
+import { hasBrandSpecData } from "@/lib/battery-knowledge";
 import { NO_REGISTERED_SPEC_MESSAGE } from "@/lib/search/battery-recommendation-copy";
 import { isPorter2VehicleContext } from "@/lib/search/fitment-overrides";
 import type { SearchUxPresentation } from "@/lib/search/search-ux-presentation";
@@ -295,15 +297,18 @@ export function SearchBatteryFocusBlock({
           ) : null}
         </>
       ) : (
-        <RecommendedBatteryCard
-          code={code!}
-          fieldLabel={fieldLabel}
-          vehicleLabel={vehicle?.vehicleLabel}
-          exceptionNote={reasonForCard ?? exceptionNote}
-          ctas={ctas}
-          secondaryLinks={secondaryLinks}
-          primary
-        />
+        <>
+          <RecommendedBatteryCard
+            code={code!}
+            fieldLabel={fieldLabel}
+            vehicleLabel={vehicle?.vehicleLabel}
+            exceptionNote={reasonForCard ?? exceptionNote}
+            ctas={ctas}
+            secondaryLinks={secondaryLinks}
+            primary
+          />
+          {hasBrandSpecData(code!) ? <BatterySpecMiniCard code={code!} compact /> : null}
+        </>
       )}
 
       {ux.heroCtas.length > 0 && ux.mode !== "spec" ? (

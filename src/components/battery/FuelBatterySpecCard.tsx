@@ -9,6 +9,8 @@ import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSum
 import { bm } from "@/lib/design-tokens";
 
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
+import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
+import { hasBrandSpecData } from "@/lib/battery-knowledge";
 
 import { getBatteryImageSet } from "@/lib/battery-alias-map";
 
@@ -127,6 +129,12 @@ export function FuelBatterySpecCard({
           terminalLabel={display.terminalLabel}
 
         />
+
+        {hasBrandSpecData(batteryCode) ? (
+          <p className="mt-2 line-clamp-2 text-[10px] font-medium leading-snug text-slate-600">
+            {getHomeCardCopy(batteryCode) ?? "브랜드별 제원은 상세 페이지에서 확인"}
+          </p>
+        ) : null}
 
         {note ? (
           <p className="mt-2 flex items-start gap-1.5 text-[10px] font-medium leading-snug text-slate-500">
