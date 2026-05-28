@@ -90,9 +90,6 @@ export function BatterySpecSummary({ code, showBrandTable = true }: Props) {
         <Link className={bm.btnTertiary + " text-xs"} href="/compare">
           비교해보기
         </Link>
-        <Link className={bm.btnTertiary + " text-xs"} href="/photo-check">
-          사진으로 확인
-        </Link>
       </div>
     </section>
   );

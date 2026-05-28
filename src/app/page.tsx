@@ -1,7 +1,7 @@
 ﻿import { PortalHeader } from "@/components/portal";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { HomeDeliverySection } from "@/components/home/HomeDeliverySection";
-import { HomeEvHybridSection } from "@/components/home/HomeEvHybridSection";
+import { HomeEvHybridHint } from "@/components/home/HomeEvHybridHint";
 import { HomePlatformHero } from "@/components/home/HomePlatformHero";
 import { HomePopularBatteryRanking } from "@/components/home/HomePopularBatteryRanking";
 import { HomePopularVehicleSearch } from "@/components/home/HomePopularVehicleSearch";
@@ -27,7 +27,7 @@ export default function Home() {
         </HomeSectionShell>
         <HomePopularBatteryRanking />
         <HomePopularVehicleSearch />
-        <HomeEvHybridSection />
+        <HomeEvHybridHint />
         <HomeTrendingSection />
         <HomeDeliverySection />
         <HomeStoreHub />

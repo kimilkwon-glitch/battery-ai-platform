@@ -84,8 +84,8 @@ function mergeFeaturedVehicles(
 function BatteryDetailMobileSticky({ code }: { code: string }) {
   const actions = [
     { label: "택배 주문", href: HUB_SHOP_ANCHORS.delivery, iconKey: "delivery" as const },
-    { label: "사진 확인", href: HUB_PHOTO, iconKey: "photoCheck" as const },
     { label: "내 차 검색", href: `/search?q=${encodeURIComponent(code)}`, iconKey: "vehicle" as const },
+    { label: "매장 문의", href: HUB_STORE, iconKey: "store" as const },
   ];
   return (
     <div className={bm.stickyMobileBar} data-battery-detail-sticky>
@@ -96,9 +96,7 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
             className={
               i === 0
                 ? `${bm.btnNavy} flex flex-1 items-center justify-center gap-1 text-xs`
-                : i === 1
-                  ? `${bm.btnSecondary} flex flex-1 items-center justify-center gap-1 text-xs`
-                  : `${bm.btnGhost} flex flex-1 items-center justify-center gap-1 text-xs`
+                : `${bm.btnSecondary} flex flex-1 items-center justify-center gap-1 text-xs`
             }
             href={a.href}
           >
@@ -109,6 +107,13 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
       </div>
     </div>
   );
+}
+
+function getShortCautionNote(code: string): string {
+  if (/^AGM/i.test(code)) {
+    return "AGM 적용 차량은 일반 배터리와 충전 방식이 다를 수 있습니다. 현재 장착 규격과 차량 조건을 함께 확인해 주세요.";
+  }
+  return "차량에 따라 코딩·등록 또는 장착 조건이 다를 수 있습니다. 현재 장착 배터리 라벨과 단자 위치를 함께 보면 오주문을 줄일 수 있습니다.";
 }
 
 export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
@@ -297,12 +302,9 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
           <div className={`${bm.surfaceMuted} mt-3 p-4`}>
             <p className="text-sm font-bold text-slate-800">대표 적용 차량 데이터 준비중</p>
             <p className="mt-1 text-xs font-medium text-slate-600">
-              현재 장착 배터리 사진이 있으면 규격 확인이 더 안전합니다.
+              라벨·단자 사진을 함께 보면 안전합니다. 차량명으로 검색해 연식·연료를 확인해 주세요.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Link className={`${bm.btnPrimary} text-xs`} href={HUB_PHOTO}>
-                사진으로 확인
-              </Link>
               <Link className={`${bm.btnSecondary} text-xs`} href={searchHref}>
                 차량 검색
               </Link>
@@ -338,29 +340,14 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         )}
       </section>
 
-      {/* F. Misorder prevention */}
-      <section className={bm.warningPanel}>
-        <SectionHeader title="오주문 방지" description="주문 전 반드시 확인" />
-        <ul className="mt-3 space-y-2">
-          {hub.misorderTips.map((tip) => (
-            <li className="flex gap-2 text-sm font-medium text-slate-700" key={tip}>
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" aria-hidden />
-              {tip}
-            </li>
-          ))}
-        </ul>
+      {/* F. Short caution */}
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <p className="text-sm font-medium leading-relaxed text-slate-700">
+          {getShortCautionNote(displayCode)}
+        </p>
         {hub.cautionNotes.length > 0 ? (
-          <div className="mt-3 rounded-lg border border-amber-100/80 bg-white/60 px-3 py-2">
-            {hub.cautionNotes.map((n) => (
-              <p className="text-xs font-semibold text-amber-900/90" key={n}>
-                {n}
-              </p>
-            ))}
-          </div>
+          <p className="mt-2 text-xs font-medium text-slate-600">{hub.cautionNotes[0]}</p>
         ) : null}
-        <Link className={`${bm.btnPrimary} mt-4 inline-flex text-xs`} href={HUB_PHOTO}>
-          사진으로 확인
-        </Link>
       </section>
 
       {/* G. Order CTA */}

@@ -24,7 +24,7 @@ export const HOME_HERO_EXAMPLES = [
   "AGM70L",
   "스포티지 NQ5 하이브리드",
   "레이 블랙박스 방전",
-  "100R vs AGM95L",
+  "AGM95L",
 ] as const;
 
 /** 많이 찾는 규격 랭킹 — 핵심 8종 */
@@ -206,7 +206,7 @@ export const HOME_TRENDING_PATTERNS = [
   { label: "그랜저 IG AGM70L/AGM80L", href: getSearchHref("그랜저 IG 가솔린"), tag: "연료" },
   { label: "스포티지 NQ5 하이브리드 AGM60L", href: getSearchHref("스포티지 NQ5 하이브리드"), tag: "HEV" },
   { label: "스타리아 CMF80L", href: getSearchHref("스타리아 CMF80L"), tag: "CMF" },
-  { label: "100R vs AGM95L", href: getSearchHref("100R vs AGM95L"), tag: "비교" },
+  { label: "AGM95L 제원", href: getBatteryHref("AGM95L"), tag: "AGM" },
   { label: "EV6 EV 12V", href: getBatteryHref("EV 12V"), tag: "EV" },
   { label: "레이 블랙박스 방전", href: getSearchHref("레이 블랙박스 방전"), tag: "증상" },
 ] as const;

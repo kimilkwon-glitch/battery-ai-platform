@@ -4,6 +4,12 @@ import { isDeprioritizedBatterySpec } from "@/lib/battery-detail/deprioritized-s
 import { resolveCoreBatteryHubCode, normalizeCoreBatteryCode } from "@/lib/battery-detail/core-battery-codes";
 import type { BatteryDetailHubContent, HubBadge, HubCompareCard } from "@/lib/battery-detail/battery-detail-hub-content";
 import { getBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-content";
+import { sanitizeBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-sanitize";
+import {
+  areNeverSuggestTogether,
+  filterCodesForCustomerCards,
+  filterConfusionForDisplay,
+} from "@/data/battery/batterySpecRelations";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { getBattery } from "@/lib/platform-data";
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
@@ -63,7 +69,6 @@ function buildConfusionSpecs(code: string, related: string[]): string[] {
     if (r !== code) out.add(r);
   }
   if (/CMF80L/i.test(code)) out.add("80L 축약 주문");
-  if (/^AGM80/i.test(code)) out.add("CMF80L");
   if (/100R/i.test(code)) {
     out.add("90R");
     out.add("CMF100R");
@@ -77,7 +82,7 @@ function buildConfusionSpecs(code: string, related: string[]): string[] {
     out.add("AGM80L");
   }
   if (out.size === 0) out.add("동일 계열 타입·단자 혼동");
-  return [...out].slice(0, 5);
+  return filterConfusionForDisplay(code, [...out]).slice(0, 5);
 }
 
 function buildCompareCards(code: string, relatedCodes: string[]): HubCompareCard[] {
@@ -86,6 +91,7 @@ function buildCompareCards(code: string, relatedCodes: string[]): HubCompareCard
   for (const target of relatedCodes) {
     const canonical = canonicalBatteryCode(target) || target;
     if (!canonical || canonical === code || seen.has(canonical)) continue;
+    if (areNeverSuggestTogether(code, canonical)) continue;
     if (isDeprioritizedBatterySpec(canonical) && !isDeprioritizedBatterySpec(code)) continue;
     if (resolveCoreBatteryHubCode(canonical) && resolveCoreBatteryHubCode(code) === resolveCoreBatteryHubCode(canonical)) {
       continue;
@@ -102,25 +108,8 @@ function buildCompareCards(code: string, relatedCodes: string[]): HubCompareCard
   return cards;
 }
 
-function buildMisorderTips(code: string): string[] {
-  const tips = [
-    "현재 장착 배터리 라벨·단자 방향은 사진으로 보는 것이 안전합니다.",
-    "연식·연료·옵션에 따라 규격이 달라질 수 있습니다.",
-    "AGM·DIN·CMF·JIS를 서로 다른 계열로 보는 것이 좋습니다.",
-  ];
-  if (/^EV\s*12V/i.test(code)) {
-    tips.unshift("고전압 메인 배터리가 아닙니다 — 보조 12V만 보시면 됩니다.");
-  }
-  if (/CMF80L/i.test(code) || normalizeBatteryCode(code) === "80L") {
-    tips.unshift("CMF80L은 80L로 축약해 주문하지 마세요.");
-  }
-  if (/100R|90R/i.test(code)) {
-    tips.unshift("R타입 단자·연식(포터2 90R/100R)을 함께 보세요.");
-  }
-  if (/^DIN/i.test(code)) {
-    tips.unshift("DIN 트레이·홀 위치·고정 방식을 함께 보세요.");
-  }
-  return tips.slice(0, 6);
+function buildMisorderTips(_code: string): string[] {
+  return [];
 }
 
 function buildCautionNotes(code: string): string[] {
@@ -157,7 +146,7 @@ export function buildFallbackBatteryDetailHubContent(
       return true;
     });
 
-  return {
+  return sanitizeBatteryDetailHubContent({
     code,
     positioning: buildPositioning(code, typeLabel),
     typeLabel,
@@ -170,7 +159,7 @@ export function buildFallbackBatteryDetailHubContent(
     compareCards: buildCompareCards(code, filteredRelated),
     misorderTips: buildMisorderTips(code),
     cautionNotes: buildCautionNotes(code),
-  };
+  });
 }
 
 /** 전용(8) → 없으면 fallback (80L은 CMF80L 전용으로 승격하지 않음) */
@@ -187,7 +176,7 @@ export function resolveBatteryDetailHubContent(
   const core = resolveCoreBatteryHubCode(code);
   if (core) {
     const dedicated = getBatteryDetailHubContent(core);
-    if (dedicated) return dedicated;
+    if (dedicated) return sanitizeBatteryDetailHubContent(dedicated);
   }
   return buildFallbackBatteryDetailHubContent(code || trimmed, relatedCodes);
 }

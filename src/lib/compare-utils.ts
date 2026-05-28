@@ -13,7 +13,7 @@ export const compareDefaultVisibleCodes = [
 
 export const compareRecommendedPairs: { label: string; a: string; b: string }[] = [
   { label: "90R vs 100R", a: "CMF90R", b: "CMF100R" },
-  { label: "100R vs AGM95L", a: "100R", b: "AGM95L" },
+  { label: "100L vs 100R", a: "100L", b: "100R" },
   { label: "AGM70L vs AGM80L", a: "AGM70L", b: "AGM80L" },
   { label: "AGM60L vs EV12V", a: "AGM60L", b: "AGM70L" },
   { label: "DIN74L vs CMF80L", a: "DIN74L", b: "CMF80L" },

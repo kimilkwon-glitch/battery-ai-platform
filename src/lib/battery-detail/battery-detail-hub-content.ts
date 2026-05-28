@@ -137,14 +137,14 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
       { text: "DIN 표기 혼동 주의", tone: "amber" },
       { text: "AGM 무조건 대체 금지", tone: "gray" },
     ],
-    confusionSpecs: ["DIN78L", "57412", "57820", "AGM70L", "100R"],
+    confusionSpecs: ["DIN78L", "57412", "57820", "AGM70L"],
     featuredVehicles: [
       { slug: "bongo3-truck", title: "봉고3", fuel: "디젤", condition: "DIN74L" },
     ],
     compareCards: [
-      cmp("AGM70L", "AGM JIS 계열과 DIN 트레이·고정이 다름", ["DIN74L", "AGM70L"]),
       cmp("DIN62L", "용량·트레이 한 단계 차이 — 표기 57412/57820 혼동", ["DIN74L", "DIN62L"]),
-      cmp("100R", "상용 R타입 JIS와 DIN은 타입·단자 체계가 다름", ["DIN74L", "100R"]),
+      cmp("DIN80L", "DIN 계열 상위 Ah — 트레이·홀 여유 확인", ["DIN74L", "DIN80L"]),
+      cmp("57412", "동일 H6급 품번 표기 — Ah·브랜드별 CCA 확인", ["DIN74L", "57412"]),
     ],
     misorderTips: [
       "DIN74L / DIN78L / 57412 / 57820 표기를 라벨로 확인하세요.",
@@ -162,15 +162,15 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
       { text: "R타입 단자", tone: "blue" },
       { text: "90R 연식 분기", tone: "amber" },
     ],
-    confusionSpecs: ["90R", "CMF100R", "100L", "AGM95L"],
+    confusionSpecs: ["90R", "CMF100R", "100L"],
     featuredVehicles: [
       { slug: "porter2-new", title: "포터2", fuel: "디젤", condition: "2020년 이후 · 100R" },
       { slug: "porter2-old", title: "포터2", fuel: "디젤", condition: "2019년 이전 · 90R" },
     ],
     compareCards: [
-      cmp("90R", "포터2 연식에 따라 90R/100R 분기 — 연식 칩·사진 확인", ["100R", "90R"]),
-      cmp("CMF100R", "브랜드 상품코드와 family 100R — 라벨 표기 확인", ["100R", "CMF100R"]),
-      cmp("AGM95L", "대형 AGM 승용·수입차 — 상용 R타입과 용도가 다름", ["100R", "AGM95L"]),
+      cmp("90R", "포터2 연식에 따라 90R/100R 분기 — 연식·라벨 확인", ["100R", "90R"]),
+      cmp("100L", "L타입 상용·승용 혼동 — 단자·트레이 확인", ["100R", "100L"]),
+      cmp("CMF100R", "브랜드 표기와 100R family — 라벨 확인", ["100R", "CMF100R"]),
     ],
     misorderTips: [
       "100R은 R타입으로 통일해 확인하세요. L타입과 혼동 금지.",
@@ -188,14 +188,13 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
       { text: "CMF80L 표기 유지", tone: "blue" },
       { text: "80L 축약 주문 금지", tone: "amber" },
     ],
-    confusionSpecs: ["80L", "AGM80L", "CMF100R"],
+    confusionSpecs: ["80L", "CMF90L", "CMF100R"],
     featuredVehicles: [
       { slug: "staria", title: "스타리아", fuel: "디젤", condition: "CMF80L" },
     ],
     compareCards: [
-      cmp("AGM80L", "AGM과 CMF는 타입·트레이가 다를 수 있음", ["CMF80L", "AGM80L"]),
       cmp("CMF90L", "CMF 계열 용량·단자 차이 — L/R 표기 확인", ["CMF80L", "CMF90L"]),
-      cmp("CMF100R", "상용 R타입 CMF와 L타입 CMF 혼동 주의", ["CMF80L", "CMF100R"]),
+      cmp("80L", "80L 축약 표기 — CMF80L 전체 코드 확인", ["CMF80L", "80L"]),
     ],
     misorderTips: [
       "주문·검색 시 CMF80L 전체 코드를 사용하세요.",
@@ -210,22 +209,17 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
     typeLabel: "AGM",
     useCase: "대형 AGM, 수입·대형 승용(확정 차종만 연결)",
     badges: [
-      { text: "100R 단순 대체 금지", tone: "amber" },
-      { text: "코딩 차종 안내만", tone: "gray" },
+      { text: "L타입 AGM", tone: "blue" },
+      { text: "코딩·등록 차종 확인", tone: "gray" },
     ],
-    confusionSpecs: ["AGM80L", "100R", "AGM105L"],
+    confusionSpecs: ["AGM80L", "AGM105L"],
     featuredVehicles: [],
     compareCards: [
-      cmp("AGM80L", "국산 대형 SUV·디젤 ISG는 AGM80L 후보가 많음", ["AGM95L", "AGM80L"]),
-      cmp("100R", "상용 R타입과 승용 대형 AGM — 용도·타입이 다름", ["AGM95L", "100R"]),
-      cmp("AGM105L", "대형 AGM 상위 용량 — 단순 대체·비교 주문 금지", ["AGM95L", "AGM105L"]),
+      cmp("AGM80L", "L4→L5 AGM — 트레이·충전계·BMS 확인 후 검토", ["AGM95L", "AGM80L"]),
+      cmp("AGM105L", "L6급 상위 AGM — 트레이·무게 여유 필요", ["AGM95L", "AGM105L"]),
     ],
-    misorderTips: [
-      "BMS·코딩이 필요한 차종은 확정 표현 대신 안내만 제공합니다.",
-      "수입차는 연식·옵션별 AGM95L 여부가 다를 수 있습니다.",
-      "라벨·단자 사진으로 최종 확인하세요.",
-    ],
-    cautionNotes: ["100R과 타입·차량 적용이 다릅니다."],
+    misorderTips: [],
+    cautionNotes: [],
   },
   "EV 12V": {
     code: "EV 12V",
