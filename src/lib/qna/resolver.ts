@@ -1,6 +1,11 @@
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 import { baseQuestions } from "@/lib/platform-base-questions";
 import type { Question } from "@/lib/platform-types";
+import {
+  BATTERY_QNA_FALLBACK,
+  SEARCH_QNA_FALLBACK,
+  VEHICLE_QNA_FALLBACK,
+} from "./fallbacks";
 import { platformQnaQuestions } from "./catalog-questions";
 import type { QnaMatchContext } from "./types";
 
@@ -91,9 +96,24 @@ function scoreQuestion(q: Question, ctx: QnaMatchContext): number {
   return score;
 }
 
+function mergeWithFallbacks(picked: Question[], fallbackIds: string[] | undefined, limit: number): Question[] {
+  const seen = new Set(picked.map((q) => q.id));
+  const out = [...picked];
+  for (const id of fallbackIds ?? []) {
+    if (out.length >= limit) break;
+    if (seen.has(id)) continue;
+    const q = questions.find((item) => item.id === id);
+    if (q) {
+      seen.add(id);
+      out.push(q);
+    }
+  }
+  return out.slice(0, limit);
+}
+
 function pickQuestions(pool: Question[], ctx: QnaMatchContext): Question[] {
   const limit = ctx.limit ?? 4;
-  const minScore = ctx.searchQuery || ctx.batteryCode || ctx.vehicleSlug || ctx.compareCodes ? 12 : 8;
+  const minScore = ctx.searchQuery || ctx.batteryCode || ctx.vehicleSlug || ctx.compareCodes ? 8 : 6;
   const ranked = pool
     .map((q) => ({ q, score: scoreQuestion(q, ctx) }))
     .filter((row) => row.score >= minScore)
@@ -110,21 +130,58 @@ function pickQuestions(pool: Question[], ctx: QnaMatchContext): Question[] {
   return out;
 }
 
+function fallbackIdsForSearch(query: string): string[] {
+  const qn = normQuery(query);
+  for (const row of SEARCH_QNA_FALLBACK) {
+    if (row.pattern.test(qn)) return row.ids;
+  }
+  return [];
+}
+
+function fallbackIdsForBattery(code: string): string[] {
+  const family = normalizeBatteryCode(code);
+  return BATTERY_QNA_FALLBACK[family] ?? BATTERY_QNA_FALLBACK[code] ?? [];
+}
+
+function fallbackIdsForVehicle(slug: string, fuelHint?: string | null): string[] {
+  const base = VEHICLE_QNA_FALLBACK[normSlug(slug)] ?? [];
+  if (/하이브리드|hev/i.test(fuelHint ?? "")) {
+    return [
+      ...base,
+      ...(VEHICLE_QNA_FALLBACK["sportage-nq5"] ?? []),
+      "q-hybrid-replace",
+      "q-agm60l-vs-ev12v",
+    ];
+  }
+  return base;
+}
+
 export function getQuestionById(id: string): Question | undefined {
   return questions.find((q) => q.id === id);
 }
 
 export function getQuestionsForBattery(batteryCode: string, limit = 4): Question[] {
-  return pickQuestions(questions, { batteryCode, limit });
+  const picked = pickQuestions(questions, { batteryCode, limit });
+  return mergeWithFallbacks(picked, fallbackIdsForBattery(batteryCode), limit);
 }
 
-export function getQuestionsForVehicle(vehicleSlug: string, limit = 4): Question[] {
-  return pickQuestions(questions, { vehicleSlug, limit });
+export function getQuestionsForVehicle(
+  vehicleSlug: string,
+  limit = 4,
+  fuelHint?: string | null,
+): Question[] {
+  const ctx: QnaMatchContext = { vehicleSlug, limit };
+  if (fuelHint && /하이브리드|hev/i.test(fuelHint)) {
+    ctx.searchQuery = `${vehicleSlug} 하이브리드`;
+  }
+  const picked = pickQuestions(questions, ctx);
+  return mergeWithFallbacks(picked, fallbackIdsForVehicle(vehicleSlug, fuelHint), limit);
 }
 
 export function getQuestionsForSearch(searchQuery: string, limit = 4): Question[] {
   if (!searchQuery.trim()) return [];
-  return pickQuestions(questions, { searchQuery, limit });
+  const picked = pickQuestions(questions, { searchQuery, limit });
+  return mergeWithFallbacks(picked, fallbackIdsForSearch(searchQuery), limit);
 }
 
 export function getQuestionsForCompare(codes: string[], limit = 4): Question[] {

@@ -6,12 +6,12 @@ const STAMP = "BM-UX-REV-20260528-QNA-FONT-V1";
 
 const routes = [
   ["/", ["home-popular-qna", STAMP]],
-  ["/community", ["배터리 매칭 질문 허브", STAMP]],
-  ["/batteries/AGM60L", ["related-qna", STAMP]],
-  ["/batteries/100R", ["related-qna", STAMP]],
-  ["/batteries/CMF80L", ["related-qna", STAMP]],
-  ["/vehicle/sportage-nq5?fuel=" + encodeURIComponent("하이브리드"), ["related-qna", STAMP]],
-  ["/search?q=" + encodeURIComponent("레이 블랙박스 방전"), ["related-qna", STAMP]],
+  ["/community", ["배터리 매칭 질문 허브", STAMP, "community-qna-hub"]],
+  ["/batteries/AGM60L", ["related-qna", STAMP, "q-sportage-nq5-agm60l"]],
+  ["/batteries/100R", ["related-qna", STAMP, "q-porter2-year"]],
+  ["/batteries/CMF80L", ["related-qna", STAMP, "q-cmf80l"]],
+  ["/vehicle/sportage-nq5?fuel=" + encodeURIComponent("하이브리드"), ["related-qna", STAMP, "q-sportage-nq5-agm60l"]],
+  ["/search?q=" + encodeURIComponent("레이 블랙박스 방전"), ["related-qna", STAMP, "q-blackbox"]],
   ["/search?q=100R%20vs%20AGM95L", ["related-qna", STAMP]],
   ["/search?q=" + encodeURIComponent("포터2 배터리"), ["related-qna", STAMP]],
 ];

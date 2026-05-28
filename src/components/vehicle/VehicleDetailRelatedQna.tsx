@@ -11,7 +11,7 @@ export function VehicleDetailRelatedQna({
   slug: string;
   fuelHint?: string | null;
 }) {
-  const items = getQuestionsForVehicle(slug, 4);
+  const items = getQuestionsForVehicle(slug, 4, fuelHint);
   if (items.length === 0) return null;
 
   const hybrid = /하이브리드|hev/i.test(fuelHint ?? "") || /sportage-nq5|k8-gl3/.test(slug);

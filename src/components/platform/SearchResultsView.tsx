@@ -139,7 +139,13 @@ export function SearchResultsView({ data }: Props) {
     <div className={`space-y-3 ${hasHero ? "pb-24 md:pb-0" : ""}`} data-search-results-root>
       {hasHero ? (
         <SearchResultHero data={data} fallbackCtas={[...ctas]} />
-      ) : (
+      ) : null}
+
+      {(data.symptomDiagnosisFirst || data.query) && (data.displayQuery || data.query) ? (
+        <SearchRelatedQna query={data.displayQuery || data.query} />
+      ) : null}
+
+      {!hasHero ? (
         <div className={`${bm.card} p-4 motion-safe:animate-[page-enter_0.35s_ease-out_forwards]`} id="search-summary">
           <p className="text-[11px] font-black uppercase tracking-[0.08em] text-slate-500">{data.ux.intentBadge}</p>
           <h1 className={`${bm.titleLg} mt-1`}>&ldquo;{data.displayQuery || data.query}&rdquo; 검색 결과</h1>
@@ -175,7 +181,7 @@ export function SearchResultsView({ data }: Props) {
             </>
           ) : null}
         </div>
-      )}
+      ) : null}
 
       {data.hadError ? (
         <div className={`${bm.card} border-amber-100 bg-amber-50/50 p-4`}>
@@ -373,8 +379,6 @@ export function SearchResultsView({ data }: Props) {
             : ""}
         </button>
       ) : null}
-
-      <SearchRelatedQna query={data.displayQuery || data.query} />
 
       {hasHero ? <SearchMobileStickyCta actions={data.ux.mobileSticky} /> : null}
     </div>
