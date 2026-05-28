@@ -2,7 +2,8 @@ import { getBatteryImageSet, getCanonicalBatteryCode } from "@/lib/battery-alias
 import type { BatteryImageSet } from "@/lib/battery-alias-map";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getBattery } from "@/lib/platform-data";
-import { normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 
 export type BatterySpecDisplay = {
   code: string;
@@ -36,20 +37,16 @@ export function resolvePrimaryBatteryCode(
   primaryCodes: string[],
 ): string | null {
   for (const c of primaryCodes) {
-    const p = productBatteryCode(c);
+    const p = canonicalBatteryCode(c);
     if (p) return p;
   }
   if (!displayValue) return null;
   const stripped = displayValue.replace(/\s*계열\s*$/u, "").trim().split(/\s*\/\s*/)[0]?.trim() ?? "";
-  const code = productBatteryCode(getCanonicalBatteryCode(stripped) || stripped);
-  return code || null;
+  return canonicalBatteryCode(getCanonicalBatteryCode(stripped) || stripped) || null;
 }
 
 export function parseBatterySpecDisplay(rawCode: string): BatterySpecDisplay {
-  const code =
-    productBatteryCode(getCanonicalBatteryCode(rawCode) || rawCode) ||
-    normalizeBatteryCode(getCanonicalBatteryCode(rawCode) || rawCode) ||
-    rawCode;
+  const code = canonicalBatteryCode(rawCode) || normalizeBatteryCode(rawCode) || rawCode;
   const bat = getBattery(code);
   const parts = parseSpecParts(code);
   const rocket = getBatteryImageSet(code, "rocket");

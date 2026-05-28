@@ -1,4 +1,6 @@
-import { normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { normalizeBatteryCode } from "@/lib/batteryNormalize";
+import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import {
   getRecordsForSlug,
   groupRecordsByFuel,
@@ -57,10 +59,10 @@ function pickConfirmedRecords(
 function codesFromRecords(recs: VehicleBatteryRecord[]): string[] {
   const codes: string[] = [];
   for (const r of recs) {
-    const p = productBatteryCode(r.primaryBattery) || normalizeBatteryCode(r.primaryBattery);
+    const p = canonicalBatteryCode(r.primaryBattery);
     if (p) codes.push(p);
     for (const o of r.batteryOptions) {
-      const c = productBatteryCode(o) || normalizeBatteryCode(o);
+      const c = canonicalBatteryCode(o);
       if (c) codes.push(c);
     }
   }
@@ -69,7 +71,7 @@ function codesFromRecords(recs: VehicleBatteryRecord[]): string[] {
 
 function isIceSpecOnHybridSearch(fuel: string | null, primaryCode: string): boolean {
   if (!fuel || !/하이브|hev/i.test(fuel)) return false;
-  const p = productBatteryCode(primaryCode);
+  const p = canonicalBatteryCode(primaryCode);
   return /^DIN/i.test(p);
 }
 
@@ -87,7 +89,7 @@ function resolveHybridCandidateBeforeDb(
     tier: "map",
     fieldLabel: "추천 규격",
     displayValue,
-    primaryCodes: mapHit.codes.map((c) => productBatteryCode(c) || c),
+    primaryCodes: mapHit.codes.map((c) => canonicalBatteryCode(c) || c),
     source: "candidate-map",
     dbMatchKey: null,
     dbRecordId: null,
@@ -207,7 +209,7 @@ function lookupVehicleBatteryByDbQuery(
 
 function formatDisplayValue(codes: string[], useSeriesSuffix: boolean): string {
   const unique = [
-    ...new Set(codes.map((c) => productBatteryCode(c) || normalizeBatteryCode(c)).filter(Boolean)),
+    ...new Set(codes.map((c) => canonicalBatteryCode(c) || normalizeBatteryCode(c)).filter(Boolean)),
   ];
   if (!unique.length) return "";
   if (!useSeriesSuffix && unique.length === 1) return unique[0]!;
@@ -277,7 +279,7 @@ export function resolveVehicleBatterySpecForSearch(options: {
   };
 
   if (exactSpec) {
-    const code = productBatteryCode(exactSpec) || normalizeBatteryCode(exactSpec);
+    const code = canonicalBatteryCode(exactSpec);
     return {
       tier: "exact",
       fieldLabel: "검색한 규격",
@@ -321,14 +323,20 @@ export function resolveVehicleBatterySpecForSearch(options: {
     }) ?? (dbQuery ? lookupVehicleBatteryByDbQuery(dbQuery, fuel) : null);
 
   if (dbHit?.codes.length) {
-    const codes = dbHit.codes.map((c) => productBatteryCode(c) || c);
-    const dbPrimary = codes[0] ?? "";
+    const slug = dbHit.dbMatchKey;
+    const unifiedPrimary = resolveVehicleFuelPrimaryBattery(slug, fuel);
+    const codes = dbHit.codes.map((c) => canonicalBatteryCode(c) || c);
+    const dbPrimary = unifiedPrimary || (codes[0] ?? "");
     if (hybridCandidate && isIceSpecOnHybridSearch(fuel, dbPrimary)) {
       return hybridCandidate;
     }
+    const primaryCodes = unifiedPrimary
+      ? [unifiedPrimary, ...codes.filter((c) => c !== unifiedPrimary)]
+      : codes;
     const singleConfirmed =
-      codes.length === 1 && dbHit.record?.status === "confirmed";
-    const displayValue = formatDisplayValue(codes, !singleConfirmed);
+      Boolean(unifiedPrimary) ||
+      (primaryCodes.length === 1 && dbHit.record?.status === "confirmed");
+    const displayValue = unifiedPrimary || formatDisplayValue(primaryCodes, !singleConfirmed);
     const fieldLabel = singleConfirmed ? "추천 규격" : "대표 확인 후보";
     const isPorterYearSplit =
       canonicalKey === "hyundai-porter2-from2020" || assetId === "porter2-new";
@@ -342,7 +350,7 @@ export function resolveVehicleBatterySpecForSearch(options: {
       tier: "db",
       fieldLabel,
       displayValue,
-      primaryCodes: codes.map((c) => productBatteryCode(c) || c),
+      primaryCodes,
       source: "vehicle-battery-db",
       dbMatchKey: dbHit.dbMatchKey,
       dbRecordId: dbHit.record?.id ?? null,
@@ -361,7 +369,7 @@ export function resolveVehicleBatterySpecForSearch(options: {
       tier: "map",
       fieldLabel: single ? "추천 규격" : mapHit.entry.candidateLabel,
       displayValue,
-      primaryCodes: mapHit.codes.map((c) => productBatteryCode(c) || c),
+      primaryCodes: mapHit.codes.map((c) => canonicalBatteryCode(c) || c),
       source: "candidate-map",
       dbMatchKey: null,
       dbRecordId: null,

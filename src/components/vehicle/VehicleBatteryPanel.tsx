@@ -5,7 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { bm } from "@/lib/design-tokens";
-import { productBatteryCode } from "@/lib/batteryNormalize";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import {
+  normalizeVehicleFuelParam,
+  resolveVehicleFuelPrimaryBattery,
+} from "@/lib/vehicle-fuel-primary-battery";
 import {
   getRecordFuelLabel,
   groupRecordsByFuel,
@@ -28,16 +32,6 @@ type Props = {
 
 const FUEL_TABS = ["전체", "가솔린", "디젤", "LPG", "하이브리드", "전기"] as const;
 
-function normalizeFuelParam(raw: string | null): string | null {
-  if (!raw) return null;
-  const t = raw.trim();
-  if (/하이브|hev/i.test(t)) return "하이브리드";
-  if (/디젤/i.test(t)) return "디젤";
-  if (/가솔|휘발/i.test(t)) return "가솔린";
-  if (/lpg/i.test(t)) return "LPG";
-  if (/전기|ev/i.test(t)) return "전기";
-  return t;
-}
 
 function AlternativeBatteryChips({ alternatives }: { alternatives: BatteryAlternative[] }) {
   if (!alternatives.length) return null;
@@ -83,7 +77,7 @@ export function VehicleBatteryPanel({
   embedded = false,
 }: Props) {
   const searchParams = useSearchParams();
-  const highlightFuel = normalizeFuelParam(searchParams.get("fuel"));
+  const highlightFuel = normalizeVehicleFuelParam(searchParams.get("fuel"));
   const highlightYear = searchParams.get("year");
   const initialFuel = highlightFuel ?? "전체";
   const [fuelTab, setFuelTab] = useState<string>(initialFuel);
@@ -141,6 +135,12 @@ export function VehicleBatteryPanel({
 
     return groupRecordsByFuel(recs);
   }, [fuelGroups, fuelTab, yearChip, yearChips]);
+
+  const activeFuel =
+    highlightFuel ?? (fuelTab !== "전체" ? fuelTab : null);
+  const unifiedPrimaryForFuel = activeFuel
+    ? resolveVehicleFuelPrimaryBattery(slug, activeFuel, { yearChipId: yearChip })
+    : null;
 
   if (fuelGroups.length === 0) {
     return (
@@ -242,7 +242,9 @@ export function VehicleBatteryPanel({
                         <td className="px-2 py-2 font-bold">{g.fuelLabel}</td>
                         <td className="px-2 py-2">{r.years ?? "-"}</td>
                         <td className="px-2 py-2 font-black text-[var(--bm-primary)]">
-                          {productBatteryCode(r.primaryBattery)}
+                          {unifiedPrimaryForFuel && getRecordFuelLabel(r) === activeFuel
+                            ? unifiedPrimaryForFuel
+                            : canonicalBatteryCode(r.primaryBattery)}
                         </td>
                         <td className="px-2 py-2 text-slate-500">{recordStatusLabel(r.status)}</td>
                       </tr>

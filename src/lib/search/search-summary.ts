@@ -5,6 +5,8 @@ import type { VehicleIntent } from "@/lib/search/parse-vehicle-intent";
 import { SEARCH_SPEC_TOKENS } from "@/lib/search/battery-spec-parser";
 
 function codeFromExactSpec(exactSpec: string): string {
+  const canonical = canonicalBatteryCode(exactSpec);
+  if (canonical) return canonical;
   const upper = exactSpec.toUpperCase();
   if ((SEARCH_SPEC_TOKENS as readonly string[]).includes(upper)) return upper;
   return resolvePrimaryBatteryCode(exactSpec, [exactSpec]) ?? upper;
@@ -22,8 +24,9 @@ function aliasFromVehicleIntent(v: VehicleIntent): SearchVehicleAliasMatch | nul
 }
 import { formatSearchVehicleDisplayLabel } from "@/lib/search/search-vehicle-display";
 import { resolveVehicleBatterySpecForSearch } from "@/lib/search/resolve-vehicle-battery-spec";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { resolvePrimaryBatteryCode } from "@/lib/battery-spec-display";
-import { productBatteryCode } from "@/lib/batteryNormalize";
+import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import {
   basisLabelForTier,
   buildNoSpecPrimaryCtas,
@@ -112,15 +115,22 @@ export function buildSearchSummary(
     });
 
     const hasSpecLine = batterySpec.tier !== "none";
-    const primaryBatteryCode = hasSpecLine
-      ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
-      : null;
-    const specDisplayResolved =
-      hasSpecLine && primaryBatteryCode
-        ? productBatteryCode(primaryBatteryCode) || primaryBatteryCode
-        : batterySpec.displayValue
-          ? productBatteryCode(batterySpec.displayValue) || batterySpec.displayValue
-          : null;
+    const unifiedPrimary =
+      detailSlug && v.fuel && v.fuel !== "확인 필요" && !exactSpec
+        ? resolveVehicleFuelPrimaryBattery(detailSlug, v.fuel, {
+            yearChipId: fitmentOverride?.yearChipId ?? null,
+          })
+        : "";
+    const primaryBatteryCode = unifiedPrimary
+      ? unifiedPrimary
+      : hasSpecLine
+        ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
+        : null;
+    const specDisplayResolved = primaryBatteryCode
+      ? canonicalBatteryCode(primaryBatteryCode)
+      : hasSpecLine && batterySpec.displayValue
+        ? canonicalBatteryCode(batterySpec.displayValue)
+        : null;
     const secondaryNote = batterySpec.caution ?? secondaryNoteForTier(batterySpec.tier);
     const basisLabel = basisLabelForTier(batterySpec.tier, batterySpec.source);
 

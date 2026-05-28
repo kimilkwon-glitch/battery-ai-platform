@@ -4,6 +4,8 @@
 import dbJson from "@/data/vehicle-battery-db.json";
 import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import {
   normalizeBatteryCode,
   productBatteryCode,
@@ -452,7 +454,7 @@ function clusterRecordsByYearBucket(recs: VehicleBatteryRecord[]): VehicleBatter
 }
 
 function buildFuelBatteryGroup(fuelLabelKey: string, groupRecs: VehicleBatteryRecord[]): FuelBatteryGroup {
-  const primary = pickPrimaryBattery(groupRecs);
+  const primary = canonicalBatteryCode(pickPrimaryBatteryFromRecords(groupRecs));
 
   const otherPrimaries = [
     ...new Set(
@@ -518,7 +520,7 @@ function ahRankFromCode(code: string): number {
 }
 
 /** 동일 연료·연식 버킷 — 다수·확정 레코드 우선, 동률이면 용량 큰 규격 */
-function pickPrimaryBattery(recs: VehicleBatteryRecord[]): string {
+export function pickPrimaryBatteryFromRecords(recs: VehicleBatteryRecord[]): string {
   const votes = new Map<string, number>();
   for (const r of recs) {
     const code = productBatteryCode(r.primaryBattery) || normalizeBatteryCode(r.primaryBattery);
@@ -927,7 +929,7 @@ export function getVehicleBatteryPageData(slug: string) {
   const relatedVehicles = getRelatedVehicleSlugs(slug);
   const hasConfirmedDb = recs.some(hasConfirmedBatteryData);
   const needsAnyReview = !hasConfirmedDb && recs.some(needsPhotoReview);
-  const summary = buildVehicleBatterySummary(fuelGroups, profile?.title ?? slug);
+  const summary = buildVehicleBatterySummary(slug, fuelGroups);
 
   return {
     profile,
@@ -956,18 +958,14 @@ export type VehicleBatterySummary = {
 
 /** 연료별 DB 그룹 → 상단 빠른 요약 */
 export function buildVehicleBatterySummary(
+  slug: string,
   fuelGroups: FuelBatteryGroup[],
-  _title?: string,
 ): VehicleBatterySummary | null {
   if (fuelGroups.length === 0) return null;
 
   const lines: VehicleBatterySummaryLine[] = [];
-  const gasPrimary = pickRepresentativeBatteryCodes(
-    fuelGroups.filter((g) => g.fuelLabel === "가솔린").map((g) => g.primaryBattery),
-  );
-  const dieselPrimary = pickRepresentativeBatteryCodes(
-    fuelGroups.filter((g) => g.fuelLabel === "디젤").map((g) => g.primaryBattery),
-  );
+  const gasPrimary = resolveVehicleFuelPrimaryBattery(slug, "가솔린");
+  const dieselPrimary = resolveVehicleFuelPrimaryBattery(slug, "디젤");
 
   if (gasPrimary && dieselPrimary && gasPrimary === dieselPrimary) {
     lines.push({ label: "가솔린/디젤", battery: gasPrimary });
@@ -981,7 +979,8 @@ export function buildVehicleBatterySummary(
       if (gasPrimary && dieselPrimary && gasPrimary === dieselPrimary) continue;
     }
     if (!lines.some((l) => l.label === g.fuelLabel)) {
-      lines.push({ label: g.fuelLabel, battery: g.primaryBattery });
+      const code = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel) || g.primaryBattery;
+      lines.push({ label: g.fuelLabel, battery: code });
     }
   }
 
@@ -1017,7 +1016,7 @@ export function getBatteryDetailData(code: string) {
   if (isRetiredBatterySpec(code)) {
     return getBatteryDetailData("DIN74R");
   }
-  const displayCode = productBatteryCode(code) || normalizeBatteryCode(code);
+  const displayCode = canonicalBatteryCode(code);
   const matchKey = normalizeBatteryCode(displayCode);
   const matching = getRecordsForBattery(matchKey, 48);
   const fitment = getBatteryFitmentVehicles(matchKey, 12);

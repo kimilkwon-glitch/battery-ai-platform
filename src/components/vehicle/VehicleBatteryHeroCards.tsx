@@ -2,18 +2,11 @@ import { FuelBatterySpecCard } from "@/components/battery/FuelBatterySpecCard";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { bm } from "@/lib/design-tokens";
 import { getVehicleConditionSpecLines } from "@/lib/vehicle-condition-spec-lines";
-import { pickRepresentativeBatteryCodes, type FuelBatteryGroup, type YearChip } from "@/lib/vehicleBattery";
-
-function normalizeFuelParam(raw: string | null | undefined): string | null {
-  if (!raw) return null;
-  const t = raw.trim();
-  if (/하이브|hev/i.test(t)) return "하이브리드";
-  if (/디젤/i.test(t)) return "디젤";
-  if (/가솔|휘발/i.test(t)) return "가솔린";
-  if (/lpg/i.test(t)) return "LPG";
-  if (/전기|ev/i.test(t)) return "전기";
-  return t;
-}
+import {
+  normalizeVehicleFuelParam,
+  resolveVehicleFuelPrimaryBattery,
+} from "@/lib/vehicle-fuel-primary-battery";
+import type { FuelBatteryGroup, YearChip } from "@/lib/vehicleBattery";
 
 type Props = {
   slug: string;
@@ -32,7 +25,7 @@ export function VehicleBatteryHeroCards({
   highlightFuel: highlightFuelRaw,
   highlightYear,
 }: Props) {
-  const highlightFuel = normalizeFuelParam(highlightFuelRaw);
+  const highlightFuel = normalizeVehicleFuelParam(highlightFuelRaw);
   const conditionLines = getVehicleConditionSpecLines(slug);
   const useYearCards = conditionLines.length >= 2 && /porter2/i.test(slug);
 
@@ -76,11 +69,7 @@ export function VehicleBatteryHeroCards({
             <FuelBatterySpecCard
               key={group.fuelLabel}
               fuelLabel={group.fuelLabel}
-              batteryCode={
-                pickRepresentativeBatteryCodes(
-                  fuelGroups.filter((g) => g.fuelLabel === group.fuelLabel).map((g) => g.primaryBattery),
-                ) || group.primaryBattery
-              }
+              batteryCode={resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel) || group.primaryBattery}
               conditionNote="연료·트림에 따라 예외가 있을 수 있습니다."
               highlighted={highlightFuel === group.fuelLabel}
               showExceptionNote={highlightFuel === group.fuelLabel}

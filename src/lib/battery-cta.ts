@@ -1,6 +1,11 @@
 import type { SearchCtaLink } from "@/lib/search/battery-recommendation-copy";
-import { productBatteryCode } from "@/lib/batteryNormalize";
-import { pickRepresentativeBatteryCodes } from "@/lib/vehicleBattery";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import {
+  batteryCodeForFuelParam,
+  resolveVehicleFuelPrimaryBattery,
+} from "@/lib/vehicle-fuel-primary-battery";
+
+export { batteryCodeForFuelParam } from "@/lib/vehicle-fuel-primary-battery";
 
 export const CTA_PRIMARY_LABELS = new Set([
   "이 규격 자세히 보기",
@@ -33,16 +38,6 @@ function decodeFuelQueryParam(raw: string | null | undefined): string | null {
   }
 }
 
-/** URL fuel 쿼리 → 폴백 규격 (DB fuelGroups에 없을 때만) */
-export function batteryCodeForFuelParam(fuel: string | null | undefined): string | null {
-  const t = decodeFuelQueryParam(fuel);
-  if (!t) return null;
-  if (/하이브|hev/i.test(t)) return "AGM60L";
-  if (/디젤/i.test(t)) return "AGM80L";
-  if (/lpg/i.test(t)) return "AGM80L";
-  return null;
-}
-
 function normalizeFuelLabelFromQuery(fuel: string): string {
   if (/하이브|hev/i.test(fuel)) return "하이브리드";
   if (/디젤/i.test(fuel)) return "디젤";
@@ -54,25 +49,21 @@ function normalizeFuelLabelFromQuery(fuel: string): string {
 
 export type FuelGroupBatteryPick = { fuelLabel: string; primaryBattery: string };
 
-/** 차량 상세 — fuel 쿼리 우선, 없으면 fuelGroups·fallback */
+/** @deprecated slug 있는 경우 resolveVehicleFuelPrimaryBattery 사용 */
 export function resolvePrimaryBatteryForFuelQuery(
   fuelRaw: string | null | undefined,
-  fuelGroups: FuelGroupBatteryPick[],
+  _fuelGroups: FuelGroupBatteryPick[],
   fallback?: string,
+  slug?: string,
+  yearChipId?: string | null,
 ): string {
-  const fuel = decodeFuelQueryParam(fuelRaw);
-  if (fuel && fuelGroups.length) {
-    const normalized = normalizeFuelLabelFromQuery(fuel);
-    const matching = fuelGroups.filter((g) => g.fuelLabel === normalized);
-    const codes = matching.map((g) => g.primaryBattery).filter(Boolean);
-    const picked = pickRepresentativeBatteryCodes(codes);
-    if (picked) return picked;
+  if (slug) {
+    const unified = resolveVehicleFuelPrimaryBattery(slug, fuelRaw, { yearChipId, fallback });
+    if (unified) return unified;
   }
-
   const fromParam = batteryCodeForFuelParam(fuelRaw);
-  if (fromParam) return fromParam;
-
-  if (fallback) return productBatteryCode(fallback) || fallback;
+  if (fromParam) return canonicalBatteryCode(fromParam);
+  if (fallback) return canonicalBatteryCode(fallback);
   return "AGM80L";
 }
 

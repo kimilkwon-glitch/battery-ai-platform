@@ -13,7 +13,8 @@ import {
   queryMentionsKgMobilityBrand,
 } from "@/lib/search/kg-mobility-brand";
 import { vehicleAssetsToSearchRows } from "@/lib/vehicle-search";
-import { isBatteryMatched, normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
+import { batteryDetailHref, canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { isBatteryMatched, normalizeBatteryCode } from "@/lib/batteryNormalize";
 import { resolveSearchVehicleAlias, type SearchVehicleAliasMatch } from "@/lib/search/search-vehicle-aliases";
 import { HUB_PHOTO, HUB_SHOP, HUB_SHOP_ANCHORS, HUB_STORE } from "@/lib/customer-hub-routes";
 import { prependHubCtas } from "@/lib/search/search-hub-cta";
@@ -252,9 +253,11 @@ function specDetailHref(
   hero: SearchHeroResult | null,
 ): string {
   const primary = specTokens[0] ?? specs[0];
-  if (primary && isKnownBatterySpec(productBatteryCode(resolveSpec(primary) || primary) || normalizeBatteryCode(resolveSpec(primary) || primary))) {
-    const hrefCode = productBatteryCode(resolveSpec(primary) || primary) || normalizeBatteryCode(resolveSpec(primary) || primary);
-    return `/batteries/${encodeURIComponent(hrefCode)}`;
+  if (primary) {
+    const hrefCode = canonicalBatteryCode(resolveSpec(primary) || primary);
+    if (hrefCode && isKnownBatterySpec(hrefCode)) {
+      return batteryDetailHref(hrefCode);
+    }
   }
   if (topBattery?.href) return topBattery.href;
   if (hero?.href && !hero.href.includes("#")) return hero.href;
@@ -552,7 +555,7 @@ function mapHitToBatteryItem(
   exact = false,
   options?: { unverifiedFit?: boolean },
 ): SearchBatteryItem {
-  const code = productBatteryCode(h.title) || normalizeBatteryCode(h.title);
+  const code = canonicalBatteryCode(h.title) || normalizeBatteryCode(h.title);
   let variantNote: string | undefined;
   if (options?.unverifiedFit) {
     variantNote = "차량 적합 여부 확인 필요";
@@ -576,7 +579,7 @@ function syntheticBatteryItem(
   options?: { unverifiedFit?: boolean; queryOnly?: boolean },
 ): SearchBatteryItem {
   const resolved = resolveSpec(spec) || spec;
-  const code = productBatteryCode(resolved) || productBatteryCode(spec) || normalizeBatteryCode(resolved);
+  const code = canonicalBatteryCode(resolved) || canonicalBatteryCode(spec) || normalizeBatteryCode(resolved);
   const known = isKnownBatterySpec(code) || isKnownBatterySpec(normalizeBatteryCode(resolved));
   const bat = known ? getBattery(code) : getBattery(normalizeBatteryCode(resolved));
   const variantNote = options?.queryOnly
@@ -586,14 +589,14 @@ function syntheticBatteryItem(
       : !known
         ? "확인 필요 규격"
         : undefined;
-  const displayCode = options?.queryOnly ? productBatteryCode(spec) || code : code;
+  const displayCode = options?.queryOnly ? canonicalBatteryCode(spec) || code : code;
   return {
     code: displayCode,
     subtitle:
       bat
         ? `${bat.type ?? ""} · ${bat.terminal ?? ""} · ${bat.capacity ?? ""}`.replace(/^ · | · $/g, "").trim()
         : "검색어에 포함된 규격",
-    href: known ? `/batteries/${encodeURIComponent(displayCode)}` : "/guides",
+    href: known ? batteryDetailHref(displayCode) : "/guides",
     score: 200,
     variantNote,
   };
@@ -616,7 +619,7 @@ function filterBatteries(
     for (const spec of specs) {
       const resolved = resolveSpec(spec) || spec;
       const nMatch = normalizeBatteryCode(resolved);
-      const nDisplay = productBatteryCode(resolved) || productBatteryCode(spec) || nMatch;
+      const nDisplay = canonicalBatteryCode(resolved) || canonicalBatteryCode(spec) || nMatch;
       const known = isKnownBatterySpec(nMatch) || isKnownBatterySpec(nDisplay);
       const fitConfirmed = options?.vehicleSlug ? vehicleSpecFitConfirmed(options.vehicleSlug, nMatch) : false;
       const unverifiedFit = Boolean(options?.vehicleSlug) && !fitConfirmed;

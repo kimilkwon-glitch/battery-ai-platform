@@ -20,7 +20,7 @@ import { getVehicleAsset } from "@/lib/car-assets";
 
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
 
-import { resolvePrimaryBatteryForFuelQuery } from "@/lib/battery-cta";
+import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
 
 import { getVehicleDetail, getVehicleSlugs } from "@/lib/vehicle-data";
@@ -74,15 +74,10 @@ export default async function VehicleDetailPage({
 
     (batteryPage.fuelGroups.length > 1 || /porter2/i.test(slug));
 
-  const navBatteryCode = resolvePrimaryBatteryForFuelQuery(
-
-    sp.fuel ?? null,
-
-    batteryPage.fuelGroups,
-
-    batteryPage.summary?.representativeBattery ?? vehicle.recommendedBattery,
-
-  );
+  const navBatteryCode = resolveVehicleFuelPrimaryBattery(slug, sp.fuel ?? null, {
+    yearChipId: sp.year ?? null,
+    fallback: batteryPage.summary?.representativeBattery ?? vehicle.recommendedBattery,
+  });
 
 
 

@@ -1,7 +1,8 @@
 import legacyDbJson from "@/data/vehicle-battery-db.json";
 import specMappingsJson from "@/data/batteries/specMappings.json";
 import { getCanonicalBatteryCode, batteryAliasMap } from "@/lib/battery-alias-map";
-import { normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 
 type NormalizationRules = Record<string, string>;
 type SpecMappingEntry = { standardSpec: string; aliases: string[]; note?: string };
@@ -16,6 +17,7 @@ function norm(s: string) {
 
 /** 제품코드·별칭 → 표준 규격 (기존 DB normalizationRules + alias map 우선) */
 export function resolveSpec(input: string): string {
+  if (!input?.trim) return "";
   const raw = input.trim();
   if (!raw) return "";
 
@@ -37,7 +39,7 @@ export function resolveSpec(input: string): string {
     if (brandCodes.some((c) => norm(c) === key)) return canonical;
   }
 
-  return productBatteryCode(raw) || normalizeBatteryCode(raw);
+  return canonicalBatteryCode(raw) || normalizeBatteryCode(raw);
 }
 
 export function resolveSpecWithMeta(input: string) {
