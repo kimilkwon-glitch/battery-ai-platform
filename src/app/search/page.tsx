@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { SearchActivityRecorder } from "@/components/platform/SearchActivityRecorder";
 import { SearchResultsView } from "@/components/platform/SearchResultsView";
 import { Breadcrumb, PortalHeader } from "@/components/portal";
@@ -16,6 +17,7 @@ export default async function SearchPage({
 }: {
   searchParams: Promise<{ q?: string; tab?: string; filter?: string }>;
 }) {
+  noStore();
   const params = await searchParams;
   const rawQuery = params.q?.trim() ?? "";
   const results = buildSearchPageResults(rawQuery);
