@@ -10,7 +10,7 @@ import { searchHref } from "@/lib/platform-data";
 
 export function SymptomsHubClient() {
   return (
-    <div className="space-y-5 overflow-x-hidden" data-page="symptoms-hub">
+    <div className={`${bm.hubSymptom} overflow-x-hidden`} data-page="symptoms-hub">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
         <p className={bm.intentBadge}>증상 진단 허브</p>
         <SectionHeader
@@ -21,7 +21,7 @@ export function SymptomsHubClient() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         {SYMPTOM_HUB_ITEMS.map((s) => (
-          <article className={`${bm.cardInteractive} flex flex-col p-4`} key={s.id}>
+          <article className={`${bm.cardSymptom} flex flex-col`} key={s.id}>
             <h3 className="text-sm font-bold text-slate-950">{s.title}</h3>
             <dl className="mt-3 space-y-2 text-[11px]">
               <div>

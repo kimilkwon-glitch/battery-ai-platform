@@ -19,14 +19,14 @@ export function PhotoCheckClient() {
   const badExamples = PHOTO_CHECK_EXAMPLES.filter((c) => c.kind === "bad");
 
   return (
-    <div className="space-y-5 overflow-x-hidden" data-page="photo-check">
+    <div className={`${bm.hubPhoto} overflow-x-hidden`} data-page="photo-check">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
         <p className={bm.intentBadge}>보조 검증</p>
         <SectionHeader
           title="사진 확인 안내"
           description="사진확인은 메인 답변이 아닙니다. DB·차종 검색 후 최종 검증용으로 사용하세요."
         />
-        <p className="mt-3 text-xs font-semibold leading-relaxed text-[var(--bm-primary)]">
+        <p className={`${bm.alertInfo} mt-3`}>
           사진확인은 메인 답변이 아니라 보조 검증입니다. 차종·연식·연료 확인과 함께 쓰세요.
         </p>
         <div className="mt-4 max-w-md">
@@ -62,12 +62,10 @@ export function PhotoCheckClient() {
         <section className={`${bm.card} ${bm.cardPad}`} key={block.step}>
           <SectionHeader title={block.title} />
           <ul className="mt-3 list-none space-y-2 p-0">
-            {block.items.map((item) => (
-              <li
-                className={`${bm.surfaceMuted} rounded-xl px-3 py-2.5 text-xs font-medium leading-relaxed text-slate-700`}
-                key={item}
-              >
-                {item}
+            {block.items.map((item, idx) => (
+              <li className={`${bm.stepItem} text-xs font-medium leading-relaxed text-slate-700`} key={item}>
+                <span className={bm.stepNum}>{idx + 1}</span>
+                <span>{item}</span>
               </li>
             ))}
           </ul>

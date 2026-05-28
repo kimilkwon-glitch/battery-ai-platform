@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { RelatedQnaSection } from "@/components/qna/RelatedQnaSection";
 import { bm } from "@/lib/design-tokens";
@@ -9,8 +10,8 @@ export function HomePopularQna() {
   const featured = getHomeFeaturedQuestions(5);
 
   return (
-    <section className={`${bm.card} overflow-hidden`} data-section="home-popular-qna">
-      <div className={`${bm.cardPad} border-b border-slate-100`}>
+    <HomeSectionShell rhythm="qna" data-section="home-popular-qna">
+      <div className="border-b border-slate-200/80 pb-4">
         <SectionHeader
           label="자주 묻는 질문"
           title="규격·연식·방전 — 바로 답 찾기"
@@ -28,7 +29,7 @@ export function HomePopularQna() {
           </Link>
         </div>
       </div>
-      <div className={bm.cardPad}>
+      <div className="pt-4">
         <RelatedQnaSection
           title="추천 Q&A"
           description=""
@@ -36,6 +37,6 @@ export function HomePopularQna() {
           hubHref="/community"
         />
       </div>
-    </section>
+    </HomeSectionShell>
   );
 }

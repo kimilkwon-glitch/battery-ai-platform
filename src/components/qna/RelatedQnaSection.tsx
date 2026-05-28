@@ -29,7 +29,7 @@ export function RelatedQnaSection({
   if (list.length === 0) return null;
 
   return (
-    <section className={`${bm.card} ${bm.cardPad}`} data-section="related-qna">
+    <section className="space-y-3" data-section="related-qna">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className={bm.sectionTitle}>{title}</h2>

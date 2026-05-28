@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
@@ -8,7 +9,7 @@ import { bm } from "@/lib/design-tokens";
 
 export function HomeEvHybridSection() {
   return (
-    <section className={`${bm.card} ${bm.cardPad}`} data-home-section="ev-hybrid">
+    <HomeSectionShell rhythm="ev" data-section="ev-hybrid">
       <SectionHeader
         label="보조 12V"
         title="전기차·하이브리드 보조배터리"
@@ -23,7 +24,7 @@ export function HomeEvHybridSection() {
       </div>
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {HOME_EV_HYBRID_ITEMS.map((item) => (
-          <article className={`${bm.surfaceMuted} flex flex-col overflow-hidden rounded-xl`} key={item.label}>
+          <article className={`${bm.cardBatteryProduct} overflow-hidden`} key={item.label}>
             <BatteryCardImage code={item.battery} variant="card" flushTop />
             <div className={`${bm.batteryCardBody} !border-t-0`}>
               <p className="text-xs font-bold leading-snug text-slate-900 sm:text-sm">{item.label}</p>
@@ -68,6 +69,6 @@ export function HomeEvHybridSection() {
           사진으로 최종 확인
         </Link>
       </div>
-    </section>
+    </HomeSectionShell>
   );
 }

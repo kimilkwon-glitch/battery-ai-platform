@@ -15,7 +15,7 @@ export function PhotoCheckExampleCard({ card }: { card: PhotoExampleCard }) {
   const good = card.kind === "good";
   return (
     <article
-      className={`${bm.cardInteractive} flex flex-col overflow-hidden`}
+      className={`${bm.cardPhotoCheck} flex flex-col overflow-hidden transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[var(--bm-shadow-md)]`}
       data-photo-example={card.kind}
     >
       <div

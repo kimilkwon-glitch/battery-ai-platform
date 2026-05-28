@@ -1,6 +1,18 @@
 /**
- * Battery Manager — Precision Garage Platform design tokens (Tailwind class strings)
+ * Battery Manager — Design System P2 (Precision Garage Platform)
  */
+
+export type SectionRhythm =
+  | "hero"
+  | "catalog"
+  | "vehicle"
+  | "ev"
+  | "symptom"
+  | "delivery"
+  | "service"
+  | "tools"
+  | "qna"
+  | "order";
 
 export const bm = {
   /** 은은한 그리드·글로우 배경 (globals .bm-page-mesh) */
@@ -57,7 +69,38 @@ export const bm = {
     "bm-card-surface overflow-visible rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-md)]",
   sectionBlockPad: "p-4 sm:p-5",
   rankCard:
-    "overflow-hidden rounded-[18px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/20 motion-safe:hover:shadow-[var(--bm-shadow-md)]",
+    "bm-card-battery-product flex flex-col overflow-hidden",
+  /** P2 card types */
+  cardBatteryProduct: "bm-card-battery-product flex flex-col overflow-hidden",
+  cardVehicleMatch: "bm-card-vehicle-match",
+  cardSymptom: "bm-card-symptom flex flex-col p-4",
+  cardPhotoCheck: "bm-card-photo-check",
+  cardServiceStore: "bm-card-service-store",
+  cardQna: "bm-card-qna",
+  sectionRhythm: "bm-section-rhythm bm-section-enter",
+  sectionRhythmHero: "bm-section-rhythm bm-section-rhythm--hero",
+  sectionRhythmCatalog: "bm-section-rhythm bm-section-rhythm--catalog",
+  sectionRhythmVehicle: "bm-section-rhythm bm-section-rhythm--vehicle",
+  sectionRhythmEv: "bm-section-rhythm bm-section-rhythm--ev",
+  sectionRhythmSymptom: "bm-section-rhythm bm-section-rhythm--symptom",
+  sectionRhythmDelivery: "bm-section-rhythm bm-section-rhythm--delivery",
+  sectionRhythmService: "bm-section-rhythm bm-section-rhythm--service",
+  sectionRhythmTools: "bm-section-rhythm bm-section-rhythm--tools",
+  sectionRhythmQna: "bm-section-rhythm bm-section-rhythm--qna",
+  sectionRhythmOrder: "bm-section-rhythm bm-section-rhythm--order",
+  heroDark: "bm-hero-dark",
+  heroDarkAccent: "bm-hero-dark-accent",
+  heroLeadP2: "text-base font-bold leading-relaxed text-[#cbd5e1] sm:text-lg",
+  hubPhoto: "bm-hub-rhythm--photo space-y-5",
+  hubSymptom: "bm-hub-rhythm--symptom space-y-5",
+  hubServicePage: "bm-hub-rhythm--service-page space-y-5",
+  hubOrder: "bm-hub-rhythm--order space-y-5",
+  hubCatalog: "bm-hub-rhythm--catalog space-y-5",
+  alertInfo: "bm-alert-info text-xs font-medium text-slate-700",
+  alertWarn: "bm-alert-warn text-xs font-medium text-amber-950",
+  alertSuccess: "bm-alert-success text-xs font-medium text-emerald-900",
+  stepItem: "bm-step-item",
+  stepNum: "bm-step-num",
   textSub: "text-sm font-medium leading-relaxed text-[var(--bm-muted)]",
   muted: "text-[var(--bm-muted)]",
   label:

@@ -68,7 +68,7 @@ export function QnaQuestionCard({
   const iconSize = compact ? 44 : 48;
 
   return (
-    <article className={`group ${bm.cardInteractive}`} data-qna-card-expanded={open ? "true" : "false"}>
+    <article className={`group ${bm.cardQna}`} data-qna-card-expanded={open ? "true" : "false"}>
       <div
         className="flex cursor-pointer items-start gap-2.5 p-3"
         onClick={onToggle}

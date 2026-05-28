@@ -11,7 +11,7 @@ import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
 
 export function OrderChecklistClient() {
   return (
-    <div className="space-y-5 overflow-x-hidden" data-page="order-checklist">
+    <div className={`${bm.hubOrder} overflow-x-hidden`} data-page="order-checklist">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
         <p className={bm.intentBadge}>오주문 방지 센터</p>
         <SectionHeader
@@ -20,13 +20,8 @@ export function OrderChecklistClient() {
         />
         <ul className="mt-4 list-none space-y-3 p-0">
           {ORDER_CHECKLIST_ITEMS.map((item, i) => (
-            <li
-              className={`${bm.surfaceMuted} flex gap-3 rounded-[18px] p-4`}
-              key={item.title}
-            >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--bm-navy)] text-sm font-bold text-white">
-                {i + 1}
-              </span>
+            <li className={bm.stepItem} key={item.title}>
+              <span className={bm.stepNum}>{i + 1}</span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="text-sm font-bold text-[var(--bm-text)]">{item.title}</h3>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { HUB_STORE } from "@/lib/customer-hub-routes";
@@ -15,7 +16,7 @@ const STORE_SLOT: Record<string, () => import("@/lib/media/image-slot-registry")
 
 export function HomeStoreHub() {
   return (
-    <section className={`${bm.card} ${bm.cardPad}`} data-home-section="stores">
+    <HomeSectionShell rhythm="service" data-section="stores">
       <SectionHeader
         label="부산 직영"
         title="덕천점 · 학장점 · 출장 교체"
@@ -32,10 +33,10 @@ export function HomeStoreHub() {
                 </div>
               ) : null}
               <div className="p-4">
-                <p className="text-sm font-bold text-slate-950">{store.name}</p>
-                <p className="mt-0.5 text-[10px] font-semibold text-blue-700">{store.region}</p>
-                <p className="mt-2 text-xs font-medium text-slate-600">{store.areas}</p>
-                <p className="mt-1 text-[10px] font-medium text-slate-500">{store.scenarios}</p>
+                <p className="text-sm font-bold text-slate-50">{store.name}</p>
+                <p className="mt-0.5 text-[10px] font-semibold text-sky-300">{store.region}</p>
+                <p className="mt-2 text-xs font-medium text-slate-300">{store.areas}</p>
+                <p className="mt-1 text-[10px] font-medium text-slate-400">{store.scenarios}</p>
                 <Link className={`${bm.btnSecondary} mt-3 inline-flex text-[10px]`} href={store.href}>
                   안내 보기
                 </Link>
@@ -47,6 +48,6 @@ export function HomeStoreHub() {
       <Link className={`${bm.btnNavy} mt-4 inline-flex text-xs`} href={HUB_STORE}>
         매장·출장 허브
       </Link>
-    </section>
+    </HomeSectionShell>
   );
 }

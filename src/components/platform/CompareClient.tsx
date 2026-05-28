@@ -126,7 +126,7 @@ export function CompareClient({ initial }: { initial: string[] }) {
   const pairLabel = `${codeA} vs ${codeB}`;
 
   return (
-    <div className="space-y-5">
+    <div className={`${bm.hubCatalog} space-y-5`}>
       <ComparePresetHub />
 
       {/* 선택 중인 비교 */}

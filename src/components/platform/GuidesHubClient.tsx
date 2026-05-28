@@ -89,7 +89,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
   const activeLabel = GUIDE_FILTER_CATEGORIES.find((c) => c.key === active)?.label ?? "전체 가이드";
 
   return (
-    <section className="mx-auto grid max-w-[1280px] gap-4 px-0 lg:grid-cols-[260px_minmax(0,1fr)_280px]">
+    <section className={`${bm.hubCatalog} mx-auto grid max-w-[1280px] gap-4 px-0 lg:grid-cols-[260px_minmax(0,1fr)_280px]`}>
       <aside className="space-y-3 lg:sticky lg:top-[72px] lg:self-start">
         <Panel title="가이드 분류">
           <div className="space-y-1.5">

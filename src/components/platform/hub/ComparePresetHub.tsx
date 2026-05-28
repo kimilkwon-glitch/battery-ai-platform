@@ -23,7 +23,7 @@ export function ComparePresetHub() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {COMPARE_PRESET_CARDS.map((card) => (
           <Link
-            className={`${bm.cardInteractive} flex flex-col p-4`}
+            className={`${bm.cardBatteryProduct} flex flex-col p-4`}
             href={card.href}
             key={card.label}
           >

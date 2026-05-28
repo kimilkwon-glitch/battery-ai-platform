@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { CrossLinkCard } from "@/components/portal";
 import { bm } from "@/lib/design-tokens";
@@ -6,7 +7,7 @@ import { PLATFORM_HUB_LINKS } from "@/lib/platform-hub-routes";
 
 export function HomePlatformTools() {
   return (
-    <section className={`${bm.sectionBlock} ${bm.sectionBlockPad}`} data-home-section="platform-tools">
+    <HomeSectionShell rhythm="tools" data-section="platform-tools">
       <SectionHeader
         label="플랫폼 허브"
         title="배터리 매칭 플랫폼 전체 도구"
@@ -25,6 +26,6 @@ export function HomePlatformTools() {
           차량 목록
         </Link>
       </div>
-    </section>
+    </HomeSectionShell>
   );
 }

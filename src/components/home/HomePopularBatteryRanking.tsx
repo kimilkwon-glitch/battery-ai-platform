@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
@@ -10,11 +11,7 @@ import { bm } from "@/lib/design-tokens";
 
 export function HomePopularBatteryRanking() {
   return (
-    <section
-      id="home-popular-batteries"
-      className={`${bm.sectionBlock} ${bm.sectionBlockPad}`}
-      data-home-section="popular-batteries"
-    >
+    <HomeSectionShell rhythm="catalog" id="home-popular-batteries" data-section="popular-batteries">
       <SectionHeader
         label="규격 허브"
         title="많이 찾는 배터리 규격"
@@ -22,7 +19,7 @@ export function HomePopularBatteryRanking() {
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {HOME_POPULAR_BATTERIES.map((item) => (
-          <article className={`${bm.rankCard} flex flex-col overflow-hidden`} key={item.code}>
+          <article className={bm.cardBatteryProduct} key={item.code}>
             <BatteryCardImage code={item.code} flushTop />
             <div className={bm.batteryCardBody}>
               <p className="spec-code text-sm font-bold text-[var(--bm-text)] sm:text-base" data-spec-code>
@@ -46,6 +43,6 @@ export function HomePopularBatteryRanking() {
           </article>
         ))}
       </div>
-    </section>
+    </HomeSectionShell>
   );
 }

@@ -11,7 +11,7 @@ import { HUB_STORE } from "@/lib/customer-hub-routes";
 
 export function ServiceHubClient() {
   return (
-    <div className="space-y-5 overflow-x-hidden" data-page="service-hub">
+    <div className={`${bm.hubServicePage} overflow-x-hidden`} data-page="service-hub">
       <section className={`${bm.reportCard} ${bm.cardPad}`}>
         <p className={bm.intentBadge}>이용 방법 선택</p>
         <SectionHeader
@@ -22,13 +22,13 @@ export function ServiceHubClient() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         {SERVICE_OPTIONS.map((opt) => (
-          <article className={`${bm.cardInteractive} flex flex-col p-4`} key={opt.title}>
-            <h3 className="text-sm font-bold text-slate-950">{opt.title}</h3>
+          <article className={`${bm.cardServiceStore} flex flex-col p-4`} key={opt.title}>
+            <h3 className="text-sm font-bold text-slate-50">{opt.title}</h3>
             {opt.region ? (
               <span className={`${bm.badge} ${bm.badgeGray} mt-1.5 w-fit`}>{opt.region}</span>
             ) : null}
-            <p className="mt-1 text-xs font-medium text-slate-600">{opt.desc}</p>
-            <p className="mt-2 text-[10px] font-semibold leading-relaxed text-[var(--bm-muted)]">{opt.when}</p>
+            <p className="mt-1 text-xs font-medium text-slate-300">{opt.desc}</p>
+            <p className="mt-2 text-[10px] font-semibold leading-relaxed text-slate-400">{opt.when}</p>
             <Link
               className={`mt-auto pt-3 ${
                 opt.tone === "primary"

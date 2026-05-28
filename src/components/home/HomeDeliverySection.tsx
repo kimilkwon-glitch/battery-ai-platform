@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { HUB_PHOTO, HUB_SHOP, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
@@ -8,7 +9,7 @@ import { bm } from "@/lib/design-tokens";
 
 export function HomeDeliverySection() {
   return (
-    <section className={`${bm.card} ${bm.cardPad}`} data-home-section="delivery">
+    <HomeSectionShell rhythm="delivery" data-section="delivery">
       <SectionHeader
         label="택배 주문"
         title="규격 확인 후 택배 주문"
@@ -16,7 +17,7 @@ export function HomeDeliverySection() {
       />
       <div className="grid gap-3 lg:grid-cols-3">
         {HOME_DELIVERY_STEPS.map((step) => (
-          <article className={`${bm.surfaceMuted} flex flex-col p-4`} key={step.title}>
+          <article className={`${bm.cardPhotoCheck} flex flex-col p-4`} key={step.title}>
             <p className="text-sm font-bold text-slate-900">{step.title}</p>
             <p className="mt-1 flex-1 text-xs font-medium leading-relaxed text-slate-600">{step.desc}</p>
             <Link className={`${bm.btnSecondary} mt-3 w-fit text-[10px]`} href={step.href}>
@@ -47,6 +48,6 @@ export function HomeDeliverySection() {
           쇼핑 허브
         </Link>
       </p>
-    </section>
+    </HomeSectionShell>
   );
 }

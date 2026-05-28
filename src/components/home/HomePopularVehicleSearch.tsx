@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { VehicleCardImage } from "@/components/media/VehicleCardImage";
 import { HOME_POPULAR_VEHICLES } from "@/lib/home-upgrade-v2-data";
@@ -6,10 +7,7 @@ import { bm } from "@/lib/design-tokens";
 
 export function HomePopularVehicleSearch() {
   return (
-    <section
-      className={`${bm.sectionBlock} ${bm.sectionBlockPad}`}
-      data-home-section="popular-vehicles"
-    >
+    <HomeSectionShell rhythm="vehicle" data-section="popular-vehicles">
       <SectionHeader
         label="차량 매칭"
         title="인기 차량 빠른 검색"
@@ -18,7 +16,7 @@ export function HomePopularVehicleSearch() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {HOME_POPULAR_VEHICLES.map((v) => (
           <Link
-            className={`${bm.rankCard} flex flex-col`}
+            className={`${bm.cardVehicleMatch} flex flex-col`}
             href={v.href}
             key={v.slug}
           >
@@ -36,6 +34,6 @@ export function HomePopularVehicleSearch() {
           </Link>
         ))}
       </div>
-    </section>
+    </HomeSectionShell>
   );
 }
