@@ -76,9 +76,22 @@ export const bm = {
   cardHorizontal:
     "flex flex-col overflow-hidden md:grid md:grid-cols-[44%_56%] md:items-stretch",
   cardHorizontalMedia:
-    "bm-card-horizontal__media flex min-h-[132px] shrink-0 items-center justify-center border-b border-slate-100 bg-[var(--bm-image-bg)] p-2 md:min-h-[156px] md:border-b-0 md:border-r md:p-2.5",
+    "bm-card-horizontal__media flex min-h-[132px] shrink-0 items-center justify-center border-b border-slate-100 bg-[var(--bm-image-bg)] p-1.5 md:min-h-[156px] md:border-b-0 md:border-r md:p-2",
   cardHorizontalBody:
-    "bm-card-horizontal__body flex min-w-0 flex-col justify-center gap-1 p-3 md:px-3.5 md:py-3",
+    "bm-card-horizontal__body flex min-h-[132px] min-w-0 flex-1 flex-col justify-between gap-0 p-4 md:min-h-[156px] md:p-5",
+  cardInfoStack: "flex min-w-0 flex-1 flex-col gap-1.5",
+  cardInfoTitleRow: "flex items-center gap-2",
+  cardInfoIconBadge:
+    "inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-slate-50 ring-1 ring-slate-200/90",
+  cardInfoTitle:
+    "text-base font-bold leading-tight text-slate-900 group-hover:text-blue-800",
+  cardInfoSpec: "spec-code text-sm font-bold leading-none text-blue-700",
+  cardInfoDesc: "text-sm font-medium leading-snug text-slate-600 line-clamp-2",
+  cardInfoBadgeRow: "flex flex-wrap gap-1.5",
+  cardInfoMeta: "text-[10px] font-medium leading-snug text-slate-500 line-clamp-2",
+  cardInfoActions: "mt-3 flex shrink-0 flex-wrap items-center gap-2",
+  cardInfoCtaLink:
+    "inline-flex items-center gap-1 rounded-lg bg-blue-50/70 px-2.5 py-1.5 text-[11px] font-bold text-blue-800 ring-1 ring-blue-100 transition group-hover:bg-blue-100 group-hover:ring-blue-200",
   cardSymptom: "bm-card-symptom flex flex-col p-4",
   cardPhotoCheck: "bm-card-photo-check",
   cardServiceStore: "bm-card-service-store",
@@ -128,7 +141,7 @@ export const bm = {
   /** 배터리 상품 카드 하단·CTA — 이미지보다 약하게 */
   batteryCardBody:
     "flex flex-1 flex-col gap-1 border-t border-slate-100 px-2.5 pb-2 pt-1.5 md:border-t-0 md:px-0 md:pb-0 md:pt-0",
-  batteryCardBtnRow: "mt-1 flex flex-wrap gap-1",
+  batteryCardBtnRow: "flex flex-wrap items-center gap-2",
   btnCardNavy:
     "inline-flex h-8 min-h-8 items-center justify-center rounded-lg bg-[var(--bm-navy)] px-2.5 text-[9px] font-black text-white transition motion-safe:hover:bg-slate-800",
   btnCardSecondary:

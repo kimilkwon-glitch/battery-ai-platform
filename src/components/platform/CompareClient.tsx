@@ -12,6 +12,11 @@ import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
 import { AppIcon } from "@/components/common/AppIcon";
 import { ComparePresetHub } from "@/components/platform/hub/ComparePresetHub";
 import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
+import {
+  CardInfoDesc,
+  CardInfoStack,
+  CardInfoTitleRow,
+} from "@/components/cards/CardHorizontalInfo";
 import { bm } from "@/lib/design-tokens";
 import {
   BRAND_COMPARE_LABEL,
@@ -52,14 +57,18 @@ function SelectedBatteryCard({
             layout="row"
           />
         </div>
-        <div className={`${bm.cardHorizontalBody} gap-0.5 md:py-2.5`}>
-          <p className="spec-code text-base font-bold leading-snug text-[var(--bm-text)] md:text-lg" data-spec-code>
-            {battery.code}
-          </p>
-          <p className={`${bm.specData} text-[11px]`}>
-            {battery.capacity} · CCA {battery.cca} · {battery.terminal}타입
-          </p>
-          <p className={`${bm.textSub} line-clamp-3 text-[11px] leading-relaxed`}>{battery.pros}</p>
+        <div className={bm.cardHorizontalBody}>
+          <CardInfoStack>
+            <CardInfoTitleRow
+              iconKey="batterySpec"
+              title={battery.code}
+              titleClassName="spec-code md:text-lg"
+            />
+            <p className={`${bm.specData} text-[11px]`}>
+              {battery.capacity} · CCA {battery.cca} · {battery.terminal}타입
+            </p>
+            <CardInfoDesc className="line-clamp-3 text-[11px]">{battery.pros}</CardInfoDesc>
+          </CardInfoStack>
         </div>
       </div>
     </div>

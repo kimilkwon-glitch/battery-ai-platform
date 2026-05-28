@@ -193,7 +193,7 @@ export function SearchBatteryFocusBlock({
             <div className={bm.cardHorizontalMedia}>
               <BatteryCardImage code={ux.specMeta.code} variant="search" layout="row" flushTop />
             </div>
-            <div className={`${bm.cardHorizontalBody} md:py-3`}>
+            <div className={bm.cardHorizontalBody}>
             <p className="spec-code text-2xl font-bold tracking-normal text-slate-950" data-spec-code>
               {ux.specMeta.code}
             </p>

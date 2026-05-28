@@ -1,8 +1,15 @@
 import Link from "next/link";
-import { AppIcon } from "@/components/common/AppIcon";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
+import {
+  CardInfoActions,
+  CardInfoCtaLink,
+  CardInfoDesc,
+  CardInfoSpecBadges,
+  CardInfoStack,
+  CardInfoTitleRow,
+} from "@/components/cards/CardHorizontalInfo";
 import { VehicleCardImage } from "@/components/media/VehicleCardImage";
 import { HOME_POPULAR_VEHICLES } from "@/lib/home-upgrade-v2-data";
 import { bm } from "@/lib/design-tokens";
@@ -25,17 +32,14 @@ export function HomePopularVehicleSearch() {
             key={v.slug}
             imagePanel={<VehicleCardImage slug={v.slug} title={v.title} layout="row" />}
           >
-            <div className="flex items-start gap-2">
-              <span className="bm-icon-pill shrink-0" aria-hidden>
-                <AppIcon iconKey="vehicle" size="sm" strokeWidth={2.5} />
-              </span>
-              <p className="text-base font-bold text-slate-900 group-hover:text-blue-800">{v.title}</p>
-            </div>
-            <p className="spec-code text-xs font-bold text-blue-700" data-spec-code>
-              {v.spec}
-            </p>
-            <p className="line-clamp-2 text-xs font-medium leading-relaxed text-slate-700">{v.hint}</p>
-            <span className="text-[10px] font-bold text-slate-500">검색·상세 →</span>
+            <CardInfoStack>
+              <CardInfoTitleRow iconKey="vehicle" title={v.title} />
+              <CardInfoSpecBadges spec={v.spec} />
+              <CardInfoDesc>{v.hint}</CardInfoDesc>
+            </CardInfoStack>
+            <CardInfoActions>
+              <CardInfoCtaLink>검색·상세 →</CardInfoCtaLink>
+            </CardInfoActions>
           </CardHorizontalLayout>
         ))}
       </div>

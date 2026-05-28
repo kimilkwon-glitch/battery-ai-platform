@@ -1,5 +1,10 @@
 import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
+import {
+  CardInfoMeta,
+  CardInfoStack,
+  CardInfoTitleRow,
+} from "@/components/cards/CardHorizontalInfo";
 import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSummary";
 import { bm } from "@/lib/design-tokens";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
@@ -51,20 +56,27 @@ export function RecommendedBatteryCard({
             flushTop
           />
         </div>
-        <div className={`${bm.cardHorizontalBody} md:!py-2.5`}>
-          <h3 className="spec-code text-base font-bold leading-snug text-[var(--bm-text)] sm:text-lg">
-            {display.code}
-            <span className="ml-1 text-xs font-bold text-[var(--bm-muted)] sm:text-sm">배터리</span>
-          </h3>
-          {context ? <p className="mt-0.5 text-[11px] font-semibold text-slate-600">{context}</p> : null}
-          <SearchResultSpecChips
-            typeLabel={display.typeLabel}
-            seriesLabel={display.seriesLabel}
-            terminalLabel={display.terminalLabel}
-          />
-          {exceptionNote ? (
-            <p className="mt-1.5 text-[10px] font-medium leading-relaxed text-slate-500 sm:text-[11px]">{exceptionNote}</p>
-          ) : null}
+        <div className={bm.cardHorizontalBody}>
+          <CardInfoStack>
+            <CardInfoTitleRow
+              iconKey="batterySpec"
+              title={
+                <>
+                  <span className="spec-code text-base sm:text-lg">{display.code}</span>
+                  <span className="ml-1 text-xs font-bold text-[var(--bm-muted)] sm:text-sm">배터리</span>
+                </>
+              }
+            />
+            {context ? (
+              <p className="text-[11px] font-semibold text-slate-600">{context}</p>
+            ) : null}
+            <SearchResultSpecChips
+              typeLabel={display.typeLabel}
+              seriesLabel={display.seriesLabel}
+              terminalLabel={display.terminalLabel}
+            />
+            {exceptionNote ? <CardInfoMeta className="sm:text-[11px]">{exceptionNote}</CardInfoMeta> : null}
+          </CardInfoStack>
         </div>
       </div>
       <div className="border-t border-[var(--bm-border)] bg-[var(--bm-surface-muted)] px-2.5 py-2">

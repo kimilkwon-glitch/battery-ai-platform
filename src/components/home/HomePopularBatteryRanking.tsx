@@ -3,6 +3,14 @@ import { AppIcon } from "@/components/common/AppIcon";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
+import {
+  CardInfoActions,
+  CardInfoBadgeRow,
+  CardInfoDesc,
+  CardInfoMeta,
+  CardInfoStack,
+  CardInfoTitleRow,
+} from "@/components/cards/CardHorizontalInfo";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 import {
@@ -30,16 +38,20 @@ export function HomePopularBatteryRanking() {
               <BatteryCardImage code={item.code} flushTop layout="row" />
             }
           >
-            <p className="spec-code text-base font-bold text-[var(--bm-text)]" data-spec-code>
-              {item.code}
-            </p>
-            <p className="text-xs font-medium leading-snug text-slate-700">{item.summary}</p>
-            <div className="flex flex-wrap gap-1">
-              <span className={`${bm.badge} ${bm.badgeGray}`}>{item.typeLabel}</span>
-              <span className={`${bm.badge} ${bm.badgeGray}`}>{item.terminal}</span>
-            </div>
-            <p className="line-clamp-2 text-[10px] font-medium text-slate-600">{item.useCase}</p>
-            <div className={bm.batteryCardBtnRow}>
+            <CardInfoStack>
+              <CardInfoTitleRow
+                iconKey="batterySpec"
+                title={item.code}
+                titleClassName="spec-code text-[var(--bm-text)]"
+              />
+              <CardInfoDesc>{item.summary}</CardInfoDesc>
+              <CardInfoBadgeRow>
+                <span className={`${bm.badge} ${bm.badgeGray}`}>{item.typeLabel}</span>
+                <span className={`${bm.badge} ${bm.badgeGray}`}>{item.terminal}</span>
+              </CardInfoBadgeRow>
+              <CardInfoMeta>{item.useCase}</CardInfoMeta>
+            </CardInfoStack>
+            <CardInfoActions>
               <Link className={`${bm.btnCardNavy} inline-flex items-center gap-1`} href={batteryDetailHref(item.code)}>
                 <AppIcon iconKey="batterySpec" size="xs" className="!text-white" />
                 규격 상세
@@ -48,7 +60,7 @@ export function HomePopularBatteryRanking() {
                 <AppIcon iconKey="photoCheck" size="xs" />
                 사진확인
               </Link>
-            </div>
+            </CardInfoActions>
           </CardHorizontalLayout>
         ))}
       </div>

@@ -3,6 +3,12 @@ import { AppIcon } from "@/components/common/AppIcon";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
+import {
+  CardInfoActions,
+  CardInfoBadgeRow,
+  CardInfoStack,
+  CardInfoTitleRow,
+} from "@/components/cards/CardHorizontalInfo";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
@@ -34,14 +40,13 @@ export function HomeEvHybridSection() {
             key={item.label}
             imagePanel={<BatteryCardImage code={item.battery} layout="row" flushTop />}
           >
-            <div className="flex items-center gap-1.5">
-              <span className="bm-icon-pill bm-icon-pill--emerald shrink-0" aria-hidden>
-                <AppIcon iconKey="ev" size="sm" strokeWidth={2.5} />
-              </span>
-              <p className="text-sm font-bold text-slate-900">{item.label}</p>
-            </div>
-            <p className="text-xs font-semibold text-blue-800">추천 확인: {item.battery}</p>
-            <div className={bm.batteryCardBtnRow}>
+            <CardInfoStack>
+              <CardInfoTitleRow iconKey="ev" title={item.label} />
+              <CardInfoBadgeRow>
+                <span className={`${bm.badge} ${bm.badgeBlue}`}>{item.battery}</span>
+              </CardInfoBadgeRow>
+            </CardInfoStack>
+            <CardInfoActions>
               <Link className={bm.btnCardSecondary} href={item.href}>
                 검색 결과
               </Link>
@@ -56,7 +61,7 @@ export function HomeEvHybridSection() {
                   차량 상세
                 </Link>
               ) : null}
-            </div>
+            </CardInfoActions>
           </CardHorizontalLayout>
         ))}
       </div>

@@ -4,6 +4,14 @@ import Link from "next/link";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { IconBadge } from "@/components/common/IconBadge";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
+import {
+  CardInfoActions,
+  CardInfoCtaLink,
+  CardInfoDesc,
+  CardInfoMeta,
+  CardInfoStack,
+  CardInfoTitleRow,
+} from "@/components/cards/CardHorizontalInfo";
 import { HubBadge } from "@/components/platform/hub/HubBadge";
 import { bm } from "@/lib/design-tokens";
 import { COMPARE_PRESET_CARDS, type ComparePresetCard } from "@/lib/platform-hub-content";
@@ -27,7 +35,7 @@ export function ComparePresetHub() {
         {COMPARE_PRESET_CARDS.map((card) => (
           <CardHorizontalLayout
             as={Link}
-            className={bm.cardBatteryProduct}
+            className={`${bm.cardBatteryProduct} group`}
             href={card.href}
             key={card.label}
             imagePanel={
@@ -36,16 +44,20 @@ export function ComparePresetHub() {
               </div>
             }
           >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="spec-code text-sm font-bold text-[var(--bm-text)]" data-spec-code>
-                {card.label}
-              </p>
-              <SubstituteBadge level={card.substitute} />
-            </div>
-            <p className="text-xs font-bold text-slate-800">{card.headline}</p>
-            <p className="line-clamp-2 text-[11px] font-medium text-slate-600">{card.diff}</p>
-            <p className="text-[10px] font-semibold text-blue-800">{card.terminalNote}</p>
-            <span className="text-[10px] font-bold text-slate-500">비교 리포트 →</span>
+            <CardInfoStack>
+              <CardInfoTitleRow
+                iconKey="compare"
+                title={card.label}
+                titleClassName="spec-code text-[var(--bm-text)]"
+                trailing={<SubstituteBadge level={card.substitute} />}
+              />
+              <p className="text-xs font-bold text-slate-800">{card.headline}</p>
+              <CardInfoDesc>{card.diff}</CardInfoDesc>
+              <CardInfoMeta className="font-semibold text-blue-800">{card.terminalNote}</CardInfoMeta>
+            </CardInfoStack>
+            <CardInfoActions>
+              <CardInfoCtaLink>비교 리포트 →</CardInfoCtaLink>
+            </CardInfoActions>
           </CardHorizontalLayout>
         ))}
       </div>
