@@ -56,7 +56,7 @@ export function VehicleDetailTabs({
         yearChips={yearChips}
       />
 
-      <div className={`${bm.card} p-2`}>
+      <div className={`${bm.cardPremium} p-2`}>
         <p className="px-2 pb-2 text-[11px] font-bold text-[var(--bm-muted)]">추가 정보</p>
         <div className="flex gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {TABS.map((t) => (
@@ -64,11 +64,7 @@ export function VehicleDetailTabs({
               key={t.id}
               type="button"
               onClick={() => setTab(tab === t.id ? null : t.id)}
-              className={`shrink-0 whitespace-nowrap rounded-lg px-4 py-2.5 text-xs font-black transition ${
-                tab === t.id
-                  ? "bg-[var(--bm-primary)] text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-700"
-              }`}
+              className={tab === t.id ? bm.tabBtnActive : bm.tabBtn}
             >
               {t.label}
             </button>
@@ -77,9 +73,26 @@ export function VehicleDetailTabs({
       </div>
 
       {tab === "specs" ? (
-        <div className="space-y-3">
+        <div className="bm-tab-panel space-y-3">
           <CollapsibleSection defaultOpen={false} title="호환 제품 · 판정표">
-            <div className="overflow-x-auto">
+            <div className="space-y-2 md:hidden">
+              {vehicle.compatibility.map((item) => (
+                <div className={`${bm.surfaceMuted} p-3`} key={item.model}>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <Link
+                      className="spec-code text-sm font-black text-[var(--bm-primary)] hover:underline"
+                      href={`/batteries/${encodeURIComponent(item.model)}`}
+                    >
+                      {item.model}
+                    </Link>
+                    <span className={`${bm.badge} ${bm.badgeGreen}`}>{item.fit}</span>
+                  </div>
+                  <p className={`mt-1 ${bm.specData}`}>{item.status}</p>
+                  <p className={`mt-1 ${bm.textSub} text-xs`}>{item.note}</p>
+                </div>
+              ))}
+            </div>
+            <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[640px] border-separate border-spacing-y-2 text-left text-xs">
                 <thead className="text-slate-400">
                   <tr>
@@ -111,7 +124,7 @@ export function VehicleDetailTabs({
       ) : null}
 
       {tab === "caution" ? (
-        <div className="space-y-3">
+        <div className="bm-tab-panel space-y-3">
           <PanelBlock title="교체 주의사항">
             <div className="grid gap-2">
               {[
@@ -166,20 +179,22 @@ export function VehicleDetailTabs({
       ) : null}
 
       {tab === "qa" ? (
-        <PanelBlock title="자주 묻는 질문">
-          <div className="space-y-2">
-            {defaultQna.map(([question, answer]) => (
-              <Link
-                className={`block ${bm.cardPad} rounded-xl bg-slate-50 transition hover:border-blue-200 hover:bg-blue-50/50 ring-1 ring-slate-200`}
-                href={`/community?q=${encodeURIComponent(`${vehicle.model} ${question}`)}`}
-                key={question}
-              >
-                <p className="text-xs font-black text-slate-900">{question}</p>
-                <p className="mt-1 text-[11px] font-bold text-slate-500">{answer}</p>
-              </Link>
-            ))}
-          </div>
-        </PanelBlock>
+        <div className="bm-tab-panel">
+          <PanelBlock title="자주 묻는 질문">
+            <div className="space-y-2">
+              {defaultQna.map(([question, answer]) => (
+                <Link
+                  className={`block ${bm.cardInteractive} ${bm.cardPad}`}
+                  href={`/community?q=${encodeURIComponent(`${vehicle.model} ${question}`)}`}
+                  key={question}
+                >
+                  <p className="text-xs font-black text-[var(--bm-text)]">{question}</p>
+                  <p className={`mt-1 ${bm.textSub} text-[11px]`}>{answer}</p>
+                </Link>
+              ))}
+            </div>
+          </PanelBlock>
+        </div>
       ) : null}
     </div>
   );
@@ -187,8 +202,8 @@ export function VehicleDetailTabs({
 
 function PanelBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className={`${bm.card} ${bm.cardPad}`}>
-      <h3 className="mb-3 text-sm font-black text-slate-950">{title}</h3>
+    <section className={`${bm.cardPremium} ${bm.cardPad}`}>
+      <h3 className={`${bm.cardTitle} mb-3`}>{title}</h3>
       {children}
     </section>
   );
@@ -222,7 +237,7 @@ function CollapsibleSection({
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs ring-1 ring-slate-200">
+    <div className={`${bm.surfaceMuted} flex items-center justify-between gap-2 px-3 py-2 text-xs`}>
       <span className="font-black text-slate-400">{label}</span>
       <span className="text-right font-black text-slate-700">{value}</span>
     </div>

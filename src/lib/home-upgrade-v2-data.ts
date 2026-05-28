@@ -7,8 +7,8 @@ import { CORE_BATTERY_DETAIL_CODES } from "@/lib/battery-detail/core-battery-cod
 /** 메인 hero — 검색 유형·예시 */
 export const HOME_HERO = {
   headline: "내 차 배터리, 차종·규격·증상 기준으로 한 번에 확인",
-  subline: "DB 매칭으로 먼저 찾고, 사진으로 마지막 확인하세요.",
-  tagline: "차종으로 찾고, 규격으로 확인하고, 사진으로 최종 검증하세요.",
+  subline: "차종으로 찾거나, AGM80L처럼 규격명으로 바로 확인하세요.",
+  tagline: "DB 매칭으로 먼저 답을 보여주고, 사진은 마지막 검증입니다.",
 } as const;
 
 export const HOME_SEARCH_TYPE_CHIPS = [

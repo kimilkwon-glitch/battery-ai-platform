@@ -102,9 +102,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
                   key={cat.key}
                   onClick={() => selectCategory(cat.key)}
                   className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left text-xs font-black transition ${
-                    isActive
-                      ? "bg-[var(--bm-primary)] text-white shadow-sm"
-                      : "bg-slate-50 text-slate-700 ring-1 ring-[var(--bm-border)] hover:bg-blue-50"
+                    isActive ? bm.tabBtnActive : bm.tabBtn
                   }`}
                 >
                   <span>{cat.label}</span>
@@ -119,7 +117,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
 
         <Panel title="빠른 링크">
           <div className="space-y-1.5">
-            <Link className={`${bm.btnPrimary} w-full`} href="/vehicles">
+            <Link className={`${bm.btnNavy} w-full`} href="/vehicles">
               차량 목록
             </Link>
             <Link className={`${bm.btnNavy} w-full`} href="/compare">
@@ -141,10 +139,13 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
 
       <div className="min-w-0 space-y-4">
         <div className={`${bm.heroPanel} ${bm.cardPad}`}>
-          <p className={bm.label}>Battery Manager</p>
-          <h1 className="mt-1 text-xl font-black text-slate-950">차량별 배터리 가이드</h1>
-          <p className="mt-2 text-sm font-semibold leading-relaxed text-[var(--bm-muted)]">
-            차량명·연식·연료에 따라 달라지는 배터리 규격과 오주문 방지 포인트를 정리했습니다.
+          <p className={bm.label}>불안 제거 센터</p>
+          <h1 className={`${bm.heroDisplay} mt-2 text-xl sm:text-2xl`}>배터리 선택 전, 여기서 먼저 확인</h1>
+          <p className={`mt-3 ${bm.heroLead} text-sm sm:text-base`}>
+            차종·연식·연료·단자 방향 때문에 헷갈리는 포인트를 고객 언어로 정리했습니다.
+          </p>
+          <p className={`mt-2 ${bm.textSub} text-xs`}>
+            가이드 → 규격 상세 → Q&A → 사진 확인 순으로 이어가면 오주문을 줄일 수 있습니다.
           </p>
         </div>
 
@@ -192,8 +193,11 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
           <p className="mt-2 text-[11px] font-semibold leading-relaxed text-[var(--bm-muted)]">
             배터리 상단 라벨, 단자 방향, 장착 위치를 보면 오주문을 줄일 수 있습니다.
           </p>
-          <Link className={`${bm.btnPrimary} mt-3 w-full`} href="/analysis/photo">
+          <Link className={`${bm.btnSecondary} mt-3 w-full`} href="/analysis/photo">
             사진 규격 확인
+          </Link>
+          <Link className={`${bm.btnNavy} mt-2 w-full`} href="/vehicles">
+            내 차량 기준 확인
           </Link>
           <button
             type="button"

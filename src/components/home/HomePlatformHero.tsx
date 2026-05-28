@@ -19,29 +19,43 @@ export function HomePlatformHero() {
     <section className={bm.heroPanel} data-home-section="hero" data-precision-garage="hero">
       <div className={bm.heroPanelAccent}>
         <p className={bm.label}>{BRAND_HERO_LABEL}</p>
+        <p className="mt-1 text-[10px] font-semibold text-[var(--bm-muted)]">
+          정밀 fitment · 배터리 매칭 플랫폼
+        </p>
       </div>
       <div className="grid gap-0 lg:grid-cols-[1fr_minmax(240px,360px)]">
-        <div className="p-5 lg:p-7">
-          <h1 className={`${bm.titleLg} sm:text-[1.75rem]`}>{HOME_HERO.headline}</h1>
-          <p className={`mt-2 ${bm.textSub}`}>{HOME_HERO.subline}</p>
-          <p className={`mt-1 text-xs font-medium ${bm.muted}`}>{HOME_HERO.tagline}</p>
+        <div className="order-1 p-5 lg:order-none lg:p-7">
+          <h1 className={bm.heroDisplay}>{HOME_HERO.headline}</h1>
+          <p className={`mt-3 ${bm.heroLead}`}>{HOME_HERO.subline}</p>
+          <p className={`mt-2 text-sm font-medium ${bm.muted}`}>{HOME_HERO.tagline}</p>
 
-          <VehicleSearchBox
-            className="mt-5"
-            inputClassName={`${bm.input} h-12 font-semibold`}
-            placeholder="차량명 · 배터리 규격 · 증상 검색"
-            showButton
-            buttonLabel="검색"
-          />
+          <div className={`${bm.searchInset} mt-5`}>
+            <VehicleSearchBox
+              className="w-full"
+              inputClassName={`${bm.input} !h-12 !border-0 !bg-transparent !shadow-none !ring-0 font-semibold`}
+              placeholder="차량명 · AGM80L · 방전 증상"
+              showButton
+              buttonLabel="검색"
+            />
+          </div>
 
-          <p className="mt-3 text-[10px] font-bold uppercase tracking-wide text-slate-400">검색 유형</p>
+          <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
+            <Link className={`${bm.btnNavy} flex-1 text-xs`} href="/vehicles">
+              내 차량 확인
+            </Link>
+            <Link className={`${bm.btnSecondary} flex-1 text-xs`} href={getSearchHref("AGM80L")}>
+              규격 검색
+            </Link>
+          </div>
+
+          <p className="mt-4 text-[10px] font-bold uppercase tracking-wide text-[var(--bm-muted)]">검색 유형</p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {HOME_SEARCH_TYPE_CHIPS.map((chip) => (
               <Link
                 key={chip.label}
                 className={
                   chip.tone === "primary"
-                    ? "rounded-xl border-2 border-[var(--bm-primary)] bg-blue-50/50 px-3 py-2.5 transition motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[var(--bm-shadow-sm)]"
+                    ? "rounded-xl border-2 border-[var(--bm-primary)] bg-blue-50/60 px-3 py-2.5 shadow-[var(--bm-shadow-sm)] transition motion-safe:hover:-translate-y-0.5"
                     : chip.tone === "secondary"
                       ? `${bm.surfaceMuted} px-3 py-2.5 transition motion-safe:hover:border-[var(--bm-primary)]/20`
                       : `${bm.card} px-3 py-2.5 transition motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-accent)]/30`
@@ -49,29 +63,25 @@ export function HomePlatformHero() {
                 href={chip.href}
               >
                 <p
-                  className={`text-xs font-bold ${chip.tone === "secondary" ? "text-slate-600" : "text-slate-900"}`}
+                  className={`text-xs font-bold ${chip.tone === "secondary" ? "text-[var(--bm-muted)]" : "text-[var(--bm-text)]"}`}
                 >
                   {chip.label}
                 </p>
-                <p className="mt-0.5 text-[10px] font-medium text-slate-500">{chip.desc}</p>
+                <p className="mt-0.5 text-[10px] font-medium text-[var(--bm-muted)]">{chip.desc}</p>
               </Link>
             ))}
           </div>
 
-          <p className="mt-4 text-[10px] font-bold text-slate-400">대표 예시 검색</p>
+          <p className="mt-4 text-[10px] font-bold text-[var(--bm-muted)]">인기 검색</p>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
             {HOME_HERO_EXAMPLES.map((keyword) => (
-              <Link
-                key={keyword}
-                className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-bold text-slate-600 transition hover:border-blue-200 hover:text-blue-700"
-                href={getSearchHref(keyword)}
-              >
+              <Link key={keyword} className={bm.chipExample} href={getSearchHref(keyword)}>
                 {keyword}
               </Link>
             ))}
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 hidden flex-wrap gap-2 lg:flex">
             <Link className={`${bm.btnNavy} text-xs`} href="/vehicles">
               내 차량 기준으로 확인
             </Link>
@@ -83,8 +93,8 @@ export function HomePlatformHero() {
             </Link>
           </div>
         </div>
-        <div className="border-t border-slate-100 p-4 lg:border-l lg:border-t-0 lg:p-5">
-          <p className="mb-2 text-[10px] font-bold text-slate-500">플랫폼 미리보기</p>
+        <div className="order-2 border-t border-[var(--bm-border)] p-4 lg:order-none lg:border-l lg:border-t-0 lg:p-5">
+          <p className="mb-2 text-[10px] font-bold text-[var(--bm-muted)]">매칭 미리보기</p>
           <MediaImageSlot slot={HOME_IMAGE_SLOTS.heroMatching()} />
         </div>
       </div>

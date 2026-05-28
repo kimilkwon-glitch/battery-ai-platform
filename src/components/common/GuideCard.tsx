@@ -71,7 +71,7 @@ export function GuideCard({ article }: { article: Article }) {
     <article className={`flex h-full flex-col overflow-hidden ${bm.cardInteractive}`}>
       <GuideCardImage article={article} />
       <div className={`flex flex-1 flex-col ${bm.cardPad} pt-3`}>
-        <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{article.title}</h3>
+        <h3 className="line-clamp-2 text-sm font-black leading-snug text-[var(--bm-text)]">{article.title}</h3>
         <p className="mt-1.5 line-clamp-2 flex-1 text-[11px] font-semibold leading-relaxed text-[var(--bm-muted)]">
           {article.description}
         </p>
@@ -90,7 +90,7 @@ export function GuideCard({ article }: { article: Article }) {
         ) : null}
         <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
           <span className="text-[10px] font-semibold text-slate-400">{formatArticleDate(article.updatedAt)}</span>
-          <Link className={`${bm.btnPrimary} !h-9 !px-3 !text-[10px]`} href={`/guides/${article.id}`}>
+          <Link className={`${bm.btnNavy} !h-9 !px-3 !text-[10px]`} href={`/guides/${article.id}`}>
             자세히 보기
           </Link>
         </div>

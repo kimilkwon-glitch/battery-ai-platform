@@ -76,18 +76,17 @@ export function SmartNextActions({
   }
 
   return (
-    <section className={`${bm.heroPanel} ${bm.cardPad}`}>
-      <h3 className="text-sm font-black text-slate-900">{title}</h3>
-      {subtitle ? <p className="mt-0.5 text-[11px] font-semibold text-[var(--bm-muted)]">{subtitle}</p> : null}
+    <section className={`${bm.platformStrip}`}>
+      <p className={bm.label}>다음 단계</p>
+      <h3 className={`${bm.titleMd} mt-1`}>{title}</h3>
+      {subtitle ? <p className={`mt-1 ${bm.textSub} text-xs`}>{subtitle}</p> : null}
       <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {actions.map((a, index) => (
-          <Link
-            key={`${a.href}-${index}`}
-            href={a.href}
-            className={`${bm.card} p-3 transition hover:-translate-y-0.5 hover:border-[var(--bm-primary)] hover:bg-[var(--bm-primary)] hover:text-white`}
-          >
-            <p className="text-xs font-black">{a.title}</p>
-            <p className="mt-1 text-[10px] font-semibold opacity-80">{a.description}</p>
+          <Link key={`${a.href}-${index}`} href={a.href} className={bm.nextStepCard}>
+            <p className="text-xs font-black text-[var(--bm-text)] group-hover:text-[var(--bm-primary)]">
+              {a.title}
+            </p>
+            <p className="mt-1 text-[10px] font-semibold text-[var(--bm-muted)]">{a.description}</p>
           </Link>
         ))}
       </div>

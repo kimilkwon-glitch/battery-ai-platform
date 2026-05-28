@@ -145,10 +145,15 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         </div>
 
         <div className="grid gap-0 sm:grid-cols-[minmax(200px,280px)_1fr]">
-          <div className="border-b border-slate-100 p-4 sm:border-b-0 sm:border-r">
-            <BatteryImageOrSlot code={displayCode} ratio="4/3" tall className="rounded-xl" />
+          <div className="order-2 border-b border-[var(--bm-border)] p-4 sm:order-none sm:border-b-0 sm:border-r">
+            <BatteryImageOrSlot
+              code={displayCode}
+              ratio="4/3"
+              tall
+              className="mx-auto max-h-[200px] rounded-xl sm:max-h-none"
+            />
           </div>
-          <div className="p-4 sm:p-5">
+          <div className="order-1 p-4 sm:order-none sm:p-5">
             <CtaHierarchy
               ctas={[
                 { label: "택배 주문하기", href: HUB_SHOP_ANCHORS.delivery },

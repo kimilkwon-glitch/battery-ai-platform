@@ -83,7 +83,7 @@ export default async function VehicleDetailPage({
 
   return (
 
-    <main className={bm.pageBg}>
+    <main className={bm.pageBg} data-page="vehicle-detail">
 
       <VehicleActivityTracker vehicleId={slug} />
 

@@ -35,9 +35,9 @@ export function PageShell({
       />
       <div className={wide ? bm.pageContainerWide : bm.pageContainer}>
         {title || description ? (
-          <header className={`${bm.card} mb-5 ${bm.cardPad}`}>
-            {title ? <h1 className="text-xl font-black tracking-tight text-slate-950">{title}</h1> : null}
-            {description ? <p className="mt-1 max-w-2xl text-sm font-medium text-slate-500">{description}</p> : null}
+          <header className={`${bm.cardPremium} mb-5 ${bm.cardPad}`}>
+            {title ? <h1 className={bm.titleLg}>{title}</h1> : null}
+            {description ? <p className={`mt-1 max-w-2xl ${bm.textSub}`}>{description}</p> : null}
           </header>
         ) : null}
         {children}

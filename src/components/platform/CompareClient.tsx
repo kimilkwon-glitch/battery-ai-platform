@@ -34,11 +34,11 @@ function SelectedBatteryCard({
   const images = getBatteryImageSet(battery.code, imageBrand);
   return (
     <div
-      className={`flex flex-1 flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-[var(--bm-shadow-sm)] ${
+      className={`${bm.compareSpecCol} ${
         side === "left" ? "lg:rounded-r-none lg:border-r-0" : "lg:rounded-l-none"
       }`}
     >
-      <div className={`relative ${bm.imageBattery} sm:h-[180px]`}>
+      <div className={`relative ${bm.imageBatteryCompact} sm:!h-[180px]`}>
         <BatteryThumbnail
           code={battery.code}
           imageSet={images?.main ? images : battery.images}
@@ -52,11 +52,13 @@ function SelectedBatteryCard({
         />
       </div>
       <div className="flex flex-1 flex-col p-4">
-        <p className="text-xl font-black text-blue-700">{battery.code}</p>
-        <p className="mt-1 text-sm font-bold text-slate-700">
-          {battery.capacity} · {battery.cca} · {battery.terminal}타입
+        <p className={bm.specTitle} data-spec-code>
+          {battery.code}
         </p>
-        <p className="mt-2 text-sm font-medium text-slate-500">{battery.pros}</p>
+        <p className={`mt-1 ${bm.specData}`}>
+          {battery.capacity} · CCA {battery.cca} · {battery.terminal}타입
+        </p>
+        <p className={`mt-2 ${bm.textSub} text-xs`}>{battery.pros}</p>
       </div>
     </div>
   );
@@ -130,17 +132,17 @@ export function CompareClient({ initial }: { initial: string[] }) {
   return (
     <div className="space-y-5">
       {/* 선택 중인 비교 */}
-      <section className="rounded-xl border border-blue-100 bg-blue-50/40 px-4 py-3">
-        <p className="text-[10px] font-black text-slate-500">비교 중</p>
-        <p className="mt-1 text-sm font-bold text-blue-800">
-          {codeA} · {codeB}
+      <section className={bm.intentSummary}>
+        <p className={bm.intentBadge}>비교 리포트</p>
+        <p className={`mt-2 ${bm.specTitle} text-lg`} data-spec-code>
+          {codeA} <span className="text-[var(--bm-muted)]">vs</span> {codeB}
         </p>
       </section>
 
       {/* 추천 조합 */}
       <section>
-        <p className="mb-2 text-[10px] font-black text-slate-500">추천 비교 조합</p>
-        <div className="flex flex-wrap gap-2">
+        <p className={bm.label}>추천 비교 조합</p>
+        <div className="mt-2 flex flex-wrap gap-2">
         {compareRecommendedPairs.map((pair) => {
           const active = codeA === pair.a && codeB === pair.b;
           return (
@@ -148,11 +150,7 @@ export function CompareClient({ initial }: { initial: string[] }) {
               type="button"
               key={pair.label}
               onClick={() => selectPair(pair.a, pair.b)}
-              className={`rounded-lg border px-3 py-1.5 text-xs font-bold transition ${
-                active
-                  ? "border-blue-600 bg-blue-600 text-white shadow-sm"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
-              }`}
+              className={active ? bm.tabBtnActive : bm.tabBtn}
             >
               {pair.label}
             </button>
@@ -162,29 +160,31 @@ export function CompareClient({ initial }: { initial: string[] }) {
       </section>
 
       {/* 비교 요약 — 주인공 */}
-      <section className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm">
-        <div className="border-b border-slate-100 bg-slate-50/40 px-5 py-4">
-          <p className="text-[11px] font-black uppercase tracking-wide text-blue-600">{BRAND_COMPARE_LABEL}</p>
-          <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-900">{pairLabel}</h2>
-          <p className="mt-2 max-w-3xl text-sm font-medium leading-relaxed text-slate-600">{description}</p>
+      <section className={bm.reportCard}>
+        <div className={bm.reportCardHeader}>
+          <p className={bm.label}>{BRAND_COMPARE_LABEL}</p>
+          <h2 className={`${bm.specTitle} mt-1`} data-spec-code>
+            {pairLabel}
+          </h2>
+          <p className={`mt-2 max-w-3xl ${bm.textSub}`}>{description}</p>
         </div>
 
-        <div className="relative flex flex-col lg:flex-row">
+        <div className="relative flex flex-col gap-3 p-3 lg:flex-row lg:gap-0 lg:p-0">
           <SelectedBatteryCard battery={batA} imageBrand={imageBrand} side="left" />
-          <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:flex">
-            <span className="flex size-10 items-center justify-center rounded-lg bg-[#1D4ED8] text-xs font-black text-white shadow-md ring-4 ring-white">
+          <div className="flex items-center justify-center lg:absolute lg:left-1/2 lg:top-1/2 lg:z-10 lg:-translate-x-1/2 lg:-translate-y-1/2">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-[var(--bm-navy)] text-xs font-black text-white shadow-[var(--bm-shadow-md)] ring-4 ring-white">
               VS
             </span>
           </div>
           <SelectedBatteryCard battery={batB} imageBrand={imageBrand} side="right" />
         </div>
 
-        <div className="border-t border-slate-100 bg-slate-50/50 px-5 py-4">
-          <p className="text-sm font-black text-slate-900">핵심 차이</p>
+        <div className={`${bm.surfaceMuted} mx-4 mb-4 mt-0 p-4 lg:mx-5`}>
+          <p className={bm.cardTitle}>핵심 차이</p>
           <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
             {keyDiffs.map((d) => (
-              <li key={d} className="flex gap-2 text-sm font-medium text-slate-700">
-                <span className="text-blue-500">·</span>
+              <li key={d} className={`flex gap-2 ${bm.textSub} text-xs`}>
+                <span className="font-black text-[var(--bm-accent)]">·</span>
                 {d}
               </li>
             ))}
@@ -193,9 +193,32 @@ export function CompareClient({ initial }: { initial: string[] }) {
       </section>
 
       {/* 비교 테이블 */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <h2 className="mb-4 text-sm font-black text-slate-900">상세 비교</h2>
-        <div className="overflow-x-auto">
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <h2 className={bm.cardTitle}>상세 비교 스펙</h2>
+        <p className={`mt-0.5 ${bm.muted} text-xs`}>모바일은 카드형 · PC는 표 형식</p>
+
+        <div className="mt-4 space-y-2 md:hidden">
+          {tableRows.map((row) => (
+            <div
+              key={row.label}
+              className={`${bm.surfaceMuted} p-3 ${row.caution ? "!border-orange-200 !bg-orange-50/40" : ""}`}
+            >
+              <p className="text-[10px] font-black uppercase tracking-wide text-[var(--bm-muted)]">{row.label}</p>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <div>
+                  <p className="spec-code text-[10px] font-bold text-[var(--bm-primary)]">{codeA}</p>
+                  <CellValue value={row.a} showHigher={row.higherSide === "a"} caution={row.caution} />
+                </div>
+                <div>
+                  <p className="spec-code text-[10px] font-bold text-[var(--bm-accent)]">{codeB}</p>
+                  <CellValue value={row.b} showHigher={row.higherSide === "b"} caution={row.caution} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 hidden overflow-x-auto md:block">
           <table className="w-full min-w-[480px] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-xs font-black text-slate-400">
@@ -247,20 +270,22 @@ export function CompareClient({ initial }: { initial: string[] }) {
       {/* 이럴 때 선택 */}
       <section className="grid gap-3 sm:grid-cols-2">
         {[batA, batB].map((b) => (
-          <div key={b.code} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="text-sm font-black text-blue-700">{b.code} 추천</p>
+          <div key={b.code} className={`${bm.cardPremium} ${bm.cardPad}`}>
+            <p className="spec-code text-sm font-black text-[var(--bm-primary)]" data-spec-code>
+              {b.code} 선택 가이드
+            </p>
             <ul className="mt-2 space-y-1.5">
               {getPickGuideItems(b).map((item) => (
-                <li key={item} className="flex gap-2 text-sm font-medium text-slate-600">
-                  <span className="text-emerald-500">✓</span>
+                <li key={item} className={`flex gap-2 ${bm.textSub} text-xs`}>
+                  <span className={`${bm.badge} ${bm.badgeGreen}`}>적합</span>
                   {item}
                 </li>
               ))}
             </ul>
           </div>
         ))}
-        <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 sm:col-span-2">
-          <p className="text-sm font-black text-amber-900">주의</p>
+        <div className={`${bm.warningPanel} sm:col-span-2`}>
+          <p className={bm.cardTitle}>주의 · 단순 대체 금지</p>
           <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             {compareCautions.map((c) => (
               <li key={c} className="text-sm font-medium text-amber-800">
@@ -272,7 +297,7 @@ export function CompareClient({ initial }: { initial: string[] }) {
       </section>
 
       {/* 배터리 선택 — 보조 영역 */}
-      <section className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4">
+      <section className={`${bm.card} ${bm.cardPad} bg-[var(--bm-surface-muted)]`}>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
             <p className="text-[11px] font-black text-slate-400">보조 선택</p>
@@ -324,9 +349,10 @@ export function CompareClient({ initial }: { initial: string[] }) {
         </button>
       </section>
 
-      <section className={`${bm.card} border-blue-100 bg-gradient-to-br from-[#FAFCFF] to-white p-5`}>
-        <h2 className="text-base font-black text-slate-950">비교 후 다음 단계</h2>
-        <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">
+      <section className={bm.platformStrip}>
+        <p className={bm.label}>다음 단계</p>
+        <h2 className={`${bm.titleMd} mt-1`}>비교 후 이렇게 확인하세요</h2>
+        <p className={`mt-2 ${bm.textSub}`}>
           두 규격 중 어떤 배터리가 맞는지는 차량 연식·연료·트레이 공간·단자 방향에 따라 달라질 수
           있습니다. 정확한 확인은 차량 정보 또는 현재 배터리 사진을 기준으로 진행해 주세요.
         </p>
@@ -364,7 +390,7 @@ function CellValue({
     <span className={`inline-flex flex-wrap items-center gap-1.5 font-semibold ${caution ? "text-amber-800" : "text-slate-800"}`}>
       {value}
       {showHigher ? (
-        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-black text-blue-700">높음</span>
+        <span className={`${bm.badge} ${bm.badgeCyan}`}>높음</span>
       ) : null}
     </span>
   );
@@ -385,9 +411,7 @@ function PickerCard({
       type="button"
       onClick={onToggle}
       className={`inline-flex max-w-full flex-col rounded-xl border px-3 py-2.5 text-left transition ${
-        selected
-          ? "border-blue-500 bg-blue-600 text-white shadow-sm ring-2 ring-blue-300"
-          : "border-slate-200 bg-white text-slate-900 hover:border-blue-200 hover:bg-blue-50/50"
+        selected ? bm.tabBtnActive : bm.tabBtn
       }`}
     >
       <span className={`text-sm font-black ${selected ? "text-white" : "text-slate-900"}`}>{battery.code}</span>

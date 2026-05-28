@@ -20,7 +20,7 @@ export function ConversionActions({
 }) {
   return (
     <div className={`flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center ${className}`}>
-      <Link className={`${bm.btnPrimary} min-h-[44px] w-full justify-center sm:w-auto`} href={primary.href}>
+      <Link className={`${bm.btnNavy} min-h-[44px] w-full justify-center sm:w-auto`} href={primary.href}>
         {primary.label}
       </Link>
       {secondary ? (

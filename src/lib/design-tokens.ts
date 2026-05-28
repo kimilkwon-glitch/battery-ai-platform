@@ -3,31 +3,47 @@
  */
 
 export const bm = {
-  pageBg: "min-h-screen bg-[var(--bm-page-bg)] text-[var(--bm-text)]",
+  /** 은은한 그리드·글로우 배경 (globals .bm-page-mesh) */
+  pageBg: "bm-page-mesh min-h-screen text-[var(--bm-text)]",
+  pageBgPlain: "min-h-screen bg-[var(--bm-page-bg)] text-[var(--bm-text)]",
   pageContainer: "mx-auto max-w-[1280px] px-4 py-5 sm:px-5",
   pageContainerWide: "mx-auto max-w-[1440px] px-4 py-5 lg:px-6",
   sectionGap: "space-y-5",
   section: "space-y-4",
 
   card:
-    "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)]",
+    "bm-card-surface rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)]",
   cardPad: "p-4 sm:p-5",
+  cardPremium:
+    "bm-card-surface rounded-[22px] border border-[var(--bm-border)] bg-gradient-to-b from-white to-[var(--bm-surface-muted)] shadow-[var(--bm-shadow-md)] ring-1 ring-white/80",
   cardInteractive:
-    "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/25 motion-safe:hover:shadow-[var(--bm-shadow-md)]",
+    "bm-card-surface rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/25 motion-safe:hover:shadow-[var(--bm-shadow-md)]",
 
   /** 검색·fitment 판정 카드 */
   fitmentCard:
     "overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/20 motion-safe:hover:shadow-[var(--bm-shadow-md)]",
   fitmentCardPrimary:
-    "overflow-hidden rounded-[22px] border-2 border-[var(--bm-navy)]/12 bg-[var(--bm-card)] shadow-[var(--bm-shadow-md)] ring-1 ring-[var(--bm-primary)]/8 transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[var(--bm-shadow-lg)]",
+    "bm-card-surface overflow-hidden rounded-[22px] border-2 border-[var(--bm-navy)]/12 bg-gradient-to-br from-white via-white to-[var(--bm-hero-from)] shadow-[var(--bm-shadow-md)] ring-1 ring-[var(--bm-primary)]/10 transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[var(--bm-shadow-lg)]",
+  reportCard:
+    "bm-card-surface overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-md)]",
+  reportCardHeader:
+    "border-b border-[var(--bm-border)] bg-gradient-to-r from-[var(--bm-hero-from)] via-white to-[var(--bm-accent-soft)]/30 px-5 py-4",
+  compareSpecCol:
+    "bm-card-surface flex flex-1 flex-col overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-gradient-to-b from-white to-[var(--bm-surface-muted)] shadow-[var(--bm-shadow-sm)]",
 
   intentSummary:
     "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-surface-soft)] p-4 sm:p-5 shadow-[var(--bm-shadow-sm)] backdrop-blur-sm",
   intentBadge:
     "inline-flex items-center rounded-lg bg-[var(--bm-navy)]/[0.04] px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-[var(--bm-primary-dark)] ring-1 ring-[var(--bm-border)]",
 
+  heroDisplay:
+    "font-heading text-[1.65rem] font-black leading-[1.2] tracking-[-0.03em] text-[var(--bm-text)] sm:text-[2rem] lg:text-[2.15rem]",
+  heroLead:
+    "text-base font-bold leading-relaxed tracking-[-0.01em] text-[var(--bm-primary-dark)] sm:text-lg",
   titleLg:
     "font-heading text-xl font-black tracking-[-0.02em] text-[var(--bm-text)] sm:text-2xl",
+  specData:
+    "spec-code text-xs font-bold tabular-nums tracking-wide text-[var(--bm-muted)]",
   titleMd: "font-heading text-lg font-black tracking-[-0.02em] text-[var(--bm-text)]",
   cardTitle: "text-sm font-black leading-snug text-[var(--bm-text)]",
   specTitle: "spec-code text-xl font-black tracking-tight text-[var(--bm-text)] sm:text-2xl",
@@ -48,6 +64,20 @@ export const bm = {
     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[var(--bm-accent)]/35 bg-[var(--bm-accent-soft)] px-5 text-sm font-black text-cyan-900 transition motion-safe:hover:border-[var(--bm-accent)] motion-safe:hover:bg-cyan-50",
   btnGhost:
     "inline-flex min-h-[40px] items-center justify-center rounded-lg px-3 text-[11px] font-bold text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+  btnWarning:
+    "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-orange-200 bg-[var(--bm-warning-bg)] px-5 text-sm font-black text-orange-900 transition motion-safe:hover:border-orange-300 motion-safe:hover:bg-orange-50",
+  btnDanger:
+    "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-red-200 bg-[var(--bm-danger-bg)] px-5 text-sm font-black text-red-800 transition motion-safe:hover:border-red-300",
+  chipExample:
+    "rounded-full border border-[var(--bm-border)] bg-[var(--bm-card)] px-3 py-1.5 text-[11px] font-bold text-[var(--bm-text)] shadow-[var(--bm-shadow-sm)] transition motion-safe:hover:-translate-y-px motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:shadow-[var(--bm-shadow-sm)]",
+  tabBtn:
+    "shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-xs font-black text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] bg-[var(--bm-surface-muted)] transition duration-200 motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+  tabBtnActive:
+    "shrink-0 whitespace-nowrap rounded-xl bg-[var(--bm-navy)] px-4 py-2.5 text-xs font-black text-white shadow-[var(--bm-shadow-sm)] ring-1 ring-[var(--bm-navy)]",
+  nextStepCard:
+    "bm-card-surface group block rounded-[18px] border border-[var(--bm-border)] bg-gradient-to-br from-white to-[var(--bm-surface-muted)] p-3 shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/30 motion-safe:hover:shadow-[var(--bm-shadow-md)]",
+  searchInset:
+    "rounded-[20px] border border-[var(--bm-border)] bg-[var(--bm-card)] p-1 shadow-[var(--bm-shadow-md)] ring-1 ring-[var(--bm-primary)]/5",
 
   badge:
     "inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold ring-1",
@@ -79,7 +109,7 @@ export const bm = {
   warningPanel:
     "rounded-[22px] border border-orange-100/80 bg-[var(--bm-warning-bg)] p-4 sm:p-5 shadow-[var(--bm-shadow-sm)]",
   heroPanel:
-    "overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-md)]",
+    "bm-card-surface overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-lg)] ring-1 ring-white/60",
   heroPanelAccent:
     "border-b border-[var(--bm-border)] bg-gradient-to-r from-[var(--bm-hero-from)] to-[var(--bm-card)] px-5 py-3 lg:px-7",
   surfaceMuted:

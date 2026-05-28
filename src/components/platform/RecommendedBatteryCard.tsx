@@ -35,9 +35,9 @@ export function RecommendedBatteryCard({
       data-search-battery-card={primary ? "primary" : "secondary"}
     >
       {primary ? (
-        <div className="flex flex-wrap items-center gap-2 border-b border-[var(--bm-border)] bg-[var(--bm-hero-from)] px-4 py-2">
-          <span className={`${bm.badge} ${bm.statusRecommended}`}>추천 규격</span>
-          <span className="text-[11px] font-semibold text-[var(--bm-muted)]">DB·차량 매칭 기준 1순위</span>
+        <div className="flex flex-wrap items-center gap-2 border-b border-[var(--bm-border)] bg-gradient-to-r from-[var(--bm-hero-from)] to-[var(--bm-accent-soft)]/20 px-4 py-2.5">
+          <span className={`${bm.badge} ${bm.statusRecommended}`}>추천</span>
+          <span className="text-[11px] font-semibold text-[var(--bm-muted)]">fitment 판정 · DB 1순위</span>
         </div>
       ) : null}
       <div className="grid gap-0 sm:grid-cols-[minmax(148px,220px)_1fr]">
