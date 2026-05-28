@@ -22,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="battery-card-compact-fix1">
-      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="battery-card-compact-fix1">
+    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="battery-image-global-tune1">
+      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="battery-image-global-tune1">
         <CartProvider>
           {children}
           <BuildVersionStamp />

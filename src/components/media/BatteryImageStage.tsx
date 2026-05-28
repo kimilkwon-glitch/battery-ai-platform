@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
+import { BatteryStagePhoto } from "@/components/media/BatteryProductImage";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import {
   batteryImageCandidates,
@@ -9,10 +9,8 @@ import {
   type BatteryImageRole,
 } from "@/lib/battery-image";
 import {
-  batteryImageProductFit,
   batteryImageStageHeight,
   batteryImageStageInset,
-  batteryImageStageProductSize,
   type BatteryImageStageVariant,
 } from "@/lib/battery-image-stage";
 import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
@@ -25,44 +23,8 @@ type Props = {
   role?: BatteryImageRole;
   imageSet?: BatteryImageSet;
   className?: string;
-  /** rank 카드 상단 — 하단 radius 제거 */
   flushTop?: boolean;
 };
-
-function StagePhoto({
-  code,
-  src,
-  candidates,
-  index,
-  onFail,
-  variant,
-}: {
-  code: string;
-  src: string;
-  candidates: string[];
-  index: number;
-  onFail: () => void;
-  variant: BatteryImageStageVariant;
-}) {
-  return (
-    <div className={`flex h-full w-full items-center justify-center ${batteryImageStageInset}`}>
-      <div className={batteryImageStageProductSize[variant]}>
-        <Image
-          key={src}
-          src={src}
-          alt={`${code} 배터리`}
-          fill
-          className={batteryImageProductFit}
-          sizes="(max-width:768px) 45vw, 280px"
-          loading="lazy"
-          onError={() => {
-            if (index < candidates.length - 1) onFail();
-          }}
-        />
-      </div>
-    </div>
-  );
-}
 
 /** 카드·히어로·비교 공통 배터리 image stage */
 export function BatteryImageStage({
@@ -92,7 +54,7 @@ export function BatteryImageStage({
       data-image-slot-state={hasPhoto ? "ready" : "placeholder"}
     >
       {hasPhoto ? (
-        <StagePhoto
+        <BatteryStagePhoto
           code={code}
           src={src}
           candidates={candidates}
@@ -118,7 +80,6 @@ export function BatteryImageStage({
   );
 }
 
-/** @deprecated BatteryCardImage — variant 래퍼 */
 export function batteryStageForCard(compact = false): BatteryImageStageVariant {
   return compact ? "cardCompact" : "card";
 }

@@ -13,6 +13,7 @@ import {
   type BatteryImageRole,
   type BatteryImageSet,
 } from "@/lib/battery-image";
+import { BatteryProductImage } from "@/components/media/BatteryProductImage";
 import {
   batteryImageProductFit,
   batteryImageStageInset,
@@ -77,8 +78,7 @@ export function BatteryThumbnail({
   const showGraphic = failed || !src || candidates.length === 0;
 
   const areaClass = tall ? "h-[180px] w-full" : batteryRatioClass[ratio];
-  const imgClass =
-    fit === "contain" || tall ? batteryImageProductFit : "object-cover object-center";
+  const imgClass = batteryImageProductFit;
 
   const surfaceClass = surface === "transparent" ? "bg-transparent" : batteryThumbSurface;
 
@@ -88,7 +88,7 @@ export function BatteryThumbnail({
     >
       {showGraphic ? (
         <BatteryGraphic code={code} />
-      ) : tall || fit === "contain" ? (
+      ) : (
         <div className={`absolute inset-0 flex items-center justify-center ${batteryImageStageInset}`}>
           <div className={batteryImageStageProductSize.card}>
             <Image
@@ -112,28 +112,6 @@ export function BatteryThumbnail({
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent" />
           ) : null}
         </div>
-      ) : (
-        <>
-          <Image
-            key={src}
-            src={src}
-            alt={`${code} 배터리`}
-            fill
-            className={imgClass}
-            sizes="(max-width:768px) 50vw, 320px"
-            loading="lazy"
-            onError={() => {
-              if (index < candidates.length - 1) {
-                setIndex((i) => i + 1);
-              } else {
-                setFailed(true);
-              }
-            }}
-          />
-          {darkOverlay ? (
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
-          ) : null}
-        </>
       )}
       {overlayLabel !== false && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/75 to-transparent px-2 pb-1.5 pt-6">
@@ -239,17 +217,16 @@ export function hasSoliteProductAssets(code: string): boolean {
   return hasSoliteBatteryAssets(code);
 }
 
-export function batteryImageFit(code: string, brandKey: BatteryBrandKey = "rocket"): "cover" | "contain" {
-  return hasBatteryAssets(code, brandKey) ? "contain" : "cover";
+export function batteryImageFit(_code: string, _brandKey: BatteryBrandKey = "rocket"): "contain" {
+  return "contain";
 }
 
-/** 최신 콘텐츠·리스트용 고정 비율 썸네일 */
+/** 가이드·Q&A 리스트 커버 */
 export function BatteryContentThumb({
   code,
   imageSet,
   image,
   role = "main",
-  fit,
 }: {
   code: string;
   imageSet?: BatteryImageSet;
@@ -257,32 +234,19 @@ export function BatteryContentThumb({
   role?: BatteryImageRole;
   fit?: "cover" | "contain";
 }) {
+  const set = imageSet ?? batteryImageSetForCode(code);
+  const merged = image && !set.main ? { ...set, main: image } : set;
   return (
-    <div
-      className={`relative h-[160px] w-[120px] min-w-[120px] shrink-0 overflow-hidden rounded-xl ${batteryThumbSurface} ring-1 ring-slate-200/80`}
-    >
-      <BatteryThumbnail
-        code={code}
-        imageSet={imageSet}
-        image={image}
-        role={role}
-        fit={fit ?? batteryImageFit(code)}
-        ratio="16/9"
-        surface="muted"
-        overlayLabel={false}
-        darkOverlay={false}
-        className="!absolute !inset-0 !aspect-auto h-full w-full min-h-0 rounded-none rounded-t-xl"
-      />
-    </div>
+    <BatteryProductImage code={code} variant="content" imageSet={merged} role={role} />
   );
 }
 
-/** 리스트·검색·AI 추천 등 소형 보조 썸네일 */
+/** 리스트·검색·차량 패널 소형 썸네일 */
 export function BatteryMiniThumb({
   code,
   imageSet,
   role = "main",
-  className = "h-14 w-14",
+  className = "h-12 w-12",
 }: {
   code: string;
   imageSet?: BatteryImageSet;
@@ -290,17 +254,12 @@ export function BatteryMiniThumb({
   className?: string;
 }) {
   return (
-    <div className={`relative shrink-0 overflow-hidden rounded-lg ${batteryThumbSurface} ring-1 ring-slate-200 ${className}`}>
-      <BatteryThumbnail
-        code={code}
-        imageSet={imageSet}
-        role={role}
-        fit={batteryImageFit(code)}
-        ratio="1/1"
-        overlayLabel={false}
-        darkOverlay={false}
-        className="!aspect-square h-full min-h-0 w-full"
-      />
-    </div>
+    <BatteryProductImage
+      code={code}
+      imageSet={imageSet}
+      role={role}
+      variant="mini"
+      className={className}
+    />
   );
 }
