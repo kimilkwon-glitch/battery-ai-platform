@@ -1,0 +1,39 @@
+{
+  "task": "BATTERY-DETAIL-ALL",
+  "buildStamp": "BM-UX-REV-20260528-BATTERY-DETAIL-ALL",
+  "hubVersion": "20260528-all",
+  "localVerify": {
+    "baseUrl": "http://localhost:3020",
+    "script": "scripts/verify-battery-detail-hub.mjs",
+    "result": "ALL_PASS",
+    "verifiedAt": "2026-05-28T06:54:00Z"
+  },
+  "modifiedFiles": [
+    "build-stamp.json",
+    "src/app/batteries/[code]/page.tsx",
+    "src/components/battery/BatteryDetailHub.tsx",
+    "src/lib/battery-detail/battery-detail-hub-content.ts",
+    "src/lib/battery-detail/battery-detail-hub-fallback.ts",
+    "src/lib/battery-detail/core-battery-codes.ts",
+    "src/lib/battery-detail/deprioritized-specs.ts",
+    "src/lib/vehicleBattery.ts",
+    "src/lib/search-page-results.ts",
+    "scripts/verify-battery-detail-hub.mjs",
+    "scripts/verify-battery-detail-all-production.mjs"
+  ],
+  "coreEightPreserved": [
+    "AGM60L",
+    "AGM70L",
+    "AGM80L",
+    "DIN74L",
+    "100R",
+    "CMF80L",
+    "AGM95L",
+    "EV 12V"
+  ],
+  "fallbackSamples": ["90R", "CMF100R", "DIN62L", "DIN50L", "80L", "57412", "57820", "115D31L"],
+  "legacyUiRemoved": true,
+  "production": {
+    "pending": true
+  }
+}

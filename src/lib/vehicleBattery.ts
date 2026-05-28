@@ -2,6 +2,7 @@
  * 차량-배터리 DB — vehicle-battery-db.json 단일 소스
  */
 import dbJson from "@/data/vehicle-battery-db.json";
+import { isDeprioritizedBatterySpec } from "@/lib/battery-detail/deprioritized-specs";
 import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
@@ -807,7 +808,10 @@ export function getRelatedBatteryCodes(code: string, limit = 4): string[] {
     const candidate = `${family}${size}${terminal}`;
     if (candidate !== canonical && getCanonicalBatteryCode(candidate)) related.push(normalizeBatteryCode(candidate));
   }
-  return related.filter((c, i, arr) => arr.indexOf(c) === i).slice(0, limit);
+  return related
+    .filter((c, i, arr) => arr.indexOf(c) === i)
+    .filter((c) => !isDeprioritizedBatterySpec(c))
+    .slice(0, limit);
 }
 
 function scoreBatteryFitRecord(r: VehicleBatteryRecord, canonical: string): number {

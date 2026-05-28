@@ -14,6 +14,7 @@ import {
 } from "@/lib/search/kg-mobility-brand";
 import { vehicleAssetsToSearchRows } from "@/lib/vehicle-search";
 import { batteryDetailHref, canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { isDeprioritizedBatterySpec } from "@/lib/battery-detail/deprioritized-specs";
 import { isBatteryMatched, normalizeBatteryCode } from "@/lib/batteryNormalize";
 import { resolveSearchVehicleAlias, type SearchVehicleAliasMatch } from "@/lib/search/search-vehicle-aliases";
 import { HUB_PHOTO, HUB_SHOP, HUB_SHOP_ANCHORS, HUB_STORE } from "@/lib/customer-hub-routes";
@@ -716,7 +717,15 @@ function filterBatteries(
     };
   }
 
-  const relevant = hits.filter((h) => h.score >= MIN_BATTERY_SCORE && isKnownBatterySpec(normalizeBatteryCode(h.title)));
+  const relevant = hits
+    .filter((h) => h.score >= MIN_BATTERY_SCORE && isKnownBatterySpec(normalizeBatteryCode(h.title)))
+    .sort((a, b) => {
+      const codeA = normalizeBatteryCode(a.title);
+      const codeB = normalizeBatteryCode(b.title);
+      const scoreA = isDeprioritizedBatterySpec(codeA) ? a.score - 45 : a.score;
+      const scoreB = isDeprioritizedBatterySpec(codeB) ? b.score - 45 : b.score;
+      return scoreB - scoreA;
+    });
   return {
     exact: relevant.slice(0, DEFAULT_VISIBLE).map((h) => mapHitToBatteryItem(h, undefined, false)),
     popular: relevant.slice(DEFAULT_VISIBLE, DEFAULT_VISIBLE + 3).map((h) => mapHitToBatteryItem(h, undefined, false)),

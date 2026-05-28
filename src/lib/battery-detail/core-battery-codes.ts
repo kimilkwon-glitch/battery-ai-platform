@@ -1,7 +1,7 @@
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 
-/** 상품형 상세·규격 허브 — 9개 핵심 규격 */
+/** 상품형 상세·규격 허브 — 8개 핵심 규격 (115D31L 제외) */
 export const CORE_BATTERY_DETAIL_CODES = [
   "AGM60L",
   "AGM70L",
@@ -9,7 +9,6 @@ export const CORE_BATTERY_DETAIL_CODES = [
   "DIN74L",
   "100R",
   "CMF80L",
-  "115D31L",
   "AGM95L",
   "EV 12V",
 ] as const;
@@ -17,7 +16,7 @@ export const CORE_BATTERY_DETAIL_CODES = [
 export type CoreBatteryDetailCode = (typeof CORE_BATTERY_DETAIL_CODES)[number];
 
 /** 배포·검수용 — 허브 HTML 버전 */
-export const BATTERY_DETAIL_HUB_VERSION = "20260528-v2";
+export const BATTERY_DETAIL_HUB_VERSION = "20260528-all";
 
 /** family/별칭 → 허브 canonical (CMF80L·AGM60·100R 등) */
 const FAMILY_TO_HUB_CODE: Record<string, CoreBatteryDetailCode> = {
@@ -33,8 +32,6 @@ const FAMILY_TO_HUB_CODE: Record<string, CoreBatteryDetailCode> = {
   GB100R: "100R",
   CMF100R: "100R",
   CMF80L: "CMF80L",
-  "80L": "CMF80L",
-  "115D31L": "115D31L",
   AGM95L: "AGM95L",
   AGM95: "AGM95L",
   EV12V: "EV 12V",
@@ -52,7 +49,7 @@ export function isCoreBatteryDetailCode(code: string): boolean {
   return resolveCoreBatteryHubCode(code) != null;
 }
 
-/** URL·canonical·family 기준 허브 규격 코드 (9개 중 하나) */
+/** URL·canonical·family 기준 허브 규격 코드 (8개 중 하나) */
 export function resolveCoreBatteryHubCode(code: string): CoreBatteryDetailCode | null {
   const trimmed = code.trim();
   if (!trimmed) return null;

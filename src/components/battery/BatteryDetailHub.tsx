@@ -13,11 +13,9 @@ import {
   HUB_SHOP_ANCHORS,
   HUB_STORE,
 } from "@/lib/customer-hub-routes";
-import {
-  BATTERY_DETAIL_HUB_VERSION,
-  normalizeCoreBatteryCode,
-} from "@/lib/battery-detail/core-battery-codes";
-import { getBatteryDetailHubContent, type HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
+import { BATTERY_DETAIL_HUB_VERSION } from "@/lib/battery-detail/core-battery-codes";
+import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
+import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
 import { BATTERY_DETAIL_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import type { HubBadge } from "@/lib/battery-detail/battery-detail-hub-content";
@@ -27,7 +25,14 @@ type VehicleRow = { slug: string; title: string; brand: string; fuel: string };
 type Props = {
   code: string;
   vehicles: VehicleRow[];
+  relatedCodes?: string[];
 };
+
+function specField(value: string | null | undefined, missing = "확인 필요"): string {
+  const v = value?.trim();
+  if (!v || v === "—") return missing;
+  return v;
+}
 
 function badgeClass(tone: HubBadge["tone"]): string {
   if (tone === "amber") return `${bm.badge} ${bm.badgeAmber}`;
@@ -98,32 +103,33 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
   );
 }
 
-export function BatteryDetailHub({ code, vehicles }: Props) {
-  const hubCode = normalizeCoreBatteryCode(code);
-  const hub = getBatteryDetailHubContent(hubCode);
-  if (!hub) return null;
-
-  const spec = parseBatterySpecDisplay(hubCode);
+export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
+  const hub = resolveBatteryDetailHubContent(code, relatedCodes);
+  const displayCode = hub.code;
+  const spec = parseBatterySpecDisplay(displayCode);
   const vehicleCards = mergeFeaturedVehicles(hub.featuredVehicles, vehicles);
-  const searchHref = `/search?q=${encodeURIComponent(hubCode)}`;
+  const searchHref = `/search?q=${encodeURIComponent(displayCode)}`;
+  const capacityLabel = specField(spec.capacity);
+  const ccaLabel = specField(spec.cca, "차량/브랜드별 확인 필요");
+  const terminalLabel = specField(spec.terminalLabel);
 
   return (
     <div
       className="space-y-4 pb-20 md:pb-4"
-      data-battery-detail-hub={hubCode}
+      data-battery-detail-hub={displayCode}
       data-battery-detail-hub-version={BATTERY_DETAIL_HUB_VERSION}
     >
       {/* A. Hero */}
       <section className={bm.heroPanel}>
         <div className="border-b border-slate-100 p-4 sm:p-5">
           <p className={bm.label}>배터리 규격 허브</p>
-          <h1 className={`${bm.titleLg} mt-1`}>{hubCode}</h1>
+          <h1 className={`${bm.titleLg} mt-1`}>{displayCode}</h1>
           <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">{hub.positioning}</p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             <BatterySpecBadge tone="blue">{hub.typeLabel}</BatterySpecBadge>
-            {spec.capacity ? <BatterySpecBadge tone="green">{spec.capacity}</BatterySpecBadge> : null}
-            {spec.cca ? <BatterySpecBadge tone="green">CCA {spec.cca}</BatterySpecBadge> : null}
-            {spec.terminalLabel ? <BatterySpecBadge tone="gray">{spec.terminalLabel}</BatterySpecBadge> : null}
+            <BatterySpecBadge tone="green">{capacityLabel}</BatterySpecBadge>
+            <BatterySpecBadge tone="green">CCA {ccaLabel}</BatterySpecBadge>
+            <BatterySpecBadge tone="gray">{terminalLabel}</BatterySpecBadge>
             {hub.badges.map((b) => (
               <span className={badgeClass(b.tone)} key={b.text}>
                 {b.text}
@@ -140,7 +146,7 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
 
         <div className="grid gap-0 sm:grid-cols-[minmax(200px,280px)_1fr]">
           <div className="border-b border-slate-100 p-4 sm:border-b-0 sm:border-r">
-            <BatteryImageOrSlot code={hubCode} ratio="4/3" tall className="rounded-xl" />
+            <BatteryImageOrSlot code={displayCode} ratio="4/3" tall className="rounded-xl" />
           </div>
           <div className="p-4 sm:p-5">
             <CtaHierarchy
@@ -164,15 +170,15 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           <div>
             <p className="mb-1.5 text-[10px] font-black text-slate-500">제품 대표</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.product(hubCode)} />
+            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.product(displayCode)} />
           </div>
           <div>
             <p className="mb-1.5 text-[10px] font-black text-slate-500">장착 예시</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.install(hubCode)} />
+            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.install(displayCode)} />
           </div>
           <div>
             <p className="mb-1.5 text-[10px] font-black text-slate-500">라벨·단자</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.labelTerminal(hubCode)} />
+            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.labelTerminal(displayCode)} />
           </div>
         </div>
       </section>
@@ -183,11 +189,16 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
         <dl className="mt-3 grid gap-2 sm:grid-cols-2">
           {[
             ["타입", hub.typeLabel],
-            ["용량", spec.capacity ?? "—"],
-            ["CCA", spec.cca ?? "—"],
-            ["단자", spec.terminalLabel ?? "—"],
+            ["용량", capacityLabel],
+            ["CCA", ccaLabel],
+            ["단자", terminalLabel],
             ["용도", hub.useCase],
-            ["적용 차량군", vehicleCards.length ? vehicleCards.map((v) => v.title).slice(0, 4).join(", ") : "차량 DB 확인"],
+            [
+              "적용 차량군",
+              vehicleCards.length
+                ? vehicleCards.map((v) => v.title).slice(0, 4).join(", ")
+                : "대표 적용 차량 데이터 준비중",
+            ],
             ["혼동 주의", hub.confusionSpecs.join(", ")],
           ].map(([k, v]) => (
             <div className={bm.surfaceMuted + " px-3 py-2.5"} key={k}>
@@ -199,9 +210,9 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
       </section>
 
       {/* D. Vehicles */}
-      {vehicleCards.length > 0 ? (
-        <section className={`${bm.card} ${bm.cardPad}`}>
-          <SectionHeader title="대표 적용 차량" description="연료·연식은 차량 상세에서 확인" />
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <SectionHeader title="대표 적용 차량" description="연료·연식은 차량 상세에서 확인" />
+        {vehicleCards.length > 0 ? (
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {vehicleCards.map((v) => (
               <article
@@ -228,28 +239,49 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
               </article>
             ))}
           </div>
-        </section>
-      ) : null}
+        ) : (
+          <div className={`${bm.surfaceMuted} mt-3 p-4`}>
+            <p className="text-sm font-bold text-slate-800">대표 적용 차량 데이터 준비중</p>
+            <p className="mt-1 text-xs font-medium text-slate-600">
+              현재 장착 배터리 사진으로 최종 확인하세요.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link className={`${bm.btnPrimary} text-xs`} href={HUB_PHOTO}>
+                사진으로 최종 확인
+              </Link>
+              <Link className={`${bm.btnSecondary} text-xs`} href={searchHref}>
+                차량 검색
+              </Link>
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* E. Compare */}
       <section className={`${bm.card} ${bm.cardPad}`}>
         <SectionHeader title="비슷한 규격 비교" description="헷갈리기 쉬운 규격 — 비교 후 주문" />
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {hub.compareCards.map((c) => (
-            <article className={`${bm.surfaceMuted} p-3`} key={c.target}>
-              <p className="text-sm font-black text-slate-900">{c.target}</p>
-              <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">{c.diff}</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Link className={`${bm.btnSecondary} text-[10px]`} href={c.href}>
-                  비교 보기
-                </Link>
-                <Link className={`${bm.btnTertiary} text-[10px]`} href={c.detailHref}>
-                  {c.target} 상세
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
+        {hub.compareCards.length > 0 ? (
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {hub.compareCards.map((c) => (
+              <article className={`${bm.surfaceMuted} p-3`} key={c.target}>
+                <p className="text-sm font-black text-slate-900">{c.target}</p>
+                <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">{c.diff}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Link className={`${bm.btnSecondary} text-[10px]`} href={c.href}>
+                    비교 보기
+                  </Link>
+                  <Link className={`${bm.btnTertiary} text-[10px]`} href={c.detailHref}>
+                    {c.target} 상세
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className={`${bm.surfaceMuted} mt-3 px-3 py-4 text-sm font-medium text-slate-600`}>
+            비슷한 규격은 사진 확인 후 안내합니다. 무리한 대체 주문을 피하세요.
+          </p>
+        )}
       </section>
 
       {/* F. Misorder prevention */}
@@ -290,7 +322,7 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
         />
       </section>
 
-      <BatteryDetailMobileSticky code={hubCode} />
+      <BatteryDetailMobileSticky code={displayCode} />
     </div>
   );
 }

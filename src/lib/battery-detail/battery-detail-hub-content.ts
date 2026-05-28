@@ -20,7 +20,7 @@ export type HubCompareCard = {
 };
 
 export type BatteryDetailHubContent = {
-  code: CoreBatteryDetailCode;
+  code: string;
   positioning: string;
   typeLabel: string;
   useCase: string;
@@ -204,29 +204,6 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
     ],
     cautionNotes: ["검색·상세 URL에서 CMF80L이 잘리지 않도록 확인하세요."],
   },
-  "115D31L": {
-    code: "115D31L",
-    positioning: "대형 국산·상용 JIS 대용량 L타입 규격",
-    typeLabel: "JIS/CMF",
-    useCase: "대형 국산·상용, 고용량 L타입 트레이",
-    badges: [
-      { text: "L타입 단자", tone: "blue" },
-      { text: "100R 단순 대체 금지", tone: "amber" },
-    ],
-    confusionSpecs: ["115D31R", "100R", "AGM95L"],
-    featuredVehicles: [],
-    compareCards: [
-      cmp("100R", "R타입 상용과 L타입 대용량 — 단자·트레이가 다름", ["115D31L", "100R"]),
-      cmp("115D31R", "L/R 단자 방향이 다름 — 라벨·트레이 확인", ["115D31L", "115D31R"]),
-      cmp("AGM95L", "대형 AGM 승용과 JIS CMF 계열 혼동 주의", ["115D31L", "AGM95L"]),
-    ],
-    misorderTips: [
-      "L/R 단자 방향을 트레이 기준으로 확인하세요.",
-      "장착 공간·홀 위치를 사진으로 확인하세요.",
-      "100R과 단순 대체하지 마세요.",
-    ],
-    cautionNotes: ["차량 DB에 확인된 모델만 대표 차량으로 연결합니다."],
-  },
   AGM95L: {
     code: "AGM95L",
     positioning: "대형 AGM — 수입차·대형차 고용량 ISG 계열",
@@ -236,12 +213,12 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
       { text: "100R 단순 대체 금지", tone: "amber" },
       { text: "코딩 차종 안내만", tone: "gray" },
     ],
-    confusionSpecs: ["AGM80L", "100R", "115D31L"],
+    confusionSpecs: ["AGM80L", "100R", "AGM105L"],
     featuredVehicles: [],
     compareCards: [
       cmp("AGM80L", "국산 대형 SUV·디젤 ISG는 AGM80L 후보가 많음", ["AGM95L", "AGM80L"]),
       cmp("100R", "상용 R타입과 승용 대형 AGM — 용도·타입이 다름", ["AGM95L", "100R"]),
-      cmp("115D31L", "JIS CMF 대용량과 AGM 타입 혼동 주의", ["AGM95L", "115D31L"]),
+      cmp("AGM105L", "대형 AGM 상위 용량 — 단순 대체·비교 주문 금지", ["AGM95L", "AGM105L"]),
     ],
     misorderTips: [
       "BMS·코딩이 필요한 차종은 확정 표현 대신 안내만 제공합니다.",
