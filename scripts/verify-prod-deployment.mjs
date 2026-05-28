@@ -4,7 +4,7 @@
  * Usage: node scripts/verify-prod-deployment.mjs
  */
 const BASE = "https://battery-ai-platform.vercel.app";
-const EXPECTED_STAMP = "BM-UX-REV-20260528-SEARCH-UX-UPGRADE";
+const EXPECTED_STAMP = "BM-UX-REV-20260528-SEARCH-UX-UPGRADE-FIX1";
 
 const CHECKS = [
   { path: "/search?q=" + encodeURIComponent("포터2 배터리"), name: "porter2" },

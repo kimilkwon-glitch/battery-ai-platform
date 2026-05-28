@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { RecommendedBatteryCard } from "@/components/platform/RecommendedBatteryCard";
 import {
   SearchResultCoreSummary,
@@ -11,9 +12,12 @@ import { SearchUxHeroCtas } from "@/components/platform/search-ux/SearchUxHeroCt
 import { SearchUxIntentBadge } from "@/components/platform/search-ux/SearchUxIntentBadge";
 import { bm } from "@/lib/design-tokens";
 import { compareHref } from "@/lib/platform-data";
+import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
 import { NO_REGISTERED_SPEC_MESSAGE } from "@/lib/search/battery-recommendation-copy";
+import { isPorter2VehicleContext } from "@/lib/search/fitment-overrides";
 import type { SearchUxPresentation } from "@/lib/search/search-ux-presentation";
 import type { RecognizedSpecResult } from "@/lib/search/search-summary";
+import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import type { RecognizedVehicleResult } from "@/lib/search-page-results";
 
 type Props = {
@@ -80,6 +84,16 @@ export function SearchBatteryFocusBlock({
       value: multiCodes.join(" · "),
       highlight: true,
     });
+    for (const specCode of multiCodes) {
+      const terminal = resolveBatteryTerminalLabel(specCode);
+      if (terminal) {
+        summaryRows.push({
+          key: `terminal-${specCode}`,
+          label: `${specCode} 단자`,
+          value: terminal,
+        });
+      }
+    }
   }
 
   const header = (
@@ -135,9 +149,14 @@ export function SearchBatteryFocusBlock({
   const secondaryLinks = vehicle?.secondaryLinks ?? specOnly?.secondaryLinks ?? [];
   const compareLink =
     multiCodes && multiCodes.length >= 2 ? compareHref(multiCodes[0]!, multiCodes[1]!) : null;
+  const isPorter2 = isPorter2VehicleContext({
+    query: displayQuery,
+    vehicleLabel: vehicle?.vehicleLabel,
+    href: vehicle?.href,
+  });
   const reasonForCard =
     ux.recommendationReasons[0] ??
-    (vehicle?.candidateBatteryCodes?.length
+    (isPorter2 && vehicle?.candidateBatteryCodes?.length
       ? "연식 분기 후보를 같은 우선순위로 표시합니다."
       : null);
 
@@ -149,6 +168,9 @@ export function SearchBatteryFocusBlock({
         <p className="text-xs font-semibold text-amber-900">{ux.yearBranchHint}</p>
       ) : null}
       <SearchConditionChips chips={ux.conditionChips} />
+      {vehicle?.vehicleLabel ? (
+        <MediaImageSlot slot={SEARCH_IMAGE_SLOTS.vehicleCard(vehicle.vehicleLabel)} />
+      ) : null}
       {summaryRows.length > 0 ? <SearchResultCoreSummary rows={summaryRows} /> : null}
 
       {ux.mode === "spec" && ux.specMeta ? (
@@ -251,6 +273,12 @@ export function SearchBatteryFocusBlock({
 
       {ux.heroCtas.length > 0 && ux.mode !== "spec" ? (
         <SearchUxHeroCtas ctas={ux.heroCtas.filter((c) => c.tier !== "ghost")} />
+      ) : null}
+
+      {(code ?? multiCodes?.[0]) ? (
+        <MediaImageSlot
+          slot={SEARCH_IMAGE_SLOTS.batteryInstallExample(code ?? multiCodes![0]!)}
+        />
       ) : null}
 
       <SearchPhotoVerifyBar cta={ux.photoCta} />

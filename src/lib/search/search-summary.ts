@@ -39,6 +39,7 @@ import {
 } from "@/lib/search/battery-recommendation-copy";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
 import { resolveFitmentOverride } from "@/lib/search/fitment-overrides";
+import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
 import { detectQueryIntentFlags, isSymptomDiagnosisPrimaryQuery } from "@/lib/search/search-intent";
 
 export type RecognizedSpecResult = {
@@ -191,20 +192,29 @@ export function buildSearchSummary(
       candidateBatteryCodes,
       yearBranchLinks,
       secondaryNote: isMultiCandidate
-        ? (batterySpec.caution ?? "2020년 이전: 90R · 2020년 이후: 100R — 연식 기준 확인이 필요합니다.")
+        ? porterDual
+          ? (batterySpec.caution ?? "2020년 이전: 90R · 2020년 이후: 100R — 연식 기준 확인이 필요합니다.")
+          : (batterySpec.caution ?? "여러 후보 규격이 있습니다. 연식·연료를 확인하세요.")
         : secondaryNote,
       basisLabel,
       fallbackMessage: hasSpecLine ? null : NO_REGISTERED_SPEC_MESSAGE,
       guidance: isMultiCandidate
-        ? (batterySpec.caution ?? "연식 기준 확인 필요")
+        ? porterDual
+          ? (batterySpec.caution ?? "연식 기준 확인 필요")
+          : (batterySpec.caution ?? "후보 규격 중 차량 조건에 맞는지 확인하세요.")
         : (secondaryNote ?? NO_REGISTERED_SPEC_MESSAGE),
       href,
       ctas: isMultiCandidate
-        ? [
-            { label: "90R 규격 보기", href: "/batteries/90R" },
-            { label: "100R 규격 보기", href: "/batteries/100R" },
-            { label: "사진으로 확인", href: "/analysis/photo" },
-          ]
+        ? porterDual
+          ? [
+              { label: "90R 규격 보기", href: "/batteries/90R" },
+              { label: "100R 규격 보기", href: "/batteries/100R" },
+              { label: "사진으로 확인", href: "/analysis/photo" },
+            ]
+          : multiCodes.map((specCode) => ({
+              label: `${specCode} 상세`,
+              href: `/batteries/${encodeURIComponent(specCode)}`,
+            }))
         : primaryBatteryCode
           ? PRIMARY_BATTERY_CTAS(primaryBatteryCode)
           : buildNoSpecPrimaryCtas(vehicleLabel, pipeline.normalizedQuery),
@@ -235,7 +245,8 @@ export function buildSearchSummary(
 
   if (pipeline.batterySpec.hasSpec && exactSpec && !v.hasVehicle) {
     const code = codeFromExactSpec(exactSpec);
-    const terminal = pipeline.batterySpec.terminalDirection;
+    const terminal =
+      resolveBatteryTerminalLabel(code) ?? pipeline.batterySpec.terminalDirection;
     recognizedSpec = {
       spec: code,
       primaryBatteryCode: code,

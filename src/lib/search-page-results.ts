@@ -39,6 +39,7 @@ import {
 } from "@/lib/search/search-spec-fit";
 import { normalizeQuery } from "@/lib/search/normalize-query";
 import { buildSearchIntent } from "@/lib/search/search-intent-parser";
+import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
 import { buildSearchSummary, type RecognizedSpecResult } from "@/lib/search/search-summary";
 import { shouldSuppressPopularBatteries } from "@/lib/search/search-ranking";
 import {
@@ -482,10 +483,51 @@ function extractGenerationChip(query: string): string | null {
 function primarySpecTerminalLabel(spec: string): string | null {
   const code = normalizeBatteryCode(resolveSpec(spec) || spec);
   if (!isKnownBatterySpec(code)) return null;
-  const bat = getBattery(code);
-  const terminal = bat.terminal?.trim();
-  if (!terminal) return null;
-  return `${terminal}타입`;
+  return resolveBatteryTerminalLabel(code);
+}
+
+function resolveSummaryBatterySpecCodes(
+  recognizedVehicle: RecognizedVehicleResult | null,
+  recognizedSpec: RecognizedSpecResult | null,
+  queryHasBatterySpec: boolean,
+  parsedSpecs: string[],
+): string[] {
+  if (queryHasBatterySpec && parsedSpecs.length > 0) {
+    return parsedSpecs.filter((s) => isKnownBatterySpec(normalizeBatteryCode(resolveSpec(s) || s)));
+  }
+  if (recognizedVehicle?.candidateBatteryCodes?.length) {
+    return recognizedVehicle.candidateBatteryCodes;
+  }
+  if (recognizedVehicle?.primaryBatteryCode) {
+    return [recognizedVehicle.primaryBatteryCode];
+  }
+  if (recognizedSpec?.primaryBatteryCode) {
+    return [recognizedSpec.primaryBatteryCode];
+  }
+  return [];
+}
+
+function shouldShowMissingSpecMessage(input: {
+  symptomDiagnosisFirst: boolean;
+  hasBatteryFocus: boolean;
+  compareIntent: boolean;
+  compareBatteryCodes: string[] | null;
+  recognizedVehicle: RecognizedVehicleResult | null;
+  recognizedSpec: RecognizedSpecResult | null;
+  summaryBatterySpecs: string[];
+}): boolean {
+  if (input.symptomDiagnosisFirst) return false;
+  if (input.hasBatteryFocus) return false;
+  if (input.compareIntent && (input.compareBatteryCodes?.length ?? 0) >= 2) return false;
+  if (input.recognizedVehicle?.primaryBatteryCode || input.recognizedVehicle?.candidateBatteryCodes?.length) {
+    return false;
+  }
+  if (input.recognizedSpec?.primaryBatteryCode) return false;
+  if (input.summaryBatterySpecs.length === 0) return false;
+  const unknown = input.summaryBatterySpecs.filter(
+    (s) => !isKnownBatterySpec(normalizeBatteryCode(resolveSpec(s) || s)),
+  );
+  return unknown.length > 0;
 }
 
 function parseChips(query: string, intent: SearchIntent, specs: string[]): string[] {
@@ -991,8 +1033,15 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
     let recognizedVehicle = summaryCards.recognizedVehicle;
     const recognizedSpec = summaryCards.recognizedSpec;
 
-    if (recognizedVehicle?.specDisplay && !queryHasBatterySpec) {
-      summary.batterySpecs = [recognizedVehicle.specDisplay];
+    if (symptomDiagnosisFirst) {
+      summary.batterySpecs = [];
+    } else {
+      summary.batterySpecs = resolveSummaryBatterySpecCodes(
+        recognizedVehicle,
+        recognizedSpec,
+        queryHasBatterySpec,
+        summary.batterySpecs,
+      );
     }
 
     if (recognizedVehicle) {
@@ -1135,11 +1184,20 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
         ? "일치하는 차량 정보를 찾지 못했습니다. 차량명, 연식, 연료를 다시 입력하거나 사진으로 확인해 주세요."
         : null;
 
-    const unknownSpecs = summary.batterySpecs.filter((s) => !isKnownBatterySpec(normalizeBatteryCode(resolveSpec(s) || s)));
-    const missingSpecMessage =
-      summary.batterySpecs.length > 0 && unknownSpecs.length > 0
-        ? `${unknownSpecs.join(", ")}은(는) 검색한 규격입니다. ${MISSING_SPEC_MESSAGE}`
-        : null;
+    const unknownSpecs = summary.batterySpecs.filter(
+      (s) => !isKnownBatterySpec(normalizeBatteryCode(resolveSpec(s) || s)),
+    );
+    const missingSpecMessage = shouldShowMissingSpecMessage({
+      symptomDiagnosisFirst,
+      hasBatteryFocus,
+      compareIntent: intentFlags.compare,
+      compareBatteryCodes,
+      recognizedVehicle,
+      recognizedSpec,
+      summaryBatterySpecs: summary.batterySpecs,
+    })
+      ? `${unknownSpecs.join(", ")}은(는) 검색한 규격입니다. ${MISSING_SPEC_MESSAGE}`
+      : null;
 
     const totalRelevant =
       finalVehicles.length + batteries.length + questions.length + guides.length + (hero ? 1 : 0);

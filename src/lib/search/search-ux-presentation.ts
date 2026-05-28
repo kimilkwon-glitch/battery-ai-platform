@@ -1,4 +1,4 @@
-import { batteryDetailHref } from "@/lib/canonical-battery-code";
+import { batteryDetailHref, canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
 import { getSearchHref } from "@/lib/battery-search";
 import { HUB_PHOTO, HUB_SHOP, HUB_SHOP_ANCHORS, HUB_STORE, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
@@ -7,7 +7,21 @@ import type { SearchPageResults, RecognizedVehicleResult } from "@/lib/search-pa
 import { detectCustomerHubFromQuery, hubCtaForQuery } from "@/lib/search/search-hub-cta";
 import type { QueryIntentFlags } from "@/lib/search/search-intent";
 import { resolveSearchIntentLabel } from "@/lib/search/search-intent";
+import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
+import { isPorter2VehicleContext } from "@/lib/search/fitment-overrides";
 import type { RecognizedSpecResult } from "@/lib/search/search-summary";
+
+function porter2ContextFromVehicle(
+  query: string,
+  vehicle: RecognizedVehicleResult | null,
+): boolean {
+  if (!vehicle) return false;
+  return isPorter2VehicleContext({
+    query,
+    vehicleLabel: vehicle.vehicleLabel,
+    href: vehicle.href,
+  });
+}
 
 export type SearchUxMode = "vehicle" | "spec" | "compare" | "symptom" | "purpose" | "generic";
 
@@ -119,7 +133,7 @@ function buildYearChips(
   query: string,
   vehicle: RecognizedVehicleResult | null,
 ): SearchUxChip[] {
-  if (!vehicle?.yearBranchLinks?.length) return [];
+  if (!vehicle?.yearBranchLinks?.length || !porter2ContextFromVehicle(query, vehicle)) return [];
   const chips: SearchUxChip[] = vehicle.yearBranchLinks.map((link) => ({
     label: link.label,
     href: link.href,
@@ -161,7 +175,11 @@ function buildRecommendationReasons(input: {
     reasons.push("타입·용량·CCA·적용 차량을 함께 확인하세요.");
   }
   if (mode === "vehicle" && vehicle) {
-    if (vehicle.candidateBatteryCodes && vehicle.candidateBatteryCodes.length >= 2) {
+    if (
+      porter2ContextFromVehicle(query, vehicle) &&
+      vehicle.candidateBatteryCodes &&
+      vehicle.candidateBatteryCodes.length >= 2
+    ) {
       reasons.push("포터2는 연식에 따라 90R/100R이 갈리므로 두 후보를 함께 표시합니다.");
     }
     if (vehicle.fuelLabel === "하이브리드" || /하이브|hev/i.test(query)) {
@@ -185,17 +203,18 @@ function buildRecommendationReasons(input: {
 
 function buildHeroLines(input: {
   mode: SearchUxMode;
+  query: string;
   vehicle: RecognizedVehicleResult | null;
   spec: RecognizedSpecResult | null;
   compareCodes: string[] | null;
   purposeBlurb: string | null;
 }): string[] {
   const lines: string[] = [];
-  const { mode, vehicle, spec, compareCodes, purposeBlurb } = input;
+  const { mode, query, vehicle, spec, compareCodes, purposeBlurb } = input;
 
   if (purposeBlurb) lines.push(purposeBlurb);
   if (mode === "vehicle" && vehicle) {
-    if (vehicle.candidateBatteryCodes?.length) {
+    if (porter2ContextFromVehicle(query, vehicle) && vehicle.candidateBatteryCodes?.length) {
       lines.push("연식에 따라 규격이 달라질 수 있습니다.");
       lines.push("2020년 이전 90R · 2020년 이후 100R — 연식 칩으로 확인하세요.");
     } else if (vehicle.specDisplay) {
@@ -339,13 +358,15 @@ function buildMobileSticky(input: {
 
 function buildSpecMeta(code: string | null | undefined) {
   if (!code) return null;
-  const b = getBattery(code);
+  const displayCode = canonicalBatteryCode(code) || code;
+  const b = getBattery(displayCode);
+  const terminal = resolveBatteryTerminalLabel(displayCode)?.replace(/타입$/, "") ?? "—";
   return {
-    code: b.code,
+    code: displayCode,
     type: b.type ?? "—",
     capacity: b.capacity ? `${b.capacity}` : "—",
     cca: b.cca ? `${b.cca} CCA` : "—",
-    terminal: b.terminal ?? "—",
+    terminal,
   };
 }
 
@@ -434,7 +455,7 @@ export function buildSearchUxPresentation(
   return {
     mode,
     intentBadge,
-    heroLines: buildHeroLines({ mode, vehicle, spec, compareCodes, purposeBlurb }),
+    heroLines: buildHeroLines({ mode, query, vehicle, spec, compareCodes, purposeBlurb }),
     recommendationReasons: buildRecommendationReasons({ mode, query, vehicle, compareCodes }),
     conditionChips,
     photoCta: PHOTO_CTA,
@@ -446,7 +467,7 @@ export function buildSearchUxPresentation(
         ? "타입·용량·CCA·적용 차량이 다를 수 있어 단순 대체로 보지 마세요."
         : null,
     yearBranchHint:
-      vehicle?.yearBranchLinks?.length
+      porter2ContextFromVehicle(query, vehicle) && vehicle?.yearBranchLinks?.length
         ? "연식에 따라 규격이 달라질 수 있습니다"
         : null,
     specMeta: mode === "spec" || (mode === "vehicle" && specCode) ? buildSpecMeta(specCode) : null,

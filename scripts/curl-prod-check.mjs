@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 const BASE = "https://battery-ai-platform.vercel.app";
-const STAMP = "BM-UX-REV-20260528-SEARCH-UX-UPGRADE";
+const STAMP = "BM-UX-REV-20260528-SEARCH-UX-UPGRADE-FIX1";
 
 const paths = [
   "/search?q=" + encodeURIComponent("포터2 배터리"),
   "/search?q=" + encodeURIComponent("레이 블랙박스 방전"),
+  "/search?q=" + encodeURIComponent("레이 TAM 배터리"),
   "/search?q=" + encodeURIComponent("봉고3 DIN74L"),
   "/search?q=" + encodeURIComponent("100R vs AGM95L"),
   "/search?q=" + encodeURIComponent("스포티지 NQ5 하이브리드"),

@@ -3,7 +3,7 @@ import type { BatteryImageSet } from "@/lib/battery-alias-map";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getBattery } from "@/lib/platform-data";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
-import { normalizeBatteryCode } from "@/lib/batteryNormalize";
+import { isBatteryMatched, normalizeBatteryCode, terminalFromCode } from "@/lib/batteryNormalize";
 
 export type BatterySpecDisplay = {
   code: string;
@@ -30,6 +30,18 @@ function parseSpecParts(code: string): { type: string; series: string; terminal:
     series: side ? `${num}${side} 계열` : `${num} 계열`,
     terminal: side ? `${side}타입` : null,
   };
+}
+
+/** 100R·90R 등 family 코드 — catalog fallback(첫 배터리) 오염 방지 */
+export function resolveBatteryTerminalLabel(rawCode: string): string | null {
+  const code = canonicalBatteryCode(rawCode) || normalizeBatteryCode(rawCode) || rawCode;
+  const fromFamily = terminalFromCode(code);
+  if (fromFamily) return `${fromFamily}타입`;
+  const bat = getBattery(code);
+  if (bat.terminal?.trim() && isBatteryMatched(code, bat.code)) {
+    return `${bat.terminal.trim()}타입`;
+  }
+  return parseSpecParts(code).terminal;
 }
 
 export function resolvePrimaryBatteryCode(
@@ -59,11 +71,13 @@ export function parseBatterySpecDisplay(rawCode: string): BatterySpecDisplay {
       imageSet;
   }
 
+  const terminalLabel = resolveBatteryTerminalLabel(code);
+
   return {
     code,
     typeLabel: bat.type?.trim() || parts.type,
     seriesLabel: parts.series,
-    terminalLabel: bat.terminal?.trim() ? `${bat.terminal.trim()}타입` : parts.terminal,
+    terminalLabel,
     capacity: bat.capacity?.trim() || null,
     cca: bat.cca?.trim() || null,
     imageSet: imageSet?.main ? imageSet : null,

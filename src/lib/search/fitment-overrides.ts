@@ -67,15 +67,21 @@ const PORTER2_OVERRIDE_RULES: FitmentOverrideRule[] = [
   },
 ];
 
-function isPorter2Context(
-  query: string,
-  model: string | null,
-  canonicalKey: string | null,
-): boolean {
+/** 포터2 연식·90R/100R 분기 — 이 차량(검색)에서만 사용 */
+export function isPorter2VehicleContext(options: {
+  query: string;
+  model?: string | null;
+  canonicalKey?: string | null;
+  vehicleLabel?: string | null;
+  href?: string | null;
+}): boolean {
+  const { query, model = null, canonicalKey = null, vehicleLabel = null, href = null } = options;
   return (
     isPorter2Query(query) ||
     model === "포터2" ||
-    Boolean(canonicalKey?.includes("porter2"))
+    Boolean(canonicalKey?.includes("porter2")) ||
+    Boolean(href?.includes("porter2")) ||
+    /포터\s*2|porter\s*2/i.test(vehicleLabel ?? "")
   );
 }
 
@@ -89,7 +95,8 @@ export function resolveFitmentOverride(options: {
   year?: number | null;
 }): FitmentOverrideResult | null {
   const q = options.normalizedQuery.replace(/\s*배터리\s*$/i, "").trim();
-  if (!isPorter2Context(q, options.model, options.canonicalKey)) return null;
+  if (!isPorter2VehicleContext({ query: q, model: options.model, canonicalKey: options.canonicalKey }))
+    return null;
 
   const yearHint = parseVehicleYearHint(q);
   const era = yearHint.era;
