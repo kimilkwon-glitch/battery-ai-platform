@@ -197,6 +197,30 @@
 }
 
 /* Cards */
+/* 가로형 카드 — md+ 좌 이미지 / 우 정보 */
+.bm-card-horizontal {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .bm-card-horizontal {
+    display: grid;
+    grid-template-columns: 44% 56%;
+    align-items: stretch;
+  }
+
+  .bm-card-horizontal__media .battery-image-stage {
+    height: 100%;
+    min-height: 156px;
+    border-radius: 16px 0 0 16px;
+  }
+
+  .bm-card-horizontal__media .battery-image-stage[data-flush-top="true"] {
+    border-radius: 16px 0 0 16px;
+  }
+}
+
 .bm-card-battery-product {
   overflow: hidden;
   border-radius: 16px;

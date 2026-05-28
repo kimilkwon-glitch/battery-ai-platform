@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { GitCompare } from "lucide-react";
 import { SectionHeader } from "@/components/common/SectionHeader";
+import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
 import { HubBadge } from "@/components/platform/hub/HubBadge";
 import { bm } from "@/lib/design-tokens";
 import { COMPARE_PRESET_CARDS, type ComparePresetCard } from "@/lib/platform-hub-content";
@@ -20,12 +22,20 @@ export function ComparePresetHub() {
         title="헷갈리는 규격 빠른 비교"
         description="단자 방향·용량·차종 주의가 한눈에 보이도록 정리했습니다."
       />
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {COMPARE_PRESET_CARDS.map((card) => (
-          <Link
-            className={`${bm.cardBatteryProduct} flex flex-col p-4`}
+          <CardHorizontalLayout
+            as={Link}
+            className={bm.cardBatteryProduct}
             href={card.href}
             key={card.label}
+            imagePanel={
+              <div className="flex h-full min-h-[100px] w-full items-center justify-center md:min-h-[120px]">
+                <span className="bm-icon-pill !h-12 !w-12" aria-hidden>
+                  <GitCompare className="size-6" strokeWidth={2} />
+                </span>
+              </div>
+            }
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="spec-code text-sm font-bold text-[var(--bm-text)]" data-spec-code>
@@ -33,11 +43,11 @@ export function ComparePresetHub() {
               </p>
               <SubstituteBadge level={card.substitute} />
             </div>
-            <p className="mt-2 text-xs font-bold text-slate-800">{card.headline}</p>
-            <p className="mt-1 text-[11px] font-medium text-slate-600">{card.diff}</p>
-            <p className="mt-2 text-[10px] font-semibold text-[var(--bm-primary)]">{card.terminalNote}</p>
-            <span className="mt-auto pt-3 text-[10px] font-bold text-[var(--bm-muted)]">비교 리포트 →</span>
-          </Link>
+            <p className="text-xs font-bold text-slate-800">{card.headline}</p>
+            <p className="line-clamp-2 text-[11px] font-medium text-slate-600">{card.diff}</p>
+            <p className="text-[10px] font-semibold text-blue-800">{card.terminalNote}</p>
+            <span className="text-[10px] font-bold text-slate-500">비교 리포트 →</span>
+          </CardHorizontalLayout>
         ))}
       </div>
     </section>

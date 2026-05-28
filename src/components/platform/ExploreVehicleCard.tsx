@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 
-import { productCardShell } from "@/components/car/car-card-styles";
+import { bm } from "@/lib/design-tokens";
 
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
 
@@ -50,9 +50,11 @@ export function ExploreVehicleCard({
 
   return (
 
-    <Link className={`group flex h-full flex-col overflow-hidden ${productCardShell}`} href={href}>
+    <Link className={`group ${bm.cardVehicleMatch} h-full overflow-hidden`} href={href}>
 
-      <div className="relative flex h-[120px] items-end justify-center overflow-hidden bg-slate-50/80">
+      <div className="flex h-full flex-col md:grid md:grid-cols-[42%_58%]">
+
+      <div className={`${bm.cardHorizontalMedia} !min-h-[120px] md:!min-h-[150px]`}>
 
         {imageSrc ? (
 
@@ -60,7 +62,7 @@ export function ExploreVehicleCard({
 
             alt={title}
 
-            className={isCommercial ? "!h-[80%] !w-[86%]" : "!h-[84%] !w-[88%]"}
+            className={isCommercial ? "!h-[86%] !w-[92%] !max-w-[95%]" : "!h-[90%] !w-[94%] !max-w-[95%]"}
 
             commercial={isCommercial}
 
@@ -72,13 +74,13 @@ export function ExploreVehicleCard({
 
         ) : (
 
-          <span className="pb-6 text-[10px] font-black text-slate-400">{title}</span>
+          <span className="text-[10px] font-black text-slate-500">{title}</span>
 
         )}
 
       </div>
 
-      <div className="flex flex-1 flex-col gap-1 p-3">
+      <div className={`${bm.cardHorizontalBody} gap-1`}>
 
         <p className="truncate text-sm font-black text-slate-950 group-hover:text-blue-700">{title}</p>
 
@@ -109,6 +111,8 @@ export function ExploreVehicleCard({
           {copy.ctaLabel} →
 
         </span>
+
+      </div>
 
       </div>
 

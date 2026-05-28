@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { Car } from "lucide-react";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
+import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
 import { VehicleCardImage } from "@/components/media/VehicleCardImage";
 import { HOME_POPULAR_VEHICLES } from "@/lib/home-upgrade-v2-data";
 import { bm } from "@/lib/design-tokens";
@@ -13,25 +15,27 @@ export function HomePopularVehicleSearch() {
         title="인기 차량 빠른 검색"
         description="연식·연료에 따라 규격이 달라질 수 있습니다 — 카드에서 바로 확인하세요."
       />
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {HOME_POPULAR_VEHICLES.map((v) => (
-          <Link
-            className={`${bm.cardVehicleMatch} flex flex-col`}
+          <CardHorizontalLayout
+            as={Link}
+            className={`${bm.cardVehicleMatch} group`}
             href={v.href}
             key={v.slug}
+            imagePanel={<VehicleCardImage slug={v.slug} title={v.title} layout="row" />}
           >
-            <div className="p-2.5">
-              <VehicleCardImage slug={v.slug} title={v.title} />
+            <div className="flex items-start gap-2">
+              <span className="bm-icon-pill shrink-0" aria-hidden>
+                <Car className="size-3.5" strokeWidth={2.5} />
+              </span>
+              <p className="text-base font-bold text-slate-900 group-hover:text-blue-800">{v.title}</p>
             </div>
-            <div className="flex flex-1 flex-col gap-1 border-t border-slate-100 px-3 pb-3 pt-2">
-              <p className="text-sm font-bold text-slate-950">{v.title}</p>
-              <p className="spec-code text-[10px] font-bold text-[var(--bm-primary)]" data-spec-code>
-                {v.spec}
-              </p>
-              <p className="text-xs font-medium leading-relaxed text-slate-600">{v.hint}</p>
-              <span className="mt-2 text-[10px] font-bold text-[var(--bm-muted)]">검색·상세 →</span>
-            </div>
-          </Link>
+            <p className="spec-code text-xs font-bold text-blue-700" data-spec-code>
+              {v.spec}
+            </p>
+            <p className="line-clamp-2 text-xs font-medium leading-relaxed text-slate-700">{v.hint}</p>
+            <span className="text-[10px] font-bold text-slate-500">검색·상세 →</span>
+          </CardHorizontalLayout>
         ))}
       </div>
     </HomeSectionShell>

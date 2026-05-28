@@ -24,6 +24,7 @@ type Props = {
   imageSet?: BatteryImageSet;
   className?: string;
   flushTop?: boolean;
+  layout?: "stack" | "row";
 };
 
 /** 카드·히어로·비교 공통 배터리 image stage */
@@ -34,6 +35,7 @@ export function BatteryImageStage({
   imageSet,
   className = "",
   flushTop = false,
+  layout = "stack",
 }: Props) {
   const set = imageSet ?? batteryImageSetForCode(code);
   const candidates = useMemo(
@@ -44,11 +46,18 @@ export function BatteryImageStage({
   const src = candidates[index];
   const hasPhoto = Boolean(src) && candidates.length > 0;
 
-  const radius = flushTop ? "rounded-t-[18px] rounded-b-none" : "rounded-xl";
+  const radius =
+    layout === "row" && flushTop
+      ? "rounded-t-[16px] rounded-b-none md:rounded-l-[16px] md:rounded-tr-none md:rounded-b-none"
+      : flushTop
+        ? "rounded-t-[16px] rounded-b-none"
+        : "rounded-xl";
 
   return (
     <div
       className={`battery-image-stage relative w-full overflow-hidden ${batteryThumbSurface} ring-1 ring-[var(--bm-border)]/80 ${batteryImageStageHeight[variant]} ${radius} ${className}`}
+      data-flush-top={flushTop ? "true" : undefined}
+      data-layout={layout}
       style={{ contain: "layout" }}
       data-battery-image-stage={variant}
       data-image-slot={`search.battery.product.${code}`}

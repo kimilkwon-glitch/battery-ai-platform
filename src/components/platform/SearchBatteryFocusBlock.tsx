@@ -189,10 +189,11 @@ export function SearchBatteryFocusBlock({
 
       {ux.mode === "spec" && ux.specMeta ? (
         <div className={`${bm.card} overflow-hidden p-0`}>
-          <div className="overflow-hidden border-b border-[var(--bm-border)] px-2.5 pt-2.5 sm:px-3">
-            <BatteryCardImage code={ux.specMeta.code} variant="search" />
-          </div>
-          <div className="p-3 sm:p-4">
+          <div className="flex flex-col md:grid md:grid-cols-[44%_56%]">
+            <div className={bm.cardHorizontalMedia}>
+              <BatteryCardImage code={ux.specMeta.code} variant="search" layout="row" flushTop />
+            </div>
+            <div className={`${bm.cardHorizontalBody} md:py-3`}>
             <p className="spec-code text-2xl font-bold tracking-normal text-slate-950" data-spec-code>
               {ux.specMeta.code}
             </p>
@@ -232,6 +233,7 @@ export function SearchBatteryFocusBlock({
             ) : null}
             <div className="mt-4">
               <SearchUxHeroCtas ctas={ux.heroCtas} />
+            </div>
             </div>
           </div>
         </div>

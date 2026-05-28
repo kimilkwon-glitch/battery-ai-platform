@@ -71,8 +71,14 @@ export const bm = {
   rankCard:
     "bm-card-battery-product flex flex-col overflow-hidden",
   /** P2 card types */
-  cardBatteryProduct: "bm-card-battery-product flex flex-col overflow-hidden",
-  cardVehicleMatch: "bm-card-vehicle-match",
+  cardBatteryProduct: "bm-card-battery-product bm-card-horizontal overflow-hidden",
+  cardVehicleMatch: "bm-card-vehicle-match bm-card-horizontal overflow-hidden",
+  cardHorizontal:
+    "flex flex-col overflow-hidden md:grid md:grid-cols-[44%_56%] md:items-stretch",
+  cardHorizontalMedia:
+    "bm-card-horizontal__media flex min-h-[132px] shrink-0 items-center justify-center border-b border-slate-100 bg-[var(--bm-image-bg)] p-2 md:min-h-[156px] md:border-b-0 md:border-r md:p-2.5",
+  cardHorizontalBody:
+    "bm-card-horizontal__body flex min-w-0 flex-col justify-center gap-1 p-3 md:px-3.5 md:py-3",
   cardSymptom: "bm-card-symptom flex flex-col p-4",
   cardPhotoCheck: "bm-card-photo-check",
   cardServiceStore: "bm-card-service-store",
@@ -121,14 +127,14 @@ export const bm = {
 
   /** 배터리 상품 카드 하단·CTA — 이미지보다 약하게 */
   batteryCardBody:
-    "flex flex-1 flex-col gap-0.5 border-t border-slate-100 px-2.5 pb-2 pt-1.5",
-  batteryCardBtnRow: "mt-0.5 flex flex-wrap gap-1",
+    "flex flex-1 flex-col gap-1 border-t border-slate-100 px-2.5 pb-2 pt-1.5 md:border-t-0 md:px-0 md:pb-0 md:pt-0",
+  batteryCardBtnRow: "mt-1 flex flex-wrap gap-1",
   btnCardNavy:
-    "inline-flex min-h-[34px] items-center justify-center rounded-lg bg-[var(--bm-navy)] px-2.5 py-1 text-[9px] font-black text-white transition motion-safe:hover:bg-slate-800",
+    "inline-flex h-8 min-h-8 items-center justify-center rounded-lg bg-[var(--bm-navy)] px-2.5 text-[9px] font-black text-white transition motion-safe:hover:bg-slate-800",
   btnCardSecondary:
-    "inline-flex min-h-[34px] items-center justify-center rounded-lg border border-[var(--bm-border)] bg-[var(--bm-card)] px-2.5 py-1 text-[9px] font-black text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)]",
+    "inline-flex h-8 min-h-8 items-center justify-center rounded-lg border border-[var(--bm-border)] bg-[var(--bm-card)] px-2.5 text-[9px] font-black text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)]",
   btnCardGhost:
-    "inline-flex min-h-[34px] items-center justify-center rounded-lg px-2 py-1 text-[9px] font-bold text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+    "inline-flex h-8 min-h-8 items-center justify-center rounded-lg px-2 text-[9px] font-bold text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
   btnWarning:
     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-orange-200 bg-[var(--bm-warning-bg)] px-5 text-sm font-black text-orange-900 transition motion-safe:hover:border-orange-300 motion-safe:hover:bg-orange-50",
   btnDanger:

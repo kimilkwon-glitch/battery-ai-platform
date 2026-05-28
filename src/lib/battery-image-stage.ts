@@ -6,14 +6,29 @@
  */
 
 /** 상품 카드·히어로·비교 image stage */
-export type BatteryImageStageVariant = "card" | "cardCompact" | "hero" | "search" | "compare";
+export type BatteryImageStageVariant =
+  | "card"
+  | "cardRow"
+  | "cardCompact"
+  | "hero"
+  | "search"
+  | "compare"
+  | "compareRow";
 
 export type BatteryImageCompactVariant = "chip" | "chipMd" | "mini" | "content";
 
 export type BatteryImageVariant = BatteryImageStageVariant | BatteryImageCompactVariant;
 
 export function isBatteryStageVariant(v: BatteryImageVariant): v is BatteryImageStageVariant {
-  return v === "card" || v === "cardCompact" || v === "hero" || v === "search" || v === "compare";
+  return (
+    v === "card" ||
+    v === "cardRow" ||
+    v === "cardCompact" ||
+    v === "hero" ||
+    v === "search" ||
+    v === "compare" ||
+    v === "compareRow"
+  );
 }
 
 /**
@@ -23,11 +38,13 @@ export function isBatteryStageVariant(v: BatteryImageVariant): v is BatteryImage
 
 /** stage 외곽 — product-card 170px (overflow-hidden은 stage만) */
 export const batteryImageStageHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[180px] min-h-[180px]",
-  cardCompact: "h-[168px] min-h-[168px]",
+  card: "h-[128px] min-h-[128px] md:h-full md:min-h-[156px]",
+  cardRow: "h-[128px] min-h-[128px] md:h-full md:min-h-[156px]",
+  cardCompact: "h-[120px] min-h-[120px] md:h-full md:min-h-[148px]",
   hero: "h-[200px] sm:h-[220px]",
-  search: "h-[180px] min-h-[180px]",
-  compare: "h-[176px] min-h-[176px]",
+  search: "h-[128px] min-h-[128px] md:h-full md:min-h-[156px]",
+  compare: "h-[128px] min-h-[128px] md:h-full md:min-h-[152px]",
+  compareRow: "h-[128px] min-h-[128px] md:h-full md:min-h-[152px]",
 };
 
 export const batteryImageStageInset =
@@ -35,22 +52,26 @@ export const batteryImageStageInset =
 
 /** img height 135~150px — width auto, height 기준 only */
 export const batteryImageStageImgHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[152px] min-h-[152px]",
-  cardCompact: "h-[142px] min-h-[142px]",
+  card: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
+  cardRow: "h-[118px] min-h-[118px] md:h-[145px] md:min-h-[145px]",
+  cardCompact: "h-[110px] min-h-[110px] md:h-[132px] md:min-h-[132px]",
   hero: "h-[176px] sm:h-[196px]",
-  search: "h-[152px] min-h-[152px]",
-  compare: "h-[148px] min-h-[148px]",
+  search: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
+  compare: "h-[116px] min-h-[116px] md:h-[138px] md:min-h-[138px]",
+  compareRow: "h-[116px] min-h-[116px] md:h-[140px] md:min-h-[140px]",
 };
 
 export const batteryImageStageImgMaxWidth = "max-w-[94%]";
 
 /** asset 여백 보정 — stage 높이 확보 후 center scale (잘림 시 scale 낮출 것) */
 export const batteryImageStagePhotoScale: Record<BatteryImageStageVariant, string> = {
-  card: "inline-flex origin-center scale-[1.22]",
-  cardCompact: "inline-flex origin-center scale-[1.16]",
+  card: "inline-flex origin-center scale-[1.2] md:scale-[1.24]",
+  cardRow: "inline-flex origin-center scale-[1.2] md:scale-[1.26]",
+  cardCompact: "inline-flex origin-center scale-[1.14] md:scale-[1.18]",
   hero: "inline-flex origin-center",
-  search: "inline-flex origin-center scale-[1.2]",
-  compare: "inline-flex origin-center scale-[1.14]",
+  search: "inline-flex origin-center scale-[1.2] md:scale-[1.24]",
+  compare: "inline-flex origin-center scale-[1.12] md:scale-[1.16]",
+  compareRow: "inline-flex origin-center scale-[1.14] md:scale-[1.2]",
 };
 
 /** height 기준 img class (fill 미사용) */

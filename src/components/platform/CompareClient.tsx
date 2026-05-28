@@ -36,25 +36,30 @@ function SelectedBatteryCard({
   const images = getBatteryImageSet(battery.code, imageBrand);
   return (
     <div
-      className={`${bm.compareSpecCol} ${
+      className={`${bm.compareSpecCol} flex flex-col ${
         side === "left" ? "lg:rounded-r-none lg:border-r-0" : "lg:rounded-l-none"
       }`}
     >
-      <BatteryImageStage
-        code={battery.code}
-        variant="compare"
-        imageSet={images?.main ? images : battery.images}
-        className="rounded-none rounded-t-[22px] ring-0"
-        flushTop
-      />
-      <div className="flex flex-1 flex-col gap-0.5 px-2.5 py-2 sm:px-3">
-        <p className="spec-code text-base font-bold leading-snug text-[var(--bm-text)] sm:text-lg" data-spec-code>
-          {battery.code}
-        </p>
-        <p className={`${bm.specData} text-[11px]`}>
-          {battery.capacity} · CCA {battery.cca} · {battery.terminal}타입
-        </p>
-        <p className={`${bm.textSub} text-[11px] leading-relaxed`}>{battery.pros}</p>
+      <div className="flex flex-col md:grid md:grid-cols-[44%_56%]">
+        <div className={`${bm.cardHorizontalMedia} !rounded-none !border-r-0 md:!min-h-[152px]`}>
+          <BatteryImageStage
+            code={battery.code}
+            variant="compare"
+            imageSet={images?.main ? images : battery.images}
+            className="h-full w-full !ring-0"
+            flushTop
+            layout="row"
+          />
+        </div>
+        <div className={`${bm.cardHorizontalBody} gap-0.5 md:py-2.5`}>
+          <p className="spec-code text-base font-bold leading-snug text-[var(--bm-text)] md:text-lg" data-spec-code>
+            {battery.code}
+          </p>
+          <p className={`${bm.specData} text-[11px]`}>
+            {battery.capacity} · CCA {battery.cca} · {battery.terminal}타입
+          </p>
+          <p className={`${bm.textSub} line-clamp-3 text-[11px] leading-relaxed`}>{battery.pros}</p>
+        </div>
       </div>
     </div>
   );
