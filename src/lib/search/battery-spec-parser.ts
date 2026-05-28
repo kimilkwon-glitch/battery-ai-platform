@@ -1,3 +1,6 @@
+import { getCanonicalBatteryCode } from "@/lib/battery-alias-map";
+import { terminalFromCode } from "@/lib/batteryNormalize";
+
 const SPEC_TOKENS = [
   "AGM105L",
   "AGM95R",
@@ -28,8 +31,12 @@ export type BatterySpecIntent = {
 };
 
 function terminalFromSpec(spec: string): "L타입" | "R타입" | null {
-  if (/L$/i.test(spec)) return "L타입";
-  if (/R$/i.test(spec)) return "R타입";
+  const canonical = getCanonicalBatteryCode(spec) || spec.replace(/\s+/g, "").toUpperCase();
+  const side = terminalFromCode(canonical);
+  if (side === "L") return "L타입";
+  if (side === "R") return "R타입";
+  if (/L$/i.test(canonical)) return "L타입";
+  if (/R$/i.test(canonical)) return "R타입";
   return null;
 }
 

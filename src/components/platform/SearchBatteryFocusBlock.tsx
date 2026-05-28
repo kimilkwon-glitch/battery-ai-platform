@@ -73,7 +73,10 @@ export function SearchBatteryFocusBlock({
       value: specOnly.spec,
       highlight: true,
     });
-    const terminal = specOnly.terminalDirection ?? terminalTypeLabel;
+    const terminal =
+      resolveBatteryTerminalLabel(specOnly.spec) ??
+      specOnly.terminalDirection ??
+      terminalTypeLabel;
     if (terminal) {
       summaryRows.push({ key: "terminal", label: "단자", value: terminal });
     }

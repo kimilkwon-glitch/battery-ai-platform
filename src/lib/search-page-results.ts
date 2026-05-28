@@ -955,7 +955,7 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
   } else if (!queryHasBatterySpec) {
     summary.batterySpecs = [];
   }
-  const primarySpec = queryHasBatterySpec ? summary.batterySpecs[0] ?? specTokens[0] : null;
+  const primarySpec = queryHasBatterySpec ? (specTokens[0] ?? summary.batterySpecs[0]) : null;
   const terminalTypeLabel = primarySpec ? primarySpecTerminalLabel(primarySpec) : null;
   const showSymptomSidebar = intentFlags.symptom && !intentFlags.compare;
   const vehicleQuery = alias?.dbQuery ?? (queryVehiclePart(query, specs) || query);
@@ -1132,6 +1132,7 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
           query,
         ),
       };
+      summary.batterySpecs = [];
     }
 
     const hasVehicle = Boolean(alias) || summary.vehicleKeywords.length > 0;
@@ -1187,17 +1188,19 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
     const unknownSpecs = summary.batterySpecs.filter(
       (s) => !isKnownBatterySpec(normalizeBatteryCode(resolveSpec(s) || s)),
     );
-    const missingSpecMessage = shouldShowMissingSpecMessage({
-      symptomDiagnosisFirst,
-      hasBatteryFocus,
-      compareIntent: intentFlags.compare,
-      compareBatteryCodes,
-      recognizedVehicle,
-      recognizedSpec,
-      summaryBatterySpecs: summary.batterySpecs,
-    })
-      ? `${unknownSpecs.join(", ")}은(는) 검색한 규격입니다. ${MISSING_SPEC_MESSAGE}`
-      : null;
+    const missingSpecMessage =
+      unknownSpecs.length > 0 &&
+      shouldShowMissingSpecMessage({
+        symptomDiagnosisFirst,
+        hasBatteryFocus,
+        compareIntent: intentFlags.compare,
+        compareBatteryCodes,
+        recognizedVehicle,
+        recognizedSpec,
+        summaryBatterySpecs: summary.batterySpecs,
+      })
+        ? `${unknownSpecs.join(", ")}은(는) 검색한 규격입니다. ${MISSING_SPEC_MESSAGE}`
+        : null;
 
     const totalRelevant =
       finalVehicles.length + batteries.length + questions.length + guides.length + (hero ? 1 : 0);
