@@ -25,28 +25,28 @@ export function HomeEvHybridSection() {
         {HOME_EV_HYBRID_ITEMS.map((item) => (
           <article className={`${bm.surfaceMuted} flex flex-col overflow-hidden rounded-xl`} key={item.label}>
             <BatteryCardImage code={item.battery} variant="cardCompact" flushTop />
-            <div className="flex flex-1 flex-col p-3 pt-2.5">
-              <p className="text-sm font-bold text-slate-900">{item.label}</p>
-              <p className="mt-1 text-[10px] font-semibold text-[var(--bm-primary)]">
+            <div className={`${bm.batteryCardBody} !border-t-0`}>
+              <p className="text-sm font-bold leading-snug text-slate-900">{item.label}</p>
+              <p className="text-[10px] font-semibold text-[var(--bm-primary)]">
                 추천 확인: {item.battery}
               </p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Link className={`${bm.btnSecondary} text-[10px]`} href={item.href}>
+              <div className={bm.batteryCardBtnRow}>
+                <Link className={bm.btnCardSecondary} href={item.href}>
                   검색 결과
                 </Link>
-                <Link className={`${bm.btnTertiary} text-[10px]`} href={batteryDetailHref(item.battery)}>
+                <Link className={bm.btnCardGhost} href={batteryDetailHref(item.battery)}>
                   {item.battery} 상세
                 </Link>
                 {"fuel" in item && item.fuel ? (
                   <Link
-                    className={`${bm.btnGhost} text-[10px]`}
+                    className={bm.btnCardGhost}
                     href={buildVehicleDetailHref(item.vehicleSlug, item.fuel)}
                   >
                     차량 상세
                   </Link>
                 ) : (
                   <Link
-                    className={`${bm.btnGhost} text-[10px]`}
+                    className={bm.btnCardGhost}
                     href={buildVehicleDetailHref(item.vehicleSlug)}
                   >
                     차량 상세

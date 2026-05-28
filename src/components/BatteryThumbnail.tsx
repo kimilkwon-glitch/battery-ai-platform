@@ -13,6 +13,12 @@ import {
   type BatteryImageRole,
   type BatteryImageSet,
 } from "@/lib/battery-image";
+import {
+  batteryImageProductFit,
+  batteryImageStageInset,
+  batteryImageStageProductBox,
+  batteryImageStageScale,
+} from "@/lib/battery-image-stage";
 
 function BatteryGraphic({ code }: { code: string }) {
   return (
@@ -203,7 +209,7 @@ export function BatteryImageCard({
         overlayLabel={false}
         darkOverlay={false}
       />
-      <div className={`px-4 pb-4 ${searchLayout ? "pt-2" : "pt-3"}`}>
+      <div className={`px-3 pb-3 ${searchLayout ? "pt-2" : "pt-2"}`}>
         <p
           className={`spec-code font-black text-[var(--bm-text)] ${searchLayout ? "text-lg leading-snug sm:text-xl" : "text-sm"}`}
           data-spec-code

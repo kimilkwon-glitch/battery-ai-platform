@@ -12,6 +12,8 @@ import {
   batteryImageProductFit,
   batteryImageStageHeight,
   batteryImageStageInset,
+  batteryImageStageProductBox,
+  batteryImageStageScale,
   type BatteryImageStageVariant,
 } from "@/lib/battery-image-stage";
 import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
@@ -34,16 +36,18 @@ function StagePhoto({
   candidates,
   index,
   onFail,
+  variant,
 }: {
   code: string;
   src: string;
   candidates: string[];
   index: number;
   onFail: () => void;
+  variant: BatteryImageStageVariant;
 }) {
   return (
-    <div className={`flex h-full w-full items-end justify-center ${batteryImageStageInset}`}>
-      <div className="relative h-[88%] w-[92%] shrink-0">
+    <div className={`flex h-full w-full items-end justify-center overflow-hidden ${batteryImageStageInset}`}>
+      <div className={`${batteryImageStageProductBox} ${batteryImageStageScale[variant]}`}>
         <Image
           key={src}
           src={src}
@@ -94,6 +98,7 @@ export function BatteryImageStage({
           src={src}
           candidates={candidates}
           index={index}
+          variant={variant}
           onFail={() => setIndex((i) => i + 1)}
         />
       ) : (
@@ -107,7 +112,7 @@ export function BatteryImageStage({
         </div>
       )}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-gradient-to-t from-[var(--bm-image-bg)] to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-3 bg-gradient-to-t from-[var(--bm-image-bg)]/90 to-transparent"
         aria-hidden
       />
     </div>

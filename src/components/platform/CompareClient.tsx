@@ -47,14 +47,14 @@ function SelectedBatteryCard({
         className="rounded-none rounded-t-[22px] ring-0"
         flushTop
       />
-      <div className="flex flex-1 flex-col p-4">
-        <p className={bm.specTitle} data-spec-code>
+      <div className="flex flex-1 flex-col gap-1 px-3 py-2.5 sm:px-3.5">
+        <p className="spec-code text-lg font-bold leading-snug text-[var(--bm-text)] sm:text-xl" data-spec-code>
           {battery.code}
         </p>
-        <p className={`mt-1 ${bm.specData}`}>
+        <p className={`${bm.specData} text-[11px]`}>
           {battery.capacity} · CCA {battery.cca} · {battery.terminal}타입
         </p>
-        <p className={`mt-2 ${bm.textSub} text-xs`}>{battery.pros}</p>
+        <p className={`${bm.textSub} text-[11px] leading-relaxed`}>{battery.pros}</p>
       </div>
     </div>
   );

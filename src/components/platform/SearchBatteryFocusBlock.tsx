@@ -189,10 +189,10 @@ export function SearchBatteryFocusBlock({
 
       {ux.mode === "spec" && ux.specMeta ? (
         <div className={`${bm.card} overflow-hidden p-0`}>
-          <div className="overflow-hidden border-b border-[var(--bm-border)] px-3 pt-3 sm:px-4">
+          <div className="overflow-hidden border-b border-[var(--bm-border)] px-2.5 pt-2.5 sm:px-3">
             <BatteryCardImage code={ux.specMeta.code} variant="search" />
           </div>
-          <div className="p-4 sm:p-5">
+          <div className="p-3 sm:p-4">
             <p className="spec-code text-2xl font-bold tracking-normal text-slate-950" data-spec-code>
               {ux.specMeta.code}
             </p>

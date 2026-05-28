@@ -2,7 +2,7 @@
  * Production probe — stamp, fonts, Q&A sections
  */
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
-const STAMP = "BM-UX-REV-20260528-PLATFORM-FINAL-FIX1";
+const STAMP = "BM-UX-REV-20260528-BATTERY-CARD-IMAGE-SCALE1";
 
 const routes = [
   ["/", ["home-popular-qna", STAMP]],

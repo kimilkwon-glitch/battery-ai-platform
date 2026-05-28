@@ -75,6 +75,17 @@ export const bm = {
     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[var(--bm-accent)]/35 bg-[var(--bm-accent-soft)] px-5 text-sm font-black text-cyan-900 transition motion-safe:hover:border-[var(--bm-accent)] motion-safe:hover:bg-cyan-50",
   btnGhost:
     "inline-flex min-h-[40px] items-center justify-center rounded-lg px-3 text-[11px] font-bold text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+
+  /** 배터리 상품 카드 하단·CTA (IMAGE-SCALE1) */
+  batteryCardBody:
+    "flex flex-1 flex-col gap-1.5 border-t border-slate-100 px-3 pb-2.5 pt-2",
+  batteryCardBtnRow: "mt-auto flex flex-wrap gap-1.5",
+  btnCardNavy:
+    "inline-flex min-h-[40px] items-center justify-center rounded-xl bg-[var(--bm-navy)] px-3.5 py-2 text-[10px] font-black text-white transition motion-safe:hover:bg-slate-800 sm:text-[11px]",
+  btnCardSecondary:
+    "inline-flex min-h-[40px] items-center justify-center rounded-xl border border-[var(--bm-border)] bg-[var(--bm-card)] px-3.5 py-2 text-[10px] font-black text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)] sm:text-[11px]",
+  btnCardGhost:
+    "inline-flex min-h-[40px] items-center justify-center rounded-lg px-2.5 py-2 text-[10px] font-bold text-[var(--bm-muted)] ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
   btnWarning:
     "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-orange-200 bg-[var(--bm-warning-bg)] px-5 text-sm font-black text-orange-900 transition motion-safe:hover:border-orange-300 motion-safe:hover:bg-orange-50",
   btnDanger:
