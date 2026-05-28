@@ -38,6 +38,12 @@ const markers = [
   "Pretendard",
 ];
 
+const FONT_PATHS = [
+  "/fonts/Pretendard-1.3.9/web/variable/woff2/PretendardVariable.woff2",
+  "/fonts/GmarketSansTTF/GmarketSansTTFBold.ttf",
+  "/fonts/S-Core_Dream_OTF/SCDream5.otf",
+];
+
 async function check(path) {
   const url = `${BASE}${path}`;
   const res = await fetch(url, { headers: { "cache-control": "no-cache" } });
@@ -47,8 +53,23 @@ async function check(path) {
   return { path, status: res.status, stamp: ok, hits, len: html.length };
 }
 
+async function checkFonts() {
+  const rows = [];
+  for (const path of FONT_PATHS) {
+    const url = `${BASE}${path}`;
+    const res = await fetch(url, { method: "HEAD", headers: { "cache-control": "no-cache" } }).catch(() => null);
+    const ok = res?.ok && res.status === 200;
+    rows.push({ path, status: res?.status ?? 0, ok });
+    console.log(`${ok ? "FONT OK" : "FONT FAIL"} ${res?.status ?? "ERR"} ${path}`);
+  }
+  return rows;
+}
+
 async function main() {
   console.log(`Verify ${STAMP} @ ${BASE}\n`);
+  console.log("Font assets:");
+  const fonts = await checkFonts();
+  console.log("");
   const results = [];
   for (const path of routes) {
     try {
@@ -62,8 +83,9 @@ async function main() {
     }
   }
   const failed = results.filter((r) => !r.stamp && !r.error);
-  console.log(`\nDone: ${results.length - failed.length}/${results.length} stamp OK`);
-  process.exit(failed.length > 0 ? 1 : 0);
+  const fontFailed = fonts.filter((f) => !f.ok).length;
+  console.log(`\nDone: ${results.length - failed.length}/${results.length} stamp OK, fonts ${fonts.length - fontFailed}/${fonts.length} OK`);
+  process.exit(failed.length > 0 || fontFailed > 0 ? 1 : 0);
 }
 
 main();
