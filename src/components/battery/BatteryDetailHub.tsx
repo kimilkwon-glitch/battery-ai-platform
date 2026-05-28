@@ -13,6 +13,10 @@ import {
   HUB_SHOP_ANCHORS,
   HUB_STORE,
 } from "@/lib/customer-hub-routes";
+import {
+  BATTERY_DETAIL_HUB_VERSION,
+  normalizeCoreBatteryCode,
+} from "@/lib/battery-detail/core-battery-codes";
 import { getBatteryDetailHubContent, type HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
 import { BATTERY_DETAIL_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
@@ -95,20 +99,25 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
 }
 
 export function BatteryDetailHub({ code, vehicles }: Props) {
-  const hub = getBatteryDetailHubContent(code);
+  const hubCode = normalizeCoreBatteryCode(code);
+  const hub = getBatteryDetailHubContent(hubCode);
   if (!hub) return null;
 
-  const spec = parseBatterySpecDisplay(code);
+  const spec = parseBatterySpecDisplay(hubCode);
   const vehicleCards = mergeFeaturedVehicles(hub.featuredVehicles, vehicles);
-  const searchHref = `/search?q=${encodeURIComponent(code)}`;
+  const searchHref = `/search?q=${encodeURIComponent(hubCode)}`;
 
   return (
-    <div className="space-y-4 pb-20 md:pb-4" data-battery-detail-hub={code}>
+    <div
+      className="space-y-4 pb-20 md:pb-4"
+      data-battery-detail-hub={hubCode}
+      data-battery-detail-hub-version={BATTERY_DETAIL_HUB_VERSION}
+    >
       {/* A. Hero */}
       <section className={bm.heroPanel}>
         <div className="border-b border-slate-100 p-4 sm:p-5">
           <p className={bm.label}>배터리 규격 허브</p>
-          <h1 className={`${bm.titleLg} mt-1`}>{code}</h1>
+          <h1 className={`${bm.titleLg} mt-1`}>{hubCode}</h1>
           <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">{hub.positioning}</p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             <BatterySpecBadge tone="blue">{hub.typeLabel}</BatterySpecBadge>
@@ -131,7 +140,7 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
 
         <div className="grid gap-0 sm:grid-cols-[minmax(200px,280px)_1fr]">
           <div className="border-b border-slate-100 p-4 sm:border-b-0 sm:border-r">
-            <BatteryImageOrSlot code={code} ratio="4/3" tall className="rounded-xl" />
+            <BatteryImageOrSlot code={hubCode} ratio="4/3" tall className="rounded-xl" />
           </div>
           <div className="p-4 sm:p-5">
             <CtaHierarchy
@@ -155,15 +164,15 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           <div>
             <p className="mb-1.5 text-[10px] font-black text-slate-500">제품 대표</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.product(code)} />
+            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.product(hubCode)} />
           </div>
           <div>
             <p className="mb-1.5 text-[10px] font-black text-slate-500">장착 예시</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.install(code)} />
+            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.install(hubCode)} />
           </div>
           <div>
             <p className="mb-1.5 text-[10px] font-black text-slate-500">라벨·단자</p>
-            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.labelTerminal(code)} />
+            <MediaImageSlot slot={BATTERY_DETAIL_IMAGE_SLOTS.labelTerminal(hubCode)} />
           </div>
         </div>
       </section>
@@ -281,7 +290,7 @@ export function BatteryDetailHub({ code, vehicles }: Props) {
         />
       </section>
 
-      <BatteryDetailMobileSticky code={code} />
+      <BatteryDetailMobileSticky code={hubCode} />
     </div>
   );
 }

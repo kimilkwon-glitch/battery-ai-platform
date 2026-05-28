@@ -2,7 +2,9 @@ import { unstable_noStore as noStore } from "next/cache";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { PageShell } from "@/components/common/PageShell";
+import { BatteryDetailHub } from "@/components/battery/BatteryDetailHub";
 import { BatteryDetailClient } from "@/components/battery/BatteryDetailClient";
+import { resolveCoreBatteryHubCode } from "@/lib/battery-detail/core-battery-codes";
 import { BatteryNavFooter } from "@/components/battery/BatteryNavFooter";
 import { BatteryActivityTracker } from "@/components/battery/BatteryActivityTracker";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
@@ -21,6 +23,7 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
     redirect(`/batteries/${encodeURIComponent("DIN74R")}`);
   }
   const displayCode = canonicalBatteryCode(decoded) || decoded.trim().toUpperCase();
+  const hubCode = resolveCoreBatteryHubCode(decoded) ?? resolveCoreBatteryHubCode(displayCode);
   const data = getBatteryDetailData(displayCode);
 
   return (
@@ -32,7 +35,15 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
     >
       <BatteryActivityTracker code={displayCode} />
       <Suspense fallback={null}>
-        <BatteryDetailClient code={displayCode} relatedCodes={data.relatedCodes} vehicles={data.vehicles} />
+        {hubCode ? (
+          <BatteryDetailHub code={hubCode} vehicles={data.vehicles} />
+        ) : (
+          <BatteryDetailClient
+            code={displayCode}
+            relatedCodes={data.relatedCodes}
+            vehicles={data.vehicles}
+          />
+        )}
       </Suspense>
       <div className="mt-4">
         <BatteryNavFooter code={displayCode} />

@@ -1,17 +1,18 @@
 #!/usr/bin/env node
-const BASE = process.env.BASE_URL ?? "http://localhost:3000";
-const STAMP = "BM-UX-REV-20260528-BATTERY-DETAIL-HUB";
+const BASE = process.argv[2] ?? process.env.BASE_URL ?? "http://localhost:3000";
+const STAMP = "BM-UX-REV-20260528-BATTERY-DETAIL-HUB-V2";
+const HUB_VERSION = "20260528-v2";
 
 const batteryPaths = [
-  "/batteries/AGM60L",
-  "/batteries/AGM70L",
-  "/batteries/AGM80L",
-  "/batteries/DIN74L",
-  "/batteries/100R",
-  "/batteries/CMF80L",
-  "/batteries/115D31L",
-  "/batteries/AGM95L",
-  "/batteries/EV%2012V",
+  ["/batteries/AGM60L", "AGM60L"],
+  ["/batteries/AGM70L", "AGM70L"],
+  ["/batteries/AGM80L", "AGM80L"],
+  ["/batteries/DIN74L", "DIN74L"],
+  ["/batteries/100R", "100R"],
+  ["/batteries/CMF80L", "CMF80L"],
+  ["/batteries/115D31L", "115D31L"],
+  ["/batteries/AGM95L", "AGM95L"],
+  ["/batteries/EV%2012V", "EV 12V"],
 ];
 
 const searchPaths = [
@@ -32,24 +33,26 @@ const regressionPaths = [
   "/compare?items=100R,AGM95L",
 ];
 
-function hubOk(html, code) {
-  const codeMatch =
-    html.includes(`data-battery-detail-hub="${code}"`) ||
-    (code.includes("EV") && html.includes('data-battery-detail-hub="EV 12V"'));
+function hubOk(html, hubCode) {
+  const slots = (html.match(/data-image-slot=/g) ?? []).length;
   return (
-    codeMatch &&
+    html.includes(`data-battery-detail-hub="${hubCode}"`) &&
+    html.includes(`data-battery-detail-hub-version="${HUB_VERSION}"`) &&
+    html.includes("배터리 규격 허브") &&
     html.includes("오주문 방지") &&
     html.includes("택배 주문하기") &&
     html.includes("사진으로 최종 확인") &&
-    html.includes("data-image-slot") &&
-    (html.includes("이미지 준비중") || html.includes("사진 준비중") || html.includes("data-image-slot-state"))
+    html.includes("부산 매장/출장 문의") &&
+    html.includes("내 차량 다시 검색") &&
+    slots >= 3 &&
+    !html.includes("label\":\"배터리 규격\"") &&
+    !(html.includes("로케트") && html.includes("쏠라이트") && !html.includes("사진 슬롯"))
   );
 }
 
 let fail = 0;
 
-for (const p of batteryPaths) {
-  const code = decodeURIComponent(p.replace("/batteries/", ""));
+for (const [p, hubCode] of batteryPaths) {
   const url = BASE + p;
   const res = await fetch(url, { headers: { "Cache-Control": "no-cache" }, cache: "no-store" });
   const html = await res.text();
@@ -58,10 +61,13 @@ for (const p of batteryPaths) {
     res.status === 200 &&
     stamps.length === 1 &&
     stamps[0] === STAMP &&
-    hubOk(html, code === "EV%2012V" ? "EV 12V" : code);
+    hubOk(html, hubCode);
   if (!pass) fail++;
-  console.log(`${pass ? "PASS" : "FAIL"} battery ${p}`);
-  if (!pass) console.log(`  stamps=${stamps.join(",")} hub=${html.includes("data-battery-detail-hub")}`);
+  console.log(`${pass ? "PASS" : "FAIL"} battery ${hubCode} ${url}`);
+  if (!pass) {
+    console.log(`  stamps=${stamps.join(",")} hub=${html.includes("data-battery-detail-hub")}`);
+    console.log(`  version=${html.includes(HUB_VERSION)} slots=${(html.match(/data-image-slot=/g) ?? []).length}`);
+  }
 }
 
 for (const p of [...searchPaths, ...regressionPaths]) {
@@ -77,7 +83,7 @@ for (const p of [...searchPaths, ...regressionPaths]) {
     extra = /data-fuel-hero="하이브리드"[^>]*data-battery-hero="AGM60L"/.test(html);
   const pass = res.status === 200 && stamps[0] === STAMP && extra;
   if (!pass) fail++;
-  console.log(`${pass ? "PASS" : "FAIL"} ${p.slice(0, 50)}`);
+  console.log(`${pass ? "PASS" : "FAIL"} ${p.slice(0, 48)}`);
 }
 
 console.log(fail ? `\n${fail} FAILED` : "\nALL PASS");

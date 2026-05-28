@@ -7,7 +7,7 @@ const NO_STORE = {
   "Vercel-CDN-Cache-Control": "no-store",
 };
 
-/** /search?q=… 별 CDN·브라우저 캐시 혼재 방지 */
+/** /search · /batteries — query·규격별 CDN 캐시 혼재 방지 */
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
   for (const [key, value] of Object.entries(NO_STORE)) {
@@ -17,5 +17,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/search"],
+  matcher: ["/search", "/batteries/:path*"],
 };
