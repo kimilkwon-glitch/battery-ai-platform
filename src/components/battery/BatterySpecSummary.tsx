@@ -39,7 +39,7 @@ export function BatterySpecSummary({ code, showBrandTable = true }: Props) {
           <BatterySpecBadge tone="green">{summary.capacityAh5Hr}Ah (5HR)</BatterySpecBadge>
         ) : null}
         {summary.cca ? <BatterySpecBadge tone="green">CCA {summary.cca}A</BatterySpecBadge> : null}
-        {summary.rc ? <BatterySpecBadge tone="green">RC {summary.rc}</BatterySpecBadge> : null}
+        {summary.rc != null ? <BatterySpecBadge tone="green">RC {summary.rc}</BatterySpecBadge> : null}
         <BatterySpecBadge tone="gray">{terminalLayoutLabel(summary.terminalLayout)}</BatterySpecBadge>
       </div>
 

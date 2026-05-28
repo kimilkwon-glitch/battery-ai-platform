@@ -1,14 +1,15 @@
 import type { BatteryBrandSpec } from "@/data/battery/types";
-import { BRAND_LABEL, terminalTypeLabel } from "@/data/battery/spec-helpers";
-import { formatTerminalDisplay } from "@/data/battery/batterySpecIndex";
-import { bm } from "@/lib/design-tokens";
-
-function cell(value: string | number | null | undefined, missing = "확인 필요") {
-  const v = value == null || value === "" ? missing : String(value);
-  return (
-    <span className={v === missing ? "text-slate-400" : "font-semibold text-slate-800"}>{v}</span>
-  );
-}
+import {
+  BRAND_LABEL,
+  confidenceNote,
+  formatDimensionsDisplay,
+  formatSpecValue,
+  formatTerminalDisplay,
+  hasSpecValue,
+  isFieldListedMissing,
+  specsShowRcColumn,
+  specsShowWeightColumn,
+} from "@/data/battery/spec-helpers";
 
 type Props = {
   specs: BatteryBrandSpec[];
@@ -20,6 +21,8 @@ export function SpecComparisonTable({ specs, compact = false, showTerminal = tru
   if (specs.length === 0) return null;
 
   const rows = specs.slice(0, compact ? 4 : 8);
+  const showRc = specsShowRcColumn(rows);
+  const showWeight = specsShowWeightColumn(rows);
 
   return (
     <div className="overflow-x-auto">
@@ -30,33 +33,72 @@ export function SpecComparisonTable({ specs, compact = false, showTerminal = tru
             <th className="py-2 pr-3">표기</th>
             <th className="py-2 pr-3">20HR</th>
             <th className="py-2 pr-3">CCA</th>
-            <th className="py-2 pr-3">RC</th>
+            {showRc ? <th className="py-2 pr-3">RC</th> : null}
             <th className="py-2 pr-3">크기(mm)</th>
             {showTerminal ? <th className="py-2 pr-3">단자</th> : null}
-            <th className="py-2">중량</th>
+            {showWeight ? <th className="py-2">중량</th> : null}
           </tr>
         </thead>
         <tbody>
           {rows.map((s) => {
-            const size = s.dimensionsMm
-              ? `${s.dimensionsMm.length}×${s.dimensionsMm.width}×${s.dimensionsMm.height}`
-              : null;
+            const size = formatDimensionsDisplay(s.dimensionsMm);
+            const weightMissing =
+              isFieldListedMissing(s, "weightKg") || s.weightKg === undefined;
+            const rcVal = s.rc != null ? formatSpecValue(s.rc) : formatSpecValue(undefined);
+
             return (
               <tr className="border-b border-slate-100" key={`${s.brand}-${s.code}`}>
                 <td className="py-2.5 pr-3 font-black text-slate-900">{BRAND_LABEL[s.brand]}</td>
-                <td className="py-2.5 pr-3">{cell(s.productName || s.code)}</td>
                 <td className="py-2.5 pr-3">
-                  {cell(s.capacityAh20Hr != null ? `${s.capacityAh20Hr}Ah` : null)}
+                  <span className="font-semibold text-slate-800">{s.productName || s.code}</span>
                 </td>
-                <td className="py-2.5 pr-3">{cell(s.cca != null ? `${s.cca}A` : null)}</td>
-                <td className="py-2.5 pr-3">{cell(s.rc)}</td>
-                <td className="py-2.5 pr-3">{cell(size)}</td>
+                <td className="py-2.5 pr-3">
+                  {hasSpecValue(s.capacityAh20Hr)
+                    ? formatSpecValue(s.capacityAh20Hr, "Ah")
+                    : formatSpecValue(undefined)}
+                </td>
+                <td className="py-2.5 pr-3">
+                  {hasSpecValue(s.cca) ? formatSpecValue(s.cca, "A") : formatSpecValue(undefined)}
+                </td>
+                {showRc ? (
+                  <td className="py-2.5 pr-3">
+                    <span
+                      className={
+                        s.rc != null ? "font-semibold text-slate-800" : "text-slate-400"
+                      }
+                    >
+                      {rcVal}
+                      {confidenceNote(s.fieldConfidence?.rc) ? (
+                        <span className="ml-1 text-[9px] font-medium text-slate-400">
+                          ({confidenceNote(s.fieldConfidence?.rc)})
+                        </span>
+                      ) : null}
+                    </span>
+                  </td>
+                ) : null}
+                <td className="py-2.5 pr-3">
+                  <span className={size ? "font-semibold text-slate-800" : "text-slate-400"}>
+                    {size ?? formatSpecValue(undefined)}
+                  </span>
+                </td>
                 {showTerminal ? (
                   <td className="py-2.5 pr-3 text-[10px] font-medium text-slate-600">
                     {formatTerminalDisplay(s)}
                   </td>
                 ) : null}
-                <td className="py-2.5">{cell(s.weightKg != null ? `${s.weightKg}kg` : null)}</td>
+                {showWeight ? (
+                  <td className="py-2.5">
+                    <span
+                      className={
+                        !weightMissing && s.weightKg != null
+                          ? "font-semibold text-slate-800"
+                          : "text-slate-400"
+                      }
+                    >
+                      {weightMissing ? formatSpecValue(undefined) : formatSpecValue(s.weightKg, "kg")}
+                    </span>
+                  </td>
+                ) : null}
               </tr>
             );
           })}

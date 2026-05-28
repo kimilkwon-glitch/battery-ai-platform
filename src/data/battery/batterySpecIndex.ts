@@ -8,7 +8,11 @@ import type {
   TerminalLayout,
   TerminalType,
 } from "./types";
-import { terminalTypeLabel } from "./spec-helpers";
+import {
+  formatDimensionsDisplay,
+  formatTerminalDisplay,
+  terminalTypeLabel,
+} from "./spec-helpers";
 
 const BRAND_ORDER: BatteryBrand[] = ["ROCKET", "DELKOR", "ATLASBX", "SOLITE"];
 
@@ -19,6 +23,7 @@ const SERIES_BY_NORM: Record<string, string> = {
   AGM95L: "L5",
   AGM105L: "L6",
   DIN74L: "DIN H6",
+  DIN78L: "DIN H6 (78Ah)",
   DIN62L: "DIN H5",
 };
 
@@ -31,7 +36,8 @@ const CONFUSION: Record<string, string[]> = {
   "100R": ["90R", "AGM95L"],
   "90R": ["100R"],
   "80L": ["AGM80L", "CMF80L"],
-  DIN74L: ["AGM80L", "57412", "57820"],
+  DIN74L: ["AGM80L", "57412", "DIN78L"],
+  DIN78L: ["DIN74L", "57820", "GB57820"],
   "EV 12V": ["AGM60L"],
 };
 
@@ -46,6 +52,7 @@ export const HOME_CARD_COPY: Record<string, string> = {
   CMF80L: "일반 충전계통 차량에 쓰이는 80Ah급 L타입 배터리입니다.",
   "100R": "상용차에서 많이 쓰이는 R타입 대용량 일반 배터리입니다.",
   DIN74L: "DIN 74Ah 계열입니다. 숫자 표기명과 함께 쓰이는 경우가 있습니다.",
+  DIN78L: "DIN 78Ah(57820) 계열입니다. 57412(74Ah)와 Ah·품번이 다를 수 있습니다.",
   "EV 12V": "전기차 보조 12V — 고전압 메인 배터리와 별도입니다.",
 };
 
@@ -60,7 +67,8 @@ const EXPERT_MEMO: Record<string, string> = {
   "100R": "R타입 상용 대용량 — 포터2 연식·90R 구분이 중요합니다. AGM95L과 타입·단자가 다릅니다.",
   "90R": "R타입 90Ah급 상용 — 100R과 트레이·홀 패턴이 다를 수 있습니다.",
   "80L": "일반 CMF/GB 80Ah L타입 — AGM80L과 충전계·타입이 다릅니다.",
-  DIN74L: "DIN H6(74Ah) — 57412·57820 등 품번 표기가 다릅니다. ISG는 AGM 우선 검토.",
+  DIN74L: "DIN H6(74Ah) — CMF57412 등 74Ah 품번. ISG는 AGM 우선 검토.",
+  DIN78L: "로케트 GB57820(78Ah) — 57412와 Ah 체급이 다릅니다. CCA·RC는 제원표 기준, 중량은 확인 필요.",
   "EV 12V": "EV 보조 12V — 메인 고전압 팩과 별개입니다.",
 };
 
@@ -120,12 +128,30 @@ function pickTerminal(specs: BatteryBrandSpec[]): TerminalLayout {
 
 function pickTerminalType(specs: BatteryBrandSpec[]): TerminalType {
   const rocket = specs.find((s) => s.brand === "ROCKET");
-  return rocket?.terminalType ?? specs.find((s) => s.terminalType !== "UNKNOWN")?.terminalType ?? "UNKNOWN";
+  const t =
+    rocket?.terminalType ??
+    specs.find((s) => s.terminalType != null && s.terminalType !== "UNKNOWN")?.terminalType;
+  return t ?? "UNKNOWN";
 }
 
 function maxCca(specs: BatteryBrandSpec[]): number | null {
   const vals = specs.map((s) => s.cca).filter((v): v is number => v != null);
   return vals.length ? Math.max(...vals) : null;
+}
+
+/** 참고 필드 — 매칭에 사용하지 않음 */
+function pickRc(specs: BatteryBrandSpec[]): number | undefined {
+  const rocket = specs.find((s) => s.brand === "ROCKET");
+  if (rocket?.rc != null) return rocket.rc;
+  return specs.find((s) => s.rc != null)?.rc;
+}
+
+function pickWeightKg(specs: BatteryBrandSpec[]): number | undefined {
+  const withWeight = specs.filter(
+    (s) => s.weightKg != null && !s.missingFields?.includes("weightKg"),
+  );
+  const rocket = withWeight.find((s) => s.brand === "ROCKET");
+  return rocket?.weightKg ?? withWeight[0]?.weightKg;
 }
 
 export function getNormalizedBatterySummary(raw: string): NormalizedBatterySummary | null {
@@ -143,8 +169,8 @@ export function getNormalizedBatterySummary(raw: string): NormalizedBatterySumma
     capacityAh20Hr: rocket?.capacityAh20Hr ?? primary.capacityAh20Hr ?? null,
     capacityAh5Hr: rocket?.capacityAh5Hr ?? primary.capacityAh5Hr ?? null,
     cca: rocket?.cca ?? maxCca(specs),
-    rc: rocket?.rc ?? specs.find((s) => s.rc != null)?.rc ?? null,
-    weightKg: rocket?.weightKg ?? specs.find((s) => s.weightKg != null)?.weightKg ?? null,
+    rc: pickRc(specs),
+    weightKg: pickWeightKg(specs),
     dimensionsMm: rocket?.dimensionsMm ?? primary.dimensionsMm ?? null,
     terminalLayout: pickTerminal(specs),
     terminalPolarity: rocket?.terminalPolarity ?? primary.terminalPolarity ?? "UNKNOWN",
@@ -163,9 +189,8 @@ export function getNormalizedBatterySummary(raw: string): NormalizedBatterySumma
 }
 
 export function formatDimensions(d: NormalizedBatterySummary["dimensionsMm"]): string | null {
-  if (!d) return null;
-  const th = d.totalHeight ? ` (총 ${d.totalHeight})` : "";
-  return `${d.length}×${d.width}×${d.height}mm${th}`;
+  const s = formatDimensionsDisplay(d ?? undefined);
+  return s ?? null;
 }
 
 export function terminalLayoutLabel(layout: TerminalLayout): string {
@@ -174,12 +199,7 @@ export function terminalLayoutLabel(layout: TerminalLayout): string {
   return "확인 필요";
 }
 
-export function formatTerminalDisplay(spec: BatteryBrandSpec): string {
-  const parts = [terminalLayoutLabel(spec.terminalLayout)];
-  const tt = terminalTypeLabel(spec.terminalType);
-  if (tt !== "확인 필요") parts.push(tt);
-  return parts.join(" · ");
-}
+export { formatTerminalDisplay } from "./spec-helpers";
 
 /** 메인·인기 카드 */
 export function getHomeCardCopy(raw: string): string | null {

@@ -2,7 +2,7 @@ import type {
   BatteryBrand,
   BatteryBrandSpec,
   BatteryDimensionsMm,
-  BatteryFamily,
+  FieldConfidenceLevel,
   TerminalLayout,
   TerminalPolarity,
   TerminalType,
@@ -12,9 +12,9 @@ export function dims(
   length: number,
   width: number,
   height: number,
-  totalHeight?: number | null,
+  totalHeight?: number,
 ): BatteryDimensionsMm {
-  return { length, width, height, totalHeight: totalHeight ?? null };
+  return { length, width, height, ...(totalHeight != null ? { totalHeight } : {}) };
 }
 
 export function polarityForLayout(layout: TerminalLayout): TerminalPolarity {
@@ -31,20 +31,55 @@ export type SpecInput = Omit<
   exposeToCustomer?: boolean;
   voltage?: number;
   terminalPolarity?: TerminalPolarity;
+  capacityAh5Hr?: number | null;
+  rc?: number | null;
+  weightKg?: number | null;
+  holdDown?: string | null;
+  terminalType?: TerminalType | null;
 };
 
-/** 브랜드별 제원 레코드 생성 — 불확실한 값은 호출부에서 null */
+function omitNullishOptional<T extends Record<string, unknown>>(obj: T): Partial<T> {
+  const out: Partial<T> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== null && v !== undefined) (out as Record<string, unknown>)[k] = v;
+  }
+  return out;
+}
+
+/** 브랜드별 제원 레코드 — null은 저장하지 않고 optional 생략 */
 export function makeSpec(input: SpecInput): BatteryBrandSpec {
   const layout = input.terminalLayout ?? "UNKNOWN";
-  return {
-    ...input,
+  const base: BatteryBrandSpec = {
+    code: input.code,
+    normalizedCode: input.normalizedCode,
+    brand: input.brand,
+    productName: input.productName,
     aliases: input.aliases ?? [],
+    family: input.family,
     voltage: input.voltage ?? 12,
+    capacityAh20Hr: input.capacityAh20Hr,
+    cca: input.cca,
     terminalLayout: layout,
     terminalPolarity: input.terminalPolarity ?? polarityForLayout(layout),
+    sourceNote: input.sourceNote,
     exposeToCustomer: input.exposeToCustomer ?? true,
     cautionNotes: input.cautionNotes,
+    fieldConfidence: input.fieldConfidence,
+    missingFields: input.missingFields ? [...input.missingFields] : undefined,
+    commonUse: input.commonUse,
+    layoutRaw: input.layoutRaw ?? undefined,
   };
+
+  const optional = omitNullishOptional({
+    capacityAh5Hr: input.capacityAh5Hr,
+    rc: input.rc,
+    weightKg: input.weightKg,
+    dimensionsMm: input.dimensionsMm,
+    terminalType: input.terminalType === "UNKNOWN" ? undefined : input.terminalType,
+    holdDown: input.holdDown,
+  });
+
+  return { ...base, ...optional };
 }
 
 export const BRAND_LABEL: Record<BatteryBrand, string> = {
@@ -54,6 +89,29 @@ export const BRAND_LABEL: Record<BatteryBrand, string> = {
   ATLASBX: "아트라스BX",
   UNKNOWN: "기타",
 };
+
+export function formatSpecValue(
+  value: string | number | null | undefined,
+  unit = "",
+): string {
+  if (value === undefined || value === null || value === "") return "확인 필요";
+  return `${value}${unit}`;
+}
+
+export function hasSpecValue(value: string | number | null | undefined): boolean {
+  return value !== undefined && value !== null && value !== "";
+}
+
+export function isFieldListedMissing(spec: BatteryBrandSpec, field: string): boolean {
+  return spec.missingFields?.includes(field) ?? false;
+}
+
+export function confidenceNote(level: FieldConfidenceLevel | undefined): string | null {
+  if (level === "inferred_from_same_series") return "동일 계열 정규화";
+  if (level === "public_spec") return "공개 제원";
+  if (level === "provided_screenshot") return "제공 자료";
+  return null;
+}
 
 export function terminalTypeLabel(t: TerminalType | undefined): string {
   switch (t) {
@@ -70,4 +128,35 @@ export function terminalTypeLabel(t: TerminalType | undefined): string {
     default:
       return "확인 필요";
   }
+}
+
+export function formatDimensionsDisplay(d: BatteryDimensionsMm | undefined): string | undefined {
+  if (!d) return undefined;
+  const th = d.totalHeight != null ? ` (총 ${d.totalHeight})` : "";
+  return `${d.length}×${d.width}×${d.height}mm${th}`;
+}
+
+/** 비교표 — 참고 필드 열 표시 여부 */
+export function specsShowWeightColumn(specs: BatteryBrandSpec[]): boolean {
+  return specs.some((s) => s.weightKg != null && !isFieldListedMissing(s, "weightKg"));
+}
+
+export function specsShowRcColumn(specs: BatteryBrandSpec[]): boolean {
+  return specs.some((s) => s.rc != null);
+}
+
+export function formatTerminalDisplay(spec: BatteryBrandSpec): string {
+  const parts = [terminalLayoutLabel(spec.terminalLayout)];
+  const tt = terminalTypeLabel(spec.terminalType);
+  if (tt !== "확인 필요") {
+    const note = confidenceNote(spec.fieldConfidence?.terminalType);
+    parts.push(note ? `${tt} (${note})` : tt);
+  }
+  return parts.join(" · ");
+}
+
+function terminalLayoutLabel(layout: TerminalLayout): string {
+  if (layout === "L") return "L타입";
+  if (layout === "R") return "R타입";
+  return "확인 필요";
 }

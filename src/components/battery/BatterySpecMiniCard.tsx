@@ -46,7 +46,12 @@ export function BatterySpecMiniCard({ code, compact = false, detailHref }: Props
             <dt className="font-bold text-slate-400">RC</dt>
             <dd className="font-black text-slate-800">{summary.rc}</dd>
           </div>
-        ) : null}
+        ) : (
+          <div>
+            <dt className="font-bold text-slate-400">RC</dt>
+            <dd className="font-medium text-slate-400">확인 필요</dd>
+          </div>
+        )}
         <div>
           <dt className="font-bold text-slate-400">단자</dt>
           <dd className="font-black text-slate-800">
