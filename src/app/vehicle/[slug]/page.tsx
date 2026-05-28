@@ -155,7 +155,7 @@ export default async function VehicleDetailPage({
 
                 <p className={bm.label}>차량 배터리 프로필</p>
 
-                <h1 className="mt-1 text-xl font-black text-slate-950">{displayTitle}</h1>
+                <h1 className={`${bm.sectionTitleLg} mt-1`}>{displayTitle}</h1>
 
                 {batteryPage.profile?.subtitle ? (
 

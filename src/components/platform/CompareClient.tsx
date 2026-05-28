@@ -184,7 +184,9 @@ export function CompareClient({ initial }: { initial: string[] }) {
           <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
             {keyDiffs.map((d) => (
               <li key={d} className={`flex gap-2 ${bm.textSub} text-xs`}>
-                <span className="font-black text-[var(--bm-accent)]">·</span>
+                <span className="font-bold text-slate-400" aria-hidden>
+                  •
+                </span>
                 {d}
               </li>
             ))}

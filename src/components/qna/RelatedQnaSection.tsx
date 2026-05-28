@@ -36,7 +36,7 @@ export function RelatedQnaSection({
     <section className={`${bm.card} ${bm.cardPad}`} data-section="related-qna">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-heading text-base font-black tracking-[-0.02em] text-slate-950">{title}</h2>
+          <h2 className={bm.sectionTitle}>{title}</h2>
           {description ? (
             <p className="mt-1 text-xs font-medium leading-relaxed text-slate-500">{description}</p>
           ) : null}
@@ -65,12 +65,12 @@ export function RelatedQnaSection({
         ))}
       </ul>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Link className={`${bm.btnPrimary} text-xs`} href={HUB_PHOTO}>
-          사진으로 최종 확인
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        <Link className={`${bm.btnNavy} w-full text-xs sm:w-auto`} href={hubHref}>
+          관련 질문 더보기
         </Link>
-        <Link className={`${bm.btnSecondary} text-xs`} href={HUB_STORE}>
-          부산 매장/출장 문의
+        <Link className={`${bm.btnGhost} w-full text-xs sm:w-auto`} href={HUB_PHOTO}>
+          사진으로 최종 확인
         </Link>
       </div>
     </section>

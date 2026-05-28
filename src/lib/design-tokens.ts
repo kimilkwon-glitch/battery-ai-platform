@@ -36,21 +36,32 @@ export const bm = {
   intentBadge:
     "inline-flex items-center rounded-lg bg-[var(--bm-navy)]/[0.04] px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-[var(--bm-primary-dark)] ring-1 ring-[var(--bm-border)]",
 
+  /** 메인 hero H1 — Pretendard 700 (선명도 우선) */
   heroDisplay:
-    "font-heading text-[1.65rem] font-black leading-[1.2] tracking-[-0.03em] text-[var(--bm-text)] sm:text-[2rem] lg:text-[2.15rem]",
+    "bm-section-title text-[1.65rem] leading-[1.25] text-[var(--bm-text)] sm:text-[2rem] lg:text-[2.1rem]",
   heroLead:
-    "text-base font-bold leading-relaxed tracking-[-0.01em] text-[var(--bm-primary-dark)] sm:text-lg",
-  titleLg:
-    "font-heading text-xl font-black tracking-[-0.02em] text-[var(--bm-text)] sm:text-2xl",
+    "text-base font-bold leading-relaxed tracking-normal text-[var(--bm-primary-dark)] sm:text-lg",
+  /** 페이지·섹션 제목 공통 (전 페이지 SectionHeader·PageShell) */
+  sectionTitle:
+    "bm-section-title text-lg leading-snug text-[var(--bm-text)] sm:text-xl",
+  sectionTitleLg:
+    "bm-section-title text-xl leading-snug text-[var(--bm-text)] sm:text-2xl",
+  titleLg: "bm-section-title text-xl leading-snug text-[var(--bm-text)] sm:text-2xl",
   specData:
     "spec-code text-xs font-bold tabular-nums tracking-wide text-[var(--bm-muted)]",
-  titleMd: "font-heading text-lg font-black tracking-[-0.02em] text-[var(--bm-text)]",
-  cardTitle: "text-sm font-black leading-snug text-[var(--bm-text)]",
-  specTitle: "spec-code text-xl font-black tracking-tight text-[var(--bm-text)] sm:text-2xl",
+  titleMd: "bm-section-title text-lg leading-snug text-[var(--bm-text)] sm:text-xl",
+  cardTitle: "text-sm font-bold leading-snug text-[var(--bm-text)]",
+  specTitle: "spec-code text-xl font-bold tracking-normal text-[var(--bm-text)] sm:text-2xl",
+  sectionHead: "bm-section-head",
+  sectionBlock:
+    "bm-card-surface overflow-visible rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-md)]",
+  sectionBlockPad: "p-4 sm:p-5",
+  rankCard:
+    "overflow-hidden rounded-[18px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/20 motion-safe:hover:shadow-[var(--bm-shadow-md)]",
   textSub: "text-sm font-medium leading-relaxed text-[var(--bm-muted)]",
   muted: "text-[var(--bm-muted)]",
   label:
-    "text-[11px] font-black uppercase tracking-[0.06em] text-[var(--bm-primary)]",
+    "text-[11px] font-bold uppercase tracking-[0.04em] text-[var(--bm-primary)]",
 
   btnPrimary:
     "inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[var(--bm-primary)] px-5 text-sm font-black text-white shadow-sm transition motion-safe:hover:bg-[var(--bm-primary-hover)] motion-safe:hover:shadow-[var(--bm-shadow-sm)]",

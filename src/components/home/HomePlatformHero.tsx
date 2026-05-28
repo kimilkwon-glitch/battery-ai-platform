@@ -16,7 +16,7 @@ import { bm } from "@/lib/design-tokens";
 
 export function HomePlatformHero() {
   return (
-    <section className={bm.heroPanel} data-home-section="hero" data-precision-garage="hero">
+    <section className={`${bm.heroPanel} mb-1`} data-home-section="hero" data-precision-garage="hero">
       <div className={bm.heroPanelAccent}>
         <p className={bm.label}>{BRAND_HERO_LABEL}</p>
         <p className="mt-1 text-[10px] font-semibold text-[var(--bm-muted)]">

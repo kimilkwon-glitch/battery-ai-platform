@@ -73,9 +73,7 @@ export default async function CommunityQuestionDetailPage({
 
       <article className={`${bm.card} ${bm.cardPad} mt-4`}>
         <p className="text-[10px] font-bold uppercase tracking-wide text-blue-600">{question.category}</p>
-        <h1 className="font-heading mt-2 text-xl font-black leading-snug tracking-[-0.02em] text-slate-950 sm:text-2xl">
-          {question.title}
-        </h1>
+        <h1 className={`${bm.sectionTitleLg} mt-2`}>{question.title}</h1>
         <p className="mt-4 text-sm font-medium leading-relaxed text-slate-700">
           {question.shortAnswer ?? question.answer}
         </p>
@@ -131,7 +129,7 @@ export default async function CommunityQuestionDetailPage({
 
       {related.length > 0 ? (
         <section className={`${bm.card} ${bm.cardPad} mt-4`}>
-          <h2 className="font-heading text-base font-black text-slate-950">관련 질문</h2>
+          <h2 className={bm.sectionTitle}>관련 질문</h2>
           <ul className="mt-3 space-y-2">
             {related.map((rq) => (
               <li key={rq.id}>

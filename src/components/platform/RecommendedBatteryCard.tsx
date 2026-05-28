@@ -40,20 +40,21 @@ export function RecommendedBatteryCard({
           <span className="text-[11px] font-semibold text-[var(--bm-muted)]">fitment 판정 · DB 1순위</span>
         </div>
       ) : null}
-      <div className="grid gap-0 sm:grid-cols-[minmax(148px,220px)_1fr]">
-        <div className="bg-[var(--bm-image-bg)] p-3 sm:border-r sm:border-[var(--bm-border)]">
+      <div className="grid gap-0 max-sm:grid-rows-[auto_1fr] sm:grid-cols-[minmax(148px,220px)_1fr]">
+        <div className="bg-[var(--bm-image-bg)] p-3 max-sm:max-h-[140px] sm:border-r sm:border-[var(--bm-border)]">
           <BatteryThumbnail
             code={display.code}
             imageSet={display.imageSet ?? undefined}
             role="main"
             fit={batteryImageFit(display.code)}
             ratio="4/3"
-            tall
+            tall={false}
+            className="!h-[120px] w-full sm:!h-[160px]"
             overlayLabel={false}
             surface="transparent"
           />
         </div>
-        <div className="p-4">
+        <div className="p-4 max-sm:pt-3">
           <h3 className={bm.specTitle}>
             {display.code}
             <span className="ml-1.5 text-base font-bold text-[var(--bm-muted)]">배터리</span>

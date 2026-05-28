@@ -31,7 +31,7 @@ function SectionHeader({ kicker, title, desc }: { kicker?: string; title: string
       {kicker ? (
         <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">{kicker}</p>
       ) : null}
-      <h2 className="mt-0.5 text-lg font-black text-slate-950">{title}</h2>
+      <h2 className={`${bm.sectionTitle} mt-0.5`}>{title}</h2>
       {desc ? <p className="mt-0.5 text-xs font-medium text-slate-400">{desc}</p> : null}
     </div>
   );
@@ -118,9 +118,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
     <div className="space-y-5">
       <section className={`${bm.heroPanel} p-5 lg:p-6`}>
         <p className="text-[11px] font-black uppercase tracking-[0.08em] text-[#2563EB]">{BRAND_QNA_LABEL}</p>
-        <h1 className="font-heading mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-[#0F172A] lg:text-[1.75rem]">
-          배터리 매칭 질문 허브
-        </h1>
+        <h1 className={`${bm.sectionTitleLg} mt-2`}>배터리 매칭 질문 허브</h1>
         <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-[#64748B]">
           차종·규격·증상별 Q&A를 검색하고, 관련 배터리·차량·사진확인·문의로 바로 이어갑니다.
         </p>

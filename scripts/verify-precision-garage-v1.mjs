@@ -2,7 +2,7 @@
  * Precision Garage V1 — stamp, fonts, Q&A, key routes (no-cache)
  */
 const BASE = process.argv[2] || "http://localhost:3000";
-const STAMP = "BM-UX-REV-20260528-DESIGN-MOBILE-V1";
+const STAMP = "BM-UX-REV-20260528-DESIGN-MOBILE-V2";
 
 const routes = [
   ["/", ["precision-garage-v1", "home-popular-qna", STAMP]],

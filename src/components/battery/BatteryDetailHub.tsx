@@ -149,8 +149,8 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
             <BatteryImageOrSlot
               code={displayCode}
               ratio="4/3"
-              tall
-              className="mx-auto max-h-[200px] rounded-xl sm:max-h-none"
+              tall={false}
+              className="mx-auto h-[120px] max-h-[140px] rounded-xl sm:h-auto sm:max-h-none sm:min-h-[160px]"
             />
           </div>
           <div className="order-1 p-4 sm:order-none sm:p-5">

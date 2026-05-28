@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import { RelatedQnaSection } from "@/components/qna/RelatedQnaSection";
 import { bm } from "@/lib/design-tokens";
 import { getHomeFeaturedQuestions } from "@/lib/qna";
@@ -11,13 +12,11 @@ export function HomePopularQna() {
   return (
     <section className={`${bm.card} overflow-hidden`} data-section="home-popular-qna">
       <div className={`${bm.cardPad} border-b border-slate-100`}>
-        <p className="text-[10px] font-black uppercase tracking-[0.08em] text-blue-600">자주 묻는 질문</p>
-        <h2 className="font-heading mt-1 text-lg font-black tracking-[-0.02em] text-slate-950">
-          규격·연식·방전 — 바로 답 찾기
-        </h2>
-        <p className="mt-1 text-xs font-medium text-slate-500">
-          포터2 90R/100R, 블랙박스 방전, EV 12V, AGM 차이, CMF80L 검색까지 한곳에서 연결합니다.
-        </p>
+        <SectionHeader
+          label="자주 묻는 질문"
+          title="규격·연식·방전 — 바로 답 찾기"
+          description="포터2 90R/100R, 블랙박스 방전, EV 12V, AGM 차이, CMF80L 검색까지 한곳에서 연결합니다."
+        />
         <div className="mt-3 flex flex-wrap gap-2">
           <Link className={`${bm.btnGhost} text-[10px]`} href={searchHref("포터2 배터리")}>
             포터2 검색

@@ -18,7 +18,7 @@ export default function Home() {
     <main className={bm.pageBg} data-page="precision-garage-v1">
       <PortalHeader showSearch />
 
-      <div className={`${bm.pageContainerWide} ${bm.sectionGap} py-6`}>
+      <div className={`${bm.pageContainerWide} space-y-6 py-6 sm:space-y-7`}>
         <HomePlatformHero />
         <HomePopularBatteryRanking />
         <HomePopularVehicleSearch />
