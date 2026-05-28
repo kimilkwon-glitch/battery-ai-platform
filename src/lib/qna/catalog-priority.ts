@@ -7,9 +7,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     id: "q-hybrid-replace",
     question: "하이브리드 차량도 일반 배터리처럼 교체하나요?",
     shortAnswer:
-      "하이브리드도 12V 보조배터리 교체가 필요할 수 있습니다. 다만 일반 승용 규격과 동일하다고 단정하기 어렵습니다.",
+      "하이브리드도 12V 보조배터리 교체가 필요할 수 있습니다. 일반 승용과 동일하다고 보기는 어렵습니다.",
     answer:
-      "하이브리드는 고전압 시스템과 별도로 12V 보조배터리가 있습니다. 교체 주기·규격은 차종·연료·트림에 따라 달라 사진·라벨 확인이 안전합니다.",
+      "하이브리드는 고전압 시스템과 별도로 12V 보조배터리가 있습니다. 차종·연료·트림에 따라 규격이 달라질 수 있어, 라벨·사진을 함께 보는 것이 안전합니다.",
     category: "EV/하이브리드",
     tags: ["하이브리드", "보조배터리", "AGM60L"],
     relatedBatteryCodes: ["AGM60L", "EV 12V"],
@@ -22,7 +22,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-agm60l-vs-ev12v",
     question: "AGM60L과 EV 12V는 같은 건가요?",
-    shortAnswer: "같은 12V라도 용도·충전 패턴이 달라 차종별 확인이 필요합니다.",
+    shortAnswer: "같은 12V라도 용도·충전 패턴이 달라 차종별로 보는 것이 좋습니다.",
     answer:
       "AGM60L은 승용·하이브리드 보조전원에, EV 12V는 전기차 보조전원에 쓰이는 경우가 많습니다. 라벨·차종 기준으로 구분하는 것이 안전합니다.",
     category: "EV/규격",
@@ -38,9 +38,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-sportage-nq5-agm60l",
     question: "스포티지 NQ5 하이브리드 배터리는 왜 AGM60L로 보나요?",
-    shortAnswer: "NQ5 하이브리드 트림에서 AGM60L 후보가 많지만, 연식·장착 사진 확인이 필요합니다.",
+    shortAnswer: "NQ5 하이브리드에서 AGM60L 후보가 많지만, 연식·장착 사진을 함께 보는 것이 좋습니다.",
     answer:
-      "스포티지 NQ5 하이브리드는 보조 12V 규격 후보로 AGM60L이 자주 확인됩니다. 트림·연식에 따라 달라질 수 있어 라벨·단자 사진 확인을 권장합니다.",
+      "스포티지 NQ5 하이브리드는 보조 12V 후보로 AGM60L이 자주 나옵니다. 트림·연식에 따라 달라질 수 있어, 라벨·단자 사진을 함께 보면 오주문을 줄일 수 있습니다.",
     category: "차종/규격",
     tags: ["스포티지 NQ5", "하이브리드", "AGM60L"],
     vehicleId: "sportage-nq5",
@@ -56,9 +56,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-k8-hybrid-photo",
     question: "K8 하이브리드 보조배터리는 사진 확인이 필요한가요?",
-    shortAnswer: "연식·트림에 따라 후보 규격이 달라질 수 있어 사진 확인을 권장합니다.",
+    shortAnswer: "연식·트림에 따라 후보가 달라질 수 있어 사진 확인을 권장합니다.",
     answer:
-      "K8 하이브리드는 AGM60L 후보가 많지만, 장착 위치·단자·라벨이 트림별로 다를 수 있습니다. 사진으로 최종 확인하는 것이 안전합니다.",
+      "K8 하이브리드는 AGM60L 후보가 많지만, 장착 위치·단자·라벨이 트림별로 다를 수 있습니다. 현재 장착 배터리 사진을 함께 보면 가장 정확합니다.",
     category: "EV/하이브리드",
     tags: ["K8", "하이브리드", "AGM60L", "사진확인"],
     vehicleId: "k8-gl3",
@@ -76,7 +76,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "전기차 보조배터리는 고전압 배터리와 다른가요?",
     shortAnswer: "고전압(주행) 배터리와 12V 보조배터리는 역할이 완전히 다릅니다.",
     answer:
-      "EV 주행용 고전압 팩과 12V 보조배터리는 별도입니다. 문잠금·통신·시동 준비 등에 12V가 쓰이며, EV 전용 12V 규격 확인이 필요합니다.",
+      "EV 주행용 고전압 팩과 12V 보조배터리는 별도입니다. 문잠금·통신·시동 준비 등에 12V가 쓰이며, EV 전용 12V 규격을 차종 기준으로 보는 것이 좋습니다.",
     category: "EV/규격",
     tags: ["EV", "보조배터리", "EV 12V"],
     batteryCode: "EV 12V",
@@ -90,9 +90,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-porter2-2020-100r",
     question: "포터2 2020년 이후는 왜 100R로 보나요?",
-    shortAnswer: "2020년형 이후 트림에서 100R 후보가 많지만, 연식·사진으로 최종 확인이 필요합니다.",
+    shortAnswer: "2020년형 이후 트림에서 100R 후보가 많습니다. 연식·사진을 함께 보는 것이 안전합니다.",
     answer:
-      "2020년형 이후 포터2는 100R(GB100R) 기준으로 안내하는 경우가 많습니다. 다만 개조·특장 차량은 달라질 수 있어 연식·라벨 확인이 필요합니다.",
+      "2020년형 이후 포터2는 100R(GB100R) 기준으로 안내하는 경우가 많습니다. 개조·특장 차량은 달라질 수 있어, 연식·라벨·현재 장착 배터리를 함께 보는 것이 좋습니다.",
     category: "연식/규격",
     tags: ["포터2", "100R", "2020"],
     vehicleId: "porter2-new",
@@ -107,9 +107,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-90r-100r-interchange",
     question: "100R과 90R은 서로 대체 가능한가요?",
-    shortAnswer: "크기·단자가 비슷해도 단순 대체는 어렵습니다. 연식·라벨 확인이 필요합니다.",
+    shortAnswer: "크기·단자가 비슷해도 단순 대체는 어렵습니다. 연식·라벨을 함께 보는 것이 좋습니다.",
     answer:
-      "90R과 100R은 계열이 다릅니다. 트레이·홀·단자·용량이 달라 무리한 대체는 위험합니다. 현재 장착 배터리 사진으로 확인하세요.",
+      "90R과 100R은 계열이 다릅니다. 트레이·홀·단자·용량이 달라 무리한 대체는 위험합니다. 현재 장착 배터리 사진을 함께 보면 오주문을 줄일 수 있습니다.",
     category: "호환",
     tags: ["90R", "100R", "포터2"],
     relatedBatteryCodes: ["90R", "100R"],
@@ -122,9 +122,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-100r-l-or-r",
     question: "100R은 L타입인가요 R타입인가요?",
-    shortAnswer: "100R은 R(플러스 단자) 계열로 확인하는 경우가 많습니다. 라벨·단자 사진 확인이 필요합니다.",
+    shortAnswer: "100R은 R(플러스 단자) 계열로 보는 경우가 많습니다. 라벨·단자 사진이 도움이 됩니다.",
     answer:
-      "상용 100R은 R타입(플러스 단자 위치)로 안내하는 경우가 많습니다. 차량 트레이·케이블 방향에 따라 달라질 수 있어 사진 확인을 권장합니다.",
+      "상용 100R은 R타입(플러스 단자 위치)로 안내하는 경우가 많습니다. 차량 트레이·케이블 방향에 따라 달라질 수 있어, 사진으로 확인하는 것이 안전합니다.",
     category: "단자/규격",
     tags: ["100R", "R타입", "포터2"],
     batteryCode: "100R",
@@ -137,9 +137,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-porter2-year-importance",
     question: "포터2 배터리는 연식 확인이 왜 중요한가요?",
-    shortAnswer: "연식에 따라 90R·100R 후보가 나뉘기 때문입니다.",
+    shortAnswer: "연식에 따라 90R·100R 후보가 나뉠 수 있기 때문입니다.",
     answer:
-      "포터2는 세대·연식에 따라 90R과 100R 후보가 달라집니다. 연식만으로 100% 확정은 어렵지만, 사진·라벨과 함께 보면 오주문을 줄일 수 있습니다.",
+      "포터2는 세대·연식에 따라 90R과 100R 후보가 달라집니다. 연식만으로 단정하기는 어렵지만, 사진·라벨과 함께 보면 오주문을 줄일 수 있습니다.",
     category: "연식/규격",
     tags: ["포터2", "연식", "90R", "100R"],
     relatedVehicleSlugs: ["porter2-new", "porter2-old"],
@@ -154,7 +154,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "CMF80L과 AGM80L은 같은 건가요?",
     shortAnswer: "표기가 비슷해도 계열·단자·적용 차종이 다를 수 있습니다.",
     answer:
-      "CMF80L과 AGM80L은 제조사·계열 표기가 다릅니다. 스타리아 등 일부 차종은 CMF80L 후보가 많아 라벨·단자 사진 확인이 필요합니다.",
+      "CMF80L과 AGM80L은 제조사·계열 표기가 다릅니다. 스타리아 등 일부 차종은 CMF80L 후보가 많아, 라벨·단자 사진을 함께 보는 것이 안전합니다.",
     category: "규격",
     tags: ["CMF80L", "AGM80L", "스타리아"],
     relatedBatteryCodes: ["CMF80L", "AGM80L"],
@@ -168,7 +168,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "CMF80L을 80L로 검색해도 되나요?",
     shortAnswer: "80L만으로 검색하면 CMF80L이 누락될 수 있어 CMF80L로 검색하는 것이 안전합니다.",
     answer:
-      "CMF80L은 CMF 계열 표기입니다. 80L만 검색하면 다른 80L 규격이 섞일 수 있어 CMF80L·차종명을 함께 검색하는 것을 권장합니다.",
+      "CMF80L은 CMF 계열 표기입니다. 80L만 검색하면 다른 80L 규격이 섞일 수 있어, CMF80L·차종명을 함께 검색하는 것을 권장합니다.",
     category: "규격",
     tags: ["CMF80L", "80L", "검색"],
     batteryCode: "CMF80L",
@@ -181,9 +181,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-staria-diesel-cmf80l",
     question: "스타리아 디젤은 왜 CMF80L로 확인하나요?",
-    shortAnswer: "스타리아 디젤 트림에서 CMF80L 후보가 많지만, 장착 사진 확인이 필요합니다.",
+    shortAnswer: "스타리아 디젤 트림에서 CMF80L 후보가 많습니다. 장착 사진을 함께 보는 것이 좋습니다.",
     answer:
-      "스타리아 디젤은 CMF80L 후보로 안내하는 경우가 많습니다. AGM80L·AGM80R과 혼동이 있어 라벨·단자 방향 사진 확인을 권장합니다.",
+      "스타리아 디젤은 CMF80L 후보로 안내하는 경우가 많습니다. AGM80L·AGM80R과 혼동이 있어, 라벨·단자 방향 사진을 함께 보는 것이 안전합니다.",
     category: "차종/규격",
     tags: ["스타리아", "디젤", "CMF80L"],
     vehicleId: "staria-us4",
@@ -197,9 +197,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-cmf80l-terminal",
     question: "CMF80L 단자 방향은 어떻게 확인하나요?",
-    shortAnswer: "배터리 라벨의 L/R 표기와 플러스 단자 위치 사진으로 확인합니다.",
+    shortAnswer: "라벨 L/R 표기와 +단자 위치 사진으로 볼 수 있습니다.",
     answer:
-      "라벨의 L/R·극성 표기와 엔진룸에서 플러스 단자 위치를 함께 확인하세요. 단자 방향이 다르면 케이블이 맞지 않습니다.",
+      "L/R 단자 방향이 다르면 장착이 어려울 수 있습니다. 라벨의 L/R·극성 표기와 엔진룸에서 플러스 단자 위치를 함께 보는 것이 가장 정확합니다.",
     category: "단자/규격",
     tags: ["CMF80L", "단자방향", "사진확인"],
     batteryCode: "CMF80L",
@@ -211,9 +211,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-cmf80l-swap-agm80l",
     question: "CMF80L은 AGM80L로 바꿔도 되나요?",
-    shortAnswer: "차종·트레이·단자 조건 확인 없이 단순 대체는 권장하지 않습니다.",
+    shortAnswer: "차종·트레이·단자 조건 없이 단순 대체는 권장하지 않습니다.",
     answer:
-      "CMF80L과 AGM80L은 계열·단자·BMS 조건이 다를 수 있습니다. 스타리아 등은 CMF80L 유지가 안전한 경우가 많아 사진·차종 확인 후 결정하세요.",
+      "CMF80L과 AGM80L은 계열·단자·BMS 조건이 다를 수 있습니다. 스타리아 등은 CMF80L 유지가 안전한 경우가 많아, 사진·차종 정보를 본 뒤 판단하는 것이 좋습니다.",
     category: "호환",
     tags: ["CMF80L", "AGM80L"],
     relatedBatteryCodes: ["CMF80L", "AGM80L"],
@@ -224,9 +224,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-agm70l-vs-agm80l",
     question: "AGM70L과 AGM80L은 어떤 차이가 있나요?",
-    shortAnswer: "Ah·CCA·트레이 크기가 다릅니다. 차종별 장착 공간 확인이 필요합니다.",
+    shortAnswer: "Ah·CCA·트레이 크기가 다릅니다. 차종별 장착 공간을 함께 보는 것이 좋습니다.",
     answer:
-      "70·80은 용량(Ah) 계열 차이입니다. CCA·크기·고정 브라켓이 달라 차종 트레이에 맞는 규격을 확인해야 합니다. 무리한 업·다운그레이드는 주의가 필요합니다.",
+      "70·80은 용량(Ah) 계열 차이입니다. CCA·크기·고정 브라켓이 달라 차종 트레이에 맞는 규격을 맞춰야 합니다. 무리한 업·다운그레이드는 주의가 필요합니다.",
     category: "규격",
     tags: ["AGM70L", "AGM80L"],
     relatedBatteryCodes: ["AGM70L", "AGM80L"],
@@ -240,7 +240,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "그랜저 IG 가솔린과 디젤은 왜 배터리가 다를 수 있나요?",
     shortAnswer: "연료·ISG·장착 트레이에 따라 후보 규격이 달라질 수 있습니다.",
     answer:
-      "가솔린·디젤·LPG·HEV 트림마다 ISG·BMS·트레이 공간이 달라 AGM80L·AGM95L 등 후보가 나뉩니다. 연료·트림·사진 기준 확인이 필요합니다.",
+      "가솔린·디젤·LPG·HEV 트림마다 ISG·BMS·트레이 공간이 달라 AGM80L·AGM95L 등 후보가 나뉩니다. 연료·트림·사진을 함께 보는 것이 안전합니다.",
     category: "차종/규격",
     tags: ["그랜저 IG", "가솔린", "디젤"],
     vehicleId: "grandeur-ig",
@@ -265,7 +265,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "ISG 차량은 AGM을 써야 하나요?",
     shortAnswer: "ISG·스마트충전 차량은 AGM/EFB 유지가 안전한 경우가 많습니다.",
     answer:
-      "ISG 차량은 충전 제어·대기전류 특성상 AGM/EFB 유지가 권장됩니다. 일반 DIN으로 내리면 경고·수명 저하가 생길 수 있어 차종별 확인이 필요합니다.",
+      "ISG 차량은 충전 제어·대기전류 특성상 AGM/EFB 유지가 권장됩니다. 일반 DIN으로 내리면 경고·수명 저하가 생길 수 있어, 차종별로 보는 것이 좋습니다.",
     category: "호환",
     tags: ["ISG", "AGM"],
     relatedGuideId: "agm-vs-din",
@@ -278,7 +278,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "DIN74L과 57412, 57820은 같은 계열인가요?",
     shortAnswer: "제조사·유통 표기가 다를 뿐 DIN74 계열로 묶어 보는 경우가 많습니다.",
     answer:
-      "57412·57820 등은 DIN74 계열 호칭으로 쓰이기도 합니다. 차종·단자·크기는 라벨·사진으로 최종 확인하세요.",
+      "57412·57820 등은 DIN74 계열 호칭으로 쓰이기도 합니다. 차종·단자·크기는 라벨·사진을 함께 보는 것이 안전합니다.",
     category: "규격",
     tags: ["DIN74L", "57412", "57820"],
     batteryCode: "DIN74L",
@@ -289,9 +289,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-bongo3-din74l",
     question: "봉고3에 DIN74L이 들어가는 경우가 있나요?",
-    shortAnswer: "봉고3 일부 트림·연식에서 DIN74L 후보가 확인됩니다.",
+    shortAnswer: "봉고3 일부 트림·연식에서 DIN74L 후보가 있습니다.",
     answer:
-      "봉고3 트럭 등 상용 일부에서 DIN74L 후보가 있습니다. 연식·연료·특장 여부에 따라 달라질 수 있어 차종·사진 확인이 필요합니다.",
+      "봉고3 트럭 등 상용 일부에서 DIN74L 후보가 있습니다. 연식·연료·특장 여부에 따라 달라질 수 있어, 차종·사진을 함께 보는 것이 좋습니다.",
     category: "차종/규격",
     tags: ["봉고3", "DIN74L"],
     vehicleId: "bongo3-truck",
@@ -306,7 +306,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "DIN 배터리는 일반 80L과 다른가요?",
     shortAnswer: "DIN은 유럽 규격 체계이고, 80L은 Ah·단자 표기로 계열이 다릅니다.",
     answer:
-      "DIN74L 등은 크기·극성 체계가 다르고, AGM80L은 Ah·L/R 단자 표기입니다. 차종 트레이·ISG 조건에 맞는 규격을 확인해야 합니다.",
+      "DIN74L 등은 크기·극성 체계가 다르고, AGM80L은 Ah·L/R 단자 표기입니다. 차종 트레이·ISG 조건에 맞는 규격을 맞춰 보는 것이 좋습니다.",
     category: "규격",
     tags: ["DIN", "80L", "AGM80L"],
     relatedBatteryCodes: ["DIN74L", "AGM80L"],
@@ -318,7 +318,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "DIN74L과 DIN62L은 어떻게 구분하나요?",
     shortAnswer: "숫자는 Ah 계열이며, L은 단자 방향입니다. 트레이 크기·라벨로 구분합니다.",
     answer:
-      "74·62는 용량 계열, L/R은 플러스 단자 위치입니다. 트레이 길이·홀 패턴·라벨 코드로 구분하고, 무리한 대체는 피하세요.",
+      "74·62는 용량 계열, L/R은 플러스 단자 위치입니다. 트레이 길이·홀 패턴·라벨 코드로 구분하고, 무리한 대체는 피하는 것이 좋습니다.",
     category: "규격",
     tags: ["DIN74L", "DIN62L"],
     batteryCode: "DIN74L",
@@ -343,9 +343,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-long-park-discharge-replace",
     question: "장기주차 후 방전이면 바로 교체해야 하나요?",
-    shortAnswer: "충전 후 SOH·대기전류를 먼저 확인하고, 반복 방전이면 교체를 검토합니다.",
+    shortAnswer: "충전 후 SOH·대기전류를 먼저 보고, 반복 방전이면 교체를 검토합니다.",
     answer:
-      "1회 방전만으로 교체를 단정하기 어렵습니다. 충전·부하 테스트 후 SOH·대기전류·블랙박스 설정을 확인하세요. 반복 방전이면 교체·원인 점검이 필요합니다.",
+      "1회 방전만으로 교체를 단정하기는 어렵습니다. 충전·부하 테스트 후 SOH·대기전류·블랙박스 설정을 함께 보는 것이 좋습니다. 반복 방전이면 교체·원인 점검이 필요합니다.",
     category: "방전",
     tags: ["장기주차", "방전"],
     questionType: "방전",
@@ -357,7 +357,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "시동이 느리게 걸리면 배터리 문제인가요?",
     shortAnswer: "배터리·충전·시동 모터·추위 등 여러 원인이 있어 점검이 필요합니다.",
     answer:
-      "CCA 저하·충전 불량·단거리 주행·추위가 겹칠 수 있습니다. OCV·시동 전압·충전 전압을 함께 확인하고, 반복되면 SOH 점검을 권장합니다.",
+      "CCA 저하·충전 불량·단거리 주행·추위가 겹칠 수 있습니다. OCV·시동 전압·충전 전압을 함께 보고, 반복되면 SOH 점검을 권장합니다.",
     category: "방전/시동",
     tags: ["시동", "CCA", "SOH"],
     questionType: "방전",
@@ -368,7 +368,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "배터리 전압과 CCA는 어떻게 봐야 하나요?",
     shortAnswer: "OCV는 휴지 전압, CCA는 저온 시동 여유 지표입니다. 둘 다 함께 봅니다.",
     answer:
-      "엔진 정지 OCV 12.4V 전후가 양호한 편이나, 차종·온도·측정 조건에 따라 달라집니다. CCA는 부하 테스트·시동 전압 강하로 함께 확인하세요.",
+      "엔진 정지 OCV 12.4V 전후가 양호한 편이나, 차종·온도·측정 조건에 따라 달라집니다. CCA는 부하 테스트·시동 전압 강하를 함께 보는 것이 좋습니다.",
     category: "전압/CCA",
     tags: ["전압", "CCA", "OCV"],
     relatedGuideId: "cca-ah",
@@ -381,7 +381,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "100R과 AGM95L은 단순 대체 가능한가요?",
     shortAnswer: "계열·단자·차종이 달라 단순 대체는 어렵습니다.",
     answer:
-      "100R은 상용 R타입, AGM95L은 승용 AGM 계열로 용도가 다릅니다. 비교 검색은 차이 이해용이며, 최종 규격은 차종·사진으로 확인하세요.",
+      "100R은 상용 R타입, AGM95L은 승용 AGM 계열로 용도가 다릅니다. 비교는 차이 이해용이며, 규격은 차종·현재 장착 배터리 사진을 함께 보는 것이 안전합니다.",
     category: "호환",
     tags: ["100R", "AGM95L", "비교"],
     relatedBatteryCodes: ["100R", "AGM95L"],
@@ -395,7 +395,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     question: "AGM95L은 어떤 차량군에서 확인하나요?",
     shortAnswer: "대형 SUV·MPV·일부 수입차에서 AGM95L 후보가 많습니다.",
     answer:
-      "쏘렌토 MQ4·팰리세이드 등 대형 차량에서 AGM95L 문의가 많습니다. 트림·ISG 조건에 따라 달라 사진·연료 확인이 필요합니다.",
+      "쏘렌토 MQ4·팰리세이드 등 대형 차량에서 AGM95L 문의가 많습니다. 트림·ISG 조건에 따라 달라질 수 있어, 사진·연료를 함께 보는 것이 좋습니다.",
     category: "차종/규격",
     tags: ["AGM95L", "쏘렌토", "SUV"],
     batteryCode: "AGM95L",
@@ -406,9 +406,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-compare-terminal-photo",
     question: "비교할 때 단자 방향은 어떻게 확인하나요?",
-    shortAnswer: "라벨 L/R 표기와 플러스 단자 위치 사진으로 확인합니다.",
+    shortAnswer: "라벨 L/R 표기와 +단자 위치 사진으로 볼 수 있습니다.",
     answer:
-      "규격 코드만으로 단자 방향을 확정하기 어렵습니다. 비교 후에도 라벨·엔진룸 사진으로 L/R·극성을 확인하는 것이 안전합니다.",
+      "규격 코드만으로 단자 방향을 확정하기는 어렵습니다. 비교 후에도 라벨·엔진룸 사진으로 L/R·극성을 함께 보는 것이 안전합니다.",
     category: "단자/규격",
     tags: ["단자방향", "비교", "사진확인"],
     relatedGuideId: "terminal-lr",
@@ -419,9 +419,9 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
   {
     id: "q-compare-substitute",
     question: "비교 규격은 서로 대체 가능한가요?",
-    shortAnswer: "비교는 차이 이해용이며, 대체 가능 여부는 차종별 확인이 필요합니다.",
+    shortAnswer: "비교는 차이 이해용이며, 대체 가능 여부는 차종별로 봅니다.",
     answer:
-      "Ah·단자·트레이·BMS 조건이 맞아야 합니다. 비교 페이지 결과만으로 주문하기보다 사진·차종 정보로 최종 확인하세요.",
+      "Ah·단자·트레이·BMS 조건이 맞아야 합니다. 비교 결과만으로 주문하기보다, 사진·차종 정보를 함께 보는 것이 안전합니다.",
     category: "호환",
     tags: ["비교", "대체", "호환"],
     questionType: "규격 호환",

@@ -821,7 +821,7 @@ function buildHero(
         batteryCode: specs[0],
         status: "needs_check",
         statusLabel: "확인 필요 규격",
-        message: `${specs.join(", ")}은(는) 검색어에 포함된 규격입니다. 차량 적합 여부는 연식·연료·사진으로 확인하세요.`,
+        message: `${specs.join(", ")}은(는) 검색어에 포함된 규격입니다. 차량 적합 여부는 연식·연료·사진을 함께 보는 것이 안전합니다.`,
         href: specDetailHref(specs, specs, topBattery, null),
         detailLabel: "규격 가이드 보기",
       };
@@ -832,7 +832,7 @@ function buildHero(
   let status: SearchHeroResult["status"] = "needs_check";
   let statusLabel = "연식/연료/트림 확인 필요";
   let message =
-    "연식·연료·트림에 따라 적용 규격이 달라질 수 있습니다. 차량 상세에서 연료와 연식을 선택해 확인하세요.";
+    "연식·연료·트림에 따라 적용 규격이 달라질 수 있습니다. 차량 기준 페이지에서 연료와 연식을 함께 보는 것이 좋습니다.";
 
   if (slug && batteryCode) {
     const fitConfirmed = vehicleSpecFitConfirmed(slug, batteryCode);
@@ -841,7 +841,7 @@ function buildHero(
     if (fitConfirmed && !jisUnverified) {
       status = "confirmed";
       statusLabel = "확인된 규격";
-      message = `${vehicleName}에 ${batteryCode} 규격이 확인되어 있습니다. 연료·연식별 상세는 차량 페이지에서 확인하세요.`;
+      message = `${vehicleName}에 ${batteryCode} 규격이 확인되어 있습니다. 연료·연식별 상세는 차량 기준 페이지에서 볼 수 있습니다.`;
     } else {
       status = "needs_check";
       statusLabel = jisUnverified ? "장착 가능 여부 확인 필요" : "연식/연료/트림 확인 필요";
@@ -851,7 +851,7 @@ function buildHero(
         `확인된 차량 정보와 검색 규격(${batteryCode})의 적합 여부를 바로 확정하기 어렵습니다. 연식·연료·사진 확인을 권장합니다.`;
     }
   } else if (batteryCode && !vehicleName) {
-    message = `${batteryCode} 규격 정보와 호환 차종을 아래에서 확인하세요. 단자 방향(L/R)을 꼭 확인하세요.`;
+    message = `${batteryCode} 규격 정보와 호환 차종을 아래에서 볼 수 있습니다. 단자 방향(L/R)도 함께 보는 것이 안전합니다.`;
   }
 
   const title =
@@ -1129,7 +1129,7 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
         candidateBatteryCodes: undefined,
         bodyMessage:
           buildIntentMessage(query, intentFlags, intent) ??
-          "블랙박스 상시전원·장기주차·배터리 노후 여부를 먼저 확인하세요.",
+          "블랙박스 상시전원·장기주차·배터리 노후 여부를 먼저 보는 것이 좋습니다.",
         guidance: "차종·연식 확인 후 규격을 보조로 안내합니다.",
         ctas: buildIntentCtas(
           intentFlags,

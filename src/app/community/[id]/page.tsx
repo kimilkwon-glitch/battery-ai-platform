@@ -127,13 +127,13 @@ export default async function CommunityQuestionDetailPage({
 
         <div className="mt-5 flex flex-wrap gap-2">
           <Link className={`${bm.btnPrimary} text-xs`} href={HUB_PHOTO}>
-            사진으로 최종 확인
+            사진으로 확인
           </Link>
           <Link className={`${bm.btnSecondary} text-xs`} href={HUB_STORE}>
-            부산 매장/출장 문의
+            매장·출장 문의
           </Link>
           <Link className={`${bm.btnGhost} text-xs`} href="/community">
-            질문 허브로
+            Q&A 전체 보기
           </Link>
         </div>
       </article>

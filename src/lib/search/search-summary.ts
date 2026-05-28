@@ -194,14 +194,14 @@ export function buildSearchSummary(
       secondaryNote: isMultiCandidate
         ? porterDual
           ? (batterySpec.caution ?? "2020년 이전: 90R · 2020년 이후: 100R — 연식 기준 확인이 필요합니다.")
-          : (batterySpec.caution ?? "여러 후보 규격이 있습니다. 연식·연료를 확인하세요.")
+          : (batterySpec.caution ?? "여러 후보 규격이 있습니다. 연식·연료를 함께 보는 것이 좋습니다.")
         : secondaryNote,
       basisLabel,
       fallbackMessage: hasSpecLine ? null : NO_REGISTERED_SPEC_MESSAGE,
       guidance: isMultiCandidate
         ? porterDual
           ? (batterySpec.caution ?? "연식 기준 확인 필요")
-          : (batterySpec.caution ?? "후보 규격 중 차량 조건에 맞는지 확인하세요.")
+          : (batterySpec.caution ?? "후보 규격 중 차량 조건에 맞는지 함께 보는 것이 좋습니다.")
         : (secondaryNote ?? NO_REGISTERED_SPEC_MESSAGE),
       href,
       ctas: isMultiCandidate

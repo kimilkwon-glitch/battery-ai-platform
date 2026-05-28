@@ -1,4 +1,4 @@
-const STAMP = "BM-UX-REV-20260528-CUSTOMER-HOOK-COPY-MOBILE-FLOW1";
+const STAMP = "BM-UX-REV-20260528-QNA-BODY-COPY-TONE-FIX1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const routes = [
   "/",

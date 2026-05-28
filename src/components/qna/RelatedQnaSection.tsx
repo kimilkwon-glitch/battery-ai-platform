@@ -17,7 +17,7 @@ type Props = {
 
 export function RelatedQnaSection({
   title = "관련 질문",
-  description = "비슷한 고객 질문을 먼저 확인한 뒤, 사진·문의로 이어가세요.",
+  description = "비슷한 질문을 먼저 보고, 사진 확인·문의로 이어갈 수 있습니다.",
   questions,
   hubHref = "/community",
   compact = true,
@@ -38,7 +38,7 @@ export function RelatedQnaSection({
           ) : null}
         </div>
         <Link className={`${bm.btnGhost} shrink-0 text-[10px]`} href={hubHref}>
-          질문 허브 전체
+          Q&A 전체 보기
         </Link>
       </div>
 
@@ -60,7 +60,7 @@ export function RelatedQnaSection({
           관련 질문 더보기
         </Link>
         <Link className={`${bm.btnGhost} w-full text-xs sm:w-auto`} href={HUB_PHOTO}>
-          사진으로 최종 확인
+          사진으로 확인
         </Link>
       </div>
     </section>

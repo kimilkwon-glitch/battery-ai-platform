@@ -124,7 +124,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
           <span>많이 헷갈리는 질문</span>
         </h1>
         <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-[#64748B]">
-          차종·규격·증상별 Q&A를 검색하고, 관련 배터리·차량·사진확인·문의로 바로 이어갑니다.
+          차종·규격·증상별 Q&A를 검색하고, 관련 배터리·차량·사진 확인·문의로 이어갈 수 있습니다.
         </p>
 
         <form
@@ -171,9 +171,9 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
           </Link>
           <Link
             className="rounded-lg bg-white px-4 py-2.5 text-sm font-bold text-[#0F172A] ring-1 ring-blue-100 transition hover:bg-blue-50"
-            href="/analysis/photo"
+            href="/photo-check"
           >
-            규격 문의 준비하기
+            사진으로 확인
           </Link>
         </div>
       </section>

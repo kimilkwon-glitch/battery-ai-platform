@@ -130,7 +130,7 @@ export function QnaQuestionCard({
           <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold">
             {question.vehicleId ? (
               <Link className="text-blue-600 hover:underline" href={vehicleHref(question.vehicleId)}>
-                관련 차량 보기
+                차량 기준 보기
               </Link>
             ) : null}
             {question.batteryCode ? (
@@ -143,7 +143,7 @@ export function QnaQuestionCard({
                 className="text-blue-600 hover:underline"
                 href={compareHref(question.batteryCode, compareTarget)}
               >
-                비교 보기
+                비교해보기
               </Link>
             ) : null}
             {question.guideId ? (
@@ -163,12 +163,12 @@ export function QnaQuestionCard({
           <div className="mt-3 flex flex-wrap gap-2">
             {showPhotoCta ? (
               <Link className={`${bm.btnPrimary} px-3 py-2 text-[10px]`} href={HUB_PHOTO}>
-                사진으로 최종 확인
+                사진으로 확인
               </Link>
             ) : null}
             {showInquiryCta || showPhotoCta ? (
               <Link className={`${bm.btnSecondary} px-3 py-2 text-[10px]`} href={HUB_STORE}>
-                부산 매장/출장 문의
+                매장·출장 문의
               </Link>
             ) : null}
           </div>
