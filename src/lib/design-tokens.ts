@@ -44,14 +44,14 @@ export const bm = {
     "bm-card-surface flex flex-1 flex-col overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-gradient-to-b from-white to-[var(--bm-surface-muted)] shadow-[var(--bm-shadow-sm)]",
 
   intentSummary:
-    "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-surface-soft)] p-4 sm:p-5 shadow-[var(--bm-shadow-sm)] backdrop-blur-sm",
+    "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-surface-soft)] p-4 sm:p-5 shadow-[var(--bm-shadow-sm)]",
   intentBadge:
-    "inline-flex items-center rounded-lg bg-[var(--bm-navy)]/[0.04] px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-[var(--bm-primary-dark)] ring-1 ring-[var(--bm-border)]",
+    "inline-flex items-center rounded-lg bg-[var(--bm-surface-blue)] px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-[var(--bm-primary)] ring-1 ring-[var(--bm-border-blue)]",
 
   /** 타이포 스케일 — eyebrow / hero / section / card / badge / button */
   typoEyebrow:
     "text-xs font-semibold uppercase tracking-wide text-[var(--bm-primary)] sm:text-sm",
-  typoCaption: "text-xs font-medium leading-snug text-slate-600 sm:text-sm",
+  typoCaption: "text-xs font-medium leading-snug text-[var(--bm-text-sub)] sm:text-sm",
   /** 메인 hero H1 — mobile ~3xl, desktop ≤5xl 권장 상한 */
   heroDisplay:
     "bm-section-title text-3xl leading-[1.2] text-[var(--bm-text)] sm:text-4xl lg:text-[2.75rem]",
@@ -86,16 +86,16 @@ export const bm = {
   cardInfoStack: "flex min-w-0 flex-1 flex-col gap-1.5",
   cardInfoTitleRow: "flex items-center gap-2",
   cardInfoIconBadge:
-    "inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-slate-50 ring-1 ring-slate-200/90",
+    "inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-[var(--bm-surface-blue)] ring-1 ring-[var(--bm-border-blue)]",
   cardInfoTitle:
-    "text-base font-bold leading-tight text-slate-900 group-hover:text-blue-800",
-  cardInfoSpec: "spec-code text-sm font-bold leading-none text-blue-700",
-  cardInfoDesc: "text-sm font-medium leading-snug text-slate-600 line-clamp-2",
+    "text-base font-bold leading-tight text-[var(--bm-text)] group-hover:text-[var(--bm-primary)]",
+  cardInfoSpec: "spec-code text-sm font-bold leading-none text-[var(--bm-primary)]",
+  cardInfoDesc: "text-sm font-medium leading-snug text-[var(--bm-text-sub)] line-clamp-2",
   cardInfoBadgeRow: "flex flex-wrap gap-1.5",
-  cardInfoMeta: "text-xs font-medium leading-snug text-slate-600 line-clamp-2",
+  cardInfoMeta: "text-xs font-medium leading-snug text-[var(--bm-text-muted)] line-clamp-2",
   cardInfoActions: "mt-3 flex shrink-0 flex-wrap items-center gap-2",
   cardInfoCtaLink:
-    "inline-flex items-center gap-1 rounded-lg bg-blue-50/70 px-2.5 py-1.5 text-xs font-bold text-blue-800 ring-1 ring-blue-100 transition group-hover:bg-blue-100 group-hover:ring-blue-200",
+    "inline-flex items-center gap-1 rounded-lg bg-[var(--bm-surface-blue)] px-2.5 py-1.5 text-xs font-bold text-[var(--bm-primary)] ring-1 ring-[var(--bm-border-blue)] transition group-hover:bg-[var(--bm-info-soft)] group-hover:ring-[var(--bm-primary)]/30",
   cardSymptom: "bm-card-symptom flex flex-col p-4",
   cardPhotoCheck: "bm-card-photo-check",
   cardServiceStore: "bm-card-service-store",
@@ -113,7 +113,9 @@ export const bm = {
   sectionRhythmOrder: "bm-section-rhythm bm-section-rhythm--order",
   heroDark: "bm-hero-dark",
   heroDarkAccent: "bm-hero-dark-accent",
-  heroLeadP2: "text-base font-semibold leading-relaxed text-slate-200 sm:text-lg",
+  heroLeadP2: "text-base font-semibold leading-relaxed text-[var(--bm-text-on-dark-sub)] sm:text-lg",
+  heroMuted: "text-[var(--bm-text-on-dark-sub)]",
+  heroPreviewPanel: "bm-hero-dark-side",
   hubPhoto: "bm-hub-rhythm--photo space-y-5",
   hubSymptom: "bm-hub-rhythm--symptom space-y-5",
   hubServicePage: "bm-hub-rhythm--service-page space-y-5",
@@ -124,8 +126,8 @@ export const bm = {
   alertSuccess: "bm-alert-success text-sm font-medium text-emerald-900",
   stepItem: "bm-step-item",
   stepNum: "bm-step-num",
-  textSub: "text-sm font-medium leading-relaxed text-slate-600 sm:text-base",
-  muted: "text-slate-600",
+  textSub: "text-sm font-medium leading-relaxed text-[var(--bm-text-sub)] sm:text-base",
+  muted: "text-[var(--bm-text-muted)]",
   label: "text-xs font-semibold uppercase tracking-wide text-[var(--bm-primary)] sm:text-sm",
 
   btnPrimary:
@@ -158,12 +160,13 @@ export const bm = {
   chipExample:
     "rounded-full border border-[var(--bm-border)] bg-[var(--bm-card)] px-3 py-1.5 text-xs font-bold text-[var(--bm-text)] shadow-[var(--bm-shadow-sm)] transition motion-safe:hover:-translate-y-px motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:shadow-[var(--bm-shadow-sm)]",
   /** 필터·연식·연료 칩 — badge보다 강조, 카드 CTA보다 작음 */
-  filterChipRowLabel: "w-[4.25rem] shrink-0 text-xs font-semibold text-slate-600 sm:w-16",
+  filterChipRowLabel: "w-[4.25rem] shrink-0 text-xs font-semibold text-[var(--bm-text-sub)] sm:w-16",
   filterChip:
     "inline-flex min-h-8 items-center justify-center rounded-full px-2.5 py-1.5 text-xs font-bold leading-none transition sm:px-3",
-  filterChipOn: "bg-blue-600 text-white shadow-sm ring-1 ring-blue-600",
+  filterChipOn:
+    "bg-[var(--bm-primary)] text-white shadow-sm ring-1 ring-[var(--bm-primary)] hover:bg-[var(--bm-primary-hover)]",
   filterChipOff:
-    "bg-slate-100 text-slate-700 ring-1 ring-slate-200/90 hover:bg-slate-200",
+    "bg-[var(--bm-surface-muted)] text-[var(--bm-text-sub)] ring-1 ring-[var(--bm-border)] hover:bg-[var(--bm-surface-blue)]",
   tabBtn:
     "shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 ring-1 ring-[var(--bm-border)] bg-[var(--bm-surface-muted)] transition duration-200 motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
   tabBtnActive:
@@ -175,20 +178,21 @@ export const bm = {
 
   badge:
     "inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold ring-1 sm:text-xs",
-  badgeBlue: "bg-blue-50/90 text-blue-800 ring-blue-100/80",
-  badgeGreen: "bg-emerald-50/90 text-emerald-800 ring-emerald-100/70",
-  badgeAmber: "bg-orange-50/90 text-orange-800 ring-orange-100/70",
-  badgeCyan: "bg-cyan-50/90 text-cyan-900 ring-cyan-100/80",
-  badgeRed: "bg-red-50/90 text-red-700 ring-red-100/80",
-  badgeGray: "bg-slate-50 text-slate-600 ring-slate-200/80",
-  badgeNavy: "bg-[var(--bm-navy)]/5 text-[var(--bm-primary-dark)] ring-[var(--bm-border)]",
+  badgeBlue: "bg-[var(--bm-info-soft)] text-blue-800 ring-[var(--bm-border-blue)]",
+  badgeGreen: "bg-[var(--bm-success-soft)] text-emerald-800 ring-emerald-200/80",
+  badgeAmber: "bg-[var(--bm-warning-soft)] text-amber-900 ring-amber-200/80",
+  badgeCyan: "bg-[var(--bm-indigo-soft)] text-indigo-800 ring-indigo-200/80",
+  badgeIndigo: "bg-[var(--bm-indigo-soft)] text-indigo-800 ring-indigo-200/80",
+  badgeRed: "bg-[var(--bm-danger-bg)] text-red-800 ring-red-200/80",
+  badgeGray: "bg-[var(--bm-surface-muted)] text-[var(--bm-text-sub)] ring-[var(--bm-border)]",
+  badgeNavy: "bg-[var(--bm-surface-blue)] text-[var(--bm-primary-dark)] ring-[var(--bm-border-blue)]",
 
   /** fitment 판정 배지 */
-  statusRecommended: "bg-blue-50/90 text-blue-800 ring-blue-100/80",
-  statusOk: "bg-emerald-50/90 text-emerald-800 ring-emerald-100/70",
-  statusSubstitute: "bg-cyan-50/90 text-cyan-900 ring-cyan-100/80",
-  statusCheck: "bg-orange-50/90 text-orange-800 ring-orange-100/70",
-  statusWarn: "bg-red-50/90 text-red-700 ring-red-100/80",
+  statusRecommended: "bg-[var(--bm-info-soft)] text-blue-800 ring-[var(--bm-border-blue)]",
+  statusOk: "bg-[var(--bm-success-soft)] text-emerald-800 ring-emerald-200/80",
+  statusSubstitute: "bg-[var(--bm-indigo-soft)] text-indigo-800 ring-indigo-200/80",
+  statusCheck: "bg-[var(--bm-warning-soft)] text-amber-900 ring-amber-200/80",
+  statusWarn: "bg-[var(--bm-danger-bg)] text-red-800 ring-red-200/80",
 
   /** 레거시 — 신규 카드는 BatteryImageStage 사용 */
   imageBattery:
@@ -213,7 +217,7 @@ export const bm = {
   surfaceMuted:
     "rounded-xl border border-[var(--bm-border)] bg-[var(--bm-surface-muted)]",
   platformStrip:
-    "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-surface-soft)] p-4 shadow-[var(--bm-shadow-sm)] backdrop-blur-sm sm:p-5",
+    "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-surface-soft)] p-4 shadow-[var(--bm-shadow-sm)] sm:p-5",
 
   input:
     "h-11 w-full rounded-xl border border-[var(--bm-border)] bg-[var(--bm-surface-muted)] px-3 text-base font-semibold text-[var(--bm-text)] outline-none transition focus:border-[var(--bm-primary)] focus:bg-white focus:ring-2 focus:ring-blue-100/80 sm:text-sm",

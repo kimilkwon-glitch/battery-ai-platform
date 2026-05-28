@@ -21,7 +21,7 @@ export function HomePlatformHero() {
     <div className={bm.heroDark} data-home-section="hero" data-precision-garage="hero">
       <div className={`${bm.heroDarkAccent} px-5 py-3 lg:px-7`}>
         <p className={`${bm.typoEyebrow} !text-sky-200`}>{BRAND_HERO_LABEL}</p>
-        <p className="mt-1 text-xs font-medium text-slate-300 sm:text-sm">
+        <p className={`mt-1 text-xs font-medium sm:text-sm ${bm.heroMuted}`}>
           차종·규격·증상 기준 배터리 안내
         </p>
       </div>
@@ -29,7 +29,7 @@ export function HomePlatformHero() {
         <div className="order-1 p-5 lg:order-none lg:p-7">
           <h1 className={`${bm.heroDisplay} text-slate-50`}>{HOME_HERO.headline}</h1>
           <p className={`mt-3 ${bm.heroLeadP2}`}>{HOME_HERO.subline}</p>
-          <p className="mt-2 text-sm font-medium text-slate-300 sm:text-base">{HOME_HERO.tagline}</p>
+          <p className={`mt-2 text-sm font-medium sm:text-base ${bm.heroMuted}`}>{HOME_HERO.tagline}</p>
 
           <div className={`bm-hero-search-shell mt-5`}>
             <VehicleSearchBox
@@ -56,7 +56,7 @@ export function HomePlatformHero() {
             </Link>
           </div>
 
-          <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-300">검색 유형</p>
+          <p className={`mt-4 text-xs font-semibold uppercase tracking-wide ${bm.heroMuted}`}>검색 유형</p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {HOME_SEARCH_TYPE_CHIPS.map((chip) => {
               const iconKey = (HOME_SEARCH_CHIP_ICONS[chip.label] ?? "search") as IconKey;
@@ -80,12 +80,12 @@ export function HomePlatformHero() {
             })}
           </div>
 
-          <p className="mt-4 text-xs font-semibold text-slate-300">인기 검색</p>
+          <p className={`mt-4 text-xs font-semibold ${bm.heroMuted}`}>인기 검색</p>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
             {HOME_HERO_EXAMPLES.map((keyword) => (
               <Link
                 key={keyword}
-                className="rounded-full border border-slate-500/50 bg-slate-800/50 px-3 py-1.5 text-xs font-bold text-slate-100 transition hover:border-sky-400/60 hover:bg-slate-700/80"
+                className="rounded-full border border-slate-500/40 bg-slate-800/40 px-3 py-1.5 text-xs font-bold text-slate-100 transition hover:border-[var(--bm-border-blue)] hover:bg-slate-700/70"
                 href={getSearchHref(keyword)}
               >
                 {keyword}
@@ -114,8 +114,8 @@ export function HomePlatformHero() {
             </Link>
           </div>
         </div>
-        <div className="order-2 border-t border-slate-600/40 bg-slate-900/20 p-4 lg:order-none lg:border-l lg:border-t-0 lg:p-5">
-          <p className="mb-2 text-xs font-semibold text-slate-300">대표 규격 · AGM80L</p>
+        <div className={`order-2 p-4 lg:order-none lg:p-5 ${bm.heroPreviewPanel}`}>
+          <p className={`mb-2 text-xs font-semibold ${bm.heroMuted}`}>대표 규격 · AGM80L</p>
           <BatteryImageStage code="AGM80L" variant="hero" className="mx-auto max-w-[280px]" />
         </div>
       </div>

@@ -1,4 +1,4 @@
-const STAMP = "BM-UX-REV-20260528-TYPOGRAPHY-CHIP-FINAL-FIX1";
+const STAMP = "BM-UX-REV-20260528-COLOR-SYSTEM-PREMIUM-TRUST1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const routes = [
   "/",
@@ -18,7 +18,7 @@ const routes = [
   "/vehicle/porter2-new",
 ];
 
-const cb = "typography-chip-final-fix1-20260528";
+const cb = "color-system-premium-trust1-20260528";
 
 for (const r of routes) {
   const url = `${BASE}${r}?_cb=${cb}&t=${Date.now()}`;

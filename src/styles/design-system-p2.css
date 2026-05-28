@@ -29,19 +29,19 @@
 }
 
 .bm-section-rhythm--vehicle {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f6ff 100%);
-  border: 1px solid rgba(29, 78, 216, 0.1);
+  background: linear-gradient(135deg, #ffffff 0%, var(--bm-surface-blue) 100%);
+  border: 1px solid var(--bm-border-blue);
   box-shadow: var(--bm-shadow-sm);
 }
 
 .bm-section-rhythm--ev {
-  background: linear-gradient(180deg, #f0fdfa 0%, #f8fafc 100%);
-  border: 1px solid rgba(6, 182, 212, 0.15);
+  background: linear-gradient(180deg, #ffffff 0%, var(--bm-indigo-soft) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.14);
 }
 
 .bm-section-rhythm--symptom {
-  background: linear-gradient(180deg, #fffef8 0%, #f8fafc 100%);
-  border: 1px solid rgba(251, 191, 36, 0.14);
+  background: linear-gradient(180deg, #ffffff 0%, var(--bm-warning-soft) 55%, #f8fafc 100%);
+  border: 1px solid rgba(251, 191, 36, 0.2);
 }
 
 .bm-section-rhythm--delivery {
@@ -64,6 +64,7 @@
 .bm-section-rhythm--qna {
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border: 1px solid var(--bm-border);
+  box-shadow: var(--bm-shadow-sm);
 }
 
 .bm-section-rhythm--order {
@@ -106,32 +107,49 @@
   padding: 1rem 1.25rem;
 }
 
-/* Hero — 다크는 히어로 패널만 */
+/* Hero — 다크는 히어로 패널만 (무겁지 않은 slate-navy + cobalt) */
 .bm-hero-dark {
   overflow: hidden;
   border-radius: 22px;
-  border: 1px solid rgba(30, 58, 138, 0.35);
-  background: linear-gradient(145deg, #0f172a 0%, #1e293b 55%, #1e3a5f 100%);
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  background: linear-gradient(
+    155deg,
+    var(--bm-brand-navy) 0%,
+    var(--bm-navy-mid) 48%,
+    #334155 100%
+  );
   box-shadow: var(--bm-shadow-lg);
-  color: #f1f5f9;
+  color: var(--bm-text-on-dark);
 }
 
 .bm-hero-dark .bm-section-title,
 .bm-hero-dark h1 {
-  color: #f8fafc;
+  color: var(--bm-text-on-dark);
 }
 
 .bm-hero-dark-accent {
-  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.12) 0%, transparent 72%);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.18) 0%, transparent 70%);
+}
+
+.bm-hero-dark-side {
+  border-color: rgba(148, 163, 184, 0.22);
+  background: rgba(30, 58, 138, 0.12);
+}
+
+@media (min-width: 1024px) {
+  .bm-hero-dark-side {
+    border-top: 0;
+    border-left: 1px solid rgba(148, 163, 184, 0.22);
+  }
 }
 
 .bm-hero-search-shell {
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  border: 1px solid var(--bm-border-blue);
+  background: var(--bm-card);
   padding: 0.25rem;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
 }
 
 .bm-hero-chip {
@@ -139,8 +157,8 @@
   flex-direction: column;
   gap: 0.125rem;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  border: 1px solid var(--bm-border-soft);
+  background: var(--bm-card);
   padding: 0.625rem 0.75rem;
   transition:
     transform 180ms ease,
@@ -155,21 +173,21 @@
 }
 
 .bm-hero-chip--primary {
-  border-color: rgba(37, 99, 235, 0.45);
-  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+  border-color: rgba(37, 99, 235, 0.4);
+  background: linear-gradient(180deg, var(--bm-surface-blue) 0%, var(--bm-card) 100%);
 }
 
 .bm-hero-chip__title {
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--bm-text);
 }
 
 .bm-hero-chip__desc {
   font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.35;
-  color: #475569;
+  color: var(--bm-text-sub);
 }
 
 .bm-icon-pill {
@@ -180,9 +198,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #dbeafe;
+  background: var(--bm-surface-blue);
+  color: var(--bm-primary);
+  border: 1px solid var(--bm-border-blue);
 }
 
 .bm-icon-pill--amber {
@@ -225,8 +243,8 @@
 .bm-card-battery-product {
   overflow: hidden;
   border-radius: 16px;
-  border: 1px solid rgba(29, 78, 216, 0.12);
-  background: #ffffff;
+  border: 1px solid var(--bm-border-blue);
+  background: var(--bm-card);
   box-shadow: var(--bm-shadow-sm);
   transition:
     transform 180ms ease,
@@ -252,7 +270,7 @@
 }
 
 .bm-card-vehicle-match:hover {
-  border-color: rgba(6, 182, 212, 0.3);
+  border-color: rgba(37, 99, 235, 0.28);
   box-shadow: var(--bm-shadow-md);
   transform: translateY(-2px);
 }
@@ -272,8 +290,8 @@
 
 .bm-card-photo-check {
   border-radius: 14px;
-  border: 1px dashed rgba(148, 163, 184, 0.5);
-  background: #f8fafc;
+  border: 1px dashed var(--bm-border-strong);
+  background: linear-gradient(180deg, var(--bm-surface-blue) 0%, var(--bm-card) 100%);
 }
 
 .bm-card-service-store {
@@ -300,30 +318,31 @@
 }
 
 .bm-card-qna[data-qna-card-expanded="true"] {
-  border-color: rgba(29, 78, 216, 0.22);
+  border-color: rgba(99, 102, 241, 0.22);
+  background: linear-gradient(180deg, var(--bm-indigo-soft) 0%, var(--bm-card) 24%);
   box-shadow: var(--bm-shadow-md);
 }
 
 .bm-alert-info {
   border-radius: 12px;
-  border: 1px solid rgba(29, 78, 216, 0.18);
-  background: #eff6ff;
+  border: 1px solid var(--bm-border-blue);
+  background: var(--bm-info-soft);
   padding: 0.625rem 0.875rem;
-  color: #1e3a8a;
+  color: #1e40af;
 }
 
 .bm-alert-warn {
   border-radius: 12px;
   border: 1px solid rgba(251, 191, 36, 0.35);
-  background: #fffbeb;
+  background: var(--bm-warning-soft);
   padding: 0.625rem 0.875rem;
   color: #92400e;
 }
 
 .bm-alert-success {
   border-radius: 12px;
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  background: #ecfdf5;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  background: var(--bm-success-soft);
   padding: 0.625rem 0.875rem;
   color: #065f46;
 }
@@ -356,8 +375,8 @@
   position: relative;
   overflow: hidden;
   border-radius: 12px;
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
-  border: 1px dashed #cbd5e1;
+  background: linear-gradient(180deg, var(--bm-image-bg) 0%, var(--bm-card) 100%);
+  border: 1px dashed var(--bm-border-strong);
 }
 
 .bm-image-slot-pending--compact {
@@ -372,15 +391,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #dbeafe;
+  background: var(--bm-surface-blue);
+  color: var(--bm-primary);
+  border: 1px solid var(--bm-border-blue);
 }
 
 .bm-image-slot-pending__label {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #475569;
+  color: var(--bm-text-sub);
 }
 
 .bm-image-slot-pending__caption {
@@ -388,7 +407,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.35;
-  color: #0f172a;
+  color: var(--bm-text);
 }
 
 .bm-image-slot-pending__hint {
@@ -396,7 +415,7 @@
   font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.4;
-  color: #64748b;
+  color: var(--bm-text-muted);
 }
 
 .bm-section-enter {

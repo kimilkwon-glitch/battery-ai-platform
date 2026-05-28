@@ -118,7 +118,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
   return (
     <div className="space-y-5">
       <section className={`${bm.heroPanel} p-5 lg:p-6`}>
-        <p className="text-[11px] font-black uppercase tracking-[0.08em] text-[#2563EB]">{BRAND_QNA_LABEL}</p>
+        <p className={`${bm.label} text-[var(--bm-primary)]`}>{BRAND_QNA_LABEL}</p>
         <h1 className={`${bm.sectionTitleLg} mt-2 flex items-center gap-2`}>
           <IconBadge iconKey="qna" size="md" className="!h-9 !w-9" />
           <span>많이 헷갈리는 질문</span>
@@ -135,7 +135,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
           }}
         >
           <input
-            className="h-12 min-w-0 flex-1 rounded-xl bg-white px-4 text-base font-bold shadow-sm outline-none ring-1 ring-[#DBEAFE] focus:ring-2 focus:ring-[#2563EB]"
+            className={`${bm.input} h-12 min-w-0 flex-1 shadow-sm`}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="차종, 배터리 규격, 증상으로 질문 검색"
             type="search"
@@ -164,7 +164,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
 
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
-            className="rounded-lg bg-[#2563EB] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#1D4ED8]"
+            className={`${bm.btnPrimary} px-4 py-2.5`}
             href="/community"
           >
             비슷한 질문 먼저 찾기
@@ -180,7 +180,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
         <div className="min-w-0 space-y-5">
-          <section className="rounded-2xl border border-blue-100 bg-white p-4 shadow-sm">
+          <section className={`${bm.card} p-4`}>
             <p className="text-[11px] font-black uppercase tracking-[0.06em] text-[#64748B]">필터</p>
             <div className="mt-2 flex gap-2 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {QNA_PRIMARY_FILTERS.map((f) => (
@@ -188,10 +188,8 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
                   key={f.key}
                   type="button"
                   onClick={() => onPrimaryFilter(f.key)}
-                  className={`shrink-0 rounded-lg px-3.5 py-2 text-sm font-bold transition ${
-                    primaryFilter === f.key
-                      ? "bg-[#2563EB] text-white shadow-sm"
-                      : "bg-[#F8FAFC] text-[#475569] ring-1 ring-slate-200 hover:bg-blue-50"
+                  className={`${bm.filterChip} shrink-0 rounded-lg px-3.5 py-2 text-sm ${
+                    primaryFilter === f.key ? bm.filterChipOn : bm.filterChipOff
                   }`}
                 >
                   {f.label}
@@ -205,10 +203,8 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
                   key={t}
                   type="button"
                   onClick={() => setTagFilter(tagFilter === t ? null : t)}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-bold transition ${
-                    tagFilter === t
-                      ? "bg-[#1D4ED8] text-white"
-                      : "bg-white text-[#64748B] ring-1 ring-slate-200 hover:ring-blue-200"
+                  className={`${bm.filterChip} rounded-lg px-2.5 py-1 ${
+                    tagFilter === t ? bm.filterChipOn : bm.filterChipOff
                   }`}
                 >
                   {t}
@@ -218,7 +214,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
                 <button
                   type="button"
                   onClick={() => setShowAllTags(true)}
-                  className="text-xs font-black text-[#2563EB] hover:underline"
+                  className="text-xs font-bold text-[var(--bm-primary)] hover:underline"
                 >
                   더보기
                 </button>
@@ -227,7 +223,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
           </section>
 
           {isFiltered ? (
-            <section className="rounded-2xl border border-blue-100 bg-white p-4 shadow-sm">
+            <section className={`${bm.card} p-4`}>
               <SectionHeader
                 desc={`${filtered.length}개 질문`}
                 title="검색·필터 결과"
@@ -291,7 +287,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
                         <button
                           type="button"
                           onClick={() => setRecentVisible((c) => c + RECENT_QNA_PAGE_SIZE)}
-                          className="mt-4 w-full rounded-xl border border-blue-200 bg-[#F8FBFF] py-2.5 text-sm font-black text-[#2563EB] transition hover:bg-blue-50"
+                          className={`${bm.btnSecondary} mt-4 w-full justify-center border-[var(--bm-border-blue)] bg-[var(--bm-surface-blue)] text-[var(--bm-primary)] hover:bg-[var(--bm-info-soft)]`}
                         >
                           더 보기 (+{RECENT_QNA_PAGE_SIZE})
                         </button>
@@ -307,7 +303,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
                     <button
                       type="button"
                       onClick={() => setShowTopicSections(true)}
-                      className="w-full rounded-xl border border-blue-200 bg-[#F8FBFF] py-2.5 text-sm font-black text-[#2563EB] transition hover:bg-blue-50"
+                      className={`${bm.btnSecondary} w-full justify-center border-[var(--bm-border-blue)] bg-[var(--bm-surface-blue)] text-[var(--bm-primary)] hover:bg-[var(--bm-info-soft)]`}
                     >
                       주제별 질문 더 보기 ({topicSections.reduce((n, g) => n + g.items.length, 0)}개)
                     </button>
