@@ -21,10 +21,22 @@ import {
   parseGuideFilterKey,
 } from "@/lib/content";
 
-function Panel({ title, children, subtitle }: { title: string; children: ReactNode; subtitle?: string }) {
+import type { IconKey } from "@/lib/icon-map";
+
+function Panel({
+  title,
+  children,
+  subtitle,
+  iconKey,
+}: {
+  title: string;
+  children: ReactNode;
+  subtitle?: string;
+  iconKey?: IconKey;
+}) {
   return (
     <section className={`${bm.card} ${bm.cardPad}`}>
-      <SectionHeader label={subtitle} title={title} />
+      <SectionHeader label={subtitle} title={title} iconKey={iconKey} />
       {children}
     </section>
   );
@@ -91,7 +103,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
   return (
     <section className={`${bm.hubCatalog} mx-auto grid max-w-[1280px] gap-4 px-0 lg:grid-cols-[260px_minmax(0,1fr)_280px]`}>
       <aside className="space-y-3 lg:sticky lg:top-[72px] lg:self-start">
-        <Panel title="가이드 분류">
+        <Panel title="가이드 분류" iconKey="guide">
           <div className="space-y-1.5">
             {GUIDE_FILTER_CATEGORIES.map((cat) => {
               const isActive = active === cat.key;
@@ -115,7 +127,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
           </div>
         </Panel>
 
-        <Panel title="플랫폼 허브">
+        <Panel title="플랫폼 허브" iconKey="route">
           <div className="space-y-1.5">
             <Link className={`${bm.btnNavy} w-full`} href="/order-checklist">
               오주문 방지 체크

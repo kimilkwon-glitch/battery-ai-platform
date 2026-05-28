@@ -1,18 +1,13 @@
+import { AppIcon } from "@/components/common/AppIcon";
 import { bm } from "@/lib/design-tokens";
 import type { PhotoExampleCard } from "@/lib/platform-hub-content";
-
-const ICONS: Record<PhotoExampleCard["icon"], string> = {
-  top: "▣",
-  label: "⌁",
-  terminal: "⊕⊖",
-  tray: "⊞",
-  blur: "◌",
-  hidden: "▤",
-  crop: "✂",
-};
+import { PHOTO_EXAMPLE_ICONS } from "@/lib/icon-map";
+import type { IconKey } from "@/lib/icon-map";
 
 export function PhotoCheckExampleCard({ card }: { card: PhotoExampleCard }) {
   const good = card.kind === "good";
+  const iconKey = (PHOTO_EXAMPLE_ICONS[card.icon] ?? "photoCheck") as IconKey;
+
   return (
     <article
       className={`${bm.cardPhotoCheck} flex flex-col overflow-hidden transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[var(--bm-shadow-md)]`}
@@ -26,14 +21,14 @@ export function PhotoCheckExampleCard({ card }: { card: PhotoExampleCard }) {
         }`}
       >
         <span
-          className={`flex size-14 flex-col items-center justify-center rounded-2xl text-lg font-black ring-1 ${
+          className={`flex size-14 items-center justify-center rounded-2xl ring-1 ${
             good
-              ? "bg-white text-emerald-800 ring-emerald-100"
-              : "bg-white text-orange-800 ring-orange-100"
+              ? "bg-white ring-emerald-100"
+              : "bg-white ring-orange-100"
           }`}
           aria-hidden
         >
-          {ICONS[card.icon]}
+          <AppIcon iconKey={iconKey} size="xl" tone={good ? "emerald" : "amber"} />
         </span>
       </div>
       <div className="flex flex-1 flex-col gap-1 border-t border-[var(--bm-border)] p-3">

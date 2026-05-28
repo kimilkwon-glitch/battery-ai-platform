@@ -1,4 +1,4 @@
-const STAMP = "BM-UX-REV-20260528-DESIGN-P2-RECOVERY-ICON-BUTTON-FIX1";
+const STAMP = "BM-UX-REV-20260528-ICON-REGISTRY-CONSISTENCY-FIX1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const routes = [
   "/",
@@ -16,7 +16,7 @@ const routes = [
   "/batteries/CMF80L",
 ];
 
-const cb = "design-p2-recovery-icon-button-fix1-20260528";
+const cb = "icon-registry-consistency-fix1-20260528";
 
 for (const r of routes) {
   const url = `${BASE}${r}?_cb=${cb}&t=${Date.now()}`;

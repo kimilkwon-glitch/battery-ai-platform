@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AppIcon } from "@/components/common/AppIcon";
 import { BatteryImageOrSlot } from "@/components/media/BatteryImageOrSlot";
 import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
@@ -74,9 +75,9 @@ function mergeFeaturedVehicles(
 
 function BatteryDetailMobileSticky({ code }: { code: string }) {
   const actions = [
-    { label: "택배 주문", href: HUB_SHOP_ANCHORS.delivery },
-    { label: "사진 확인", href: HUB_PHOTO },
-    { label: "내 차 검색", href: `/search?q=${encodeURIComponent(code)}` },
+    { label: "택배 주문", href: HUB_SHOP_ANCHORS.delivery, iconKey: "delivery" as const },
+    { label: "사진 확인", href: HUB_PHOTO, iconKey: "photoCheck" as const },
+    { label: "내 차 검색", href: `/search?q=${encodeURIComponent(code)}`, iconKey: "vehicle" as const },
   ];
   return (
     <div className={bm.stickyMobileBar} data-battery-detail-sticky>
@@ -86,14 +87,15 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
             key={a.label}
             className={
               i === 0
-                ? `${bm.btnNavy} flex-1 text-xs`
+                ? `${bm.btnNavy} flex flex-1 items-center justify-center gap-1 text-xs`
                 : i === 1
-                  ? `${bm.btnSecondary} flex-1 text-xs`
-                  : `${bm.btnGhost} flex-1 text-xs`
+                  ? `${bm.btnSecondary} flex flex-1 items-center justify-center gap-1 text-xs`
+                  : `${bm.btnGhost} flex flex-1 items-center justify-center gap-1 text-xs`
             }
             href={a.href}
           >
-            {a.label}
+            <AppIcon iconKey={a.iconKey} size="xs" className={i === 0 ? "!text-white" : undefined} />
+            <span className="truncate">{a.label}</span>
           </Link>
         ))}
       </div>
@@ -120,7 +122,10 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
       {/* A. Hero */}
       <section className={bm.heroPanel}>
         <div className={`${bm.heroPanelAccent} p-4 sm:p-5`}>
-          <p className={bm.label}>배터리 규격 허브 · 구매 전 확신</p>
+          <p className={`${bm.label} inline-flex items-center gap-1.5`}>
+            <AppIcon iconKey="batterySpec" size="sm" />
+            배터리 규격 허브 · 구매 전 확신
+          </p>
           <h1 className={`${bm.specTitle} mt-1`} data-spec-code>
             {displayCode}
           </h1>

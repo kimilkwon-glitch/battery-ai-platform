@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppIcon } from "@/components/common/AppIcon";
 import { bm } from "@/lib/design-tokens";
 import type { SearchUxCta } from "@/lib/search/search-ux-presentation";
 
@@ -14,8 +15,12 @@ export function SearchPhotoVerifyBar({ cta, hintIndex = 0 }: { cta: SearchUxCta;
       className="flex flex-col gap-2 rounded-xl border border-slate-100 bg-white px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
       data-search-photo-verify
     >
-      <p className="text-[11px] font-semibold text-slate-500">{hint}</p>
-      <Link className={`${bm.btnGhost} shrink-0`} href={cta.href}>
+      <p className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+        <AppIcon iconKey="photoCheck" size="sm" />
+        {hint}
+      </p>
+      <Link className={`${bm.btnGhost} inline-flex shrink-0 items-center gap-1.5`} href={cta.href}>
+        <AppIcon iconKey="photoCheck" size="sm" />
         {cta.label}
       </Link>
     </div>

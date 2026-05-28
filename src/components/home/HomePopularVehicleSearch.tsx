@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Car } from "lucide-react";
+import { AppIcon } from "@/components/common/AppIcon";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
@@ -14,6 +14,7 @@ export function HomePopularVehicleSearch() {
         label="차량 매칭"
         title="인기 차량 빠른 검색"
         description="연식·연료에 따라 규격이 달라질 수 있습니다 — 카드에서 바로 확인하세요."
+        iconKey="vehicle"
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {HOME_POPULAR_VEHICLES.map((v) => (
@@ -26,7 +27,7 @@ export function HomePopularVehicleSearch() {
           >
             <div className="flex items-start gap-2">
               <span className="bm-icon-pill shrink-0" aria-hidden>
-                <Car className="size-3.5" strokeWidth={2.5} />
+                <AppIcon iconKey="vehicle" size="sm" strokeWidth={2.5} />
               </span>
               <p className="text-base font-bold text-slate-900 group-hover:text-blue-800">{v.title}</p>
             </div>

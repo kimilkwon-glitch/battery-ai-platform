@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { IconBadge } from "@/components/common/IconBadge";
 import { BRAND_QNA_LABEL } from "@/lib/brand";
 import { bm } from "@/lib/design-tokens";
 import { QnaQuestionCard } from "@/components/platform/QnaQuestionCard";
@@ -118,7 +119,10 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
     <div className="space-y-5">
       <section className={`${bm.heroPanel} p-5 lg:p-6`}>
         <p className="text-[11px] font-black uppercase tracking-[0.08em] text-[#2563EB]">{BRAND_QNA_LABEL}</p>
-        <h1 className={`${bm.sectionTitleLg} mt-2`}>배터리 매칭 질문 허브</h1>
+        <h1 className={`${bm.sectionTitleLg} mt-2 flex items-center gap-2`}>
+          <IconBadge iconKey="qna" size="md" className="!h-9 !w-9" />
+          <span>배터리 매칭 질문 허브</span>
+        </h1>
         <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-[#64748B]">
           차종·규격·증상별 Q&A를 검색하고, 관련 배터리·차량·사진확인·문의로 바로 이어갑니다.
         </p>

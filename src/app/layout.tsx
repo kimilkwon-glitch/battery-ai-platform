@@ -26,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="card-horizontal-image-layout-fix1-20260528" className={cn("font-sans", geist.variable)}>
-      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="card-horizontal-image-layout-fix1-20260528">
+    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="icon-registry-consistency-fix1-20260528" className={cn("font-sans", geist.variable)}>
+      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="icon-registry-consistency-fix1-20260528">
         <CartProvider>
           {children}
           <BuildVersionStamp />

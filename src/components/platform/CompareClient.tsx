@@ -9,6 +9,7 @@ import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { ConversionActions } from "@/components/common/ConversionActions";
 import { SmartNextActions } from "@/components/common/SmartNextActions";
 import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
+import { AppIcon } from "@/components/common/AppIcon";
 import { ComparePresetHub } from "@/components/platform/hub/ComparePresetHub";
 import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
 import { bm } from "@/lib/design-tokens";
@@ -136,9 +137,15 @@ export function CompareClient({ initial }: { initial: string[] }) {
 
       {/* 선택 중인 비교 */}
       <section className={bm.intentSummary}>
-        <p className={bm.intentBadge}>비교 리포트</p>
-        <p className={`mt-2 ${bm.specTitle} text-lg`} data-spec-code>
-          {codeA} <span className="text-[var(--bm-muted)]">vs</span> {codeB}
+        <p className={`${bm.intentBadge} inline-flex items-center gap-1.5`}>
+          <AppIcon iconKey="compare" size="sm" />
+          비교 리포트
+        </p>
+        <p className={`mt-2 ${bm.specTitle} flex items-center gap-2 text-lg`} data-spec-code>
+          <AppIcon iconKey="compareVs" size="md" />
+          <span>
+            {codeA} <span className="text-[var(--bm-muted)]">vs</span> {codeB}
+          </span>
         </p>
       </section>
 

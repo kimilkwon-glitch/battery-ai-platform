@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import { AppIcon } from "@/components/common/AppIcon";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
@@ -16,6 +16,7 @@ export function HomeEvHybridSection() {
         label="보조 12V"
         title="전기차·하이브리드 보조배터리"
         description="고전압 메인 배터리가 아닙니다. 보조 12V 위치와 규격(EV 12V · AGM60L)을 구분해 확인하세요."
+        iconKey="ev"
       />
       <div className={`${bm.alertInfo} mb-4`}>
         <p className="text-sm font-medium text-slate-800">
@@ -35,7 +36,7 @@ export function HomeEvHybridSection() {
           >
             <div className="flex items-center gap-1.5">
               <span className="bm-icon-pill bm-icon-pill--emerald shrink-0" aria-hidden>
-                <Zap className="size-3.5" strokeWidth={2.5} />
+                <AppIcon iconKey="ev" size="sm" strokeWidth={2.5} />
               </span>
               <p className="text-sm font-bold text-slate-900">{item.label}</p>
             </div>
@@ -48,29 +49,21 @@ export function HomeEvHybridSection() {
                 {item.battery} 상세
               </Link>
               {"fuel" in item && item.fuel ? (
-                <Link className={bm.btnCardGhost} href={buildVehicleDetailHref(item.vehicleSlug, item.fuel)}>
+                <Link
+                  className={bm.btnCardGhost}
+                  href={buildVehicleDetailHref(item.vehicleSlug, item.fuel)}
+                >
                   차량 상세
                 </Link>
-              ) : (
-                <Link className={bm.btnCardGhost} href={buildVehicleDetailHref(item.vehicleSlug)}>
-                  차량 상세
-                </Link>
-              )}
+              ) : null}
             </div>
           </CardHorizontalLayout>
         ))}
       </div>
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Link className={`${bm.btnNavy} text-xs`} href={batteryDetailHref("EV 12V")}>
-          EV 12V 상세
-        </Link>
-        <Link className={`${bm.btnSecondary} text-xs`} href={batteryDetailHref("AGM60L")}>
-          AGM60L 상세
-        </Link>
-        <Link className={`${bm.btnGhost} text-xs`} href={HUB_PHOTO}>
-          사진으로 최종 확인
-        </Link>
-      </div>
+      <Link className={`${bm.btnGhost} mt-3 inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
+        <AppIcon iconKey="photoCheck" size="sm" />
+        EV·HEV 보조배터리 사진 확인
+      </Link>
     </HomeSectionShell>
   );
 }

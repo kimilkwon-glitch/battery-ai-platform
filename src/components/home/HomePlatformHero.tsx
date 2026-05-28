@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  AlertTriangle,
-  Battery,
-  Camera,
-  Car,
-  Search,
-} from "lucide-react";
+import { AppIcon } from "@/components/common/AppIcon";
 import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { BRAND_HERO_LABEL } from "@/lib/brand";
@@ -18,14 +12,9 @@ import {
   HOME_HERO_EXAMPLES,
   HOME_SEARCH_TYPE_CHIPS,
 } from "@/lib/home-upgrade-v2-data";
+import { HOME_SEARCH_CHIP_ICONS } from "@/lib/icon-map";
+import type { IconKey } from "@/lib/icon-map";
 import { bm } from "@/lib/design-tokens";
-
-const CHIP_ICONS = {
-  "차량명 검색": Car,
-  "배터리 규격 검색": Battery,
-  "증상 진단": AlertTriangle,
-  "사진 확인": Camera,
-} as const;
 
 export function HomePlatformHero() {
   return (
@@ -56,10 +45,15 @@ export function HomePlatformHero() {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
-            <Link className={`${bm.btnNavy} flex-1 text-xs`} href="/vehicles">
+            <Link className={`${bm.btnNavy} flex-1 inline-flex items-center justify-center gap-1.5 text-xs`} href="/vehicles">
+              <AppIcon iconKey="vehicle" size="sm" className="!text-white" />
               내 차량 확인
             </Link>
-            <Link className={`${bm.btnSecondary} flex-1 text-xs !text-slate-900`} href={getSearchHref("AGM80L")}>
+            <Link
+              className={`${bm.btnSecondary} flex-1 inline-flex items-center justify-center gap-1.5 text-xs !text-slate-900`}
+              href={getSearchHref("AGM80L")}
+            >
+              <AppIcon iconKey="batterySpec" size="sm" />
               규격 검색
             </Link>
           </div>
@@ -67,7 +61,7 @@ export function HomePlatformHero() {
           <p className="mt-4 text-[10px] font-bold uppercase tracking-wide text-slate-300">검색 유형</p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {HOME_SEARCH_TYPE_CHIPS.map((chip) => {
-              const Icon = CHIP_ICONS[chip.label as keyof typeof CHIP_ICONS] ?? Search;
+              const iconKey = (HOME_SEARCH_CHIP_ICONS[chip.label] ?? "search") as IconKey;
               return (
                 <Link
                   key={chip.label}
@@ -76,7 +70,7 @@ export function HomePlatformHero() {
                 >
                   <span className="flex items-center gap-2">
                     <span className="bm-icon-pill" aria-hidden>
-                      <Icon className="size-3.5" strokeWidth={2.5} />
+                      <AppIcon iconKey={iconKey} size="sm" strokeWidth={2.5} />
                     </span>
                     <span>
                       <span className="bm-hero-chip__title">{chip.label}</span>
@@ -102,19 +96,22 @@ export function HomePlatformHero() {
           </div>
 
           <div className="mt-4 hidden flex-wrap gap-2 lg:flex">
-            <Link className={`${bm.btnNavy} text-xs`} href="/vehicles">
+            <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-xs`} href="/vehicles">
+              <AppIcon iconKey="vehicle" size="sm" className="!text-white" />
               내 차량 기준으로 확인
             </Link>
             <Link
-              className={`${bm.btnSecondary} text-xs !bg-white !text-slate-900 hover:!bg-slate-50`}
+              className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs !bg-white !text-slate-900 hover:!bg-slate-50`}
               href={HUB_STORE}
             >
+              <AppIcon iconKey="store" size="sm" />
               부산 매장·출장 문의
             </Link>
             <Link
-              className={`${bm.btnGhost} text-xs !text-slate-200 !ring-slate-500 hover:!bg-slate-800/60 hover:!text-white`}
+              className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs !text-slate-200 !ring-slate-500 hover:!bg-slate-800/60 hover:!text-white`}
               href={HUB_PHOTO}
             >
+              <AppIcon iconKey="photoCheck" size="sm" className="!text-slate-200" />
               사진으로 최종 확인
             </Link>
           </div>

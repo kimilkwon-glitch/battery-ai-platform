@@ -10,7 +10,10 @@ import { getVehicleBodyType, uniqueCrossLinks } from "@/lib/platform-data";
 import { PortalHeaderClient } from "@/components/platform/PortalHeaderClient";
 import { portalNav } from "@/components/platform/PortalHeaderNav";
 import { ContentUiIcon } from "@/components/content/ContentUiIcon";
+import { IconBadge } from "@/components/common/IconBadge";
 import { resolveContentUiIconFromText, type ContentUiIconKey } from "@/lib/content-ui-icons";
+import type { IconKey } from "@/lib/icon-map";
+import { resolveIconKeyForHubLink } from "@/lib/icon-map";
 export { portalNav };
 
 export type BreadcrumbItem = { label: string; href?: string };
@@ -34,12 +37,26 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   );
 }
 
-export function CrossLinkCard({ title, description, href }: { title: string; description: string; href: string }) {
+export function CrossLinkCard({
+  title,
+  description,
+  href,
+  iconKey,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  iconKey?: IconKey;
+}) {
+  const key = iconKey ?? resolveIconKeyForHubLink(title, href);
   return (
     <a
       className={`flex h-full flex-col ${bm.cardInteractive} ${bm.cardPad}`}
       href={href}
     >
+      <span className="mb-2">
+        <IconBadge iconKey={key} size="md" />
+      </span>
       <span className="block text-sm font-black text-[var(--bm-text)]">{title}</span>
       <span className="mt-1.5 flex-1 text-[11px] font-semibold leading-relaxed text-[var(--bm-muted)]">{description}</span>
       <span className="mt-3 text-[10px] font-black text-[var(--bm-primary)]">바로가기 →</span>
@@ -47,7 +64,11 @@ export function CrossLinkCard({ title, description, href }: { title: string; des
   );
 }
 
-export function CrossLinkGrid({ links }: { links: { title: string; description: string; href: string }[] }) {
+export function CrossLinkGrid({
+  links,
+}: {
+  links: { title: string; description: string; href: string; iconKey?: IconKey }[];
+}) {
   const deduped = uniqueCrossLinks(links);
   return (
     <PortalPanel title="다음에 확인하기">

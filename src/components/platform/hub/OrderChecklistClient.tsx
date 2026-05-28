@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { AppIcon } from "@/components/common/AppIcon";
+import { IconBadge } from "@/components/common/IconBadge";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 import { HubBadge } from "@/components/platform/hub/HubBadge";
@@ -8,6 +10,15 @@ import { bm } from "@/lib/design-tokens";
 import { ORDER_CHECKLIST_ITEMS, ORDER_CHECKLIST_SECTIONS } from "@/lib/platform-hub-content";
 import { HUB_PHOTO_CHECK, HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
 import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
+import { ORDER_CHECKLIST_STEP_ICONS, ORDER_SECTION_ICON_FROM_TITLE } from "@/lib/icon-map";
+import type { IconKey } from "@/lib/icon-map";
+
+function sectionIconKey(title: string): IconKey {
+  for (const [needle, key] of Object.entries(ORDER_SECTION_ICON_FROM_TITLE)) {
+    if (title.includes(needle)) return key;
+  }
+  return "warning";
+}
 
 export function OrderChecklistClient() {
   return (
@@ -17,29 +28,35 @@ export function OrderChecklistClient() {
         <SectionHeader
           title="배터리 주문 전 확인 체크리스트"
           description="택배·자가장착·전화 문의 전에 확인하면 반품·재주문을 줄일 수 있습니다. DB 매칭 결과와 함께 사용하세요."
+          iconKey="checklist"
         />
         <ul className="mt-4 list-none space-y-3 p-0">
-          {ORDER_CHECKLIST_ITEMS.map((item, i) => (
-            <li className={bm.stepItem} key={item.title}>
-              <span className={bm.stepNum}>{i + 1}</span>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-sm font-bold text-[var(--bm-text)]">{item.title}</h3>
-                  <HubBadge label={item.badge} tone={item.tone} />
+          {ORDER_CHECKLIST_ITEMS.map((item, i) => {
+            const iconKey = (ORDER_CHECKLIST_STEP_ICONS[i] ?? "verify") as IconKey;
+            return (
+              <li className={bm.stepItem} key={item.title}>
+                <span className={bm.stepNum}>{i + 1}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <AppIcon iconKey={iconKey} size="sm" />
+                    <h3 className="text-sm font-bold text-[var(--bm-text)]">{item.title}</h3>
+                    <HubBadge label={item.badge} tone={item.tone} />
+                  </div>
+                  <p className="mt-1 text-xs font-medium leading-relaxed text-[var(--bm-muted)]">{item.body}</p>
                 </div>
-                <p className="mt-1 text-xs font-medium leading-relaxed text-[var(--bm-muted)]">{item.body}</p>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       </section>
 
       <section className={`${bm.card} ${bm.cardPad}`}>
-        <SectionHeader title="꼭 확인할 주제" description="헷갈리기 쉬운 규격·단자·타입" />
+        <SectionHeader title="꼭 확인할 주제" description="헷갈리기 쉬운 규격·단자·타입" iconKey="terminal" />
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {ORDER_CHECKLIST_SECTIONS.map((s) => (
             <article className={`${bm.cardInteractive} p-4`} key={s.title}>
               <div className="flex flex-wrap items-center gap-2">
+                <IconBadge iconKey={sectionIconKey(s.title)} size="sm" />
                 <h3 className="text-sm font-bold text-slate-900">{s.title}</h3>
                 <HubBadge label={s.badge} tone={s.tone} />
               </div>
@@ -53,21 +70,26 @@ export function OrderChecklistClient() {
       </section>
 
       <section className={bm.platformStrip}>
-        <SectionHeader title="다음 행동" description="확인 후 이렇게 이어가세요" />
+        <SectionHeader title="다음 행동" description="확인 후 이렇게 이어가세요" iconKey="route" />
         <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-          <Link className={`${bm.btnNavy} text-xs`} href={HUB_PHOTO}>
+          <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
+            <AppIcon iconKey="photoCheck" size="sm" className="!text-white" />
             사진으로 최종 확인
           </Link>
-          <Link className={`${bm.btnSecondary} text-xs`} href="/compare">
+          <Link className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs`} href="/compare">
+            <AppIcon iconKey="compare" size="sm" />
             규격 비교
           </Link>
-          <Link className={`${bm.btnGhost} text-xs`} href={HUB_SYMPTOMS}>
+          <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_SYMPTOMS}>
+            <AppIcon iconKey="symptom" size="sm" />
             증상 진단
           </Link>
-          <Link className={`${bm.btnGhost} text-xs`} href={HUB_QA}>
+          <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_QA}>
+            <AppIcon iconKey="qna" size="sm" />
             Q&A 허브
           </Link>
-          <Link className={`${bm.btnGhost} text-xs`} href={HUB_SHOP_ANCHORS.orderCheck}>
+          <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_SHOP_ANCHORS.orderCheck}>
+            <AppIcon iconKey="delivery" size="sm" />
             택배 주문 전 확인
           </Link>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AppIcon } from "@/components/common/AppIcon";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 import { recordSearch, recordVehicleClick } from "@/lib/activity";
@@ -165,8 +166,9 @@ export function VehicleSearchBox({
               shimmerColor="#93c5fd"
               shimmerDuration="4s"
               borderRadius="10px"
-              className="h-11 min-h-[44px] px-6 text-sm font-black"
+              className="h-11 min-h-[44px] inline-flex items-center justify-center gap-1.5 px-6 text-sm font-black"
             >
+              <AppIcon iconKey="search" size="sm" className="!text-white" />
               {buttonLabel}
             </ShimmerButton>
           ) : (

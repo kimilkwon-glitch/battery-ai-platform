@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Battery } from "lucide-react";
+import { AppIcon } from "@/components/common/AppIcon";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
@@ -18,6 +18,7 @@ export function HomePopularBatteryRanking() {
         label="규격 허브"
         title="많이 찾는 배터리 규격"
         description="DB에 등록된 대표 규격 — 상세 허브에서 차량·비교·오주문 방지를 확인하세요."
+        iconKey="batterySpec"
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {HOME_POPULAR_BATTERIES.map((item) => (
@@ -39,10 +40,12 @@ export function HomePopularBatteryRanking() {
             </div>
             <p className="line-clamp-2 text-[10px] font-medium text-slate-600">{item.useCase}</p>
             <div className={bm.batteryCardBtnRow}>
-              <Link className={bm.btnCardNavy} href={batteryDetailHref(item.code)}>
+              <Link className={`${bm.btnCardNavy} inline-flex items-center gap-1`} href={batteryDetailHref(item.code)}>
+                <AppIcon iconKey="batterySpec" size="xs" className="!text-white" />
                 규격 상세
               </Link>
-              <Link className={bm.btnCardGhost} href={HUB_PHOTO}>
+              <Link className={`${bm.btnCardGhost} inline-flex items-center gap-1`} href={HUB_PHOTO}>
+                <AppIcon iconKey="photoCheck" size="xs" />
                 사진확인
               </Link>
             </div>
@@ -50,7 +53,7 @@ export function HomePopularBatteryRanking() {
         ))}
       </div>
       <p className="mt-3 flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
-        <Battery className="size-3.5 shrink-0 text-blue-600" strokeWidth={2.5} aria-hidden />
+        <AppIcon iconKey="battery" size="sm" />
         상품 이미지는 좌측 크게 · 규격 정보는 우측에 정리됩니다.
       </p>
     </HomeSectionShell>

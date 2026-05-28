@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AppIcon } from "@/components/common/AppIcon";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { PlatformHubLinks } from "@/components/platform/hub/PlatformHubLinks";
 import { PhotoCheckExampleCard } from "@/components/platform/hub/PhotoCheckExampleCard";
@@ -11,6 +12,9 @@ import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
 import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
 import { QNA_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { resolveImageSlotAssetUrl } from "@/lib/media/resolve-asset-image";
+import type { IconKey } from "@/lib/icon-map";
+
+const PHOTO_STEP_HEADER_ICONS: IconKey[] = ["photoCheck", "photoLabel", "warning", "photoVerify"];
 
 export function PhotoCheckClient() {
   const labelSlot = QNA_IMAGE_SLOTS.labelCheck();
@@ -25,6 +29,7 @@ export function PhotoCheckClient() {
         <SectionHeader
           title="사진 확인 안내"
           description="사진확인은 메인 답변이 아닙니다. DB·차종 검색 후 최종 검증용으로 사용하세요."
+          iconKey="photoCheck"
         />
         <p className={`${bm.alertInfo} mt-3`}>
           사진확인은 메인 답변이 아니라 보조 검증입니다. 차종·연식·연료 확인과 함께 쓰세요.
@@ -38,6 +43,7 @@ export function PhotoCheckClient() {
         <SectionHeader
           title="좋은 사진 예시"
           description="아래 항목이 보이면 규격·단자 확인이 빨라집니다."
+          iconKey="photoVerify"
         />
         <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
           {goodExamples.map((card) => (
@@ -50,6 +56,7 @@ export function PhotoCheckClient() {
         <SectionHeader
           title="피해야 할 사진"
           description="아래처럼 찍히면 재촬영을 요청할 수 있습니다."
+          iconKey="warning"
         />
         <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
           {badExamples.map((card) => (
@@ -60,7 +67,10 @@ export function PhotoCheckClient() {
 
       {PHOTO_CHECK_STEPS.map((block) => (
         <section className={`${bm.card} ${bm.cardPad}`} key={block.step}>
-          <SectionHeader title={block.title} />
+          <SectionHeader
+            title={block.title}
+            iconKey={PHOTO_STEP_HEADER_ICONS[block.step - 1] ?? "photoCheck"}
+          />
           <ul className="mt-3 list-none space-y-2 p-0">
             {block.items.map((item, idx) => (
               <li className={`${bm.stepItem} text-xs font-medium leading-relaxed text-slate-700`} key={item}>
@@ -76,15 +86,18 @@ export function PhotoCheckClient() {
       ))}
 
       <section className={bm.platformStrip}>
-        <SectionHeader title="문의·상담" description="사진 준비 후 연락하면 확인이 빠릅니다." />
+        <SectionHeader title="문의·상담" description="사진 준비 후 연락하면 확인이 빠릅니다." iconKey="phone" />
         <div className="mt-3 flex flex-wrap gap-2">
-          <Link className={`${bm.btnNavy} text-xs`} href={HUB_PHOTO}>
+          <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
+            <AppIcon iconKey="photoCheck" size="sm" className="!text-white" />
             사진 분석 페이지
           </Link>
-          <Link className={`${bm.btnSecondary} text-xs`} href={HUB_STORE}>
+          <Link className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs`} href={HUB_STORE}>
+            <AppIcon iconKey="store" size="sm" />
             매장·출장 문의
           </Link>
-          <Link className={`${bm.btnGhost} text-xs`} href={HUB_ORDER_CHECKLIST}>
+          <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_ORDER_CHECKLIST}>
+            <AppIcon iconKey="checklist" size="sm" />
             오주문 체크리스트
           </Link>
         </div>

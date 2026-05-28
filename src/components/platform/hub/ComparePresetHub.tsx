@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { GitCompare } from "lucide-react";
 import { SectionHeader } from "@/components/common/SectionHeader";
+import { IconBadge } from "@/components/common/IconBadge";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
 import { HubBadge } from "@/components/platform/hub/HubBadge";
 import { bm } from "@/lib/design-tokens";
@@ -21,6 +21,7 @@ export function ComparePresetHub() {
         label="비교 센터"
         title="헷갈리는 규격 빠른 비교"
         description="단자 방향·용량·차종 주의가 한눈에 보이도록 정리했습니다."
+        iconKey="compare"
       />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {COMPARE_PRESET_CARDS.map((card) => (
@@ -31,9 +32,7 @@ export function ComparePresetHub() {
             key={card.label}
             imagePanel={
               <div className="flex h-full min-h-[100px] w-full items-center justify-center md:min-h-[120px]">
-                <span className="bm-icon-pill !h-12 !w-12" aria-hidden>
-                  <GitCompare className="size-6" strokeWidth={2} />
-                </span>
+                <IconBadge iconKey="compare" large />
               </div>
             }
           >
