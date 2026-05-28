@@ -13,7 +13,7 @@ import {
   HUB_SHOP_ANCHORS,
   HUB_STORE,
 } from "@/lib/customer-hub-routes";
-import { BATTERY_DETAIL_HUB_VERSION } from "@/lib/battery-detail/core-battery-codes";
+import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
 import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
 import { BATTERY_DETAIL_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
@@ -117,7 +117,7 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
     <div
       className="space-y-4 pb-20 md:pb-4"
       data-battery-detail-hub={displayCode}
-      data-battery-detail-hub-version={BATTERY_DETAIL_HUB_VERSION}
+      data-battery-detail-build-stamp={BATTERY_DETAIL_BUILD_STAMP}
     >
       {/* A. Hero */}
       <section className={bm.heroPanel}>

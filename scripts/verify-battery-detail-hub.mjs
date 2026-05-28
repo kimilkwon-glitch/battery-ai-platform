@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const BASE = process.argv[2] ?? process.env.BASE_URL ?? "http://localhost:3000";
 const STAMP = "BM-UX-REV-20260528-BATTERY-DETAIL-ALL";
-const HUB_VERSION = "20260528-all";
 
 const coreBatteryPaths = [
   ["/batteries/AGM60L", "AGM60L"],
@@ -50,7 +49,10 @@ function hubOk(html, hubCode) {
   const hasHub = codes.some((c) => html.includes(`data-battery-detail-hub="${c}"`));
   return (
     hasHub &&
-    html.includes(`data-battery-detail-hub-version="${HUB_VERSION}"`) &&
+    html.includes(`data-battery-detail-build-stamp="${STAMP}"`) &&
+    html.includes(`data-battery-route-build-stamp="${STAMP}"`) &&
+    !html.includes("data-battery-detail-hub-version=") &&
+    !html.includes("BATTERY-DETAIL-HUB") &&
     html.includes("배터리 규격 허브") &&
     html.includes("오주문 방지") &&
     html.includes("택배 주문하기") &&
@@ -81,7 +83,7 @@ for (const [p, hubCode] of [...coreBatteryPaths, ...fallbackBatteryPaths]) {
   if (!pass) {
     const stamps = [...new Set(html.match(/BM-UX-REV-[A-Z0-9-]+/g) ?? [])];
     console.log(`  stamps=${stamps.join(",")} hubAttr=${html.match(/data-battery-detail-hub="[^"]+"/)?.[0]}`);
-    console.log(`  version=${html.includes(HUB_VERSION)} slots=${(html.match(/data-image-slot=/g) ?? []).length}`);
+    console.log(`  routeStamp=${html.includes(`data-battery-route-build-stamp="${STAMP}"`)} slots=${(html.match(/data-image-slot=/g) ?? []).length}`);
   }
 }
 

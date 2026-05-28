@@ -31,8 +31,12 @@ for (const p of paths) {
   const res = await fetch(url, { headers: { "Cache-Control": "no-cache" }, redirect: "follow", cache: "no-store" });
   const html = await res.text();
   const stamps = [...new Set(html.match(/BM-UX-REV-[A-Z0-9-]+/g) ?? [])];
-  const hub = html.includes("data-battery-detail-hub") || !p.startsWith("/batteries/");
-  const pass = res.status === 200 && stamps[0] === STAMP && hub;
+  const hub =
+    !p.startsWith("/batteries/") ||
+    (html.includes("data-battery-detail-hub") &&
+      html.includes(`data-battery-detail-build-stamp="${STAMP}"`) &&
+      !html.includes("BATTERY-DETAIL-HUB"));
+  const pass = res.status === 200 && stamps.length === 1 && stamps[0] === STAMP && hub;
   if (!pass) fail++;
   rows.push({ path: p, status: res.status, stamp: stamps[0] ?? null, hub, pass });
   console.log(`${pass ? "PASS" : "FAIL"} ${p} stamp=${stamps[0] ?? "none"}`);

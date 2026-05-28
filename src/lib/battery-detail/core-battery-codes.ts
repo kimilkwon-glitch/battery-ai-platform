@@ -1,4 +1,5 @@
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { BUILD_STAMP } from "@/lib/build-stamp";
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 
 /** 상품형 상세·규격 허브 — 8개 핵심 규격 (115D31L 제외) */
@@ -15,8 +16,8 @@ export const CORE_BATTERY_DETAIL_CODES = [
 
 export type CoreBatteryDetailCode = (typeof CORE_BATTERY_DETAIL_CODES)[number];
 
-/** 배포·검수용 — 허브 HTML 버전 */
-export const BATTERY_DETAIL_HUB_VERSION = "20260528-all";
+/** /batteries/[code] route build stamp — build-stamp.json 단일 소스 */
+export const BATTERY_DETAIL_BUILD_STAMP = BUILD_STAMP;
 
 /** family/별칭 → 허브 canonical (CMF80L·AGM60·100R 등) */
 const FAMILY_TO_HUB_CODE: Record<string, CoreBatteryDetailCode> = {

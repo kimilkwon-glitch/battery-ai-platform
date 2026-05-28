@@ -8,6 +8,7 @@ import { BatteryActivityTracker } from "@/components/battery/BatteryActivityTrac
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { isRetiredBatterySpec } from "@/lib/batteryNormalize";
 import { getBatteryDetailData } from "@/lib/vehicleBattery";
+import { BUILD_STAMP } from "@/lib/build-stamp";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,6 +31,7 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
       description="배터리 규격 허브 · 호환 차량 · 오주문 방지 · 택배·사진확인 CTA"
       searchPlaceholder={`${displayCode} 호환 차종 검색`}
     >
+      <div data-battery-route-build-stamp={BUILD_STAMP} className="contents">
       <BatteryActivityTracker code={displayCode} />
       <Suspense fallback={null}>
         <BatteryDetailHub
@@ -40,6 +42,7 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
       </Suspense>
       <div className="mt-4">
         <BatteryNavFooter code={displayCode} />
+      </div>
       </div>
     </PageShell>
   );
