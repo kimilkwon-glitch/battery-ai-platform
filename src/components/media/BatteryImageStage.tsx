@@ -12,8 +12,7 @@ import {
   batteryImageProductFit,
   batteryImageStageHeight,
   batteryImageStageInset,
-  batteryImageStageProductBox,
-  batteryImageStageScale,
+  batteryImageStageProductSize,
   type BatteryImageStageVariant,
 } from "@/lib/battery-image-stage";
 import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
@@ -46,8 +45,8 @@ function StagePhoto({
   variant: BatteryImageStageVariant;
 }) {
   return (
-    <div className={`flex h-full w-full items-end justify-center overflow-hidden ${batteryImageStageInset}`}>
-      <div className={`${batteryImageStageProductBox} ${batteryImageStageScale[variant]}`}>
+    <div className={`flex h-full w-full items-center justify-center ${batteryImageStageInset}`}>
+      <div className={batteryImageStageProductSize[variant]}>
         <Image
           key={src}
           src={src}

@@ -25,10 +25,10 @@ export function HomePopularBatteryRanking() {
           <article className={`${bm.rankCard} flex flex-col overflow-hidden`} key={item.code}>
             <BatteryCardImage code={item.code} flushTop />
             <div className={bm.batteryCardBody}>
-              <p className="spec-code text-base font-bold text-[var(--bm-text)]" data-spec-code>
+              <p className="spec-code text-sm font-bold text-[var(--bm-text)] sm:text-base" data-spec-code>
                 {item.code}
               </p>
-              <p className="text-[11px] font-medium leading-snug text-slate-600">{item.summary}</p>
+              <p className="text-[10px] font-medium leading-snug text-slate-600 sm:text-[11px]">{item.summary}</p>
               <div className="flex flex-wrap gap-1">
                 <span className={`${bm.badge} ${bm.badgeGray}`}>{item.typeLabel}</span>
                 <span className={`${bm.badge} ${bm.badgeGray}`}>{item.terminal}</span>

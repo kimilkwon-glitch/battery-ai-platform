@@ -47,8 +47,8 @@ function SelectedBatteryCard({
         className="rounded-none rounded-t-[22px] ring-0"
         flushTop
       />
-      <div className="flex flex-1 flex-col gap-1 px-3 py-2.5 sm:px-3.5">
-        <p className="spec-code text-lg font-bold leading-snug text-[var(--bm-text)] sm:text-xl" data-spec-code>
+      <div className="flex flex-1 flex-col gap-0.5 px-2.5 py-2 sm:px-3">
+        <p className="spec-code text-base font-bold leading-snug text-[var(--bm-text)] sm:text-lg" data-spec-code>
           {battery.code}
         </p>
         <p className={`${bm.specData} text-[11px]`}>

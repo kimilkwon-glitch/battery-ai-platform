@@ -16,8 +16,7 @@ import {
 import {
   batteryImageProductFit,
   batteryImageStageInset,
-  batteryImageStageProductBox,
-  batteryImageStageScale,
+  batteryImageStageProductSize,
 } from "@/lib/battery-image-stage";
 
 function BatteryGraphic({ code }: { code: string }) {
@@ -79,9 +78,7 @@ export function BatteryThumbnail({
 
   const areaClass = tall ? "h-[180px] w-full" : batteryRatioClass[ratio];
   const imgClass =
-    fit === "contain" || tall
-      ? "object-contain object-[center_92%]"
-      : "object-cover object-center";
+    fit === "contain" || tall ? batteryImageProductFit : "object-cover object-center";
 
   const surfaceClass = surface === "transparent" ? "bg-transparent" : batteryThumbSurface;
 
@@ -92,8 +89,8 @@ export function BatteryThumbnail({
       {showGraphic ? (
         <BatteryGraphic code={code} />
       ) : tall || fit === "contain" ? (
-        <div className="absolute inset-0 flex items-end justify-center overflow-hidden px-3 pt-2 pb-3">
-          <div className="relative h-[88%] w-[92%]">
+        <div className={`absolute inset-0 flex items-center justify-center ${batteryImageStageInset}`}>
+          <div className={batteryImageStageProductSize.card}>
             <Image
               key={src}
               src={src}
@@ -209,7 +206,7 @@ export function BatteryImageCard({
         overlayLabel={false}
         darkOverlay={false}
       />
-      <div className={`px-3 pb-3 ${searchLayout ? "pt-2" : "pt-2"}`}>
+      <div className={`px-2.5 pb-2.5 ${searchLayout ? "pt-1.5" : "pt-1.5"}`}>
         <p
           className={`spec-code font-black text-[var(--bm-text)] ${searchLayout ? "text-lg leading-snug sm:text-xl" : "text-sm"}`}
           data-spec-code

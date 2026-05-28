@@ -41,7 +41,7 @@ export function RecommendedBatteryCard({
         </div>
       ) : null}
       <div className="grid gap-0 max-sm:grid-rows-[auto_1fr] sm:grid-cols-[minmax(148px,220px)_1fr]">
-        <div className="overflow-hidden p-2 sm:border-r sm:border-[var(--bm-border)] sm:p-2.5">
+        <div className="overflow-hidden p-1.5 sm:border-r sm:border-[var(--bm-border)] sm:p-2">
           <BatteryImageStage
             code={display.code}
             variant="search"
@@ -49,23 +49,23 @@ export function RecommendedBatteryCard({
             className="w-full"
           />
         </div>
-        <div className="px-3 py-2.5 max-sm:pt-2 sm:px-3.5">
-          <h3 className="spec-code text-lg font-bold leading-snug text-[var(--bm-text)] sm:text-xl">
+        <div className="px-2.5 py-2 max-sm:pt-1.5 sm:px-3">
+          <h3 className="spec-code text-base font-bold leading-snug text-[var(--bm-text)] sm:text-lg">
             {display.code}
-            <span className="ml-1.5 text-sm font-bold text-[var(--bm-muted)]">배터리</span>
+            <span className="ml-1 text-xs font-bold text-[var(--bm-muted)] sm:text-sm">배터리</span>
           </h3>
-          {context ? <p className="mt-0.5 text-xs font-semibold text-slate-600">{context}</p> : null}
+          {context ? <p className="mt-0.5 text-[11px] font-semibold text-slate-600">{context}</p> : null}
           <SearchResultSpecChips
             typeLabel={display.typeLabel}
             seriesLabel={display.seriesLabel}
             terminalLabel={display.terminalLabel}
           />
           {exceptionNote ? (
-            <p className="mt-2 text-[11px] font-medium leading-relaxed text-slate-500">{exceptionNote}</p>
+            <p className="mt-1.5 text-[10px] font-medium leading-relaxed text-slate-500 sm:text-[11px]">{exceptionNote}</p>
           ) : null}
         </div>
       </div>
-      <div className="border-t border-[var(--bm-border)] bg-[var(--bm-surface-muted)] px-3 py-2.5">
+      <div className="border-t border-[var(--bm-border)] bg-[var(--bm-surface-muted)] px-2.5 py-2">
         <CtaHierarchy compact ctas={ctas} links={secondaryLinks} />
       </div>
     </article>
