@@ -8,6 +8,7 @@ import { bm } from "@/lib/design-tokens";
 export default function GuideSymptomsPage() {
   return (
     <PageShell
+      zone="guide"
       pageLabel="배터리 가이드"
       title="증상 진단"
       description="시동지연·방전·블랙박스 방전 등 증상별 확인 방법입니다."
@@ -18,7 +19,7 @@ export default function GuideSymptomsPage() {
             <Link
               key={item.id}
               href={item.href}
-              className="rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-black text-slate-600 hover:bg-blue-50 hover:text-blue-800"
+              className="bm-badge bm-badge--guide px-3 py-1.5 hover:opacity-90"
             >
               {item.label}
             </Link>

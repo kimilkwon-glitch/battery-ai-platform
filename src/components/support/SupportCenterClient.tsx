@@ -80,16 +80,9 @@ export function SupportCenterClient() {
   };
 
   return (
-    <div className="support-center space-y-6" data-page="support-center">
-      <header>
-        <h1 className="text-2xl font-black text-slate-950 sm:text-3xl">고객센터</h1>
-        <p className="mt-2 text-sm font-medium text-slate-600">
-          공지사항, 자주 묻는 질문, 문의 접수를 한곳에서 확인하세요.
-        </p>
-      </header>
-
+    <div className="support-center bm-zone bm-zone--support space-y-6" data-page="support-center">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1 rounded-xl bg-slate-100 p-1">
+        <div className="bm-tab-rail bm-tab-rail--support">
           {(
             [
               ["notices", "공지사항"],
@@ -102,8 +95,8 @@ export function SupportCenterClient() {
               type="button"
               onClick={() => setTab(id)}
               className={clsx(
-                "rounded-lg px-4 py-2 text-sm font-black transition",
-                tab === id ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900",
+                "bm-tab-rail__btn",
+                tab === id && "bm-tab-rail__btn--active",
               )}
             >
               {label}

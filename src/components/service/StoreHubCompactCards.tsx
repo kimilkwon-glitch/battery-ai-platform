@@ -20,12 +20,9 @@ export function StoreHubCompactCards({ highlightId }: { highlightId: BusanStoreI
             key={store.id}
             id={`store-${store.id}`}
             className={clsx(
-              `${bm.card} overflow-hidden transition`,
-              active
-                ? store.id === "deokcheon"
-                  ? "ring-2 ring-blue-300"
-                  : "ring-2 ring-emerald-300"
-                : "border border-slate-200",
+              `${bm.card} bm-card-unified bm-store-card overflow-hidden transition`,
+              store.id === "deokcheon" ? "bm-store-card--deokcheon" : "bm-store-card--hakjang",
+              active && "bm-store-card--active",
             )}
           >
             <div className="relative aspect-[16/9] w-full bg-slate-100">
@@ -40,7 +37,16 @@ export function StoreHubCompactCards({ highlightId }: { highlightId: BusanStoreI
             </div>
 
             <div className={bm.cardPad}>
-              <h3 className="text-lg font-black text-slate-950">{store.name}</h3>
+              <h3 className="text-lg font-black text-slate-950">
+                <span
+                  className={clsx(
+                    "bm-store-badge mr-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-black",
+                    store.id === "deokcheon" ? "bm-store-badge--deokcheon" : "bm-store-badge--hakjang",
+                  )}
+                >
+                  {store.name}
+                </span>
+              </h3>
               <p className="mt-0.5 text-xs font-bold text-slate-500">대표 권역</p>
               <p className="mt-1 text-sm font-black text-slate-800">{store.displayRegions}</p>
               <p className="mt-2 text-sm font-black text-slate-900">

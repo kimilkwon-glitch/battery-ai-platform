@@ -10,6 +10,7 @@ export default async function ReviewsPage({
 
   return (
     <PageShell
+      zone="review"
       pageLabel="리뷰"
       title="배터리 교체 후기"
       description="덕천점·학장점 교체 후기와 작업 사례를 확인하세요."

@@ -14,7 +14,7 @@ export function GuideSubPage({
   sections: { heading: string; items: string[] }[];
 }) {
   return (
-    <PageShell pageLabel="배터리 가이드" title={title} description={description}>
+    <PageShell zone="guide" pageLabel="배터리 가이드" title={title} description={description}>
       <div className="space-y-6">
         <nav className="flex flex-wrap gap-2">
           {GUIDE_HUB_ITEMS.map((item) => (
@@ -29,7 +29,7 @@ export function GuideSubPage({
         </nav>
 
         {sections.map((section) => (
-          <section key={section.heading} className={`${bm.card} ${bm.cardPad}`}>
+          <section key={section.heading} className={`${bm.card} ${bm.cardPad} bm-card-unified`}>
             <h2 className="text-base font-black text-slate-950">{section.heading}</h2>
             <ul className="mt-3 space-y-2">
               {section.items.map((item) => (

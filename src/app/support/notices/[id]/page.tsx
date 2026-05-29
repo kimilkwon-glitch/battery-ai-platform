@@ -16,7 +16,7 @@ export default async function SupportNoticeDetailPage({
   if (!notice) notFound();
 
   return (
-    <PageShell pageLabel="공지사항" title={notice.title} searchPlaceholder="차량·규격 검색">
+    <PageShell zone="support" pageLabel="공지사항" title={notice.title} searchPlaceholder="차량·규격 검색">
       <article className={`${bm.card} ${bm.cardPad} mx-auto max-w-3xl`}>
         <Link
           href={HUB_SUPPORT}

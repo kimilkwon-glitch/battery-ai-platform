@@ -20,7 +20,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
 
   return (
     <article
-      className="home-spec-card group flex h-full flex-col overflow-hidden rounded-[20px] border border-slate-200/90 bg-white shadow-[0_4px_24px_rgba(15,23,42,0.05)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)]"
+      className="home-spec-card bm-card-unified group flex h-full flex-col overflow-hidden bg-white motion-safe:hover:-translate-y-0.5"
       data-home-spec-card={displayName}
       data-home-spec-search-code={searchCode}
       data-home-spec-brand={brand}

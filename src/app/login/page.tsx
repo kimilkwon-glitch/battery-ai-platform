@@ -5,8 +5,8 @@ import { bm } from "@/lib/design-tokens";
 /** 실제 인증 백엔드 없음 — UI·안내만 제공 */
 export default function LoginPage() {
   return (
-    <PageShell pageLabel="로그인" title="로그인" showSearch={false}>
-      <div className={`${bm.card} ${bm.cardPad} mx-auto max-w-md`}>
+    <PageShell zone="auth" pageLabel="로그인" title="로그인" showSearch={false}>
+      <div className={`${bm.card} ${bm.cardPad} bm-auth-card`}>
         <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-bold text-amber-900 ring-1 ring-amber-100">
           회원 로그인·주문 내역 기능은 준비 중입니다. 상담·주문은 배터리 상세페이지 또는 채팅상담을
           이용해 주세요.
@@ -16,7 +16,7 @@ export default function LoginPage() {
             휴대폰번호 또는 이메일
             <input
               disabled
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+              className={`${bm.input} bm-input-field mt-1`}
               placeholder="준비중"
             />
           </label>
@@ -25,7 +25,7 @@ export default function LoginPage() {
             <input
               disabled
               type="password"
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+              className={`${bm.input} bm-input-field mt-1`}
             />
           </label>
           <button type="button" disabled className={`${bm.btnPrimary} w-full opacity-50`}>

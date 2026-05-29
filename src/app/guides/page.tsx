@@ -7,6 +7,7 @@ import { bm } from "@/lib/design-tokens";
 export default function GuidesPage() {
   return (
     <PageShell
+      zone="guide"
       pageLabel="배터리 가이드"
       title="배터리 가이드"
       description="점검·증상·불량·AS 안내를 카테고리별로 확인하세요."
@@ -19,7 +20,7 @@ export default function GuidesPage() {
             <Link
               key={item.id}
               href={item.href}
-              className={`${bm.card} ${bm.cardPad} flex gap-4 transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md`}
+              className={`${bm.card} ${bm.cardPad} bm-card-unified flex gap-4 hover:border-indigo-200`}
             >
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                 <Icon className="size-5" aria-hidden />

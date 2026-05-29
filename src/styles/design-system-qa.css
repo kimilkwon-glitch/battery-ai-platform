@@ -1,0 +1,324 @@
+/**
+ * Design QA V1 — 역할별 포인트 컬러·타이포·카드·버튼·모션 통일
+ * 신규 기능 없음, globals --bm-* 토큰 확장
+ */
+
+:root {
+  --color-primary: var(--bm-primary);
+  --color-primary-soft: var(--bm-info-soft);
+  --color-accent-benefit: #ea580c;
+  --color-accent-benefit-soft: #fff7ed;
+  --color-accent-review: #0d9488;
+  --color-accent-review-soft: #f0fdfa;
+  --color-accent-guide: #4f46e5;
+  --color-accent-guide-soft: #eef2ff;
+  --color-accent-support: #475569;
+  --color-accent-support-soft: #f1f5f9;
+  --color-accent-store-blue: #2563eb;
+  --color-accent-store-green: #059669;
+  --radius-card: 20px;
+  --shadow-card: var(--bm-shadow-sm);
+  --shadow-card-hover: var(--bm-shadow-md);
+  --motion-fast: 180ms;
+  --motion-normal: 280ms;
+  --motion-slow: 350ms;
+  --text-page-title: clamp(1.75rem, 4vw, 2.25rem);
+  --text-section-title: clamp(1.25rem, 2.5vw, 1.625rem);
+  --text-card-title: clamp(1.125rem, 2vw, 1.375rem);
+  --text-spec-code: clamp(1.375rem, 2.5vw, 1.75rem);
+  --text-body: 0.9375rem;
+  --text-caption: 0.8125rem;
+  --text-badge: 0.75rem;
+}
+
+/* —— 페이지 헤더 존 악센트 (좌측 라인) —— */
+.bm-page-header {
+  border-left: 3px solid transparent;
+}
+
+.bm-page-header--benefit {
+  border-left-color: var(--color-accent-benefit);
+  background: linear-gradient(90deg, var(--color-accent-benefit-soft) 0%, transparent 42%);
+}
+
+.bm-page-header--review {
+  border-left-color: var(--color-accent-review);
+  background: linear-gradient(90deg, var(--color-accent-review-soft) 0%, transparent 42%);
+}
+
+.bm-page-header--guide {
+  border-left-color: var(--color-accent-guide);
+  background: linear-gradient(90deg, var(--color-accent-guide-soft) 0%, transparent 42%);
+}
+
+.bm-page-header--support {
+  border-left-color: #64748b;
+  background: linear-gradient(90deg, var(--color-accent-support-soft) 0%, transparent 42%);
+}
+
+.bm-page-header--store {
+  border-left-color: var(--color-accent-store-blue);
+}
+
+.bm-page-header--brand {
+  border-left-color: var(--bm-primary);
+}
+
+.bm-page-header--auth {
+  border-left-color: var(--bm-border-strong);
+}
+
+/* —— 통일 카드 셸 —— */
+.bm-card-unified {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--bm-border);
+  background: var(--bm-card);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--motion-normal) ease,
+    box-shadow var(--motion-normal) ease,
+    border-color var(--motion-fast) ease;
+}
+
+.bm-card-unified:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bm-card-unified {
+    transition: border-color var(--motion-fast) ease;
+  }
+  .bm-card-unified:hover {
+    transform: none;
+  }
+}
+
+/* —— 배지 변형 —— */
+.bm-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.2rem 0.55rem;
+  font-size: var(--text-badge);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.bm-badge--benefit {
+  background: var(--color-accent-benefit-soft);
+  color: #9a3412;
+  box-shadow: 0 0 0 1px #fed7aa;
+}
+
+.bm-badge--review {
+  background: var(--color-accent-review-soft);
+  color: #115e59;
+  box-shadow: 0 0 0 1px #ccfbf1;
+}
+
+.bm-badge--guide {
+  background: var(--color-accent-guide-soft);
+  color: #3730a3;
+  box-shadow: 0 0 0 1px #e0e7ff;
+}
+
+.bm-badge--support {
+  background: var(--color-accent-support-soft);
+  color: var(--color-accent-support);
+  box-shadow: 0 0 0 1px #e2e8f0;
+}
+
+/* —— 탭/필터 (고객센터·리뷰) —— */
+.bm-tab-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-radius: 14px;
+  background: var(--bm-surface-muted);
+  padding: 0.25rem;
+}
+
+.bm-tab-rail--support .bm-tab-rail__btn--active {
+  background: white;
+  color: #334155;
+  box-shadow: var(--bm-shadow-sm);
+}
+
+.bm-tab-rail--review .bm-tab-rail__btn--active {
+  background: var(--color-accent-review);
+  color: white;
+  box-shadow: var(--bm-shadow-sm);
+}
+
+.bm-tab-rail__btn {
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: var(--text-body);
+  font-weight: 800;
+  color: var(--bm-text-sub);
+  transition: background var(--motion-fast), color var(--motion-fast);
+}
+
+.bm-tab-rail__btn--active {
+  background: white;
+  color: var(--bm-text);
+}
+
+/* —— 혜택 존 —— */
+.bm-zone--benefit .home-benefit-card--active {
+  border-color: #fed7aa;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.08);
+}
+
+.bm-zone--benefit .home-benefit-card-media--active {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 40%, #f8fafc 100%);
+}
+
+.bm-zone--benefit .home-benefits-section-title {
+  color: #9a3412;
+}
+
+/* —— 가이드 메가메뉴 —— */
+.guide-mega-panel {
+  border-color: #c7d2fe !important;
+  background: linear-gradient(180deg, #fafaff 0%, #ffffff 100%) !important;
+}
+
+.guide-mega-item:hover,
+.guide-mega-item:focus-visible {
+  border-color: #a5b4fc !important;
+  background: var(--color-accent-guide-soft) !important;
+}
+
+.guide-mega-item--active {
+  border-color: #818cf8 !important;
+  background: var(--color-accent-guide-soft) !important;
+}
+
+.guide-mega-item__icon {
+  background: white !important;
+  color: var(--color-accent-guide) !important;
+  box-shadow: 0 0 0 1px #e0e7ff !important;
+}
+
+.portal-nav-link--guide-active {
+  color: #4338ca !important;
+  background: var(--color-accent-guide-soft) !important;
+}
+
+/* —— 리뷰 —— */
+.bm-zone--review .review-operator-reply {
+  border-color: #99f6e4 !important;
+  background: var(--color-accent-review-soft) !important;
+}
+
+.bm-zone--review .review-operator-reply__label {
+  color: #0f766e !important;
+}
+
+/* —— 고객센터 —— */
+.bm-zone--support .support-notice-row:hover {
+  background: #f8fafc;
+  border-left: 3px solid #94a3b8;
+  padding-left: calc(1rem - 3px);
+}
+
+.support-center h1 {
+  font-size: var(--text-page-title);
+  line-height: 1.25;
+}
+
+/* —— 지점 —— */
+.bm-store-card--deokcheon.bm-store-card--active {
+  ring-color: #93c5fd;
+}
+
+.bm-store-card--hakjang.bm-store-card--active {
+  ring-color: #6ee7b7;
+}
+
+.bm-store-badge--deokcheon {
+  background: var(--bm-info-soft);
+  color: var(--color-accent-store-blue);
+}
+
+.bm-store-badge--hakjang {
+  background: var(--color-accent-review-soft);
+  color: var(--color-accent-store-green);
+}
+
+/* —— 로그인/회원 —— */
+.bm-auth-card {
+  border-radius: var(--radius-card);
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bm-auth-card .bm-input-field {
+  min-height: 44px;
+  font-size: var(--text-body);
+}
+
+/* —— Floating —— */
+.bm-floating-dock .bm-floating-btn {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  transition: transform var(--motion-normal), box-shadow var(--motion-normal);
+}
+
+.bm-floating-dock .bm-floating-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.bm-floating-dock .bm-floating-btn--primary {
+  background: var(--bm-navy);
+  color: white;
+}
+
+.bm-floating-panel {
+  border-radius: 14px;
+  border: 1px solid var(--bm-border);
+  box-shadow: var(--bm-shadow-md);
+}
+
+/* —— 홈 스펙 카드 —— */
+.home-spec-card {
+  border-radius: var(--radius-card);
+}
+
+.home-spec-code-title {
+  font-family: var(--font-body);
+  font-size: var(--text-spec-code);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.home-spec-cta-pill {
+  font-size: var(--text-body);
+  min-height: 44px;
+}
+
+/* —— 섹션 타이틀 통일 —— */
+.bm-section-eyebrow {
+  font-size: var(--text-caption);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bm-text-muted);
+}
+
+.bm-section-eyebrow--benefit {
+  color: #c2410c;
+}
+
+.bm-section-eyebrow--guide {
+  color: var(--color-accent-guide);
+}
+
+.bm-section-eyebrow--review {
+  color: var(--color-accent-review);
+}

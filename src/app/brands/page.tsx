@@ -6,6 +6,7 @@ import { BrandHubClient } from "@/components/platform/BrandHubClient";
 export default function BrandsPage() {
   return (
     <PageShell
+      zone="brand"
       pageLabel="브랜드 안내"
       title="배터리 브랜드 안내"
       description="브랜드별 대표 표기와 규격 차이를 간단히 확인하세요."

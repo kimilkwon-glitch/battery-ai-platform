@@ -18,9 +18,8 @@ export function BenefitCardMedia({ card }: { card: HomeBenefitCard }) {
     <div
       className={clsx(
         "home-benefit-card-media relative aspect-[2/1] w-full overflow-hidden",
-        active
-          ? "bg-gradient-to-br from-slate-100 via-blue-50/80 to-slate-50"
-          : "bg-gradient-to-br from-slate-100 to-slate-50",
+        active && "home-benefit-card-media--active",
+        !active && "opacity-90",
       )}
     >
       {card.image && !imageFailed ? (

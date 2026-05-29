@@ -40,11 +40,9 @@ function BenefitCard({ card, emphasis }: { card: HomeBenefitCard; emphasis?: boo
   return (
     <article
       className={clsx(
-        "home-benefit-card flex h-full min-h-[220px] flex-col overflow-hidden rounded-2xl border bg-white transition-[transform,box-shadow,opacity] duration-[280ms] ease-out motion-safe:hover:-translate-y-1",
-        emphasis ? "opacity-100 shadow-md" : "opacity-[0.92] shadow-sm",
-        active
-          ? "border-blue-100/90 ring-1 ring-blue-50 hover:shadow-lg"
-          : "border-slate-200/90 bg-slate-50/40 opacity-80 hover:opacity-90",
+        "home-benefit-card bm-card-unified flex h-full min-h-[240px] flex-col overflow-hidden bg-white transition-[transform,box-shadow,opacity] duration-[280ms] ease-out motion-safe:hover:-translate-y-1",
+        emphasis ? "opacity-100" : "opacity-[0.94]",
+        active ? "home-benefit-card--active border-amber-200/80" : "border-slate-200/90 bg-slate-50/50",
       )}
     >
       <BenefitCardMedia card={card} />
@@ -132,14 +130,14 @@ export function HomeBenefitsCarousel() {
 
   return (
     <section
-      className="home-benefits-carousel mt-10 sm:mt-12"
+      className="home-benefits-carousel bm-zone bm-zone--benefit mt-10 sm:mt-12"
       data-home-section="benefits-carousel"
       aria-label={HOME_BENEFITS_TITLE}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div className="text-center">
-        <h2 className="text-[11px] font-black uppercase tracking-wide text-slate-500">
+        <h2 className="bm-section-eyebrow bm-section-eyebrow--benefit home-benefits-section-title">
           {HOME_BENEFITS_TITLE}
         </h2>
         <p className="mt-1 text-[11px] font-medium text-slate-500">{HOME_BENEFITS_SUBTITLE}</p>
@@ -148,9 +146,10 @@ export function HomeBenefitsCarousel() {
       <div className="home-benefits-carousel-shell relative mx-auto mt-4 max-w-[1100px] px-10 sm:px-11">
         <div ref={viewportRef} className="home-benefits-viewport overflow-hidden rounded-2xl">
           <div
-            className="home-benefits-track flex gap-3 transition-[transform,opacity] duration-[320ms] ease-out"
+            className="home-benefits-track flex gap-3 transition-[transform,opacity] duration-[320ms] ease-out will-change-transform"
             style={{
               transform: slideStep ? `translateX(-${index * slideStep}px)` : undefined,
+              opacity: 1,
             }}
           >
             {cards.map((card, i) => (

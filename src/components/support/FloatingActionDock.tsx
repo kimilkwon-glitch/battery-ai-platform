@@ -64,7 +64,7 @@ export function FloatingActionDock() {
               <button
                 type="button"
                 onClick={scrollTop}
-                className="flex size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
+                className="bm-floating-btn flex items-center justify-center border border-slate-200 bg-white text-slate-700 shadow-lg"
                 aria-label="맨 위로"
               >
                 <ArrowUp className="size-5" />
@@ -77,13 +77,13 @@ export function FloatingActionDock() {
                     setChannelOpen((v) => !v);
                     setPhoneOpen(false);
                   }}
-                  className="flex size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg transition hover:-translate-y-0.5"
+                  className="bm-floating-btn flex items-center justify-center border border-slate-200 bg-white text-slate-700 shadow-lg"
                   aria-label="공식 채널"
                 >
                   <Store className="size-5" />
                 </button>
                 {channelOpen ? (
-                  <div className="absolute bottom-14 right-0 w-48 rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
+                  <div className="bm-floating-panel absolute bottom-14 right-0 w-48 bg-white p-2">
                     <p className="px-2 py-1 text-[10px] font-black text-slate-500">공식 운영 채널</p>
                     <ul className="space-y-1">
                       {floatingChannels.map((ch) => (
@@ -125,7 +125,7 @@ export function FloatingActionDock() {
                   <Phone className="size-5" />
                 </button>
                 {phoneOpen ? (
-                  <div className="absolute bottom-14 right-0 w-44 rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
+                  <div className="bm-floating-panel absolute bottom-14 right-0 w-44 bg-white p-2">
                     {BUSAN_STORES.map((s) => (
                       <a
                         key={s.id}
@@ -143,7 +143,7 @@ export function FloatingActionDock() {
               <button
                 type="button"
                 onClick={() => openChat()}
-                className="flex size-11 items-center justify-center rounded-full bg-[var(--bm-navy)] text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[var(--bm-primary)]"
+                className="bm-floating-btn bm-floating-btn--primary flex items-center justify-center text-white shadow-lg hover:bg-[var(--bm-primary)]"
                 aria-label="채팅상담"
               >
                 <MessageCircle className="size-5" />
@@ -156,10 +156,10 @@ export function FloatingActionDock() {
           type="button"
           onClick={() => setExpanded((v) => !v)}
           className={clsx(
-            "flex size-12 items-center justify-center rounded-full shadow-lg transition",
+            "bm-floating-btn flex size-12 items-center justify-center shadow-lg",
             expanded
               ? "border border-slate-200 bg-white text-slate-700"
-              : "bg-[var(--bm-navy)] text-white hover:bg-[var(--bm-primary)]",
+              : "bm-floating-btn--primary text-white",
           )}
           aria-expanded={expanded}
           aria-label={expanded ? "도구 접기" : "상담 도구 펼치기"}

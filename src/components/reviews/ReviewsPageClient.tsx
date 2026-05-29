@@ -14,16 +14,12 @@ import {
 import { bm } from "@/lib/design-tokens";
 
 function ReviewBadge({ id }: { id: ReviewBadgeId }) {
-  return (
-    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600 ring-1 ring-slate-200/80">
-      {REVIEW_BADGE_LABELS[id]}
-    </span>
-  );
+  return <span className="bm-badge bm-badge--review">{REVIEW_BADGE_LABELS[id]}</span>;
 }
 
 function ReviewCard({ item }: { item: ReviewItem }) {
   return (
-    <article className={`${bm.card} overflow-hidden`}>
+    <article className={`${bm.card} bm-card-unified overflow-hidden`}>
       <div className={`${bm.cardPad} space-y-3`}>
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-0.5 text-amber-500">
@@ -56,8 +52,8 @@ function ReviewCard({ item }: { item: ReviewItem }) {
           </Link>
         </div>
         {item.operatorReply ? (
-          <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-3">
-            <p className="text-[10px] font-black text-blue-800">Battery Manager 답변</p>
+          <div className="review-operator-reply rounded-xl border p-3">
+            <p className="review-operator-reply__label text-[10px] font-black">Battery Manager 답변</p>
             {item.operatorSummary ? (
               <p className="mt-1 text-xs font-bold text-slate-700">{item.operatorSummary}</p>
             ) : null}
@@ -83,41 +79,34 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
   }, [filter, initialBattery]);
 
   return (
-    <div className="reviews-page space-y-6">
-      <header className="text-center sm:text-left">
-        <h1 className="text-2xl font-black text-slate-950">배터리 교체 후기</h1>
-        <p className="mt-2 text-sm font-medium text-slate-600">
-          실제 교체 경험과 작업 사례를 확인해보세요.
+    <div className="reviews-page bm-zone bm-zone--review space-y-6">
+      {initialBattery ? (
+        <p className="text-sm font-bold text-[var(--color-accent-review)]">
+          필터: {initialBattery}{" "}
+          <Link href="/reviews" className="font-semibold text-slate-500 hover:underline">
+            전체 보기
+          </Link>
         </p>
-        {initialBattery ? (
-          <p className="mt-2 text-xs font-bold text-blue-700">
-            필터: {initialBattery}{" "}
-            <Link href="/reviews" className="text-slate-500 hover:underline">
-              전체 보기
-            </Link>
-          </p>
-        ) : null}
-        <button
-          type="button"
-          disabled
-          className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-400"
-          title="리뷰 작성 기능 준비중"
-        >
-          리뷰 작성 (준비중)
-        </button>
-      </header>
+      ) : null}
+      <button
+        type="button"
+        disabled
+        className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-slate-400"
+        title="리뷰 작성 기능 준비중"
+      >
+        리뷰 작성 (준비중)
+      </button>
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="bm-tab-rail bm-tab-rail--review overflow-x-auto flex-nowrap sm:flex-wrap">
         {REVIEW_FILTER_OPTIONS.map((opt) => (
           <button
             key={opt.id}
             type="button"
             onClick={() => setFilter(opt.id)}
-            className={
-              filter === opt.id
-                ? "rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-black text-white"
-                : "rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold text-slate-600 hover:bg-slate-200"
-            }
+            className={clsx(
+              "bm-tab-rail__btn shrink-0",
+              filter === opt.id && "bm-tab-rail__btn--active",
+            )}
           >
             {opt.label}
           </button>

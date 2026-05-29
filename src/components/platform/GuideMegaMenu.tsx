@@ -15,7 +15,7 @@ function GuideNavPill({ active, onClick }: { active: boolean; onClick?: () => vo
       onClick={onClick}
       className={clsx(
         "portal-nav-link inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-full px-2.5 py-2 text-[12px] font-extrabold lg:px-3 lg:text-[13px] xl:px-3.5 xl:py-2.5 xl:text-sm",
-        active && "portal-nav-link--active",
+        active && "portal-nav-link--active portal-nav-link--guide-active",
       )}
       aria-expanded={undefined}
       aria-haspopup="true"
@@ -65,12 +65,12 @@ export function GuideDesktopMegaMenu() {
                     href={item.href}
                     role="menuitem"
                     className={clsx(
-                      "guide-mega-item flex gap-3 rounded-xl border p-3 transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/40 hover:shadow-sm",
-                      itemActive ? "border-blue-200 bg-blue-50/50" : "border-slate-100 bg-slate-50/30",
+                      "guide-mega-item flex gap-3 rounded-xl border p-3 transition duration-[var(--motion-normal)] motion-safe:hover:-translate-y-0.5",
+                      itemActive ? "guide-mega-item--active" : "border-slate-100 bg-slate-50/30",
                     )}
                     onClick={() => setOpen(false)}
                   >
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-blue-700 ring-1 ring-slate-100">
+                    <span className="guide-mega-item__icon flex size-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-slate-100">
                       <Icon className="size-4" aria-hidden />
                     </span>
                     <span>

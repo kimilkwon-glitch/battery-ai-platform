@@ -5,8 +5,8 @@ import { bm } from "@/lib/design-tokens";
 /** 실제 회원 DB·개인정보 저장 없음 — UI·안내만 */
 export default function SignupPage() {
   return (
-    <PageShell pageLabel="회원가입" title="회원가입" showSearch={false}>
-      <div className={`${bm.card} ${bm.cardPad} mx-auto max-w-md`}>
+    <PageShell zone="auth" pageLabel="회원가입" title="회원가입" showSearch={false}>
+      <div className={`${bm.card} ${bm.cardPad} bm-auth-card`}>
         <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200">
           회원가입·주문 내역 저장은 인증·DB 연동 후 제공 예정입니다. (Supabase/Firebase 등 별도
           연동 필요)
@@ -16,7 +16,7 @@ export default function SignupPage() {
             (label) => (
               <label key={label} className="block text-sm font-bold text-slate-700">
                 {label}
-                <input disabled className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2" />
+                <input disabled className={`${bm.input} bm-input-field mt-1`} />
               </label>
             ),
           )}
