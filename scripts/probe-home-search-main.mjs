@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-STRUCTURE-V1";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-NAV-MERGE-V1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;
@@ -12,7 +12,10 @@ const checks = {
   noHeaderLogoText: !html.match(/sticky[\s\S]{0,800}배터리매니저/),
   hasMainLogo: html.includes('class="home-main-logo'),
   noMoreMenu: !html.includes("더보기"),
-  hasStoreNav: html.includes("매장방문"),
+  navNoRocketMenu: !html.match(/portal-nav[^>]*>[\s\S]{0,120}로케트/),
+  navNoSoliteMenu: !html.match(/portal-nav[^>]*>[\s\S]{0,120}쏠라이트/),
+  navNoStoreVisit: !html.includes("매장방문"),
+  navNoOutbound: !html.includes("출장교체"),
   hasLineupTitle: html.includes("배터리 라인업") && !html.includes("취급 배터리"),
   emptyPlaceholder:
     html.includes('placeholder=""') ||

@@ -1,21 +1,20 @@
 import { BRAND_FOOTER, BRAND_NAME } from "@/lib/brand";
 import {
-  HUB_BATTERY,
+  HUB_BRANDS,
   HUB_PHOTO,
   HUB_QA,
   HUB_SHOP,
-  HUB_STORE,
-  HUB_VEHICLES,
+  HUB_STORE_DETAIL,
 } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 
 const links = [
-  ["차종검색", HUB_VEHICLES],
-  ["배터리 규격", HUB_BATTERY],
+  ["브랜드 안내", HUB_BRANDS],
+  ["매장·출장 안내", HUB_STORE_DETAIL],
+  ["배터리 업그레이드", "/compare"],
+  ["택배주문", HUB_SHOP],
   ["사진확인", HUB_PHOTO],
-  ["매장·출장", HUB_STORE],
-  ["택배·쇼핑", HUB_SHOP],
   ["Q&A", HUB_QA],
 ] as const;
 
