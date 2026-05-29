@@ -11,16 +11,24 @@ export const compareDefaultVisibleCodes = [
   "CMF100R",
 ] as const;
 
-export const compareRecommendedPairs: { label: string; a: string; b: string }[] = [
-  { label: "90R vs 100R", a: "CMF90R", b: "CMF100R" },
-  { label: "100L vs 100R", a: "100L", b: "100R" },
-  { label: "AGM70L vs AGM80L", a: "AGM70L", b: "AGM80L" },
-  { label: "AGM60L vs EV12V", a: "AGM60L", b: "AGM70L" },
-  { label: "DIN74L vs CMF80L", a: "DIN74L", b: "CMF80L" },
-  { label: "AGM80L vs AGM95L", a: "AGM80L", b: "AGM95L" },
-  { label: "CMF80L vs 100R", a: "CMF80L", b: "100R" },
-  { label: "AGM80L vs DIN74L", a: "AGM80L", b: "DIN74L" },
+/** 업그레이드 판단용 대표 비교 (AGM95L↔100R 등 혼동 쌍 제외) */
+export const compareUpgradePairs: { label: string; a: string; b: string }[] = [
+  { label: "DIN62L → DIN74L", a: "DIN62L", b: "DIN74L" },
+  { label: "AGM70L → AGM80L", a: "AGM70L", b: "AGM80L" },
+  { label: "GB80L → GB90R", a: "GB80L", b: "GB90R" },
+  { label: "CMF80L → CMF90L", a: "CMF80L", b: "CMF90L" },
+  { label: "CMF90R → CMF100R", a: "CMF90R", b: "CMF100R" },
 ];
+
+export const compareUpgradeExamples: { label: string; note: string }[] = [
+  { label: "DIN62L → DIN74L", note: "트레이·단자·고정쇠 확인" },
+  { label: "AGM70L → AGM80L", note: "용량·CCA 증가, 공간 여유 필요" },
+  { label: "GB80L → GB90R", note: "단자 R/L·홀더 확인" },
+  { label: "CMF80L → CMF90L", note: "쏠라이트 계열 상위 용량 후보" },
+];
+
+/** @deprecated 업그레이드 페이지 — compareUpgradePairs 사용 */
+export const compareRecommendedPairs = compareUpgradePairs;
 
 export const compareNextActions = [
   { title: "내 차에 맞는지 확인", description: "차종·연식·연료별 규격", href: "/vehicles" },
@@ -28,7 +36,7 @@ export const compareNextActions = [
   { title: "규격 문의하기", description: "실무 기준 답변", href: "/ai" },
 ] as const;
 
-export const BRAND_COMPARE_LABEL = "BATTERY MANAGER · 배터리 비교";
+export const BRAND_COMPARE_LABEL = "BATTERY MANAGER · 배터리 업그레이드";
 
 function parseNumber(text: string): number {
   const m = text.match(/(\d+)/);
@@ -105,8 +113,30 @@ export function buildCompareTableRows(a: Battery, b: Battery): CompareTableRow[]
   const ahB = parseNumber(b.capacity);
   const ccaA = parseNumber(a.cca);
   const ccaB = parseNumber(b.cca);
+  const ahDelta = ahB - ahA;
+  const ccaDelta = ccaB - ccaA;
 
   return [
+    {
+      label: "기준 규격",
+      a: `${a.code} (순정·현재)`,
+      b: `${b.code} (업그레이드 후보)`,
+      highlight: true,
+    },
+    {
+      label: "용량 증가폭",
+      a: a.capacity,
+      b: ahDelta > 0 ? `${b.capacity} (+${ahDelta}Ah)` : b.capacity,
+      highlight: true,
+      higherSide: ahDelta > 0 ? "b" : ahDelta < 0 ? "a" : "equal",
+    },
+    {
+      label: "CCA 증가폭",
+      a: a.cca,
+      b: ccaDelta > 0 ? `${b.cca} (+${ccaDelta}A)` : b.cca,
+      highlight: true,
+      higherSide: ccaDelta > 0 ? "b" : ccaDelta < 0 ? "a" : "equal",
+    },
     {
       label: "용량",
       a: a.capacity,
@@ -129,7 +159,25 @@ export function buildCompareTableRows(a: Battery, b: Battery): CompareTableRow[]
       highlight: a.terminal !== b.terminal,
       caution: a.terminal !== b.terminal,
     },
-    { label: "크기", a: a.size, b: b.size, highlight: a.size !== b.size },
+    {
+      label: "크기·트레이",
+      a: a.size,
+      b: b.size,
+      highlight: a.size !== b.size,
+      caution: a.size !== b.size,
+    },
+    {
+      label: "트레이 장착",
+      a: a.size === b.size ? "동일 치수" : "공간 확인",
+      b: ahB > ahA ? "여유·고정쇠 확인" : "확인 필요",
+      caution: true,
+    },
+    {
+      label: "고정쇠·홀더",
+      a: "현재 장착 기준",
+      b: "확인 필요",
+      caution: true,
+    },
     {
       label: "추천 차종",
       a: a.pros,

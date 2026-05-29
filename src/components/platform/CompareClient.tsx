@@ -19,6 +19,7 @@ import {
 } from "@/lib/battery-knowledge";
 import { CompareRelatedQna } from "@/components/platform/CompareRelatedQna";
 import { AppIcon } from "@/components/common/AppIcon";
+import { CompareUpgradeHero } from "@/components/platform/CompareUpgradeHero";
 import { ComparePresetHub } from "@/components/platform/hub/ComparePresetHub";
 import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
 import {
@@ -32,7 +33,7 @@ import {
   buildCompareTableRows,
   compareCautions,
   compareDefaultVisibleCodes,
-  compareRecommendedPairs,
+  compareUpgradePairs,
   getComparisonDescription,
   getKeyDiffs,
   getPickGuideItems,
@@ -150,28 +151,35 @@ export function CompareClient({ initial }: { initial: string[] }) {
   const pairLabel = `${codeA} vs ${codeB}`;
 
   return (
-    <div className={`${bm.hubCatalog} space-y-5`}>
+    <div className={`${bm.hubCatalog} space-y-5`} data-page="battery-upgrade">
+      <CompareUpgradeHero
+        activeA={codeA}
+        activeB={codeB}
+        onSelectPair={selectPair}
+      />
+
       <ComparePresetHub />
 
-      {/* 선택 중인 비교 */}
       <section className={bm.intentSummary}>
         <p className={`${bm.intentBadge} inline-flex items-center gap-1.5`}>
           <AppIcon iconKey="compare" size="sm" />
-          비교 리포트
+          업그레이드 판단 리포트
         </p>
         <p className={`mt-2 ${bm.specTitle} flex items-center gap-2 text-lg`} data-spec-code>
           <AppIcon iconKey="compareVs" size="md" />
           <span>
-            {codeA} <span className="text-[var(--bm-muted)]">vs</span> {codeB}
+            {codeA} <span className="text-[var(--bm-muted)]">→</span> {codeB}
           </span>
+        </p>
+        <p className={`mt-2 ${bm.textSub} text-sm`}>
+          {description} 최종 장착 가능 여부는 차종·트레이·단자·ISG/IBS 조건을 함께 확인하세요.
         </p>
       </section>
 
-      {/* 추천 조합 */}
       <section>
-        <p className={bm.label}>추천 비교 조합</p>
+        <p className={bm.label}>다른 업그레이드 조합</p>
         <div className="mt-2 flex flex-wrap gap-2">
-        {compareRecommendedPairs.map((pair) => {
+        {compareUpgradePairs.map((pair) => {
           const active = codeA === pair.a && codeB === pair.b;
           return (
             <button
@@ -249,8 +257,10 @@ export function CompareClient({ initial }: { initial: string[] }) {
 
       {/* 비교 테이블 */}
       <section className={`${bm.card} ${bm.cardPad}`}>
-        <h2 className={bm.cardTitle}>상세 비교 스펙</h2>
-        <p className={`mt-0.5 ${bm.muted} text-xs`}>모바일은 카드형 · PC는 표 형식</p>
+        <h2 className={bm.cardTitle}>업그레이드 판단 비교</h2>
+        <p className={`mt-0.5 ${bm.muted} text-xs`}>
+          순정 대비 후보 규격 — 용량·CCA·크기·단자·ISG/IBS를 함께 확인하세요.
+        </p>
 
         <div className="mt-4 space-y-2 md:hidden">
           {tableRows.map((row) => (

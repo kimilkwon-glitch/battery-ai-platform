@@ -9,10 +9,10 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
   return (
     <PageShell
-      pageLabel="배터리 비교"
-      title="둘 중 뭐가 맞는지 헷갈릴 때"
-      description={`${selected.join(" vs ")} — 용량·단자·장착 차종 차이를 나란히 봅니다.`}
-      searchPlaceholder="비교할 배터리 규격 검색"
+      pageLabel="배터리 업그레이드"
+      title="배터리 용량 업그레이드"
+      description="순정 규격보다 큰 배터리를 장착할 수 있는지 확인하세요. 차종·연식·트레이 공간·단자 방향에 따라 가능 여부가 달라질 수 있습니다."
+      searchPlaceholder="차량명 또는 배터리 규격 검색"
     >
       <Suspense fallback={<ContentAreaFallback lines={3} />}>
         <CompareClient initial={selected} />

@@ -217,8 +217,13 @@ function ShopPageBottom() {
   return (
     <div className="space-y-4 border-t border-slate-100 pt-4" data-ux="shop-page-bottom">
       <section className="rounded-2xl border border-amber-100 bg-[#fdfbf7] p-4 shadow-sm" id="order-check">
-        <h2 className="text-base font-black text-slate-900">주문 전 체크리스트</h2>
-        <p className="mt-1 text-xs font-semibold text-slate-500">오주문을 줄이기 위한 실무 체크 항목입니다.</p>
+        <h2 className="text-base font-black text-slate-900">택배 주문 전 꼭 확인해주세요</h2>
+        <p className="mt-1 text-xs font-semibold text-slate-500">
+          차종·연식·단자·규격을 확인하면 오주문을 크게 줄일 수 있습니다.
+        </p>
+        <Link className="mt-2 inline-block text-[11px] font-bold text-blue-700 hover:underline" href="/order-checklist">
+          주문 전 체크리스트 전체 보기 →
+        </Link>
         <ul className="mt-3 space-y-2">
           {preOrderChecklist.map((item) => (
             <li key={item} className="flex items-start gap-2 text-xs font-semibold text-slate-700">

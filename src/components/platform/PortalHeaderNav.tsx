@@ -4,14 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
-import { HUB_ORDER_CHECKLIST, HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
+import { HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
 
 /** 상단 카테고리 — 검색은 메인 통합검색만, 더보기 없이 전체 노출 */
 export const portalNavPrimary = [
   ["홈", "/"],
-  ["배터리비교", "/compare"],
+  ["배터리 업그레이드", "/compare"],
   ["증상진단", HUB_SYMPTOMS],
-  ["주문 전 확인", HUB_ORDER_CHECKLIST],
   ["로케트", "/brands?brand=rocket"],
   ["쏠라이트", "/brands?brand=solite"],
   ["매장방문", HUB_STORE_ANCHORS.visit],

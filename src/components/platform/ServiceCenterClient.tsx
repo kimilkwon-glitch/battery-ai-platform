@@ -7,6 +7,7 @@ import {
   BUSAN_SERVICE_CTAS,
   BUSAN_STORES,
   CONSULT_PREP_ITEMS,
+  OUTBOUND_PREP_ITEMS,
   STORE_HUB_SECTIONS,
 } from "@/lib/busan-service-hub-data";
 import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
@@ -69,7 +70,21 @@ export function ServiceCenterClient({
 
       <section className={`${bm.card} ${bm.cardPad}`} id="regions">
         <h3 className="text-base font-black text-slate-950">2. 출장 가능 지역</h3>
-        <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">
+        <div className="mt-4 rounded-xl bg-blue-50/60 p-4 ring-1 ring-blue-100">
+          <h4 className="text-sm font-black text-slate-900">출장 전 확인 정보</h4>
+          <ul className="mt-2 list-inside list-disc space-y-1 text-sm font-medium text-slate-700">
+            {OUTBOUND_PREP_ITEMS.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <Link
+            className={`${bm.btnTertiary} mt-3 inline-flex text-[11px]`}
+            href="/order-checklist"
+          >
+            주문·교체 전 체크리스트 전체 보기 →
+          </Link>
+        </div>
+        <p className="mt-4 text-sm font-semibold leading-relaxed text-slate-600">
           출장/내방 가능 지역은 덕천점·학장점 권역을 기준으로 안내합니다. 북구·사상권 외 지역은
           사전 문의 후 일정을 조율합니다.
         </p>
@@ -96,11 +111,22 @@ export function ServiceCenterClient({
       </section>
 
       <section className={`${bm.card} ${bm.cardPad}`} id="visit">
-        <h3 className="text-base font-black text-slate-950">3. 내방 교체 안내</h3>
+        <h3 className="text-base font-black text-slate-950">3. 방문 전 확인하면 좋은 정보</h3>
         <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">
           차량을 직영점으로 가져오시면 현장에서 규격·단자 방향을 확인한 뒤 교체를 진행합니다.
           예약 없이 방문 가능한 경우도 있으나, 혼잡 시간대에는 문의 후 방문을 권장합니다.
         </p>
+        <ul className="mt-3 list-inside list-disc space-y-1 text-sm font-medium text-slate-700">
+          {CONSULT_PREP_ITEMS.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        <Link
+          className={`${bm.btnTertiary} mt-3 inline-flex text-[11px]`}
+          href="/order-checklist"
+        >
+          주문·교체 전 체크리스트 전체 보기 →
+        </Link>
       </section>
 
       <section className={`${bm.card} ${bm.cardPad}`} id="consult-prep">

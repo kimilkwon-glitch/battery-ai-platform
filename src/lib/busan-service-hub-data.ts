@@ -79,15 +79,19 @@ export const BUSAN_CAPABILITIES = [
 
 
 export const CONSULT_PREP_ITEMS = [
+  "차량명",
+  "연식",
+  "현재 장착 배터리",
+  "방전·시동 불량 등 증상",
+  "ISG/하이브리드 여부",
+] as const;
 
-  "차량명·연식·연료 (가솔린/디젤/하이브리드/LPG)",
-
-  "현재 장착 배터리 사진 (라벨·단자 방향)",
-
-  "시동 불량·방전 등 증상 (있는 경우)",
-
-  "희망 일정·내방/출장 여부",
-
+export const OUTBOUND_PREP_ITEMS = [
+  "차량 위치·연락 가능 번호",
+  "지하주차장 여부·진입 제한",
+  "시동 가능 여부",
+  "차종·연식",
+  "현재 배터리 규격·단자 방향",
 ] as const;
 
 

@@ -205,11 +205,11 @@ export const featuredSpecs: FeaturedSpec[] = [
 ];
 
 export const preOrderChecklist = [
-  "기존 배터리 규격 (AGM/DIN/CMF 표기)",
-  "단자 방향 L / R",
-  "차량 연식 · 연료 (가솔린/디젤/HEV/LPG)",
-  "ISG · 스마트충전 여부",
-  "AGM vs DIN 차이 (ISG 차량 다운그레이드 주의)",
+  "차종 · 연식 · 연료 (가솔린/디젤/HEV/LPG)",
+  "단자 방향 (L / R)",
+  "현재 배터리 규격 (AGM/DIN/CMF 표기)",
+  "L/R 방향·트레이 여유 확인",
+  "오주문 주의: 유사 규격(AGM vs DIN, 90R vs 100R 등) 혼동 금지",
 ] as const;
 
 export const specNotationRows = [
@@ -231,7 +231,7 @@ export const shopPopularComparisons = [
 export const shopSidebarLinks = [
   { label: "차량으로 찾기", href: "/vehicles", desc: "차종·연료별 안내" },
   { label: "사진으로 확인", href: "/analysis/photo", desc: "단자·규격 OCR" },
-  { label: "배터리 비교", href: "/compare", desc: "규격 차이 확인" },
+  { label: "배터리 업그레이드", href: "/compare", desc: "용량 업그레이드 판단" },
   { label: "규격 상담", href: "/ai", desc: "문의·Q&A" },
 ] as const;
 

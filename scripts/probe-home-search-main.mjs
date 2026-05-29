@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-NAV-SIMPLIFY-V1";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-STRUCTURE-V1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;
@@ -41,6 +41,8 @@ const checks = {
   navNoVehicleSearch: !html.includes("차량검색"),
   navNoSpecSearch: !html.includes("규격검색"),
   navNoPhotoNav: !html.match(/portal-nav[^>]*>[\s\S]{0,200}사진확인/),
-  navHasCompare: html.includes("배터리비교"),
+  navHasUpgrade: html.includes("배터리 업그레이드"),
+  navNoOrderCheck: !html.includes("주문 전 확인"),
+  homeFooterSpacing: html.includes("home-main-footer-wrap"),
 };
 console.log(JSON.stringify(checks, null, 2));
