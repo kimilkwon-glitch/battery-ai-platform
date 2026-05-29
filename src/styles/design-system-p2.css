@@ -449,11 +449,11 @@
 
 /* Home — 검색 중심 메인 */
 .home-main-logo {
-  font-family: "GmarketSans", var(--font-body);
-  font-size: clamp(2.5rem, 9vw, 3.75rem);
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 1.06;
+  font-family: "Paperlogy", "GmarketSans", var(--font-body);
+  font-size: clamp(2.65rem, 9.5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.08;
   color: var(--bm-navy);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 28px rgba(15, 23, 42, 0.07);
 }
@@ -469,10 +469,133 @@
 
 .home-main-search-shell form {
   align-items: stretch;
+  gap: 0.75rem;
+}
+
+.home-main-search-shell button[type="submit"] {
+  min-height: 3.5rem;
+  border-radius: 1rem;
+  padding: 0 1.75rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.22);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.home-main-search-shell button[type="submit"]:hover {
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.28);
+}
+
+@media (min-width: 640px) {
+  .home-main-search-shell button[type="submit"] {
+    min-height: 4rem;
+    padding: 0 2.25rem;
+    font-size: 1.0625rem;
+  }
 }
 
 @media (min-width: 768px) {
   .home-main-search-shell form {
     grid-template-columns: 1fr auto;
+    gap: 0.875rem;
+  }
+}
+
+/* 제품 카드 — 동일 행 높이 */
+.home-spec-card-image {
+  height: 11.5rem;
+  min-height: 11.5rem;
+}
+
+.home-spec-card-image > * {
+  height: 100%;
+}
+
+.home-spec-card-summary {
+  min-height: 4.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 상단 포털 네비 */
+.portal-nav-link {
+  position: relative;
+  color: rgb(51 65 85);
+  transition:
+    color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.portal-nav-link__text {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  transition: transform 220ms ease;
+}
+
+.portal-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0.35rem;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgb(59 130 246), rgb(37 99 235));
+  opacity: 0;
+  transform: translateX(-50%);
+  transition:
+    width 220ms ease,
+    opacity 220ms ease;
+}
+
+.portal-nav-link:hover,
+.portal-nav-link:focus-visible {
+  color: rgb(29 78 216);
+  background: rgba(239, 246, 255, 0.95);
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+}
+
+.portal-nav-link:hover .portal-nav-link__text,
+.portal-nav-link:focus-visible .portal-nav-link__text {
+  transform: translateY(-2px);
+}
+
+.portal-nav-link:hover::after,
+.portal-nav-link:focus-visible::after {
+  width: 55%;
+  opacity: 1;
+}
+
+.portal-nav-link--active {
+  color: rgb(30 64 175);
+  background: rgba(219, 234, 254, 0.85);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+}
+
+.portal-nav-link--active::after {
+  width: 50%;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-nav-link,
+  .portal-nav-link__text,
+  .portal-nav-link::after,
+  .home-main-search-shell button[type="submit"] {
+    transition: none;
+  }
+
+  .portal-nav-link:hover .portal-nav-link__text,
+  .portal-nav-link:focus-visible .portal-nav-link__text {
+    transform: none;
   }
 }

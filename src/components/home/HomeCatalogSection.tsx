@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
 import { bm } from "@/lib/design-tokens";
 import {
-  HOME_CATALOG_BY_BRAND,
   HOME_CATALOG_TYPE_FILTERS,
   filterCatalogProducts,
+  getCurrentLineup,
   type HomeCatalogBrandId,
   type HomeProductTypeFilter,
 } from "@/lib/home-main-catalog-data";
@@ -21,7 +21,7 @@ export function HomeCatalogSection() {
   const [typeFilter, setTypeFilter] = useState<HomeProductTypeFilter>("전체");
 
   const products = useMemo(
-    () => filterCatalogProducts(HOME_CATALOG_BY_BRAND[brand], typeFilter),
+    () => filterCatalogProducts(getCurrentLineup(brand), typeFilter),
     [brand, typeFilter],
   );
 
@@ -68,7 +68,10 @@ export function HomeCatalogSection() {
         ))}
       </div>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        className="mt-5 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        data-home-lineup-brand={brand}
+      >
         {products.map((item) => (
           <HomeSpecExploreCard key={`${brand}-${item.code}`} brand={brand} product={item} />
         ))}

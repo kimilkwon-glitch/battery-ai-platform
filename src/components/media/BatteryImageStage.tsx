@@ -41,10 +41,11 @@ export function BatteryImageStage({
   flushTop = false,
   layout = "stack",
 }: Props) {
+  const strictBrand = Boolean(preferBrand);
   const set =
     imageSet ??
-    (preferBrand
-      ? getBatteryImageSet(code, preferBrand) ?? batteryImageSetForCode(code)
+    (strictBrand
+      ? getBatteryImageSet(code, preferBrand, { strictBrand: true })
       : batteryImageSetForCode(code));
   const candidates = useMemo(
     () => batteryImageCandidates(set, code, role),
@@ -54,7 +55,7 @@ export function BatteryImageStage({
 
   useEffect(() => {
     setIndex(0);
-  }, [code, preferBrand, set.main]);
+  }, [code, preferBrand, set?.main]);
 
   const src = candidates[index];
   const hasPhoto = Boolean(src) && candidates.length > 0;
@@ -86,6 +87,17 @@ export function BatteryImageStage({
           variant={variant}
           onFail={() => setIndex((i) => i + 1)}
         />
+      ) : strictBrand ? (
+        <div
+          className={`flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-b from-slate-100 to-slate-50 ${batteryImageStageInset}`}
+          data-home-brand-placeholder="true"
+        >
+          <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
+            {preferBrand === "solite" ? "쏠라이트" : "로케트"}
+          </span>
+          <span className="spec-code text-lg font-black text-slate-500">{code}</span>
+          <span className="text-[10px] font-medium text-slate-400">이미지 준비중</span>
+        </div>
       ) : (
         <div className={`flex h-full w-full items-center justify-center ${batteryImageStageInset}`}>
           <MediaImageSlot

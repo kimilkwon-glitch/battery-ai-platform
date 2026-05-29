@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-SEARCH-MAIN-V2";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-SEARCH-MAIN-V3";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;
@@ -16,6 +16,9 @@ const checks = {
   hasLineupTitle: html.includes("배터리 라인업") && !html.includes("취급 배터리"),
   hasFitCheckSecondary: html.includes("내 차에 맞는지 확인"),
   hasStoreCtaFirst: html.includes("매장방문") && html.includes("home-spec-cta-pill"),
-  hasSoliteBrandAttr: html.includes('data-home-spec-brand="solite"') || html.includes("data-prefer-brand=\"solite\""),
+  hasSoliteBrandAttr: html.includes('data-home-spec-brand="solite"'),
+  hasPortalNavMotion: html.includes("portal-nav-link"),
+  hasSearchInputClass: html.includes("home-main-search-input"),
+  hasLineupBrandAttr: html.includes("data-home-lineup-brand"),
 };
 console.log(JSON.stringify(checks, null, 2));

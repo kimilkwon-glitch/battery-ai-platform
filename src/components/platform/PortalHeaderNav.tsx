@@ -38,14 +38,12 @@ function isActive(pathname: string, href: string): boolean {
 function NavPill({ label, href, active }: { label: string; href: string; active: boolean }) {
   return (
     <Link
-      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-black transition sm:px-4 sm:text-sm ${
-        active
-          ? "bg-blue-600 text-white shadow-sm"
-          : "text-slate-700 hover:bg-blue-50 hover:text-blue-700"
+      className={`portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-extrabold sm:px-5 sm:text-base ${
+        active ? "portal-nav-link--active" : ""
       }`}
       href={href}
     >
-      {label}
+      <span className="portal-nav-link__text">{label}</span>
     </Link>
   );
 }
@@ -70,7 +68,7 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
   if (variant === "desktop") {
     return (
       <nav
-        className="flex max-w-[min(100%,72rem)] flex-wrap items-center justify-center gap-2"
+        className="flex max-w-[min(100%,72rem)] flex-wrap items-center justify-center gap-2.5 sm:gap-3"
         aria-label="주요 메뉴"
       >
         {portalNavPrimary.map(([label, href]) => (

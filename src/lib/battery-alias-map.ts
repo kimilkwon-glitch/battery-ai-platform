@@ -480,9 +480,15 @@ export function findBatteryProductByCode(
  * canonical + 브랜드 imageFolder 기준 imageSet.
  * rocket 외 브랜드는 imageFolder 없으면 undefined → gradient fallback.
  */
+export type GetBatteryImageSetOptions = {
+  /** true면 다른 브랜드 폴더로 대체하지 않음 (메인 라인업) */
+  strictBrand?: boolean;
+};
+
 export function getBatteryImageSet(
   code: string,
   brandKey: BatteryBrandKey = "rocket",
+  options?: GetBatteryImageSetOptions,
 ): BatteryImageSet | undefined {
   const canonical = findBatteryProductByCode(code, brandKey) ?? getCanonicalBatteryCode(code);
   if (!canonical) return undefined;
@@ -490,12 +496,21 @@ export function getBatteryImageSet(
   if (!spec) return undefined;
   const folder = spec.imageFolderByBrand[brandKey];
   if (!folder) {
+    if (options?.strictBrand) return undefined;
     const altBrand: BatteryBrandKey = brandKey === "rocket" ? "solite" : "rocket";
     const altFolder = spec.imageFolderByBrand[altBrand];
     if (altFolder) return buildImageSetFromFolder(altFolder);
     return undefined;
   }
   return buildImageSetFromFolder(folder);
+}
+
+/** 메인 라인업 — 해당 브랜드 전용 이미지 asset 존재 여부 */
+export function hasStrictBrandProductImage(
+  code: string,
+  brandKey: BatteryBrandKey,
+): boolean {
+  return Boolean(getBatteryImageSet(code, brandKey, { strictBrand: true })?.main);
 }
 
 export type BatteryDisplaySpec = BatterySpecEntry & {

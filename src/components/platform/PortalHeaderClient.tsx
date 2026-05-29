@@ -17,8 +17,8 @@ export function PortalHeaderClient({
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
-      <div className="relative mx-auto max-w-[1440px] px-4 py-2 lg:px-6">
-        <div className="relative flex min-h-12 items-center justify-center">
+      <div className="relative mx-auto max-w-[1440px] px-4 py-2.5 lg:px-6 lg:py-3">
+        <div className="relative flex min-h-14 items-center justify-center">
           {title ? (
             <span className="absolute left-0 top-1/2 hidden max-w-[28%] -translate-y-1/2 truncate text-xs font-black text-slate-400 md:block">
               {title}

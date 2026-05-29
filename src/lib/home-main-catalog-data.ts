@@ -1,4 +1,5 @@
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
+import { hasStrictBrandProductImage } from "@/lib/battery-alias-map";
 import { getSearchHref } from "@/lib/battery-search";
 import { batteryDetailHref } from "@/lib/home-upgrade-v2-data";
 import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
@@ -12,10 +13,8 @@ export type HomeProductTypeFilter = "전체" | "AGM" | "일반형" | "DIN" | "EV
 export type HomeProductTypeTag = "AGM" | "일반형" | "DIN" | "EV 보조 12V";
 
 export type HomeCatalogProduct = {
-  /** 카드 표기 규격명 */
   code: string;
-  /** 이미지 lookup 코드 (브랜드별 품번) */
-  imageCode?: string;
+  imageCode: string;
   typeTag: HomeProductTypeTag;
   summary: string;
 };
@@ -49,9 +48,10 @@ function product(
   typeTag: HomeProductTypeTag,
   opts?: { imageCode?: string; summary?: string },
 ): HomeCatalogProduct {
+  const imageCode = opts?.imageCode ?? code;
   return {
     code,
-    imageCode: opts?.imageCode ?? code,
+    imageCode,
     typeTag,
     summary:
       opts?.summary ??
@@ -60,23 +60,25 @@ function product(
   };
 }
 
-export const HOME_ROCKET_PRODUCTS: HomeCatalogProduct[] = [
+/** 로케트 대표 라인업 (이미지 있는 항목만 메인 노출) */
+export const rocketLineup: HomeCatalogProduct[] = [
   product("AGM60L", "AGM"),
   product("AGM70L", "AGM"),
   product("AGM80L", "AGM"),
   product("AGM95L", "AGM"),
-  product("90R", "일반형"),
-  product("100R", "일반형"),
   product("CMF80L", "일반형"),
   product("DIN74L", "DIN"),
   product("DIN62L", "DIN"),
-];
+  product("90R", "일반형"),
+  product("100R", "일반형"),
+].filter((p) => hasStrictBrandProductImage(p.imageCode, "rocket"));
 
-export const HOME_SOLITE_PRODUCTS: HomeCatalogProduct[] = [
-  product("AGM60L", "AGM"),
-  product("AGM70L", "AGM"),
-  product("AGM80L", "AGM"),
-  product("AGM95L", "AGM"),
+/** 쏠라이트 대표 라인업 — 로케트 이미지 fallback 없음, 없으면 중립 placeholder */
+export const soliteLineup: HomeCatalogProduct[] = [
+  product("CMF80L", "일반형", {
+    imageCode: "CMF80L",
+    summary: "쏠라이트 CMF80L — 일반 충전계통 중대형 L타입 규격입니다.",
+  }),
   product("57412", "DIN", {
     imageCode: "57412",
     summary: "쏠라이트 CMF57412 — DIN H6(74Ah) 계열 표기입니다.",
@@ -85,25 +87,29 @@ export const HOME_SOLITE_PRODUCTS: HomeCatalogProduct[] = [
     imageCode: "54459",
     summary: "쏠라이트 CMF54459 — 소형 DIN 계열 표기입니다.",
   }),
-  product("CMF80L", "일반형"),
   product("eAGM60", "EV 보조 12V", {
     imageCode: "AGM60L",
     summary: "쏠라이트 EV 보조 12V(eAGM60) — 차종·라벨로 최종 확인하세요.",
   }),
   product("EV 12V", "EV 보조 12V", {
+    imageCode: "EV 12V",
     summary: "전기차 보조 12V — 고전압 메인 배터리와 별도입니다.",
   }),
 ];
 
 export const HOME_CATALOG_BY_BRAND: Record<HomeCatalogBrandId, HomeCatalogProduct[]> = {
-  rocket: HOME_ROCKET_PRODUCTS,
-  solite: HOME_SOLITE_PRODUCTS,
+  rocket: rocketLineup,
+  solite: soliteLineup,
 };
 
 export const HOME_CATALOG_BRAND_KEY: Record<HomeCatalogBrandId, BatteryBrandKey> = {
   rocket: "rocket",
   solite: "solite",
 };
+
+export function getCurrentLineup(brand: HomeCatalogBrandId): HomeCatalogProduct[] {
+  return HOME_CATALOG_BY_BRAND[brand];
+}
 
 export function filterCatalogProducts(
   products: HomeCatalogProduct[],
