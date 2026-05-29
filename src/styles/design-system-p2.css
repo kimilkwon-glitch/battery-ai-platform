@@ -505,6 +505,103 @@
   }
 }
 
+/* 메인 — 배터리 라인업 접힘/펼침 */
+.home-catalog-header {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.home-catalog-label {
+  font-family: var(--font-body);
+}
+
+.home-catalog-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgb(191 219 254);
+  background: linear-gradient(180deg, rgb(255 255 255) 0%, rgb(239 246 255) 100%);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: rgb(29 78 216);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease,
+    color 220ms ease;
+}
+
+.home-catalog-toggle:hover {
+  border-color: rgb(147 197 253);
+  background: rgb(239 246 255);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.14);
+  transform: translateY(-1px);
+}
+
+.home-catalog-toggle__chevron {
+  font-size: 0.65rem;
+  line-height: 1;
+  transition: transform 240ms ease;
+}
+
+.home-catalog-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    grid-template-rows 260ms ease,
+    opacity 240ms ease,
+    transform 240ms ease;
+}
+
+.home-catalog-panel--open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.home-catalog-panel__inner {
+  overflow: hidden;
+}
+
+.home-catalog-panel--open .home-catalog-grid {
+  animation: home-catalog-fade-in 280ms ease both;
+}
+
+@keyframes home-catalog-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-catalog-toggle,
+  .home-catalog-toggle__chevron,
+  .home-catalog-panel {
+    transition: none;
+  }
+
+  .home-catalog-toggle:hover {
+    transform: none;
+  }
+
+  .home-catalog-panel--open .home-catalog-grid {
+    animation: none;
+  }
+}
+
 /* 메인 라인업 — 규격명 타이포 (로고 폰트·tabular-nums 분리) */
 .home-spec-card .home-spec-code-title {
   font-family: var(--font-body);

@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-LINEUP-EXPAND-V1";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-LINEUP-COLLAPSE-V1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;
@@ -33,5 +33,9 @@ const checks = {
   hasPortalNavMotion: html.includes("portal-nav-link"),
   hasSearchInputClass: html.includes("home-main-search-input"),
   hasLineupBrandAttr: html.includes("data-home-lineup-brand"),
+  catalogCollapsedByDefault:
+    html.includes('data-home-catalog-expanded="false"') ||
+    html.includes("home-catalog-toggle"),
+  hasCatalogToggle: html.includes("라인업 펼쳐보기") || html.includes("home-catalog-toggle"),
 };
 console.log(JSON.stringify(checks, null, 2));
