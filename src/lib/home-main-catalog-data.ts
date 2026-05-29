@@ -78,18 +78,60 @@ function catalogProduct(
   };
 }
 
-/** 로케트 대표 라인업 (strict 브랜드 이미지 있는 항목만) */
-export const rocketLineup: HomeCatalogProduct[] = [
-  catalogProduct("rocket-agm60l", "AGM60L", "AGM60L", "AGM"),
-  catalogProduct("rocket-agm70l", "AGM70L", "AGM70L", "AGM"),
-  catalogProduct("rocket-agm80l", "AGM80L", "AGM80L", "AGM"),
-  catalogProduct("rocket-agm95l", "AGM95L", "AGM95L", "AGM"),
-  catalogProduct("rocket-cmf80l", "CMF80L", "CMF80L", "일반형"),
-  catalogProduct("rocket-din74l", "DIN74L", "DIN74L", "DIN"),
-  catalogProduct("rocket-din62l", "DIN62L", "DIN62L", "DIN"),
-  catalogProduct("rocket-90r", "90R", "90R", "일반형"),
-  catalogProduct("rocket-100r", "100R", "100R", "일반형"),
-].filter((p) => hasStrictBrandProductImage(p.imageKey, "rocket"));
+/**
+ * 로케트 메인 라인업 — 고객 화면 displayName은 GB/AGM 기준 (CMF 금지).
+ * searchCode·specAliases는 기존 검색 alias 경로 유지.
+ */
+const ROCKET_LINEUP_CANDIDATES: HomeCatalogProduct[] = [
+  catalogProduct("rocket-agm60l", "AGM60L", "AGM60L", "AGM", {
+    imageKey: "AGM60L",
+    specAliases: ["AGM60L", "AGM60", "AGM 60L"],
+  }),
+  catalogProduct("rocket-agm70l", "AGM70L", "AGM70L", "AGM", {
+    imageKey: "AGM70L",
+    specAliases: ["AGM70L", "AGM70", "AGM 70L"],
+  }),
+  catalogProduct("rocket-agm80l", "AGM80L", "AGM80L", "AGM", {
+    imageKey: "AGM80L",
+    specAliases: ["AGM80L", "AGM80", "AGM 80L"],
+  }),
+  catalogProduct("rocket-agm95l", "AGM95L", "AGM95L", "AGM", {
+    imageKey: "AGM95L",
+    specAliases: ["AGM95L", "AGM95", "AGM 95L"],
+  }),
+  catalogProduct("rocket-gb80l", "GB80L", "GB80L", "일반형", {
+    imageKey: "GB80L",
+    specAliases: ["80L", "GB80L", "CMF80L"],
+    summary:
+      "로케트 GB80L — 일반 충전제어 차량에서 많이 쓰이는 80Ah급 L타입 배터리입니다.",
+  }),
+  catalogProduct("rocket-gb57820", "GB57820", "GB57820", "DIN", {
+    imageKey: "GB57820",
+    specAliases: ["DIN74L", "57412", "57820", "GB57820"],
+    summary: "로케트 GB57820 — DIN H6 / DIN74L 계열 표기입니다.",
+  }),
+  catalogProduct("rocket-gb56219", "GB56219", "GB56219", "DIN", {
+    imageKey: "GB56219",
+    specAliases: ["DIN62L", "56219", "GB56219"],
+    summary: "로케트 GB56219 — DIN62L / DIN60L 계열 표기입니다.",
+  }),
+  catalogProduct("rocket-gb90r", "GB90R", "GB90R", "일반형", {
+    imageKey: "GB90R",
+    specAliases: ["90R", "GB90R"],
+    summary: "로케트 GB90R — 일반형 R타입 규격입니다.",
+  }),
+  catalogProduct("rocket-gb100r", "GB100R", "GB100R", "일반형", {
+    imageKey: "GB100R",
+    specAliases: ["100R", "GB100R"],
+    summary: "로케트 GB100R — 일반형 R타입 규격입니다.",
+  }),
+];
+
+export const rocketLineup: HomeCatalogProduct[] = ROCKET_LINEUP_CANDIDATES.filter(
+  (p) =>
+    hasStrictBrandProductImage(p.imageKey, "rocket") &&
+    !p.displayName.startsWith("CMF"),
+);
 
 /** 쏠라이트 — 이미지 asset 우선 순서 (public/assets/batteries CMF* 기준) */
 const SOLITE_LINEUP_WITH_IMAGE: HomeCatalogProduct[] = [
@@ -165,8 +207,10 @@ const SOLITE_LINEUP_PLACEHOLDER: HomeCatalogProduct[] = [
 ];
 
 export const soliteLineup: HomeCatalogProduct[] = [
-  ...SOLITE_LINEUP_WITH_IMAGE.filter((p) =>
-    hasStrictBrandProductImage(p.imageKey, "solite"),
+  ...SOLITE_LINEUP_WITH_IMAGE.filter(
+    (p) =>
+      hasStrictBrandProductImage(p.imageKey, "solite") &&
+      !p.displayName.startsWith("GB"),
   ),
   ...SOLITE_LINEUP_PLACEHOLDER,
 ];

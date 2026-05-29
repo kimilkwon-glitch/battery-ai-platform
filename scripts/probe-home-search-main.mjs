@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-SOLITE-LINEUP-V1";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-BRAND-DISPLAY-V1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;
@@ -20,6 +20,9 @@ const checks = {
     !html.match(/placeholder="[^"]{3,}"/),
   noLongPlaceholder: !html.includes("K3 2018, 그랜저 IG AGM80L") && !html.includes("차량명·연식·규격 검색"),
   soliteCmfLabels: html.includes("CMF57412") && html.includes("CMF54459"),
+  rocketGb80: html.includes("GB80L"),
+  rocketNoCmf80OnHome:
+    !html.match(/rocket[\s\S]{0,400}CMF80L/i) && !html.includes('data-home-spec-brand="rocket"'),
   simpleExamples:
     html.includes("쏘렌토MQ4") &&
     html.includes("포터2") &&
