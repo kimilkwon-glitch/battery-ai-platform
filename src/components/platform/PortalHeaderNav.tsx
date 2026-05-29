@@ -3,19 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS, HUB_VEHICLES } from "@/lib/customer-hub-routes";
-import {
-  HUB_ORDER_CHECKLIST,
-  HUB_PHOTO_CHECK,
-  HUB_SYMPTOMS,
-} from "@/lib/platform-hub-routes";
+import { HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
+import { HUB_ORDER_CHECKLIST, HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
 
-/** 상단 카테고리 — 더보기 없이 전체 노출 */
+/** 상단 카테고리 — 검색은 메인 통합검색만, 더보기 없이 전체 노출 */
 export const portalNavPrimary = [
-  ["차량검색", HUB_VEHICLES],
-  ["규격검색", "/search"],
+  ["홈", "/"],
   ["배터리비교", "/compare"],
-  ["사진확인", HUB_PHOTO_CHECK],
   ["증상진단", HUB_SYMPTOMS],
   ["주문 전 확인", HUB_ORDER_CHECKLIST],
   ["로케트", "/brands?brand=rocket"],
@@ -72,7 +66,7 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
         aria-label="주요 메뉴"
       >
         {portalNavPrimary.map(([label, href]) => (
-          <NavPill active={isActive(pathname, href)} href={href} key={href} label={label} />
+          <NavPill active={isActive(pathname, href)} href={href} key={`${label}-${href}`} label={label} />
         ))}
       </nav>
     );
@@ -80,9 +74,14 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
 
   return (
     <nav className="border-t border-slate-100 bg-white" aria-label="모바일 메뉴">
-      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-center gap-2 px-3 py-2.5">
+      <div className="portal-header-mobile-nav mx-auto flex max-w-[1440px] flex-nowrap items-center justify-start gap-2 overflow-x-auto px-3 py-2.5">
         {portalNavPrimary.map(([label, href]) => (
-          <NavPill active={isActive(pathname, href)} href={href} key={`m-${href}`} label={label} />
+          <NavPill
+            active={isActive(pathname, href)}
+            href={href}
+            key={`m-${label}-${href}`}
+            label={label}
+          />
         ))}
       </div>
     </nav>

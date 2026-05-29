@@ -659,6 +659,15 @@
   }
 }
 
+.portal-header-mobile-nav {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.portal-header-mobile-nav::-webkit-scrollbar {
+  display: none;
+}
+
 .portal-header-my {
   min-width: 2.75rem;
   text-align: center;
