@@ -14,7 +14,7 @@ export function FirstOrder3BenefitClient() {
   return (
     <div className="bm-zone bm-zone--benefit mx-auto max-w-2xl space-y-6" data-page="benefit-first-order-3">
       <div className="overflow-hidden rounded-2xl border border-amber-200/80 shadow-md">
-        <BenefitCardMedia card={card} />
+        <BenefitCardMedia card={card} variant="detail" />
       </div>
 
       <div>

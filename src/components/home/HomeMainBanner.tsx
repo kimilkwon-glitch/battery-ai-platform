@@ -30,15 +30,16 @@ function HeroImageSlide({
   const [mobileError, setMobileError] = useState(false);
 
   const inner = (
-    <div className="home-hero-slide home-hero-slide--image relative h-full w-full">
+    <div className="home-hero-slide home-hero-slide--image relative h-full w-full bg-slate-100">
       {!desktopError ? (
         <Image
           src={slide.imageDesktop}
           alt=""
           fill
-          className="hidden object-cover object-center sm:block"
-          sizes="(max-width: 640px) 0px, 1240px"
+          className="home-hero-slide__img home-hero-slide__img--desktop hidden object-contain object-center sm:block"
+          sizes="(max-width: 639px) 0px, min(100vw, 1240px)"
           priority={isActive}
+          unoptimized
           onError={() => setDesktopError(true)}
         />
       ) : null}
@@ -47,9 +48,13 @@ function HeroImageSlide({
           src={slide.imageMobile}
           alt=""
           fill
-          className={clsx("object-cover object-center", !desktopError && "sm:hidden")}
+          className={clsx(
+            "home-hero-slide__img home-hero-slide__img--mobile object-contain object-center",
+            !desktopError && "sm:hidden",
+          )}
           sizes="100vw"
           priority={isActive}
+          unoptimized
           onError={() => setMobileError(true)}
         />
       ) : null}
@@ -58,21 +63,20 @@ function HeroImageSlide({
           src={slide.imageMobile}
           alt=""
           fill
-          className="hidden object-cover object-center sm:block"
-          sizes="1100px"
+          className="home-hero-slide__img hidden object-contain object-center sm:block"
+          sizes="min(100vw, 1240px)"
+          unoptimized
           onError={() => setMobileError(true)}
         />
       ) : null}
-      {!(desktopError && mobileError) ? (
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/55 via-slate-900/10 to-transparent" />
-      ) : (
+      {!(desktopError && mobileError) ? null : (
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-xs font-semibold text-slate-300">
           배너 이미지를 불러올 수 없습니다
         </div>
       )}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-5 pb-5 pt-12 text-left sm:px-7 sm:pb-6">
-        <p className="text-base font-black text-white drop-shadow-sm sm:text-lg lg:text-xl">{slide.title}</p>
-        <p className="mt-1 text-sm font-semibold text-slate-100/95 sm:text-base">{slide.subtitle}</p>
+      <div className="sr-only">
+        <p>{slide.title}</p>
+        <p>{slide.subtitle}</p>
       </div>
     </div>
   );
@@ -124,7 +128,7 @@ export function HomeMainBanner() {
       <div className="home-hero-carousel__frame relative overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
         <div
           className={clsx(
-            "home-hero-carousel__viewport relative h-[220px] transition-opacity duration-[400ms] ease-out sm:h-[280px] md:h-[320px] lg:h-[340px] xl:h-[360px]",
+            "home-hero-carousel__viewport relative h-[240px] transition-opacity duration-[400ms] ease-out sm:h-[300px] md:h-[340px] lg:h-[360px] xl:h-[380px]",
             fade ? "opacity-100" : "opacity-0",
           )}
         >

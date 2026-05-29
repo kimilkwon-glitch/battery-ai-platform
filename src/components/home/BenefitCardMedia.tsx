@@ -7,7 +7,14 @@ import {
   type HomeBenefitCard,
 } from "@/lib/home-benefits-data";
 
-export function BenefitCardMedia({ card }: { card: HomeBenefitCard }) {
+export function BenefitCardMedia({
+  card,
+  variant = "card",
+}: {
+  card: HomeBenefitCard;
+  /** card: 캐러셀·목록 / detail: 상세 상단 */
+  variant?: "card" | "detail";
+}) {
   const [imageReady, setImageReady] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const Icon = HOME_BENEFIT_FALLBACK_ICONS[card.fallbackIcon];
@@ -17,7 +24,10 @@ export function BenefitCardMedia({ card }: { card: HomeBenefitCard }) {
   return (
     <div
       className={clsx(
-        "home-benefit-card-media relative aspect-[2/1] w-full overflow-hidden",
+        "home-benefit-card-media relative w-full overflow-hidden bg-gradient-to-b from-amber-50/90 to-white",
+        variant === "detail"
+          ? "min-h-[200px] sm:min-h-[260px] lg:min-h-[300px]"
+          : "aspect-[5/3] min-h-[148px] sm:min-h-[168px]",
         active && "home-benefit-card-media--active",
         !active && "opacity-90",
       )}
@@ -28,7 +38,7 @@ export function BenefitCardMedia({ card }: { card: HomeBenefitCard }) {
           src={card.image}
           alt=""
           className={clsx(
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
+            "absolute inset-0 h-full w-full object-contain object-center p-1 transition-opacity duration-300 sm:p-2",
             showImage ? "opacity-100" : "opacity-0",
           )}
           onLoad={() => setImageReady(true)}

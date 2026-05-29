@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { CalendarDays, Gift, Percent } from "lucide-react";
+import { BENEFIT_3PERCENT_SRC } from "@/lib/brand-assets";
 import { HUB_BENEFITS } from "@/lib/customer-hub-routes";
 
 /** 혜택 이미지 — public/assets/benefits/ (없으면 fallback) */
@@ -40,7 +41,7 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     label: "확인 가능",
     description: "조건 확인 후 적용 가능한 혜택입니다.",
     note: "일부 조건 적용 · 주문 상담 시 확인",
-    image: `${BENEFITS_IMAGE_DIR}/benefit-3percent.png`,
+    image: BENEFIT_3PERCENT_SRC,
     fallbackIcon: "percent",
     status: "active",
     href: HUB_BENEFIT_FIRST_ORDER_3,
