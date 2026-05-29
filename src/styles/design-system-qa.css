@@ -180,6 +180,20 @@
 }
 
 /* —— 가이드 메가메뉴 —— */
+.guide-menu-wrapper {
+  position: relative;
+}
+
+.guide-mega-dropdown {
+  /* header(z-50) 위, 검색/본문 위 */
+  isolation: isolate;
+}
+
+.guide-mega-bridge {
+  /* trigger↔panel 사이 hover 유지 (패딩 영역) */
+  background: transparent;
+}
+
 .guide-mega-panel {
   border-color: #c7d2fe !important;
   background: linear-gradient(180deg, #fafaff 0%, #ffffff 100%) !important;
