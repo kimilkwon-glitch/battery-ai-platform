@@ -11,7 +11,6 @@ import {
   SUPPORT_FAQ_ITEMS,
   type FaqCategory,
 } from "@/lib/support-faq-data";
-import { HUB_GUIDE } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 
 type TabId = "notices" | "faq" | "inquiry";
@@ -189,24 +188,11 @@ export function SupportCenterClient() {
                   </button>
                   {open ? (
                     <div className="border-t border-slate-100 px-4 pb-4 pt-2 sm:px-5">
-                      <p className="text-sm font-medium leading-relaxed text-slate-600">
-                        {item.answer}
-                      </p>
-                      {item.guideHref ? (
-                        <Link
-                          href={item.guideHref}
-                          className="mt-2 inline-block text-xs font-black text-blue-700 hover:underline"
-                        >
-                          배터리 가이드에서 더 보기 →
-                        </Link>
-                      ) : (
-                        <Link
-                          href={HUB_GUIDE}
-                          className="mt-2 inline-block text-xs font-bold text-slate-500 hover:underline"
-                        >
-                          배터리 가이드 →
-                        </Link>
-                      )}
+                      <div className="space-y-2.5 text-sm font-medium leading-relaxed text-slate-600">
+                        {item.answer.split("\n\n").map((para, i) => (
+                          <p key={i}>{para}</p>
+                        ))}
+                      </div>
                     </div>
                   ) : null}
                 </div>

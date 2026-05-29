@@ -27,7 +27,7 @@ export type HomeCatalogProduct = {
   specAliases?: readonly string[];
 };
 
-export const HOME_MAIN_SEARCH_PLACEHOLDER = "";
+export const HOME_MAIN_SEARCH_PLACEHOLDER = "차량명, 연식, 배터리 규격을 검색하세요";
 
 export const HOME_MAIN_SEARCH_EXAMPLES = [
   { label: "쏘렌토MQ4", href: getSearchHref("쏘렌토 MQ4") },

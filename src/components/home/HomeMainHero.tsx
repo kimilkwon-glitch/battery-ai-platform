@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
+import { HomeMainBanner } from "@/components/home/HomeMainBanner";
 import {
   HOME_MAIN_AUX_LINKS,
   HOME_MAIN_SEARCH_EXAMPLES,
@@ -11,18 +12,12 @@ import {
 export function HomeMainHero() {
   return (
     <section className="home-main-hero text-center" data-home-section="search-hero">
-      <h1 className="home-main-logo">배터리매니저</h1>
-      <p className="home-main-logo-sub mt-2 text-[10px] font-semibold tracking-[0.2em] text-slate-400 uppercase sm:text-[11px]">
-        Battery Manager
-      </p>
-      <p className="mx-auto mt-5 max-w-md text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
-        차량명, 연식, 배터리 규격을 검색하세요
-      </p>
+      <HomeMainBanner />
 
-      <div className="home-main-search-shell mx-auto mt-6 max-w-3xl text-left sm:max-w-4xl">
+      <div className="home-main-search-shell mx-auto mt-5 max-w-3xl text-left sm:mt-6 sm:max-w-4xl">
         <VehicleSearchBox
           className="w-full"
-          inputClassName="home-main-search-input h-14 w-full rounded-2xl border border-slate-300/90 bg-white px-5 text-lg font-semibold text-slate-900 shadow-[0_10px_36px_rgba(15,23,42,0.08)] outline-none ring-0 placeholder:text-base placeholder:text-slate-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/90 sm:h-16 sm:px-6 sm:text-xl sm:placeholder:text-lg"
+          inputClassName="home-main-search-input h-14 w-full rounded-2xl border-2 border-slate-300/95 bg-white px-5 text-lg font-semibold text-slate-900 shadow-[0_8px_32px_rgba(37,99,235,0.1),0_4px_16px_rgba(15,23,42,0.06)] outline-none ring-0 transition placeholder:text-[15px] placeholder:font-medium placeholder:text-slate-500 hover:border-blue-300/90 focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.18),0_10px_36px_rgba(37,99,235,0.12)] focus:ring-0 sm:h-16 sm:px-6 sm:text-xl sm:placeholder:text-base"
           placeholder={HOME_MAIN_SEARCH_PLACEHOLDER}
           showButton
           buttonLabel="검색"

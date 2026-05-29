@@ -448,19 +448,16 @@
 }
 
 /* Home — 검색 중심 메인 */
-.home-main-logo {
-  font-family: "Paperlogy", "GmarketSans", var(--font-body);
-  font-size: clamp(2.65rem, 9.5vw, 4rem);
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 1.08;
-  color: var(--bm-navy);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 28px rgba(15, 23, 42, 0.07);
+.home-main-banner__frame {
+  transition: box-shadow var(--motion-normal) ease;
 }
 
-.home-main-logo-sub {
-  font-family: var(--font-body);
-  font-weight: 600;
+.home-main-banner__frame:hover {
+  box-shadow: 0 14px 44px rgba(15, 23, 42, 0.1);
+}
+
+.portal-brand-logo img {
+  max-height: 2.75rem;
 }
 
 .home-spec-cta-pill {
