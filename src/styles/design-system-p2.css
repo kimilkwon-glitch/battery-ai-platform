@@ -838,6 +838,25 @@
   border-bottom: 1px solid rgba(226, 232, 240, 0.6);
 }
 
+.home-benefit-card-media--fill .home-benefit-card-media__img--cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+@media (max-width: 639px) {
+  .home-benefit-card-media--fill .home-benefit-card-media__img--cover {
+    object-position: center 38%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-benefit-card-media--fill.home-benefit-card-media--active {
+    min-height: 13.5rem;
+  }
+}
+
 @media (max-width: 639px) {
   .home-benefits-carousel-shell {
     padding-left: 2.25rem;
