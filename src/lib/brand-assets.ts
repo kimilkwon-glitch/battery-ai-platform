@@ -1,7 +1,7 @@
 /** 브랜드·메인 배너 정적 자산 경로 (public/assets) */
 
-/** 실제 제공 파일: public/assets/brand/배터리매니저 로고.png */
-export const BRAND_LOGO_SRC = "/assets/brand/배터리매니저 로고.png";
+/** 실제 파일: public/assets/brand/battery-manager-logo.png → URL은 /assets/... (public 접두어 없음) */
+export const BRAND_LOGO_SRC = "/assets/brand/battery-manager-logo.png";
 
 export const BRAND_LOGO_ALT = "부산배터리매니저 로고";
 

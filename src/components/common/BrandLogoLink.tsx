@@ -18,27 +18,27 @@ export function BrandLogoLink({ className }: { className?: string }) {
       )}
       aria-label="배터리매니저 홈"
     >
-      {!imgError ? (
-        <span className="relative block shrink-0">
+      <span className="relative block h-10 w-[2.75rem] shrink-0 sm:h-11 sm:w-[3rem] lg:h-12 lg:w-[3.25rem]">
+        {!imgError ? (
           <Image
             src={BRAND_LOGO_SRC}
-            alt=""
-            width={56}
-            height={56}
-            className="h-10 w-auto object-contain object-left sm:h-11 lg:h-12"
+            alt={BRAND_LOGO_ALT}
+            width={120}
+            height={48}
+            className="h-full w-full object-contain object-left"
             priority
+            unoptimized
             onError={() => setImgError(true)}
-            aria-hidden
           />
-        </span>
-      ) : (
-        <span
-          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[10px] font-black text-slate-500 sm:size-11 lg:size-12"
-          aria-hidden
-        >
-          BM
-        </span>
-      )}
+        ) : (
+          <span
+            className="flex h-full w-full items-center justify-center rounded-xl bg-slate-100 text-[10px] font-black text-slate-500"
+            aria-hidden
+          >
+            BM
+          </span>
+        )}
+      </span>
       <span className="flex min-w-0 flex-col items-start leading-none">
         <span className="portal-brand-lockup__title truncate text-[15px] font-extrabold tracking-tight text-[var(--bm-navy)] sm:text-base lg:text-[17px]">
           배터리매니저
