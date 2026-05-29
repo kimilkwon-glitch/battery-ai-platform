@@ -22,6 +22,8 @@ export function ServiceCenterClient({
 }) {
   const context = [vehicleLabel, battery, symptom].filter(Boolean);
   const [activeStore, setActiveStore] = useState<BusanStoreId | null>(null);
+  const [hoveredStore, setHoveredStore] = useState<BusanStoreId | null>(null);
+  const highlightStore = activeStore ?? hoveredStore;
 
   return (
     <div className="busan-service-hub space-y-6 pb-8">
@@ -31,11 +33,15 @@ export function ServiceCenterClient({
         </p>
       ) : null}
 
-      <StoreNeighborhoodSearch activeStore={activeStore} onMatch={setActiveStore} />
+      <StoreNeighborhoodSearch activeStore={highlightStore} onMatch={setActiveStore} />
 
-      <BusanRegionMap activeStore={activeStore} onSelect={setActiveStore} />
+      <BusanRegionMap
+        activeStore={activeStore}
+        onHoverStore={setHoveredStore}
+        onSelect={setActiveStore}
+      />
 
-      <StoreHubCompactCards highlightId={activeStore} />
+      <StoreHubCompactCards highlightId={highlightStore} />
 
       <section className={`${bm.card} ${bm.cardPad}`} id="visit-prep">
         <h3 className="text-base font-black text-slate-950">방문·출장 전 알려주시면 좋은 정보</h3>

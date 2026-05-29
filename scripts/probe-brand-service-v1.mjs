@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-BRAND-SERVICE-V1";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-BUSAN-MAP-V1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 
@@ -31,7 +31,13 @@ const checks = {
     status: service.status,
     hasNeighborhoodSearch:
       service.html.includes("가까운 지점 확인") && service.html.includes("화명동"),
-    hasMap: service.html.includes("busan-region-map") || service.html.includes("부산 권역 안내"),
+    hasMap: service.html.includes("busan-region-map") || service.html.includes("부산 권역 지도"),
+    hasDistrictLabels:
+      service.html.includes("북구") &&
+      service.html.includes("금정") &&
+      service.html.includes("사상") &&
+      service.html.includes("명지"),
+    noOldPolygonOnly: !service.html.includes('d="M 24 28 L 118 22'),
     hasDeokcheonRegions: service.html.includes("북구 · 대저1동 · 금정 · 연제"),
     hasHakjangRegions: service.html.includes("사상 · 사하 · 강서 · 명지"),
     hasVisitPrep: service.html.includes("방문·출장 전 알려주시면 좋은 정보"),
