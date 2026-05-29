@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { OwnedCouponHint } from "@/components/benefits/CouponIssuerPanel";
 import { addInquiry } from "@/lib/inquiry-storage";
+import { getUserCouponForBenefit } from "@/lib/coupon-storage";
 import type { ChatInquiryOpenDetail } from "@/lib/chat-inquiry-events";
 import {
   BATTERY_RETURN_OPTIONS,
@@ -24,6 +26,7 @@ export function ChatInquiryPanel({
   const [contact, setContact] = useState("");
   const [vehicle, setVehicle] = useState(preset?.vehicle ?? "");
   const [message, setMessage] = useState("");
+  const [couponCode, setCouponCode] = useState("");
   const [returnOption, setReturnOption] = useState<BatteryReturnOption>(
     (preset?.returnOption as BatteryReturnOption) ?? "return",
   );
@@ -33,6 +36,8 @@ export function ChatInquiryPanel({
     if (open) {
       setSubmitted(false);
       if (preset?.vehicle) setVehicle(preset.vehicle);
+      const held = getUserCouponForBenefit("first-order-3")?.code;
+      setCouponCode(held ?? "");
     }
   }, [open, preset?.vehicle]);
 
@@ -48,6 +53,7 @@ export function ChatInquiryPanel({
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
       source: "chat",
       inquiryType: "채팅상담",
+      couponCode: couponCode.trim() || undefined,
     });
     setSubmitted(true);
   };
@@ -132,6 +138,15 @@ export function ChatInquiryPanel({
                       className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold"
                       value={vehicle}
                       onChange={(e) => setVehicle(e.target.value)}
+                    />
+                  </label>
+                  <label className="block text-xs font-bold text-slate-600">
+                    쿠폰 코드 (선택)
+                    <input
+                      className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 font-mono text-sm font-semibold"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="BM-FIRST3-XXXX"
                     />
                   </label>
                   <label className="block text-xs font-bold text-slate-600">

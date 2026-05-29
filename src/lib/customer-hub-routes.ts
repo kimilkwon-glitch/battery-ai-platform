@@ -15,6 +15,7 @@ export const HUB_QA = "/community";
 export const HUB_BRANDS = "/brands";
 /** Q&A·콘텐츠·가이드 허브 */
 export const HUB_GUIDE = "/guides";
+export const HUB_BENEFITS = "/benefits";
 export const HUB_REVIEWS = "/reviews";
 export const HUB_SUPPORT = "/support";
 export const HUB_LOGIN = "/login";

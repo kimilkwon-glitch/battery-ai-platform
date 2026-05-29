@@ -3,13 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
-import { BenefitCardMedia } from "@/components/home/BenefitCardMedia";
+import { BenefitCardVisual } from "@/components/benefits/BenefitCardVisual";
 import {
-  HOME_BENEFIT_CARDS,
-  HOME_BENEFITS_SUBTITLE,
-  HOME_BENEFITS_TITLE,
-  type HomeBenefitCard,
-} from "@/lib/home-benefits-data";
+  BENEFIT_CARDS,
+  BENEFITS_HUB_SUBTITLE,
+  BENEFITS_HUB_TITLE,
+} from "@/lib/benefits-data";
 
 function useVisibleCount() {
   const [count, setCount] = useState(1);
@@ -34,48 +33,8 @@ function useVisibleCount() {
   return count;
 }
 
-function BenefitCard({ card, emphasis }: { card: HomeBenefitCard; emphasis?: boolean }) {
-  const active = card.status === "active";
-
-  return (
-    <article
-      className={clsx(
-        "home-benefit-card bm-card-unified flex h-full min-h-[240px] flex-col overflow-hidden bg-white transition-[transform,box-shadow,opacity] duration-[280ms] ease-out motion-safe:hover:-translate-y-1",
-        emphasis ? "opacity-100" : "opacity-[0.94]",
-        active ? "home-benefit-card--active border-amber-200/80" : "border-slate-200/90 bg-slate-50/50",
-      )}
-    >
-      <BenefitCardMedia card={card} />
-
-      <div className="flex flex-1 flex-col p-4">
-        <span
-          className={clsx(
-            "inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide",
-            active
-              ? "bg-blue-600/10 text-blue-800 ring-1 ring-blue-100"
-              : "bg-slate-200/60 text-slate-500",
-          )}
-        >
-          {card.label}
-        </span>
-        <h3 className="mt-2 text-base font-black text-slate-900">{card.title}</h3>
-        <p className="mt-1.5 text-xs font-semibold leading-relaxed text-slate-600">
-          {card.description}
-        </p>
-        {card.note ? (
-          <p className="mt-auto pt-3 text-[10px] font-medium leading-snug text-slate-400">
-            {card.note}
-          </p>
-        ) : (
-          <p className="mt-auto pt-3 text-[10px] text-transparent">.</p>
-        )}
-      </div>
-    </article>
-  );
-}
-
 export function HomeBenefitsCarousel() {
-  const cards = HOME_BENEFIT_CARDS;
+  const cards = BENEFIT_CARDS;
   const visibleCount = useVisibleCount();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -132,15 +91,15 @@ export function HomeBenefitsCarousel() {
     <section
       className="home-benefits-carousel bm-zone bm-zone--benefit mt-10 sm:mt-12"
       data-home-section="benefits-carousel"
-      aria-label={HOME_BENEFITS_TITLE}
+      aria-label={BENEFITS_HUB_TITLE}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div className="text-center">
         <h2 className="bm-section-eyebrow bm-section-eyebrow--benefit home-benefits-section-title">
-          {HOME_BENEFITS_TITLE}
+          {BENEFITS_HUB_TITLE}
         </h2>
-        <p className="mt-1 text-[11px] font-medium text-slate-500">{HOME_BENEFITS_SUBTITLE}</p>
+        <p className="mt-1 text-[11px] font-medium text-slate-500">{BENEFITS_HUB_SUBTITLE}</p>
       </div>
 
       <div className="home-benefits-carousel-shell relative mx-auto mt-4 max-w-[1100px] px-10 sm:px-11">
@@ -149,7 +108,6 @@ export function HomeBenefitsCarousel() {
             className="home-benefits-track flex gap-3 transition-[transform,opacity] duration-[320ms] ease-out will-change-transform"
             style={{
               transform: slideStep ? `translateX(-${index * slideStep}px)` : undefined,
-              opacity: 1,
             }}
           >
             {cards.map((card, i) => (
@@ -162,7 +120,7 @@ export function HomeBenefitsCarousel() {
                     : `calc((100% - ${(visibleCount - 1) * 12}px) / ${visibleCount})`,
                 }}
               >
-                <BenefitCard card={card} emphasis={i >= index && i < index + visibleCount} />
+                <BenefitCardVisual card={card} emphasis={i >= index && i < index + visibleCount} />
               </div>
             ))}
           </div>
@@ -200,7 +158,7 @@ export function HomeBenefitsCarousel() {
                 onClick={() => goTo(i)}
                 className={clsx(
                   "h-2 rounded-full transition-all duration-300",
-                  i === index ? "w-5 bg-blue-600" : "w-2 bg-slate-300 hover:bg-slate-400",
+                  i === index ? "w-5 bg-amber-600" : "w-2 bg-slate-300 hover:bg-slate-400",
                 )}
                 aria-label={`혜택 ${i + 1}`}
               />

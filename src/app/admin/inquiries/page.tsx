@@ -29,7 +29,12 @@ export default function AdminInquiriesPage() {
         <p className="text-xs font-bold text-amber-800">
           운영용 임시 화면 — localStorage 저장·보안 없음. Supabase 등 DB 연동 권장.
         </p>
-        <h1 className="mt-2 text-2xl font-black text-slate-950">상담 접수 목록</h1>
+        <div className="mt-2 flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-black text-slate-950">상담 접수 목록</h1>
+          <a href="/admin/coupons" className="text-xs font-bold text-blue-700 hover:underline">
+            쿠폰 목록 →
+          </a>
+        </div>
         <button type="button" onClick={refresh} className={`${bm.btnSecondary} mt-4 text-xs`}>
           새로고침
         </button>
@@ -71,6 +76,9 @@ export default function AdminInquiriesPage() {
                   <p className="mt-1 text-xs font-bold text-blue-700">규격: {row.batteryCode}</p>
                 ) : null}
                 {row.vehicle ? <p className="text-xs font-semibold text-slate-600">차량: {row.vehicle}</p> : null}
+                {row.couponCode ? (
+                  <p className="mt-1 font-mono text-xs font-black text-amber-800">쿠폰: {row.couponCode}</p>
+                ) : null}
                 <p className="mt-2 text-sm font-medium text-slate-700">{row.message}</p>
                 {row.pageUrl ? (
                   <p className="mt-1 truncate text-[10px] text-slate-400">{row.pageUrl}</p>

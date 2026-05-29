@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import clsx from "clsx";
 import { addInquiry } from "@/lib/inquiry-storage";
@@ -11,6 +11,8 @@ import {
   SUPPORT_FAQ_ITEMS,
   type FaqCategory,
 } from "@/lib/support-faq-data";
+import { OwnedCouponHint } from "@/components/benefits/CouponIssuerPanel";
+import { getUserCouponForBenefit } from "@/lib/coupon-storage";
 import { bm } from "@/lib/design-tokens";
 
 type TabId = "notices" | "faq" | "inquiry";
@@ -37,13 +39,20 @@ export function SupportCenterClient() {
     vehicle: string;
     inquiryType: InquiryType;
     message: string;
+    couponCode: string;
   }>({
     name: "",
     contact: "",
     vehicle: "",
     inquiryType: INQUIRY_TYPES[0],
     message: "",
+    couponCode: "",
   });
+
+  useEffect(() => {
+    const held = getUserCouponForBenefit("first-order-3")?.code;
+    if (held) setForm((f) => ({ ...f, couponCode: f.couponCode || held }));
+  }, []);
 
   const q = query.trim().toLowerCase();
 
@@ -210,6 +219,7 @@ export function SupportCenterClient() {
             </p>
           ) : (
             <form className="space-y-4" onSubmit={handleInquiry}>
+              <OwnedCouponHint />
               <p className="text-xs font-semibold text-slate-500">
                 접수된 문의는 채팅상담과 함께 운영자 화면에서 확인됩니다. (localStorage 임시 저장)
               </p>
@@ -242,6 +252,17 @@ export function SupportCenterClient() {
                     </option>
                   ))}
                 </select>
+              </label>
+              <label className="block text-xs font-bold text-slate-700">
+                쿠폰 코드 (선택)
+                <input
+                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 font-mono text-sm font-semibold"
+                  placeholder={
+                    getUserCouponForBenefit("first-order-3")?.code ?? "BM-FIRST3-XXXX"
+                  }
+                  value={form.couponCode}
+                  onChange={(e) => setForm((f) => ({ ...f, couponCode: e.target.value }))}
+                />
               </label>
               <label className="block text-xs font-bold text-slate-700">
                 문의 내용

@@ -20,6 +20,7 @@ export type InquiryRecord = {
   pageUrl?: string;
   source?: InquirySource;
   inquiryType?: string;
+  couponCode?: string;
 };
 
 const STORAGE_KEY = "bm-inquiries-v1";

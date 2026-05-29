@@ -11,6 +11,7 @@ import {
   BATTERY_RETURN_OPTIONS,
   type BatteryReturnOption,
 } from "@/lib/shop-order-types";
+import { OwnedCouponHint } from "@/components/benefits/CouponIssuerPanel";
 import { bm } from "@/lib/design-tokens";
 
 export function BatteryDetailOrderPanel({
@@ -82,6 +83,8 @@ export function BatteryDetailOrderPanel({
               ))}
             </div>
           </div>
+
+          <OwnedCouponHint />
 
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             <Link
