@@ -23,7 +23,7 @@ export function BenefitCardVisual({
   const inner = (
     <article
       className={clsx(
-        "home-benefit-card bm-card-unified flex h-full min-h-[260px] flex-col overflow-hidden bg-white transition-[transform,box-shadow,opacity] duration-[280ms] ease-out sm:min-h-[280px]",
+        "home-benefit-card bm-card-unified flex h-full min-h-[248px] flex-col overflow-hidden bg-white transition-[transform,box-shadow,opacity] duration-[280ms] ease-out sm:min-h-[256px]",
         asLink && active && "motion-safe:hover:-translate-y-1",
         emphasis ? "opacity-100" : "opacity-[0.94]",
         active ? "home-benefit-card--active border-amber-200/80" : "border-slate-200/90 bg-slate-50/50",

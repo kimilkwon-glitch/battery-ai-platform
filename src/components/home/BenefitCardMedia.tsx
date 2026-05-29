@@ -7,6 +7,10 @@ import {
   type HomeBenefitCard,
 } from "@/lib/home-benefits-data";
 
+/** 카드형·상세 공통 — 3개 혜택 카드 media 높이 통일 */
+const MEDIA_HEIGHT_CARD = "h-[168px] sm:h-[180px]";
+const MEDIA_HEIGHT_DETAIL = "h-[240px] sm:h-[300px] lg:h-[340px]";
+
 export function BenefitCardMedia({
   card,
   variant = "card",
@@ -20,50 +24,52 @@ export function BenefitCardMedia({
   const Icon = HOME_BENEFIT_FALLBACK_ICONS[card.fallbackIcon];
   const active = card.status === "active";
   const showImage = Boolean(card.image) && !imageFailed && imageReady;
-  /** 3% 쿠폰 등 실제 배너 이미지 — 영역을 꽉 채우되 비율 유지 */
-  const fillBanner = active && Boolean(card.image);
+  /** 첫 번째 3% 쿠폰 — contain + 톤 배경 (cover 금지) */
+  const isCouponBanner = active && Boolean(card.image) && card.id === "first-order-3";
+  const isDetail = variant === "detail";
 
   return (
     <div
       className={clsx(
-        "home-benefit-card-media relative w-full overflow-hidden",
-        fillBanner ? "bg-amber-100/80" : "bg-gradient-to-b from-amber-50/90 to-white",
-        variant === "detail"
-          ? fillBanner
-            ? "h-[220px] sm:h-[280px] md:h-[320px]"
-            : "min-h-[200px] sm:min-h-[260px]"
-          : fillBanner
-            ? "aspect-[3/2] min-h-[180px] sm:min-h-[200px] lg:min-h-[212px]"
-            : "aspect-[5/3] min-h-[148px] sm:min-h-[168px]",
+        "home-benefit-card-media relative w-full shrink-0 overflow-hidden border-b border-slate-200/60",
+        isDetail ? MEDIA_HEIGHT_DETAIL : MEDIA_HEIGHT_CARD,
+        isCouponBanner
+          ? "home-benefit-card-media--banner bg-gradient-to-br from-amber-100/95 via-amber-50/90 to-white"
+          : "bg-gradient-to-b from-amber-50/90 to-white",
         active && "home-benefit-card-media--active",
-        fillBanner && "home-benefit-card-media--fill",
         !active && "opacity-90",
       )}
     >
       {card.image && !imageFailed ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={card.image}
-          alt=""
+        <div
           className={clsx(
-            "absolute inset-0 h-full w-full transition-opacity duration-300",
-            fillBanner
-              ? "home-benefit-card-media__img--cover object-cover object-[center_42%] p-0"
-              : "object-contain object-center p-2",
+            "absolute inset-0 flex items-center justify-center transition-opacity duration-300",
+            isCouponBanner ? "p-0.5 sm:p-1" : "p-2",
             showImage ? "opacity-100" : "opacity-0",
           )}
-          onLoad={() => setImageReady(true)}
-          onError={() => {
-            setImageFailed(true);
-            setImageReady(false);
-          }}
-        />
+          aria-hidden={!showImage}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={card.image}
+            alt=""
+            className={clsx(
+              "home-benefit-card-media__img block max-h-full max-w-full object-contain object-center",
+              isCouponBanner && "home-benefit-card-media__img--coupon",
+            )}
+            onLoad={() => setImageReady(true)}
+            onError={() => {
+              setImageFailed(true);
+              setImageReady(false);
+            }}
+          />
+        </div>
       ) : null}
 
       <div
         className={clsx(
           "absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity duration-300",
-          showImage ? "opacity-0 pointer-events-none" : "opacity-100",
+          showImage ? "pointer-events-none opacity-0" : "opacity-100",
         )}
         aria-hidden={showImage}
       >

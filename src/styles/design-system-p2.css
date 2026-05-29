@@ -834,26 +834,28 @@
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, transparent 100%);
 }
 
-.home-benefit-card-media {
-  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+/* 혜택 카드 — 3장 media 높이 통일, 3% 쿠폰만 contain + 톤 배경 */
+.home-benefit-card-media--banner .home-benefit-card-media__img--coupon {
+  width: auto;
+  height: auto;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center center;
+  filter: drop-shadow(0 2px 8px rgba(180, 83, 9, 0.08));
 }
 
-.home-benefit-card-media--fill .home-benefit-card-media__img--cover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 42%;
-}
-
-@media (max-width: 639px) {
-  .home-benefit-card-media--fill .home-benefit-card-media__img--cover {
-    object-position: center 38%;
+@media (min-width: 640px) {
+  .home-benefit-card-media--banner .home-benefit-card-media__img--coupon {
+    max-height: 98%;
+    max-width: 99%;
   }
 }
 
-@media (min-width: 1024px) {
-  .home-benefit-card-media--fill.home-benefit-card-media--active {
-    min-height: 13.5rem;
+@media (max-width: 639px) {
+  .home-benefit-card-media--banner .home-benefit-card-media__img--coupon {
+    max-height: 96%;
+    max-width: 98%;
   }
 }
 
