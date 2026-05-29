@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BatteryStagePhoto } from "@/components/media/BatteryProductImage";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import {
@@ -14,7 +14,8 @@ import {
   type BatteryImageStageVariant,
 } from "@/lib/battery-image-stage";
 import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
-import type { BatteryImageSet } from "@/lib/battery-alias-map";
+import type { BatteryBrandKey, BatteryImageSet } from "@/lib/battery-alias-map";
+import { getBatteryImageSet } from "@/lib/battery-alias-map";
 import { batteryThumbSurface } from "@/lib/design-tokens";
 
 type Props = {
@@ -22,6 +23,8 @@ type Props = {
   variant?: BatteryImageStageVariant;
   role?: BatteryImageRole;
   imageSet?: BatteryImageSet;
+  /** 메인 라인업 — 로케트/쏠라이트 탭별 이미지 */
+  preferBrand?: BatteryBrandKey;
   className?: string;
   flushTop?: boolean;
   layout?: "stack" | "row";
@@ -33,16 +36,26 @@ export function BatteryImageStage({
   variant = "card",
   role = "main",
   imageSet,
+  preferBrand,
   className = "",
   flushTop = false,
   layout = "stack",
 }: Props) {
-  const set = imageSet ?? batteryImageSetForCode(code);
+  const set =
+    imageSet ??
+    (preferBrand
+      ? getBatteryImageSet(code, preferBrand) ?? batteryImageSetForCode(code)
+      : batteryImageSetForCode(code));
   const candidates = useMemo(
     () => batteryImageCandidates(set, code, role),
     [set, code, role],
   );
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    setIndex(0);
+  }, [code, preferBrand, set.main]);
+
   const src = candidates[index];
   const hasPhoto = Boolean(src) && candidates.length > 0;
 
@@ -60,6 +73,7 @@ export function BatteryImageStage({
       data-layout={layout}
       style={{ contain: "layout" }}
       data-battery-image-stage={variant}
+      data-prefer-brand={preferBrand}
       data-image-slot={`search.battery.product.${code}`}
       data-image-slot-state={hasPhoto ? "ready" : "placeholder"}
     >

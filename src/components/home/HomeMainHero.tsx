@@ -11,8 +11,8 @@ import {
 export function HomeMainHero() {
   return (
     <section className="home-main-hero text-center" data-home-section="search-hero">
-      <h1 className="home-main-logo font-[family-name:var(--font-body)]">배터리매니저</h1>
-      <p className="mt-1 text-[11px] font-semibold tracking-[0.12em] text-slate-400 uppercase">
+      <h1 className="home-main-logo">배터리매니저</h1>
+      <p className="home-main-logo-sub mt-2 text-[10px] font-semibold tracking-[0.2em] text-slate-400 uppercase sm:text-[11px]">
         Battery Manager
       </p>
       <p className="mx-auto mt-5 max-w-md text-sm font-medium leading-relaxed text-slate-600 sm:text-base">

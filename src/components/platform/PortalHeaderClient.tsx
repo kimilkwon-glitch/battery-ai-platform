@@ -2,8 +2,6 @@
 
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { PortalSiteNav, useNavViewport } from "@/components/platform/PortalHeaderNav";
-import { bm } from "@/lib/design-tokens";
-
 export function PortalHeaderClient({
   title,
   showSearch = true,
@@ -19,43 +17,39 @@ export function PortalHeaderClient({
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
-      <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-3 px-4 lg:px-6">
-        <a className="flex shrink-0 items-center whitespace-nowrap" href="/">
-          <span className="text-[15px] font-extrabold tracking-[-0.04em] text-[var(--bm-navy)] sm:text-base">
-            배터리매니저
-          </span>
-        </a>
-        {title ? (
-          <span className="hidden shrink-0 whitespace-nowrap text-xs font-black text-slate-400 md:block">
-            {title}
-          </span>
-        ) : null}
+      <div className="relative mx-auto max-w-[1440px] px-4 py-2 lg:px-6">
+        <div className="relative flex min-h-12 items-center justify-center">
+          {title ? (
+            <span className="absolute left-0 top-1/2 hidden max-w-[28%] -translate-y-1/2 truncate text-xs font-black text-slate-400 md:block">
+              {title}
+            </span>
+          ) : null}
+          {viewport === "desktop" ? <PortalSiteNav variant="desktop" /> : null}
+          <a
+            className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full px-3 py-1.5 text-[11px] font-bold text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-800"
+            href="/mypage"
+          >
+            MY
+          </a>
+        </div>
+
         {showSearch ? (
-          <VehicleSearchBox
-            className="hidden min-w-0 flex-1 md:block md:max-w-xl lg:max-w-2xl"
-            defaultQuery={defaultQuery}
-            placeholder={searchPlaceholder}
-          />
-        ) : (
-          <div className="hidden flex-1 md:block" />
-        )}
-        {viewport === "desktop" ? (
-          <div className="shrink-0">
-            <PortalSiteNav variant="desktop" />
+          <div className="mt-2 hidden md:block">
+            <VehicleSearchBox
+              className="mx-auto max-w-2xl"
+              defaultQuery={defaultQuery}
+              placeholder={searchPlaceholder}
+            />
           </div>
         ) : null}
-        <a
-          className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-800"
-          href="/mypage"
-        >
-          MY
-        </a>
       </div>
+
       {showSearch ? (
-        <div className="border-t border-slate-100 px-4 py-2 lg:hidden">
+        <div className="border-t border-slate-100 px-4 py-2 md:hidden">
           <VehicleSearchBox defaultQuery={defaultQuery} placeholder={searchPlaceholder} />
         </div>
       ) : null}
+
       {viewport === "mobile" ? <PortalSiteNav variant="mobile" /> : null}
     </header>
   );

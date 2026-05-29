@@ -28,9 +28,9 @@ export function HomeCatalogSection() {
   return (
     <section className="mt-14 sm:mt-16" data-home-section="catalog" id="home-catalog">
       <div className="text-center sm:text-left">
-        <h2 className={`${bm.sectionTitle} text-slate-900`}>취급 배터리</h2>
-        <p className="mt-1 text-sm font-medium text-slate-500">
-          대표 규격으로 탐색하세요. 브랜드별 제원 비교는 상세·검색 결과에서 확인할 수 있습니다.
+        <h2 className={`${bm.sectionTitle} text-slate-900`}>배터리 라인업</h2>
+        <p className="mt-1 text-sm font-medium leading-relaxed text-slate-500">
+          대표 규격을 브랜드별로 확인하세요. 자세한 제원과 비교는 검색·상세 페이지에서 볼 수 있습니다.
         </p>
       </div>
 
@@ -41,8 +41,8 @@ export function HomeCatalogSection() {
             type="button"
             className={
               brand === tab.id
-                ? `${bm.btnNavy} min-w-[7rem] rounded-full px-5 py-2.5 text-sm`
-                : `${bm.btnSecondary} min-w-[7rem] rounded-full px-5 py-2.5 text-sm`
+                ? "min-w-[7rem] rounded-full bg-[var(--bm-navy)] px-5 py-2.5 text-sm font-black text-white shadow-md ring-2 ring-blue-200/60"
+                : `${bm.btnSecondary} min-w-[7rem] rounded-full px-5 py-2.5 text-sm font-bold`
             }
             onClick={() => setBrand(tab.id)}
           >
@@ -70,7 +70,7 @@ export function HomeCatalogSection() {
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((item) => (
-          <HomeSpecExploreCard key={`${brand}-${item.code}`} product={item} />
+          <HomeSpecExploreCard key={`${brand}-${item.code}`} brand={brand} product={item} />
         ))}
       </div>
 

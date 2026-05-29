@@ -1,6 +1,7 @@
 "use client";
 
 import { BatteryImageStage } from "@/components/media/BatteryImageStage";
+import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import type { BatteryImageStageVariant } from "@/lib/battery-image-stage";
 
 type Props = {
@@ -12,6 +13,7 @@ type Props = {
   flushTop?: boolean;
   /** md+ 좌측 이미지 패널용 — cardRow / compareRow variant */
   layout?: "stack" | "row";
+  preferBrand?: BatteryBrandKey;
 };
 
 function resolveVariant(
@@ -38,6 +40,7 @@ export function BatteryCardImage({
   variant,
   flushTop = false,
   layout = "row",
+  preferBrand,
 }: Props) {
   const resolvedVariant = resolveVariant(variant, heightClass, layout);
 
@@ -48,6 +51,7 @@ export function BatteryCardImage({
       className={`h-full w-full ${className}`}
       flushTop={flushTop}
       layout={layout}
+      preferBrand={preferBrand}
     />
   );
 }

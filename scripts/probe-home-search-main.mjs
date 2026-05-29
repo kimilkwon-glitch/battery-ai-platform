@@ -1,4 +1,4 @@
-const STAMP = "BM-UX-REV-20260528-HOME-SEARCH-MAIN-V1";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-SEARCH-MAIN-V2";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;
@@ -9,14 +9,13 @@ const checks = {
   status: res.status,
   stampOk: html.includes(STAMP),
   buildVersion: html.match(/data-build-version="([^"]+)"/)?.[1] ?? "—",
-  hasHomeSearchMain: html.includes('data-page="home-search-main"'),
-  hasKoreanLogo: html.includes("배터리매니저"),
-  hasCatalog: html.includes('data-home-section="catalog"'),
-  noPopularRanking: !html.includes("home-popular-batteries") && !html.includes("많이 찾는 배터리 규격"),
-  noPortalHeroSearchChip: !html.includes("검색 유형"),
-  noUnifiedSearchMenu: !html.includes("통합검색"),
-  hasRocketNav: html.includes("로케트"),
-  hasSoliteNav: html.includes("쏠라이트"),
-  hasFitCheckCta: html.includes("내 차에 맞는지 확인"),
+  noHeaderLogoText: !html.match(/sticky[\s\S]{0,800}배터리매니저/),
+  hasMainLogo: html.includes('class="home-main-logo'),
+  noMoreMenu: !html.includes("더보기"),
+  hasStoreNav: html.includes("매장방문"),
+  hasLineupTitle: html.includes("배터리 라인업") && !html.includes("취급 배터리"),
+  hasFitCheckSecondary: html.includes("내 차에 맞는지 확인"),
+  hasStoreCtaFirst: html.includes("매장방문") && html.includes("home-spec-cta-pill"),
+  hasSoliteBrandAttr: html.includes('data-home-spec-brand="solite"') || html.includes("data-prefer-brand=\"solite\""),
 };
 console.log(JSON.stringify(checks, null, 2));

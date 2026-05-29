@@ -1,50 +1,67 @@
 import Link from "next/link";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
-import { bm } from "@/lib/design-tokens";
-import type { HomeCatalogProduct } from "@/lib/home-main-catalog-data";
-import { HOME_SPEC_CARD_ACTIONS } from "@/lib/home-main-catalog-data";
+import type { HomeCatalogBrandId, HomeCatalogProduct } from "@/lib/home-main-catalog-data";
+import {
+  HOME_CATALOG_BRAND_KEY,
+  HOME_SPEC_CARD_ACTIONS,
+  HOME_SPEC_CARD_CTA_ORDER,
+} from "@/lib/home-main-catalog-data";
 
 type Props = {
   product: HomeCatalogProduct;
+  brand: HomeCatalogBrandId;
 };
 
-export function HomeSpecExploreCard({ product }: Props) {
-  const { code, typeTag, summary } = product;
+export function HomeSpecExploreCard({ product, brand }: Props) {
+  const { code, typeTag, summary, imageCode } = product;
+  const lookupCode = imageCode ?? code;
+  const preferBrand = HOME_CATALOG_BRAND_KEY[brand];
 
   return (
     <article
-      className={`${bm.card} flex flex-col overflow-hidden transition duration-200 motion-safe:hover:shadow-[var(--bm-shadow-md)]`}
+      className="home-spec-card group flex flex-col overflow-hidden rounded-[20px] border border-slate-200/90 bg-white shadow-[0_4px_24px_rgba(15,23,42,0.05)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)]"
       data-home-spec-card={code}
+      data-home-spec-brand={brand}
     >
-      <div className="border-b border-[var(--bm-border)] bg-[var(--bm-surface-soft)] p-3">
-        <BatteryCardImage code={code} flushTop layout="stack" variant="card" className="mx-auto max-h-[140px] w-full" />
+      <div className="border-b border-slate-100 bg-gradient-to-b from-slate-50 to-white p-3">
+        <BatteryCardImage
+          key={`${brand}-${lookupCode}`}
+          code={lookupCode}
+          flushTop
+          layout="stack"
+          variant="card"
+          preferBrand={preferBrand}
+          className="mx-auto max-h-[148px] w-full"
+        />
       </div>
-      <div className="flex flex-1 flex-col p-4">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <p className="spec-code text-lg font-black tracking-tight text-slate-900">{code}</p>
-          <span className={`${bm.badge} ${bm.badgeBlue}`}>{typeTag}</span>
+
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="spec-code text-xl font-black tracking-tight text-slate-950 sm:text-2xl">{code}</p>
+          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-800 ring-1 ring-blue-100">
+            {typeTag}
+          </span>
         </div>
-        <p className="mt-2 line-clamp-2 text-xs font-medium leading-relaxed text-slate-600">{summary}</p>
-        <div className="mt-4">
+        <p className="mt-2.5 text-sm font-medium leading-relaxed text-slate-600">{summary}</p>
+
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          {HOME_SPEC_CARD_CTA_ORDER.map((cta) => (
+            <Link
+              key={cta.key}
+              className="home-spec-cta-pill inline-flex min-h-[44px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800"
+              href={cta.href}
+            >
+              {cta.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="mt-4 border-t border-slate-100 pt-4">
           <Link
-            className={`${bm.btnNavy} inline-flex w-full items-center justify-center text-sm`}
+            className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[var(--bm-navy)] px-4 text-sm font-bold text-white transition hover:bg-[var(--bm-primary)]"
             href={HOME_SPEC_CARD_ACTIONS.fitCheck(code)}
           >
             내 차에 맞는지 확인
-          </Link>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 border-t border-slate-100 pt-3 text-[10px] font-bold text-slate-500">
-          <Link className="hover:text-blue-700 hover:underline" href={HOME_SPEC_CARD_ACTIONS.photo}>
-            사진 확인
-          </Link>
-          <Link className="hover:text-blue-700 hover:underline" href={HOME_SPEC_CARD_ACTIONS.outbound}>
-            출장교체
-          </Link>
-          <Link className="hover:text-blue-700 hover:underline" href={HOME_SPEC_CARD_ACTIONS.store}>
-            매장방문
-          </Link>
-          <Link className="hover:text-blue-700 hover:underline" href={HOME_SPEC_CARD_ACTIONS.delivery}>
-            택배주문
           </Link>
         </div>
       </div>
