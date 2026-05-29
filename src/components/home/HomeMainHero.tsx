@@ -14,7 +14,7 @@ export function HomeMainHero() {
     <section className="home-main-hero text-center" data-home-section="search-hero">
       <HomeMainBanner />
 
-      <div className="home-main-search-shell mx-auto mt-5 max-w-3xl text-left sm:mt-6 sm:max-w-4xl">
+      <div className="home-main-search-shell mx-auto mt-4 max-w-3xl text-left sm:mt-5 sm:max-w-4xl lg:max-w-[1100px]">
         <VehicleSearchBox
           className="w-full"
           inputClassName="home-main-search-input h-14 w-full rounded-2xl border-2 border-slate-300/95 bg-white px-5 text-lg font-semibold text-slate-900 shadow-[0_8px_32px_rgba(37,99,235,0.1),0_4px_16px_rgba(15,23,42,0.06)] outline-none ring-0 transition placeholder:text-[15px] placeholder:font-medium placeholder:text-slate-500 hover:border-blue-300/90 focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.18),0_10px_36px_rgba(37,99,235,0.12)] focus:ring-0 sm:h-16 sm:px-6 sm:text-xl sm:placeholder:text-base"

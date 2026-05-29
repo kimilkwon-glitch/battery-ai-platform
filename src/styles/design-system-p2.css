@@ -448,16 +448,24 @@
 }
 
 /* Home — 검색 중심 메인 */
-.home-main-banner__frame {
+.home-hero-carousel__frame {
   transition: box-shadow var(--motion-normal) ease;
 }
 
-.home-main-banner__frame:hover {
-  box-shadow: 0 14px 44px rgba(15, 23, 42, 0.1);
+.home-hero-carousel__frame:hover {
+  box-shadow: 0 18px 52px rgba(15, 23, 42, 0.14);
 }
 
-.portal-brand-logo img {
-  max-height: 2.75rem;
+.portal-brand-lockup__title {
+  font-family: "Paperlogy", "GmarketSans", var(--font-body);
+  letter-spacing: -0.04em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-carousel__viewport {
+    transition: none !important;
+  }
 }
 
 .home-spec-cta-pill {

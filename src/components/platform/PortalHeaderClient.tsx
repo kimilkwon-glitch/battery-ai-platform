@@ -22,11 +22,11 @@ export function PortalHeaderClient({
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
       <div className="relative mx-auto max-w-[1440px] px-4 py-2.5 lg:px-6 lg:py-3">
-        <div className="portal-header-top-row relative flex min-h-14 items-center gap-3 pl-[7.5rem] pr-[7.5rem] sm:pl-[9.5rem] sm:pr-[10.5rem] lg:pl-[11rem] lg:pr-[11rem]">
-          <BrandLogoLink className="absolute left-0 top-1/2 z-[2] -translate-y-1/2" />
+        <div className="portal-header-top-row relative flex min-h-[3.25rem] items-center gap-3 pl-[10.5rem] pr-[7.5rem] sm:min-h-14 sm:pl-[12.5rem] sm:pr-[10.5rem] lg:pl-[15rem] lg:pr-[11rem]">
+          <BrandLogoLink className="absolute left-0 top-1/2 z-[2] max-w-[calc(100%-5rem)] -translate-y-1/2 sm:max-w-[14rem]" />
 
           {title ? (
-            <span className="absolute left-[9.5rem] top-1/2 hidden max-w-[22%] -translate-y-1/2 truncate text-xs font-black text-slate-400 lg:block xl:left-[11rem]">
+            <span className="absolute left-[12rem] top-1/2 hidden max-w-[18%] -translate-y-1/2 truncate text-xs font-black text-slate-400 lg:block xl:left-[15rem]">
               {title}
             </span>
           ) : null}
