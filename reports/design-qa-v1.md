@@ -39,8 +39,21 @@
 
 **변경 없음**
 
+## 배포 (production)
+
+| 항목 | 값 |
+|------|-----|
+| Commit | `fe4b1ea` |
+| Deployment ID | `dpl_4ouvtSELygJa5tXbmWiXN2kKSwfb` |
+| Production alias | https://battery-ai-platform.vercel.app |
+| Build stamp | `BM-UX-REV-20260528-DESIGN-QA-V1` |
+| Cache-bust 예 | `https://battery-ai-platform.vercel.app/?_cb=<timestamp>` |
+
+Production probe (2026-05-28): stamp OK on `/`, `/reviews`, `/support`, `/guides`, `/guide/maintenance`, `/service-center`, `/login`, `/batteries/AGM95L`, `/compare`, `/shop`, `/admin/inquiries`, `/brands`, `/guide/symptoms`, `/signup`.
+
 ## 남은 리스크
 
-- 클라이언트 컴포넌트(메가메뉴·캐러셀)는 HTML probe에 일부만 반영
+- 클라이언트 컴포넌트(메가메뉴·캐러셀)는 HTML probe에 일부만 반영 — 브라우저 375/768 수동 확인 권장
 - `/guides/knowledge/*` 등 레거시 URL 스타일은 최소 변경
 - 혜택 PNG 미등록 시 placeholder 유지
+- `public/fonts/*` 대량 파일은 이번 커밋에 미포함 (로컬만 존재)

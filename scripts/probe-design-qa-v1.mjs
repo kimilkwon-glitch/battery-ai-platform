@@ -14,7 +14,7 @@ const results = await Promise.all(
   }),
 );
 
-const home = (await fetch(`${BASE}/?_cb=${cb}`)).text();
+const home = await (await fetch(`${BASE}/?_cb=${cb}`, { headers: { "Cache-Control": "no-cache" } })).text();
 
 console.log(
   JSON.stringify(
