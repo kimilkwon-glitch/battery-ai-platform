@@ -13,8 +13,8 @@ export default async function ServiceCenterPage({
   return (
     <PageShell
       pageLabel="매장·출장"
-      title="매장·출장 · 덕천점·학장점"
-      description="직영점 안내, 출장·내방 가능 지역, 교체 상담을 한 페이지에서 확인합니다."
+      title="매장·출장 안내"
+      description="부산 지역은 가까운 직영점 기준으로 빠르게 안내드립니다. 동네명을 입력하면 가까운 지점을 확인할 수 있습니다."
       searchPlaceholder="차량·규격 검색"
     >
       <Suspense fallback={<ContentAreaFallback lines={3} />}>

@@ -1,9 +1,4 @@
-import { HUB_PHOTO, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
-
-
-
 /** 부산 덕천점·학장점 직영 — 매장·출장 대표 허브 */
-
 
 
 export const BUSAN_SERVICE_TITLE = "매장·출장";
@@ -11,49 +6,35 @@ export const BUSAN_SERVICE_TITLE = "매장·출장";
 
 
 export const BUSAN_SERVICE_DESCRIPTION =
-
-  "덕천점·학장점 직영과 출장·내방 배터리 교체를 한 페이지에서 안내합니다. 부산 지역은 가까운 직영점 기준으로 일정을 맞춰 안내드립니다.";
+  "부산 지역은 가까운 직영점 기준으로 빠르게 안내드립니다. 동네명을 입력하면 가까운 지점을 확인할 수 있습니다.";
 
 
 
 export const BUSAN_STORES = [
-
   {
-
     id: "deokcheon",
-
     name: "덕천점",
-
-    tagline: "북구권 생활권 · 승용·SUV 중심",
-
-    areas: ["덕천", "구포", "만덕", "화명", "대저", "동래", "금정"],
-
-    scenarios: ["아파트 지하주차장", "출근 전 시동불량", "장기주차 방전"],
-
+    tagline: "북구·금정·연제권 생활권",
+    displayRegions: "북구 · 대저1동 · 금정 · 연제",
+    areas: ["덕천", "구포", "만덕", "화명", "금정", "연산"],
+    scenarios: ["아파트 지하주차장", "출근 전 시동불량", "생활권 출장 중심"],
     visit: "내방 교체",
-
     mobile: "출장 교체 (권역 내)",
-
+    mapsQuery: "부산 북구 덕천 배터리",
+    contactHref: "/ai",
   },
-
   {
-
     id: "hakjang",
-
     name: "학장점",
-
-    tagline: "사상구권 업무·물류 · 업무차·화물차·법인차 중심",
-
-    areas: ["학장", "감전", "괘법", "주례", "엄궁", "신평", "장림", "하단"],
-
-    scenarios: ["업무차·화물차", "대형차·법인차", "공업사·정비 연계"],
-
+    tagline: "사상·사하·강서·명지권",
+    displayRegions: "사상 · 사하 · 강서 · 명지 · 대저2동 · 진구",
+    areas: ["학장", "사상", "하단", "명지", "강서", "서면"],
+    scenarios: ["업무차·물류차", "산업단지", "서부산 출장 중심"],
     visit: "내방 교체",
-
     mobile: "출장 교체 (권역 내)",
-
+    mapsQuery: "부산 사상구 학장 배터리",
+    contactHref: "/ai",
   },
-
 ] as const;
 
 
@@ -78,13 +59,16 @@ export const BUSAN_CAPABILITIES = [
 
 
 
-export const CONSULT_PREP_ITEMS = [
+export const VISIT_OUTBOUND_PREP_ITEMS = [
   "차량명",
   "연식",
-  "현재 장착 배터리",
-  "방전·시동 불량 등 증상",
-  "ISG/하이브리드 여부",
+  "현재 배터리 규격",
+  "방전 증상",
+  "지하주차장 여부",
+  "시동 가능 여부",
 ] as const;
+
+export const CONSULT_PREP_ITEMS = VISIT_OUTBOUND_PREP_ITEMS;
 
 export const OUTBOUND_PREP_ITEMS = [
   "차량 위치·연락 가능 번호",
@@ -96,34 +80,7 @@ export const OUTBOUND_PREP_ITEMS = [
 
 
 
-export const BUSAN_SERVICE_CTAS = [
-
-  { label: "사진으로 확인", href: HUB_PHOTO, primary: true },
-
-  { label: "문의하기", href: "/ai", primary: true },
-
-  { label: "덕천점 안내", href: HUB_STORE_ANCHORS.deokcheon, primary: false },
-
-  { label: "학장점 안내", href: HUB_STORE_ANCHORS.hakjang, primary: false },
-
-  { label: "출장 가능 지역 보기", href: HUB_STORE_ANCHORS.regions, primary: false },
-
-] as const;
-
-
-
-export const STORE_HUB_SECTIONS = [
-
-  { id: "stores", label: "직영점" },
-
-  { id: "regions", label: "출장 지역" },
-
-  { id: "visit", label: "내방 안내" },
-
-  { id: "consult-prep", label: "상담 준비" },
-
-  { id: "photo-guide", label: "사진 확인" },
-
-] as const;
+export const BUSAN_REGION_FOOTNOTE =
+  "가까운 직영점 기준으로 우선 안내하며, 일정과 현장 상황에 따라 조정될 수 있습니다.";
 
 

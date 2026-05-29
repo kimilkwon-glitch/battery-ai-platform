@@ -152,11 +152,11 @@ export type BrandSpecRow = {
 };
 
 export const brandSpecMatchingTable: BrandSpecRow[] = [
-  { canonical: "AGM80L", rocket: "AGM80L", solite: "CMF80L", note: "SUV·대형 세단" },
-  { canonical: "DIN74L", rocket: "GB57820", solite: "CMF57412", note: "일반 DIN 대체" },
-  { canonical: "100R", rocket: "GB100R", solite: "CMF100R", note: "포터2 2020년 이후" },
-  { canonical: "90R", rocket: "GB90R", solite: "CMF90R", note: "상용차 기본 규격" },
-  { canonical: "AGM60L", rocket: "AGM60L", solite: "CMF60L", note: "소형 SUV·ISG" },
+  { canonical: "80L", rocket: "GB80L", solite: "CMF80L", note: "일반 L타입" },
+  { canonical: "100R", rocket: "GB100R", solite: "CMF100R", note: "포터2 2020년 이후 등" },
+  { canonical: "DIN74L", rocket: "GB57820 (대응)", solite: "CMF57412", note: "DIN H6 계열" },
+  { canonical: "DIN50L", rocket: "GB55066 (대응)", solite: "CMF54459", note: "소형 DIN 계열" },
+  { canonical: "AGM80L", rocket: "AGM80L", solite: "AGM80L", note: "SUV·대형 세단 계열" },
 ];
 
 export const brandSelectorMeta: Record<
