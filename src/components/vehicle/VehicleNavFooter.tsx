@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AppIcon } from "@/components/common/AppIcon";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
 import { bm } from "@/lib/design-tokens";
-import { compareHref, guideHref } from "@/lib/platform-data";
+import { compareHref } from "@/lib/platform-data";
 
 export function VehicleNavFooter({
   vehicleId,
@@ -21,14 +21,14 @@ export function VehicleNavFooter({
       </p>
       <CtaHierarchy
         ctas={[
-          { label: `${batteryCode} 규격 상세`, href: specHref },
-          { label: "사진으로 확인", href: "/analysis/photo" },
+          { label: "해당 규격 보기", href: specHref },
+          { label: "택배주문", href: `/shop?code=${encodeURIComponent(batteryCode)}#shop-order-panel` },
         ]}
         links={[
-          { label: "문의하기", href: "/ai" },
+          { label: "매장·출장 안내", href: "/service-center" },
+          { label: "배터리 가이드", href: "/guides" },
+          { label: "사진으로 확인 (보조)", href: "/photo-check" },
           { label: "규격 비교", href: compareHref(batteryCode, "DIN74L") },
-          { label: "규격 가이드", href: guideHref("terminal-lr") },
-          { label: "이 차량 검색", href: `/search?q=${encodeURIComponent(vehicleId)}` },
         ]}
       />
       <details className="group mt-4">
@@ -40,23 +40,14 @@ export function VehicleNavFooter({
           </span>
         </summary>
         <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
-          <Link className={`${bm.btnTertiary} text-[11px]`} href={specHref}>
-            {batteryCode} 규격 상세
+          <Link className={`${bm.btnTertiary} text-[11px]`} href="/shop">
+            택배주문
           </Link>
-          <Link className={`${bm.btnTertiary} text-[11px]`} href="/analysis/photo">
-            사진으로 확인
+          <Link className={`${bm.btnTertiary} text-[11px]`} href="/guides">
+            배터리 가이드
           </Link>
-          <Link className={`${bm.btnTertiary} text-[11px]`} href="/ai">
-            문의하기
-          </Link>
-          <Link className={`${bm.btnTertiary} text-[11px]`} href={compareHref(batteryCode, "DIN74L")}>
-            규격 비교
-          </Link>
-          <Link className={`${bm.btnTertiary} text-[11px]`} href={guideHref("terminal-lr")}>
-            규격 가이드
-          </Link>
-          <Link className={`${bm.btnTertiary} text-[11px]`} href={`/search?q=${encodeURIComponent(vehicleId)}`}>
-            이 차량 검색
+          <Link className={`${bm.btnTertiary} text-[11px]`} href="/photo-check">
+            사진 확인 (보조)
           </Link>
         </div>
       </details>

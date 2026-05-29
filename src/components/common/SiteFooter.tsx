@@ -1,8 +1,8 @@
 import { BRAND_FOOTER, BRAND_NAME } from "@/lib/brand";
 import {
   HUB_BRANDS,
+  HUB_GUIDE,
   HUB_PHOTO,
-  HUB_QA,
   HUB_SHOP,
   HUB_STORE_DETAIL,
 } from "@/lib/customer-hub-routes";
@@ -12,10 +12,10 @@ import { BUILD_STAMP } from "@/lib/build-stamp";
 const links = [
   ["브랜드 안내", HUB_BRANDS],
   ["매장·출장 안내", HUB_STORE_DETAIL],
-  ["배터리 업그레이드", "/compare"],
   ["택배주문", HUB_SHOP],
+  ["배터리 가이드", HUB_GUIDE],
+  ["배터리 업그레이드", "/compare"],
   ["사진확인", HUB_PHOTO],
-  ["Q&A", HUB_QA],
 ] as const;
 
 export function SiteFooter({ className = "" }: { className?: string }) {

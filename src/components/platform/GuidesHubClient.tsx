@@ -103,6 +103,17 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
 
   const activeLabel = GUIDE_FILTER_CATEGORIES.find((c) => c.key === active)?.label ?? "전체 가이드";
 
+  const quickTopics = [
+    { label: "자주 묻는 질문", href: "/community" },
+    { label: "오주문 방지", href: "/guides?category=오주문 방지" },
+    { label: "AGM/DIN 차이", href: "/guides/knowledge/bk-agm-vs-din" },
+    { label: "L/R 단자", href: "/guide/spec" },
+    { label: "포터2 90R/100R", href: "/guides/porter2-year-battery-guide" },
+    { label: "EV 보조 12V", href: "/guides/knowledge/bk-ev-aux-12v" },
+    { label: "용량 업그레이드", href: "/compare" },
+    { label: "택배·반납 안내", href: "/shop#order-check" },
+  ] as const;
+
   return (
     <section className={`${bm.hubCatalog} mx-auto grid max-w-[1280px] gap-4 px-0 lg:grid-cols-[260px_minmax(0,1fr)_280px]`}>
       <aside className="space-y-3 lg:sticky lg:top-[72px] lg:self-start">
@@ -141,8 +152,11 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
             <Link className={`${bm.btnSecondary} w-full`} href="/photo-check">
               사진 확인 안내
             </Link>
-            <Link className={`${bm.btnSecondary} w-full`} href="/service">
-              매장·택배
+            <Link className={`${bm.btnSecondary} w-full`} href="/service-center">
+              매장·출장 안내
+            </Link>
+            <Link className={`${bm.btnSecondary} w-full`} href="/shop">
+              택배주문
             </Link>
             <Link className={`${bm.btnSecondary} w-full`} href="/compare">
               규격 비교
@@ -169,6 +183,21 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
             가이드 → 규격 상세 → Q&A → 사진 확인 순으로 이어가면 오주문을 줄일 수 있습니다.
           </p>
         </div>
+
+        <section className={`${bm.card} ${bm.cardPad}`}>
+          <SectionHeader label="주제별 바로가기" title="배터리 가이드 주제" />
+          <div className="mt-3 flex flex-wrap gap-2">
+            {quickTopics.map((t) => (
+              <Link
+                key={t.href}
+                href={t.href}
+                className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-black text-slate-700 ring-1 ring-slate-200 hover:bg-blue-50 hover:text-blue-800"
+              >
+                {t.label}
+              </Link>
+            ))}
+          </div>
+        </section>
 
         <section className={`${bm.card} ${bm.cardPad}`} id="battery-knowledge">
           <SectionHeader

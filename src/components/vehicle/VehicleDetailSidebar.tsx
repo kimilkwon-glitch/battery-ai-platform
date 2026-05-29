@@ -24,7 +24,7 @@ export function VehicleDetailSidebar({
 }) {
   const recommendedBatteries = [...new Set(fuelGroups.map((g) => g.primaryBattery).filter(Boolean))].slice(0, 3);
 
-  const guides = getArticlesByVehicleId(slug).slice(0, 4);
+  const guides = getArticlesByVehicleId(slug).slice(0, 2);
 
   const relatedMap = new Map<string, RelatedVehicle>();
   for (const v of relatedFromDb) relatedMap.set(v.slug, v);
@@ -33,7 +33,7 @@ export function VehicleDetailSidebar({
       relatedMap.set(v.slug, { slug: v.slug, title: v.model, battery: v.battery });
     }
   }
-  const relatedVehicles = [...relatedMap.values()].slice(0, 4);
+  const relatedVehicles = [...relatedMap.values()].slice(0, 2);
 
   const multiFuel = fuelGroups.length > 1;
 

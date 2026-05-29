@@ -12,6 +12,7 @@ type Props = {
   description?: string;
   questions: Question[];
   hubHref?: string;
+  hubLinkLabel?: string;
   compact?: boolean;
   showPhotoCta?: boolean;
   contextBatteryCode?: string;
@@ -21,14 +22,15 @@ export function RelatedQnaSection({
   title = "관련 질문",
   description = "비슷한 질문을 먼저 보고, 사진 확인·문의로 이어갈 수 있습니다.",
   questions,
-  hubHref = "/community",
+  hubHref = "/guides",
+  hubLinkLabel = "배터리 가이드에서 더보기",
   compact = true,
   showPhotoCta = true,
   contextBatteryCode,
 }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const list = useMemo(() => questions.slice(0, 4), [questions]);
+  const list = useMemo(() => questions.slice(0, 3), [questions]);
 
   if (list.length === 0) return null;
 
@@ -42,7 +44,7 @@ export function RelatedQnaSection({
           ) : null}
         </div>
         <Link className={`${bm.btnGhost} shrink-0 text-[10px]`} href={hubHref}>
-          Q&A 전체 보기
+          {hubLinkLabel}
         </Link>
       </div>
 
@@ -62,11 +64,11 @@ export function RelatedQnaSection({
 
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         <Link className={`${bm.btnNavy} w-full text-xs sm:w-auto`} href={hubHref}>
-          관련 질문 더보기
+          {hubLinkLabel}
         </Link>
         {showPhotoCta ? (
           <Link className={`${bm.btnGhost} w-full text-xs sm:w-auto`} href={HUB_PHOTO}>
-            사진으로 확인
+            사진으로 확인 (보조)
           </Link>
         ) : null}
       </div>

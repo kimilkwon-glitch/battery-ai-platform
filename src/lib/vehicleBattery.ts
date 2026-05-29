@@ -6,6 +6,7 @@ import { isDeprioritizedBatterySpec } from "@/lib/battery-detail/deprioritized-s
 import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { mapCustomerFuelLabel } from "@/lib/vehicle-fuel-display";
 import {
   mergeOperatorFuelGroups,
   resolveVehicleFuelPrimaryBattery,
@@ -495,13 +496,7 @@ function buildFuelBatteryGroup(fuelLabelKey: string, groupRecs: VehicleBatteryRe
 }
 
 function fuelLabel(fuel: string | null): string {
-  if (!fuel) return "공통";
-  if (/하이브|hev|phev/i.test(fuel)) return "하이브리드";
-  if (/lpg/i.test(fuel)) return "LPG";
-  if (/디젤|diesel/i.test(fuel)) return "디젤";
-  if (/가솔|gasoline|휘발/i.test(fuel)) return "가솔린";
-  if (/전기|ev/i.test(fuel)) return "전기";
-  return fuel;
+  return mapCustomerFuelLabel(fuel);
 }
 
 /** UI 필터 — 레코드 연료 라벨 */
@@ -576,7 +571,17 @@ export function groupRecordsByFuel(recs: VehicleBatteryRecord[]): FuelBatteryGro
     byFuel.get(fuel)!.push(r);
   }
 
-  const order = ["가솔린", "디젤", "LPG", "하이브리드", "전기", "공통"];
+  const order = [
+    "가솔린",
+    "디젤",
+    "LPG",
+    "하이브리드",
+    "ISG/스마트충전",
+    "EV 보조 12V",
+    "전기",
+    "확인 필요",
+    "공통",
+  ];
   const groups: FuelBatteryGroup[] = [];
 
   for (const fuelKey of order) {

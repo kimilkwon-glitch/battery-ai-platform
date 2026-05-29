@@ -17,33 +17,23 @@ import { getBatteryImageSet } from "@/lib/battery-alias-map";
 
 
 type Props = {
-
   fuelLabel: string;
-
   batteryCode: string;
-
   highlighted?: boolean;
-
   showExceptionNote?: boolean;
-
   conditionNote?: string;
-
+  compact?: boolean;
 };
 
 
 
 export function FuelBatterySpecCard({
-
   fuelLabel,
-
   batteryCode,
-
   highlighted = false,
-
   showExceptionNote = false,
-
   conditionNote,
-
+  compact = false,
 }: Props) {
 
   const display = parseBatterySpecDisplay(batteryCode);
@@ -94,7 +84,7 @@ export function FuelBatterySpecCard({
 
       </div>
 
-      <div className="relative h-[140px] bg-slate-50">
+      <div className={`relative bg-slate-50 ${compact ? "h-[100px]" : "h-[140px]"}`}>
 
         <BatteryThumbnail
 
@@ -146,7 +136,6 @@ export function FuelBatterySpecCard({
         ) : null}
 
         <div className="mt-auto flex flex-col gap-2 pt-3">
-
           <Link
             className={`${bm.btnPrimary} inline-flex w-full items-center justify-center gap-1.5 text-xs`}
             href={`/batteries/${encodeURIComponent(batteryCode)}`}
@@ -155,13 +144,11 @@ export function FuelBatterySpecCard({
             해당 규격 보기
           </Link>
           <Link
-            className={`${bm.btnSecondary} inline-flex w-full items-center justify-center gap-1.5 text-xs`}
-            href="/analysis/photo"
+            className="text-center text-[10px] font-bold text-slate-500 hover:text-blue-700 hover:underline"
+            href="/photo-check"
           >
-            <AppIcon iconKey="photoCheck" size="sm" />
-            사진으로 확인
+            사진으로 확인 (보조)
           </Link>
-
         </div>
 
       </div>

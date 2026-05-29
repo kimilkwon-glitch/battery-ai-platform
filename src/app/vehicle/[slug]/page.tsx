@@ -108,28 +108,6 @@ export default async function VehicleDetailPage({
 
         <section className="min-w-0 space-y-4">
 
-          {showFuelHeroCards ? (
-
-            <VehicleBatteryHeroCards
-
-              fuelGroups={batteryPage.fuelGroups}
-
-              highlightFuel={sp.fuel ?? null}
-
-              highlightYear={sp.year ?? null}
-
-              slug={slug}
-
-              vehicleTitle={displayTitle}
-
-              yearChips={batteryPage.yearChips}
-
-            />
-
-          ) : null}
-
-
-
           <div className={`${bm.card} ${bm.cardPad}`}>
 
             <div className="grid gap-4 sm:grid-cols-[180px_1fr]">
@@ -217,7 +195,16 @@ export default async function VehicleDetailPage({
 
           </div>
 
-
+          {showFuelHeroCards ? (
+            <VehicleBatteryHeroCards
+              fuelGroups={batteryPage.fuelGroups}
+              highlightFuel={sp.fuel ?? null}
+              highlightYear={sp.year ?? null}
+              slug={slug}
+              vehicleTitle={displayTitle}
+              yearChips={batteryPage.yearChips}
+            />
+          ) : null}
 
           {batteryPage.fuelGroups.length <= 1 ? (
 

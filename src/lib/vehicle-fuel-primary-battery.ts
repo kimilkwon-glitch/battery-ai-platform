@@ -4,6 +4,7 @@
  */
 import enrichmentJson from "@/data/vehicle-battery-enrichment.json";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { mapCustomerFuelLabel, sortFuelGroupsByDisplayOrder } from "@/lib/vehicle-fuel-display";
 import {
   getRecordFuelLabel,
   getRecordsForSlug,
@@ -102,7 +103,7 @@ export function buildFuelHeroCardGroups(
     });
   }
 
-  return cards;
+  return sortFuelGroupsByDisplayOrder(cards);
 }
 
 function decodeFuelQueryParam(raw: string | null | undefined): string | null {
@@ -127,13 +128,7 @@ export function batteryCodeForFuelParam(fuel: string | null | undefined): string
 /** URL fuel 쿼리 → 표준 연료 라벨 */
 export function normalizeVehicleFuelParam(raw: string | null | undefined): string | null {
   if (!raw) return null;
-  const t = raw.trim();
-  if (/하이브|hev/i.test(t)) return "하이브리드";
-  if (/디젤/i.test(t)) return "디젤";
-  if (/가솔|휘발/i.test(t)) return "가솔린";
-  if (/lpg/i.test(t)) return "LPG";
-  if (/전기|ev/i.test(t)) return "전기";
-  return t;
+  return mapCustomerFuelLabel(raw.trim());
 }
 
 function enrichmentForSlug(slug: string): EnrichmentRow | undefined {
