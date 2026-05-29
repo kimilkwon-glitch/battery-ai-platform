@@ -523,7 +523,41 @@
   overflow: hidden;
 }
 
-/* 상단 포털 네비 */
+/* 메인 — 자주 검색 예시 한 줄 */
+.home-main-search-examples {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.home-main-search-examples::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .home-main-search-examples {
+    justify-content: center;
+  }
+}
+
+/* 상단 포털 네비 — 데스크톱 한 줄 */
+@media (min-width: 1024px) {
+  .portal-header-desktop-nav {
+    flex-wrap: nowrap !important;
+  }
+}
+
+.portal-header-my {
+  min-width: 2.75rem;
+  text-align: center;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.06);
+}
+
 .portal-nav-link {
   position: relative;
   color: rgb(51 65 85);

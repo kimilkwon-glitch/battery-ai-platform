@@ -19,14 +19,16 @@ export type HomeCatalogProduct = {
   summary: string;
 };
 
-export const HOME_MAIN_SEARCH_PLACEHOLDER =
-  "K3 2018, 그랜저 IG AGM80L, 포터2 100R, AGM70L 검색";
+export const HOME_MAIN_SEARCH_PLACEHOLDER = "차량명·연식·규격 검색";
 
+/** 메인 — 차종명 중심 간단 예시 (검색 흐름은 기존 getSearchHref) */
 export const HOME_MAIN_SEARCH_EXAMPLES = [
-  { label: "포터2 90R/100R", href: getSearchHref("포터2 배터리") },
-  { label: "그랜저 IG AGM70L/AGM80L", href: getSearchHref("그랜저 IG 가솔린") },
-  { label: "스타리아 CMF80L", href: getSearchHref("스타리아 CMF80L") },
-  { label: "EV6 EV 12V", href: batteryDetailHref("EV 12V") },
+  { label: "쏘렌토MQ4", href: getSearchHref("쏘렌토 MQ4") },
+  { label: "쏘렌토", href: getSearchHref("쏘렌토") },
+  { label: "포터2", href: getSearchHref("포터2") },
+  { label: "그랜저IG", href: getSearchHref("그랜저 IG") },
+  { label: "스타리아", href: getSearchHref("스타리아") },
+  { label: "K3", href: getSearchHref("K3") },
 ] as const;
 
 export const HOME_MAIN_AUX_LINKS = [

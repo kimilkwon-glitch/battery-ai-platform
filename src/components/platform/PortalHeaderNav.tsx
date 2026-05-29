@@ -38,7 +38,7 @@ function isActive(pathname: string, href: string): boolean {
 function NavPill({ label, href, active }: { label: string; href: string; active: boolean }) {
   return (
     <Link
-      className={`portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-extrabold sm:px-5 sm:text-base ${
+      className={`portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-2 text-[12px] font-extrabold lg:px-3 lg:text-[13px] xl:px-3.5 xl:py-2.5 xl:text-sm ${
         active ? "portal-nav-link--active" : ""
       }`}
       href={href}
@@ -68,7 +68,7 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
   if (variant === "desktop") {
     return (
       <nav
-        className="flex max-w-[min(100%,72rem)] flex-wrap items-center justify-center gap-2.5 sm:gap-3"
+        className="portal-header-desktop-nav flex w-full max-w-[calc(100%-4.5rem)] flex-nowrap items-center justify-center gap-1 lg:gap-1.5 xl:gap-2"
         aria-label="주요 메뉴"
       >
         {portalNavPrimary.map(([label, href]) => (

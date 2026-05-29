@@ -18,7 +18,7 @@ export function PortalHeaderClient({
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
       <div className="relative mx-auto max-w-[1440px] px-4 py-2.5 lg:px-6 lg:py-3">
-        <div className="relative flex min-h-14 items-center justify-center">
+        <div className="relative flex min-h-14 items-center justify-center lg:px-2">
           {title ? (
             <span className="absolute left-0 top-1/2 hidden max-w-[28%] -translate-y-1/2 truncate text-xs font-black text-slate-400 md:block">
               {title}
@@ -26,7 +26,7 @@ export function PortalHeaderClient({
           ) : null}
           {viewport === "desktop" ? <PortalSiteNav variant="desktop" /> : null}
           <a
-            className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full px-3 py-1.5 text-[11px] font-bold text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-800"
+            className="portal-header-my absolute right-0 top-1/2 -translate-y-1/2 rounded-full px-4 py-2 text-xs font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 lg:px-5 lg:py-2.5 lg:text-sm"
             href="/mypage"
           >
             MY

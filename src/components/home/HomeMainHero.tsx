@@ -31,7 +31,7 @@ export function HomeMainHero() {
 
       <div className="mx-auto mt-6 max-w-3xl text-left sm:max-w-4xl sm:text-center">
         <p className="text-[11px] font-bold text-slate-400">자주 검색하는 예시</p>
-        <p className="mt-2 flex flex-wrap gap-x-1 gap-y-1 text-xs font-semibold text-slate-600 sm:justify-center">
+        <p className="home-main-search-examples mt-2 text-xs font-semibold text-slate-600 sm:justify-center">
           {HOME_MAIN_SEARCH_EXAMPLES.map((ex, i) => (
             <span key={ex.href} className="inline-flex items-center">
               {i > 0 ? <span className="mx-1 text-slate-300" aria-hidden>·</span> : null}
