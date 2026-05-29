@@ -44,7 +44,7 @@ export function BenefitCardMedia({
         <div
           className={clsx(
             "absolute inset-0 flex items-center justify-center transition-opacity duration-300",
-            isCouponBanner ? "p-0.5 sm:p-1" : "p-2",
+            isCouponBanner ? "p-0 sm:p-0.5" : "p-2",
             showImage ? "opacity-100" : "opacity-0",
           )}
           aria-hidden={!showImage}
@@ -52,7 +52,7 @@ export function BenefitCardMedia({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={card.image}
-            alt=""
+            alt={card.imageAlt ?? (isCouponBanner ? "첫 주문 3% 혜택 카드" : "")}
             className={clsx(
               "home-benefit-card-media__img block max-h-full max-w-full object-contain object-center",
               isCouponBanner && "home-benefit-card-media__img--coupon",

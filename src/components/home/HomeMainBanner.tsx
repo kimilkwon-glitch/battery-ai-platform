@@ -34,7 +34,7 @@ function HeroImageSlide({
       {!desktopError ? (
         <Image
           src={slide.imageDesktop}
-          alt=""
+          alt={slide.imageAlt}
           fill
           className="home-hero-slide__img home-hero-slide__img--desktop hidden object-contain object-center sm:block"
           sizes="(max-width: 639px) 0px, min(100vw, 1240px)"
@@ -46,7 +46,7 @@ function HeroImageSlide({
       {!mobileError ? (
         <Image
           src={slide.imageMobile}
-          alt=""
+          alt={slide.imageAlt}
           fill
           className={clsx(
             "home-hero-slide__img home-hero-slide__img--mobile object-contain object-center",
@@ -61,7 +61,7 @@ function HeroImageSlide({
       {desktopError && !mobileError ? (
         <Image
           src={slide.imageMobile}
-          alt=""
+          alt={slide.imageAlt}
           fill
           className="home-hero-slide__img hidden object-contain object-center sm:block"
           sizes="min(100vw, 1240px)"
@@ -85,7 +85,7 @@ function HeroImageSlide({
     <Link
       href={slide.href}
       className="block h-full w-full outline-none ring-blue-300 focus-visible:ring-2"
-      aria-label={`${slide.title} — 자세히 보기`}
+      aria-label={`${slide.imageAlt} — 자세히 보기`}
     >
       {inner}
     </Link>

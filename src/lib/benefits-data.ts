@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { CalendarDays, Gift, Percent } from "lucide-react";
-import { BENEFIT_3PERCENT_SRC } from "@/lib/brand-assets";
+import { BENEFIT_3PERCENT_CARD_SRC } from "@/lib/brand-assets";
 import { HUB_BENEFITS } from "@/lib/customer-hub-routes";
 
 /** 혜택 이미지 — public/assets/benefits/ (없으면 fallback) */
@@ -17,6 +17,7 @@ export type BenefitCardConfig = {
   description: string;
   note?: string;
   image?: string;
+  imageAlt?: string;
   fallbackIcon: BenefitFallbackIcon;
   status: BenefitStatus;
   href: string;
@@ -33,7 +34,7 @@ export const BENEFIT_FALLBACK_ICONS: Record<BenefitFallbackIcon, LucideIcon> = {
 export const HUB_BENEFIT_FIRST_ORDER_3 = "/benefits/first-order-3";
 export { HUB_BENEFITS };
 
-/** 실제 파일: benefit-3percent.png — season/coming-soon 없으면 fallback */
+/** 실제 파일: benefit-3percent-card.png — season/coming-soon 없으면 fallback */
 export const BENEFIT_CARDS: BenefitCardConfig[] = [
   {
     id: "first-order-3",
@@ -41,7 +42,8 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     label: "확인 가능",
     description: "조건 확인 후 적용 가능한 혜택입니다.",
     note: "일부 조건 적용 · 주문 상담 시 확인",
-    image: BENEFIT_3PERCENT_SRC,
+    image: BENEFIT_3PERCENT_CARD_SRC,
+    imageAlt: "첫 주문 3% 혜택 카드",
     fallbackIcon: "percent",
     status: "active",
     href: HUB_BENEFIT_FIRST_ORDER_3,
