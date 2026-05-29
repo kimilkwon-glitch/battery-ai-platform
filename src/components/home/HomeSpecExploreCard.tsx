@@ -38,7 +38,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
 
       <div className="flex min-h-0 flex-1 flex-col p-4 sm:p-5">
         <div className="home-spec-card-head flex min-h-[2.75rem] flex-wrap items-start gap-2">
-          <p className="spec-code text-xl font-black tracking-tight text-slate-950 sm:text-2xl">{displayName}</p>
+          <p className="home-spec-code-title text-xl text-slate-950 sm:text-2xl">{displayName}</p>
           <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-800 ring-1 ring-blue-100">
             {typeTag}
           </span>

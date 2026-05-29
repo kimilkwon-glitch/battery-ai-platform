@@ -1,10 +1,14 @@
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
-import { hasStrictBrandProductImage } from "@/lib/battery-alias-map";
+import {
+  batteryAliasMap,
+  getStrictHomeLineupFolders,
+  type BatteryBrandKey,
+  type BatterySpecEntry,
+} from "@/lib/battery-alias-map";
 import { getSearchHref } from "@/lib/battery-search";
 import { batteryDetailHref } from "@/lib/home-upgrade-v2-data";
 import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
 import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
-import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 
 export type HomeCatalogBrandId = "rocket" | "solite";
 
@@ -16,19 +20,15 @@ export type HomeProductTypeTag = "AGM" | "일반형" | "DIN" | "EV 보조 12V";
 export type HomeCatalogProduct = {
   id: string;
   displayName: string;
-  /** 검색·상세·CTA — 기존 alias/canonical 경로 */
   searchCode: string;
-  /** strict solite/rocket 이미지 lookup */
   imageKey: string;
   typeTag: HomeProductTypeTag;
   summary: string;
   specAliases?: readonly string[];
 };
 
-/** 메인 검색창 — placeholder 없음 (안내는 아래 예시 영역) */
 export const HOME_MAIN_SEARCH_PLACEHOLDER = "";
 
-/** 메인 — 차종명 중심 간단 예시 (검색 흐름은 기존 getSearchHref) */
 export const HOME_MAIN_SEARCH_EXAMPLES = [
   { label: "쏘렌토MQ4", href: getSearchHref("쏘렌토 MQ4") },
   { label: "쏘렌토", href: getSearchHref("쏘렌토") },
@@ -51,6 +51,63 @@ export const HOME_CATALOG_TYPE_FILTERS: HomeProductTypeFilter[] = [
   "DIN",
   "EV 보조 12V",
 ];
+
+const ROCKET_FOLDER_ORDER = [
+  "AGM60L",
+  "AGM70L",
+  "AGM80L",
+  "AGM95L",
+  "AGM95R",
+  "AGM105L",
+  "GB40AL",
+  "GB50L",
+  "GB60AL",
+  "GB60R",
+  "GB80L",
+  "GB80R",
+  "GB90L",
+  "GB90R",
+  "GB95R",
+  "GB100L",
+  "GB100R",
+  "GB55066",
+  "GB56219",
+  "GB57219",
+  "GB57820",
+  "GB58014",
+  "GB59042",
+  "GB60044",
+] as const;
+
+const SOLITE_FOLDER_ORDER = [
+  "CMF57412",
+  "CMF54459",
+  "CMF56219",
+  "CMF80L",
+  "CMF80R",
+  "CMF60L",
+  "CMF40L",
+  "CMF90L",
+  "CMF90R",
+  "CMF100L",
+  "CMF100R",
+] as const;
+
+const ROCKET_SUMMARY: Partial<Record<string, string>> = {
+  GB80L: "로케트 GB80L — 일반 충전제어 차량에서 많이 쓰이는 80Ah급 L타입 배터리입니다.",
+  GB57820: "로케트 GB57820 — DIN H6 / DIN74L 계열 표기입니다.",
+  GB56219: "로케트 GB56219 — DIN62L / DIN60L 계열 표기입니다.",
+  GB55066: "로케트 GB55066 — 소형 DIN / DIN50L 계열 표기입니다.",
+  GB90R: "로케트 GB90R — 일반형 R타입 규격입니다.",
+  GB100R: "로케트 GB100R — 일반형 R타입 규격입니다.",
+};
+
+const SOLITE_SUMMARY: Partial<Record<string, string>> = {
+  CMF57412: "쏠라이트 CMF57412 — DIN H6 / DIN74L 계열 표기입니다.",
+  CMF54459: "쏠라이트 CMF54459 — 소형 DIN 계열에서 함께 확인되는 표기입니다.",
+  CMF80L: "쏠라이트 CMF80L — 일반 충전계통 중대형 L타입 규격입니다.",
+  CMF56219: "쏠라이트 CMF56219 — DIN62L / DIN60L 계열 표기입니다.",
+};
 
 function catalogProduct(
   id: string,
@@ -78,121 +135,83 @@ function catalogProduct(
   };
 }
 
-/**
- * 로케트 메인 라인업 — 고객 화면 displayName은 GB/AGM 기준 (CMF 금지).
- * searchCode·specAliases는 기존 검색 alias 경로 유지.
- */
-const ROCKET_LINEUP_CANDIDATES: HomeCatalogProduct[] = [
-  catalogProduct("rocket-agm60l", "AGM60L", "AGM60L", "AGM", {
-    imageKey: "AGM60L",
-    specAliases: ["AGM60L", "AGM60", "AGM 60L"],
-  }),
-  catalogProduct("rocket-agm70l", "AGM70L", "AGM70L", "AGM", {
-    imageKey: "AGM70L",
-    specAliases: ["AGM70L", "AGM70", "AGM 70L"],
-  }),
-  catalogProduct("rocket-agm80l", "AGM80L", "AGM80L", "AGM", {
-    imageKey: "AGM80L",
-    specAliases: ["AGM80L", "AGM80", "AGM 80L"],
-  }),
-  catalogProduct("rocket-agm95l", "AGM95L", "AGM95L", "AGM", {
-    imageKey: "AGM95L",
-    specAliases: ["AGM95L", "AGM95", "AGM 95L"],
-  }),
-  catalogProduct("rocket-gb80l", "GB80L", "GB80L", "일반형", {
-    imageKey: "GB80L",
-    specAliases: ["80L", "GB80L", "CMF80L"],
-    summary:
-      "로케트 GB80L — 일반 충전제어 차량에서 많이 쓰이는 80Ah급 L타입 배터리입니다.",
-  }),
-  catalogProduct("rocket-gb57820", "GB57820", "GB57820", "DIN", {
-    imageKey: "GB57820",
-    specAliases: ["DIN74L", "57412", "57820", "GB57820"],
-    summary: "로케트 GB57820 — DIN H6 / DIN74L 계열 표기입니다.",
-  }),
-  catalogProduct("rocket-gb56219", "GB56219", "GB56219", "DIN", {
-    imageKey: "GB56219",
-    specAliases: ["DIN62L", "56219", "GB56219"],
-    summary: "로케트 GB56219 — DIN62L / DIN60L 계열 표기입니다.",
-  }),
-  catalogProduct("rocket-gb90r", "GB90R", "GB90R", "일반형", {
-    imageKey: "GB90R",
-    specAliases: ["90R", "GB90R"],
-    summary: "로케트 GB90R — 일반형 R타입 규격입니다.",
-  }),
-  catalogProduct("rocket-gb100r", "GB100R", "GB100R", "일반형", {
-    imageKey: "GB100R",
-    specAliases: ["100R", "GB100R"],
-    summary: "로케트 GB100R — 일반형 R타입 규격입니다.",
-  }),
-];
+function specTypeToHomeTag(type: BatterySpecEntry["type"]): HomeProductTypeTag {
+  if (type === "AGM") return "AGM";
+  if (type === "DIN") return "DIN";
+  return "일반형";
+}
 
-export const rocketLineup: HomeCatalogProduct[] = ROCKET_LINEUP_CANDIDATES.filter(
-  (p) =>
-    hasStrictBrandProductImage(p.imageKey, "rocket") &&
-    !p.displayName.startsWith("CMF"),
-);
+function findPrimarySpecForFolder(
+  brandKey: BatteryBrandKey,
+  folder: string,
+): { canonical: string; spec: BatterySpecEntry } | undefined {
+  let hit: { canonical: string; spec: BatterySpecEntry } | undefined;
+  for (const [canonical, spec] of Object.entries(batteryAliasMap)) {
+    if (spec.imageFolderByBrand[brandKey] !== folder) continue;
+    if (canonical === folder) return { canonical, spec };
+    if (!hit) hit = { canonical, spec };
+  }
+  return hit;
+}
 
-/** 쏠라이트 — 이미지 asset 우선 순서 (public/assets/batteries CMF* 기준) */
-const SOLITE_LINEUP_WITH_IMAGE: HomeCatalogProduct[] = [
-  catalogProduct("solite-cmf57412", "CMF57412", "CMF57412", "DIN", {
-    imageKey: "CMF57412",
-    specAliases: ["57412", "CMF57412", "DIN74L", "DIN78L", "H6"],
-    summary: "쏠라이트 CMF57412 — DIN H6 / DIN74L 계열 표기입니다.",
-  }),
-  catalogProduct("solite-cmf54459", "CMF54459", "CMF54459", "DIN", {
-    imageKey: "CMF54459",
-    specAliases: ["54459", "CMF54459", "DIN50L", "DIN44L"],
-    summary: "쏠라이트 CMF54459 — 소형 DIN 계열에서 함께 확인되는 표기입니다.",
-  }),
-  catalogProduct("solite-cmf80l", "CMF80L", "CMF80L", "일반형", {
-    imageKey: "CMF80L",
-    specAliases: ["CMF80L", "80L"],
-    summary: "쏠라이트 CMF80L — 일반 충전계통 중대형 L타입 규격입니다.",
-  }),
-  catalogProduct("solite-cmf56219", "CMF56219", "CMF56219", "DIN", {
-    imageKey: "CMF56219",
-    specAliases: ["56219", "CMF56219", "DIN62L", "DIN60L"],
-    summary: "쏠라이트 CMF56219 — DIN62L / DIN60L 계열 표기입니다.",
-  }),
-  catalogProduct("solite-cmf60l", "CMF60L", "CMF60L", "일반형", {
-    imageKey: "CMF60L",
-    specAliases: ["CMF60L", "60L"],
-    summary: "쏠라이트 CMF60L — 일반형 L타입 규격입니다.",
-  }),
-  catalogProduct("solite-cmf40l", "CMF40L", "CMF40L", "일반형", {
-    imageKey: "CMF40L",
-    specAliases: ["CMF40L", "40L"],
-    summary: "쏠라이트 CMF40L — 소형 일반형 L타입 규격입니다.",
-  }),
-  catalogProduct("solite-cmf90l", "CMF90L", "CMF90L", "일반형", {
-    imageKey: "CMF90L",
-    specAliases: ["CMF90L", "90L"],
-    summary: "쏠라이트 CMF90L — 일반형 L타입 규격입니다.",
-  }),
-  catalogProduct("solite-cmf90r", "CMF90R", "CMF90R", "일반형", {
-    imageKey: "CMF90R",
-    specAliases: ["CMF90R", "90R"],
-    summary: "쏠라이트 CMF90R — 일반형 R타입 규격입니다.",
-  }),
-  catalogProduct("solite-cmf100l", "CMF100L", "CMF100L", "일반형", {
-    imageKey: "CMF100L",
-    specAliases: ["CMF100L", "100L"],
-    summary: "쏠라이트 CMF100L — 일반형 L타입 규격입니다.",
-  }),
-  catalogProduct("solite-cmf100r", "CMF100R", "CMF100R", "일반형", {
-    imageKey: "CMF100R",
-    specAliases: ["CMF100R", "100R"],
-    summary: "쏠라이트 CMF100R — 일반형 R타입 규격입니다.",
-  }),
-  catalogProduct("solite-cmf80r", "CMF80R", "CMF80R", "일반형", {
-    imageKey: "CMF80R",
-    specAliases: ["CMF80R", "80R"],
-    summary: "쏠라이트 CMF80R — 일반형 R타입 규격입니다.",
-  }),
-];
+function sortFolders(folders: string[], order: readonly string[]): string[] {
+  return [...folders].sort((a, b) => {
+    const ia = order.indexOf(a);
+    const ib = order.indexOf(b);
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
+}
 
-/** 쏠라이트 전용 이미지 없음 — placeholder만 (로케트 fallback 금지) */
+function rocketDisplayName(folder: string): string | null {
+  if (folder.startsWith("CMF")) return null;
+  if (folder.startsWith("GB") || folder.startsWith("AGM")) return folder;
+  return folder;
+}
+
+function soliteDisplayName(folder: string): string | null {
+  if (folder.startsWith("GB")) return null;
+  if (folder.startsWith("CMF")) return folder;
+  return folder;
+}
+
+function buildLineupFromAssetFolders(
+  brand: HomeCatalogBrandId,
+  folders: string[],
+  order: readonly string[],
+): HomeCatalogProduct[] {
+  const brandKey = brand === "rocket" ? "rocket" : "solite";
+  const nameFor =
+    brand === "rocket" ? rocketDisplayName : soliteDisplayName;
+  const summaryMap = brand === "rocket" ? ROCKET_SUMMARY : SOLITE_SUMMARY;
+  const brandLabel = brand === "rocket" ? "로케트" : "쏠라이트";
+
+  return sortFolders(folders, order)
+    .map((folder) => {
+      const displayName = nameFor(folder);
+      if (!displayName) return null;
+      const meta = findPrimarySpecForFolder(brandKey, folder);
+      const searchCode = meta?.canonical ?? folder;
+      const typeTag = meta ? specTypeToHomeTag(meta.spec.type) : "일반형";
+      return catalogProduct(
+        `${brand}-${folder.toLowerCase()}`,
+        displayName,
+        searchCode,
+        typeTag,
+        {
+          imageKey: folder,
+          specAliases: meta?.spec.aliases,
+          summary:
+            summaryMap[folder] ??
+            `${brandLabel} ${displayName} — 차종·라벨과 함께 확인하세요.`,
+        },
+      );
+    })
+    .filter((p): p is HomeCatalogProduct => p !== null);
+}
+
 const SOLITE_LINEUP_PLACEHOLDER: HomeCatalogProduct[] = [
   catalogProduct("solite-eagm60", "eAGM60", "eAGM60", "EV 보조 12V", {
     imageKey: "eAGM60",
@@ -206,11 +225,17 @@ const SOLITE_LINEUP_PLACEHOLDER: HomeCatalogProduct[] = [
   }),
 ];
 
+export const rocketLineup: HomeCatalogProduct[] = buildLineupFromAssetFolders(
+  "rocket",
+  getStrictHomeLineupFolders("rocket"),
+  ROCKET_FOLDER_ORDER,
+);
+
 export const soliteLineup: HomeCatalogProduct[] = [
-  ...SOLITE_LINEUP_WITH_IMAGE.filter(
-    (p) =>
-      hasStrictBrandProductImage(p.imageKey, "solite") &&
-      !p.displayName.startsWith("GB"),
+  ...buildLineupFromAssetFolders(
+    "solite",
+    getStrictHomeLineupFolders("solite"),
+    SOLITE_FOLDER_ORDER,
   ),
   ...SOLITE_LINEUP_PLACEHOLDER,
 ];

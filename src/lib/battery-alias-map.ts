@@ -644,19 +644,16 @@ export function resolveBatteryImageSet(
 
 export const ROCKET_BATTERY_FOLDERS = Object.keys(FOLDER_IMAGE_FILES).filter((f) => !f.startsWith("CMF"));
 
-export const SOLITE_BATTERY_FOLDERS = [
-  "CMF40L",
-  "CMF60L",
-  "CMF80L",
-  "CMF80R",
-  "CMF90L",
-  "CMF90R",
-  "CMF100L",
-  "CMF100R",
-  "CMF54459",
-  "CMF56219",
-  "CMF57412",
-] as const;
+export const SOLITE_BATTERY_FOLDERS = Object.keys(FOLDER_IMAGE_FILES).filter((f) =>
+  f.startsWith("CMF"),
+);
+
+/** 메인 라인업 — strict 브랜드 이미지가 있는 asset 폴더만 */
+export function getStrictHomeLineupFolders(brandKey: BatteryBrandKey): string[] {
+  const candidates =
+    brandKey === "rocket" ? ROCKET_BATTERY_FOLDERS : SOLITE_BATTERY_FOLDERS;
+  return candidates.filter((folder) => hasStrictBrandProductImage(folder, brandKey));
+}
 
 export const EMPTY_BATTERY_IMAGE_SET: BatteryImageSet = { main: "" };
 

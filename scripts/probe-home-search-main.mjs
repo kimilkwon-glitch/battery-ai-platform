@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-BRAND-DISPLAY-V1";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-LINEUP-EXPAND-V1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;

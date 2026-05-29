@@ -505,6 +505,16 @@
   }
 }
 
+/* 메인 라인업 — 규격명 타이포 (로고 폰트·tabular-nums 분리) */
+.home-spec-card .home-spec-code-title {
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-variant-numeric: normal;
+  font-feature-settings: normal;
+}
+
 /* 제품 카드 — 동일 행 높이 */
 .home-spec-card-image {
   height: 11.5rem;
