@@ -13,12 +13,12 @@ export function BrandLogoLink({ className }: { className?: string }) {
     <Link
       href="/"
       className={clsx(
-        "portal-brand-lockup group inline-flex max-w-[min(100%,14rem)] shrink-0 items-center gap-2 rounded-lg outline-none ring-blue-200 transition hover:opacity-95 focus-visible:ring-2 sm:max-w-none sm:gap-2.5 lg:gap-3",
+        "portal-brand-lockup group inline-flex max-w-[min(100%,16rem)] shrink-0 items-center gap-2.5 rounded-lg outline-none ring-blue-200 transition hover:opacity-95 focus-visible:ring-2 sm:max-w-none sm:gap-3 lg:gap-3.5",
         className,
       )}
       aria-label="배터리매니저 홈"
     >
-      <span className="relative block h-10 w-[2.75rem] shrink-0 sm:h-11 sm:w-[3rem] lg:h-12 lg:w-[3.25rem]">
+      <span className="relative block h-11 w-[3rem] shrink-0 sm:h-12 sm:w-[3.35rem] lg:h-14 lg:w-[3.75rem]">
         {!imgError ? (
           <Image
             src={BRAND_LOGO_SRC}
@@ -40,10 +40,10 @@ export function BrandLogoLink({ className }: { className?: string }) {
         )}
       </span>
       <span className="flex min-w-0 flex-col items-start leading-none">
-        <span className="portal-brand-lockup__title truncate text-[15px] font-extrabold tracking-tight text-[var(--bm-navy)] sm:text-base lg:text-[17px]">
+        <span className="portal-brand-lockup__title truncate text-base font-extrabold tracking-tight text-[var(--bm-navy)] sm:text-lg lg:text-xl">
           배터리매니저
         </span>
-        <span className="portal-brand-lockup__sub mt-0.5 hidden text-[8px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:block lg:text-[9px]">
+        <span className="portal-brand-lockup__sub mt-0.5 hidden text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400 sm:block lg:text-[10px]">
           Battery Manager
         </span>
       </span>

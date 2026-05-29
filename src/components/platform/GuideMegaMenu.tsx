@@ -24,7 +24,7 @@ function GuideNavPill({
       type="button"
       onClick={onClick}
       className={clsx(
-        "portal-nav-link inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-full px-2.5 py-2 text-[12px] font-extrabold lg:px-3 lg:text-[13px] xl:px-3.5 xl:py-2.5 xl:text-sm",
+        "portal-nav-link inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-full",
         active && "portal-nav-link--active portal-nav-link--guide-active",
       )}
       aria-expanded={open}
@@ -190,7 +190,7 @@ export function GuideMobileAccordion() {
         type="button"
         onClick={() => setExpanded((v) => !v)}
         className={clsx(
-          "portal-nav-link inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-full px-2.5 py-2 text-[12px] font-extrabold",
+          "portal-nav-link inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-full",
           active && "portal-nav-link--active portal-nav-link--guide-active",
         )}
         aria-expanded={expanded}

@@ -10,11 +10,11 @@ import { HERO_CAROUSEL_INTERVAL_MS, HERO_SLIDES, type HeroSlide } from "@/lib/he
 function HeroPlaceholderSlide({ slide }: { slide: Extract<HeroSlide, { type: "placeholder" }> }) {
   return (
     <div className="home-hero-slide home-hero-slide--placeholder relative flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-slate-800 via-[#1e3a5f] to-slate-900 px-6 text-center">
-      <span className="mb-3 flex size-12 items-center justify-center rounded-2xl bg-white/10 text-white/80 ring-1 ring-white/15">
-        <ImageIcon className="size-6" aria-hidden />
+      <span className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-white/10 text-white/80 ring-1 ring-white/15 sm:size-16">
+        <ImageIcon className="size-7 sm:size-8" aria-hidden />
       </span>
-      <p className="text-sm font-black text-white sm:text-base">{slide.title}</p>
-      <p className="mt-1.5 max-w-sm text-xs font-medium text-slate-300 sm:text-sm">{slide.subtitle}</p>
+      <p className="text-base font-black text-white sm:text-lg">{slide.title}</p>
+      <p className="mt-2 max-w-md text-sm font-medium text-slate-300 sm:text-base">{slide.subtitle}</p>
     </div>
   );
 }
@@ -37,7 +37,7 @@ function HeroImageSlide({
           alt=""
           fill
           className="hidden object-cover object-center sm:block"
-          sizes="(max-width: 640px) 0px, 1100px"
+          sizes="(max-width: 640px) 0px, 1240px"
           priority={isActive}
           onError={() => setDesktopError(true)}
         />
@@ -70,9 +70,9 @@ function HeroImageSlide({
           배너 이미지를 불러올 수 없습니다
         </div>
       )}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-4 pt-10 text-left sm:px-6 sm:pb-5">
-        <p className="text-sm font-black text-white drop-shadow-sm sm:text-base lg:text-lg">{slide.title}</p>
-        <p className="mt-0.5 text-xs font-semibold text-slate-100/95 sm:text-sm">{slide.subtitle}</p>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-5 pb-5 pt-12 text-left sm:px-7 sm:pb-6">
+        <p className="text-base font-black text-white drop-shadow-sm sm:text-lg lg:text-xl">{slide.title}</p>
+        <p className="mt-1 text-sm font-semibold text-slate-100/95 sm:text-base">{slide.subtitle}</p>
       </div>
     </div>
   );
@@ -115,16 +115,16 @@ export function HomeMainBanner() {
 
   return (
     <section
-      className="home-hero-carousel mx-auto w-full max-w-3xl sm:max-w-4xl lg:max-w-[1100px]"
+      className="home-hero-carousel w-full"
       aria-label="메인 프로모션"
       data-home-section="main-banner"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="home-hero-carousel__frame relative overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_16px_48px_rgba(15,23,42,0.12)]">
+      <div className="home-hero-carousel__frame relative overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
         <div
           className={clsx(
-            "home-hero-carousel__viewport relative h-[180px] transition-opacity duration-[400ms] ease-out sm:h-[220px] lg:h-[260px] xl:h-[280px]",
+            "home-hero-carousel__viewport relative h-[220px] transition-opacity duration-[400ms] ease-out sm:h-[280px] md:h-[320px] lg:h-[340px] xl:h-[360px]",
             fade ? "opacity-100" : "opacity-0",
           )}
         >
@@ -140,7 +140,7 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => go(-1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/35 text-white backdrop-blur-sm transition hover:bg-slate-900/55 sm:left-3"
+              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/40 text-white backdrop-blur-sm transition hover:bg-slate-900/60 sm:left-4 sm:size-11"
               aria-label="이전 배너"
             >
               <ChevronLeft className="size-4" />
@@ -148,12 +148,12 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => go(1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/35 text-white backdrop-blur-sm transition hover:bg-slate-900/55 sm:right-3"
+              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/40 text-white backdrop-blur-sm transition hover:bg-slate-900/60 sm:right-4 sm:size-11"
               aria-label="다음 배너"
             >
               <ChevronRight className="size-4" />
             </button>
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+            <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 sm:bottom-5">
               <div className="flex gap-1.5 rounded-full bg-slate-900/30 px-2 py-1 backdrop-blur-sm">
                 {slides.map((s, i) => (
                   <button

@@ -43,7 +43,7 @@ function isNavActive(pathname: string, label: string, href: string): boolean {
 function NavPill({ label, href, active }: { label: string; href: string; active: boolean }) {
   return (
     <Link
-      className={`portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-2 text-[12px] font-extrabold lg:px-3 lg:text-[13px] xl:px-3.5 xl:py-2.5 xl:text-sm ${
+      className={`portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full ${
         active ? "portal-nav-link--active" : ""
       }`}
       href={href}
@@ -104,7 +104,7 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
 
   return (
     <nav className="relative border-t border-slate-100 bg-white" aria-label="모바일 메뉴">
-      <div className="portal-header-mobile-nav mx-auto flex max-w-[1440px] flex-nowrap items-center justify-start gap-2 overflow-x-auto px-3 py-2.5">
+      <div className="portal-header-mobile-nav mx-auto flex max-w-[1440px] flex-nowrap items-center justify-start gap-2.5 overflow-x-auto px-3 py-3">
         {portalNavPrimary.slice(0, 2).map(([label, href]) => (
           <NavPill
             active={isNavActive(pathname, label, href)}

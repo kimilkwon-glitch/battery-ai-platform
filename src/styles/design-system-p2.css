@@ -448,12 +448,28 @@
 }
 
 /* Home — 검색 중심 메인 */
+.home-hero-breakout {
+  position: relative;
+  left: 50%;
+  width: min(calc(100vw - 1.5rem), 78rem);
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 639px) {
+  .home-hero-breakout {
+    left: auto;
+    width: 100%;
+    transform: none;
+  }
+}
+
 .home-hero-carousel__frame {
   transition: box-shadow var(--motion-normal) ease;
 }
 
 .home-hero-carousel__frame:hover {
-  box-shadow: 0 18px 52px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.16);
 }
 
 .portal-brand-lockup__title {
@@ -697,12 +713,31 @@
 
 .portal-nav-link {
   position: relative;
-  color: rgb(51 65 85);
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgb(30 41 59);
   transition:
     color 220ms ease,
     background-color 220ms ease,
     box-shadow 220ms ease,
     transform 220ms ease;
+}
+
+@media (min-width: 1024px) {
+  .portal-nav-link {
+    padding: 0.5625rem 0.875rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+@media (min-width: 1280px) {
+  .portal-nav-link {
+    padding: 0.625rem 1rem;
+    font-size: 1.0625rem;
+  }
 }
 
 .portal-nav-link__text {
@@ -716,9 +751,9 @@
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 0.35rem;
+  bottom: 0.3rem;
   width: 0;
-  height: 2px;
+  height: 2.5px;
   border-radius: 999px;
   background: linear-gradient(90deg, rgb(59 130 246), rgb(37 99 235));
   opacity: 0;
@@ -730,9 +765,9 @@
 
 .portal-nav-link:hover,
 .portal-nav-link:focus-visible {
-  color: rgb(29 78 216);
-  background: rgba(239, 246, 255, 0.95);
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+  color: rgb(37 99 235);
+  background: rgba(239, 246, 255, 0.98);
+  box-shadow: 0 2px 14px rgba(37, 99, 235, 0.12);
 }
 
 .portal-nav-link:hover .portal-nav-link__text,
@@ -742,18 +777,18 @@
 
 .portal-nav-link:hover::after,
 .portal-nav-link:focus-visible::after {
-  width: 55%;
+  width: 62%;
   opacity: 1;
 }
 
 .portal-nav-link--active {
-  color: rgb(30 64 175);
-  background: rgba(219, 234, 254, 0.85);
-  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+  color: rgb(29 78 216);
+  background: rgba(219, 234, 254, 0.92);
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.14);
 }
 
 .portal-nav-link--active::after {
-  width: 50%;
+  width: 58%;
   opacity: 1;
 }
 
