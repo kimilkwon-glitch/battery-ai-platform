@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
+import { BenefitCardMedia } from "@/components/home/BenefitCardMedia";
 import {
   HOME_BENEFIT_CARDS,
   HOME_BENEFITS_SUBTITLE,
@@ -10,82 +11,124 @@ import {
   type HomeBenefitCard,
 } from "@/lib/home-benefits-data";
 
-function BenefitCard({ card }: { card: HomeBenefitCard }) {
+function useVisibleCount() {
+  const [count, setCount] = useState(1);
+
+  useEffect(() => {
+    const lg = window.matchMedia("(min-width: 1024px)");
+    const sm = window.matchMedia("(min-width: 640px)");
+    const update = () => {
+      if (lg.matches) setCount(3);
+      else if (sm.matches) setCount(2);
+      else setCount(1);
+    };
+    update();
+    lg.addEventListener("change", update);
+    sm.addEventListener("change", update);
+    return () => {
+      lg.removeEventListener("change", update);
+      sm.removeEventListener("change", update);
+    };
+  }, []);
+
+  return count;
+}
+
+function BenefitCard({ card, emphasis }: { card: HomeBenefitCard; emphasis?: boolean }) {
   const active = card.status === "active";
+
   return (
     <article
       className={clsx(
-        "home-benefit-card min-w-[calc(100%-0.5rem)] shrink-0 snap-center rounded-2xl border p-4 transition duration-[220ms] motion-safe:hover:-translate-y-0.5 sm:min-w-[calc(50%-0.375rem)] lg:min-w-[calc(33.333%-0.5rem)]",
+        "home-benefit-card flex h-full min-h-[220px] flex-col overflow-hidden rounded-2xl border bg-white transition-[transform,box-shadow,opacity] duration-[280ms] ease-out motion-safe:hover:-translate-y-1",
+        emphasis ? "opacity-100 shadow-md" : "opacity-[0.92] shadow-sm",
         active
-          ? "border-blue-100 bg-gradient-to-br from-white to-blue-50/40 shadow-sm hover:shadow-md"
-          : "border-dashed border-slate-200 bg-slate-50/60",
+          ? "border-blue-100/90 ring-1 ring-blue-50 hover:shadow-lg"
+          : "border-slate-200/90 bg-slate-50/40 opacity-80 hover:opacity-90",
       )}
     >
-      <p className="text-sm font-black text-slate-900">{card.title}</p>
-      {!active ? (
-        <span className="mt-1 inline-block text-[9px] font-black uppercase text-slate-400">
-          준비중
+      <BenefitCardMedia card={card} />
+
+      <div className="flex flex-1 flex-col p-4">
+        <span
+          className={clsx(
+            "inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide",
+            active
+              ? "bg-blue-600/10 text-blue-800 ring-1 ring-blue-100"
+              : "bg-slate-200/60 text-slate-500",
+          )}
+        >
+          {card.label}
         </span>
-      ) : null}
-      <p className="mt-2 text-xs font-semibold leading-relaxed text-slate-600">{card.description}</p>
-      {card.footnote ? (
-        <p className="mt-2 text-[10px] font-medium text-slate-400">{card.footnote}</p>
-      ) : null}
+        <h3 className="mt-2 text-base font-black text-slate-900">{card.title}</h3>
+        <p className="mt-1.5 text-xs font-semibold leading-relaxed text-slate-600">
+          {card.description}
+        </p>
+        {card.note ? (
+          <p className="mt-auto pt-3 text-[10px] font-medium leading-snug text-slate-400">
+            {card.note}
+          </p>
+        ) : (
+          <p className="mt-auto pt-3 text-[10px] text-transparent">.</p>
+        )}
+      </div>
     </article>
   );
 }
 
 export function HomeBenefitsCarousel() {
   const cards = HOME_BENEFIT_CARDS;
-  const trackRef = useRef<HTMLDivElement>(null);
+  const visibleCount = useVisibleCount();
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [slideStep, setSlideStep] = useState(0);
 
-  const scrollToIndex = useCallback((next: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const child = track.children[next] as HTMLElement | undefined;
-    if (!child) return;
-    const left = child.offsetLeft - track.offsetLeft;
-    track.scrollTo({ left, behavior: "smooth" });
-    setIndex(next);
-  }, []);
+  const maxIndex = Math.max(0, cards.length - visibleCount);
+
+  useEffect(() => {
+    setIndex((i) => Math.min(i, maxIndex));
+  }, [maxIndex]);
+
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      const gap = 12;
+      const w = el.clientWidth;
+      const step = (w - gap * (visibleCount - 1)) / visibleCount + gap;
+      setSlideStep(step);
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [visibleCount]);
+
+  const goTo = useCallback(
+    (next: number) => {
+      setIndex(Math.max(0, Math.min(maxIndex, next)));
+    },
+    [maxIndex],
+  );
 
   const go = useCallback(
     (delta: number) => {
-      const next = (index + delta + cards.length) % cards.length;
-      scrollToIndex(next);
+      if (maxIndex === 0) return;
+      goTo(index + delta);
     },
-    [index, cards.length, scrollToIndex],
+    [index, maxIndex, goTo],
   );
 
   useEffect(() => {
-    if (paused || cards.length <= 1) return;
-    const t = window.setInterval(() => go(1), 6000);
+    if (paused || cards.length <= visibleCount) return;
+    const t = window.setInterval(() => {
+      setIndex((i) => (i >= maxIndex ? 0 : i + 1));
+    }, 6500);
     return () => window.clearInterval(t);
-  }, [paused, go, cards.length]);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const onScroll = () => {
-      const children = Array.from(track.children) as HTMLElement[];
-      const center = track.scrollLeft + track.clientWidth / 2;
-      let best = 0;
-      let bestDist = Infinity;
-      children.forEach((el, i) => {
-        const mid = el.offsetLeft + el.offsetWidth / 2;
-        const d = Math.abs(mid - center);
-        if (d < bestDist) {
-          bestDist = d;
-          best = i;
-        }
-      });
-      setIndex(best);
-    };
-    track.addEventListener("scroll", onScroll, { passive: true });
-    return () => track.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [paused, cards.length, visibleCount, maxIndex]);
 
   return (
     <section
@@ -102,22 +145,37 @@ export function HomeBenefitsCarousel() {
         <p className="mt-1 text-[11px] font-medium text-slate-500">{HOME_BENEFITS_SUBTITLE}</p>
       </div>
 
-      <div className="relative mt-4">
-        <div
-          ref={trackRef}
-          className="home-benefits-track flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {cards.map((card) => (
-            <BenefitCard key={card.id} card={card} />
-          ))}
+      <div className="home-benefits-carousel-shell relative mx-auto mt-4 max-w-[1100px] px-10 sm:px-11">
+        <div ref={viewportRef} className="home-benefits-viewport overflow-hidden rounded-2xl">
+          <div
+            className="home-benefits-track flex gap-3 transition-[transform,opacity] duration-[320ms] ease-out"
+            style={{
+              transform: slideStep ? `translateX(-${index * slideStep}px)` : undefined,
+            }}
+          >
+            {cards.map((card, i) => (
+              <div
+                key={card.id}
+                className="home-benefit-slide shrink-0"
+                style={{
+                  width: slideStep
+                    ? slideStep - 12
+                    : `calc((100% - ${(visibleCount - 1) * 12}px) / ${visibleCount})`,
+                }}
+              >
+                <BenefitCard card={card} emphasis={i >= index && i < index + visibleCount} />
+              </div>
+            ))}
+          </div>
         </div>
 
-        {cards.length > 1 ? (
+        {cards.length > visibleCount ? (
           <>
             <button
               type="button"
               onClick={() => go(-1)}
-              className="absolute -left-1 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/95 p-2 shadow-md hover:bg-white sm:flex"
+              disabled={index === 0}
+              className="home-benefits-nav home-benefits-nav--prev absolute left-0 top-[calc(50%-1.25rem)] z-10 flex size-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-md transition hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-35"
               aria-label="이전 혜택"
             >
               <ChevronLeft className="size-4" />
@@ -125,26 +183,30 @@ export function HomeBenefitsCarousel() {
             <button
               type="button"
               onClick={() => go(1)}
-              className="absolute -right-1 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-slate-200 bg-white/95 p-2 shadow-md hover:bg-white sm:flex"
+              disabled={index >= maxIndex}
+              className="home-benefits-nav home-benefits-nav--next absolute right-0 top-[calc(50%-1.25rem)] z-10 flex size-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-md transition hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-35"
               aria-label="다음 혜택"
             >
               <ChevronRight className="size-4" />
             </button>
-            <div className="mt-3 flex justify-center gap-1.5">
-              {cards.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => scrollToIndex(i)}
-                  className={clsx(
-                    "size-2 rounded-full transition",
-                    i === index ? "bg-blue-600" : "bg-slate-300 hover:bg-slate-400",
-                  )}
-                  aria-label={`혜택 ${i + 1}`}
-                />
-              ))}
-            </div>
           </>
+        ) : null}
+
+        {cards.length > 1 ? (
+          <div className="mt-4 flex justify-center gap-1.5">
+            {Array.from({ length: maxIndex + 1 }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                className={clsx(
+                  "h-2 rounded-full transition-all duration-300",
+                  i === index ? "w-5 bg-blue-600" : "w-2 bg-slate-300 hover:bg-slate-400",
+                )}
+                aria-label={`혜택 ${i + 1}`}
+              />
+            ))}
+          </div>
         ) : null}
       </div>
     </section>

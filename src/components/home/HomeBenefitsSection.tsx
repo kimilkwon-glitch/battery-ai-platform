@@ -39,8 +39,8 @@ export function HomeBenefitsSection() {
               <p className="mt-2 text-xs font-semibold leading-relaxed text-slate-600">
                 {card.description}
               </p>
-              {card.footnote ? (
-                <p className="mt-2 text-[10px] font-medium text-slate-400">{card.footnote}</p>
+              {card.note ? (
+                <p className="mt-2 text-[10px] font-medium text-slate-400">{card.note}</p>
               ) : null}
             </article>
           );
