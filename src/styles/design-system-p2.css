@@ -765,3 +765,22 @@
     transform: none;
   }
 }
+
+.guide-mega-menu .portal-nav-link {
+  cursor: default;
+}
+
+.guide-mega-panel {
+  animation: guide-mega-in 0.18s ease-out;
+}
+
+@keyframes guide-mega-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

@@ -73,7 +73,7 @@ export function StoreHubCompactCards({ highlightId }: { highlightId: BusanStoreI
                 </a>
               </div>
 
-              <StoreOfficialChannelLinks className="mt-3" />
+              <StoreOfficialChannelLinks storeId={store.id} className="mt-3" />
             </div>
           </article>
         );

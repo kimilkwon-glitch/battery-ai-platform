@@ -7,7 +7,7 @@ import {
 } from "@/lib/battery-alias-map";
 import { getSearchHref } from "@/lib/battery-search";
 import { batteryDetailHref } from "@/lib/home-upgrade-v2-data";
-import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
+import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
 
 export type HomeCatalogBrandId = "rocket" | "solite";
@@ -271,11 +271,18 @@ export const HOME_SPEC_CARD_ACTIONS = {
   detail: (code: string) => batteryDetailHref(code),
 } as const;
 
-export function homeSpecCardCtas(code: string) {
+/** 카드 상단 보조 CTA 2개 — 매장·출장 / 택배주문 */
+export function homeSpecCardSecondaryCtas(code: string) {
   return [
-    { key: "detail", label: "해당 규격 보기", href: HOME_SPEC_CARD_ACTIONS.detail(code) },
-    { key: "photo", label: "사진확인", href: HOME_SPEC_CARD_ACTIONS.photo },
-    { key: "store", label: "매장방문", href: HOME_SPEC_CARD_ACTIONS.store },
-    { key: "outbound", label: "출장교체", href: HOME_SPEC_CARD_ACTIONS.outbound },
+    { key: "store", label: "매장·출장 안내", href: HUB_STORE_DETAIL },
+    {
+      key: "delivery",
+      label: "택배주문",
+      href: `${HOME_SPEC_CARD_ACTIONS.detail(code)}#battery-order`,
+    },
   ] as const;
+}
+
+export function homeSpecCardDetailHref(code: string) {
+  return HOME_SPEC_CARD_ACTIONS.detail(code);
 }

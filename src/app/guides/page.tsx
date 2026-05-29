@@ -1,21 +1,37 @@
-import { Suspense } from "react";
-import { ContentAreaFallback } from "@/components/common/ContentAreaFallback";
+import Link from "next/link";
 import { PageShell } from "@/components/common/PageShell";
-import { GuidesHubClient } from "@/components/platform/GuidesHubClient";
+import { GUIDE_HUB_ITEMS } from "@/lib/guide-hub-routes";
+import { bm } from "@/lib/design-tokens";
 
-export default async function GuidesPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
-  const { category } = await searchParams;
-
+/** 가이드 허브 — 상단 메가메뉴와 동일한 4개 카테고리만 */
+export default function GuidesPage() {
   return (
     <PageShell
       pageLabel="배터리 가이드"
       title="배터리 가이드"
-      description="자주 묻는 질문, 오주문 방지, AGM/DIN 차이, L/R 단자, EV 보조 12V, 택배주문·반납 안내를 한곳에서 확인하세요."
-      searchPlaceholder="쏘렌토 MQ4, 포터2, AGM80R 가이드 검색"
+      description="점검·증상·불량·AS 안내를 카테고리별로 확인하세요."
+      searchPlaceholder="차량명, 연식, 배터리 규격 검색"
     >
-      <Suspense fallback={<ContentAreaFallback lines={4} />}>
-        <GuidesHubClient initialCategory={category} />
-      </Suspense>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {GUIDE_HUB_ITEMS.map((item) => {
+          const Icon = item.Icon;
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={`${bm.card} ${bm.cardPad} flex gap-4 transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md`}
+            >
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                <Icon className="size-5" aria-hidden />
+              </span>
+              <span>
+                <span className="block text-sm font-black text-slate-900">{item.label}</span>
+                <span className="mt-1 block text-xs font-medium text-slate-500">{item.description}</span>
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </PageShell>
   );
 }

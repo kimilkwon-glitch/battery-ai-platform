@@ -3,7 +3,8 @@ import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import type { HomeCatalogBrandId, HomeCatalogProduct } from "@/lib/home-main-catalog-data";
 import {
   HOME_CATALOG_BRAND_KEY,
-  homeSpecCardCtas,
+  homeSpecCardDetailHref,
+  homeSpecCardSecondaryCtas,
 } from "@/lib/home-main-catalog-data";
 
 type Props = {
@@ -14,6 +15,8 @@ type Props = {
 export function HomeSpecExploreCard({ product, brand }: Props) {
   const { displayName, searchCode, imageKey, typeTag, summary } = product;
   const preferBrand = HOME_CATALOG_BRAND_KEY[brand];
+  const secondaryCtas = homeSpecCardSecondaryCtas(searchCode);
+  const detailHref = homeSpecCardDetailHref(searchCode);
 
   return (
     <article
@@ -47,7 +50,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
         </p>
 
         <div className="home-spec-card-actions mt-5 grid grid-cols-2 gap-2">
-          {homeSpecCardCtas(searchCode).map((cta) => (
+          {secondaryCtas.map((cta) => (
             <Link
               key={cta.key}
               className="home-spec-cta-pill inline-flex min-h-[44px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800"
@@ -61,7 +64,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
         <div className="home-spec-card-fit mt-auto border-t border-slate-100 pt-4">
           <Link
             className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[var(--bm-navy)] px-4 text-sm font-bold text-white transition hover:bg-[var(--bm-primary)]"
-            href={homeSpecCardCtas(searchCode)[0].href}
+            href={detailHref}
           >
             해당 규격 보기
           </Link>

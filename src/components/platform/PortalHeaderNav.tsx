@@ -5,21 +5,19 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   HUB_BRANDS,
-  HUB_GUIDE,
   HUB_REVIEWS,
   HUB_STORE_DETAIL,
   HUB_SUPPORT,
 } from "@/lib/customer-hub-routes";
-import { HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
+import { isGuideHubPath } from "@/lib/guide-hub-routes";
+import { GuideDesktopMegaMenu, GuideMobileAccordion } from "@/components/platform/GuideMegaMenu";
 
 /** 상단 카테고리 — 검색은 메인 통합검색만, 더보기 없이 전체 노출 */
 export const portalNavPrimary = [
   ["홈", "/"],
   ["배터리 업그레이드", "/compare"],
-  ["증상진단", HUB_SYMPTOMS],
   ["브랜드 안내", HUB_BRANDS],
   ["매장·출장 안내", HUB_STORE_DETAIL],
-  ["배터리 가이드", HUB_GUIDE],
   ["리뷰", HUB_REVIEWS],
   ["고객센터", HUB_SUPPORT],
 ] as const;
@@ -32,7 +30,6 @@ function isNavActive(pathname: string, label: string, href: string): boolean {
   if (label === "매장·출장 안내") {
     return pathname === "/service-center" || pathname.startsWith("/service-center/");
   }
-  if (label === "배터리 가이드") return pathname === "/guides" || pathname.startsWith("/guides/");
   if (label === "리뷰") return pathname === "/reviews" || pathname.startsWith("/reviews/");
   if (label === "고객센터") {
     return pathname === "/support" || pathname.startsWith("/support/");
@@ -79,7 +76,17 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
         className="portal-header-desktop-nav flex w-full max-w-[calc(100%-4.5rem)] flex-nowrap items-center justify-center gap-1 lg:gap-1.5 xl:gap-2"
         aria-label="주요 메뉴"
       >
-        {portalNavPrimary.map(([label, href]) => (
+        <NavPill active={pathname === "/"} href="/" label="홈" />
+        {portalNavPrimary.slice(1, 3).map(([label, href]) => (
+          <NavPill
+            active={isNavActive(pathname, label, href)}
+            href={href}
+            key={`${label}-${href}`}
+            label={label}
+          />
+        ))}
+        <GuideDesktopMegaMenu />
+        {portalNavPrimary.slice(3).map(([label, href]) => (
           <NavPill
             active={isNavActive(pathname, label, href)}
             href={href}
@@ -92,9 +99,19 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
   }
 
   return (
-    <nav className="border-t border-slate-100 bg-white" aria-label="모바일 메뉴">
+    <nav className="relative border-t border-slate-100 bg-white" aria-label="모바일 메뉴">
       <div className="portal-header-mobile-nav mx-auto flex max-w-[1440px] flex-nowrap items-center justify-start gap-2 overflow-x-auto px-3 py-2.5">
-        {portalNavPrimary.map(([label, href]) => (
+        <NavPill active={pathname === "/"} href="/" label="홈" />
+        {portalNavPrimary.slice(1, 3).map(([label, href]) => (
+          <NavPill
+            active={isNavActive(pathname, label, href)}
+            href={href}
+            key={`m-${label}-${href}`}
+            label={label}
+          />
+        ))}
+        <GuideMobileAccordion />
+        {portalNavPrimary.slice(3).map(([label, href]) => (
           <NavPill
             active={isNavActive(pathname, label, href)}
             href={href}

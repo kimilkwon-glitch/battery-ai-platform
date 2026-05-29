@@ -14,10 +14,11 @@ import {
   OFFICIAL_CHANNELS,
   OFFICIAL_CHANNELS_SUBTITLE,
   OFFICIAL_CHANNELS_TITLE,
-  channelsForStoreCard,
+  storeChannelLinks,
   type OfficialChannel,
   type OfficialChannelId,
 } from "@/lib/official-channels";
+import type { StoreLinkKey } from "@/lib/external-links";
 
 const CHANNEL_ICONS: Record<OfficialChannelId, LucideIcon> = {
   naver_place: MapPin,
@@ -180,40 +181,37 @@ export function OfficialChannelsStrip({
   );
 }
 
-/** 지점 카드용 — 플레이스·블로그만 */
-export function StoreOfficialChannelLinks({ className = "" }: { className?: string }) {
-  const channels = channelsForStoreCard();
+/** 지점 카드용 — 플레이스·블로그·당근 (공식채널과 분리) */
+export function StoreOfficialChannelLinks({
+  storeId,
+  className = "",
+}: {
+  storeId: StoreLinkKey;
+  className?: string;
+}) {
+  const channels = storeChannelLinks(storeId);
 
   return (
     <div className={clsx("flex flex-wrap gap-2", className)}>
       {channels.map((ch) => {
-        const ready = ch.status === "active" && ch.href;
         const Icon = CHANNEL_ICONS[ch.id];
-        if (ready && ch.href) {
-          return (
-            <a
-              key={ch.id}
-              href={ch.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-black text-slate-700 hover:border-slate-300 hover:shadow-sm"
-            >
-              <Icon className="size-3.5 opacity-70" aria-hidden />
-              {ch.id === "naver_place" ? "네이버 플레이스" : "블로그 사례 보기"}
-            </a>
-          );
-        }
+        const label =
+          ch.id === "naver_place"
+            ? "네이버 플레이스"
+            : ch.id === "naver_blog"
+              ? "블로그"
+              : "당근";
         return (
-          <span
+          <a
             key={ch.id}
-            className="inline-flex items-center gap-1 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold text-slate-400"
-            aria-disabled
-            title="준비중"
+            href={ch.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-black text-slate-700 hover:border-slate-300 hover:shadow-sm"
           >
-            <Icon className="size-3.5 opacity-50" aria-hidden />
-            {ch.id === "naver_place" ? "네이버 플레이스" : "블로그 사례"}
-            <span className="text-[9px] font-black text-slate-400">준비중</span>
-          </span>
+            <Icon className="size-3.5 opacity-70" aria-hidden />
+            {label}
+          </a>
         );
       })}
     </div>
