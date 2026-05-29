@@ -3,45 +3,41 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import {
-  HUB_BATTERY,
-  HUB_QA,
-  HUB_SEARCH,
-  HUB_SHOP,
-  HUB_VEHICLES,
-} from "@/lib/customer-hub-routes";
+import { HUB_VEHICLES } from "@/lib/customer-hub-routes";
 import {
   HUB_ORDER_CHECKLIST,
   HUB_PHOTO_CHECK,
-  HUB_SERVICE,
   HUB_SYMPTOMS,
 } from "@/lib/platform-hub-routes";
 
+/** 메인·전역 상단 — 통합검색 없음, 카테고리형 플랫 메뉴 */
 export const portalNavPrimary = [
-  ["통합검색", HUB_SEARCH],
-  ["차종검색", HUB_VEHICLES],
-  ["규격 비교", "/compare"],
-  ["증상 진단", HUB_SYMPTOMS],
+  ["차량검색", HUB_VEHICLES],
+  ["규격검색", "/search"],
+  ["배터리비교", "/compare"],
+  ["사진확인", HUB_PHOTO_CHECK],
+  ["증상진단", HUB_SYMPTOMS],
+  ["주문 전 확인", HUB_ORDER_CHECKLIST],
+  ["로케트", "/brands?brand=rocket"],
+  ["쏠라이트", "/brands?brand=solite"],
 ] as const;
 
-/** 보조 메뉴 — 플랫폼 허브 */
+/** 보조 — 더보기 */
 export const portalNavMore = [
-  ["오주문 방지", HUB_ORDER_CHECKLIST],
-  ["사진 확인", HUB_PHOTO_CHECK],
-  ["매장·택배", HUB_SERVICE],
-  ["Q&A", HUB_QA],
+  ["매장·택배", "/service"],
+  ["Q&A", "/community"],
   ["가이드", "/guides"],
-  ["배터리 규격", HUB_BATTERY],
-  ["택배·쇼핑", HUB_SHOP],
-  ["브랜드", "/brands"],
+  ["브랜드 전체", "/brands"],
 ] as const;
 
 export const portalNav = [...portalNavPrimary, ...portalNavMore] as unknown as [string, string][];
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
-  const base = href.split("#")[0]!;
-  return pathname === base || pathname.startsWith(`${base}/`);
+  const base = href.split("?")[0]!;
+  if (pathname === base) return true;
+  if (base !== "/" && pathname.startsWith(`${base}/`)) return true;
+  return false;
 }
 
 function NavPill({ label, href, active }: { label: string; href: string; active: boolean }) {
@@ -134,7 +130,6 @@ export function useNavViewport(): "desktop" | "mobile" | null {
   return viewport;
 }
 
-/** 한 번에 desktop 또는 mobile 메뉴만 렌더 */
 export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
   const pathname = usePathname();
 

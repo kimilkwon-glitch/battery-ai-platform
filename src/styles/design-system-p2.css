@@ -446,3 +446,23 @@
     transform: none;
   }
 }
+
+/* Home — 검색 중심 메인 */
+.home-main-logo {
+  font-family: var(--font-body);
+  font-size: clamp(2.25rem, 8vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  color: var(--bm-navy);
+}
+
+.home-main-search-shell form {
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .home-main-search-shell form {
+    grid-template-columns: 1fr auto;
+  }
+}

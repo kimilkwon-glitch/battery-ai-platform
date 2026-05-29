@@ -73,7 +73,7 @@ export const HOME_POPULAR_BATTERIES = [
   },
   {
     code: "AGM95L",
-    summary: "대형 AGM이며 100R과 단순 대체가 어렵습니다.",
+    summary: "대형 SUV·승합에서 확인되는 L5급 AGM 대용량 규격입니다.",
     typeLabel: "AGM",
     terminal: "L타입",
     useCase: "대형 승용·SUV",

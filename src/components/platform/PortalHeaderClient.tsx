@@ -3,7 +3,6 @@
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { PortalSiteNav, useNavViewport } from "@/components/platform/PortalHeaderNav";
 import { bm } from "@/lib/design-tokens";
-import { BRAND_NAME } from "@/lib/brand";
 
 export function PortalHeaderClient({
   title,
@@ -21,11 +20,10 @@ export function PortalHeaderClient({
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
       <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-3 px-4 lg:px-6">
-        <a className="flex shrink-0 items-center gap-2 whitespace-nowrap" href="/">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--bm-primary)] text-sm font-black text-white shadow-sm">
-            B
+        <a className="flex shrink-0 items-center whitespace-nowrap" href="/">
+          <span className="text-[15px] font-extrabold tracking-[-0.04em] text-[var(--bm-navy)] sm:text-base">
+            배터리매니저
           </span>
-          <span className="text-[17px] font-black tracking-[-0.03em] text-[var(--bm-navy)]">{BRAND_NAME}</span>
         </a>
         {title ? (
           <span className="hidden shrink-0 whitespace-nowrap text-xs font-black text-slate-400 md:block">
@@ -46,7 +44,10 @@ export function PortalHeaderClient({
             <PortalSiteNav variant="desktop" />
           </div>
         ) : null}
-        <a className={`${bm.btnNavy} shrink-0 whitespace-nowrap rounded-full px-4`} href="/mypage">
+        <a
+          className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-800"
+          href="/mypage"
+        >
           MY
         </a>
       </div>
