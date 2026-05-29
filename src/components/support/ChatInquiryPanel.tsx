@@ -46,6 +46,8 @@ export function ChatInquiryPanel({
       batteryCode: preset?.batteryCode,
       returnOption,
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
+      source: "chat",
+      inquiryType: "채팅상담",
     });
     setSubmitted(true);
   };

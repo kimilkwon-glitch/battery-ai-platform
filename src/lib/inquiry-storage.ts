@@ -5,6 +5,8 @@
 
 export type InquiryStatus = "new" | "reviewed" | "done";
 
+export type InquirySource = "chat" | "support";
+
 export type InquiryRecord = {
   id: string;
   createdAt: string;
@@ -16,6 +18,8 @@ export type InquiryRecord = {
   batteryCode?: string;
   returnOption?: string;
   pageUrl?: string;
+  source?: InquirySource;
+  inquiryType?: string;
 };
 
 const STORAGE_KEY = "bm-inquiries-v1";

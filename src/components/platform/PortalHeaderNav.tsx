@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { HUB_BRANDS, HUB_GUIDE, HUB_REVIEWS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import {
+  HUB_BRANDS,
+  HUB_GUIDE,
+  HUB_REVIEWS,
+  HUB_STORE_DETAIL,
+  HUB_SUPPORT,
+} from "@/lib/customer-hub-routes";
 import { HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
 
 /** 상단 카테고리 — 검색은 메인 통합검색만, 더보기 없이 전체 노출 */
@@ -15,6 +21,7 @@ export const portalNavPrimary = [
   ["매장·출장 안내", HUB_STORE_DETAIL],
   ["배터리 가이드", HUB_GUIDE],
   ["리뷰", HUB_REVIEWS],
+  ["고객센터", HUB_SUPPORT],
 ] as const;
 
 export const portalNav = portalNavPrimary as unknown as [string, string][];
@@ -27,6 +34,9 @@ function isNavActive(pathname: string, label: string, href: string): boolean {
   }
   if (label === "배터리 가이드") return pathname === "/guides" || pathname.startsWith("/guides/");
   if (label === "리뷰") return pathname === "/reviews" || pathname.startsWith("/reviews/");
+  if (label === "고객센터") {
+    return pathname === "/support" || pathname.startsWith("/support/");
+  }
   const base = href.split("?")[0]!.split("#")[0]!;
   if (pathname === base) return true;
   if (base !== "/" && pathname.startsWith(`${base}/`)) return true;

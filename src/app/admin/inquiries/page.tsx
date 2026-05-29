@@ -57,7 +57,15 @@ export default function AdminInquiriesPage() {
                 </div>
                 <p className="mt-2 text-sm font-black text-slate-900">
                   {row.name} · {row.contact}
+                  {row.source ? (
+                    <span className="ml-2 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-black text-slate-600">
+                      {row.source === "support" ? "고객센터" : "채팅"}
+                    </span>
+                  ) : null}
                 </p>
+                {row.inquiryType ? (
+                  <p className="text-xs font-bold text-slate-500">유형: {row.inquiryType}</p>
+                ) : null}
                 <p className="text-xs text-slate-500">{new Date(row.createdAt).toLocaleString("ko-KR")}</p>
                 {row.batteryCode ? (
                   <p className="mt-1 text-xs font-bold text-blue-700">규격: {row.batteryCode}</p>

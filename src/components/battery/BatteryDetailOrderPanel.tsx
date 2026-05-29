@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { BatteryImageStage } from "@/components/media/BatteryImageStage";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
-import { OfficialChannelsStrip } from "@/components/common/OfficialChannelsStrip";
 import { openChatInquiry } from "@/lib/chat-inquiry-events";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { getOfficialChannel } from "@/lib/official-channels";
@@ -218,7 +217,6 @@ export function BatteryDetailOrderPanel({
         </Link>
       </section>
 
-      <OfficialChannelsStrip variant="section" className="opacity-90" subtitle="인스타·유튜브는 예정 채널입니다." />
     </section>
   );
 }

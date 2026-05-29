@@ -15,7 +15,7 @@ import {
   CHAT_INQUIRY_OPEN_EVENT,
   type ChatInquiryOpenDetail,
 } from "@/lib/chat-inquiry-events";
-import { OFFICIAL_CHANNELS } from "@/lib/official-channels";
+import { SOCIAL_OFFICIAL_CHANNELS } from "@/lib/official-channels";
 import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
 
 export function FloatingActionDock() {
@@ -45,11 +45,7 @@ export function FloatingActionDock() {
     setExpanded(false);
   };
 
-  const floatingChannels = OFFICIAL_CHANNELS.filter((c) =>
-    ["naver_place", "naver_blog", "naver_smartstore", "daangn", "instagram", "youtube"].includes(
-      c.id,
-    ),
-  );
+  const floatingChannels = SOCIAL_OFFICIAL_CHANNELS;
 
   return (
     <>

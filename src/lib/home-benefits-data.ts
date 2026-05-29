@@ -16,9 +16,9 @@ export const HOME_BENEFIT_CARDS: HomeBenefitCard[] = [
     footnote: "혜택 조건·적용 범위는 주문 상담 시 안내드립니다.",
   },
   {
-    id: "benefit-prep-1",
-    title: "준비중 혜택",
-    description: "새 혜택을 준비 중입니다.",
+    id: "benefit-season",
+    title: "시즌 혜택 준비중",
+    description: "시즌별 혜택을 준비 중입니다.",
     status: "coming_soon",
   },
   {
