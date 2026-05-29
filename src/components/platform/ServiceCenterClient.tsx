@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { CheckCircle } from "lucide-react";
+import { OfficialChannelsStrip } from "@/components/common/OfficialChannelsStrip";
 import { BusanRegionMap } from "@/components/service/BusanRegionMap";
 import { StoreHubCompactCards } from "@/components/service/StoreHubCompactCards";
 import { StoreNeighborhoodSearch } from "@/components/service/StoreNeighborhoodSearch";
@@ -42,6 +43,12 @@ export function ServiceCenterClient({
       />
 
       <StoreHubCompactCards highlightId={highlightStore} />
+
+      <OfficialChannelsStrip
+        variant="section"
+        className="rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-5 sm:px-5"
+        subtitle="실제 운영 채널에서 매장 정보와 작업 사례를 확인할 수 있습니다."
+      />
 
       <section className={`${bm.card} ${bm.cardPad}`} id="visit-prep">
         <h3 className="text-base font-black text-slate-950">방문·출장 전 알려주시면 좋은 정보</h3>

@@ -652,6 +652,22 @@
   }
 }
 
+/* 메인 — 공식 운영 채널 pill 가로 스크롤 */
+.home-official-channels-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.home-official-channels-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .home-official-channels-scroll {
+    justify-content: center;
+  }
+}
+
 /* 상단 포털 네비 — 데스크톱 한 줄 */
 @media (min-width: 1024px) {
   .portal-header-desktop-nav {

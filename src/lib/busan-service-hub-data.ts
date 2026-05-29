@@ -21,7 +21,10 @@ export const BUSAN_STORES = [
     visit: "내방 교체",
     mobile: "출장 교체 (권역 내)",
     mapsQuery: "부산 북구 덕천 배터리",
-    contactHref: "/ai",
+    phone: "010-8339-8316",
+    phoneTel: "tel:010-8339-8316",
+    imageSrc: "/assets/stores/deokcheon.jpg",
+    imageAlt: "부산배터리매니저 덕천점 매장 사진",
   },
   {
     id: "hakjang",
@@ -33,7 +36,10 @@ export const BUSAN_STORES = [
     visit: "내방 교체",
     mobile: "출장 교체 (권역 내)",
     mapsQuery: "부산 사상구 학장 배터리",
-    contactHref: "/ai",
+    phone: "010-8896-8316",
+    phoneTel: "tel:010-8896-8316",
+    imageSrc: "/assets/stores/hakjang.jpg",
+    imageAlt: "부산배터리매니저 학장점 매장 사진",
   },
 ] as const;
 

@@ -7,6 +7,7 @@ import {
   HUB_STORE_DETAIL,
 } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
+import { OfficialChannelsStrip } from "@/components/common/OfficialChannelsStrip";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 
 const links = [
@@ -33,6 +34,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
           </a>
         ))}
       </nav>
+      <OfficialChannelsStrip variant="footer" className="mt-4" />
       <p className="mt-3 text-[10px] text-slate-400">
         © {new Date().getFullYear()} {BRAND_NAME}
         <span className="mx-1 text-slate-300">·</span>
