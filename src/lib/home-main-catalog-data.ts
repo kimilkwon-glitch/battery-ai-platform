@@ -12,14 +12,21 @@ export type HomeProductTypeFilter = "전체" | "AGM" | "일반형" | "DIN" | "EV
 
 export type HomeProductTypeTag = "AGM" | "일반형" | "DIN" | "EV 보조 12V";
 
+/** 메인 라인업 카드 — 표시명·이미지·검색 연결 분리 */
 export type HomeCatalogProduct = {
-  code: string;
-  imageCode: string;
+  id: string;
+  displayName: string;
+  /** 검색·상세·CTA — 기존 alias/canonical 경로 */
+  searchCode: string;
+  /** strict solite/rocket 이미지 lookup */
+  imageKey: string;
   typeTag: HomeProductTypeTag;
   summary: string;
+  specAliases?: readonly string[];
 };
 
-export const HOME_MAIN_SEARCH_PLACEHOLDER = "차량명·연식·규격 검색";
+/** 메인 검색창 — placeholder 없음 (안내는 아래 예시 영역) */
+export const HOME_MAIN_SEARCH_PLACEHOLDER = "";
 
 /** 메인 — 차종명 중심 간단 예시 (검색 흐름은 기존 getSearchHref) */
 export const HOME_MAIN_SEARCH_EXAMPLES = [
@@ -45,58 +52,123 @@ export const HOME_CATALOG_TYPE_FILTERS: HomeProductTypeFilter[] = [
   "EV 보조 12V",
 ];
 
-function product(
-  code: string,
+function catalogProduct(
+  id: string,
+  displayName: string,
+  searchCode: string,
   typeTag: HomeProductTypeTag,
-  opts?: { imageCode?: string; summary?: string },
+  opts?: {
+    imageKey?: string;
+    summary?: string;
+    specAliases?: readonly string[];
+  },
 ): HomeCatalogProduct {
-  const imageCode = opts?.imageCode ?? code;
+  const imageKey = opts?.imageKey ?? displayName;
   return {
-    code,
-    imageCode,
+    id,
+    displayName,
+    searchCode,
+    imageKey,
     typeTag,
+    specAliases: opts?.specAliases,
     summary:
       opts?.summary ??
-      getHomeCardCopy(code) ??
-      `${code} 규격 — 차종·라벨과 함께 확인하세요.`,
+      getHomeCardCopy(searchCode) ??
+      `${displayName} 규격 — 차종·라벨과 함께 확인하세요.`,
   };
 }
 
-/** 로케트 대표 라인업 (이미지 있는 항목만 메인 노출) */
+/** 로케트 대표 라인업 (strict 브랜드 이미지 있는 항목만) */
 export const rocketLineup: HomeCatalogProduct[] = [
-  product("AGM60L", "AGM"),
-  product("AGM70L", "AGM"),
-  product("AGM80L", "AGM"),
-  product("AGM95L", "AGM"),
-  product("CMF80L", "일반형"),
-  product("DIN74L", "DIN"),
-  product("DIN62L", "DIN"),
-  product("90R", "일반형"),
-  product("100R", "일반형"),
-].filter((p) => hasStrictBrandProductImage(p.imageCode, "rocket"));
+  catalogProduct("rocket-agm60l", "AGM60L", "AGM60L", "AGM"),
+  catalogProduct("rocket-agm70l", "AGM70L", "AGM70L", "AGM"),
+  catalogProduct("rocket-agm80l", "AGM80L", "AGM80L", "AGM"),
+  catalogProduct("rocket-agm95l", "AGM95L", "AGM95L", "AGM"),
+  catalogProduct("rocket-cmf80l", "CMF80L", "CMF80L", "일반형"),
+  catalogProduct("rocket-din74l", "DIN74L", "DIN74L", "DIN"),
+  catalogProduct("rocket-din62l", "DIN62L", "DIN62L", "DIN"),
+  catalogProduct("rocket-90r", "90R", "90R", "일반형"),
+  catalogProduct("rocket-100r", "100R", "100R", "일반형"),
+].filter((p) => hasStrictBrandProductImage(p.imageKey, "rocket"));
 
-/** 쏠라이트 대표 라인업 — 로케트 이미지 fallback 없음, 없으면 중립 placeholder */
-export const soliteLineup: HomeCatalogProduct[] = [
-  product("CMF80L", "일반형", {
-    imageCode: "CMF80L",
+/** 쏠라이트 — 이미지 asset 우선 순서 (public/assets/batteries CMF* 기준) */
+const SOLITE_LINEUP_WITH_IMAGE: HomeCatalogProduct[] = [
+  catalogProduct("solite-cmf57412", "CMF57412", "CMF57412", "DIN", {
+    imageKey: "CMF57412",
+    specAliases: ["57412", "CMF57412", "DIN74L", "DIN78L", "H6"],
+    summary: "쏠라이트 CMF57412 — DIN H6 / DIN74L 계열 표기입니다.",
+  }),
+  catalogProduct("solite-cmf54459", "CMF54459", "CMF54459", "DIN", {
+    imageKey: "CMF54459",
+    specAliases: ["54459", "CMF54459", "DIN50L", "DIN44L"],
+    summary: "쏠라이트 CMF54459 — 소형 DIN 계열에서 함께 확인되는 표기입니다.",
+  }),
+  catalogProduct("solite-cmf80l", "CMF80L", "CMF80L", "일반형", {
+    imageKey: "CMF80L",
+    specAliases: ["CMF80L", "80L"],
     summary: "쏠라이트 CMF80L — 일반 충전계통 중대형 L타입 규격입니다.",
   }),
-  product("57412", "DIN", {
-    imageCode: "57412",
-    summary: "쏠라이트 CMF57412 — DIN H6(74Ah) 계열 표기입니다.",
+  catalogProduct("solite-cmf56219", "CMF56219", "CMF56219", "DIN", {
+    imageKey: "CMF56219",
+    specAliases: ["56219", "CMF56219", "DIN62L", "DIN60L"],
+    summary: "쏠라이트 CMF56219 — DIN62L / DIN60L 계열 표기입니다.",
   }),
-  product("54459", "DIN", {
-    imageCode: "54459",
-    summary: "쏠라이트 CMF54459 — 소형 DIN 계열 표기입니다.",
+  catalogProduct("solite-cmf60l", "CMF60L", "CMF60L", "일반형", {
+    imageKey: "CMF60L",
+    specAliases: ["CMF60L", "60L"],
+    summary: "쏠라이트 CMF60L — 일반형 L타입 규격입니다.",
   }),
-  product("eAGM60", "EV 보조 12V", {
-    imageCode: "AGM60L",
+  catalogProduct("solite-cmf40l", "CMF40L", "CMF40L", "일반형", {
+    imageKey: "CMF40L",
+    specAliases: ["CMF40L", "40L"],
+    summary: "쏠라이트 CMF40L — 소형 일반형 L타입 규격입니다.",
+  }),
+  catalogProduct("solite-cmf90l", "CMF90L", "CMF90L", "일반형", {
+    imageKey: "CMF90L",
+    specAliases: ["CMF90L", "90L"],
+    summary: "쏠라이트 CMF90L — 일반형 L타입 규격입니다.",
+  }),
+  catalogProduct("solite-cmf90r", "CMF90R", "CMF90R", "일반형", {
+    imageKey: "CMF90R",
+    specAliases: ["CMF90R", "90R"],
+    summary: "쏠라이트 CMF90R — 일반형 R타입 규격입니다.",
+  }),
+  catalogProduct("solite-cmf100l", "CMF100L", "CMF100L", "일반형", {
+    imageKey: "CMF100L",
+    specAliases: ["CMF100L", "100L"],
+    summary: "쏠라이트 CMF100L — 일반형 L타입 규격입니다.",
+  }),
+  catalogProduct("solite-cmf100r", "CMF100R", "CMF100R", "일반형", {
+    imageKey: "CMF100R",
+    specAliases: ["CMF100R", "100R"],
+    summary: "쏠라이트 CMF100R — 일반형 R타입 규격입니다.",
+  }),
+  catalogProduct("solite-cmf80r", "CMF80R", "CMF80R", "일반형", {
+    imageKey: "CMF80R",
+    specAliases: ["CMF80R", "80R"],
+    summary: "쏠라이트 CMF80R — 일반형 R타입 규격입니다.",
+  }),
+];
+
+/** 쏠라이트 전용 이미지 없음 — placeholder만 (로케트 fallback 금지) */
+const SOLITE_LINEUP_PLACEHOLDER: HomeCatalogProduct[] = [
+  catalogProduct("solite-eagm60", "eAGM60", "eAGM60", "EV 보조 12V", {
+    imageKey: "eAGM60",
+    specAliases: ["eAGM60", "AGM60L", "AGM LN2"],
     summary: "쏠라이트 EV 보조 12V(eAGM60) — 차종·라벨로 최종 확인하세요.",
   }),
-  product("EV 12V", "EV 보조 12V", {
-    imageCode: "EV 12V",
+  catalogProduct("solite-ev12v", "EV 12V", "EV 12V", "EV 보조 12V", {
+    imageKey: "EV 12V",
+    specAliases: ["EV 12V", "EV12V"],
     summary: "전기차 보조 12V — 고전압 메인 배터리와 별도입니다.",
   }),
+];
+
+export const soliteLineup: HomeCatalogProduct[] = [
+  ...SOLITE_LINEUP_WITH_IMAGE.filter((p) =>
+    hasStrictBrandProductImage(p.imageKey, "solite"),
+  ),
+  ...SOLITE_LINEUP_PLACEHOLDER,
 ];
 
 export const HOME_CATALOG_BY_BRAND: Record<HomeCatalogBrandId, HomeCatalogProduct[]> = {

@@ -73,7 +73,7 @@ export function HomeCatalogSection() {
         data-home-lineup-brand={brand}
       >
         {products.map((item) => (
-          <HomeSpecExploreCard key={`${brand}-${item.code}`} brand={brand} product={item} />
+          <HomeSpecExploreCard key={`${brand}-${item.id}`} brand={brand} product={item} />
         ))}
       </div>
 

@@ -1,4 +1,4 @@
-const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-SEARCH-MAIN-V4";
+const STAMP = process.argv[3] || "BM-UX-REV-20260528-HOME-SOLITE-LINEUP-V1";
 const BASE = process.argv[2] || "https://battery-ai-platform.vercel.app";
 const cb = Date.now();
 const url = `${BASE}/?_cb=${cb}`;
@@ -14,8 +14,12 @@ const checks = {
   noMoreMenu: !html.includes("더보기"),
   hasStoreNav: html.includes("매장방문"),
   hasLineupTitle: html.includes("배터리 라인업") && !html.includes("취급 배터리"),
-  shortPlaceholder: html.includes("차량명·연식·규격 검색"),
-  noLongPlaceholder: !html.includes("K3 2018, 그랜저 IG AGM80L"),
+  emptyPlaceholder:
+    html.includes('placeholder=""') ||
+    html.includes("placeholder=''") ||
+    !html.match(/placeholder="[^"]{3,}"/),
+  noLongPlaceholder: !html.includes("K3 2018, 그랜저 IG AGM80L") && !html.includes("차량명·연식·규격 검색"),
+  soliteCmfLabels: html.includes("CMF57412") && html.includes("CMF54459"),
   simpleExamples:
     html.includes("쏘렌토MQ4") &&
     html.includes("포터2") &&

@@ -14,6 +14,8 @@ type Props = {
   /** md+ 좌측 이미지 패널용 — cardRow / compareRow variant */
   layout?: "stack" | "row";
   preferBrand?: BatteryBrandKey;
+  /** placeholder·접근성용 표시 규격명 */
+  displayLabel?: string;
 };
 
 function resolveVariant(
@@ -41,6 +43,7 @@ export function BatteryCardImage({
   flushTop = false,
   layout = "row",
   preferBrand,
+  displayLabel,
 }: Props) {
   const resolvedVariant = resolveVariant(variant, heightClass, layout);
 
@@ -52,6 +55,7 @@ export function BatteryCardImage({
       flushTop={flushTop}
       layout={layout}
       preferBrand={preferBrand}
+      displayLabel={displayLabel}
     />
   );
 }

@@ -25,6 +25,7 @@ type Props = {
   imageSet?: BatteryImageSet;
   /** 메인 라인업 — 로케트/쏠라이트 탭별 이미지 */
   preferBrand?: BatteryBrandKey;
+  displayLabel?: string;
   className?: string;
   flushTop?: boolean;
   layout?: "stack" | "row";
@@ -37,6 +38,7 @@ export function BatteryImageStage({
   role = "main",
   imageSet,
   preferBrand,
+  displayLabel,
   className = "",
   flushTop = false,
   layout = "stack",
@@ -95,7 +97,7 @@ export function BatteryImageStage({
           <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
             {preferBrand === "solite" ? "쏠라이트" : "로케트"}
           </span>
-          <span className="spec-code text-lg font-black text-slate-500">{code}</span>
+          <span className="spec-code text-lg font-black text-slate-500">{displayLabel ?? code}</span>
           <span className="text-[10px] font-medium text-slate-400">이미지 준비중</span>
         </div>
       ) : (
