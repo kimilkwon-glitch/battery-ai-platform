@@ -3,7 +3,7 @@ import {
   HUB_BRANDS,
   HUB_GUIDE,
   HUB_PHOTO,
-  HUB_SHOP,
+  HUB_REVIEWS,
   HUB_STORE_DETAIL,
 } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
@@ -13,8 +13,8 @@ import { BUILD_STAMP } from "@/lib/build-stamp";
 const links = [
   ["브랜드 안내", HUB_BRANDS],
   ["매장·출장 안내", HUB_STORE_DETAIL],
-  ["택배주문", HUB_SHOP],
   ["배터리 가이드", HUB_GUIDE],
+  ["리뷰", HUB_REVIEWS],
   ["배터리 업그레이드", "/compare"],
   ["사진확인", HUB_PHOTO],
 ] as const;

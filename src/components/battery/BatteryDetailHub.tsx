@@ -3,22 +3,16 @@
 import Link from "next/link";
 import { AppIcon } from "@/components/common/AppIcon";
 import { BatteryImageOrSlot } from "@/components/media/BatteryImageOrSlot";
-import { BatteryImageStage } from "@/components/media/BatteryImageStage";
-import { CtaHierarchy } from "@/components/common/CtaHierarchy";
-import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
+import { BatteryDetailOrderPanel } from "@/components/battery/BatteryDetailOrderPanel";
+import { openChatInquiry } from "@/lib/chat-inquiry-events";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { bm } from "@/lib/design-tokens";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
-import {
-  HUB_PHOTO,
-  HUB_SHOP_ANCHORS,
-  HUB_STORE,
-} from "@/lib/customer-hub-routes";
+import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
 import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
-import type { HubBadge } from "@/lib/battery-detail/battery-detail-hub-content";
 import { BatteryDetailRelatedQna } from "@/components/battery/BatteryDetailRelatedQna";
 import { BatterySpecSummary } from "@/components/battery/BatterySpecSummary";
 import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
@@ -42,13 +36,6 @@ function specField(value: string | null | undefined, missing = "확인 필요"):
   const v = value?.trim();
   if (!v || v === "—") return missing;
   return v;
-}
-
-function badgeClass(tone: HubBadge["tone"]): string {
-  if (tone === "amber") return `${bm.badge} ${bm.badgeAmber}`;
-  if (tone === "green") return `${bm.badge} ${bm.badgeGreen}`;
-  if (tone === "gray") return `${bm.badge} ${bm.badgeGray}`;
-  return `${bm.badge} ${bm.badgeBlue}`;
 }
 
 function mergeFeaturedVehicles(
@@ -82,28 +69,31 @@ function mergeFeaturedVehicles(
 }
 
 function BatteryDetailMobileSticky({ code }: { code: string }) {
-  const actions = [
-    { label: "택배 주문", href: HUB_SHOP_ANCHORS.delivery, iconKey: "delivery" as const },
-    { label: "내 차 검색", href: `/search?q=${encodeURIComponent(code)}`, iconKey: "vehicle" as const },
-    { label: "매장 문의", href: HUB_STORE, iconKey: "store" as const },
-  ];
   return (
     <div className={bm.stickyMobileBar} data-battery-detail-sticky>
       <div className="mx-auto flex max-w-[1280px] gap-2">
-        {actions.map((a, i) => (
-          <Link
-            key={a.label}
-            className={
-              i === 0
-                ? `${bm.btnNavy} flex flex-1 items-center justify-center gap-1 text-xs`
-                : `${bm.btnSecondary} flex flex-1 items-center justify-center gap-1 text-xs`
-            }
-            href={a.href}
-          >
-            <AppIcon iconKey={a.iconKey} size="xs" className={i === 0 ? "!text-white" : undefined} />
-            <span className="truncate">{a.label}</span>
-          </Link>
-        ))}
+        <Link
+          className={`${bm.btnNavy} flex flex-1 items-center justify-center gap-1 text-xs`}
+          href={`/ai?topic=order&code=${encodeURIComponent(code)}`}
+        >
+          <AppIcon iconKey="delivery" size="xs" className="!text-white" />
+          <span className="truncate">주문 상담</span>
+        </Link>
+        <button
+          type="button"
+          className={`${bm.btnSecondary} flex flex-1 items-center justify-center gap-1 text-xs`}
+          onClick={() => openChatInquiry({ batteryCode: code })}
+        >
+          <AppIcon iconKey="store" size="xs" />
+          <span className="truncate">채팅 상담</span>
+        </button>
+        <Link
+          className={`${bm.btnSecondary} flex flex-1 items-center justify-center gap-1 text-xs`}
+          href={HUB_STORE_DETAIL}
+        >
+          <AppIcon iconKey="vehicle" size="xs" />
+          <span className="truncate">매장 안내</span>
+        </Link>
       </div>
     </div>
   );
@@ -134,55 +124,19 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
       data-battery-detail-hub={displayCode}
       data-battery-detail-build-stamp={BATTERY_DETAIL_BUILD_STAMP}
     >
-      {/* A. Hero */}
-      <section className={bm.heroPanel}>
-        <div className={`${bm.heroPanelAccent} p-4 sm:p-5`}>
-          <p className={`${bm.label} inline-flex items-center gap-1.5`}>
-            <AppIcon iconKey="batterySpec" size="sm" />
-            배터리 규격 안내
-          </p>
-          <h1 className={`${bm.specTitle} mt-1`} data-spec-code>
-            {displayCode}
-          </h1>
-          <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-600">{hub.positioning}</p>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            <BatterySpecBadge tone="blue">{hub.typeLabel}</BatterySpecBadge>
-            <BatterySpecBadge tone="green">{capacityLabel}</BatterySpecBadge>
-            <BatterySpecBadge tone="green">CCA {ccaLabel}</BatterySpecBadge>
-            <BatterySpecBadge tone="gray">{terminalLabel}</BatterySpecBadge>
-            {hub.badges.map((b) => (
-              <span className={badgeClass(b.tone)} key={b.text}>
-                {b.text}
-              </span>
-            ))}
-          </div>
-          {vehicleCards.length > 0 ? (
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              대표 적용: {vehicleCards.slice(0, 3).map((v) => v.title).join(" · ")}
-              {vehicleCards.length > 3 ? " 외" : ""}
-            </p>
-          ) : null}
-        </div>
-
-        <div className="grid gap-0 sm:grid-cols-[minmax(200px,280px)_1fr]">
-          <div className="order-2 flex items-center border-b border-[var(--bm-border)] p-4 sm:order-none sm:border-b-0 sm:border-r sm:py-5">
-            <BatteryImageStage code={displayCode} variant="hero" className="mx-auto w-full max-w-[280px]" />
-          </div>
-          <div className="order-1 p-4 sm:order-none sm:p-5">
-            <CtaHierarchy
-              ctas={[
-                { label: "택배 주문하기", href: HUB_SHOP_ANCHORS.delivery },
-                { label: "사진으로 확인", href: HUB_PHOTO },
-                { label: "내 차량 기준으로 확인", href: searchHref },
-              ]}
-              links={[
-                { label: "부산 매장/출장 문의", href: HUB_STORE },
-                { label: "주문 전 규격 확인", href: HUB_SHOP_ANCHORS.orderCheck },
-              ]}
-            />
-          </div>
-        </div>
-      </section>
+      <BatteryDetailOrderPanel
+        code={displayCode}
+        typeLabel={hub.typeLabel}
+        positioning={hub.positioning}
+        vehicleSummary={
+          vehicleCards.length > 0
+            ? `${vehicleCards
+                .slice(0, 3)
+                .map((v) => v.title)
+                .join(" · ")}${vehicleCards.length > 3 ? " 외" : ""}`
+            : undefined
+        }
+      />
 
       {/* B. Image slots */}
       <section className={`${bm.card} ${bm.cardPad}`}>
@@ -348,19 +302,6 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         {hub.cautionNotes.length > 0 ? (
           <p className="mt-2 text-xs font-medium text-slate-600">{hub.cautionNotes[0]}</p>
         ) : null}
-      </section>
-
-      {/* G. Order CTA */}
-      <section className={`${bm.card} ${bm.cardPad}`}>
-        <SectionHeader title="주문·문의" />
-        <CtaHierarchy
-          ctas={[
-            { label: "택배 주문하기", href: HUB_SHOP_ANCHORS.delivery },
-            { label: "사진으로 확인", href: HUB_PHOTO },
-            { label: "부산 매장/출장 문의", href: HUB_STORE },
-          ]}
-          links={[{ label: "내 차량 다시 검색", href: searchHref }]}
-        />
       </section>
 
       <BatteryDetailRelatedQna code={displayCode} />

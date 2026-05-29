@@ -3,6 +3,7 @@ import { CartProvider } from "@/components/platform/CartContext";
 import "./globals.css";
 
 import { BuildVersionStamp } from "@/components/common/BuildVersionStamp";
+import { FloatingActionDock } from "@/components/support/FloatingActionDock";
 import { BRAND_NAME, BRAND_META_DESCRIPTION } from "@/lib/brand";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 import { Geist } from "next/font/google";
@@ -26,10 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="official-channels-v1-20260528" className={cn("font-sans", geist.variable)}>
-      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="official-channels-v1-20260528">
+    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="commerce-flow-v1-20260528" className={cn("font-sans", geist.variable)}>
+      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="commerce-flow-v1-20260528">
         <CartProvider>
           {children}
+          <FloatingActionDock />
           <BuildVersionStamp />
         </CartProvider>
       </body>

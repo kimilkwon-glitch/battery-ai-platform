@@ -16,14 +16,22 @@ const BRAND_TABS: { id: HomeCatalogBrandId; label: string }[] = [
   { id: "solite", label: "쏠라이트" },
 ];
 
+const LINEUP_INITIAL_VISIBLE = 9;
+
 export function HomeCatalogSection() {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
+  const [showAllLineup, setShowAllLineup] = useState(false);
   const [brand, setBrand] = useState<HomeCatalogBrandId>("rocket");
   const [typeFilter, setTypeFilter] = useState<HomeProductTypeFilter>("전체");
 
   const products = useMemo(
     () => filterCatalogProducts(getCurrentLineup(brand), typeFilter),
     [brand, typeFilter],
+  );
+
+  const visibleProducts = useMemo(
+    () => (showAllLineup ? products : products.slice(0, LINEUP_INITIAL_VISIBLE)),
+    [products, showAllLineup],
   );
 
   return (
@@ -108,10 +116,20 @@ export function HomeCatalogSection() {
               className="home-catalog-grid mt-5 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
               data-home-lineup-brand={brand}
             >
-              {products.map((item) => (
+              {visibleProducts.map((item) => (
                 <HomeSpecExploreCard key={`${brand}-${item.id}`} brand={brand} product={item} />
               ))}
             </div>
+
+            {products.length > LINEUP_INITIAL_VISIBLE && !showAllLineup ? (
+              <button
+                type="button"
+                className="mx-auto mt-4 block rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-black text-slate-700 shadow-sm hover:border-slate-300"
+                onClick={() => setShowAllLineup(true)}
+              >
+                대표 규격 더 보기 ({products.length - LINEUP_INITIAL_VISIBLE}개)
+              </button>
+            ) : null}
 
             {products.length === 0 ? (
               <p className="mt-6 rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-medium text-slate-500">

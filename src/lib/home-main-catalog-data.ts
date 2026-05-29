@@ -271,9 +271,11 @@ export const HOME_SPEC_CARD_ACTIONS = {
   detail: (code: string) => batteryDetailHref(code),
 } as const;
 
-export const HOME_SPEC_CARD_CTA_ORDER = [
-  { key: "store", label: "매장방문", href: HOME_SPEC_CARD_ACTIONS.store },
-  { key: "outbound", label: "출장교체", href: HOME_SPEC_CARD_ACTIONS.outbound },
-  { key: "delivery", label: "택배주문", href: HOME_SPEC_CARD_ACTIONS.delivery },
-  { key: "photo", label: "사진확인", href: HOME_SPEC_CARD_ACTIONS.photo },
-] as const;
+export function homeSpecCardCtas(code: string) {
+  return [
+    { key: "detail", label: "해당 규격 보기", href: HOME_SPEC_CARD_ACTIONS.detail(code) },
+    { key: "photo", label: "사진확인", href: HOME_SPEC_CARD_ACTIONS.photo },
+    { key: "store", label: "매장방문", href: HOME_SPEC_CARD_ACTIONS.store },
+    { key: "outbound", label: "출장교체", href: HOME_SPEC_CARD_ACTIONS.outbound },
+  ] as const;
+}
