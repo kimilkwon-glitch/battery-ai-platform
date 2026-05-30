@@ -1,7 +1,13 @@
 /** 브랜드·메인 배너·혜택 배너 정적 자산 경로 (public/assets) */
 
-/** 실제 파일: public/assets/brand/battery-manager-logo.png → URL은 /assets/... (public 접두어 없음) */
-export const BRAND_LOGO_SRC = "/assets/brand/battery-manager-logo.png";
+/** 원본(1024², 투명 여백 큼): public/assets/brand/battery-manager-logo.png */
+/** 헤더용 trim(615×627): public/assets/brand/battery-manager-logo-tight.png */
+export const BRAND_LOGO_ASSET_REV = "20260530-logo-tight-v1";
+export const BRAND_LOGO_SRC = `/assets/brand/battery-manager-logo-tight.png?v=${BRAND_LOGO_ASSET_REV}`;
+
+/** trim 후 시각 영역 비율 — wrapper는 정사각형 쓰지 않음 */
+export const BRAND_LOGO_VISUAL_WIDTH = 615;
+export const BRAND_LOGO_VISUAL_HEIGHT = 627;
 
 export const BRAND_LOGO_ALT = "부산배터리매니저 로고";
 

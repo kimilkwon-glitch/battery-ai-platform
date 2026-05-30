@@ -532,9 +532,16 @@
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
-.portal-brand-lockup__logo img {
+.portal-brand-lockup__logo {
+  line-height: 0;
+}
+
+.portal-brand-lockup__logo-img {
+  display: block;
+  width: auto !important;
+  max-width: none;
   object-fit: contain;
-  object-position: center;
+  object-position: left center;
 }
 
 .portal-header-brand.portal-brand-lockup {
@@ -560,7 +567,9 @@
 }
 
 .portal-brand-lockup__text {
-  gap: 0.125rem;
+  gap: 0;
+  margin: 0;
+  padding: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
