@@ -6,8 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import clsx from "clsx";
 import {
+  getHeroViewportAspectClasses,
+  HERO_BANNER_CANVAS,
   HERO_CAROUSEL_INTERVAL_MS,
-  HERO_DESKTOP_ASPECT_CLASS,
   HERO_MOBILE_ASPECT_CLASS,
   HERO_SLIDES,
   type HeroSlide,
@@ -45,13 +46,13 @@ function HeroImageSlide({
       aria-label={`${slide.imageAlt} — 자세히 보기`}
       aria-hidden={!isActive}
     >
-      <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden bg-white">
+      <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden">
         {!desktopError ? (
           <Image
             src={slide.imageDesktop}
             alt={slide.imageAlt}
             fill
-            className="home-hero-slide__img home-hero-slide__img--desktop hidden object-contain object-center sm:block"
+            className="home-hero-slide__img home-hero-slide__img--desktop hidden sm:block"
             sizes="(max-width: 639px) 0px, min(100vw, 1240px)"
             priority={priority}
             unoptimized
@@ -64,7 +65,7 @@ function HeroImageSlide({
             alt={slide.imageAlt}
             fill
             className={clsx(
-              "home-hero-slide__img home-hero-slide__img--mobile object-contain object-center",
+              "home-hero-slide__img home-hero-slide__img--mobile",
               !desktopError && "sm:hidden",
             )}
             sizes="100vw"
@@ -102,6 +103,11 @@ export function HomeMainBanner() {
   const slides = HERO_SLIDES;
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
+  const activeSlide = slides[index]!;
+  const viewportAspect =
+    activeSlide.type === "image"
+      ? getHeroViewportAspectClasses(activeSlide.id)
+      : { mobile: HERO_MOBILE_ASPECT_CLASS, desktop: "sm:aspect-[1984/528]" };
 
   const goTo = useCallback(
     (next: number) => {
@@ -135,9 +141,14 @@ export function HomeMainBanner() {
         <div
           className={clsx(
             "home-hero-carousel__viewport relative w-full",
-            HERO_MOBILE_ASPECT_CLASS,
-            HERO_DESKTOP_ASPECT_CLASS,
+            viewportAspect.mobile,
+            viewportAspect.desktop,
           )}
+          data-hero-canvas={
+            activeSlide.type === "image"
+              ? `${HERO_BANNER_CANVAS.mobile.width}x${HERO_BANNER_CANVAS.mobile.height}`
+              : undefined
+          }
         >
           {slides.map((s, i) => {
             const isActive = i === index;

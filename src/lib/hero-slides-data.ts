@@ -66,8 +66,40 @@ export const HERO_SLIDES: HeroSlide[] = [
 
 export const HERO_CAROUSEL_INTERVAL_MS = 5500;
 
-/** PC hero 배너 1920×520 — aspect 48:13 */
-export const HERO_DESKTOP_ASPECT_CLASS = "sm:aspect-[48/13]" as const;
+/**
+ * 실제 PNG 캔버스 (public/assets/banners, 2026-05 감사 기준)
+ * - delivery / visit desktop: 1984×528 (동일)
+ * - night desktop (main-hero-desktop): 1856×576 ← 규격 불일치, asset 정규화 권장
+ * - mobile 3종: 1376×768 (동일)
+ */
+export const HERO_BANNER_CANVAS = {
+  desktop: {
+    deliveryOrder: { width: 1984, height: 528 },
+    visitDelivery: { width: 1984, height: 528 },
+    nightUnmanned: { width: 1856, height: 576 },
+  },
+  mobile: { width: 1376, height: 768 },
+} as const;
 
-/** 모바일 hero 배너 750×420 — aspect 25:14 */
-export const HERO_MOBILE_ASPECT_CLASS = "aspect-[25/14]" as const;
+/** 모바일 hero — 실제 asset 1376×768 */
+export const HERO_MOBILE_ASPECT_CLASS = "aspect-[1376/768]" as const;
+
+const HERO_DESKTOP_ASPECT_BY_SLIDE: Record<string, string> = {
+  "delivery-order": "sm:aspect-[1984/528]",
+  "visit-delivery": "sm:aspect-[1984/528]",
+  "night-unmanned-hakjang": "sm:aspect-[1856/576]",
+};
+
+/** @deprecated 단일 desktop ratio — 슬라이드별 비율이 달라 getHeroViewportAspectClasses 사용 */
+export const HERO_DESKTOP_ASPECT_CLASS = "sm:aspect-[1984/528]" as const;
+
+/** 활성 슬라이드 id에 맞는 viewport aspect (crop 없이 캔버스와 1:1) */
+export function getHeroViewportAspectClasses(slideId: string): {
+  mobile: string;
+  desktop: string;
+} {
+  return {
+    mobile: HERO_MOBILE_ASPECT_CLASS,
+    desktop: HERO_DESKTOP_ASPECT_BY_SLIDE[slideId] ?? HERO_DESKTOP_ASPECT_CLASS,
+  };
+}

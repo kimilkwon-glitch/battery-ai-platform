@@ -475,6 +475,7 @@
 
 .home-hero-carousel__viewport {
   line-height: 0;
+  font-size: 0;
 }
 
 .home-hero-carousel__slide-layer {
@@ -492,7 +493,15 @@
   opacity: 1 !important;
 }
 
+.home-hero-slide__link {
+  display: block;
+  line-height: 0;
+}
+
 .home-hero-slide__img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain !important;
   object-position: center center;
   transition: none !important;
@@ -501,7 +510,7 @@
 }
 
 .home-hero-slide--image {
-  background: #fff;
+  background: transparent;
 }
 
 .home-hero-carousel__nav {
