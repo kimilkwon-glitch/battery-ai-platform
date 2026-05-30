@@ -464,32 +464,48 @@
   }
 }
 
-/* hero — hover 시 이미지 repaint 방지 */
+/* hero — full-bleed media, hover 시 repaint 없음 */
 .home-hero-carousel__frame {
   isolation: isolate;
 }
 
+.home-hero-carousel__frame:hover {
+  box-shadow: 0 20px 56px rgba(15, 23, 42, 0.14);
+}
+
 .home-hero-carousel__viewport {
-  contain: layout;
+  line-height: 0;
 }
 
 .home-hero-carousel__slide-layer {
   transition: none;
 }
 
-.home-hero-slide__img,
 .home-hero-slide--image,
 .home-hero-slide__link,
 .home-hero-slide__link:hover,
-.home-hero-slide__link:focus {
+.home-hero-slide__link:focus,
+.home-hero-slide__link:focus-visible {
   transition: none !important;
   transform: none !important;
   filter: none !important;
-  opacity: 1;
+  opacity: 1 !important;
 }
 
-.home-hero-slide__link:hover {
-  opacity: 1;
+.home-hero-slide__img {
+  object-fit: cover;
+  object-position: center center;
+  transition: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.home-hero-carousel__nav {
+  transition: none;
+}
+
+.home-hero-carousel__nav:hover {
+  background-color: rgba(15, 23, 42, 0.55);
 }
 
 .portal-brand-lockup__title {
@@ -854,12 +870,34 @@
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, transparent 100%);
 }
 
-/* 혜택 카드 photo — 5:3 edge-to-edge, 선명도 유지 */
+/* 혜택 카드 — hover flicker 제거, 5:3 edge-to-edge */
+.home-benefit-card.bm-card-unified,
+.home-benefit-card.bm-card-unified:hover {
+  transform: none !important;
+  transition: border-color 200ms ease;
+}
+
+.bm-zone--benefit .home-benefit-card.bm-card-unified:hover {
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.08);
+}
+
+.home-benefit-card-media,
+.home-benefit-card-media__img,
+.home-benefit-card:hover .home-benefit-card-media__img {
+  transition: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
 .home-benefit-card-media--photo .home-benefit-card-media__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center center;
+}
+
+.home-benefits-track {
+  transition: transform 320ms ease-out;
 }
 
 @media (max-width: 639px) {

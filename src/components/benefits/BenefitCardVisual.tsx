@@ -12,12 +12,10 @@ function toMediaCard(card: BenefitCardConfig): HomeBenefitCard {
 
 export function BenefitCardVisual({
   card,
-  emphasis,
   asLink = true,
   priority = false,
 }: {
   card: BenefitCardConfig;
-  emphasis?: boolean;
   asLink?: boolean;
   priority?: boolean;
 }) {
@@ -25,9 +23,7 @@ export function BenefitCardVisual({
   const inner = (
     <article
       className={clsx(
-        "home-benefit-card bm-card-unified flex h-full flex-col overflow-hidden rounded-2xl bg-white transition-[transform,box-shadow] duration-[280ms] ease-out",
-        asLink && active && "motion-safe:hover:-translate-y-1",
-        emphasis ? "opacity-100" : "opacity-[0.94]",
+        "home-benefit-card bm-card-unified flex h-full flex-col overflow-hidden rounded-2xl bg-white",
         active ? "home-benefit-card--active border-amber-200/80" : "border-slate-200/90 bg-slate-50/50",
         !active && "cursor-default",
       )}

@@ -39,13 +39,13 @@ function HeroImageSlide({
       aria-label={`${slide.imageAlt} — 자세히 보기`}
       aria-hidden={!isActive}
     >
-      <div className="home-hero-slide home-hero-slide--image relative h-full w-full bg-slate-100">
+      <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden">
         {!desktopError ? (
           <Image
             src={slide.imageDesktop}
             alt={slide.imageAlt}
             fill
-            className="home-hero-slide__img home-hero-slide__img--desktop hidden object-contain object-center sm:block"
+            className="home-hero-slide__img home-hero-slide__img--desktop hidden sm:block"
             sizes="(max-width: 639px) 0px, min(100vw, 1240px)"
             priority={priority}
             unoptimized
@@ -58,7 +58,7 @@ function HeroImageSlide({
             alt={slide.imageAlt}
             fill
             className={clsx(
-              "home-hero-slide__img home-hero-slide__img--mobile object-contain object-center",
+              "home-hero-slide__img home-hero-slide__img--mobile",
               !desktopError && "sm:hidden",
             )}
             sizes="100vw"
@@ -72,7 +72,7 @@ function HeroImageSlide({
             src={slide.imageMobile}
             alt={slide.imageAlt}
             fill
-            className="home-hero-slide__img hidden object-contain object-center sm:block"
+            className="home-hero-slide__img hidden sm:block"
             sizes="min(100vw, 1240px)"
             unoptimized
             onError={() => setMobileError(true)}
@@ -96,11 +96,6 @@ export function HomeMainBanner() {
   const slides = HERO_SLIDES;
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
-  const indexRef = useRef(0);
-
-  useEffect(() => {
-    indexRef.current = index;
-  }, [index]);
 
   const goTo = useCallback(
     (next: number) => {
@@ -130,20 +125,15 @@ export function HomeMainBanner() {
         pausedRef.current = false;
       }}
     >
-      <div className="home-hero-carousel__frame relative overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
-        <div className="home-hero-carousel__viewport relative h-[240px] sm:h-[300px] md:h-[340px] lg:h-[360px] xl:h-[380px]">
+      <div className="home-hero-carousel__frame relative w-full overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
+        <div className="home-hero-carousel__viewport relative aspect-[5/2] w-full min-h-[220px] sm:min-h-[260px] md:min-h-[300px] lg:min-h-[320px]">
           {slides.map((s, i) => {
             const isActive = i === index;
             return (
               <div
                 key={s.id}
-                className={clsx(
-                  "home-hero-carousel__slide-layer absolute inset-0",
-                  isActive
-                    ? "z-[1] visible opacity-100"
-                    : "pointer-events-none z-0 invisible opacity-0",
-                )}
-                aria-hidden={!isActive}
+                hidden={!isActive}
+                className="home-hero-carousel__slide-layer absolute inset-0 h-full w-full"
               >
                 {s.type === "image" ? (
                   <HeroImageSlide slide={s} priority={i === 0} isActive={isActive} />
@@ -160,7 +150,7 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => goTo(index - 1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-slate-900/55 text-white transition-colors duration-200 hover:bg-slate-900/75 sm:left-4 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-slate-900/55 text-white sm:left-4 sm:size-11"
               aria-label="이전 배너"
             >
               <ChevronLeft className="size-4" />
@@ -168,7 +158,7 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => goTo(index + 1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-slate-900/55 text-white transition-colors duration-200 hover:bg-slate-900/75 sm:right-4 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-slate-900/55 text-white sm:right-4 sm:size-11"
               aria-label="다음 배너"
             >
               <ChevronRight className="size-4" />
@@ -181,8 +171,8 @@ export function HomeMainBanner() {
                     type="button"
                     onClick={() => goTo(slideIndex)}
                     className={clsx(
-                      "h-2 rounded-full transition-[width,background-color] duration-300",
-                      slideIndex === index ? "w-5 bg-white" : "w-2 bg-white/45 hover:bg-white/70",
+                      "h-2 rounded-full",
+                      slideIndex === index ? "w-5 bg-white" : "w-2 bg-white/45",
                     )}
                     aria-label={`배너 ${slideIndex + 1}`}
                     aria-current={slideIndex === index}

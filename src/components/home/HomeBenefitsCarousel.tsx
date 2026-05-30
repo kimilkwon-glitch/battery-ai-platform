@@ -38,7 +38,7 @@ export function HomeBenefitsCarousel() {
   const visibleCount = useVisibleCount();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
   const [slideStep, setSlideStep] = useState(0);
 
   const maxIndex = Math.max(0, cards.length - visibleCount);
@@ -80,20 +80,24 @@ export function HomeBenefitsCarousel() {
   );
 
   useEffect(() => {
-    if (paused || cards.length <= visibleCount) return;
+    if (pausedRef.current || cards.length <= visibleCount) return;
     const t = window.setInterval(() => {
       setIndex((i) => (i >= maxIndex ? 0 : i + 1));
     }, 6500);
     return () => window.clearInterval(t);
-  }, [paused, cards.length, visibleCount, maxIndex]);
+  }, [cards.length, visibleCount, maxIndex]);
 
   return (
     <section
       className="home-benefits-carousel bm-zone bm-zone--benefit mt-10 sm:mt-12"
       data-home-section="benefits-carousel"
       aria-label={BENEFITS_HUB_TITLE}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => {
+        pausedRef.current = true;
+      }}
+      onMouseLeave={() => {
+        pausedRef.current = false;
+      }}
     >
       <div className="text-center">
         <h2 className="bm-section-eyebrow bm-section-eyebrow--benefit home-benefits-section-title">
@@ -105,7 +109,7 @@ export function HomeBenefitsCarousel() {
       <div className="home-benefits-carousel-shell relative mx-auto mt-4 max-w-[1100px] px-10 sm:px-11">
         <div ref={viewportRef} className="home-benefits-viewport overflow-hidden rounded-2xl">
           <div
-            className="home-benefits-track flex gap-3 transition-[transform,opacity] duration-[320ms] ease-out will-change-transform"
+            className="home-benefits-track flex gap-3"
             style={{
               transform: slideStep ? `translateX(-${index * slideStep}px)` : undefined,
             }}
@@ -120,11 +124,7 @@ export function HomeBenefitsCarousel() {
                     : `calc((100% - ${(visibleCount - 1) * 12}px) / ${visibleCount})`,
                 }}
               >
-                <BenefitCardVisual
-                  card={card}
-                  emphasis={i >= index && i < index + visibleCount}
-                  priority={i === 0}
-                />
+                <BenefitCardVisual card={card} priority={i === 0} />
               </div>
             ))}
           </div>
