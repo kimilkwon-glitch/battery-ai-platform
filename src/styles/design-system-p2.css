@@ -464,7 +464,7 @@
   }
 }
 
-/* hero — full-bleed media, hover 시 repaint 없음 */
+/* hero — 완성형 배너: contain only (crop 금지), hover repaint 없음 */
 .home-hero-carousel__frame {
   isolation: isolate;
 }
@@ -493,11 +493,15 @@
 }
 
 .home-hero-slide__img {
-  object-fit: cover;
+  object-fit: contain !important;
   object-position: center center;
   transition: none !important;
   transform: none !important;
   filter: none !important;
+}
+
+.home-hero-slide--image {
+  background: #fff;
 }
 
 .home-hero-carousel__nav {

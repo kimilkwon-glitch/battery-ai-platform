@@ -65,3 +65,9 @@ export const HERO_SLIDES: HeroSlide[] = [
 ];
 
 export const HERO_CAROUSEL_INTERVAL_MS = 5500;
+
+/** PC hero 배너 1920×520 — aspect 48:13 */
+export const HERO_DESKTOP_ASPECT_CLASS = "sm:aspect-[48/13]" as const;
+
+/** 모바일 hero 배너 750×420 — aspect 25:14 */
+export const HERO_MOBILE_ASPECT_CLASS = "aspect-[25/14]" as const;

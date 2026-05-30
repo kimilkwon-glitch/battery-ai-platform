@@ -5,7 +5,13 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import clsx from "clsx";
-import { HERO_CAROUSEL_INTERVAL_MS, HERO_SLIDES, type HeroSlide } from "@/lib/hero-slides-data";
+import {
+  HERO_CAROUSEL_INTERVAL_MS,
+  HERO_DESKTOP_ASPECT_CLASS,
+  HERO_MOBILE_ASPECT_CLASS,
+  HERO_SLIDES,
+  type HeroSlide,
+} from "@/lib/hero-slides-data";
 
 function HeroPlaceholderSlide({ slide }: { slide: Extract<HeroSlide, { type: "placeholder" }> }) {
   return (
@@ -39,13 +45,13 @@ function HeroImageSlide({
       aria-label={`${slide.imageAlt} — 자세히 보기`}
       aria-hidden={!isActive}
     >
-      <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden">
+      <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden bg-white">
         {!desktopError ? (
           <Image
             src={slide.imageDesktop}
             alt={slide.imageAlt}
             fill
-            className="home-hero-slide__img home-hero-slide__img--desktop hidden sm:block"
+            className="home-hero-slide__img home-hero-slide__img--desktop hidden object-contain object-center sm:block"
             sizes="(max-width: 639px) 0px, min(100vw, 1240px)"
             priority={priority}
             unoptimized
@@ -58,7 +64,7 @@ function HeroImageSlide({
             alt={slide.imageAlt}
             fill
             className={clsx(
-              "home-hero-slide__img home-hero-slide__img--mobile",
+              "home-hero-slide__img home-hero-slide__img--mobile object-contain object-center",
               !desktopError && "sm:hidden",
             )}
             sizes="100vw"
@@ -126,7 +132,13 @@ export function HomeMainBanner() {
       }}
     >
       <div className="home-hero-carousel__frame relative w-full overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
-        <div className="home-hero-carousel__viewport relative aspect-[5/2] w-full min-h-[220px] sm:min-h-[260px] md:min-h-[300px] lg:min-h-[320px]">
+        <div
+          className={clsx(
+            "home-hero-carousel__viewport relative w-full",
+            HERO_MOBILE_ASPECT_CLASS,
+            HERO_DESKTOP_ASPECT_CLASS,
+          )}
+        >
           {slides.map((s, i) => {
             const isActive = i === index;
             return (
