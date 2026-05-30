@@ -5,7 +5,7 @@ import {
   type BatteryBrandKey,
   type BatterySpecEntry,
 } from "@/lib/battery-alias-map";
-import { getSearchHref } from "@/lib/battery-search";
+import { getHomeSearchHref } from "@/lib/home-search-types";
 import { batteryDetailHref } from "@/lib/home-upgrade-v2-data";
 import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
@@ -27,13 +27,25 @@ export type HomeCatalogProduct = {
   specAliases?: readonly string[];
 };
 
-export const HOME_MAIN_SEARCH_PLACEHOLDER = "차량명 또는 배터리 규격으로 바로 확인";
+/** 메인 라인업 상단에 우선 노출할 대표 규격 */
+export const HOME_LINEUP_PINNED_CODES = [
+  "AGM60L",
+  "AGM70L",
+  "AGM80L",
+  "AGM95L",
+  "100R",
+  "90R",
+  "GB90R",
+  "DIN74L",
+] as const;
 
 export const HOME_MAIN_SEARCH_EXAMPLES = [
-  { label: "쏘렌토 MQ4", href: getSearchHref("쏘렌토 MQ4") },
-  { label: "AGM70L", href: getSearchHref("AGM70L") },
-  { label: "포터2 100R", href: getSearchHref("포터2 100R") },
-  { label: "스타리아 AGM80R", href: getSearchHref("스타리아 CMF80L") },
+  { label: "K3", href: getHomeSearchHref("K3", "vehicle") },
+  { label: "쏘렌토 MQ4", href: getHomeSearchHref("쏘렌토 MQ4", "vehicle") },
+  { label: "스타리아 AGM80R", href: getHomeSearchHref("스타리아 CMF80L", "battery") },
+  { label: "포터2 100R", href: getHomeSearchHref("포터2 100R", "vehicle") },
+  { label: "AGM70L", href: getHomeSearchHref("AGM70L", "battery") },
+  { label: "시동지연", href: getHomeSearchHref("시동지연", "symptom") },
 ] as const;
 
 export const HOME_MAIN_AUX_LINKS = [
@@ -260,8 +272,33 @@ export function filterCatalogProducts(
   return products.filter((p) => p.typeTag === typeFilter);
 }
 
+/** 대표 규격을 앞에 두고 나머지는 기존 순서 유지 */
+export function sortLineupWithPinned(
+  products: HomeCatalogProduct[],
+  pinned: readonly string[] = HOME_LINEUP_PINNED_CODES,
+): HomeCatalogProduct[] {
+  const pinSet = new Set(pinned.map((c) => c.toUpperCase()));
+  const pinnedItems: HomeCatalogProduct[] = [];
+  const rest: HomeCatalogProduct[] = [];
+  for (const code of pinned) {
+    const hit = products.find(
+      (p) =>
+        p.searchCode.toUpperCase() === code.toUpperCase() ||
+        p.displayName.toUpperCase() === code.toUpperCase(),
+    );
+    if (hit) pinnedItems.push(hit);
+  }
+  for (const p of products) {
+    const key = p.searchCode.toUpperCase();
+    if (pinSet.has(key) || pinSet.has(p.displayName.toUpperCase())) continue;
+    if (pinnedItems.some((x) => x.id === p.id)) continue;
+    rest.push(p);
+  }
+  return [...pinnedItems, ...rest];
+}
+
 export const HOME_SPEC_CARD_ACTIONS = {
-  fitCheck: (code: string) => getSearchHref(code),
+  fitCheck: (code: string) => getHomeSearchHref(code, "battery"),
   photo: HUB_PHOTO,
   outbound: HUB_STORE_ANCHORS.regions,
   store: HUB_STORE_ANCHORS.visit,

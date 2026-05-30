@@ -21,6 +21,8 @@ type Props = {
   buttonLabel?: string;
   /** 히어로 검색 CTA — shimmer 1곳만 */
   shimmerSubmit?: boolean;
+  /** /search?type= — all이면 생략 */
+  searchType?: string;
 };
 
 export function VehicleSearchBox({
@@ -31,6 +33,7 @@ export function VehicleSearchBox({
   showButton = false,
   buttonLabel = "검색",
   shimmerSubmit = false,
+  searchType,
 }: Props) {
   const [query, setQuery] = useState(defaultQuery);
   const [open, setOpen] = useState(false);
@@ -139,10 +142,13 @@ export function VehicleSearchBox({
       <div className={`relative ${className}`} ref={wrapRef}>
         <form
           action="/search"
-          className="grid gap-2 md:grid-cols-[1fr_auto]"
+          className="flex min-w-0 flex-1 gap-2"
           onSubmit={() => onSearchSubmit()}
         >
-          <div className="relative min-w-0">
+          {searchType && searchType !== "all" ? (
+            <input type="hidden" name="type" value={searchType} />
+          ) : null}
+          <div className="relative min-w-0 flex-1">
             <input
               autoComplete="off"
               className={inputClassName || "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300"}
@@ -166,14 +172,14 @@ export function VehicleSearchBox({
               shimmerColor="#93c5fd"
               shimmerDuration="4s"
               borderRadius="10px"
-              className="h-11 min-h-[44px] inline-flex items-center justify-center gap-1.5 px-6 text-sm font-black"
+              className="h-11 min-h-[44px] shrink-0 inline-flex items-center justify-center gap-1.5 px-6 text-sm font-black sm:h-16"
             >
               <AppIcon iconKey="search" size="sm" className="!text-white" />
               {buttonLabel}
             </ShimmerButton>
           ) : (
             <button
-              className="rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700"
+              className="h-11 shrink-0 rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700 sm:h-16"
               type="submit"
             >
               {buttonLabel}

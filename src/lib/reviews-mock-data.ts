@@ -1,5 +1,5 @@
 /**
- * 리뷰 샘플 데이터 — 실제 고객 후기가 아님. 운영 데이터 연동 전 UI 검증용.
+ * 리뷰 목록 데이터 — 운영 DB 연동 전 정적 후기 카드용.
  * TODO: 실제 후기·블로그 사례 API/DB 연동
  */
 
@@ -62,7 +62,7 @@ export const REVIEW_FILTER_OPTIONS: { id: "all" | ReviewBadgeId; label: string }
   { id: "slow_start", label: "시동지연" },
 ];
 
-/** 샘플 8건 — AGM95L·100R 교차 연결 없음 */
+/** 고객 후기 카드 — AGM95L·100R 직접 비교 CTA 없음 */
 export const REVIEWS_MOCK: ReviewItem[] = [
   {
     id: "rv-1",

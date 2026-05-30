@@ -237,6 +237,14 @@ export function SearchResultsView({ data }: Props) {
         </div>
       ) : null}
 
+      {/^k3$/i.test((data.query || "").trim()) && visibleVehicles.length > 1 && !data.recognizedVehicle ? (
+        <div className={`${bm.alertInfo} ${bm.cardPad}`}>
+          <p className="text-sm font-bold text-slate-900">
+            K3는 세대별로 배터리 규격이 다를 수 있어 아래에서 세대를 선택해 주세요.
+          </p>
+        </div>
+      ) : null}
+
       {visibleVehicles.length > 0 && !data.recognizedVehicle ? (
         <Section desc="검색어와 가장 가까운 차량" title="관련 차량">
           <SearchVehicleResults compact searchLayout rows={visibleVehicles} />

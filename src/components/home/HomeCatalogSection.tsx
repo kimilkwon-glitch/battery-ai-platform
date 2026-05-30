@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
 import { bm } from "@/lib/design-tokens";
+import Link from "next/link";
 import {
   HOME_CATALOG_TYPE_FILTERS,
   filterCatalogProducts,
   getCurrentLineup,
+  sortLineupWithPinned,
   type HomeCatalogBrandId,
   type HomeProductTypeFilter,
 } from "@/lib/home-main-catalog-data";
@@ -19,15 +21,15 @@ const BRAND_TABS: { id: HomeCatalogBrandId; label: string }[] = [
 const LINEUP_INITIAL_VISIBLE = 9;
 
 export function HomeCatalogSection() {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [showAllLineup, setShowAllLineup] = useState(false);
   const [brand, setBrand] = useState<HomeCatalogBrandId>("rocket");
   const [typeFilter, setTypeFilter] = useState<HomeProductTypeFilter>("전체");
 
-  const products = useMemo(
-    () => filterCatalogProducts(getCurrentLineup(brand), typeFilter),
-    [brand, typeFilter],
-  );
+  const products = useMemo(() => {
+    const filtered = filterCatalogProducts(getCurrentLineup(brand), typeFilter);
+    return sortLineupWithPinned(filtered);
+  }, [brand, typeFilter]);
 
   const visibleProducts = useMemo(
     () => (showAllLineup ? products : products.slice(0, LINEUP_INITIAL_VISIBLE)),
@@ -51,8 +53,11 @@ export function HomeCatalogSection() {
               </span>
             </div>
             <p className="mt-1.5 text-sm font-medium leading-relaxed text-slate-600">
-              로케트·쏠라이트 대표 규격을 한눈에 확인할 수 있습니다.
+              AGM·DIN·상용 R타입 등 대표 규격을 바로 확인할 수 있습니다.
             </p>
+            <Link className={`${bm.btnTertiary} mt-3 inline-flex text-xs`} href="/shop">
+              전체 규격 보기 →
+            </Link>
           </div>
 
           <button

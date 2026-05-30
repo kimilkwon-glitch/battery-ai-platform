@@ -66,7 +66,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
             className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[var(--bm-navy)] px-4 text-sm font-bold text-white transition hover:bg-[var(--bm-primary)]"
             href={detailHref}
           >
-            해당 규격 보기
+            규격 상세 보기
           </Link>
         </div>
       </div>
