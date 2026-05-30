@@ -233,10 +233,8 @@
   display: block;
 }
 
-@media (min-width: 640px) {
-  .bm-zone--review .review-card-media {
-    min-height: 11.5rem;
-  }
+.bm-zone--review .reviews-grid {
+  align-items: start;
 }
 
 .bm-zone--review .review-operator-reply {

@@ -13,28 +13,30 @@ import { bm } from "@/lib/design-tokens";
 export function BenefitsHubClient() {
   const active = BENEFIT_CARDS.filter((c) => c.status === "active");
   const coming = BENEFIT_CARDS.filter((c) => c.status === "coming_soon");
+  const couponCards = active.filter((c) => c.couponBenefitId);
 
   return (
     <div className="bm-zone bm-zone--benefit space-y-8" data-page="benefits-hub">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {active.map((card) => (
-          <div key={card.id} className="space-y-4">
-            <BenefitCardVisual card={card} asLink />
-            {card.couponBenefitId ? (
-              <CouponIssuerPanel
-                benefitId={card.couponBenefitId}
-                benefitName={card.title}
-                compact
-              />
-            ) : null}
-            <div className="flex flex-wrap gap-2">
-              <Link href={card.href} className={bm.btnPrimary}>
-                혜택 자세히 보기
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+      <section aria-label="혜택 카드">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {active.map((card) => (
+            <BenefitCardVisual key={card.id} card={card} asLink />
+          ))}
+        </div>
+      </section>
+
+      {couponCards.length > 0 ? (
+        <section className="mt-10 space-y-4 border-t border-slate-100 pt-8" aria-label="쿠폰 안내">
+          {couponCards.map((card) => (
+            <CouponIssuerPanel
+              key={card.id}
+              benefitId={card.couponBenefitId!}
+              benefitName={card.title}
+              compact
+            />
+          ))}
+        </section>
+      ) : null}
 
       {coming.length > 0 ? (
         <section>

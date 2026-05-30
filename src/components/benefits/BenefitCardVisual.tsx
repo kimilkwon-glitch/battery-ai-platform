@@ -23,13 +23,13 @@ export function BenefitCardVisual({
   const inner = (
     <article
       className={clsx(
-        "home-benefit-card bm-card-unified flex h-full flex-col overflow-hidden rounded-2xl bg-white",
+        "home-benefit-card bm-card-unified flex flex-col overflow-hidden rounded-2xl bg-white",
         active ? "home-benefit-card--active border-amber-200/80" : "border-slate-200/90 bg-slate-50/50",
         !active && "cursor-default",
       )}
     >
       <BenefitCardMedia card={toMediaCard(card)} priority={priority} />
-      <div className="flex flex-1 flex-col justify-between gap-2 p-4 pb-5 sm:p-5">
+      <div className="home-benefit-card__body flex flex-1 flex-col gap-2 p-4 pb-5 sm:p-5">
         <span
           className={clsx(
             "inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wide",
@@ -40,19 +40,17 @@ export function BenefitCardVisual({
         >
           {card.label}
         </span>
-        <h3 className="mt-2 text-base font-black text-slate-900">{card.title}</h3>
-        <p className="mt-1.5 text-xs font-semibold leading-relaxed text-slate-600">{card.description}</p>
+        <h3 className="text-base font-black text-slate-900">{card.title}</h3>
+        <p className="text-xs font-semibold leading-relaxed text-slate-600">{card.description}</p>
         {card.note ? (
-          <p className="home-benefit-card__meta mt-auto pt-2.5 text-[10px] font-medium leading-snug text-slate-400">
+          <p className="home-benefit-card__meta text-[10px] font-medium leading-snug text-slate-400">
             {card.note}
           </p>
-        ) : (
-          <p className="mt-auto pt-2.5 text-[10px] text-transparent" aria-hidden>
-            .
-          </p>
-        )}
+        ) : null}
         {asLink && active ? (
-          <p className="mt-2 text-[11px] font-black text-amber-800">혜택 자세히 보기 →</p>
+          <p className="home-benefit-card__cta mt-auto pt-2 text-[11px] font-black text-amber-800">
+            혜택 자세히 보기 →
+          </p>
         ) : null}
       </div>
     </article>
@@ -63,7 +61,7 @@ export function BenefitCardVisual({
   }
 
   return (
-    <Link href={card.href} className="block h-full rounded-2xl outline-none ring-amber-200 focus-visible:ring-2">
+    <Link href={card.href} className="block rounded-2xl outline-none ring-amber-200 focus-visible:ring-2">
       {inner}
     </Link>
   );

@@ -27,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="vehicle-alias-v01-20260530" className={cn("font-sans", geist.variable)}>
-      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="vehicle-alias-v01-20260530">
+    <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="benefit-review-layout-fix-v1-20260530" className={cn("font-sans", geist.variable)}>
+      <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="benefit-review-layout-fix-v1-20260530">
         <CartProvider>
           {children}
           <FloatingActionDock />

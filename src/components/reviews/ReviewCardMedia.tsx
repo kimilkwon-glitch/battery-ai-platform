@@ -47,7 +47,6 @@ export function ReviewCardMedia({ item, className }: Props) {
         type="button"
         className={clsx(
           "review-card-media group relative block w-full overflow-hidden bg-slate-100 text-left",
-          "aspect-[4/3] sm:aspect-auto sm:min-h-[11.5rem] sm:w-full sm:max-w-none",
           className,
         )}
         onClick={() => setLightbox(true)}
@@ -57,7 +56,7 @@ export function ReviewCardMedia({ item, className }: Props) {
         <img
           src={src}
           alt={alt}
-          className="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02] sm:object-contain sm:group-hover:scale-100"
+          className="h-full w-full object-cover object-center transition duration-200 group-hover:scale-[1.02]"
           decoding="async"
           onError={() => setBroken(true)}
         />

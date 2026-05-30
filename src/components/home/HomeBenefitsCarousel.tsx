@@ -101,7 +101,7 @@ export function HomeBenefitsCarousel() {
       <div className="home-benefits-carousel-shell relative mx-auto max-w-[1100px] px-10 sm:px-11">
         <div ref={viewportRef} className="home-benefits-viewport overflow-hidden rounded-2xl">
           <div
-            className="home-benefits-track flex gap-3"
+            className="home-benefits-track flex items-start gap-3"
             style={{
               transform: slideStep ? `translateX(-${index * slideStep}px)` : undefined,
             }}

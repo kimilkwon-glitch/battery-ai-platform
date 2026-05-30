@@ -85,27 +85,15 @@ function ReviewCardBody({ item }: { item: ReviewItem }) {
 function ReviewCard({ item }: { item: ReviewItem }) {
   const withPhoto = reviewHasImages(item);
 
-  if (!withPhoto) {
-    return (
-      <article className={`${bm.card} bm-card-unified review-card review-card--text`}>
-        <ReviewCardBody item={item} />
-      </article>
-    );
-  }
-
   return (
     <article
-      className={`${bm.card} bm-card-unified review-card review-card--photo overflow-hidden ring-1 ring-teal-100/80`}
+      className={clsx(
+        `${bm.card} bm-card-unified review-card flex flex-col overflow-hidden`,
+        withPhoto ? "review-card--photo ring-1 ring-teal-100/80" : "review-card--text",
+      )}
     >
-      <div className="flex flex-col sm:flex-row sm:items-stretch">
-        <ReviewCardMedia
-          item={item}
-          className="sm:w-[38%] sm:max-w-[220px] sm:border-r sm:border-slate-100"
-        />
-        <div className="min-w-0 flex-1">
-          <ReviewCardBody item={item} />
-        </div>
-      </div>
+      {withPhoto ? <ReviewCardMedia item={item} /> : null}
+      <ReviewCardBody item={item} />
     </article>
   );
 }
@@ -160,7 +148,7 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="reviews-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((item) => (
           <ReviewCard key={item.id} item={item} />
         ))}
