@@ -498,6 +498,11 @@
   line-height: 0;
 }
 
+.home-hero-slide__picture {
+  margin: 0;
+  line-height: 0;
+}
+
 .home-hero-slide__img {
   display: block;
   width: 100%;

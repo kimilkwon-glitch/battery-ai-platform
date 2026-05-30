@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
@@ -35,8 +34,7 @@ function HeroImageSlide({
   priority?: boolean;
   isActive: boolean;
 }) {
-  const [desktopError, setDesktopError] = useState(false);
-  const [mobileError, setMobileError] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <Link
@@ -47,49 +45,23 @@ function HeroImageSlide({
       aria-hidden={!isActive}
     >
       <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden">
-        {!desktopError ? (
-          <Image
-            src={slide.imageDesktop}
-            alt={slide.imageAlt}
-            fill
-            className="home-hero-slide__img home-hero-slide__img--desktop hidden sm:block"
-            sizes="(max-width: 639px) 0px, min(100vw, 1240px)"
-            priority={priority}
-            unoptimized
-            onError={() => setDesktopError(true)}
-          />
-        ) : null}
-        {!mobileError ? (
-          <Image
-            src={slide.imageMobile}
-            alt={slide.imageAlt}
-            fill
-            className={clsx(
-              "home-hero-slide__img home-hero-slide__img--mobile",
-              !desktopError && "sm:hidden",
-            )}
-            sizes="100vw"
-            priority={priority}
-            unoptimized
-            onError={() => setMobileError(true)}
-          />
-        ) : null}
-        {desktopError && !mobileError ? (
-          <Image
-            src={slide.imageMobile}
-            alt={slide.imageAlt}
-            fill
-            className="home-hero-slide__img hidden sm:block"
-            sizes="min(100vw, 1240px)"
-            unoptimized
-            onError={() => setMobileError(true)}
-          />
-        ) : null}
-        {desktopError && mobileError ? (
+        {!imgError ? (
+          <picture className="home-hero-slide__picture absolute inset-0 block h-full w-full">
+            <source media="(min-width: 640px)" srcSet={slide.imageDesktop} />
+            <img
+              src={slide.imageMobile}
+              alt={slide.imageAlt}
+              className="home-hero-slide__img h-full w-full"
+              decoding="async"
+              fetchPriority={priority ? "high" : "auto"}
+              onError={() => setImgError(true)}
+            />
+          </picture>
+        ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-xs font-semibold text-slate-300">
             배너 이미지를 불러올 수 없습니다
           </div>
-        ) : null}
+        )}
         <div className="sr-only">
           <p>{slide.title}</p>
           <p>{slide.subtitle}</p>
