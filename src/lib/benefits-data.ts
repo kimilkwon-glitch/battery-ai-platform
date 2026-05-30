@@ -107,8 +107,9 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
   },
 ];
 
+export const BENEFITS_HUB_BADGE = "BENEFIT";
 export const BENEFITS_HUB_TITLE = "배터리매니저 혜택";
-export const BENEFITS_HUB_SUBTITLE = "현재 확인 가능한 혜택을 한눈에 확인하세요.";
+export const BENEFITS_HUB_SUBTITLE = "첫 주문 혜택부터 기본 서비스까지 한눈에 확인하세요.";
 
 export const FIRST_ORDER_3_BENEFIT = BENEFIT_CARDS[0]!;
 export const BASIC_SERVICE_BENEFIT = BENEFIT_CARDS[1]!;

@@ -518,6 +518,23 @@
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
+.portal-brand-lockup__logo img {
+  object-fit: contain;
+  object-position: center;
+}
+
+.portal-header-brand.portal-brand-lockup {
+  transition: none;
+}
+
+.home-benefits-section-header__badge {
+  font-family: var(--font-body);
+}
+
+.home-benefits-section-header__desc {
+  color: #475569;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-hero-carousel__viewport {
     transition: none !important;

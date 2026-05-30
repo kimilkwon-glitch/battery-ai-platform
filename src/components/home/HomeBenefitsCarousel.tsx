@@ -4,11 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { BenefitCardVisual } from "@/components/benefits/BenefitCardVisual";
-import {
-  BENEFIT_CARDS,
-  BENEFITS_HUB_SUBTITLE,
-  BENEFITS_HUB_TITLE,
-} from "@/lib/benefits-data";
+import { BenefitsSectionHeader } from "@/components/benefits/BenefitsSectionHeader";
+import { BENEFIT_CARDS, BENEFITS_HUB_TITLE } from "@/lib/benefits-data";
 
 function useVisibleCount() {
   const [count, setCount] = useState(1);
@@ -99,14 +96,9 @@ export function HomeBenefitsCarousel() {
         pausedRef.current = false;
       }}
     >
-      <div className="text-center">
-        <h2 className="bm-section-eyebrow bm-section-eyebrow--benefit home-benefits-section-title">
-          {BENEFITS_HUB_TITLE}
-        </h2>
-        <p className="mt-1 text-[11px] font-medium text-slate-500">{BENEFITS_HUB_SUBTITLE}</p>
-      </div>
+      <BenefitsSectionHeader className="mb-6 sm:mb-8" />
 
-      <div className="home-benefits-carousel-shell relative mx-auto mt-4 max-w-[1100px] px-10 sm:px-11">
+      <div className="home-benefits-carousel-shell relative mx-auto max-w-[1100px] px-10 sm:px-11">
         <div ref={viewportRef} className="home-benefits-viewport overflow-hidden rounded-2xl">
           <div
             className="home-benefits-track flex gap-3"
