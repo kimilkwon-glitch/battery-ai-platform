@@ -21,10 +21,10 @@ function HeroPlaceholderSlide({ slide }: { slide: Extract<HeroSlide, { type: "pl
 
 function HeroImageSlide({
   slide,
-  isActive,
+  priority,
 }: {
   slide: Extract<HeroSlide, { type: "image" }>;
-  isActive: boolean;
+  priority?: boolean;
 }) {
   const [desktopError, setDesktopError] = useState(false);
   const [mobileError, setMobileError] = useState(false);
@@ -38,7 +38,7 @@ function HeroImageSlide({
           fill
           className="home-hero-slide__img home-hero-slide__img--desktop hidden object-contain object-center sm:block"
           sizes="(max-width: 639px) 0px, min(100vw, 1240px)"
-          priority={isActive}
+          priority={priority}
           unoptimized
           onError={() => setDesktopError(true)}
         />
@@ -53,7 +53,7 @@ function HeroImageSlide({
             !desktopError && "sm:hidden",
           )}
           sizes="100vw"
-          priority={isActive}
+          priority={priority}
           unoptimized
           onError={() => setMobileError(true)}
         />
@@ -84,7 +84,7 @@ function HeroImageSlide({
   return (
     <Link
       href={slide.href}
-      className="block h-full w-full outline-none ring-blue-300 focus-visible:ring-2"
+      className="home-hero-slide__link block h-full w-full outline-none ring-blue-300 focus-visible:ring-2"
       aria-label={`${slide.imageAlt} — 자세히 보기`}
     >
       {inner}
@@ -96,15 +96,9 @@ export function HomeMainBanner() {
   const slides = HERO_SLIDES;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [fade, setFade] = useState(true);
 
   const goTo = useCallback((next: number) => {
-    const i = (next + slides.length) % slides.length;
-    setFade(false);
-    window.setTimeout(() => {
-      setIndex(i);
-      setFade(true);
-    }, 120);
+    setIndex((next + slides.length) % slides.length);
   }, [slides.length]);
 
   const go = useCallback((delta: number) => goTo(index + delta), [goTo, index]);
@@ -115,8 +109,6 @@ export function HomeMainBanner() {
     return () => window.clearInterval(t);
   }, [paused, slides.length, go]);
 
-  const slide = slides[index]!;
-
   return (
     <section
       className="home-hero-carousel w-full"
@@ -126,17 +118,23 @@ export function HomeMainBanner() {
       onMouseLeave={() => setPaused(false)}
     >
       <div className="home-hero-carousel__frame relative overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
-        <div
-          className={clsx(
-            "home-hero-carousel__viewport relative h-[240px] transition-opacity duration-[400ms] ease-out sm:h-[300px] md:h-[340px] lg:h-[360px] xl:h-[380px]",
-            fade ? "opacity-100" : "opacity-0",
-          )}
-        >
-          {slide.type === "image" ? (
-            <HeroImageSlide slide={slide} isActive={index === 0} />
-          ) : (
-            <HeroPlaceholderSlide slide={slide} />
-          )}
+        <div className="home-hero-carousel__viewport relative h-[240px] sm:h-[300px] md:h-[340px] lg:h-[360px] xl:h-[380px]">
+          {slides.map((s, i) => (
+            <div
+              key={s.id}
+              className={clsx(
+                "home-hero-carousel__slide-layer absolute inset-0 transition-opacity duration-300 ease-out",
+                i === index ? "z-[1] opacity-100" : "pointer-events-none z-0 opacity-0",
+              )}
+              aria-hidden={i !== index}
+            >
+              {s.type === "image" ? (
+                <HeroImageSlide slide={s} priority={i === 0} />
+              ) : (
+                <HeroPlaceholderSlide slide={s} />
+              )}
+            </div>
+          ))}
         </div>
 
         {slides.length > 1 ? (
@@ -144,7 +142,7 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => go(-1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/40 text-white backdrop-blur-sm transition hover:bg-slate-900/60 sm:left-4 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/40 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-slate-900/60 sm:left-4 sm:size-11"
               aria-label="이전 배너"
             >
               <ChevronLeft className="size-4" />
@@ -152,24 +150,24 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => go(1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/40 text-white backdrop-blur-sm transition hover:bg-slate-900/60 sm:right-4 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/40 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-slate-900/60 sm:right-4 sm:size-11"
               aria-label="다음 배너"
             >
               <ChevronRight className="size-4" />
             </button>
             <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 sm:bottom-5">
               <div className="flex gap-1.5 rounded-full bg-slate-900/30 px-2 py-1 backdrop-blur-sm">
-                {slides.map((s, i) => (
+                {slides.map((s, slideIndex) => (
                   <button
                     key={s.id}
                     type="button"
-                    onClick={() => goTo(i)}
+                    onClick={() => goTo(slideIndex)}
                     className={clsx(
-                      "h-2 rounded-full transition-all duration-300",
-                      i === index ? "w-5 bg-white" : "w-2 bg-white/45 hover:bg-white/70",
+                      "h-2 rounded-full transition-[width,background-color] duration-300",
+                      slideIndex === index ? "w-5 bg-white" : "w-2 bg-white/45 hover:bg-white/70",
                     )}
-                    aria-label={`배너 ${i + 1}`}
-                    aria-current={i === index}
+                    aria-label={`배너 ${slideIndex + 1}`}
+                    aria-current={slideIndex === index}
                   />
                 ))}
               </div>

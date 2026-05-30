@@ -464,12 +464,23 @@
   }
 }
 
+/* hero — hover 시 이미지 repaint 방지: 프레임/이미지에 hover 애니메이션 없음 */
 .home-hero-carousel__frame {
-  transition: box-shadow var(--motion-normal) ease;
+  isolation: isolate;
 }
 
-.home-hero-carousel__frame:hover {
-  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.16);
+.home-hero-carousel__viewport {
+  contain: layout paint;
+}
+
+.home-hero-slide__img,
+.home-hero-slide--image,
+.home-hero-slide__link {
+  transition: none !important;
+}
+
+.home-hero-slide__link:hover {
+  opacity: 1;
 }
 
 .portal-brand-lockup__title {
@@ -834,29 +845,10 @@
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, transparent 100%);
 }
 
-/* 혜택 카드 — 3장 media 높이 통일, 3% 쿠폰만 contain + 톤 배경 */
-.home-benefit-card-media--banner .home-benefit-card-media__img--coupon {
-  width: auto;
-  height: auto;
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
+/* 혜택 3% 카드 — 상단 edge-to-edge, 5:3, cover */
+.home-benefit-card-media--coupon .home-benefit-card-media__img {
+  object-fit: cover;
   object-position: center center;
-  filter: drop-shadow(0 2px 8px rgba(180, 83, 9, 0.08));
-}
-
-@media (min-width: 640px) {
-  .home-benefit-card-media--banner .home-benefit-card-media__img--coupon {
-    max-height: 98%;
-    max-width: 99%;
-  }
-}
-
-@media (max-width: 639px) {
-  .home-benefit-card-media--banner .home-benefit-card-media__img--coupon {
-    max-height: 96%;
-    max-width: 98%;
-  }
 }
 
 @media (max-width: 639px) {
