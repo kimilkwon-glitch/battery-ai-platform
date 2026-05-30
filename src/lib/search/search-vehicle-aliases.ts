@@ -162,12 +162,16 @@ function vehicleIntentToAlias(rawQuery: string): SearchVehicleAliasMatch | null 
   const { normalizedQuery } = normalizeQuery(rawQuery);
   const intent = parseVehicleIntent(normalizedQuery);
   if (!intent.hasVehicle) return null;
+  const asset = intent.assetId ? getVehicleAsset(intent.assetId) : null;
+  const formal = asset?.displayName ?? intent.displayName ?? intent.label;
   return {
-    label: intent.label,
+    label: formal,
+    formalDisplayName: formal,
     brand: intent.brand ?? undefined,
     assetId: intent.assetId,
-    catalogId: intent.catalogId,
+    catalogId: intent.catalogId ?? intent.assetId,
     dbQuery: intent.dbQuery,
+    matchedVia: "vehicle-canonical-registry",
   };
 }
 
