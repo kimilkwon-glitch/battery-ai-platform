@@ -36,7 +36,7 @@ export function BenefitCardVisual({
       <div className="flex flex-1 flex-col p-4">
         <span
           className={clsx(
-            "inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide",
+            "inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wide",
             active
               ? "bg-amber-500/15 text-amber-900 ring-1 ring-amber-200"
               : "bg-slate-200/60 text-slate-500",
@@ -47,9 +47,13 @@ export function BenefitCardVisual({
         <h3 className="mt-2 text-base font-black text-slate-900">{card.title}</h3>
         <p className="mt-1.5 text-xs font-semibold leading-relaxed text-slate-600">{card.description}</p>
         {card.note ? (
-          <p className="mt-auto pt-3 text-[10px] font-medium leading-snug text-slate-400">{card.note}</p>
+          <p className="home-benefit-card__meta mt-auto pt-2.5 text-[10px] font-medium leading-snug text-slate-400">
+            {card.note}
+          </p>
         ) : (
-          <p className="mt-auto pt-3 text-[10px] text-transparent">.</p>
+          <p className="mt-auto pt-2.5 text-[10px] text-transparent" aria-hidden>
+            .
+          </p>
         )}
         {asLink && active ? (
           <p className="mt-2 text-[11px] font-black text-amber-800">혜택 자세히 보기 →</p>

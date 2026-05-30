@@ -464,19 +464,28 @@
   }
 }
 
-/* hero — hover 시 이미지 repaint 방지: 프레임/이미지에 hover 애니메이션 없음 */
+/* hero — hover 시 이미지 repaint 방지 */
 .home-hero-carousel__frame {
   isolation: isolate;
 }
 
 .home-hero-carousel__viewport {
-  contain: layout paint;
+  contain: layout;
+}
+
+.home-hero-carousel__slide-layer {
+  transition: none;
 }
 
 .home-hero-slide__img,
 .home-hero-slide--image,
-.home-hero-slide__link {
+.home-hero-slide__link,
+.home-hero-slide__link:hover,
+.home-hero-slide__link:focus {
   transition: none !important;
+  transform: none !important;
+  filter: none !important;
+  opacity: 1;
 }
 
 .home-hero-slide__link:hover {
