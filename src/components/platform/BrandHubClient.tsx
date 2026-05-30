@@ -53,7 +53,7 @@ export function BrandHubClient() {
   return (
     <div className="brand-hub space-y-6">
       {/* 메인 브랜드 */}
-      <section className="grid gap-3 sm:grid-cols-2">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {mainBrands.map((b) => {
           const meta = brandSelectorMeta[b.id];
           const selected = active === b.id;
@@ -95,7 +95,13 @@ export function BrandHubClient() {
               ) : null}
               <p className="text-lg font-black">{b.displayName}</p>
               <p className={clsx("mt-1 text-xs font-bold", selected ? "text-slate-300" : "text-slate-500")}>
-                {b.id === "rocket" ? "GB·AGM 표기 중심" : "CMF·DIN 표기 중심"}
+                {b.id === "rocket"
+                  ? "GB·AGM 표기 중심"
+                  : b.id === "solite"
+                    ? "CMF·DIN 표기 중심"
+                    : b.id === "delco"
+                      ? "AGM 프리미엄"
+                      : "아트라스BX · AGM/DIN"}
               </p>
             </motion.button>
           );

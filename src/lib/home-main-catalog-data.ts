@@ -27,15 +27,13 @@ export type HomeCatalogProduct = {
   specAliases?: readonly string[];
 };
 
-export const HOME_MAIN_SEARCH_PLACEHOLDER = "차량명, 연식, 배터리 규격을 검색하세요";
+export const HOME_MAIN_SEARCH_PLACEHOLDER = "차량명 또는 배터리 규격으로 바로 확인";
 
 export const HOME_MAIN_SEARCH_EXAMPLES = [
-  { label: "쏘렌토MQ4", href: getSearchHref("쏘렌토 MQ4") },
-  { label: "쏘렌토", href: getSearchHref("쏘렌토") },
-  { label: "포터2", href: getSearchHref("포터2") },
-  { label: "그랜저IG", href: getSearchHref("그랜저 IG") },
-  { label: "스타리아", href: getSearchHref("스타리아") },
-  { label: "K3", href: getSearchHref("K3") },
+  { label: "쏘렌토 MQ4", href: getSearchHref("쏘렌토 MQ4") },
+  { label: "AGM70L", href: getSearchHref("AGM70L") },
+  { label: "포터2 100R", href: getSearchHref("포터2 100R") },
+  { label: "스타리아 AGM80R", href: getSearchHref("스타리아 CMF80L") },
 ] as const;
 
 export const HOME_MAIN_AUX_LINKS = [

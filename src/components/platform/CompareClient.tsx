@@ -91,6 +91,7 @@ export function CompareClient({ initial }: { initial: string[] }) {
     initial.length >= 2 ? initial.slice(0, 2) : ["AGM70L", "AGM80L"],
   );
   const [expanded, setExpanded] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [imageBrand] = useState<BatteryBrandKey>("rocket");
 
@@ -160,22 +161,6 @@ export function CompareClient({ initial }: { initial: string[] }) {
 
       <ComparePresetHub />
 
-      <section className={bm.intentSummary}>
-        <p className={`${bm.intentBadge} inline-flex items-center gap-1.5`}>
-          <AppIcon iconKey="compare" size="sm" />
-          업그레이드 판단 리포트
-        </p>
-        <p className={`mt-2 ${bm.specTitle} flex items-center gap-2 text-lg`} data-spec-code>
-          <AppIcon iconKey="compareVs" size="md" />
-          <span>
-            {codeA} <span className="text-[var(--bm-muted)]">→</span> {codeB}
-          </span>
-        </p>
-        <p className={`mt-2 ${bm.textSub} text-sm`}>
-          {description} 최종 장착 가능 여부는 차종·트레이·단자·ISG/IBS 조건을 함께 확인하세요.
-        </p>
-      </section>
-
       <section>
         <p className={bm.label}>다른 업그레이드 조합</p>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -230,7 +215,38 @@ export function CompareClient({ initial }: { initial: string[] }) {
         </div>
       </section>
 
-      <CompareDeepNotePanel codeA={codeA} codeB={codeB} />
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <button
+          type="button"
+          className="flex w-full items-center justify-between text-left"
+          onClick={() => setDetailOpen((v) => !v)}
+          aria-expanded={detailOpen}
+        >
+          <h2 className={bm.cardTitle}>자세히 보기</h2>
+          <span className="text-xs font-black text-slate-400">{detailOpen ? "접기" : "펼치기"}</span>
+        </button>
+        {detailOpen ? (
+          <div className="mt-4 space-y-4 border-t border-slate-100 pt-4">
+            <CompareDeepNotePanel codeA={codeA} codeB={codeB} />
+            <section className="grid gap-3 sm:grid-cols-2">
+              {[batA, batB].map((b) => (
+                <div key={b.code} className={`${bm.cardPremium} ${bm.cardPad}`}>
+                  <p className="spec-code text-sm font-black text-[var(--bm-primary)]" data-spec-code>
+                    {b.code} 선택 가이드
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-4">
+                    {getPickGuideItems(b).map((item) => (
+                      <li key={item} className={`${bm.textSub} text-xs`}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </section>
+          </div>
+        ) : null}
+      </section>
 
       {getCustomerBrandSpecs(codeA).length > 0 || getCustomerBrandSpecs(codeB).length > 0 ? (
         <section className={`${bm.card} ${bm.cardPad}`}>
@@ -332,34 +348,16 @@ export function CompareClient({ initial }: { initial: string[] }) {
         </div>
       </section>
 
-      {/* 이럴 때 선택 */}
-      <section className="grid gap-3 sm:grid-cols-2">
-        {[batA, batB].map((b) => (
-          <div key={b.code} className={`${bm.cardPremium} ${bm.cardPad}`}>
-            <p className="spec-code text-sm font-black text-[var(--bm-primary)]" data-spec-code>
-              {b.code} 선택 가이드
-            </p>
-            <ul className="mt-2 space-y-1.5">
-              {getPickGuideItems(b).map((item) => (
-                <li key={item} className={`flex gap-2 ${bm.textSub} text-xs`}>
-                  <span className={`${bm.badge} ${bm.badgeGreen}`}>적합</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-        <div className={`${bm.warningPanel} sm:col-span-2`}>
-          <p className={bm.cardTitle}>주의 · 단순 대체 금지</p>
-          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-            {compareCautions.map((c) => (
-              <li key={c} className="text-sm font-medium text-amber-800">
-                · {c}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <div className={bm.warningPanel}>
+        <p className={bm.cardTitle}>오주문 주의</p>
+        <ul className="mt-2 list-disc space-y-1 pl-4">
+          {compareCautions.slice(0, 3).map((c) => (
+            <li key={c} className="text-sm font-medium text-amber-800">
+              {c}
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* 배터리 선택 — 보조 영역 */}
       <section className={`${bm.card} ${bm.cardPad} bg-[var(--bm-surface-muted)]`}>

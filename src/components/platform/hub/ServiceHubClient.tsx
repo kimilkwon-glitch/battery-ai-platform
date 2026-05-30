@@ -77,6 +77,13 @@ export function ServiceHubClient() {
         </ul>
       </section>
 
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <SectionHeader title="부산 직영점·지도" description="덕천·학장 지점 위치와 연락처" iconKey="mapPinned" />
+        <Link className={`${bm.btnNavy} mt-3 inline-flex text-xs`} href="/service-center">
+          매장·지점 안내 보기 →
+        </Link>
+      </section>
+
       <section className={bm.platformStrip}>
         <div className="flex flex-wrap gap-2">
           <HubBadge label="직영" tone="ok" />

@@ -54,10 +54,10 @@ export function OrderChecklistClient() {
 
       <section className={`${bm.card} ${bm.cardPad}`}>
         <SectionHeader title="업그레이드·호환 기준" description="용량만 보지 마세요" iconKey="batterySpec" />
-        <ul className="mt-3 space-y-1.5">
+        <ul className="mt-3 list-disc space-y-1.5 pl-4">
           {UPGRADE_PRINCIPLES.slice(0, 4).map((p) => (
             <li key={p} className="text-xs font-medium text-slate-600">
-              · {p}
+              {p}
             </li>
           ))}
         </ul>

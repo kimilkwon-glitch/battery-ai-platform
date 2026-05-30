@@ -98,7 +98,7 @@ export function QnaSidebar({
       </section>
 
       <section className="rounded-2xl border border-amber-100 bg-gradient-to-br from-[#FFFBEB] to-white p-4">
-        <p className="text-[11px] font-black uppercase tracking-[0.06em] text-amber-700">준비</p>
+        <p className="text-[11px] font-black uppercase tracking-[0.06em] text-amber-700">문의 전 준비사항</p>
         <h2 className="mt-0.5 text-sm font-black text-[#0F172A]">질문 전 확인할 것</h2>
         <ul className="mt-2 space-y-1">
           {QNA_PREP_CHECKLIST.map((item) => (

@@ -35,7 +35,7 @@ export default async function SearchPage({
 
   const relatedKeywords = [
     ...results.relatedKeywords,
-    ...(displayQuery || results.upgradeGuidance ? [] : ["쏘렌토 MQ4 AGM95L", "그랜저 IG AGM80L"]),
+    ...(displayQuery || results.upgradeGuidance ? [] : ["쏘렌토 MQ4", "그랜저 IG AGM80L", "포터2 100R"]),
   ]
     .filter((k) => !results.upgradeGuidance || !/\b(AGM|DIN|CMF)\d/i.test(k))
     .filter((k, i, arr) => arr.indexOf(k) === i)

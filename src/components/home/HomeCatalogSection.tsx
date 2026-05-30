@@ -19,7 +19,7 @@ const BRAND_TABS: { id: HomeCatalogBrandId; label: string }[] = [
 const LINEUP_INITIAL_VISIBLE = 9;
 
 export function HomeCatalogSection() {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [showAllLineup, setShowAllLineup] = useState(false);
   const [brand, setBrand] = useState<HomeCatalogBrandId>("rocket");
   const [typeFilter, setTypeFilter] = useState<HomeProductTypeFilter>("전체");

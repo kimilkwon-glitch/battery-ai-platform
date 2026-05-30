@@ -21,10 +21,15 @@ import { BatterySpecMiniCard } from "@/components/battery/BatterySpecMiniCard";
 import { hasBrandSpecData } from "@/lib/battery-knowledge";
 import { NO_REGISTERED_SPEC_MESSAGE } from "@/lib/search/battery-recommendation-copy";
 import { isPorter2VehicleContext } from "@/lib/search/fitment-overrides";
+import { SearchFuelVariantCards } from "@/components/platform/search-ux/SearchFuelVariantCards";
 import type { SearchUxPresentation } from "@/lib/search/search-ux-presentation";
 import type { RecognizedSpecResult } from "@/lib/search/search-summary";
 import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import type { RecognizedVehicleResult } from "@/lib/search-page-results";
+import {
+  isSorentoMq4AmbiguousQuery,
+  SORENTO_MQ4_FUEL_VARIANTS,
+} from "@/lib/search/sorento-mq4-fuel-split";
 
 type Props = {
   displayQuery: string;
@@ -168,10 +173,12 @@ export function SearchBatteryFocusBlock({
     (isPorter2 && vehicle?.candidateBatteryCodes?.length
       ? "연식 분기 후보를 같은 우선순위로 표시합니다."
       : null);
+  const showSorentoFuelSplit = isSorentoMq4AmbiguousQuery(displayQuery);
 
   return (
     <div className="space-y-3">
       {header}
+      {showSorentoFuelSplit ? <SearchFuelVariantCards variants={SORENTO_MQ4_FUEL_VARIANTS} /> : null}
       <SearchRecommendationNotes reasons={ux.recommendationReasons} />
       {ux.vehicleFuelBlurb ? (
         <p className="text-xs font-medium leading-relaxed text-slate-600">{ux.vehicleFuelBlurb}</p>

@@ -2,8 +2,8 @@ import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 
 /** 브랜드 허브 — 메인/참고 브랜드·대표 규격·짧은 설명 */
 
-export const BRAND_HUB_MAIN_IDS = ["rocket", "solite"] as const;
-export const BRAND_HUB_REFERENCE_IDS = ["delco", "varta", "atk", "infinit"] as const;
+export const BRAND_HUB_MAIN_IDS = ["rocket", "solite", "delco", "varta"] as const;
+export const BRAND_HUB_REFERENCE_IDS = ["atk", "infinit"] as const;
 
 export type BrandHubMainId = (typeof BRAND_HUB_MAIN_IDS)[number];
 
@@ -27,9 +27,9 @@ export const brandHubShortCopy: Record<
     notation: "AGM92Ah 등",
   },
   varta: {
-    title: "바르타 배터리",
-    body: "유럽 수입차에서 확인되는 AGM/DIN 브랜드입니다. 순정 코드·등록 절차를 확인하세요.",
-    notation: "AGM92Ah 등",
+    title: "아트라스BX (바르타)",
+    body: "아트라스BX 계열 AGM/DIN 표기입니다. 유럽 수입차·프리미엄 차종에서 확인되며 순정 코드를 함께 보세요.",
+    notation: "AGM · DIN 표기",
   },
   atk: {
     title: "한국AT 배터리",

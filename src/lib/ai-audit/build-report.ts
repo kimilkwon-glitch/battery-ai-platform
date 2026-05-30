@@ -57,6 +57,11 @@ export type AiAuditReport = {
     remaining_p0: string;
     remaining_p1: string;
     remaining_p2: string;
+    sample_review_text_found: string;
+    fake_mypage_data_found: string;
+    photo_check_pending_copy_found: string;
+    bullet_duplication_found: string;
+    broken_cta_found: string;
   };
 };
 
@@ -161,6 +166,20 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
     remainingP2.push(`Non-customer forbidden hits in source: ${forbiddenFound.filter((f) => !customerFacingForbidden.includes(f)).join(", ")}`);
   }
 
+  const risks = auditSnapshot.customerRisks as
+    | {
+        sample_review_text_found?: boolean;
+        fake_mypage_data_found?: boolean;
+        photo_check_pending_copy_found?: boolean;
+        bullet_duplication_found?: boolean;
+        broken_cta_found?: boolean;
+      }
+    | undefined;
+  if (risks?.sample_review_text_found) remainingP1.push("sample_review_text_found");
+  if (risks?.fake_mypage_data_found) remainingP1.push("fake_mypage_data_found");
+  if (risks?.photo_check_pending_copy_found) remainingP1.push("photo_check_pending_copy_found");
+  if (risks?.bullet_duplication_found) remainingP1.push("bullet_duplication_found");
+
   const summary = {
     build_rev: BUILD_STAMP,
     production_alias: "https://battery-ai-platform.vercel.app",
@@ -175,13 +194,18 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
     remaining_p0: remainingP0.length ? remainingP0.join("; ") : "none",
     remaining_p1: remainingP1.length ? remainingP1.join("; ") : "none",
     remaining_p2: remainingP2.length ? remainingP2.join("; ") : "none",
+    sample_review_text_found: risks?.sample_review_text_found ? "yes" : "no",
+    fake_mypage_data_found: risks?.fake_mypage_data_found ? "yes" : "no",
+    photo_check_pending_copy_found: risks?.photo_check_pending_copy_found ? "yes" : "no",
+    bullet_duplication_found: risks?.bullet_duplication_found ? "yes" : "no",
+    broken_cta_found: risks?.broken_cta_found ? "yes" : "no",
   };
 
   return {
     generatedAt: new Date().toISOString(),
     production: {
       buildRev: BUILD_STAMP,
-      buildRevAttr: `ai-audit-v2-20260530 (${BUILD_STAMP_REV})`,
+      buildRevAttr: `customer-polish-v1-20260530 (${BUILD_STAMP_REV})`,
       gitCommit: auditSnapshot.gitCommit,
       gitCommitRuntime: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
       vercelDeploymentId: process.env.VERCEL_DEPLOYMENT_ID ?? null,
@@ -220,6 +244,11 @@ export function formatAuditSummaryBlock(summary: AiAuditReport["summary"]): stri
     `remaining_p0: ${summary.remaining_p0}`,
     `remaining_p1: ${summary.remaining_p1}`,
     `remaining_p2: ${summary.remaining_p2}`,
+    `sample_review_text_found: ${summary.sample_review_text_found}`,
+    `fake_mypage_data_found: ${summary.fake_mypage_data_found}`,
+    `photo_check_pending_copy_found: ${summary.photo_check_pending_copy_found}`,
+    `bullet_duplication_found: ${summary.bullet_duplication_found}`,
+    `broken_cta_found: ${summary.broken_cta_found}`,
     "AI_AUDIT_SUMMARY_END",
   ];
   return lines.join("\n");

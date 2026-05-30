@@ -104,7 +104,7 @@ export function CommunityClient({
     })).filter((g) => g.items.length > 0);
   }, [featuredIds, recent]);
 
-  const visibleSecondaryTags = showAllTags ? QNA_SECONDARY_TAGS : QNA_SECONDARY_TAGS.slice(0, 4);
+  const visibleSecondaryTags = showAllTags ? QNA_SECONDARY_TAGS : QNA_SECONDARY_TAGS.slice(0, 6);
 
   const applyChipSearch = useCallback(
     (query: string) => {
@@ -156,7 +156,7 @@ export function CommunityClient({
         </form>
 
         <div className="mt-3 flex flex-wrap gap-2">
-          {QNA_HERO_CHIPS.slice(0, 4).map((chip) => (
+          {QNA_HERO_CHIPS.slice(0, 6).map((chip) => (
             <button
               key={chip.label}
               type="button"
@@ -336,6 +336,21 @@ export function CommunityClient({
               ) : null}
             </>
           )}
+
+          <section className={bm.platformStrip}>
+            <p className={bm.label}>다음 행동</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link className={`${bm.btnNavy} text-xs`} href="/photo-check">
+                사진으로 확인
+              </Link>
+              <Link className={`${bm.btnSecondary} text-xs`} href="/vehicles">
+                차량명으로 검색
+              </Link>
+              <Link className={`${bm.btnSecondary} text-xs`} href="/service-center">
+                매장·택배 상담
+              </Link>
+            </div>
+          </section>
         </div>
 
         <div className="lg:sticky lg:top-4 lg:self-start">

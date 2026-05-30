@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-30T04:00:43.598Z",
-  "gitCommit": "f1d2250211aa8292e1dfb1ea5e473489eb723592",
+  "generatedAt": "2026-05-30T04:17:21.089Z",
+  "gitCommit": "e3fd9f062019852ecde97802423f4efff5a18748",
   "forbidden": {
     "hits": [
       {
@@ -123,8 +123,10 @@
     ]
   },
   "crossLinks": {
-    "batteries100rDirectLinkFiles": [],
-    "batteries100rDirectLink": false,
+    "batteries100rDirectLinkFiles": [
+      "src/components/battery/BatteryDetailExpandSections.tsx"
+    ],
+    "batteries100rDirectLink": true,
     "orderChecklist100rVsAgm95lCta": false,
     "orderChecklistCompareHref": false,
     "comparePairDefinitions": [
@@ -188,10 +190,20 @@
       "component": "ServiceCenterClient",
       "sameAsServiceCenter": false,
       "typoHetrimyeon": false,
-      "phoneCta": false,
+      "phoneCta": true,
       "naverCta": false,
       "blogCta": false
     },
     "unifyRecommendation": "Separate routes: /service = delivery+outbound hub copy; /service-center = Busan map/store locator. No redirect required."
+  },
+  "customerRisks": {
+    "sample_review_text_found": false,
+    "fake_mypage_data_found": false,
+    "photo_check_pending_copy_found": false,
+    "bullet_duplication_found": true,
+    "bullet_duplication_files": [
+      "src/components/platform/CompareClient.tsx"
+    ],
+    "broken_cta_found": false
   }
 }

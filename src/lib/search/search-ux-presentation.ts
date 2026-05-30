@@ -10,6 +10,7 @@ import { resolveSearchIntentLabel } from "@/lib/search/search-intent";
 import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
 import { getKnowledgeCardForSpec, getDefaultVehicleFuelKnowledgeBlurb } from "@/lib/battery-knowledge";
 import { isPorter2VehicleContext } from "@/lib/search/fitment-overrides";
+import { isSorentoMq4AmbiguousQuery } from "@/lib/search/sorento-mq4-fuel-split";
 import type { RecognizedSpecResult } from "@/lib/search/search-summary";
 
 function porter2ContextFromVehicle(
@@ -471,9 +472,11 @@ export function buildSearchUxPresentation(
         : null,
     knowledgeCard: specCode ? getKnowledgeCardForSpec(specCode) : null,
     vehicleFuelBlurb:
-      mode === "vehicle" && vehicle?.fuelLabel
-        ? getDefaultVehicleFuelKnowledgeBlurb()
-        : null,
+      isSorentoMq4AmbiguousQuery(query)
+        ? "쏘렌토 MQ4는 하이브리드(AGM60L)와 디젤·가솔린(AGM80L 후보)이 다릅니다. 아래 연료별 안내를 먼저 확인하세요."
+        : mode === "vehicle" && vehicle?.fuelLabel
+          ? getDefaultVehicleFuelKnowledgeBlurb()
+          : null,
     yearBranchHint:
       porter2ContextFromVehicle(query, vehicle) && vehicle?.yearBranchLinks?.length
         ? "연식에 따라 규격이 달라질 수 있습니다"

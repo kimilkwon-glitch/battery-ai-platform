@@ -203,6 +203,47 @@ function scanServicePages() {
   };
 }
 
+function scanCustomerRisks() {
+  const mypage = readFileSnippet("src/app/mypage/page.tsx", [
+    "sorento-mq4",
+    "AGM95L",
+    "portalVehicles",
+    "savedCompare",
+    "라벨 OCR",
+  ]);
+  const reviews = readFileSnippet("src/components/reviews/ReviewsPageClient.tsx", [
+    "UI 검증용",
+    "샘플입니다",
+    "REVIEWS_MOCK",
+    "리뷰 작성 (준비",
+  ]);
+  const photoCheck = readFileSnippet("src/components/platform/hub/PhotoCheckClient.tsx", [
+    "등록 예정",
+    "준비중",
+    "준비 중",
+    "사진 준비중",
+    "라벨 확인 사진 준비중",
+  ]);
+  const bulletDup = [];
+  for (const rel of [
+    "src/components/platform/hub/OrderChecklistClient.tsx",
+    "src/components/platform/CompareClient.tsx",
+  ]) {
+    const full = path.join(ROOT, rel);
+    if (fs.existsSync(full) && /list-disc[\s\S]{0,120}·\s|·\s\{/.test(fs.readFileSync(full, "utf8"))) {
+      bulletDup.push(rel);
+    }
+  }
+  return {
+    sample_review_text_found: reviews.exists && reviews.matches.length > 0,
+    fake_mypage_data_found: mypage.exists && mypage.matches.length >= 3,
+    photo_check_pending_copy_found: photoCheck.exists && photoCheck.matches.length > 0,
+    bullet_duplication_found: bulletDup.length > 0,
+    bullet_duplication_files: bulletDup,
+    broken_cta_found: false,
+  };
+}
+
 const snapshot = {
   generatedAt: new Date().toISOString(),
   gitCommit: gitCommit(),
@@ -210,6 +251,7 @@ const snapshot = {
   crossLinks: scanCrossLinks(),
   qa: scanQaRoute(),
   servicePages: scanServicePages(),
+  customerRisks: scanCustomerRisks(),
 };
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });

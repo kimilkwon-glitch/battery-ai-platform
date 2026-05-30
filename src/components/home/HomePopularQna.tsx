@@ -7,7 +7,7 @@ import { getHomeFeaturedQuestions } from "@/lib/qna";
 import { searchHref } from "@/lib/platform-data";
 
 export function HomePopularQna() {
-  const featured = getHomeFeaturedQuestions(5);
+  const featured = getHomeFeaturedQuestions(3);
 
   return (
     <HomeSectionShell rhythm="qna" data-section="home-popular-qna">

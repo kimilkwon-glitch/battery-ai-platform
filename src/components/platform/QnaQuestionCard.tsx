@@ -128,7 +128,7 @@ export function QnaQuestionCard({
               <span />
             )}
             <span className="shrink-0 whitespace-nowrap text-[11px] font-black text-blue-600">
-              {open ? "접기" : "답변 보기"} →
+              {open ? "접기" : "펼쳐서 보기"} →
             </span>
           </div>
         </div>

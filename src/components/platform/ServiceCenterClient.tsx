@@ -40,8 +40,21 @@ export function ServiceCenterClient({
         onHoverStore={setHoveredStore}
         onSelect={setActiveStore}
       />
+      <p className="text-center text-xs font-medium text-slate-500">
+        지도가 보이지 않으면 가까운 지점으로 전화 상담해 주세요.
+      </p>
 
       <StoreHubCompactCards highlightId={highlightStore} />
+
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <h3 className="text-base font-black text-slate-950">배송·출장·택배 전체 안내</h3>
+        <p className="mt-1 text-sm font-medium text-slate-600">
+          택배 주문·출장 교체·야간 무인 시스템은 서비스 허브에서 한눈에 볼 수 있습니다.
+        </p>
+        <Link className={`${bm.btnSecondary} mt-3 inline-flex text-xs`} href="/service">
+          서비스 안내 보기 →
+        </Link>
+      </section>
 
       <section className={`${bm.card} ${bm.cardPad}`} id="visit-prep">
         <h3 className="text-base font-black text-slate-950">방문·출장 전 알려주시면 좋은 정보</h3>

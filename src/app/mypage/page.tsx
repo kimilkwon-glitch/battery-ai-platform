@@ -1,72 +1,83 @@
-import { ArticleCard, BatteryCard, MetaInfoRow, MiniStatCard, PortalLayout, PortalPanel } from "@/components/portal";
-import { compareUrl, diagnosisUrl, photoUrl, portalQuestions, portalVehicles, searchUrl, vehicleUrl } from "@/lib/portal-data";
+import Link from "next/link";
+import { PageShell } from "@/components/common/PageShell";
+import { AppIcon } from "@/components/common/AppIcon";
+import { bm } from "@/lib/design-tokens";
+import { getSearchHref } from "@/lib/battery-search";
+import { HUB_PHOTO } from "@/lib/customer-hub-routes";
+import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
 
-const myVehicle = portalVehicles.find((v) => v.slug === "sorento-mq4")!;
-const savedCompare = ["AGM80L", "DIN74L"] as const;
+const MY_CTAS = [
+  { label: "내 차 배터리 검색하기", href: "/vehicles", icon: "vehicle" as const, tone: "primary" as const },
+  { label: "사진으로 확인하기", href: HUB_PHOTO, icon: "photoCheck" as const, tone: "secondary" as const },
+  {
+    label: "주문 전 체크리스트",
+    href: HUB_ORDER_CHECKLIST,
+    icon: "checklist" as const,
+    tone: "secondary" as const,
+  },
+];
 
 export default function MyPage() {
   return (
-    <PortalLayout
+    <PageShell
+      zone="auth"
+      pageLabel="마이페이지"
       title="마이페이지"
-      description={`${myVehicle.name} · ${myVehicle.recommendedBattery} 기준 최근 활동`}
-      breadcrumbs={[{ label: "홈", href: "/" }, { label: "마이페이지" }]}
-      sidebar={
-        <>
-          <PortalPanel title="문의 · Q&A">
-            <a href={`/ai/chat?q=${encodeURIComponent(portalQuestions[2].title)}`}>
-              <MetaInfoRow label="EV6" value="12V 상담" />
-            </a>
-            <a href="/community">
-              <MetaInfoRow label="BMS" value="등록 문의" />
-            </a>
-          </PortalPanel>
-        </>
-      }
+      description="로그인 후 최근 검색·저장한 비교·상담 내역을 확인할 수 있습니다."
+      showSearch={false}
     >
-      <div className="grid gap-3 md:grid-cols-3">
-        <PortalPanel title="내 차량">
-          <a href={vehicleUrl(myVehicle.slug)}>
-            <MiniStatCard label={myVehicle.name} value={myVehicle.recommendedBattery} meta="SOH 82%" />
-          </a>
-        </PortalPanel>
-        <PortalPanel title="진단 기록">
-          <a href={diagnosisUrl(myVehicle.symptomSlugs[0])}>
-            <MiniStatCard label="블랙박스 방전" value="주의" meta={myVehicle.name} />
-          </a>
-        </PortalPanel>
-        <PortalPanel title="사진 분석">
-          <a href={photoUrl(myVehicle.recommendedBattery)}>
-            <MiniStatCard label="라벨 OCR" value={myVehicle.recommendedBattery} meta="제조 34개월" />
-          </a>
-        </PortalPanel>
-      </div>
-      <div className="grid gap-3 md:grid-cols-2">
-        <PortalPanel title="최근 검색">
-          {[`${myVehicle.name} ${myVehicle.recommendedBattery}`, "AGM80L", "셀토스 AGM60L", "EV6 12V 방전"].map((x, i) => (
-            <ArticleCard title={x} meta="최근 검색" href={searchUrl(x)} key={x} index={i} />
+      <div className={`${bm.card} ${bm.cardPad} space-y-4`}>
+        <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium leading-relaxed text-slate-700 ring-1 ring-slate-200/80">
+          현재 상담·택배 주문은 배터리 상세 페이지 또는 채팅 상담을 이용해 주세요. 회원 로그인·주문
+          내역은 인증 연동 후 제공됩니다.
+        </p>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          {MY_CTAS.map((cta) => (
+            <Link
+              key={cta.href}
+              href={cta.href}
+              className={`flex flex-col rounded-xl border p-4 transition motion-safe:duration-200 motion-safe:hover:-translate-y-0.5 ${
+                cta.tone === "primary"
+                  ? "border-slate-800 bg-slate-900 text-white"
+                  : "border-slate-200 bg-white hover:border-slate-300"
+              }`}
+            >
+              <AppIcon
+                iconKey={cta.icon}
+                size="sm"
+                className={cta.tone === "primary" ? "!text-white" : undefined}
+              />
+              <span className="mt-2 text-sm font-black">{cta.label}</span>
+            </Link>
           ))}
-        </PortalPanel>
-        <PortalPanel title="최근 본 배터리">
-          {[myVehicle.recommendedBattery, myVehicle.upgradeOptions[0], "DIN74L"].map((x, i) => (
-            <BatteryCard title={x} spec="규격" meta={myVehicle.name} href={searchUrl(x)} key={x} index={i} />
-          ))}
-        </PortalPanel>
+        </div>
+
+        <div className={`${bm.surfaceMuted} p-4`}>
+          <p className="text-xs font-bold text-slate-500">빠른 검색</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {["쏘렌토 MQ4", "AGM70L", "포터2 100R"].map((q) => (
+              <Link
+                key={q}
+                href={getSearchHref(q)}
+                className="rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+              >
+                {q}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-center text-xs font-semibold text-slate-500">
+          <Link href="/login" className="font-black text-blue-700 hover:underline">
+            로그인
+          </Link>
+          <span className="mx-2 text-slate-300">·</span>
+          <Link href="/signup" className="font-black text-blue-700 hover:underline">
+            회원가입
+          </Link>
+        </p>
       </div>
-      <PortalPanel title="저장한 비교">
-        <a href={compareUrl(...savedCompare)}>
-          <MetaInfoRow label="비교" value={`${savedCompare[0]} vs ${savedCompare[1]}`} />
-        </a>
-        <a href={compareUrl("AGM70L", "AGM80L")}>
-          <MetaInfoRow label="비교" value="셀토스 AGM70L vs AGM80L" />
-        </a>
-      </PortalPanel>
-      <PortalPanel title="최근 본 차량">
-        {portalVehicles.slice(0, 4).map((v) => (
-          <a href={vehicleUrl(v.slug)} key={v.slug}>
-            <MetaInfoRow label={v.brand} value={`${v.name} · ${v.recommendedBattery}`} />
-          </a>
-        ))}
-      </PortalPanel>
-    </PortalLayout>
+    </PageShell>
   );
 }
