@@ -98,7 +98,7 @@ export function BatteryImageStage({
             {preferBrand === "solite" ? "쏠라이트" : "로케트"}
           </span>
           <span className="spec-code text-lg font-black text-slate-500">{displayLabel ?? code}</span>
-          <span className="text-[10px] font-medium text-slate-400">이미지 준비중</span>
+          <span className="text-[10px] font-medium text-slate-400">실물 기준 확인</span>
         </div>
       ) : (
         <div className={`flex h-full w-full items-center justify-center ${batteryImageStageInset}`}>

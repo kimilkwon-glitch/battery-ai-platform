@@ -107,7 +107,7 @@ export function FloatingActionDock() {
                             <span className="block rounded-lg px-2 py-1.5 text-[11px] font-semibold text-slate-400">
                               {ch.label}{" "}
                               <span className="text-[9px]">
-                                {ch.id === "instagram" || ch.id === "youtube" ? "예정" : "준비중"}
+                                {ch.id === "instagram" || ch.id === "youtube" ? "안내" : "연결"}
                               </span>
                             </span>
                           )}

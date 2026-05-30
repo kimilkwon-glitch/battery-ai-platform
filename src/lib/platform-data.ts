@@ -492,7 +492,7 @@ export function getPortalVehicle(id: string) {
       (db.hasConfirmedDb && db.displayCode) ||
       db.displayCode ||
       asset.defaultBatteryCode ||
-      (db.needsPhotoReview ? "사진 확인 필요" : "정보 준비중");
+      (db.needsPhotoReview ? "사진 확인 필요" : "규격 확인 필요");
     return {
       slug: asset.catalogId ?? asset.id,
       name: asset.displayName,

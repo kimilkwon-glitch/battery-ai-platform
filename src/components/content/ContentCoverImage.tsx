@@ -73,7 +73,7 @@ export function ContentCoverImage({
           size={variant === "compact" ? "sm" : "md"}
         />
         {variant !== "compact" ? (
-          <p className="mt-2 px-3 text-center text-[11px] font-bold text-slate-400">이미지 준비 중</p>
+          <p className="mt-2 px-3 text-center text-[11px] font-bold text-slate-400">실물 기준 확인</p>
         ) : null}
       </div>
     );

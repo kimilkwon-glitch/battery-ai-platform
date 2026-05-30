@@ -37,7 +37,7 @@ export const COMPARE_DEEP_NOTES: CompareDeepNote[] = [
   },
   {
     pairKey: pairKey("100R", "AGM95L"),
-    headline: "100R vs AGM95L",
+    headline: "100R과 AGM95L은 대체 규격이 아닙니다",
     summary: "용량대가 비슷해 보여도 R타입 CMF(상용)와 L타입 AGM(승용 ISG)은 단순 대체 대상이 아닙니다.",
     bullets: [
       "단자: 100R=R타입, AGM95L=L타입",

@@ -5,7 +5,7 @@ import {
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 import type { Question } from "@/lib/platform-types";
 
-const CROSS_PAIR_QUERY = /100\s*r.*agm\s*95|agm\s*95.*100\s*r|100R\s*vs\s*AGM95L|AGM95L\s*vs\s*100R/i;
+const CROSS_PAIR_QUERY = /100\s*r.*agm\s*95|agm\s*95.*100\s*r|100\s*R\s*vs\s*AGM\s*95L|AGM\s*95L\s*vs\s*100\s*R/i;
 
 /** Q&A 카드·칩 — AGM95L↔100R 등 neverSuggest 쌍 미노출 */
 export function filterQnaBatteryChips(contextCode: string | undefined, codes: string[]): string[] {

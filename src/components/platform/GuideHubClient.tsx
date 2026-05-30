@@ -159,7 +159,7 @@ export function GuideHubClient({ initialGuideId }: { initialGuideId?: string }) 
                 />
               ) : (
                 <div className="flex aspect-video items-center justify-center bg-gradient-to-b from-[#F8FBFF] to-white p-2">
-                  <p className="text-[10px] font-bold text-slate-400">이미지 준비 중</p>
+                  <p className="text-[10px] font-bold text-slate-400">실물 기준 확인</p>
                 </div>
               )}
             </div>

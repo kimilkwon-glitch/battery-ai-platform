@@ -797,7 +797,7 @@ export function getRelatedVehicleSlugs(slug: string, limit = 4): { slug: string;
     return {
       slug: a.catalogId ?? a.id,
       title: a.displayName,
-      battery: db.displayCode || a.defaultBatteryCode || "정보 준비중",
+      battery: db.displayCode || a.defaultBatteryCode || "규격 확인 필요",
     };
   });
 }

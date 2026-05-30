@@ -33,7 +33,7 @@ export function HomeFeaturedVehicleCard({
   const conditionLines = getVehicleConditionSpecLines(vehicleId);
   const fuelSummary = formatConditionSpecSummary(conditionLines);
   const primaryBattery =
-    hints.primaryCode === "사진 확인 필요" ? "정보 준비중" : hints.primaryCode;
+    hints.primaryCode === "사진 확인 필요" ? "규격 확인 필요" : hints.primaryCode;
 
   return (
     <Link

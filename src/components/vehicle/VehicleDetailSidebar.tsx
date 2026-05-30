@@ -114,7 +114,7 @@ export function VehicleDetailSidebar({
 
       <SidebarPanel iconKey="vehicle" title="관련 차량">
         {relatedVehicles.length === 0 ? (
-          <p className="text-xs font-semibold text-slate-500">관련 차량 정보 준비 중</p>
+          <p className="text-xs font-semibold text-slate-500">관련 차량 안내</p>
         ) : (
           <div className="space-y-2">
             {relatedVehicles.map((v) => (

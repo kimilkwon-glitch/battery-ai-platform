@@ -15,7 +15,7 @@ type Props = {
   className?: string;
 };
 
-/** 실사 URL이 있으면 BatteryThumbnail, 없으면 준비중 슬롯 */
+/** 실사 URL이 있으면 BatteryThumbnail, 없으면 안내 슬롯 */
 export function BatteryImageOrSlot({
   code,
   imageSet,

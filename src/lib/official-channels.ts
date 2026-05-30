@@ -25,7 +25,7 @@ export type OfficialChannel = {
 export const OFFICIAL_CHANNELS_TITLE = "공식 운영 채널";
 
 export const SOCIAL_OFFICIAL_CHANNELS_SUBTITLE =
-  "인스타그램·유튜브 채널을 준비 중입니다.";
+  "인스타그램·유튜브 채널 안내는 순차적으로 연결됩니다.";
 
 function socialToChannel(id: "instagram" | "youtube"): OfficialChannel {
   const ch = officialChannels[id];

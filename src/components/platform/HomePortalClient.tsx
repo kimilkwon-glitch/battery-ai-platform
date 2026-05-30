@@ -62,7 +62,7 @@ function matchesBatteryType(vehicleId: string, filter: BatteryTypeFilter): boole
   if (filter === "전체") return true;
   const hints = getVehicleCardHints(vehicleId);
   const code = hints.primaryCode;
-  if (code === "정보 준비중" || code === "사진 확인 필요") return filter === "일반";
+  if (code === "규격 확인 필요" || code === "사진 확인 필요") return filter === "일반";
   const bat = getBattery(code);
   if (filter === "AGM") return bat.type === "AGM";
   if (filter === "DIN") return bat.type === "DIN";

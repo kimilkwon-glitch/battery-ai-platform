@@ -28,7 +28,7 @@ export function assetToSearchRow(asset: VehicleAsset): VehicleSearchRow {
     (db.hasConfirmedDb && db.displayCode) ||
     db.displayCode ||
     asset.defaultBatteryCode ||
-    (db.needsPhotoReview ? "사진 확인 필요" : "정보 준비중");
+    (db.needsPhotoReview ? "사진 확인 필요" : "규격 확인 필요");
   const fuel = asset.tags?.includes("EV")
     ? "전기"
     : asset.tags?.includes("하이브리드")

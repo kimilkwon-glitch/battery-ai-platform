@@ -14,7 +14,7 @@ export default function HyundaiVehiclesPage() {
       breadcrumbs={[{ label: "홈", href: "/" }, { label: "차종 검색", href: "/vehicles" }, { label: "현대" }]}
       sidebar={
         <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs shadow-sm">
-          <p className="font-black text-slate-900">준비 중</p>
+          <p className="font-black text-slate-900">세대별 안내</p>
           <p className="mt-2 font-semibold text-slate-500">쏘나타 · 아반떼 · 싼타페 · 투싼 세대 허브</p>
         </div>
       }

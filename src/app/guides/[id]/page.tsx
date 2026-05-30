@@ -95,7 +95,7 @@ export default async function GuideDetailPage({ params }: Props) {
               </div>
             ) : (
               <div className="flex min-h-[180px] items-center justify-center bg-gradient-to-br from-slate-100 via-white to-blue-50 p-6 text-center">
-                <p className="text-xs font-black text-slate-500">이미지 준비 중</p>
+                <p className="text-xs font-black text-slate-500">실물 기준 확인</p>
               </div>
             )}
           </div>

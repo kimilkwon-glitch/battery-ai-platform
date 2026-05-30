@@ -33,7 +33,7 @@ export function HomeBenefitsSection() {
               <p className="text-sm font-black text-slate-900">{card.title}</p>
               {!active ? (
                 <span className="mt-1 inline-block text-[9px] font-black uppercase text-slate-400">
-                  준비중
+                  상담 시 안내
                 </span>
               ) : null}
               <p className="mt-2 text-xs font-semibold leading-relaxed text-slate-600">

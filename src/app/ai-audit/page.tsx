@@ -56,7 +56,7 @@ export default async function AiAuditPage() {
             </tr>
             <tr>
               <Th>build rev attr</Th>
-              <Cell>{BUILD_STAMP_REV} / ai-audit-v1-20260530</Cell>
+              <Cell>{BUILD_STAMP_REV} / ai-audit-v2-20260530</Cell>
             </tr>
             <tr>
               <Th>git commit (build snapshot)</Th>
@@ -194,7 +194,7 @@ export default async function AiAuditPage() {
               : ""}
           </li>
           <li>
-            /order-checklist &quot;100R vs AGM95L&quot; CTA:{" "}
+            /order-checklist cross-type compare CTA:{" "}
             <strong>{report.crossLinks.orderChecklist100rVsAgm95lCta ? "yes" : "no"}</strong>
           </li>
           <li>

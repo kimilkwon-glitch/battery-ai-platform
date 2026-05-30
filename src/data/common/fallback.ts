@@ -36,13 +36,13 @@ export const FALLBACK_MESSAGES: Record<
     ctaHref: "/service-center",
   },
   guideData: {
-    title: "가이드 준비 중",
+    title: "가이드 안내",
     body: "해당 주제의 가이드 콘텐츠가 아직 등록되지 않았습니다. 관련 Q&A 또는 규격 비교에서 먼저 확인해 보세요.",
     ctaLabel: "가이드 모음",
     ctaHref: "/guides",
   },
   qaData: {
-    title: "Q&A 준비 중",
+    title: "Q&A 안내",
     body: "아직 등록된 답변이 없습니다. 규격 문의 페이지에서 질문을 남기거나 사진으로 확인해 주세요.",
     ctaLabel: "규격 문의",
     ctaHref: "/ai",
@@ -66,7 +66,7 @@ export const FALLBACK_MESSAGES: Record<
     ctaHref: "/analysis/photo",
   },
   imageMissing: {
-    title: "이미지 준비 중",
+    title: "실물 기준 확인",
     body: "해당 이미지가 아직 등록되지 않았습니다. 규격명 또는 차량명으로 다시 검색해 주세요.",
   },
   trendData: {

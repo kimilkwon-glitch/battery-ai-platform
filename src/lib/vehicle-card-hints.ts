@@ -138,7 +138,7 @@ function resolvePrimaryCode(
     };
   }
   return {
-    primaryCode: db.needsPhotoReview ? "사진 확인 필요" : "정보 준비중",
+    primaryCode: db.needsPhotoReview ? "사진 확인 필요" : "규격 확인 필요",
     needsPhotoReview: db.needsPhotoReview,
   };
 }
@@ -234,7 +234,7 @@ export function getVehicleExploreMeta(vehicleId: string): VehicleExploreMeta {
   } else if (
     !detailLine &&
     hints.primaryCode &&
-    hints.primaryCode !== "정보 준비중" &&
+    hints.primaryCode !== "규격 확인 필요" &&
     hints.primaryCode !== "사진 확인 필요" &&
     !hints.primaryCode.includes("확인 필요")
   ) {
@@ -244,7 +244,7 @@ export function getVehicleExploreMeta(vehicleId: string): VehicleExploreMeta {
 
   const primaryDisplay =
     hints.primaryCode === "사진 확인 필요" || hints.primaryCode.includes("확인 필요")
-      ? "정보 준비중"
+      ? "규격 확인 필요"
       : hints.primaryCode;
 
   const categoryLine =

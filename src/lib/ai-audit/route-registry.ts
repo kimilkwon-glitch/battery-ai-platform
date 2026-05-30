@@ -120,7 +120,7 @@ export const AI_AUDIT_ROUTES: AuditRouteRow[] = [
     headerComponent: "PortalHeader",
     templateComponent: "PageShell",
     knownIssue: false,
-    note: "No 100R vs AGM95L compare link",
+    note: "No cross-type compare CTA on checklist",
   },
   {
     route: "/photo-check",

@@ -5,8 +5,8 @@ import type { BUSAN_STORES } from "@/lib/busan-service-hub-data";
 type Store = (typeof BUSAN_STORES)[number];
 
 const STORE_PLACEHOLDER: Record<string, string> = {
-  deokcheon: "매장 사진 준비 중",
-  hakjang: "현장 사진 추가 예정",
+  deokcheon: "덕천점 매장 안내",
+  hakjang: "학장점 서비스 안내",
 };
 
 export function ServiceStoreVisualCard({
@@ -16,7 +16,7 @@ export function ServiceStoreVisualCard({
   store: Store;
   detailHref: string;
 }) {
-  const placeholder = STORE_PLACEHOLDER[store.id] ?? "매장 사진 준비 중";
+  const placeholder = STORE_PLACEHOLDER[store.id] ?? "매장 안내";
 
   return (
     <article
@@ -28,7 +28,7 @@ export function ServiceStoreVisualCard({
         aria-label={placeholder}
       >
         <div className="text-center px-4">
-          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">사진 슬롯</p>
+          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">매장 안내</p>
           <p className="mt-1 text-xs font-semibold text-slate-500">{placeholder}</p>
         </div>
       </div>

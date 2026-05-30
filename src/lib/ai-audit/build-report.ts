@@ -1,4 +1,5 @@
 import { BUILD_STAMP, BUILD_STAMP_REV } from "@/lib/build-stamp";
+import { isCustomerFacingForbiddenFile } from "@/lib/ai-audit/match-classifier";
 import auditSnapshot from "@/lib/ai-audit/audit-snapshot.json";
 import {
   AI_AUDIT_ROUTES,
@@ -49,6 +50,7 @@ export type AiAuditReport = {
     production_alias: string;
     qa_route_status: string;
     forbidden_keywords_found: string;
+    internal_or_auth_pending: string;
     "100r_agm95l_direct_link": string;
     battery_detail_templates_unified: string;
     service_pages_unified: string;
@@ -111,15 +113,15 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
     .map((k) => k.keyword);
 
   const customerFacingForbidden = auditSnapshot.forbidden.byKeyword
-    .filter((k) => k.found)
-    .filter((k) =>
-      k.matches.some(
-        (m) =>
-          !m.file.includes("/admin/") &&
-          !m.file.includes("ai-audit") &&
-          !m.file.includes("FloatingActionDock") &&
-          !m.file.includes("OfficialChannelsStrip"),
-      ),
+    .filter((k) => k.found && k.matches.some((m) => isCustomerFacingForbiddenFile(m.file)))
+    .map((k) => k.keyword);
+
+  const internalAuthKeywords = auditSnapshot.forbidden.byKeyword
+    .filter(
+      (k) =>
+        k.found &&
+        k.matches.some((m) => !isCustomerFacingForbiddenFile(m.file)) &&
+        !k.matches.every((m) => m.file.includes("ai-audit")),
     )
     .map((k) => k.keyword);
 
@@ -164,7 +166,9 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
     production_alias: "https://battery-ai-platform.vercel.app",
     qa_route_status: qaStatus,
     forbidden_keywords_found:
-      customerFacingForbidden.length === 0 ? "none (customer paths)" : customerFacingForbidden.join("; "),
+      customerFacingForbidden.length === 0 ? "none (customer-facing)" : customerFacingForbidden.join("; "),
+    internal_or_auth_pending:
+      internalAuthKeywords.length === 0 ? "none" : internalAuthKeywords.join("; "),
     "100r_agm95l_direct_link": directLinkRisk ? "yes (source)" : "no customer CTA",
     battery_detail_templates_unified: "yes — all use batteries/[code] + BatteryDetailHub",
     service_pages_unified: "no — /service vs /service-center intentional split",
@@ -177,7 +181,7 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
     generatedAt: new Date().toISOString(),
     production: {
       buildRev: BUILD_STAMP,
-      buildRevAttr: `ai-audit-v1-20260530 (${BUILD_STAMP_REV})`,
+      buildRevAttr: `ai-audit-v2-20260530 (${BUILD_STAMP_REV})`,
       gitCommit: auditSnapshot.gitCommit,
       gitCommitRuntime: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
       vercelDeploymentId: process.env.VERCEL_DEPLOYMENT_ID ?? null,
@@ -209,6 +213,7 @@ export function formatAuditSummaryBlock(summary: AiAuditReport["summary"]): stri
     `production_alias: ${summary.production_alias}`,
     `qa_route_status: ${summary.qa_route_status}`,
     `forbidden_keywords_found: ${summary.forbidden_keywords_found}`,
+    `internal_or_auth_pending: ${summary.internal_or_auth_pending}`,
     `100r_agm95l_direct_link: ${summary["100r_agm95l_direct_link"]}`,
     `battery_detail_templates_unified: ${summary.battery_detail_templates_unified}`,
     `service_pages_unified: ${summary.service_pages_unified}`,

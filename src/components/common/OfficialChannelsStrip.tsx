@@ -33,7 +33,7 @@ function ChannelPill({ channel, compact }: { channel: OfficialChannel; compact?:
   const Icon = CHANNEL_ICONS[channel.id];
   const isReady = channel.status === "active" && channel.href;
   const comingLabel =
-    channel.id === "instagram" || channel.id === "youtube" ? "예정" : "준비중";
+    channel.id === "instagram" || channel.id === "youtube" ? "안내" : "연결";
 
   const inner = (
     <>
@@ -100,7 +100,7 @@ export function OfficialChannelsStrip({
               ch.status === "coming_soon"
                 ? ch.id === "instagram" || ch.id === "youtube"
                   ? " 예정"
-                  : " 준비중"
+                  : " 연결 안내"
                 : "";
             return (
               <span key={ch.id} className="inline-flex items-center">

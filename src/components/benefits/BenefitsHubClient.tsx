@@ -38,7 +38,7 @@ export function BenefitsHubClient() {
 
       {coming.length > 0 ? (
         <section>
-          <h2 className="text-sm font-black text-slate-800">준비 중인 혜택</h2>
+          <h2 className="text-sm font-black text-slate-800">추가 혜택 안내</h2>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
             {coming.map((card) => (
               <BenefitCardVisual key={card.id} card={card} asLink={false} />
@@ -53,7 +53,7 @@ export function BenefitsHubClient() {
           <li>혜택 조건·적용 여부는 상품·차량·운영 정책에 따라 달라질 수 있습니다.</li>
           <li>쿠폰은 자동 결제 할인이 아니며, 주문·택배 상담 시 확인 후 안내됩니다.</li>
           <li>발급 쿠폰은 이 브라우저에만 저장되며, 운영용 중복 방지는 DB 연동 후 가능합니다.</li>
-          <li>확정되지 않은 혜택은 준비중으로 표시됩니다.</li>
+          <li>일부 혜택은 조건 확인 후 상담 시 안내됩니다.</li>
         </ul>
       </section>
 

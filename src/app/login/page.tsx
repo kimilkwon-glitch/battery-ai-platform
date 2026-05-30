@@ -8,8 +8,8 @@ export default function LoginPage() {
     <PageShell zone="auth" pageLabel="로그인" title="로그인" showSearch={false}>
       <div className={`${bm.card} ${bm.cardPad} bm-auth-card`}>
         <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-bold text-amber-900 ring-1 ring-amber-100">
-          회원 로그인·주문 내역 기능은 준비 중입니다. 상담·주문은 배터리 상세페이지 또는 채팅상담을
-          이용해 주세요.
+          상담·택배 주문은 배터리 상세 페이지 또는 채팅 상담을 이용해 주세요. 회원 로그인·주문 내역은
+          인증 연동 후 제공됩니다.
         </p>
         <form className="mt-6 space-y-4 opacity-60" aria-disabled>
           <label className="block text-sm font-bold text-slate-700">
@@ -17,7 +17,7 @@ export default function LoginPage() {
             <input
               disabled
               className={`${bm.input} bm-input-field mt-1`}
-              placeholder="준비중"
+              placeholder="인증 연동 후 이용"
             />
           </label>
           <label className="block text-sm font-bold text-slate-700">
@@ -29,7 +29,7 @@ export default function LoginPage() {
             />
           </label>
           <button type="button" disabled className={`${bm.btnPrimary} w-full opacity-50`}>
-            로그인 (준비중)
+            로그인
           </button>
         </form>
         <p className="mt-4 text-center text-xs font-semibold text-slate-500">
@@ -37,7 +37,7 @@ export default function LoginPage() {
             회원가입
           </Link>
           <span className="mx-2 text-slate-300">·</span>
-          <span>비밀번호 찾기 (준비중)</span>
+          <span>비밀번호 찾기는 상담으로 안내</span>
         </p>
       </div>
     </PageShell>

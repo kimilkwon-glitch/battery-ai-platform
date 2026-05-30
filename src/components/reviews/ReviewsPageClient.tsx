@@ -92,9 +92,9 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         type="button"
         disabled
         className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-slate-400"
-        title="리뷰 작성 기능 준비중"
+        title="리뷰 작성은 상담으로 안내"
       >
-        리뷰 작성 (준비중)
+        리뷰 작성 (상담 안내)
       </button>
 
       <div className="bm-tab-rail bm-tab-rail--review overflow-x-auto flex-nowrap sm:flex-wrap">
