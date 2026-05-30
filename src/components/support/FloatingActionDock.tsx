@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -19,7 +20,12 @@ import { SOCIAL_OFFICIAL_CHANNELS } from "@/lib/official-channels";
 import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
 
 export function FloatingActionDock() {
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
+
+  if (pathname?.startsWith("/__ai-audit") || pathname === "/ai-audit") {
+    return null;
+  }
   const [chatOpen, setChatOpen] = useState(false);
   const [chatPreset, setChatPreset] = useState<ChatInquiryOpenDetail | undefined>();
   const [phoneOpen, setPhoneOpen] = useState(false);

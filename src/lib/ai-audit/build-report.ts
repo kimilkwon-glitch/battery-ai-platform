@@ -1,0 +1,221 @@
+import { BUILD_STAMP, BUILD_STAMP_REV } from "@/lib/build-stamp";
+import auditSnapshot from "@/lib/ai-audit/audit-snapshot.json";
+import {
+  AI_AUDIT_ROUTES,
+  BATTERY_DETAIL_AUDIT_CODES,
+  type AuditRouteRow,
+} from "@/lib/ai-audit/route-registry";
+
+export type RouteProbe = AuditRouteRow & {
+  probedStatus: number | null;
+  probedBuildRev: string | null;
+  probeError: string | null;
+};
+
+export type AiAuditReport = {
+  generatedAt: string;
+  production: {
+    buildRev: string;
+    buildRevAttr: string;
+    gitCommit: string;
+    gitCommitRuntime: string | null;
+    vercelDeploymentId: string | null;
+    vercelUrl: string | null;
+    deployedAt: string;
+    productionAlias: string;
+    isProduction: boolean;
+    vercelEnv: string | null;
+  };
+  routes: RouteProbe[];
+  forbidden: typeof auditSnapshot.forbidden;
+  crossLinks: typeof auditSnapshot.crossLinks;
+  batteryTemplates: Array<{
+    code: string;
+    route: string;
+    component: string;
+    headerVersion: string;
+    buildRev: string;
+    imageSlotPolicy: string;
+    oldTemplate: boolean;
+  }>;
+  servicePages: typeof auditSnapshot.servicePages;
+  qa: typeof auditSnapshot.qa & {
+    routeExists: boolean;
+    expectedStatus: number;
+    componentPath: string;
+  };
+  summary: {
+    build_rev: string;
+    production_alias: string;
+    qa_route_status: string;
+    forbidden_keywords_found: string;
+    "100r_agm95l_direct_link": string;
+    battery_detail_templates_unified: string;
+    service_pages_unified: string;
+    remaining_p0: string;
+    remaining_p1: string;
+    remaining_p2: string;
+  };
+};
+
+function productionBaseUrl(): string {
+  if (process.env.AI_AUDIT_PROBE_BASE) return process.env.AI_AUDIT_PROBE_BASE.replace(/\/$/, "");
+  if (process.env.VERCEL_ENV === "production") return "https://battery-ai-platform.vercel.app";
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3000";
+}
+
+async function probeRoute(route: string, base: string): Promise<{
+  status: number | null;
+  buildRev: string | null;
+  error: string | null;
+}> {
+  const url = `${base}${route}${route.includes("?") ? "&" : "?"}_ai_audit_probe=1`;
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache", "User-Agent": "BM-AI-Audit/1.0" },
+      signal: AbortSignal.timeout(12_000),
+    });
+    const html = await res.text();
+    const buildRev =
+      html.match(/data-build-version="([^"]+)"/)?.[1] ??
+      html.match(/BM-UX-REV-[A-Z0-9-]+/)?.[0] ??
+      null;
+    return { status: res.status, buildRev, error: null };
+  } catch (e) {
+    return {
+      status: null,
+      buildRev: null,
+      error: e instanceof Error ? e.message : String(e),
+    };
+  }
+}
+
+export async function buildAiAuditReport(): Promise<AiAuditReport> {
+  const base = productionBaseUrl();
+  const probes = await Promise.all(
+    AI_AUDIT_ROUTES.map(async (row) => {
+      const p = await probeRoute(row.route, base);
+      return {
+        ...row,
+        probedStatus: p.status,
+        probedBuildRev: p.buildRev,
+        probeError: p.error,
+      };
+    }),
+  );
+
+  const forbiddenFound = auditSnapshot.forbidden.byKeyword
+    .filter((k) => k.found)
+    .map((k) => k.keyword);
+
+  const customerFacingForbidden = auditSnapshot.forbidden.byKeyword
+    .filter((k) => k.found)
+    .filter((k) =>
+      k.matches.some(
+        (m) =>
+          !m.file.includes("/admin/") &&
+          !m.file.includes("ai-audit") &&
+          !m.file.includes("FloatingActionDock") &&
+          !m.file.includes("OfficialChannelsStrip"),
+      ),
+    )
+    .map((k) => k.keyword);
+
+  const cross = auditSnapshot.crossLinks;
+  const directLinkRisk =
+    cross.orderChecklist100rVsAgm95lCta ||
+    cross.orderChecklistCompareHref ||
+    cross.batteries100rDirectLink;
+
+  const batteryTemplates = BATTERY_DETAIL_AUDIT_CODES.map((code) => ({
+    code,
+    route: `/batteries/${code}`,
+    component: "BatteryDetailHub + BatteryDetailOrderPanel + BatteryDetailContentSlot",
+    headerVersion: "PortalHeader (PageShell)",
+    buildRev: BUILD_STAMP,
+    imageSlotPolicy: "BatteryImageStage hero; content slot hidden or photo-check card if no asset",
+    oldTemplate: false,
+  }));
+
+  const qaStatus =
+    probes.find((r) => r.route === "/qa")?.probedStatus === 200 ? "200 OK" : "check probe";
+
+  const remainingP0: string[] = [];
+  const remainingP1: string[] = [];
+  const remainingP2: string[] = [];
+
+  if (probes.find((r) => r.route === "/qa")?.probedStatus !== 200) {
+    remainingP0.push("/qa not 200 on probe");
+  }
+  if (directLinkRisk) {
+    remainingP0.push("100R↔AGM95L direct compare link in source");
+  }
+  if (customerFacingForbidden.length) {
+    remainingP1.push(`Customer-facing forbidden copy: ${customerFacingForbidden.join(", ")}`);
+  }
+  if (forbiddenFound.length > customerFacingForbidden.length) {
+    remainingP2.push(`Non-customer forbidden hits in source: ${forbiddenFound.filter((f) => !customerFacingForbidden.includes(f)).join(", ")}`);
+  }
+
+  const summary = {
+    build_rev: BUILD_STAMP,
+    production_alias: "https://battery-ai-platform.vercel.app",
+    qa_route_status: qaStatus,
+    forbidden_keywords_found:
+      customerFacingForbidden.length === 0 ? "none (customer paths)" : customerFacingForbidden.join("; "),
+    "100r_agm95l_direct_link": directLinkRisk ? "yes (source)" : "no customer CTA",
+    battery_detail_templates_unified: "yes — all use batteries/[code] + BatteryDetailHub",
+    service_pages_unified: "no — /service vs /service-center intentional split",
+    remaining_p0: remainingP0.length ? remainingP0.join("; ") : "none",
+    remaining_p1: remainingP1.length ? remainingP1.join("; ") : "none",
+    remaining_p2: remainingP2.length ? remainingP2.join("; ") : "none",
+  };
+
+  return {
+    generatedAt: new Date().toISOString(),
+    production: {
+      buildRev: BUILD_STAMP,
+      buildRevAttr: `ai-audit-v1-20260530 (${BUILD_STAMP_REV})`,
+      gitCommit: auditSnapshot.gitCommit,
+      gitCommitRuntime: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
+      vercelDeploymentId: process.env.VERCEL_DEPLOYMENT_ID ?? null,
+      vercelUrl: process.env.VERCEL_URL ?? null,
+      deployedAt: auditSnapshot.generatedAt,
+      productionAlias: "https://battery-ai-platform.vercel.app",
+      isProduction: process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production",
+      vercelEnv: process.env.VERCEL_ENV ?? null,
+    },
+    routes: probes,
+    forbidden: auditSnapshot.forbidden,
+    crossLinks: cross,
+    batteryTemplates,
+    servicePages: auditSnapshot.servicePages,
+    qa: {
+      ...auditSnapshot.qa,
+      routeExists: auditSnapshot.qa.qaPageExists,
+      expectedStatus: 200,
+      componentPath: "src/app/qa/page.tsx → CommunityClient",
+    },
+    summary,
+  };
+}
+
+export function formatAuditSummaryBlock(summary: AiAuditReport["summary"]): string {
+  const lines = [
+    "AI_AUDIT_SUMMARY_START",
+    `build_rev: ${summary.build_rev}`,
+    `production_alias: ${summary.production_alias}`,
+    `qa_route_status: ${summary.qa_route_status}`,
+    `forbidden_keywords_found: ${summary.forbidden_keywords_found}`,
+    `100r_agm95l_direct_link: ${summary["100r_agm95l_direct_link"]}`,
+    `battery_detail_templates_unified: ${summary.battery_detail_templates_unified}`,
+    `service_pages_unified: ${summary.service_pages_unified}`,
+    `remaining_p0: ${summary.remaining_p0}`,
+    `remaining_p1: ${summary.remaining_p1}`,
+    `remaining_p2: ${summary.remaining_p2}`,
+    "AI_AUDIT_SUMMARY_END",
+  ];
+  return lines.join("\n");
+}

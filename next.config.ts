@@ -10,6 +10,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/__ai-audit",
+        destination: "/ai-audit",
+      },
+      {
+        source: "/__ai-audit/:path*",
+        destination: "/ai-audit/:path*",
+      },
+    ];
+  },
   async headers() {
     return [
       {
