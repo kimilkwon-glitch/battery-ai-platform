@@ -18,7 +18,7 @@ export function BrandLogoLink({ className }: { className?: string }) {
     <Link
       href="/"
       className={clsx(
-        "portal-brand-lockup group inline-flex shrink-0 items-center gap-1.5 rounded-lg outline-none ring-blue-200 focus-visible:ring-2 sm:gap-2",
+        "portal-brand-lockup group inline-flex shrink-0 items-center gap-2 rounded-lg outline-none ring-blue-200 focus-visible:ring-2 sm:gap-2.5",
         className,
       )}
       aria-label="배터리매니저 홈"
