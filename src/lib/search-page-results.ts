@@ -48,6 +48,7 @@ import {
   rankQuestionsForVehicleContext,
 } from "@/lib/search/search-vehicle-questions";
 import { computeTopFoldLimits } from "@/lib/search/search-top-fold";
+import type { RunBatterySearchOptions } from "@/lib/search/run-battery-search-options";
 import {
   buildSearchUxPresentation,
   emptySearchUx,
@@ -931,7 +932,10 @@ function buildAliasHero(
   };
 }
 
-export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
+export function buildSearchPageResults(
+  rawQuery?: string,
+  options?: RunBatterySearchOptions,
+): SearchPageResults {
   const pipeline = buildSearchIntent(rawQuery ?? "");
   const query = pipeline.normalizedQuery;
   const displayQuery = pipeline.displayQuery;
@@ -1027,7 +1031,11 @@ export function buildSearchPageResults(rawQuery?: string): SearchPageResults {
     if (alias && vehiclesForRender.length === 0 && rawVehicleRows.length > 0) {
       vehiclesForRender = [rawVehicleRows[0]];
     }
-    vehiclesForRender = vehiclesForRender.slice(0, topFold.maxVehicles);
+    let maxVehicles = topFold.maxVehicles;
+    if (!alias && finalVehicles.length > 1 && hasVehicleIntent && !queryHasBatterySpec) {
+      maxVehicles = Math.min(finalVehicles.length, 8);
+    }
+    vehiclesForRender = vehiclesForRender.slice(0, maxVehicles);
 
     const vehicleHref =
       vehiclesForRender[0]?.href ??

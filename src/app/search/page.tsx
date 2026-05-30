@@ -5,7 +5,8 @@ import { Breadcrumb, PortalHeader } from "@/components/portal";
 import { bm } from "@/lib/design-tokens";
 import { getSearchHref } from "@/lib/battery-search";
 import { getRelatedForQuery } from "@/lib/platform-data";
-import { buildSearchPageResults } from "@/lib/search-page-results";
+import { parseHomeSearchType } from "@/lib/home-search-types";
+import { runBatterySearch } from "@/lib/search/run-battery-search";
 
 /** 검색 결과·CTA가 배포 스탬프와 함께 갱신되도록 동적 렌더 */
 export const dynamic = "force-dynamic";
@@ -15,12 +16,13 @@ export const fetchCache = "force-no-store";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; tab?: string; filter?: string }>;
+  searchParams: Promise<{ q?: string; tab?: string; filter?: string; type?: string }>;
 }) {
   noStore();
   const params = await searchParams;
   const rawQuery = params.q?.trim() ?? "";
-  const results = buildSearchPageResults(rawQuery);
+  const searchType = parseHomeSearchType(params.type);
+  const results = runBatterySearch(rawQuery, { searchType });
   const displayQuery = results.displayQuery || results.query;
 
   let related;

@@ -160,8 +160,14 @@ export function SearchResultsView({ data }: Props) {
                 검색한 규격:{" "}
                 <span className="font-semibold text-slate-900">{data.summary.batterySpecs.join(" · ")}</span>
               </p>
-            ) : data.summary.vehicleKeywords.length > 0 ? (
+            ) : data.summary.vehicleKeywords.length > 0 &&
+              data.vehicles.length === 0 &&
+              !data.recognizedVehicle ? (
               <p className="text-xs font-semibold text-amber-900">{NO_REGISTERED_SPEC_MESSAGE}</p>
+            ) : data.vehicles.length > 0 && !data.recognizedVehicle ? (
+              <p className="text-xs font-medium text-slate-600">
+                아래에서 차량·세대를 선택하면 규격을 확인할 수 있습니다.
+              </p>
             ) : (
               <p className="text-xs font-medium text-slate-600">{NO_VEHICLE_MATCH_MESSAGE}</p>
             )}

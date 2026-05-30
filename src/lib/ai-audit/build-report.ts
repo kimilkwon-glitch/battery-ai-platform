@@ -205,7 +205,7 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
     generatedAt: new Date().toISOString(),
     production: {
       buildRev: BUILD_STAMP,
-      buildRevAttr: `banner-height-unify-v1-20260530 (${BUILD_STAMP_REV})`,
+      buildRevAttr: `search-quality-qa-v1-20260530 (${BUILD_STAMP_REV})`,
       gitCommit: auditSnapshot.gitCommit,
       gitCommitRuntime: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
       vercelDeploymentId: process.env.VERCEL_DEPLOYMENT_ID ?? null,
