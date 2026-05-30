@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-30T03:57:29.498Z",
-  "gitCommit": "0053858f0e9d460a03553c789532b86d0ef4edcc",
+  "generatedAt": "2026-05-30T04:00:43.598Z",
+  "gitCommit": "f1d2250211aa8292e1dfb1ea5e473489eb723592",
   "forbidden": {
     "hits": [
       {
@@ -8,12 +8,6 @@
         "file": "src/components/admin/AdminContentClient.tsx",
         "line": 368,
         "text": "<p className=\"mt-0.5 text-[9px] font-bold text-amber-600\">준비 중</p>"
-      },
-      {
-        "keyword": "준비 중",
-        "file": "src/data/vehicle-battery-db.meta.json",
-        "line": 45,
-        "text": "\"relatedGuides\": \"관련 가이드 준비 중\""
       }
     ],
     "byKeyword": [
@@ -32,15 +26,9 @@
             "file": "src/components/admin/AdminContentClient.tsx",
             "line": 368,
             "text": "<p className=\"mt-0.5 text-[9px] font-bold text-amber-600\">준비 중</p>"
-          },
-          {
-            "keyword": "준비 중",
-            "file": "src/data/vehicle-battery-db.meta.json",
-            "line": 45,
-            "text": "\"relatedGuides\": \"관련 가이드 준비 중\""
           }
         ],
-        "matchCount": 2
+        "matchCount": 1
       },
       {
         "keyword": "등록 예정",
