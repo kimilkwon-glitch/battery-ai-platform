@@ -2,6 +2,7 @@
  * /search 전용 차량 alias — 기존 assetId / catalogId / DB 검색어로 연결
  * 차량 DB 원본은 수정하지 않음
  */
+import { getVehicleAsset } from "@/lib/car-assets";
 import { normalizeQuery } from "@/lib/search/normalize-query";
 import { parseVehicleIntent } from "@/lib/search/parse-vehicle-intent";
 import { resolveVehicleAliasDbV01 } from "@/lib/search/resolve-vehicle-alias-v01";
