@@ -23,6 +23,8 @@ type Props = {
   shimmerSubmit?: boolean;
   /** /search?type= — all이면 생략 */
   searchType?: string;
+  /** 메인 Hero 통합 검색바 — 타입 선택과 한 줄로 붙임 */
+  compoundBar?: boolean;
 };
 
 export function VehicleSearchBox({
@@ -34,6 +36,7 @@ export function VehicleSearchBox({
   buttonLabel = "검색",
   shimmerSubmit = false,
   searchType,
+  compoundBar = false,
 }: Props) {
   const [query, setQuery] = useState(defaultQuery);
   const [open, setOpen] = useState(false);
@@ -138,11 +141,18 @@ export function VehicleSearchBox({
     ) : null;
 
   if (showButton) {
+    const submitBtnClass = compoundBar
+      ? "h-14 min-h-[44px] shrink-0 rounded-none rounded-br-2xl border-0 border-l border-slate-200/90 bg-blue-600 px-5 text-sm font-black text-white hover:bg-blue-700 sm:h-16 sm:rounded-br-2xl sm:px-6"
+      : "h-11 shrink-0 rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700 sm:h-16";
+
     return (
-      <div className={`relative ${className}`} ref={wrapRef}>
+      <div
+        className={`relative ${compoundBar ? "border-t border-slate-200/90 sm:border-t-0" : ""} ${className}`}
+        ref={wrapRef}
+      >
         <form
           action="/search"
-          className="flex min-w-0 flex-1 gap-2"
+          className={compoundBar ? "flex min-w-0 flex-1 items-stretch" : "flex min-w-0 flex-1 gap-2"}
           onSubmit={() => onSearchSubmit()}
         >
           {searchType && searchType !== "all" ? (
@@ -151,7 +161,10 @@ export function VehicleSearchBox({
           <div className="relative min-w-0 flex-1">
             <input
               autoComplete="off"
-              className={inputClassName || "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300"}
+              className={
+                inputClassName ||
+                "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300"
+              }
               name="q"
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -171,17 +184,18 @@ export function VehicleSearchBox({
               background="rgb(37, 99, 235)"
               shimmerColor="#93c5fd"
               shimmerDuration="4s"
-              borderRadius="10px"
-              className="h-11 min-h-[44px] shrink-0 inline-flex items-center justify-center gap-1.5 px-6 text-sm font-black sm:h-16"
+              borderRadius={compoundBar ? "0" : "10px"}
+              className={
+                compoundBar
+                  ? "h-14 min-h-[44px] shrink-0 inline-flex items-center justify-center gap-1.5 rounded-none rounded-br-2xl border-0 border-l border-slate-200/90 px-5 text-sm font-black sm:h-16 sm:rounded-br-2xl sm:px-6"
+                  : "h-11 min-h-[44px] shrink-0 inline-flex items-center justify-center gap-1.5 px-6 text-sm font-black sm:h-16"
+              }
             >
               <AppIcon iconKey="search" size="sm" className="!text-white" />
               {buttonLabel}
             </ShimmerButton>
           ) : (
-            <button
-              className="h-11 shrink-0 rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700 sm:h-16"
-              type="submit"
-            >
+            <button className={submitBtnClass} type="submit">
               {buttonLabel}
             </button>
           )}

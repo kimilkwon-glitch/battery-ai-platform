@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-30T04:35:06.035Z",
-  "gitCommit": "457793d51ede8b2f7a26333df95faee59b4f5fd0",
+  "generatedAt": "2026-05-30T04:48:33.448Z",
+  "gitCommit": "addacb0b2102a36d5237b79ab40cff59a4f67bac",
   "forbidden": {
     "hits": [
       {
@@ -197,7 +197,7 @@
     "unifyRecommendation": "Separate routes: /service = delivery+outbound hub copy; /service-center = Busan map/store locator. No redirect required."
   },
   "customerRisks": {
-    "sample_review_text_found": false,
+    "sample_review_text_found": true,
     "fake_mypage_data_found": false,
     "photo_check_pending_copy_found": false,
     "bullet_duplication_found": false,

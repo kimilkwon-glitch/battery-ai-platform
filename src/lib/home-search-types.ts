@@ -2,12 +2,26 @@
 
 export type HomeSearchType = "all" | "vehicle" | "battery" | "symptom" | "qa";
 
+export type HomeSearchTypeMenuItem = {
+  id: HomeSearchType;
+  label: string;
+  hint: string;
+};
+
 export const HOME_SEARCH_TYPE_OPTIONS: { id: HomeSearchType; label: string }[] = [
   { id: "all", label: "전체" },
   { id: "vehicle", label: "차종" },
   { id: "battery", label: "규격" },
   { id: "symptom", label: "증상" },
   { id: "qa", label: "Q&A" },
+];
+
+export const HOME_SEARCH_TYPE_MENU: HomeSearchTypeMenuItem[] = [
+  { id: "all", label: "전체", hint: "차종·연식·규격 통합 검색" },
+  { id: "vehicle", label: "차종", hint: "K3, 쏘렌토, 스타리아" },
+  { id: "battery", label: "규격", hint: "AGM70L, 100R, DIN74L" },
+  { id: "symptom", label: "증상", hint: "시동지연, 방전, 블랙박스" },
+  { id: "qa", label: "Q&A", hint: "궁금한 내용으로 찾기" },
 ];
 
 export const HOME_SEARCH_PLACEHOLDERS: Record<HomeSearchType, string> = {

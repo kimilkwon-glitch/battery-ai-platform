@@ -6,14 +6,6 @@ import {
   HOME_MAIN_AUX_LINKS,
   HOME_MAIN_SEARCH_EXAMPLES,
 } from "@/lib/home-main-catalog-data";
-import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
-
-const HERO_SECONDARY_CTAS = [
-  { label: "사진으로 확인하기", href: "/photo-check" },
-  { label: "주문 전 체크리스트", href: "/order-checklist" },
-  { label: "매장·출장 안내", href: HUB_STORE_DETAIL },
-] as const;
-
 export function HomeMainHero() {
   return (
     <section className="home-main-hero" data-home-section="search-hero">
@@ -55,18 +47,6 @@ export function HomeMainHero() {
           ))}
         </div>
       </div>
-
-      <p className="mx-auto mt-4 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-semibold text-slate-500 sm:max-w-4xl sm:justify-start">
-        {HERO_SECONDARY_CTAS.map((link) => (
-          <Link
-            key={link.href}
-            className="text-slate-600 hover:text-blue-700 hover:underline"
-            href={link.href}
-          >
-            {link.label}
-          </Link>
-        ))}
-      </p>
     </section>
   );
 }
