@@ -120,7 +120,11 @@ export function HomeBenefitsCarousel() {
                     : `calc((100% - ${(visibleCount - 1) * 12}px) / ${visibleCount})`,
                 }}
               >
-                <BenefitCardVisual card={card} emphasis={i >= index && i < index + visibleCount} />
+                <BenefitCardVisual
+                  card={card}
+                  emphasis={i >= index && i < index + visibleCount}
+                  priority={i === 0}
+                />
               </div>
             ))}
           </div>

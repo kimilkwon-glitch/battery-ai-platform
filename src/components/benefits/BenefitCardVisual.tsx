@@ -14,10 +14,12 @@ export function BenefitCardVisual({
   card,
   emphasis,
   asLink = true,
+  priority = false,
 }: {
   card: BenefitCardConfig;
   emphasis?: boolean;
   asLink?: boolean;
+  priority?: boolean;
 }) {
   const active = card.status === "active";
   const inner = (
@@ -30,7 +32,7 @@ export function BenefitCardVisual({
         !active && "cursor-default",
       )}
     >
-      <BenefitCardMedia card={toMediaCard(card)} />
+      <BenefitCardMedia card={toMediaCard(card)} priority={priority} />
       <div className="flex flex-1 flex-col p-4">
         <span
           className={clsx(

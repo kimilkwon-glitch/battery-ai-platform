@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import clsx from "clsx";
 import {
@@ -7,64 +8,56 @@ import {
   type HomeBenefitCard,
 } from "@/lib/home-benefits-data";
 
-/** 3개 혜택 카드 media — 5:3 통일 (benefit-3percent-card.png 기준) */
+/** 혜택 카드 media — 1000×600 (5:3) 원본 비율 고정 */
 const MEDIA_ASPECT = "aspect-[5/3] w-full";
+const BENEFIT_IMAGE_SIZES = "(max-width: 639px) 92vw, (max-width: 1023px) 45vw, 360px";
 
 export function BenefitCardMedia({
   card,
   variant = "card",
+  priority = false,
 }: {
   card: HomeBenefitCard;
-  /** card: 캐러셀·목록 / detail: 상세 상단 */
   variant?: "card" | "detail";
+  priority?: boolean;
 }) {
-  const [imageReady, setImageReady] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const Icon = HOME_BENEFIT_FALLBACK_ICONS[card.fallbackIcon];
   const active = card.status === "active";
-  const showImage = Boolean(card.image) && !imageFailed && imageReady;
-  const isCouponCard = active && Boolean(card.image) && card.id === "first-order-3";
+  const hasImage = Boolean(card.image) && !imageFailed;
   const isDetail = variant === "detail";
 
   return (
     <div
       className={clsx(
-        "home-benefit-card-media relative shrink-0 overflow-hidden rounded-t-2xl",
+        "home-benefit-card-media relative shrink-0 overflow-hidden rounded-t-2xl bg-amber-50",
         MEDIA_ASPECT,
         isDetail && "min-h-[200px] sm:min-h-[240px]",
-        isCouponCard
-          ? "home-benefit-card-media--coupon bg-amber-50"
-          : "bg-gradient-to-b from-amber-50/90 to-white",
+        hasImage && "home-benefit-card-media--photo",
         active && "home-benefit-card-media--active",
         !active && "opacity-90",
       )}
     >
       {card.image && !imageFailed ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           src={card.image}
-          alt={card.imageAlt ?? (isCouponCard ? "첫 주문 3% 혜택 카드" : "")}
-          className={clsx(
-            "home-benefit-card-media__img absolute inset-0 block h-full w-full transition-opacity duration-300",
-            isCouponCard
-              ? "object-cover object-center"
-              : "object-contain object-center p-2",
-            showImage ? "opacity-100" : "opacity-0",
-          )}
-          onLoad={() => setImageReady(true)}
-          onError={() => {
-            setImageFailed(true);
-            setImageReady(false);
-          }}
+          alt={card.imageAlt ?? card.title}
+          fill
+          sizes={isDetail ? "(max-width: 639px) 100vw, 672px" : BENEFIT_IMAGE_SIZES}
+          quality={95}
+          priority={priority}
+          unoptimized
+          className="home-benefit-card-media__img object-cover object-center"
+          onError={() => setImageFailed(true)}
         />
       ) : null}
 
       <div
         className={clsx(
-          "absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity duration-300",
-          showImage ? "pointer-events-none opacity-0" : "opacity-100",
+          "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-b from-amber-50/90 to-white transition-opacity duration-200",
+          hasImage ? "pointer-events-none opacity-0" : "opacity-100",
         )}
-        aria-hidden={showImage}
+        aria-hidden={hasImage}
       >
         <span
           className={clsx(

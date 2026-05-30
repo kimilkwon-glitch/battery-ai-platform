@@ -16,7 +16,7 @@ export function BenefitsHubClient() {
 
   return (
     <div className="bm-zone bm-zone--benefit space-y-8" data-page="benefits-hub">
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {active.map((card) => (
           <div key={card.id} className="space-y-4">
             <BenefitCardVisual card={card} asLink />
