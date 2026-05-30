@@ -180,7 +180,19 @@ export const VEHICLE_CANONICAL_REGISTRY: VehicleCanonicalEntry[] = [
     fuel: null,
     dbQuery: "K3",
     specificity: 55,
-    aliases: ["K3", "k3", "케이쓰리", "케이3"],
+    aliases: ["K3", "k3"],
+  },
+  {
+    canonicalKey: "kia-k3-1st-informal",
+    displayName: "기아 K3 1세대",
+    brand: "기아",
+    model: "K3",
+    generation: "1세대",
+    fuel: null,
+    assetId: "k3-yd",
+    dbQuery: "K3",
+    specificity: 88,
+    aliases: ["케이쓰리", "케이3", "케삼"],
   },
 
   // —— 쏘나타 LF 뉴라이즈 ——

@@ -176,10 +176,14 @@ function collectMatches(rawQuery: string, nq: string, rawQ: string): ScoredMatch
   return [...bySlug.values()].sort((a, b) => b.score - a.score);
 }
 
-function isAmbiguousK3(nq: string, scored: ScoredMatch[]): boolean {
-  if (nq !== "k3") return false;
-  const k3 = scored.filter((s) => normalizeVehicleAlias(s.entry.mapTo?.vehicleFamily ?? "") === "k3");
-  return k3.length > 1;
+function isAmbiguousFamily(nq: string, scored: ScoredMatch[], familyNorm: string): boolean {
+  const familyHits = scored.filter(
+    (s) => normalizeVehicleAlias(s.entry.mapTo?.vehicleFamily ?? "") === familyNorm,
+  );
+  if (familyHits.length < 2) return false;
+  const topHit = scored[0];
+  const topAliasN = normalizeVehicleAlias(topHit.matchedAlias);
+  return topAliasN === familyNorm || topAliasN === nq;
 }
 
 function buildRecognitionNote(
@@ -214,8 +218,16 @@ function buildRecognitionNote(
 
 function buildDbQuery(entry: VehicleAliasEntry): string {
   const family = entry.mapTo?.vehicleFamily;
-  const gen = entry.generationCode ?? entry.generationName;
-  if (gen && family) return `${family} ${gen}`.replace(/\s+/g, " ").trim();
+  if (entry.generationCode && family) {
+    return `${family} ${entry.generationCode}`.replace(/\s+/g, " ").trim();
+  }
+  if (entry.generationName) {
+    const gn = entry.generationName.trim();
+    if (family && !normalizeVehicleAlias(gn).startsWith(normalizeVehicleAlias(family))) {
+      return `${family} ${gn}`.replace(/\s+/g, " ").trim();
+    }
+    return gn;
+  }
   if (family) return family;
   return entry.canonicalName;
 }
@@ -238,7 +250,7 @@ export function resolveVehicleAliasDbV01(rawQuery: string): SearchVehicleAliasMa
   if (!scored.length) return null;
 
   const top = scored[0];
-  const ambiguousK3 = isAmbiguousK3(nq, scored);
+  const ambiguousK3 = nq === "k3" && isAmbiguousFamily(nq, scored, "k3");
 
   const yearHint = parseVehicleYearHint(rawQ);
   const fuel = top.entry.mapTo?.fuel ?? detectFuelFromQuery(rawQ);
