@@ -540,8 +540,22 @@
   font-family: var(--font-body);
 }
 
+.home-benefits-section-title {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
 .home-benefits-section-header__desc {
   color: #475569;
+}
+
+.portal-brand-lockup {
+  align-items: center;
+}
+
+.portal-brand-lockup__text {
+  gap: 0.125rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

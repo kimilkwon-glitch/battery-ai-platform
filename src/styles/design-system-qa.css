@@ -178,7 +178,8 @@
 .bm-zone--benefit .home-benefits-section-title {
   color: #9a3412;
   text-transform: none;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  font-weight: 700;
 }
 
 /* —— 가이드 메가메뉴 —— */

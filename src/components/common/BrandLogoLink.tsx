@@ -13,19 +13,19 @@ export function BrandLogoLink({ className }: { className?: string }) {
     <Link
       href="/"
       className={clsx(
-        "portal-brand-lockup group inline-flex shrink-0 items-center gap-2 rounded-lg outline-none ring-blue-200 focus-visible:ring-2 sm:gap-2.5",
+        "portal-brand-lockup group inline-flex shrink-0 items-center gap-1.5 rounded-lg outline-none ring-blue-200 focus-visible:ring-2 sm:gap-2",
         className,
       )}
       aria-label="배터리매니저 홈"
     >
-      <span className="portal-brand-lockup__logo relative block h-11 w-11 shrink-0 sm:h-14 sm:w-14 lg:h-[4.5rem] lg:w-[4.5rem]">
+      <span className="portal-brand-lockup__logo relative block h-12 w-12 shrink-0 sm:h-[3.75rem] sm:w-[3.75rem] lg:h-20 lg:w-20">
         {!imgError ? (
           <Image
             src={BRAND_LOGO_SRC}
             alt=""
-            width={144}
-            height={144}
-            sizes="(max-width: 1023px) 56px, 72px"
+            width={160}
+            height={160}
+            sizes="(max-width: 1023px) 60px, 80px"
             className="h-full w-full object-contain object-center"
             priority
             unoptimized
@@ -40,11 +40,11 @@ export function BrandLogoLink({ className }: { className?: string }) {
           </span>
         )}
       </span>
-      <span className="portal-brand-lockup__text flex min-w-0 flex-col justify-center leading-none">
+      <span className="portal-brand-lockup__text flex min-w-0 flex-col justify-center gap-0 leading-none">
         <span className="portal-brand-lockup__title truncate text-lg font-extrabold tracking-tight text-[var(--bm-navy)] sm:text-xl lg:text-2xl">
           배터리매니저
         </span>
-        <span className="portal-brand-lockup__sub mt-0.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 sm:text-xs lg:tracking-[0.16em]">
+        <span className="portal-brand-lockup__sub text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500 sm:text-[11px] lg:tracking-[0.14em]">
           Battery Manager
         </span>
       </span>
