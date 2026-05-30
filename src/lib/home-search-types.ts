@@ -17,7 +17,7 @@ export const HOME_SEARCH_TYPE_OPTIONS: { id: HomeSearchType; label: string }[] =
 ];
 
 export const HOME_SEARCH_TYPE_MENU: HomeSearchTypeMenuItem[] = [
-  { id: "all", label: "전체", hint: "차종·연식·규격 통합 검색" },
+  { id: "all", label: "전체", hint: "차량·규격·증상 통합 검색" },
   { id: "vehicle", label: "차종", hint: "K3, 쏘렌토, 스타리아" },
   { id: "battery", label: "규격", hint: "AGM70L, 100R, DIN74L" },
   { id: "symptom", label: "증상", hint: "시동지연, 방전, 블랙박스" },

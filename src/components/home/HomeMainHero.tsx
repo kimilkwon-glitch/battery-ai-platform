@@ -2,44 +2,23 @@
 
 import Link from "next/link";
 import { HomeHeroSearch } from "@/components/home/HomeHeroSearch";
-import {
-  HOME_MAIN_AUX_LINKS,
-  HOME_MAIN_SEARCH_EXAMPLES,
-} from "@/lib/home-main-catalog-data";
+import { HOME_MAIN_SEARCH_EXAMPLES } from "@/lib/home-main-catalog-data";
+
+/** 검색창 + 검색 예시 chips — 제목·미니 링크 없음 */
 export function HomeMainHero() {
   return (
     <section className="home-main-hero" data-home-section="search-hero">
-      <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] font-semibold text-slate-500 sm:justify-start">
-        {HOME_MAIN_AUX_LINKS.map((link, i) => (
-          <span key={link.href} className="inline-flex items-center">
-            {i > 0 ? <span className="mx-1 text-slate-300" aria-hidden>·</span> : null}
-            <Link className="text-slate-600 hover:text-blue-700 hover:underline" href={link.href}>
-              {link.label}
-            </Link>
-          </span>
-        ))}
-      </p>
-
-      <div className="mt-8 text-center sm:mt-10 sm:text-left">
-        <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-          차량명·연식·배터리 규격으로 바로 확인
-        </h1>
-        <p className="mx-auto mt-2 max-w-2xl text-sm font-medium leading-relaxed text-slate-600 sm:mx-0">
-          내 차에 맞는 배터리 후보와 주문 전 확인 포인트를 빠르게 안내합니다.
-        </p>
-      </div>
-
-      <div className="home-main-search-shell mx-auto mt-6 max-w-3xl sm:mt-8 sm:max-w-4xl lg:max-w-[1100px]">
+      <div className="home-main-search-shell mx-auto max-w-3xl lg:max-w-[1100px]">
         <HomeHeroSearch />
       </div>
 
-      <div className="mx-auto mt-4 max-w-3xl sm:max-w-4xl">
+      <div className="mx-auto mt-4 max-w-3xl lg:max-w-[1100px]">
         <p className="text-[11px] font-bold text-slate-400">검색 예시</p>
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="home-search-example-chips mt-2 -mx-1 flex gap-2 overflow-x-auto pb-1 scroll-smooth sm:mx-0 sm:flex-wrap sm:overflow-visible sm:pb-0">
           {HOME_MAIN_SEARCH_EXAMPLES.map((ex) => (
             <Link
               key={ex.href}
-              className="rounded-full bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-200/90 transition hover:bg-white hover:text-blue-700 hover:ring-blue-200"
+              className="shrink-0 rounded-full bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-200/90 transition hover:bg-white hover:text-blue-700 hover:ring-blue-200 sm:shrink"
               href={ex.href}
             >
               {ex.label}

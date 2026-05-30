@@ -8,8 +8,6 @@ import {
 import { getHomeSearchHref } from "@/lib/home-search-types";
 import { batteryDetailHref } from "@/lib/home-upgrade-v2-data";
 import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
-import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
-
 export type HomeCatalogBrandId = "rocket" | "solite";
 
 export type HomeProductTypeFilter = "전체" | "AGM" | "일반형" | "DIN" | "EV 보조 12V";
@@ -39,19 +37,28 @@ export const HOME_LINEUP_PINNED_CODES = [
   "DIN74L",
 ] as const;
 
+/** 메인 검색 예시 chips — 차종·규격·증상·상용/가이드 혼합 */
 export const HOME_MAIN_SEARCH_EXAMPLES = [
   { label: "K3", href: getHomeSearchHref("K3", "vehicle") },
   { label: "쏘렌토 MQ4", href: getHomeSearchHref("쏘렌토 MQ4", "vehicle") },
-  { label: "스타리아 AGM80R", href: getHomeSearchHref("스타리아 CMF80L", "battery") },
-  { label: "포터2 100R", href: getHomeSearchHref("포터2 100R", "vehicle") },
+  { label: "스타리아", href: getHomeSearchHref("스타리아", "vehicle") },
+  { label: "싼타페 TM", href: getHomeSearchHref("싼타페 TM", "vehicle") },
+  { label: "그랜저 IG", href: getHomeSearchHref("그랜저 IG", "vehicle") },
+  { label: "아반떼 CN7", href: getHomeSearchHref("아반떼 CN7", "vehicle") },
   { label: "AGM70L", href: getHomeSearchHref("AGM70L", "battery") },
+  { label: "AGM80L", href: getHomeSearchHref("AGM80L", "battery") },
+  { label: "AGM95L", href: getHomeSearchHref("AGM95L", "battery") },
+  { label: "100R", href: getHomeSearchHref("100R", "battery") },
+  { label: "DIN74L", href: getHomeSearchHref("DIN74L", "battery") },
+  { label: "90R", href: getHomeSearchHref("90R", "battery") },
   { label: "시동지연", href: getHomeSearchHref("시동지연", "symptom") },
-] as const;
-
-export const HOME_MAIN_AUX_LINKS = [
-  { label: "사진으로 확인하기", href: HUB_PHOTO },
-  { label: "주문 전 체크리스트", href: HUB_ORDER_CHECKLIST },
-  { label: "EV/하이브리드 보조배터리 안내", href: "/guides/knowledge/bk-ev-aux-12v" },
+  { label: "완전방전", href: getHomeSearchHref("완전방전", "symptom") },
+  { label: "블랙박스 방전", href: getHomeSearchHref("블랙박스 방전", "symptom") },
+  { label: "장기주차 방전", href: getHomeSearchHref("장기주차 방전", "symptom") },
+  { label: "포터2 100R", href: getHomeSearchHref("포터2 100R", "vehicle") },
+  { label: "스타리아 AGM80R", href: getHomeSearchHref("스타리아 AGM80R", "battery") },
+  { label: "하이브리드 보조배터리", href: getHomeSearchHref("하이브리드 보조배터리", "qa") },
+  { label: "AGM 배터리 차이", href: getHomeSearchHref("AGM 배터리 차이", "qa") },
 ] as const;
 
 export const HOME_CATALOG_TYPE_FILTERS: HomeProductTypeFilter[] = [
