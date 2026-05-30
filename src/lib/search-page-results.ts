@@ -150,6 +150,8 @@ export type SearchPageResults = {
   orderGuidance: string | null;
   compareIntent: boolean;
   aliasVehicleNote: string | null;
+  /** 별칭 검색 인식 안내 (비공식 별칭 목록 미노출) */
+  searchRecognitionNote: string | null;
   upgradeGuidance: string | null;
   recognizedVehicle: RecognizedVehicleResult | null;
   recognizedSpec: RecognizedSpecResult | null;
@@ -378,6 +380,7 @@ function emptyResults(partial?: Partial<SearchPageResults>): SearchPageResults {
     orderGuidance: null,
     compareIntent: false,
     aliasVehicleNote: null,
+    searchRecognitionNote: null,
     upgradeGuidance: null,
     recognizedVehicle: null,
     recognizedSpec: null,
@@ -1242,7 +1245,8 @@ export function buildSearchPageResults(
       vehiclesTotal: vehiclesForRender.length,
       orderGuidance: intentFlags.order ? ORDER_GUIDANCE_TEXT : null,
       compareIntent: intentFlags.compare,
-      aliasVehicleNote: alias ? ALIAS_VEHICLE_NOTE : null,
+      aliasVehicleNote: alias?.searchRecognitionNote ?? (alias ? ALIAS_VEHICLE_NOTE : null),
+      searchRecognitionNote: alias?.searchRecognitionNote ?? null,
       upgradeGuidance: upgradeReviewOnly ? UPGRADE_REVIEW_GUIDANCE : null,
       recognizedVehicle,
       recognizedSpec,
@@ -1304,7 +1308,8 @@ export function buildSearchPageResults(
       ctas: buildCtas(specs, specTokens, intentFlags, null, undefined, query),
       orderGuidance: intentFlags.order ? ORDER_GUIDANCE_TEXT : null,
       compareIntent: intentFlags.compare,
-      aliasVehicleNote: alias ? ALIAS_VEHICLE_NOTE : null,
+      aliasVehicleNote: alias?.searchRecognitionNote ?? (alias ? ALIAS_VEHICLE_NOTE : null),
+      searchRecognitionNote: alias?.searchRecognitionNote ?? null,
       upgradeGuidance: upgradeReviewOnly ? UPGRADE_REVIEW_GUIDANCE : null,
       insufficientMessage: INSUFFICIENT_MESSAGE,
       missingSpecMessage: specs.length > 0 ? MISSING_SPEC_MESSAGE : null,

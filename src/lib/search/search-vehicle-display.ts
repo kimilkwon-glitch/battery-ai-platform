@@ -42,23 +42,25 @@ export function formatSearchVehicleDisplayLabel(
 
 
 
+  const formal = alias.formalDisplayName ?? alias.label;
+
   let base: string;
 
   if (kgModel && queryMentionsKgMobilityBrand(query)) {
 
-    base = `KG모빌리티 ${alias.label}`;
+    base = `KG모빌리티 ${formal}`;
 
   } else if (kgModel) {
 
-    base = `KG/쌍용 ${alias.label}`;
+    base = `KG/쌍용 ${formal}`;
 
   } else if (alias.brand) {
 
-    base = `${alias.brand} ${alias.label}`;
+    base = `${alias.brand} ${formal}`;
 
   } else {
 
-    base = alias.label;
+    base = formal;
 
   }
 

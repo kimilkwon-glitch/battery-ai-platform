@@ -151,6 +151,9 @@ export function SearchResultsView({ data }: Props) {
         <div className={`${bm.intentSummary} motion-safe:animate-[page-enter_0.35s_ease-out_forwards]`} id="search-summary">
           <p className={bm.intentBadge}>{data.ux.intentBadge}</p>
           <h1 className={`${bm.titleLg} mt-2`}>&ldquo;{data.displayQuery || data.query}&rdquo; 검색 결과</h1>
+          {data.searchRecognitionNote ? (
+            <p className="mt-2 text-sm font-medium text-slate-600">{data.searchRecognitionNote}</p>
+          ) : null}
           <div className={`${bm.surfaceMuted} mt-3 space-y-2 p-3`}>
             <p className="text-xs font-medium text-slate-600">
               인식된 차량: {formatList(data.summary.vehicleKeywords, "차량명 추가 입력 권장")}

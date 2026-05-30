@@ -80,8 +80,9 @@ export function computeTopFoldLimits(
   }
 
   if (alias || hasVehicleIntent) {
+    const multiGeneration = Boolean(alias && !alias.assetId);
     return {
-      maxVehicles: 1,
+      maxVehicles: multiGeneration ? 8 : 1,
       maxBatteries: specCount > 0 ? 1 : 0,
       maxQuestions: 2,
       maxGuides: 1,

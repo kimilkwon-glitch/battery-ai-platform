@@ -4,17 +4,24 @@
  */
 import { normalizeQuery } from "@/lib/search/normalize-query";
 import { parseVehicleIntent } from "@/lib/search/parse-vehicle-intent";
+import { resolveVehicleAliasDbV01 } from "@/lib/search/resolve-vehicle-alias-v01";
 import {
   KG_MOBILITY_CANONICAL_BRAND,
   withKgMobilityOptionalPrefix,
 } from "@/lib/search/kg-mobility-brand";
 
 export type SearchVehicleAliasMatch = {
+  /** 고객 화면 정식 표기 (car-assets displayName 우선) */
   label: string;
+  formalDisplayName?: string;
   brand?: string;
   assetId?: string;
   catalogId?: string;
   dbQuery: string;
+  /** 별칭 검색 시 짧은 인식 안내 (비공식 별칭 목록 노출 없음) */
+  searchRecognitionNote?: string;
+  /** 디버그·QA용 매칭 출처 */
+  matchedVia?: string;
 };
 
 type AliasRule = {
@@ -163,10 +170,13 @@ function vehicleIntentToAlias(rawQuery: string): SearchVehicleAliasMatch | null 
   };
 }
 
-/** Vehicle-first canonical → 기존 regex alias 폴백 */
+/** Vehicle-first canonical → alias DB v0.1 → regex alias 폴백 */
 export function resolveSearchVehicleAlias(rawQuery: string): SearchVehicleAliasMatch | null {
   const canonical = vehicleIntentToAlias(rawQuery);
   if (canonical) return canonical;
+
+  const aliasDb = resolveVehicleAliasDbV01(rawQuery);
+  if (aliasDb) return aliasDb;
 
   const q = normalizeQuery(rawQuery).normalizedQuery.replace(/\s*배터리\s*$/i, "").trim();
   if (!q) return null;

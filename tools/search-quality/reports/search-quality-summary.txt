@@ -1,0 +1,13 @@
+Battery Manager 검색 품질 QA
+생성: 2026-05-30T09:41:53.221Z
+URL: https://battery-ai-platform.vercel.app
+방식: Playwright home Enter + QA API
+
+평균: 9.4/10
+성공 42 / 보완 7 / 위험 1 / 실패 0
+
+실패·위험: K3
+
+상위 문제: 검색어 인식·결과 블록 약함 | 모바일 뷰포트에서 UI 요소 과다 가능 | 차량 카드 있는데 '등록된 규격 없음' 문구 노출
+
+보고서: tools/search-quality/reports/search-quality-report.md

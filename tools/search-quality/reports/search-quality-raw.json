@@ -1,0 +1,3659 @@
+{
+  "generatedAt": "2026-05-30T09:41:53.221Z",
+  "baseUrl": "https://battery-ai-platform.vercel.app",
+  "cacheBust": "search-qa-persona-v1-20260530",
+  "stats": {
+    "averageScore": 9.4,
+    "verdictCounts": {
+      "성공": 42,
+      "보완 필요": 7,
+      "위험": 1,
+      "실패": 0
+    }
+  },
+  "personas": [
+    {
+      "id": 1,
+      "persona": "K3 신규 차주",
+      "customerType": "일반 차종",
+      "query": "K3",
+      "intent": "차종 확인",
+      "desiredAction": "세대 선택 후 규격 확인",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"K3\" — 인식 결과 없음 (vehicle_generation)",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=K3",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [
+        "검색어 인식·결과 블록 약함",
+        "차량 카드 있는데 '등록된 규격 없음' 문구 노출",
+        "모바일 뷰포트에서 UI 요소 과다 가능"
+      ],
+      "apiWarnings": [
+        {
+          "level": "error",
+          "message": "K3 검색에 차량/세대 카드가 없습니다.",
+          "reason": "k3_generation_cards"
+        }
+      ],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 1,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 0
+      },
+      "totalScore": 6,
+      "verdict": "위험",
+      "fixSuggestion": "검색어 인식·결과 블록 약함",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": true,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": [
+          {
+            "level": "error",
+            "message": "K3 검색에 차량/세대 카드가 없습니다.",
+            "reason": "k3_generation_cards"
+          }
+        ]
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=K3"
+    },
+    {
+      "id": 2,
+      "persona": "아반떼 운전자",
+      "customerType": "일반 차종",
+      "query": "아반떼",
+      "intent": "차종 확인",
+      "desiredAction": "규격·세대 확인",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"아반떼\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/vehicle/avante-hd",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/60L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "CMF60L",
+        "CMF80L",
+        "AGM60AL",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L",
+        "DIN62L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "매장·출장 안내",
+        "증상 진단시동지연·방전·블랙박스 방전 증상 확인",
+        "차량검색",
+        "사진으로 확인 (보조)",
+        "택배주문",
+        "사진 확인 (보조)",
+        "전체 상세표펼치기",
+        "상세 스펙",
+        "사진으로 확인",
+        "문의하기"
+      ],
+      "issues": [
+        "모바일 뷰포트에서 UI 요소 과다 가능"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "모바일 뷰포트에서 UI 요소 과다 가능",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": true,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/vehicle/avante-hd"
+    },
+    {
+      "id": 3,
+      "persona": "쏘나타 오너",
+      "customerType": "일반 차종",
+      "query": "쏘나타",
+      "intent": "차종 확인",
+      "desiredAction": "세대별 규격",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"쏘나타\" — 인식 결과 없음 (vehicle_generation)",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%82%98%ED%83%80",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [
+        "검색어 인식·결과 블록 약함",
+        "모바일 뷰포트에서 UI 요소 과다 가능"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 0
+      },
+      "totalScore": 8,
+      "verdict": "보완 필요",
+      "fixSuggestion": "검색어 인식·결과 블록 약함",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": true,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%82%98%ED%83%80"
+    },
+    {
+      "id": 4,
+      "persona": "그랜저 오너",
+      "customerType": "일반 차종",
+      "query": "그랜저",
+      "intent": "차종 확인",
+      "desiredAction": "세대별 규격",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"그랜저\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/grandeur-gn7?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM80L",
+        "90R",
+        "AGM80R",
+        "100R",
+        "AGM95R",
+        "CMF90R",
+        "CMF80R",
+        "CMF100R",
+        "AGM70L",
+        "AGM60L",
+        "AGM95L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "그랜저 IG AGM80L에서 AGM95L 업그레이드 가능한가요?",
+        "그랜저 IG 가솔린과 디젤은 왜 배터리가 다를 수 있나요?"
+      ],
+      "ctaShown": [
+        "연료 확인 필요",
+        "AGM80L 상세",
+        "90R 상세",
+        "AGM80R 상세",
+        "100R 상세",
+        "AGM95R 상세",
+        "차량 상세",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →"
+      ],
+      "issues": [
+        "모바일 뷰포트에서 UI 요소 과다 가능"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "모바일 뷰포트에서 UI 요소 과다 가능",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": true,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80"
+    },
+    {
+      "id": 5,
+      "persona": "싼타페 가족",
+      "customerType": "일반 차종",
+      "query": "싼타페",
+      "intent": "차종 확인",
+      "desiredAction": "세대 선택",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"싼타페\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%BC%ED%83%80%ED%8E%98",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "현대 싼타페"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [
+        "모바일 뷰포트에서 UI 요소 과다 가능"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "모바일 뷰포트에서 UI 요소 과다 가능",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": true,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%BC%ED%83%80%ED%8E%98"
+    },
+    {
+      "id": 6,
+      "persona": "스포티지 오너",
+      "customerType": "일반 차종",
+      "query": "스포티지",
+      "intent": "차종 확인",
+      "desiredAction": "세대·규격",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"스포티지\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/vehicle/sportage-sl",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/80L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "CMF80L",
+        "AGM80L",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "기아 스포티지"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "스포티지 NQ5 하이브리드 배터리는 왜 AGM60L로 보나요?"
+      ],
+      "ctaShown": [
+        "매장·출장 안내",
+        "증상 진단시동지연·방전·블랙박스 방전 증상 확인",
+        "차량검색",
+        "사진으로 확인 (보조)",
+        "택배주문",
+        "사진 확인 (보조)",
+        "전체 상세표펼치기",
+        "상세 스펙",
+        "사진으로 확인",
+        "문의하기"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/vehicle/sportage-sl"
+    },
+    {
+      "id": 7,
+      "persona": "카니발 다자녀",
+      "customerType": "일반 차종",
+      "query": "카니발",
+      "intent": "차종 확인",
+      "desiredAction": "세대 선택",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"카니발\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%B9%B4%EB%8B%88%EB%B0%9C",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%B9%B4%EB%8B%88%EB%B0%9C"
+    },
+    {
+      "id": 8,
+      "persona": "레이 경차",
+      "customerType": "일반 차종",
+      "query": "레이",
+      "intent": "차종 확인",
+      "desiredAction": "규격 확인",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"레이\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%A0%88%EC%9D%B4",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/ray-tam?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM105L",
+        "DIN62L",
+        "DIN74L",
+        "AGM70L",
+        "CMF80L",
+        "DIN74AH",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "80L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "셀토스 AGM60L에서 AGM70L 업그레이드 가능한가요?",
+        "그랜저 IG AGM80L에서 AGM95L 업그레이드 가능한가요?"
+      ],
+      "ctaShown": [
+        "연료 확인 필요",
+        "80L 상세",
+        "AGM105L 상세",
+        "DIN62L 상세",
+        "DIN74L 상세",
+        "AGM70L 상세",
+        "차량 상세",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%A0%88%EC%9D%B4"
+    },
+    {
+      "id": 9,
+      "persona": "모닝 신규",
+      "customerType": "일반 차종",
+      "query": "모닝",
+      "intent": "차종 확인",
+      "desiredAction": "규격 확인",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"모닝\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%AA%A8%EB%8B%9D",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "기아 모닝"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%AA%A8%EB%8B%9D"
+    },
+    {
+      "id": 10,
+      "persona": "티볼리 SUV",
+      "customerType": "일반 차종",
+      "query": "티볼리",
+      "intent": "차종 확인",
+      "desiredAction": "세대·규격",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"티볼리\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%8B%B0%EB%B3%BC%EB%A6%AC",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "KG/쌍용 티볼리"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "KG/쌍용 티볼리KG/쌍용 티볼리연식 연식별 확인 · 연료별추천 규격 문의·사진 확인",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%8B%B0%EB%B3%BC%EB%A6%AC"
+    },
+    {
+      "id": 11,
+      "persona": "21년 싼타페",
+      "customerType": "연식 포함",
+      "query": "21년식 싼타페",
+      "intent": "연식+차종",
+      "desiredAction": "해당 연식 규격",
+      "expectedSuccessType": "연식 분기형",
+      "actualResult": "\"21년식 싼타페\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=21%EB%85%84%EC%8B%9D+%EC%8B%BC%ED%83%80%ED%8E%98",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "현대 싼타페"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=21%EB%85%84%EC%8B%9D+%EC%8B%BC%ED%83%80%ED%8E%98"
+    },
+    {
+      "id": 12,
+      "persona": "20년 티볼리",
+      "customerType": "연식 포함",
+      "query": "20년식 티볼리",
+      "intent": "연식+차종",
+      "desiredAction": "연식 규격",
+      "expectedSuccessType": "연식 분기형",
+      "actualResult": "\"20년식 티볼리\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/search?q=%ED%8B%B0%EB%B3%BC%EB%A6%AC%20%EB%B0%B0%ED%84%B0%EB%A6%AC",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM70L",
+        "AGM80L",
+        "100R"
+      ],
+      "vehicleCardsShown": [
+        "KG/쌍용 티볼리"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "매장·출장 안내",
+        "증상 진단시동지연·방전·블랙박스 방전 증상 확인",
+        "통합검색",
+        "사진으로 확인",
+        "문의하기",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q="
+    },
+    {
+      "id": 13,
+      "persona": "더뉴 싼타페 21",
+      "customerType": "세대+연식",
+      "query": "더 뉴 싼타페 21년식",
+      "intent": "세대+연식",
+      "desiredAction": "정확 세대 규격",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"더 뉴 싼타페 21년식\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94+%EB%89%B4+%EC%8B%BC%ED%83%80%ED%8E%98+21%EB%85%84%EC%8B%9D",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "현대 싼타페"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94+%EB%89%B4+%EC%8B%BC%ED%83%80%ED%8E%98+21%EB%85%84%EC%8B%9D"
+    },
+    {
+      "id": 14,
+      "persona": "올뉴 K3",
+      "customerType": "세대명",
+      "query": "올뉴 K3",
+      "intent": "세대 지정",
+      "desiredAction": "K3 세대 규격",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"올뉴 K3\" — 인식 결과 없음 (unknown)",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%98%AC%EB%89%B4+K3",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [
+        "검색어 인식·결과 블록 약함",
+        "차량 카드 있는데 '등록된 규격 없음' 문구 노출"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 2,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 0
+      },
+      "totalScore": 7,
+      "verdict": "보완 필요",
+      "fixSuggestion": "검색어 인식·결과 블록 약함",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%98%AC%EB%89%B4+K3"
+    },
+    {
+      "id": 15,
+      "persona": "더뉴 카니발",
+      "customerType": "세대명",
+      "query": "더뉴 카니발",
+      "intent": "세대 지정",
+      "desiredAction": "카니발 세대 규격",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"더뉴 카니발\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94%EB%89%B4+%EC%B9%B4%EB%8B%88%EB%B0%9C",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94%EB%89%B4+%EC%B9%B4%EB%8B%88%EB%B0%9C"
+    },
+    {
+      "id": 16,
+      "persona": "그랜저 IG",
+      "customerType": "세대 코드",
+      "query": "그랜저 IG",
+      "intent": "세대 지정",
+      "desiredAction": "IG 규격",
+      "expectedSuccessType": "즉시 확정형",
+      "actualResult": "\"그랜저 IG\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80+IG",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/grandeur-ig?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM80L",
+        "DIN80L",
+        "DIN90L",
+        "DIN74R",
+        "AGM90L",
+        "AGM74R",
+        "DIN74AH",
+        "90R",
+        "100R",
+        "AGM70L",
+        "AGM60L",
+        "AGM95L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "그랜저 IG AGM80L에서 AGM95L 업그레이드 가능한가요?",
+        "그랜저 IG 가솔린과 디젤은 왜 배터리가 다를 수 있나요?"
+      ],
+      "ctaShown": [
+        "연료 확인 필요",
+        "AGM80L 상세",
+        "DIN80L 상세",
+        "DIN90L 상세",
+        "DIN74R 상세",
+        "차량 상세",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80+IG"
+    },
+    {
+      "id": 17,
+      "persona": "그랜저 HG",
+      "customerType": "세대 코드",
+      "query": "그랜저 HG",
+      "intent": "세대 지정",
+      "desiredAction": "HG 규격",
+      "expectedSuccessType": "즉시 확정형",
+      "actualResult": "\"그랜저 HG\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80+HG",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/grandeur-gn7?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM80L",
+        "90R",
+        "AGM80R",
+        "100R",
+        "AGM95R",
+        "CMF90R",
+        "CMF80R",
+        "CMF100R",
+        "AGM95L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "연료 확인 필요",
+        "AGM80L 상세",
+        "90R 상세",
+        "AGM80R 상세",
+        "100R 상세",
+        "AGM95R 상세",
+        "차량 상세",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80+HG"
+    },
+    {
+      "id": 18,
+      "persona": "아반떼 CN7",
+      "customerType": "세대 코드",
+      "query": "아반떼 CN7",
+      "intent": "세대 지정",
+      "desiredAction": "CN7 규격",
+      "expectedSuccessType": "즉시 확정형",
+      "actualResult": "\"아반떼 CN7\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/avante-cn7#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM70L",
+        "AGM80L",
+        "100R"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "매장·출장 안내",
+        "증상 진단시동지연·방전·블랙박스 방전 증상 확인",
+        "통합검색",
+        "사진으로 확인",
+        "문의하기",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q="
+    },
+    {
+      "id": 19,
+      "persona": "스포티지 NQ5",
+      "customerType": "세대 코드",
+      "query": "스포티지 NQ5",
+      "intent": "세대 지정",
+      "desiredAction": "NQ5 규격",
+      "expectedSuccessType": "즉시 확정형",
+      "actualResult": "\"스포티지 NQ5\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%8F%AC%ED%8B%B0%EC%A7%80+NQ5",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/sportage-sl?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM105L",
+        "DIN62L",
+        "DIN74L",
+        "AGM70L",
+        "CMF80L",
+        "DIN74AH",
+        "90R",
+        "100R",
+        "AGM60L",
+        "80L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "스포티지 NQ5 하이브리드 배터리는 왜 AGM60L로 보나요?"
+      ],
+      "ctaShown": [
+        "연료 확인 필요",
+        "80L 상세",
+        "AGM105L 상세",
+        "DIN62L 상세",
+        "DIN74L 상세",
+        "AGM70L 상세",
+        "차량 상세",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%8F%AC%ED%8B%B0%EC%A7%80+NQ5"
+    },
+    {
+      "id": 20,
+      "persona": "쏘렌토 MQ4",
+      "customerType": "세대 코드",
+      "query": "쏘렌토 MQ4",
+      "intent": "세대 지정",
+      "desiredAction": "MQ4 규격 분기",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "\"쏘렌토 MQ4\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%A0%8C%ED%86%A0+MQ4",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM60L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM60L",
+        "AGM80L",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "AGM95L은 어떤 차량군에서 확인하나요?"
+      ],
+      "ctaShown": [
+        "AGM60L 상세 보기",
+        "사진으로 최종 확인",
+        "사진으로 확인",
+        "차량 상세 보기",
+        "연료 확인 필요",
+        "AGM60L 상세",
+        "AGM80L 상세",
+        "차량 상세",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%A0%8C%ED%86%A0+MQ4"
+    },
+    {
+      "id": 21,
+      "persona": "MQ4 하이브리드",
+      "customerType": "연료/트림",
+      "query": "쏘렌토 MQ4 하이브리드",
+      "intent": "하이브리드 규격",
+      "desiredAction": "AGM60L 우선",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "기아 쏘렌토 MQ4 하이브리드 — AGM60L 확정 후보",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%A0%8C%ED%86%A0+MQ4+%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/sorento-mq4?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "쏘렌토 MQ4 하이브리드 배터리는 AGM60L인가요?",
+        "하이브리드 차량은 일반 차량과 배터리가 다른가요?"
+      ],
+      "ctaShown": [
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "배터리 상세",
+        "차량 상세",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%A0%8C%ED%86%A0+MQ4+%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C"
+    },
+    {
+      "id": 22,
+      "persona": "스타리아 LPG",
+      "customerType": "연료",
+      "query": "스타리아 LPG",
+      "intent": "LPG 규격",
+      "desiredAction": "AGM80R 계열",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "현대 스타리아 US4 LPG — AGM80R 확정 후보",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+LPG",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM80R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM80R",
+        "CMF80R",
+        "CMF80L",
+        "AGM80L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "스타리아는 AGM80L이 아니라 AGM80R인가요?",
+        "CMF80L과 AGM80L은 같은 건가요?"
+      ],
+      "ctaShown": [
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "배터리 상세",
+        "차량 상세",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+LPG"
+    },
+    {
+      "id": 23,
+      "persona": "스타리아 디젤",
+      "customerType": "연료",
+      "query": "스타리아 디젤",
+      "intent": "디젤 규격",
+      "desiredAction": "스타리아 디젤 규격",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "현대 스타리아 US4 디젤 — AGM80R 확정 후보",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+%EB%94%94%EC%A0%A4",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM80R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM80R",
+        "CMF80R",
+        "CMF80L",
+        "AGM80L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "스타리아 디젤은 왜 CMF80L로 확인하나요?",
+        "스타리아는 AGM80L이 아니라 AGM80R인가요?"
+      ],
+      "ctaShown": [
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "배터리 상세",
+        "차량 상세",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+%EB%94%94%EC%A0%A4"
+    },
+    {
+      "id": 24,
+      "persona": "니로 HEV",
+      "customerType": "하이브리드",
+      "query": "니로 하이브리드",
+      "intent": "HEV 규격",
+      "desiredAction": "HEV AGM",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "\"니로 하이브리드\" — 2개 차량·세대 후보, 세대 선택 필요",
+      "actualSuccessType": "세대 선택형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8B%88%EB%A1%9C+%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM60L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "기아 포르테 가솔린/하이브리드",
+        "기아 뉴 프라이드 가솔린/하이브리드"
+      ],
+      "generationCardsShown": [
+        "기아 포르테 가솔린/하이브리드",
+        "기아 뉴 프라이드 가솔린/하이브리드"
+      ],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "generation_select",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8B%88%EB%A1%9C+%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C"
+    },
+    {
+      "id": 25,
+      "persona": "K8 HEV",
+      "customerType": "하이브리드",
+      "query": "K8 하이브리드",
+      "intent": "HEV 규격",
+      "desiredAction": "K8 HEV 규격",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "기아 K8 하이브리드 — AGM60L 확정 후보",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=K8+%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/k8-gl3?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "K8 하이브리드 보조배터리는 사진 확인이 필요한가요?"
+      ],
+      "ctaShown": [
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "배터리 상세",
+        "차량 상세",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=K8+%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C"
+    },
+    {
+      "id": 26,
+      "persona": "싼타페 TM 디젤",
+      "customerType": "연료+세대",
+      "query": "싼타페 TM 디젤",
+      "intent": "디젤 규격",
+      "desiredAction": "TM 디젤 규격",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "\"싼타페 TM 디젤\" — 통합검색: 1대 차량, 0개 규격",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%BC%ED%83%80%ED%8E%98+TM+%EB%94%94%EC%A0%A4",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [
+        "현대 싼타페 TM"
+      ],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%BC%ED%83%80%ED%8E%98+TM+%EB%94%94%EC%A0%A4"
+    },
+    {
+      "id": 27,
+      "persona": "그랜저 IG LPG",
+      "customerType": "연료+세대",
+      "query": "그랜저 IG LPG",
+      "intent": "LPG 규격",
+      "desiredAction": "IG LPG 규격",
+      "expectedSuccessType": "연료·트림 분기형",
+      "actualResult": "\"그랜저 IG LPG\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80+IG+LPG",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/grandeur-ig?fuel=%EA%B0%80%EC%86%94%EB%A6%B0#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "DIN80L",
+        "DIN90L",
+        "AGM90L",
+        "90R",
+        "100R",
+        "AGM70L",
+        "AGM80L",
+        "AGM60L",
+        "AGM95L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "그랜저 IG AGM80L에서 AGM95L 업그레이드 가능한가요?",
+        "그랜저 IG 가솔린과 디젤은 왜 배터리가 다를 수 있나요?"
+      ],
+      "ctaShown": [
+        "DIN80L 상세",
+        "DIN90L 상세",
+        "차량 상세",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "배터리 상세"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80+IG+LPG"
+    },
+    {
+      "id": 28,
+      "persona": "코나 EV 보조",
+      "customerType": "EV 보조",
+      "query": "코나 전기 보조배터리",
+      "intent": "EV 12V",
+      "desiredAction": "보조배터리 안내",
+      "expectedSuccessType": "증상/Q&A 검색형",
+      "actualResult": "\"코나 전기 보조배터리\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%BD%94%EB%82%98+%EC%A0%84%EA%B8%B0+%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/EV12V",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "증상 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%BD%94%EB%82%98+%EC%A0%84%EA%B8%B0+%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC"
+    },
+    {
+      "id": 29,
+      "persona": "AGM60L 구매",
+      "customerType": "규격명",
+      "query": "AGM60L",
+      "intent": "규격 확인",
+      "desiredAction": "상세·적용차량",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"AGM60L\" — 배터리 규격 AGM60L 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=AGM60L",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM60L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM60L",
+        "90R",
+        "100R",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "셀토스 AGM60L에서 AGM70L 업그레이드 가능한가요?",
+        "EV6 12V 배터리는 일반 AGM60L과 다른가요?",
+        "하이브리드 차량도 일반 배터리처럼 교체하나요?",
+        "AGM60L과 EV 12V는 같은 건가요?",
+        "스포티지 NQ5 하이브리드 배터리는 왜 AGM60L로 보나요?"
+      ],
+      "ctaShown": [
+        "AGM60L 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=AGM60L"
+    },
+    {
+      "id": 30,
+      "persona": "AGM70L 구매",
+      "customerType": "규격명",
+      "query": "AGM70L",
+      "intent": "규격 확인",
+      "desiredAction": "상세·택배",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"AGM70L\" — 배터리 규격 AGM70L 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=AGM70L",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM70L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM70L",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "셀토스 AGM60L에서 AGM70L 업그레이드 가능한가요?",
+        "AGM70L과 AGM80L은 어떤 차이가 있나요?"
+      ],
+      "ctaShown": [
+        "AGM70L 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [
+        {
+          "level": "caution",
+          "message": "AGM70L 검색 다음 행동(CTA)이 부족합니다.",
+          "reason": "agm70l_cta"
+        }
+      ],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 2,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 9,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": [
+          {
+            "level": "caution",
+            "message": "AGM70L 검색 다음 행동(CTA)이 부족합니다.",
+            "reason": "agm70l_cta"
+          }
+        ]
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=AGM70L"
+    },
+    {
+      "id": 31,
+      "persona": "AGM80L 구매",
+      "customerType": "규격명",
+      "query": "AGM80L",
+      "intent": "규격 확인",
+      "desiredAction": "상세 페이지",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"AGM80L\" — 배터리 규격 AGM80L 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=AGM80L",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM80L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM80L",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "그랜저 IG AGM80L에서 AGM95L 업그레이드 가능한가요?",
+        "쏘렌토 MQ4 AGM 다운그레이드해도 되나요?",
+        "스타리아는 AGM80L이 아니라 AGM80R인가요?",
+        "AGM80L과 AGM80R은 뭐가 다른가요?",
+        "DIN74L 대신 AGM80L을 넣어도 되나요?"
+      ],
+      "ctaShown": [
+        "AGM80L 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=AGM80L"
+    },
+    {
+      "id": 32,
+      "persona": "AGM95L 구매",
+      "customerType": "규격명",
+      "query": "AGM95L",
+      "intent": "규격 확인",
+      "desiredAction": "상세 (비교 CTA 없음)",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"AGM95L\" — 배터리 규격 AGM95L 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=AGM95L",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM95L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM95L",
+        "AGM80L",
+        "90R",
+        "100R",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "그랜저 IG AGM80L에서 AGM95L 업그레이드 가능한가요?",
+        "쏘렌토 MQ4 AGM 다운그레이드해도 되나요?",
+        "그랜저 IG 가솔린과 디젤은 왜 배터리가 다를 수 있나요?",
+        "100R과 AGM95L은 단순 대체 가능한가요?",
+        "AGM95L은 어떤 차량군에서 확인하나요?"
+      ],
+      "ctaShown": [
+        "AGM95L 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=AGM95L"
+    },
+    {
+      "id": 33,
+      "persona": "100R 상용",
+      "customerType": "규격명",
+      "query": "100R",
+      "intent": "규격 확인",
+      "desiredAction": "90R/100R 분기",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"100R\" — 배터리 규격 CMF100R 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=100R",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "100R",
+        "CMF100R",
+        "90R",
+        "AGM100R"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "포터2는 왜 90R과 100R이 나뉘나요?",
+        "포터2 2020년 이후는 왜 100R로 보나요?",
+        "100R과 90R은 서로 대체 가능한가요?",
+        "100R은 L타입인가요 R타입인가요?",
+        "포터2 배터리는 연식 확인이 왜 중요한가요?"
+      ],
+      "ctaShown": [
+        "100R 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [
+        {
+          "level": "error",
+          "message": "100R 검색 Q&A에 AGM95L이 섞입니다.",
+          "reason": "100r_qa_agm95l"
+        }
+      ],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 2,
+        "noConfusion": 0,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 7,
+      "verdict": "보완 필요",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": [
+          {
+            "level": "error",
+            "message": "100R 검색 Q&A에 AGM95L이 섞입니다.",
+            "reason": "100r_qa_agm95l"
+          }
+        ]
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=100R"
+    },
+    {
+      "id": 34,
+      "persona": "90R 확인",
+      "customerType": "규격명",
+      "query": "90R",
+      "intent": "규격 확인",
+      "desiredAction": "상세·분기",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"90R\" — 배터리 규격 CMF90R 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=90R",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/90R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "CMF90R",
+        "100R",
+        "AGM100R"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "포터2는 왜 90R과 100R이 나뉘나요?",
+        "100R과 90R은 서로 대체 가능한가요?",
+        "포터2 배터리는 연식 확인이 왜 중요한가요?"
+      ],
+      "ctaShown": [
+        "90R 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=90R"
+    },
+    {
+      "id": 35,
+      "persona": "DIN74L",
+      "customerType": "규격명",
+      "query": "DIN74L",
+      "intent": "규격 확인",
+      "desiredAction": "상세 페이지",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"DIN74L\" — 배터리 규격 DIN74L 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=DIN74L",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/DIN74L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "DIN74L",
+        "DIN74AH",
+        "AGM80L",
+        "DIN74"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "DIN74L과 57412, 57820은 같은 계열인가요?",
+        "DIN74L 대신 AGM80L을 넣어도 되나요?",
+        "봉고3에 DIN74L이 들어가는 경우가 있나요?",
+        "DIN 배터리는 일반 80L과 다른가요?",
+        "DIN74L과 DIN62L은 어떻게 구분하나요?"
+      ],
+      "ctaShown": [
+        "DIN74L 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=DIN74L"
+    },
+    {
+      "id": 36,
+      "persona": "DIN80L",
+      "customerType": "규격명",
+      "query": "DIN80L",
+      "intent": "규격 확인",
+      "desiredAction": "상세 페이지",
+      "expectedSuccessType": "규격명 검색형",
+      "actualResult": "\"DIN80L\" — 배터리 규격 DIN80L 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=DIN80L",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/DIN80L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "DIN80L",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "DIN 배터리는 일반 80L과 다른가요?"
+      ],
+      "ctaShown": [
+        "DIN80L 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=DIN80L"
+    },
+    {
+      "id": 37,
+      "persona": "포터2 사업",
+      "customerType": "상용차",
+      "query": "포터2",
+      "intent": "상용 규격",
+      "desiredAction": "90R/100R 분기",
+      "expectedSuccessType": "연식 분기형",
+      "actualResult": "\"포터2\" — 인식 결과 없음 (vehicle)",
+      "actualSuccessType": "연식 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/vehicle/porter2-old",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/90R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "CMF90R",
+        "100R",
+        "CMF100R",
+        "AGM100R"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "포터2는 왜 90R과 100R이 나뉘나요?",
+        "포터2 2020년 이후는 왜 100R로 보나요?"
+      ],
+      "ctaShown": [
+        "매장·출장 안내",
+        "증상 진단시동지연·방전·블랙박스 방전 증상 확인",
+        "차량검색",
+        "사진으로 확인 (보조)",
+        "택배주문",
+        "사진 확인 (보조)",
+        "전체 상세표펼치기",
+        "상세 스펙"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "year_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/vehicle/porter2-old"
+    },
+    {
+      "id": 38,
+      "persona": "포터2 2020",
+      "customerType": "상용+연식",
+      "query": "포터2 2020년식",
+      "intent": "연식 규격",
+      "desiredAction": "100R 안내",
+      "expectedSuccessType": "연식 분기형",
+      "actualResult": "현대 포터2 2020년형 이후 — 100R 확정 후보",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/vehicle/porter2-new?year=from2020#fuel-batteries",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM70L",
+        "AGM80L",
+        "100R"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "포터2 2020년 이후는 왜 100R로 보나요?"
+      ],
+      "ctaShown": [
+        "매장·출장 안내",
+        "증상 진단시동지연·방전·블랙박스 방전 증상 확인",
+        "통합검색"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q="
+    },
+    {
+      "id": 39,
+      "persona": "봉고3",
+      "customerType": "상용차",
+      "query": "봉고3",
+      "intent": "상용 규격",
+      "desiredAction": "규격 확인",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"봉고3\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B4%89%EA%B3%A03",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/DIN74L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "DIN74L",
+        "AGM80L",
+        "DIN74"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "봉고3에 DIN74L이 들어가는 경우가 있나요?"
+      ],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B4%89%EA%B3%A03"
+    },
+    {
+      "id": 40,
+      "persona": "렉스턴 칸",
+      "customerType": "상용/SUV",
+      "query": "렉스턴 스포츠 칸",
+      "intent": "차종 확인",
+      "desiredAction": "규격 확인",
+      "expectedSuccessType": "세대 선택형",
+      "actualResult": "\"렉스턴 스포츠 칸\" — 연료·트림별 규격 분기",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%A0%89%EC%8A%A4%ED%84%B4+%EC%8A%A4%ED%8F%AC%EC%B8%A0+%EC%B9%B8",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%A0%89%EC%8A%A4%ED%84%B4+%EC%8A%A4%ED%8F%AC%EC%B8%A0+%EC%B9%B8"
+    },
+    {
+      "id": 41,
+      "persona": "스타리아 규격",
+      "customerType": "차종+규격",
+      "query": "스타리아 AGM80R",
+      "intent": "규격 확인",
+      "desiredAction": "AGM80R 확정",
+      "expectedSuccessType": "즉시 확정형",
+      "actualResult": "현대 스타리아 US4 — AGM80R 확정 후보",
+      "actualSuccessType": "연료·트림 분기형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+AGM80R",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM80R",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM80R",
+        "CMF80R",
+        "CMF80L",
+        "AGM80L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "스타리아는 AGM80L이 아니라 AGM80R인가요?",
+        "CMF80L과 AGM80L은 같은 건가요?",
+        "스타리아 디젤은 왜 CMF80L로 확인하나요?",
+        "CMF80L은 AGM80L로 바꿔도 되나요?"
+      ],
+      "ctaShown": [
+        "연료 확인 필요",
+        "사진으로 확인",
+        "문의하기",
+        "차량 상세 보기",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "배터리 상세",
+        "차량 상세",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "fuel_trim_branch",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+AGM80R"
+    },
+    {
+      "id": 42,
+      "persona": "시동 지연",
+      "customerType": "증상",
+      "query": "시동지연",
+      "intent": "증상 상담",
+      "desiredAction": "증상·Q&A·사진",
+      "expectedSuccessType": "증상/Q&A 검색형",
+      "actualResult": "\"시동지연\" — 증상·Q&A·안내 우선",
+      "actualSuccessType": "증상/Q&A 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%9C%EB%8F%99%EC%A7%80%EC%97%B0",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "점검 문의",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "증상 확인",
+        "문의하기",
+        "규격 가이드 보기"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 9,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "symptom_qa",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%9C%EB%8F%99%EC%A7%80%EC%97%B0"
+    },
+    {
+      "id": 43,
+      "persona": "완전 방전",
+      "customerType": "증상",
+      "query": "완전방전",
+      "intent": "증상 상담",
+      "desiredAction": "안내·Q&A",
+      "expectedSuccessType": "증상/Q&A 검색형",
+      "actualResult": "\"완전방전\" — 증상·Q&A·안내 우선",
+      "actualSuccessType": "증상/Q&A 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%99%84%EC%A0%84%EB%B0%A9%EC%A0%84",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM95L",
+      "recognized": false,
+      "batteryCodesShown": [
+        "AGM95L",
+        "AGM80L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "점검 문의",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "증상 확인",
+        "문의하기",
+        "규격 가이드 보기"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 9,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "symptom_qa",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%99%84%EC%A0%84%EB%B0%A9%EC%A0%84"
+    },
+    {
+      "id": 44,
+      "persona": "블박 방전",
+      "customerType": "증상",
+      "query": "블랙박스 방전",
+      "intent": "증상 상담",
+      "desiredAction": "증상 가이드",
+      "expectedSuccessType": "증상/Q&A 검색형",
+      "actualResult": "\"블랙박스 방전\" — 증상·Q&A·안내 우선",
+      "actualSuccessType": "증상/Q&A 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B8%94%EB%9E%99%EB%B0%95%EC%8A%A4+%EB%B0%A9%EC%A0%84",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM95L",
+      "recognized": false,
+      "batteryCodesShown": [
+        "AGM95L",
+        "AGM80L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "블랙박스 때문에 방전이 자주 되면 배터리를 키우면 되나요?",
+        "블랙박스 때문에 배터리가 방전될 수 있나요?",
+        "AGM 배터리도 방전되면 수명이 줄어드나요?",
+        "암전류가 뭔가요?",
+        "장기주차 후 방전이면 바로 교체해야 하나요?"
+      ],
+      "ctaShown": [
+        "점검 문의",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "증상 확인",
+        "문의하기",
+        "규격 가이드 보기"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 9,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "symptom_qa",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B8%94%EB%9E%99%EB%B0%95%EC%8A%A4+%EB%B0%A9%EC%A0%84"
+    },
+    {
+      "id": 45,
+      "persona": "장기 주차",
+      "customerType": "증상",
+      "query": "장기주차 방전",
+      "intent": "증상 상담",
+      "desiredAction": "안내·Q&A",
+      "expectedSuccessType": "증상/Q&A 검색형",
+      "actualResult": "\"장기주차 방전\" — 증상·Q&A·안내 우선",
+      "actualSuccessType": "증상/Q&A 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%9E%A5%EA%B8%B0%EC%A3%BC%EC%B0%A8+%EB%B0%A9%EC%A0%84",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM95L",
+      "recognized": false,
+      "batteryCodesShown": [
+        "AGM95L",
+        "AGM80L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "장기주차 후 방전이면 바로 교체해야 하나요?"
+      ],
+      "ctaShown": [
+        "점검 문의",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "증상 확인",
+        "문의하기",
+        "규격 가이드 보기"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 9,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "symptom_qa",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%9E%A5%EA%B8%B0%EC%A3%BC%EC%B0%A8+%EB%B0%A9%EC%A0%84"
+    },
+    {
+      "id": 46,
+      "persona": "경고등",
+      "customerType": "증상",
+      "query": "배터리 경고등",
+      "intent": "증상 상담",
+      "desiredAction": "증상·점검",
+      "expectedSuccessType": "증상/Q&A 검색형",
+      "actualResult": "\"배터리 경고등\" — 인식 결과 없음 (symptom)",
+      "actualSuccessType": "별칭/파생명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B0%B0%ED%84%B0%EB%A6%AC+%EA%B2%BD%EA%B3%A0%EB%93%B1",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "사진으로 확인 (보조)",
+        "증상 확인",
+        "사진으로 확인",
+        "문의하기",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "규격 가이드 보기",
+        "차량 정보 더 입력"
+      ],
+      "issues": [
+        "검색어 인식·결과 블록 약함"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 1,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 0
+      },
+      "totalScore": 8,
+      "verdict": "보완 필요",
+      "fixSuggestion": "검색어 인식·결과 블록 약함",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "unknown",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B0%B0%ED%84%B0%EB%A6%AC+%EA%B2%BD%EA%B3%A0%EB%93%B1"
+    },
+    {
+      "id": 47,
+      "persona": "부산 출장",
+      "customerType": "구매 의도",
+      "query": "부산 배터리 출장",
+      "intent": "출장 서비스",
+      "desiredAction": "출장·매장 CTA",
+      "expectedSuccessType": "구매/서비스 의도형",
+      "actualResult": "\"부산 배터리 출장\" — 인식 결과 없음 (store)",
+      "actualSuccessType": "구매/서비스 의도형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B6%80%EC%82%B0+%EB%B0%B0%ED%84%B0%EB%A6%AC+%EC%B6%9C%EC%9E%A5",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "출장 가능 지역 보기",
+        "출장 문의",
+        "지점 문의",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "문의하기"
+      ],
+      "issues": [
+        "검색어 인식·결과 블록 약함"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 0,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 0
+      },
+      "totalScore": 7,
+      "verdict": "보완 필요",
+      "fixSuggestion": "검색어 인식·결과 블록 약함",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "service_purchase",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B6%80%EC%82%B0+%EB%B0%B0%ED%84%B0%EB%A6%AC+%EC%B6%9C%EC%9E%A5"
+    },
+    {
+      "id": 48,
+      "persona": "덕천 교체",
+      "customerType": "구매 의도",
+      "query": "덕천동 배터리 교체",
+      "intent": "매장 교체",
+      "desiredAction": "매장·출장 CTA",
+      "expectedSuccessType": "구매/서비스 의도형",
+      "actualResult": "\"덕천동 배터리 교체\" — 인식 결과 없음 (store)",
+      "actualSuccessType": "구매/서비스 의도형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%95%EC%B2%9C%EB%8F%99+%EB%B0%B0%ED%84%B0%EB%A6%AC+%EA%B5%90%EC%B2%B4",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "지점 문의",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "출장 문의",
+        "덕천점 안내",
+        "규격 가이드 보기"
+      ],
+      "issues": [
+        "검색어 인식·결과 블록 약함"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 0,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 0
+      },
+      "totalScore": 7,
+      "verdict": "보완 필요",
+      "fixSuggestion": "검색어 인식·결과 블록 약함",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "service_purchase",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%95%EC%B2%9C%EB%8F%99+%EB%B0%B0%ED%84%B0%EB%A6%AC+%EA%B5%90%EC%B2%B4"
+    },
+    {
+      "id": 49,
+      "persona": "학장 문의",
+      "customerType": "구매 의도",
+      "query": "학장동 배터리",
+      "intent": "매장 문의",
+      "desiredAction": "매장 CTA",
+      "expectedSuccessType": "구매/서비스 의도형",
+      "actualResult": "\"학장동 배터리\" — 인식 결과 없음 (store)",
+      "actualSuccessType": "구매/서비스 의도형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%95%99%EC%9E%A5%EB%8F%99+%EB%B0%B0%ED%84%B0%EB%A6%AC",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/100R",
+      "recognized": false,
+      "batteryCodesShown": [
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L",
+        "AGM70L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [],
+      "ctaShown": [
+        "지점 문의",
+        "사진으로 확인",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →",
+        "매장·택배 안내내방·출장·택배 중 맞는 방법안내 보기 →",
+        "Q&A·가이드비슷한 질문과 오주문 방지 글안내 보기 →",
+        "출장 문의",
+        "학장점 안내",
+        "문의하기"
+      ],
+      "issues": [
+        "검색어 인식·결과 블록 약함"
+      ],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 0,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 0
+      },
+      "totalScore": 7,
+      "verdict": "보완 필요",
+      "fixSuggestion": "검색어 인식·결과 블록 약함",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "service_purchase",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%95%99%EC%9E%A5%EB%8F%99+%EB%B0%B0%ED%84%B0%EB%A6%AC"
+    },
+    {
+      "id": 50,
+      "persona": "AGM70L 택배",
+      "customerType": "구매 의도",
+      "query": "AGM70L 택배 주문",
+      "intent": "택배 주문",
+      "desiredAction": "AGM70L+택배 CTA",
+      "expectedSuccessType": "구매/서비스 의도형",
+      "actualResult": "\"AGM70L 택배 주문\" — 배터리 규격 AGM70L 중심",
+      "actualSuccessType": "규격명 검색형",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=AGM70L+%ED%83%9D%EB%B0%B0+%EC%A3%BC%EB%AC%B8",
+      "detailUrlChecked": "https://battery-ai-platform.vercel.app/batteries/AGM70L",
+      "recognized": true,
+      "batteryCodesShown": [
+        "AGM70L",
+        "90R",
+        "100R",
+        "AGM95L",
+        "AGM80L",
+        "AGM60L"
+      ],
+      "vehicleCardsShown": [],
+      "generationCardsShown": [],
+      "relatedQaShown": [
+        "셀토스 AGM60L에서 AGM70L 업그레이드 가능한가요?",
+        "AGM70L과 AGM80L은 어떤 차이가 있나요?"
+      ],
+      "ctaShown": [
+        "AGM70L 상세",
+        "택배 주문",
+        "차량 기준 확인",
+        "사진으로 확인",
+        "문의하기",
+        "차량명으로 다시 검색",
+        "이 규격 상세 · 브랜드별 비교 →",
+        "사진으로 확인 (보조)",
+        "주문 전 체크리스트차종·연식·단자·규격 — 오주문 방지 5가지안내 보기 →",
+        "사진 확인 안내라벨·단자·트레이 — 보조 확인안내 보기 →"
+      ],
+      "issues": [],
+      "apiWarnings": [],
+      "scoreBreakdown": {
+        "queryRecognition": 2,
+        "recommendationAccuracy": 3,
+        "noConfusion": 2,
+        "ctaQuality": 2,
+        "conversionPotential": 1
+      },
+      "totalScore": 10,
+      "verdict": "성공",
+      "fixSuggestion": "",
+      "testMethod": "playwright_home_enter + qa_api",
+      "mobileComplex": false,
+      "apiSummary": {
+        "successType": "battery_code",
+        "warnings": []
+      },
+      "browserFinalUrl": "https://battery-ai-platform.vercel.app/search?q=AGM70L+%ED%83%9D%EB%B0%B0+%EC%A3%BC%EB%AC%B8"
+    }
+  ],
+  "aliases": [
+    {
+      "query": "케이쓰리",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%BC%80%EC%9D%B4%EC%93%B0%EB%A6%AC",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"케이쓰리\" — 인식 결과 없음 (vehicle_generation)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "K3쿱",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=K3%EC%BF%B1",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"K3쿱\" — 인식 결과 없음 (vehicle_generation)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "K3 쿠페",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=K3+%EC%BF%A0%ED%8E%98",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"K3 쿠페\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "K3 유로",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=K3+%EC%9C%A0%EB%A1%9C",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"K3 유로\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "올뉴 K3",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%98%AC%EB%89%B4+K3",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"올뉴 K3\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "더뉴 K3",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94%EB%89%B4+K3",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"더뉴 K3\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "K3 GT",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=K3+GT",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"K3 GT\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "아반떼 AD",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%95%84%EB%B0%98%EB%96%BC+AD",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"아반떼 AD\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 아반떼 CN7 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "아반떼 스포츠",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%95%84%EB%B0%98%EB%96%BC+%EC%8A%A4%ED%8F%AC%EC%B8%A0",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"아반떼 스포츠\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 아반떼 CN7 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "삼각떼",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%82%BC%EA%B0%81%EB%96%BC",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"삼각떼\" — 인식 결과 없음 (vehicle_generation)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "쏘나타 뉴라이즈",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%82%98%ED%83%80+%EB%89%B4%EB%9D%BC%EC%9D%B4%EC%A6%88",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"쏘나타 뉴라이즈\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "소나타 뉴라이즈",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%86%8C%EB%82%98%ED%83%80+%EB%89%B4%EB%9D%BC%EC%9D%B4%EC%A6%88",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"소나타 뉴라이즈\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "LF쏘나타",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=LF%EC%8F%98%EB%82%98%ED%83%80",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"LF쏘나타\" — 인식 결과 없음 (vehicle_generation)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "DN8 소나타",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=DN8+%EC%86%8C%EB%82%98%ED%83%80",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"DN8 소나타\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "그랜저IG",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80IG",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"그랜저IG\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 그랜저 IG 배터리 확인",
+      "batteryCodes": [
+        "AGM80L",
+        "DIN80L",
+        "DIN90L",
+        "DIN74R",
+        "AGM95L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "더뉴그랜저",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94%EB%89%B4%EA%B7%B8%EB%9E%9C%EC%A0%80",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"더뉴그랜저\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 그랜저 배터리 확인",
+      "batteryCodes": [
+        "AGM80L",
+        "90R",
+        "AGM80R",
+        "100R",
+        "AGM95R"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "그랜저 르블랑",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EA%B7%B8%EB%9E%9C%EC%A0%80+%EB%A5%B4%EB%B8%94%EB%9E%91",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"그랜저 르블랑\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 그랜저 배터리 확인",
+      "batteryCodes": [
+        "AGM80L",
+        "90R",
+        "AGM80R",
+        "100R",
+        "AGM95R"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "싼타페 TM",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%BC%ED%83%80%ED%8E%98+TM",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"싼타페 TM\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "현대 싼타페 TM",
+      "batteryCodes": [
+        "AGM80L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "싼타페 더프라임",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8B%BC%ED%83%80%ED%8E%98+%EB%8D%94%ED%94%84%EB%9D%BC%EC%9E%84",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"싼타페 더프라임\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "현대 싼타페",
+      "batteryCodes": [
+        "AGM80L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "더뉴 싼타페",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94%EB%89%B4+%EC%8B%BC%ED%83%80%ED%8E%98",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"더뉴 싼타페\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "현대 싼타페",
+      "batteryCodes": [
+        "AGM80L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "올뉴 카니발",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%98%AC%EB%89%B4+%EC%B9%B4%EB%8B%88%EB%B0%9C",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"올뉴 카니발\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 카니발 KA4 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "더뉴 카니발",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8D%94%EB%89%B4+%EC%B9%B4%EB%8B%88%EB%B0%9C",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"더뉴 카니발\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 카니발 KA4 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "카니발 KA4",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%B9%B4%EB%8B%88%EB%B0%9C+KA4",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"카니발 KA4\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 카니발 KA4 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "스포티지 더볼드",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%8F%AC%ED%8B%B0%EC%A7%80+%EB%8D%94%EB%B3%BC%EB%93%9C",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"스포티지 더볼드\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "기아 스포티지",
+      "batteryCodes": [
+        "AGM60L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "스포티지 NQ5",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%8F%AC%ED%8B%B0%EC%A7%80+NQ5",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"스포티지 NQ5\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 스포티지 NQ5 배터리 확인",
+      "batteryCodes": [
+        "AGM105L",
+        "DIN62L",
+        "DIN74L",
+        "AGM70L",
+        "AGM60L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "쏘렌토 하브",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%A0%8C%ED%86%A0+%ED%95%98%EB%B8%8C",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "기아 쏘렌토 MQ4 하이브리드 — AGM60L 확정 후보",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 쏘렌토 MQ4 하이브리드 배터리 확인",
+      "batteryCodes": [
+        "AGM60L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "쏘렌토 HEV",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8F%98%EB%A0%8C%ED%86%A0+HEV",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "기아 쏘렌토 MQ4 하이브리드 — AGM60L 확정 후보",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 쏘렌토 MQ4 하이브리드 배터리 확인",
+      "batteryCodes": [
+        "AGM60L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "티볼리 에어",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%8B%B0%EB%B3%BC%EB%A6%AC+%EC%97%90%EC%96%B4",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"티볼리 에어\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "KG/쌍용 티볼리",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "베리뉴 티볼리",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B2%A0%EB%A6%AC%EB%89%B4+%ED%8B%B0%EB%B3%BC%EB%A6%AC",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"베리뉴 티볼리\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "KG/쌍용 티볼리",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "티볼리 아머",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%8B%B0%EB%B3%BC%EB%A6%AC+%EC%95%84%EB%A8%B8",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"티볼리 아머\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "KG/쌍용 티볼리",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "코란도C",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%BD%94%EB%9E%80%EB%8F%84C",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"코란도C\" — 인식 결과 없음 (vehicle_generation)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "뉴코란도C",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%89%B4%EC%BD%94%EB%9E%80%EB%8F%84C",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"뉴코란도C\" — 인식 결과 없음 (vehicle_generation)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "뷰티풀 코란도",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B7%B0%ED%8B%B0%ED%92%80+%EC%BD%94%EB%9E%80%EB%8F%84",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"뷰티풀 코란도\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "렉스턴칸",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%A0%89%EC%8A%A4%ED%84%B4%EC%B9%B8",
+      "recognized": true,
+      "successType": "unknown",
+      "summary": "\"렉스턴칸\" — 통합검색: 1대 차량, 0개 규격",
+      "vehicleCount": 1,
+      "generationCount": 0,
+      "primaryTitle": "KG/쌍용 렉스턴",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "렉스턴 스포츠칸",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%A0%89%EC%8A%A4%ED%84%B4+%EC%8A%A4%ED%8F%AC%EC%B8%A0%EC%B9%B8",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"렉스턴 스포츠칸\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "KG/쌍용 렉스턴 스포츠 Y400 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "토레스 EVX",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%86%A0%EB%A0%88%EC%8A%A4+EVX",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"토레스 EVX\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "포터 전기",
+      "openedUrl": "https://battery-ai-platform.vercel.app/?_cb=search-qa-persona-v1-20260530",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"포터 전기\" — 인식 결과 없음 (vehicle_fuel)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "포터2 EV",
+      "openedUrl": "https://battery-ai-platform.vercel.app/vehicle/porter2-ev",
+      "recognized": true,
+      "successType": "year_branch",
+      "summary": "\"포터2 EV\" — 인식 결과 없음 (vehicle_fuel)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 포터2 전기 배터리 확인",
+      "batteryCodes": [
+        "90R",
+        "100R"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "포터 일렉트릭",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%ED%8F%AC%ED%84%B0+%EC%9D%BC%EB%A0%89%ED%8A%B8%EB%A6%AD",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"포터 일렉트릭\" — 인식 결과 없음 (unknown)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "봉고 전기",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%B4%89%EA%B3%A0+%EC%A0%84%EA%B8%B0",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"봉고 전기\" — 인식 결과 없음 (vehicle_fuel)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "봉고3 EV",
+      "openedUrl": "https://battery-ai-platform.vercel.app/vehicle/bongo3-ev",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "기아 봉고3 전기 — 80L 확정 후보",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 봉고3 전기 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "스타리아 라운지",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+%EB%9D%BC%EC%9A%B4%EC%A7%80",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "현대 스타리아 US4 — AGM80R 확정 후보",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 스타리아 US4 배터리 확인",
+      "batteryCodes": [
+        "AGM80R",
+        "AGM80L",
+        "CMF80L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "스타리아 카고",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%8A%A4%ED%83%80%EB%A6%AC%EC%95%84+%EC%B9%B4%EA%B3%A0",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "현대 스타리아 US4 — AGM80R 확정 후보",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 스타리아 US4 배터리 확인",
+      "batteryCodes": [
+        "AGM80R",
+        "AGM80L",
+        "CMF80L"
+      ],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "코나EV",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%BD%94%EB%82%98EV",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "\"코나EV\" — 연료·트림별 규격 분기",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 코나 전기 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "니로EV",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EB%8B%88%EB%A1%9CEV",
+      "recognized": false,
+      "successType": "unknown",
+      "summary": "\"니로EV\" — 인식 결과 없음 (vehicle_fuel)",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "아이오닉5 보조배터리",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=%EC%95%84%EC%9D%B4%EC%98%A4%EB%8B%895+%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "현대 아이오닉5 전기 — EV 12V 확정 후보",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "현대 아이오닉5 전기 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    },
+    {
+      "query": "EV6 보조배터리",
+      "openedUrl": "https://battery-ai-platform.vercel.app/search?q=EV6+%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC",
+      "recognized": true,
+      "successType": "fuel_trim_branch",
+      "summary": "기아 EV6 전기 — EV 12V 확정 후보",
+      "vehicleCount": 0,
+      "generationCount": 0,
+      "primaryTitle": "기아 EV6 전기 배터리 확인",
+      "batteryCodes": [],
+      "warnings": [],
+      "issues": [],
+      "browserMethod": "home_search_enter"
+    }
+  ]
+}

@@ -17,7 +17,9 @@
     "ux:audit:report": "playwright show-report tools/ux-audit/playwright-report",
     "ux:audit:clean": "node tools/ux-audit/cleanReports.js",
     "verify:porter2": "npx tsx scripts/verify-porter2-regression.mjs",
-    "verify:production": "node scripts/verify-production-evidence.mjs"
+    "verify:production": "node scripts/verify-production-evidence.mjs",
+    "search:qa": "node tools/search-quality/run-search-quality.mjs",
+    "verify:alias-v01": "node tools/verify-alias-v01-production.mjs"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",

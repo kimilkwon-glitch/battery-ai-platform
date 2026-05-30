@@ -125,9 +125,10 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
     const asset = getVehicleAsset(alias.assetId);
     if (asset) {
       const row = assetToSearchRow(asset);
+      const formal = alias.formalDisplayName ?? asset.displayName;
       const model =
         displayName ??
-        displayModelWithBrand(brandForAlias(alias, vehicleAssetBrandLabel(asset.brand)), asset.displayName, alias.label);
+        displayModelWithBrand(brandForAlias(alias, vehicleAssetBrandLabel(asset.brand)), formal, alias.label);
       return { ...row, model: formatSearchVehicleRowTitle(query, alias, model) };
     }
   }
