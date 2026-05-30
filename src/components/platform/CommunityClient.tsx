@@ -38,7 +38,13 @@ function SectionHeader({ kicker, title, desc }: { kicker?: string; title: string
   );
 }
 
-export function CommunityClient({ initialQ }: { initialQ?: string }) {
+export function CommunityClient({
+  initialQ,
+  hubBasePath = "/qa",
+}: {
+  initialQ?: string;
+  hubBasePath?: string;
+}) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(initialQ ?? "");
   const [primaryFilter, setPrimaryFilter] = useState<QnaPrimaryFilter>("all");
@@ -105,9 +111,9 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
       setSearchQuery(query);
       setPrimaryFilter("all");
       setTagFilter(null);
-      router.replace(`/community?q=${encodeURIComponent(query)}`, { scroll: false });
+      router.replace(`${hubBasePath}?q=${encodeURIComponent(query)}`, { scroll: false });
     },
-    [router],
+    [router, hubBasePath],
   );
 
   const onPrimaryFilter = (key: QnaPrimaryFilter) => {
@@ -131,7 +137,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
           className="mt-4 flex max-w-2xl gap-2"
           onSubmit={(e) => {
             e.preventDefault();
-            router.replace(`/community?q=${encodeURIComponent(searchQuery)}`, { scroll: false });
+            router.replace(`${hubBasePath}?q=${encodeURIComponent(searchQuery)}`, { scroll: false });
           }}
         >
           <input
@@ -165,7 +171,7 @@ export function CommunityClient({ initialQ }: { initialQ?: string }) {
         <div className="mt-4 flex flex-wrap gap-2">
           <Link
             className={`${bm.btnPrimary} px-4 py-2.5`}
-            href="/community"
+            href={hubBasePath}
           >
             비슷한 질문 먼저 찾기
           </Link>

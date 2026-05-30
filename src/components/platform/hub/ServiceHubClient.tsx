@@ -18,7 +18,7 @@ export function ServiceHubClient() {
         <p className={bm.intentBadge}>이용 안내</p>
         <SectionHeader
           title="시동이 안 걸리면 출장, 규격을 알면 택배"
-          description="지금 당장 시동이 안 걸리면 출장 문의, 규격을 알고 있다면 택배 주문, 헷리면 사진 확인부터 보시면 됩니다. 부산은 가까운 직영점 기준으로 안내드립니다."
+          description="지금 당장 시동이 안 걸리면 출장 문의, 규격을 알고 있다면 택배 주문, 헷갈리면 사진 확인부터 보시면 됩니다. 부산은 가까운 직영점 기준으로 안내드립니다."
           iconKey="store"
         />
       </section>

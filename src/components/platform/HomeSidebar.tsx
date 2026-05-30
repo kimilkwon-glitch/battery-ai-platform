@@ -15,7 +15,7 @@ export function HomeSidebar() {
       <div className="mt-3.5 grid gap-2">
         <Link
           className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-blue-300 hover:bg-blue-50/50"
-          href="/community"
+          href="/qa"
         >
           <ContentUiIcon iconKey="faq" rounded="lg" size={32} />
           <span className="text-xs font-black text-slate-800">배터리 Q&A</span>

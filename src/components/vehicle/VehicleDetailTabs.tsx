@@ -187,7 +187,7 @@ export function VehicleDetailTabs({
               {defaultQna.map(([question, answer]) => (
                 <Link
                   className={`block ${bm.cardInteractive} ${bm.cardPad}`}
-                  href={`/community?q=${encodeURIComponent(`${vehicle.model} ${question}`)}`}
+                  href={`/qa?q=${encodeURIComponent(`${vehicle.model} ${question}`)}`}
                   key={question}
                 >
                   <p className="text-xs font-black text-[var(--bm-text)]">{question}</p>

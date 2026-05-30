@@ -12,6 +12,12 @@ import {
 const MEDIA_ASPECT = "aspect-[5/3] w-full";
 const BENEFIT_IMAGE_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 560px";
 
+const PLACEHOLDER_GRADIENT: Record<HomeBenefitCard["fallbackIcon"], string> = {
+  percent: "from-[#1e3a5f] via-[#2563eb] to-[#f59e0b]",
+  service: "from-slate-800 via-[#1e40af] to-sky-500",
+  store: "from-[#0f172a] via-[#1d4ed8] to-amber-500",
+};
+
 export function BenefitCardMedia({
   card,
   variant = "card",
@@ -26,6 +32,7 @@ export function BenefitCardMedia({
   const active = card.status === "active";
   const hasImage = Boolean(card.image) && !imageFailed;
   const isDetail = variant === "detail";
+  const gradient = PLACEHOLDER_GRADIENT[card.fallbackIcon];
 
   return (
     <div
@@ -53,22 +60,27 @@ export function BenefitCardMedia({
 
       <div
         className={clsx(
-          "absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-b from-amber-50/90 to-white",
+          "absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-gradient-to-br px-4 text-center",
+          gradient,
           hasImage ? "pointer-events-none opacity-0" : "opacity-100",
         )}
         aria-hidden={hasImage}
       >
         <span
           className={clsx(
-            "flex size-12 items-center justify-center rounded-2xl shadow-sm ring-1",
-            active
-              ? "bg-white/90 text-[var(--bm-primary)] ring-blue-100/80"
-              : "bg-white/70 text-slate-400 ring-slate-200/80",
+            "flex size-12 items-center justify-center rounded-2xl shadow-md ring-1 ring-white/30",
+            active ? "bg-white/95 text-[var(--bm-primary)]" : "bg-white/80 text-slate-500",
           )}
         >
           <Icon className="size-6" strokeWidth={2} />
         </span>
-        <span className="text-[10px] font-bold text-slate-400/90">혜택 이미지 준비중</span>
+        <p className="max-w-[14rem] text-xs font-black leading-snug text-white drop-shadow-sm">
+          {card.title}
+        </p>
+        <p className="max-w-[16rem] text-[10px] font-semibold leading-relaxed text-white/90">
+          {card.label}
+          {card.note ? ` · ${card.note}` : ""}
+        </p>
       </div>
     </div>
   );

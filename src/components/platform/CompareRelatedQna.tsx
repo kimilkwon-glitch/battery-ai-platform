@@ -11,7 +11,7 @@ export function CompareRelatedQna({ codes }: { codes: string[] }) {
       title="비교 시 자주 묻는 질문"
       description="단자 방향·타입 차이·대체 가능 여부는 차종별 확인이 필요합니다."
       questions={items}
-      hubHref={`/community?q=${encodeURIComponent(codes.join(" "))}`}
+      hubHref={`/qa?q=${encodeURIComponent(codes.join(" "))}`}
     />
   );
 }

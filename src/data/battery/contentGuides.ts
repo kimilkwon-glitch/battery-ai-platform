@@ -120,8 +120,9 @@ export const CONTENT_GUIDES: ContentGuide[] = [
     ],
     checkPoints: ["R vs L 타입", "CMF vs AGM", "차종·연료"],
     ctas: [
-      { label: "비교해보기", href: "/compare?items=100R,AGM95L" },
+      { label: "사진으로 단자 확인하기", href: "/photo-check" },
       { label: "100R 규격 보기", href: "/batteries/100R" },
+      { label: "상용차 배터리 확인하기", href: "/search?q=상용차%20배터리" },
     ],
     imageSlotPurpose: "100r-agm95l-type-compare",
     imageSlotCaption: "100R·AGM95L 타입·단자 비교 이미지 영역",

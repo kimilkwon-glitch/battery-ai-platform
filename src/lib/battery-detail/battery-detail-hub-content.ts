@@ -165,7 +165,8 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
     confusionSpecs: ["90R", "CMF100R", "100L"],
     featuredVehicles: [
       { slug: "porter2-new", title: "포터2", fuel: "디젤", condition: "2020년 이후 · 100R" },
-      { slug: "porter2-old", title: "포터2", fuel: "디젤", condition: "2019년 이전 · 90R" },
+      { slug: "bongo3-truck", title: "봉고3", fuel: "디젤", condition: "상용 · R타입 확인" },
+      { slug: "starex-diesel", title: "스타렉스 등", fuel: "디젤", condition: "일부 상용차" },
     ],
     compareCards: [
       cmp("90R", "포터2 연식에 따라 90R/100R 분기 — 연식·라벨 확인", ["100R", "90R"]),

@@ -18,7 +18,7 @@ export function SearchRelatedQna({
       title="검색과 연결된 질문"
       description="같은 키워드로 문의하는 고객 Q&A입니다."
       questions={items}
-      hubHref={`/community?q=${encodeURIComponent(query)}`}
+      hubHref={`/qa?q=${encodeURIComponent(query)}`}
     />
   );
 }

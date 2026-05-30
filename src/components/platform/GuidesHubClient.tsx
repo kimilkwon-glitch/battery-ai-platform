@@ -104,7 +104,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
   const activeLabel = GUIDE_FILTER_CATEGORIES.find((c) => c.key === active)?.label ?? "전체 가이드";
 
   const quickTopics = [
-    { label: "자주 묻는 질문", href: "/community" },
+    { label: "자주 묻는 질문", href: "/qa" },
     { label: "오주문 방지", href: "/guides?category=오주문 방지" },
     { label: "AGM/DIN 차이", href: "/guides/knowledge/bk-agm-vs-din" },
     { label: "L/R 단자", href: "/guide/spec" },

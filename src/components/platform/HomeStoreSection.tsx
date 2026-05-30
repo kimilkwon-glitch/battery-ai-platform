@@ -29,7 +29,7 @@ export function HomeStoreSection() {
         className="mt-4"
         primary={{ label: "매장·출장 안내", href: "/service-center" }}
         secondary={{ label: "문의하기", href: "/ai" }}
-        tertiary={{ label: "Q&A 보기", href: "/community" }}
+        tertiary={{ label: "Q&A 보기", href: "/qa" }}
       />
     </section>
   );

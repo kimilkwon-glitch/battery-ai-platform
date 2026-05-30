@@ -89,7 +89,7 @@ export function QnaSidebar({
         <ul className="mt-2 space-y-2">
           {recentAnswers.map((q) => (
             <li key={q.id}>
-              <Link className="line-clamp-2 text-xs font-bold leading-snug text-[#475569] hover:text-[#2563EB]" href={`/community?q=${encodeURIComponent(q.title.slice(0, 20))}`}>
+              <Link className="line-clamp-2 text-xs font-bold leading-snug text-[#475569] hover:text-[#2563EB]" href={`/qa?q=${encodeURIComponent(q.title.slice(0, 20))}`}>
                 {q.title}
               </Link>
             </li>

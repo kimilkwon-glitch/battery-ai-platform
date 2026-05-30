@@ -25,7 +25,7 @@ export function HomePopularQna() {
           <Link className={`${bm.btnGhost} text-xs`} href={searchHref("레이 블랙박스 방전")}>
             방전 증상
           </Link>
-          <Link className={`${bm.btnGhost} text-xs`} href="/community">
+          <Link className={`${bm.btnGhost} text-xs`} href="/qa">
             Q&A 전체
           </Link>
         </div>
@@ -35,7 +35,7 @@ export function HomePopularQna() {
           title="추천 Q&A"
           description=""
           questions={featured}
-          hubHref="/community"
+          hubHref="/qa"
         />
       </div>
     </HomeSectionShell>

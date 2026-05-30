@@ -18,22 +18,41 @@ type Props = {
   relatedCodes?: string[];
 };
 
+function vehicleTitleKey(title: string): string {
+  return title.replace(/\s+/g, "").trim().toLowerCase();
+}
+
+function formatVehicleLabel(v: HubFeaturedVehicle | VehicleRow): string {
+  const condition = "condition" in v && v.condition ? v.condition : undefined;
+  if (condition?.includes("2020")) return "포터2 (2020년 이후)";
+  if (condition && !condition.includes("90R")) {
+    const short = condition.split("·")[0]?.trim();
+    if (short && short !== v.title) return `${v.title} (${short})`;
+  }
+  return v.title;
+}
+
 function mergeFeaturedVehicles(
   featured: HubFeaturedVehicle[],
   fromDb: VehicleRow[],
 ): { slug: string; title: string }[] {
-  const seen = new Set<string>();
+  const seenSlug = new Set<string>();
+  const seenTitle = new Set<string>();
   const out: { slug: string; title: string }[] = [];
 
+  const push = (slug: string, title: string) => {
+    const key = vehicleTitleKey(title);
+    if (seenSlug.has(slug) || seenTitle.has(key) || out.length >= 4) return;
+    seenSlug.add(slug);
+    seenTitle.add(key);
+    out.push({ slug, title });
+  };
+
   for (const f of featured) {
-    if (seen.has(f.slug) || out.length >= 4) continue;
-    seen.add(f.slug);
-    out.push({ slug: f.slug, title: f.title });
+    push(f.slug, formatVehicleLabel(f));
   }
   for (const v of fromDb) {
-    if (seen.has(v.slug) || out.length >= 4) continue;
-    seen.add(v.slug);
-    out.push({ slug: v.slug, title: v.title });
+    push(v.slug, formatVehicleLabel(v));
   }
   return out;
 }

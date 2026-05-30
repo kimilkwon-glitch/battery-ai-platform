@@ -70,7 +70,7 @@ export default async function CommunityQuestionDetailPage({
       <Breadcrumb
         items={[
           { label: "홈", href: "/" },
-          { label: "Q&A", href: "/community" },
+          { label: "Q&A", href: "/qa" },
           { label: question.title },
         ]}
       />
@@ -132,7 +132,7 @@ export default async function CommunityQuestionDetailPage({
           <Link className={`${bm.btnSecondary} text-xs`} href={HUB_STORE}>
             매장·출장 문의
           </Link>
-          <Link className={`${bm.btnGhost} text-xs`} href="/community">
+          <Link className={`${bm.btnGhost} text-xs`} href="/qa">
             Q&A 전체 보기
           </Link>
         </div>

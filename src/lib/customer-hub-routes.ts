@@ -10,7 +10,7 @@ export const HUB_STORE = "/service";
 /** 직영점 상세·앵커 (매장 지도·연락) */
 export const HUB_STORE_DETAIL = "/service-center";
 export const HUB_SHOP = "/shop";
-export const HUB_QA = "/community";
+export const HUB_QA = "/qa";
 /** 브랜드 안내 (로케트·쏠라이트 선택은 페이지 내부) */
 export const HUB_BRANDS = "/brands";
 /** Q&A·콘텐츠·가이드 허브 */

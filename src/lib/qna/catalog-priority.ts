@@ -385,7 +385,7 @@ export const PRIORITY_QNA_CATALOG: QnaCatalogEntry[] = [
     category: "호환",
     tags: ["100R", "AGM95L", "비교"],
     relatedBatteryCodes: ["100R", "AGM95L"],
-    relatedSearchQueries: ["100R vs AGM95L"],
+    relatedSearchQueries: ["100R 단자 방향", "상용차 배터리 R타입"],
     questionType: "상용차",
     priority: 87,
     updatedAt: "2026-05-28",

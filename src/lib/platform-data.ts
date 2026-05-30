@@ -282,7 +282,7 @@ export function guideHref(guideId?: string) {
 }
 
 export function communityHref(q?: string) {
-  return q ? `/community?q=${encodeURIComponent(q)}` : "/community";
+  return q ? `/qa?q=${encodeURIComponent(q)}` : "/qa";
 }
 
 export function photoHref(q?: string, vehicleId?: string) {

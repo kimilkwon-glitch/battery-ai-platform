@@ -27,11 +27,11 @@ export const ORDER_CHECKLIST_ITEMS: HubCheckItem[] = [
 export const ORDER_CHECKLIST_SECTIONS = [
   {
     title: "L/R 단자 방향",
-    body: "100R은 R타입, AGM95L은 L타입 AGM 규격이라 단순 대체 대상이 아닙니다. L/R이 정해진 규격은 이름에서 방향을 알 수 있지만, 트레이·케이블·고정쇠는 사진으로 함께 보세요.",
+    body: "100R과 AGM95L은 단자 방향과 배터리 타입이 달라 단순 대체 대상이 아닙니다. L/R이 정해진 규격은 이름에서 방향을 알 수 있지만, 트레이·케이블·고정쇠는 사진으로 함께 보세요.",
     badge: "주의",
     tone: "warn" as HubBadgeTone,
-    href: compareHref("100R", "AGM95L"),
-    cta: "100R vs AGM95L 비교",
+    href: HUB_PHOTO_CHECK,
+    cta: "사진으로 단자 확인하기",
   },
   {
     title: "AGM · DIN · CMF · 일반",
@@ -99,7 +99,7 @@ export const SYMPTOM_HUB_ITEMS: SymptomHubItem[] = [
     action: "차종과 방전 증상으로 검색",
     searchQuery: "레이 블랙박스 방전",
     diagnosisSlug: "blackbox-drain",
-    qnaHref: "/community?q=블랙박스",
+    qnaHref: "/qa?q=블랙박스",
   },
   {
     id: "parking",

@@ -28,7 +28,7 @@ const problemCards = [
 const featureLinks = [
   ["통합검색", "/search", "차량·규격·증상"],
   ["증상 확인", "/diagnosis", "원인·긴급도"],
-  ["배터리 Q&A", "/community", "호환·교체"],
+  ["배터리 Q&A", "/qa", "호환·교체"],
   ["사진 규격 확인", "/analysis/photo", "OCR·단자"],
   ["배터리 비교", "/compare", "2종 비교"],
   ["차종별 가이드", "/guides", "연료·연식"],
