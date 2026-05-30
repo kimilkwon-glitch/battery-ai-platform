@@ -230,7 +230,12 @@ function scanCustomerRisks() {
     "src/components/platform/CompareClient.tsx",
   ]) {
     const full = path.join(ROOT, rel);
-    if (fs.existsSync(full) && /list-disc[\s\S]{0,120}·\s|·\s\{/.test(fs.readFileSync(full, "utf8"))) {
+    if (
+      fs.existsSync(full) &&
+      /list-disc[^]*?<li[^>]*>[^<]*·\s|className="[^"]*stepItem[^"]*"[^>]*>[^<]*·\s/.test(
+        fs.readFileSync(full, "utf8"),
+      )
+    ) {
       bulletDup.push(rel);
     }
   }

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-30T04:17:21.089Z",
-  "gitCommit": "e3fd9f062019852ecde97802423f4efff5a18748",
+  "generatedAt": "2026-05-30T04:35:06.035Z",
+  "gitCommit": "457793d51ede8b2f7a26333df95faee59b4f5fd0",
   "forbidden": {
     "hits": [
       {
@@ -200,10 +200,8 @@
     "sample_review_text_found": false,
     "fake_mypage_data_found": false,
     "photo_check_pending_copy_found": false,
-    "bullet_duplication_found": true,
-    "bullet_duplication_files": [
-      "src/components/platform/CompareClient.tsx"
-    ],
+    "bullet_duplication_found": false,
+    "bullet_duplication_files": [],
     "broken_cta_found": false
   }
 }
