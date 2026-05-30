@@ -225,6 +225,20 @@
 }
 
 /* —— 리뷰 —— */
+.bm-zone--review .review-card--photo {
+  box-shadow: 0 12px 32px rgba(15, 118, 110, 0.08);
+}
+
+.bm-zone--review .review-card-media img {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .bm-zone--review .review-card-media {
+    min-height: 11.5rem;
+  }
+}
+
 .bm-zone--review .review-operator-reply {
   border-color: #99f6e4 !important;
   background: var(--color-accent-review-soft) !important;

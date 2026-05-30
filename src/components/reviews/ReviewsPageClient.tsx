@@ -5,6 +5,12 @@ import { useMemo, useState } from "react";
 import { Star } from "lucide-react";
 import clsx from "clsx";
 import { AppIcon } from "@/components/common/AppIcon";
+import { ReviewCardMedia } from "@/components/reviews/ReviewCardMedia";
+import {
+  reviewDisplayAuthor,
+  reviewDisplayDate,
+  reviewHasImages,
+} from "@/lib/review-card-utils";
 import {
   REVIEW_BADGE_LABELS,
   REVIEW_FILTER_OPTIONS,
@@ -20,56 +26,85 @@ function ReviewBadge({ id }: { id: ReviewBadgeId }) {
   return <span className="bm-badge bm-badge--review">{REVIEW_BADGE_LABELS[id]}</span>;
 }
 
-function ReviewCard({ item }: { item: ReviewItem }) {
+function ReviewCardBody({ item }: { item: ReviewItem }) {
   return (
-    <article className={`${bm.card} bm-card-unified overflow-hidden`}>
-      <div className={`${bm.cardPad} space-y-3`}>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-0.5 text-amber-500">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className={clsx("size-3.5", i < item.rating ? "fill-current" : "opacity-25")}
-              />
-            ))}
-          </div>
-          <span className="text-xs font-bold text-slate-500">
-            {item.authorMasked} · {item.date}
-          </span>
-        </div>
-        <div className="flex flex-wrap gap-1">
-          {item.badges.map((b) => (
-            <ReviewBadge key={b} id={b} />
+    <div className={`${bm.cardPad} space-y-3`}>
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-0.5 text-amber-500">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star
+              key={i}
+              className={clsx("size-3.5", i < item.rating ? "fill-current" : "opacity-25")}
+            />
           ))}
         </div>
+        <span className="text-xs font-bold text-slate-500">
+          {reviewDisplayAuthor(item)}
+          {reviewDisplayDate(item) ? ` · ${reviewDisplayDate(item)}` : null}
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {item.badges.map((b) => (
+          <ReviewBadge key={b} id={b} />
+        ))}
+      </div>
+      {(item.vehicleName || item.batteryCode) ? (
         <p className="text-sm font-black text-slate-900">
-          {item.vehicle} · {item.batteryCode}
+          {[item.vehicleName, item.batteryCode].filter(Boolean).join(" · ")}
         </p>
-        <p className="text-sm font-medium leading-relaxed text-slate-700">{item.body}</p>
-        <div className="flex flex-wrap gap-2">
-          <Link href={item.productHref} className={`${bm.btnSecondary} text-xs`}>
-            해당 규격 보기
-          </Link>
-          {item.blogHref ? (
-            <a
-              href={item.blogHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${bm.btnTertiary} text-xs`}
-            >
-              블로그 후기
-            </a>
-          ) : null}
-        </div>
-        {item.operatorReply ? (
-          <div className="review-operator-reply rounded-xl border p-3">
-            <p className="review-operator-reply__label text-[10px] font-black">Battery Manager 답변</p>
-            {item.operatorSummary ? (
-              <p className="mt-1 text-xs font-bold text-slate-700">{item.operatorSummary}</p>
-            ) : null}
-            <p className="mt-1 text-xs font-medium text-slate-600">{item.operatorReply}</p>
-          </div>
+      ) : null}
+      <p className="text-sm font-medium leading-relaxed text-slate-700">{item.content}</p>
+      <div className="flex flex-wrap gap-2">
+        <Link href={item.productHref} className={`${bm.btnSecondary} text-xs`}>
+          해당 규격 보기
+        </Link>
+        {item.blogHref ? (
+          <a
+            href={item.blogHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${bm.btnTertiary} text-xs`}
+          >
+            블로그 후기
+          </a>
         ) : null}
+      </div>
+      {item.operatorReply ? (
+        <div className="review-operator-reply rounded-xl border p-3">
+          <p className="review-operator-reply__label text-[10px] font-black">Battery Manager 답변</p>
+          {item.operatorSummary ? (
+            <p className="mt-1 text-xs font-bold text-slate-700">{item.operatorSummary}</p>
+          ) : null}
+          <p className="mt-1 text-xs font-medium text-slate-600">{item.operatorReply}</p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function ReviewCard({ item }: { item: ReviewItem }) {
+  const withPhoto = reviewHasImages(item);
+
+  if (!withPhoto) {
+    return (
+      <article className={`${bm.card} bm-card-unified review-card review-card--text`}>
+        <ReviewCardBody item={item} />
+      </article>
+    );
+  }
+
+  return (
+    <article
+      className={`${bm.card} bm-card-unified review-card review-card--photo overflow-hidden ring-1 ring-teal-100/80`}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-stretch">
+        <ReviewCardMedia
+          item={item}
+          className="sm:w-[38%] sm:max-w-[220px] sm:border-r sm:border-slate-100"
+        />
+        <div className="min-w-0 flex-1">
+          <ReviewCardBody item={item} />
+        </div>
       </div>
     </article>
   );
@@ -82,7 +117,7 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
     let list = REVIEWS_MOCK;
     if (initialBattery) {
       const b = initialBattery.trim().toUpperCase();
-      list = list.filter((r) => r.batteryCode.toUpperCase() === b);
+      list = list.filter((r) => (r.batteryCode ?? "").toUpperCase() === b);
     }
     if (filter === "all") return list;
     return list.filter((r) => r.badges.includes(filter));
