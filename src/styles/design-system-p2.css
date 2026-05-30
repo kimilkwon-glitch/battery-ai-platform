@@ -478,6 +478,30 @@
   font-size: 0;
 }
 
+/* 메인배너 — 통일 min-height (납작한 띠 방지), contain 유지 */
+.home-hero-carousel__viewport--unified {
+  min-height: 210px;
+  aspect-ratio: 1376 / 768;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+@media (min-width: 640px) {
+  .home-hero-carousel__viewport--unified {
+    min-height: 228px;
+    aspect-ratio: 1984 / 528;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-hero-carousel__viewport--unified {
+    min-height: 272px;
+  }
+}
+
+.home-hero-slide--placeholder {
+  padding: 1.75rem 1.25rem;
+}
+
 .home-hero-carousel__slide-layer {
   transition: none;
 }
@@ -922,13 +946,57 @@
 /* 메인 혜택 캐러셀 — 검색 영역보다 낮은 시각 무게 */
 .home-benefits-carousel-shell {
   --home-benefit-gap: 12px;
+  --home-benefit-card-min-h: 19.75rem;
+  --home-benefit-media-h: 9.75rem;
 }
 
 .home-benefits-viewport {
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, transparent 100%);
 }
 
-/* 혜택 카드 — hover flicker 제거, 5:3 edge-to-edge */
+@media (min-width: 640px) {
+  .home-benefits-carousel-shell {
+    --home-benefit-card-min-h: 20.5rem;
+    --home-benefit-media-h: 10.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-benefits-carousel-shell {
+    --home-benefit-card-min-h: 21.25rem;
+    --home-benefit-media-h: 11.5rem;
+  }
+}
+
+.home-benefit-slide > a,
+.home-benefit-slide > article,
+.home-benefit-slide .home-benefit-card {
+  height: 100%;
+  min-height: var(--home-benefit-card-min-h);
+}
+
+.bm-zone--benefit .home-benefit-card.bm-card-unified {
+  min-height: var(--home-benefit-card-min-h, 19.75rem);
+}
+
+.home-benefit-card-media--carousel {
+  height: var(--home-benefit-media-h, 9.75rem);
+  min-height: var(--home-benefit-media-h, 9.75rem);
+}
+
+.home-benefit-card-media--detail {
+  min-height: 12.5rem;
+  height: 12.5rem;
+}
+
+@media (min-width: 640px) {
+  .home-benefit-card-media--detail {
+    min-height: 15rem;
+    height: 15rem;
+  }
+}
+
+/* 혜택 카드 — hover flicker 제거, 통일 높이 */
 .home-benefit-card.bm-card-unified,
 .home-benefit-card.bm-card-unified:hover {
   transform: none !important;

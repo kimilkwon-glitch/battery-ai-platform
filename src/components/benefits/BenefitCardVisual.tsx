@@ -29,7 +29,7 @@ export function BenefitCardVisual({
       )}
     >
       <BenefitCardMedia card={toMediaCard(card)} priority={priority} />
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col justify-between gap-2 p-4 pb-5 sm:p-5">
         <span
           className={clsx(
             "inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wide",

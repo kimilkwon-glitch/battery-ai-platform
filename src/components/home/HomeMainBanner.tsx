@@ -5,10 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import clsx from "clsx";
 import {
-  getHeroViewportAspectClasses,
   HERO_BANNER_CANVAS,
   HERO_CAROUSEL_INTERVAL_MS,
-  HERO_MOBILE_ASPECT_CLASS,
   HERO_SLIDES,
   type HeroSlide,
 } from "@/lib/hero-slides-data";
@@ -76,10 +74,6 @@ export function HomeMainBanner() {
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
   const activeSlide = slides[index]!;
-  const viewportAspect =
-    activeSlide.type === "image"
-      ? getHeroViewportAspectClasses(activeSlide.id)
-      : { mobile: HERO_MOBILE_ASPECT_CLASS, desktop: "sm:aspect-[1984/528]" };
 
   const goTo = useCallback(
     (next: number) => {
@@ -111,11 +105,7 @@ export function HomeMainBanner() {
     >
       <div className="home-hero-carousel__frame relative w-full overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
         <div
-          className={clsx(
-            "home-hero-carousel__viewport relative w-full",
-            viewportAspect.mobile,
-            viewportAspect.desktop,
-          )}
+          className="home-hero-carousel__viewport home-hero-carousel__viewport--unified relative w-full"
           data-hero-canvas={
             activeSlide.type === "image"
               ? `${HERO_BANNER_CANVAS.mobile.width}x${HERO_BANNER_CANVAS.mobile.height}`
