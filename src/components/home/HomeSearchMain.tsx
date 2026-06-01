@@ -12,9 +12,13 @@ export function HomeSearchMain() {
       <PortalHeader showSearch={false} />
 
       <div className="home-main-content mx-auto max-w-[1100px] space-y-10 px-4 pb-16 pt-6 sm:space-y-12 sm:px-6 sm:pb-20 sm:pt-8 lg:space-y-14 lg:pb-24 lg:pt-10">
-        <div className="home-main-top space-y-5 sm:space-y-6" data-home-section="hero-top">
-          <HomeMainBanner />
-          <HomeMainHero />
+        <div className="home-hero-stack" data-home-section="hero-top">
+          <div className="home-hero-stack__banner home-hero-breakout">
+            <HomeMainBanner />
+          </div>
+          <div className="home-hero-stack__search">
+            <HomeMainHero />
+          </div>
         </div>
         <HomeBenefitsCarousel />
         <HomeCatalogSection />

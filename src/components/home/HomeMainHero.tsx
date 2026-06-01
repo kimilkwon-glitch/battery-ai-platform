@@ -8,13 +8,13 @@ import { HOME_MAIN_SEARCH_EXAMPLES } from "@/lib/home-main-catalog-data";
 export function HomeMainHero() {
   return (
     <section className="home-main-hero" data-home-section="search-hero">
-      <div className="home-main-search-shell mx-auto max-w-3xl lg:max-w-[1100px]">
+      <div className="home-main-search-shell mx-auto w-full max-w-[1100px]">
         <HomeHeroSearch />
       </div>
 
-      <div className="mx-auto mt-4 max-w-3xl lg:max-w-[1100px]">
+      <div className="home-main-hero-chips mx-auto mt-2 max-w-[1100px] sm:mt-2.5">
         <p className="text-[11px] font-bold text-slate-400">검색 예시</p>
-        <div className="home-search-example-chips mt-2 -mx-1 flex gap-2 overflow-x-auto pb-1 scroll-smooth sm:mx-0 sm:flex-wrap sm:overflow-visible sm:pb-0">
+        <div className="home-search-example-chips mt-1.5 -mx-1 flex gap-2 overflow-x-auto pb-0.5 scroll-smooth sm:mx-0 sm:flex-wrap sm:overflow-visible sm:pb-0">
           {HOME_MAIN_SEARCH_EXAMPLES.map((ex) => (
             <Link
               key={ex.href}

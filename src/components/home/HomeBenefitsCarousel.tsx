@@ -86,7 +86,7 @@ export function HomeBenefitsCarousel() {
 
   return (
     <section
-      className="home-benefits-carousel bm-zone bm-zone--benefit mt-10 sm:mt-12"
+      className="home-benefits-carousel bm-zone bm-zone--benefit mt-8 sm:mt-10"
       data-home-section="benefits-carousel"
       aria-label={BENEFITS_HUB_TITLE}
       onMouseEnter={() => {

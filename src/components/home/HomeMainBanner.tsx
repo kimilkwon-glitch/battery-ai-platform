@@ -103,7 +103,7 @@ export function HomeMainBanner() {
         pausedRef.current = false;
       }}
     >
-      <div className="home-hero-carousel__frame relative w-full overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
+      <div className="home-hero-carousel__frame relative w-full overflow-hidden rounded-2xl border border-slate-200/80 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
         <div
           className="home-hero-carousel__viewport home-hero-carousel__viewport--unified relative w-full"
           data-hero-canvas={
@@ -111,6 +111,7 @@ export function HomeMainBanner() {
               ? `${HERO_BANNER_CANVAS.mobile.width}x${HERO_BANNER_CANVAS.mobile.height}`
               : undefined
           }
+          data-hero-slide-id={activeSlide.id}
         >
           {slides.map((s, i) => {
             const isActive = i === index;
@@ -135,7 +136,7 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => goTo(index - 1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-slate-900/55 text-white sm:left-4 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-2 top-1/2 z-[15] flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/60 text-white shadow-lg sm:left-3 sm:size-11"
               aria-label="이전 배너"
             >
               <ChevronLeft className="size-4" />
@@ -143,7 +144,7 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => goTo(index + 1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-3 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-slate-900/55 text-white sm:right-4 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-2 top-1/2 z-[15] flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/60 text-white shadow-lg sm:right-3 sm:size-11"
               aria-label="다음 배너"
             >
               <ChevronRight className="size-4" />
