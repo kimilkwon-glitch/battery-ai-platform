@@ -1,92 +1,143 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { BatteryGallery } from "@/components/BatteryGallery";
-import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
-import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { BuyNowButton } from "@/components/cart/BuyNowButton";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryImageSetForCode } from "@/lib/battery-image";
+import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
+import { getBattery, getBrand } from "@/lib/platform-data";
+import {
+  BATTERY_RETURN_OPTIONS,
+  type BatteryReturnOption,
+} from "@/lib/shop-order-types";
 import { bm } from "@/lib/design-tokens";
 
-function orderHubHref(code: string): string {
-  return `/shop?code=${encodeURIComponent(code)}`;
-}
+type VehicleChip = { slug: string; title: string };
 
 export function BatteryDetailOrderPanel({
   code,
-  typeLabel,
-  positioning,
-  vehicleSummary,
+  vehicles = [],
 }: {
   code: string;
-  typeLabel: string;
-  positioning: string;
-  vehicleSummary?: string;
+  vehicles?: VehicleChip[];
 }) {
+  const [returnOption, setReturnOption] = useState<BatteryReturnOption>("return");
   const spec = parseBatterySpecDisplay(code);
   const imageSet = batteryImageSetForCode(code);
-  const reviewsHref = `/reviews?battery=${encodeURIComponent(code)}`;
+  const bat = getBattery(code);
+  const brand = getBrand(bat.brandId);
+  const specLine = [
+    brand.displayName,
+    spec.typeLabel,
+    spec.capacity,
+    spec.cca,
+    spec.terminalLabel,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <section
       id="battery-order"
-      className="battery-product-detail scroll-mt-24 space-y-4"
+      className="battery-product-detail scroll-mt-24"
       data-battery-product={code}
     >
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-        <div className="relative space-y-2">
-          <BatteryGallery code={code} imageSet={imageSet} minHeightClass="min-h-[240px] sm:min-h-[280px] md:min-h-[300px]" />
-        </div>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-8">
+        <BatteryGallery
+          code={code}
+          imageSet={imageSet}
+          minHeightClass="min-h-[260px] sm:min-h-[300px] lg:min-h-[360px]"
+        />
 
-        <div className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
+        <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="absolute right-4 top-4">
             <BatteryWishlistButton code={code} />
           </div>
 
-          <p className="text-[10px] font-black uppercase tracking-wide text-blue-600">배터리 규격</p>
-          <h1 className={`${bm.specTitle} mt-0.5 pr-12`} data-spec-code>
+          <h1 className={`${bm.specTitle} pr-14 text-2xl sm:text-3xl`} data-spec-code>
             {code}
           </h1>
-          <p className="mt-2 text-sm font-semibold text-slate-600">{positioning}</p>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            <BatterySpecBadge tone="blue">{typeLabel}</BatterySpecBadge>
-            <BatterySpecBadge tone="green">{spec.capacity ?? "용량 확인"}</BatterySpecBadge>
-            <BatterySpecBadge tone="green">CCA {spec.cca ?? "확인"}</BatterySpecBadge>
-            <BatterySpecBadge tone="gray">{spec.terminalLabel ?? "단자 확인"}</BatterySpecBadge>
-          </div>
-          {vehicleSummary ? (
-            <p className="mt-3 text-xs font-medium text-slate-500">
-              <span className="font-black text-slate-600">대표 적용: </span>
-              {vehicleSummary}
-            </p>
+          <p className="mt-2 text-sm font-semibold text-slate-600">{specLine}</p>
+
+          {vehicles.length > 0 ? (
+            <div className="mt-4">
+              <p className="text-xs font-black text-slate-500">대표 적용 차량</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {vehicles.map((v) => (
+                  <Link
+                    key={v.slug}
+                    href={`/vehicle/${v.slug}`}
+                    className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-800 ring-1 ring-slate-200 transition hover:bg-blue-50 hover:text-blue-800 hover:ring-blue-200"
+                  >
+                    {v.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
           ) : null}
 
+          <p className="mt-5 text-lg font-black text-slate-900">
+            상담 후 안내
+            <span className="ml-2 text-xs font-semibold text-slate-400">가격·배송</span>
+          </p>
+
           <div className="mt-4">
-            <BatteryAutoDiscountHint />
+            <p className="text-xs font-black text-slate-700">폐배터리 반납</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {BATTERY_RETURN_OPTIONS.map((opt) => {
+                const selected = returnOption === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setReturnOption(opt.id)}
+                    className={`rounded-lg px-4 py-2.5 text-sm font-black transition ring-1 ${
+                      selected
+                        ? "bg-blue-600 text-white ring-blue-600"
+                        : "bg-white text-slate-700 ring-slate-200 hover:ring-slate-300"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
-            <Link href={orderHubHref(code)} className={`${bm.btnPrimary} text-center text-sm`}>
-              주문하기
-            </Link>
+          <div className="mt-5 grid gap-2">
+            <BuyNowButton
+              batteryCode={code}
+              returnOption={returnOption}
+              className="w-full py-3.5 text-base"
+              fitmentStatus={vehicles.length ? "needs_customer_confirm" : "unknown"}
+            />
             <AddToCartButton
               mode="battery"
               variant="secondary"
-              className="w-full justify-center text-sm"
+              className="w-full"
               input={{
                 batteryCode: code,
-                fitmentStatus: vehicleSummary ? "needs_customer_confirm" : "unknown",
+                usedBatteryReturnOption: returnOption,
+                fitmentStatus: vehicles.length ? "needs_customer_confirm" : "unknown",
                 source: "battery_detail",
               }}
             />
-            <Link href={HUB_PHOTO_CHECK} className={`${bm.btnSecondary} text-center text-sm`}>
-              사진으로 규격 확인
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-3 border-t border-slate-100 pt-4">
+            <Link href={HUB_STORE_DETAIL} className="text-sm font-bold text-slate-600 hover:text-blue-700">
+              매장·출장 상담
             </Link>
-            <Link href={reviewsHref} className={`${bm.btnTertiary} text-center text-sm`}>
-              리뷰 보기
+            <span className="text-slate-200" aria-hidden>
+              |
+            </span>
+            <Link href={HUB_PHOTO_CHECK} className="text-sm font-bold text-slate-600 hover:text-blue-700">
+              사진으로 규격 확인
             </Link>
           </div>
         </div>

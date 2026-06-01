@@ -1,13 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { BatteryDetailOrderPanel } from "@/components/battery/BatteryDetailOrderPanel";
-import { BatteryDetailContentSlot } from "@/components/battery/BatteryDetailContentSlot";
-import { BatteryDetailExpandSections } from "@/components/battery/BatteryDetailExpandSections";
-import { BatteryDetailSectionNav } from "@/components/battery/BatteryDetailSectionNav";
-import { BatteryDetailReviewsSection } from "@/components/battery/BatteryDetailReviewsSection";
-import { BatteryDetailFooterCtas } from "@/components/battery/BatteryDetailFooterCtas";
+import { BatteryDetailProductTabs } from "@/components/battery/BatteryDetailProductTabs";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
+import { BuyNowButton } from "@/components/cart/BuyNowButton";
 import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
 import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
@@ -45,7 +41,7 @@ function mergeFeaturedVehicles(
 
   const push = (slug: string, title: string) => {
     const key = vehicleTitleKey(title);
-    if (seenSlug.has(slug) || seenTitle.has(key) || out.length >= 4) return;
+    if (seenSlug.has(slug) || seenTitle.has(key) || out.length >= 8) return;
     seenSlug.add(slug);
     seenTitle.add(key);
     out.push({ slug, title });
@@ -60,26 +56,11 @@ function mergeFeaturedVehicles(
   return out;
 }
 
-function orderHubHref(code: string): string {
-  return `/shop?code=${encodeURIComponent(code)}`;
-}
-
 function BatteryDetailMobileSticky({ code }: { code: string }) {
   return (
     <div className={bm.stickyMobileBar} data-battery-detail-sticky>
-      <div className="mx-auto flex max-w-[1280px] items-center gap-2">
-        <a
-          className={`${bm.btnSecondary} flex flex-1 items-center justify-center text-xs`}
-          href="#battery-spec-check"
-        >
-          규격 체크
-        </a>
-        <Link
-          className={`${bm.btnNavy} flex flex-1 items-center justify-center text-xs`}
-          href={orderHubHref(code)}
-        >
-          주문하기
-        </Link>
+      <div className="mx-auto flex max-w-[1280px] items-center gap-2 px-1">
+        <BuyNowButton batteryCode={code} className="flex-1 py-3 text-sm" />
         <BatteryWishlistButton code={code} size="sm" />
       </div>
     </div>
@@ -90,38 +71,16 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
   const hub = resolveBatteryDetailHubContent(code, relatedCodes);
   const displayCode = hub.code;
   const vehicleCards = mergeFeaturedVehicles(hub.featuredVehicles, vehicles);
-  const vehicleSummary =
-    vehicleCards.length > 0
-      ? `${vehicleCards
-          .slice(0, 3)
-          .map((v) => v.title)
-          .join(" · ")}${vehicleCards.length > 3 ? " 외" : ""}`
-      : undefined;
 
   return (
     <div
-      className="space-y-4 pb-20 md:pb-4"
+      className="space-y-8 pb-20 md:pb-6"
       data-battery-detail-hub={displayCode}
       data-battery-detail-build-stamp={BATTERY_DETAIL_BUILD_STAMP}
     >
-      <BatteryDetailOrderPanel
-        code={displayCode}
-        typeLabel={hub.typeLabel}
-        positioning={hub.positioning}
-        vehicleSummary={vehicleSummary}
-      />
+      <BatteryDetailOrderPanel code={displayCode} vehicles={vehicleCards} />
 
-      <BatteryDetailSectionNav />
-
-      <div id="battery-spec-check" className="scroll-mt-28 h-0 w-full" tabIndex={-1} aria-hidden />
-
-      <BatteryDetailContentSlot code={displayCode} />
-
-      <BatteryDetailReviewsSection code={displayCode} />
-
-      <BatteryDetailExpandSections hub={hub} vehicles={vehicleCards} />
-
-      <BatteryDetailFooterCtas code={displayCode} />
+      <BatteryDetailProductTabs code={displayCode} vehicles={vehicleCards} />
 
       <BatteryDetailMobileSticky code={displayCode} />
     </div>

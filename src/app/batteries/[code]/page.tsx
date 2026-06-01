@@ -27,7 +27,7 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
     <PageShell
       pageLabel={displayCode}
       title={displayCode}
-      description="배터리 규격 · 호환 차량 · 주문 · 사진 확인"
+      description="배터리 규격 · 호환 차량 · 구매 · 리뷰"
       searchPlaceholder={`${displayCode} 호환 차종 검색`}
     >
       <div data-battery-route-build-stamp={BUILD_STAMP} className="contents">

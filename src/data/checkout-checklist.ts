@@ -13,7 +13,7 @@ export const CHECKOUT_PAGE_COPY = {
   consultationTitle: "상담 주문 접수",
   consultationBody:
     "현재는 상담 주문 접수 방식으로 운영됩니다. 접수 후 담당자가 배터리 규격과 주문 조건을 확인해 안내드립니다.",
-  submitLabel: "상담 주문 요청하기",
+  submitLabel: "구매하기",
   backToCart: "장바구니로 돌아가기",
 } as const;
 

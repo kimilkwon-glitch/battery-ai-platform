@@ -83,7 +83,7 @@ function FeaturedSpecsSection({ onSelect }: { onSelect: (code: string) => void }
                     onClick={() => onSelect(spec.productCode)}
                     className={`${bm.btnPrimary} w-full py-2 text-[10px]`}
                   >
-                    주문하기
+                    구매하기
                   </button>
                   <Link href={spec.href} className={`${bm.btnSecondary} text-center text-[10px]`}>
                     내 차 기준 검색
