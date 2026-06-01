@@ -72,7 +72,18 @@ function assetToItem(asset: VehicleAsset): VehiclesBrowseItem {
     vehicleId: asset.catalogId ?? asset.id,
     title: asset.displayName,
     href: vehicleLinkForId(asset.catalogId ?? asset.id),
-    brandLabel: asset.brand === "hyundai" ? "현대" : "기아",
+    brandLabel:
+      asset.brand === "hyundai"
+        ? "현대"
+        : asset.brand === "kia"
+          ? "기아"
+          : asset.brand === "renault"
+            ? "르노코리아"
+            : asset.brand === "ssangyong"
+              ? "쌍용"
+              : asset.brand === "kg"
+                ? "KGM"
+                : asset.brand,
   };
 }
 

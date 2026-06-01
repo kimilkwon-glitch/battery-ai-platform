@@ -6,6 +6,7 @@ import {
   vehicleAliasV03Augments,
   type VehicleAliasV03Augment,
 } from "./vehicle-alias-v03-supplement";
+import { vehicleAliasDbV04NewEntries } from "./vehicle-alias-v04-supplement";
 
 // 주의: 배터리 규격은 기존 Battery Manager DB를 우선 사용하고, 이 파일은 검색 alias/intent 매핑용으로 사용한다.
 // 원칙:
@@ -1159,6 +1160,7 @@ export const vehicleAliasDbV01: VehicleAliasEntry[] = applyVehicleAliasV03Augmen
   ...vehicleAliasDbV01Core,
   ...(vehicleAliasDbV02Supplement as VehicleAliasEntry[]),
   ...(vehicleAliasDbV03NewEntries as VehicleAliasEntry[]),
+  ...vehicleAliasDbV04NewEntries,
 ]);
 
 export type VehicleAliasDangerRule = {

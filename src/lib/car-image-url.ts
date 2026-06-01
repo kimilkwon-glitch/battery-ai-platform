@@ -25,6 +25,9 @@ export function carDisplayImageFallback(brand: CarImageBrandKey, imageFile: stri
 
 /** 정규화 URL → 원본 URL (클라이언트 fallback) */
 export function carOriginalFromDisplayUrl(displayUrl: string): string | null {
+  if (displayUrl.includes("/assets/vehicles/cars-normalized/")) {
+    return displayUrl.replace("/assets/vehicles/cars-normalized/", "/assets/cars-normalized/");
+  }
   if (displayUrl.includes("/assets/cars-normalized/")) {
     return displayUrl.replace("/assets/cars-normalized/", "/assets/cars/");
   }

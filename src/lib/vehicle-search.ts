@@ -26,11 +26,13 @@ import { vehicles as catalogVehicles } from "@/lib/platform-data";
 
 export function assetToSearchRow(asset: VehicleAsset): VehicleSearchRow {
   const db = getVehicleCardBatteryInfo(asset.catalogId ?? asset.id);
-  const battery =
-    (db.hasConfirmedDb && db.displayCode) ||
-    db.displayCode ||
-    asset.defaultBatteryCode ||
-    (db.needsPhotoReview ? "사진 확인 필요" : "규격 확인 필요");
+  const needsBatteryReview = asset.batteryMatchStatus === "needsReview";
+  const battery = needsBatteryReview
+    ? "규격 확인 필요"
+    : (db.hasConfirmedDb && db.displayCode) ||
+      db.displayCode ||
+      asset.defaultBatteryCode ||
+      (db.needsPhotoReview ? "사진 확인 필요" : "규격 확인 필요");
   const fuel = asset.tags?.includes("EV")
     ? "전기"
     : asset.tags?.includes("하이브리드")
@@ -48,6 +50,7 @@ export function assetToSearchRow(asset: VehicleAsset): VehicleSearchRow {
     href: vehicleAssetHref(asset),
     imageSrc: asset.image || null,
     batteryNotes: asset.batteryNotes,
+    needsReview: needsBatteryReview || db.needsPhotoReview,
   };
 }
 

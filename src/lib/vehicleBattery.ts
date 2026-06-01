@@ -94,9 +94,26 @@ const MODEL_GROUP_KO: Record<string, string> = {
   niro: "니로",
   bongo: "봉고",
   rextorn: "렉스턴",
+  rexton: "렉스턴",
   tivoli: "티볼리",
   korando: "코란도",
   torres: "토레스",
+  mohave: "모하비",
+  soul: "쏘울",
+  carens: "카렌스",
+  starex: "스타렉스",
+  sm3: "SM3",
+  sm5: "SM5",
+  sm6: "SM6",
+  sm7: "SM7",
+  qm3: "QM3",
+  qm5: "QM5",
+  qm6: "QM6",
+  xm3: "XM3",
+  actyon: "액티언",
+  kyron: "카이런",
+  chairman: "체어맨",
+  k9: "K9",
 };
 
 const GENERATION_TOKEN: Record<string, string[]> = {
@@ -121,6 +138,16 @@ const GENERATION_TOKEN: Record<string, string[]> = {
   "bongo3-truck": ["봉고", "BONGO"],
   "bongo3-ev": ["봉고3 EV"],
   "staria-us4": ["스타리아"],
+  "hyundai-grand-starex-2007": ["그랜드 스타렉스", "스타렉스"],
+  "kia-mohave-2008": ["모하비"],
+  "kia-the-new-mohave-2016": ["더 뉴 모하비"],
+  "kia-mohave-the-master-2019": ["더 마스터", "모하비 더 마스터"],
+  "kia-k9-2012": ["K9"],
+  "kia-the-k9-2018": ["더 K9"],
+  "kia-soul-2008": ["쏘울"],
+  "kia-soul-booster-2019": ["부스터", "쏘울 부스터"],
+  "kia-carens-2006": ["카렌스"],
+  "kia-all-new-carens-2013": ["올 뉴 카렌스", "올뉴카렌스"],
 };
 
 const VEHICLE_SUBTITLES: Record<string, string> = {
@@ -184,12 +211,30 @@ export function getVehicleDbProfile(slug: string): VehicleDbProfile | null {
     : [];
 
   if (asset) {
+    const brandLabel =
+      asset.brand === "hyundai"
+        ? "현대"
+        : asset.brand === "kia"
+          ? "기아"
+          : asset.brand === "renault"
+            ? "르노코리아"
+            : asset.brand === "ssangyong"
+              ? "쌍용"
+              : asset.brand === "kg"
+                ? "KGM"
+                : "";
+    const dbModels = asset.dbModels?.length
+      ? asset.dbModels
+      : [
+          MODEL_GROUP_KO[asset.modelGroup] ?? asset.modelGroup,
+          asset.displayName.split(/[\s/]/)[0] ?? "",
+        ].filter(Boolean);
     return {
       slug,
       title: asset.displayName,
       subtitle: VEHICLE_SUBTITLES[slug] ?? asset.generationName ?? "",
-      brand: asset.brand === "hyundai" ? "현대" : asset.brand === "kia" ? "기아" : "",
-      dbModels: [...new Set([MODEL_GROUP_KO[asset.modelGroup] ?? "", asset.displayName.split(/[\s/]/)[0]].filter(Boolean))],
+      brand: brandLabel,
+      dbModels: [...new Set(dbModels)],
       generationTokens: extractGenerationTokens(slug, asset.displayName),
       yearRange: asset.yearRange,
     };

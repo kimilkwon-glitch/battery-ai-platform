@@ -5,8 +5,9 @@
 import type { VehicleBodyType } from "@/components/VehicleThumbnail";
 import { catalogVehicles } from "./platform-catalog";
 import { carDisplayImageUrl } from "./car-image-url";
+import { vehicleAssetsV04 } from "@/lib/vehicle-asset-v04";
 
-export type CarBrandKey = "hyundai" | "kia";
+export type CarBrandKey = "hyundai" | "kia" | "renault" | "ssangyong" | "kg";
 
 export interface VehicleAsset {
   id: string;
@@ -23,18 +24,26 @@ export interface VehicleAsset {
   /** platform-catalog Vehicle.id — 상세/배터리 카탈로그 연결 */
   catalogId?: string;
   defaultBatteryCode?: string;
+  /** v04 — 기본 추천·노출 후보 제외 (2005 미만·레거시) */
+  recommendExcluded?: boolean;
+  batteryMatchStatus?: "needsReview" | "linked";
+  /** vehicle-battery-db model 매칭 */
+  dbModels?: string[];
+  yearStart?: number;
 }
 
 const DEFAULT_NOTE =
   "연식, 연료, ISG 여부에 따라 배터리 규격 확인이 필요합니다.";
 
+type LegacyCarBrandKey = "hyundai" | "kia";
+
 const PNG = {
-  main: (brand: CarBrandKey, file: string) => carDisplayImageUrl(brand, file),
+  main: (brand: LegacyCarBrandKey, file: string) => carDisplayImageUrl(brand, file),
 };
 
 function asset(
   id: string,
-  brand: CarBrandKey,
+  brand: LegacyCarBrandKey,
   modelGroup: string,
   displayName: string,
   imageFile: string,
@@ -427,7 +436,11 @@ const KIA_ASSETS: VehicleAsset[] = [
   }),
 ];
 
-export const vehicleAssets: VehicleAsset[] = [...HYUNDAI_ASSETS, ...KIA_ASSETS];
+export const vehicleAssets: VehicleAsset[] = [
+  ...HYUNDAI_ASSETS,
+  ...KIA_ASSETS,
+  ...vehicleAssetsV04,
+];
 
 /** 이미지 파일 누락 — 디스크에 없거나 이번 연결 제외 */
 export const missingVehicleImageFiles = [
@@ -473,8 +486,16 @@ export function bodyTypeFromAsset(asset: VehicleAsset): VehicleBodyType {
   return "sedan";
 }
 
+const BRAND_LABELS: Record<CarBrandKey, string> = {
+  hyundai: "현대",
+  kia: "기아",
+  renault: "르노코리아",
+  ssangyong: "쌍용",
+  kg: "KGM",
+};
+
 export function vehicleAssetBrandLabel(brand: CarBrandKey): string {
-  return brand === "hyundai" ? "현대" : "기아";
+  return BRAND_LABELS[brand] ?? brand;
 }
 
 export function getVehicleAssetsByBrand(brand?: CarBrandKey): VehicleAsset[] {
@@ -511,11 +532,12 @@ function matchesQuery(text: string, q: string): boolean {
 
 export function searchVehicleAssets(query: string, limit = 12): VehicleAsset[] {
   const q = norm(query);
-  if (!q) return vehicleAssets.slice(0, limit);
+  const pool = vehicleAssets.filter((a) => !a.recommendExcluded);
+  if (!q) return pool.slice(0, limit);
 
   const scored: { asset: VehicleAsset; score: number }[] = [];
 
-  for (const a of vehicleAssets) {
+  for (const a of pool) {
     let score = 0;
     if (norm(a.displayName) === q) score += 100;
     else if (matchesQuery(a.displayName, q)) score += 80;

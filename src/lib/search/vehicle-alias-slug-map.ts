@@ -3,8 +3,14 @@
  * car-assets · platform-catalog · vehicle-battery-enrichment 기준
  */
 import type { VehicleYearEra } from "@/lib/search/parse-vehicle-year";
+import {
+  LEGACY_SLUG_HINT_TO_V04,
+  V04_SLUG_HINT_TO_ASSET_ID,
+} from "@/lib/vehicle-asset-v04";
 
 export const SLUG_HINT_TO_ASSET_ID: Record<string, string> = {
+  ...V04_SLUG_HINT_TO_ASSET_ID,
+  ...LEGACY_SLUG_HINT_TO_V04,
   "hyundai-avante-md": "avante-md",
   "hyundai-avante-ad": "avante-ad",
   "hyundai-avante-cn7": "avante-cn7",
