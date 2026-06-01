@@ -4,292 +4,275 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
 import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
 import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import {
-  BRAND_HUB_MAIN_IDS,
-  BRAND_HUB_REFERENCE_IDS,
-  brandHubCardBlurbs,
-  brandHubFeaturedByBrand,
-  brandHubShortCopy,
-} from "@/lib/brand-hub-display";
-import {
-  brandSelectorMeta,
-  brandSpecMatchingTable,
-  getBrandProfile,
-} from "@/lib/brand-hub-data";
-import { brands, getBattery, searchHref } from "@/lib/platform-data";
+  BRAND_HUB_BANNER,
+  BRAND_HUB_FEATURED_CODES,
+  BRAND_HUB_FOOTNOTE,
+  BRAND_HUB_INSIGHTS,
+  BRAND_HUB_THEMES,
+  CUSTOMER_BRAND_HUB_IDS,
+  isCustomerBrandHubId,
+  resolveBrandHubSpecCard,
+  type CustomerBrandHubId,
+} from "@/lib/brand-hub-customer";
+import { getBattery } from "@/lib/platform-data";
+
+const PANEL_TRANSITION = { duration: 0.78, ease: [0.65, 0, 0.35, 1] as const };
+
+const panelVariants = {
+  initial: {
+    opacity: 0.5,
+    clipPath: "inset(0 0 100% 0)",
+    filter: "blur(6px)",
+  },
+  animate: {
+    opacity: 1,
+    clipPath: "inset(0 0 0% 0)",
+    filter: "blur(0px)",
+  },
+  exit: {
+    opacity: 0.35,
+    clipPath: "inset(100% 0 0 0)",
+    filter: "blur(8px)",
+  },
+};
 
 export function BrandHubClient() {
   const params = useSearchParams();
   const router = useRouter();
-  const [active, setActive] = useState<string>("rocket");
-  const [moreOpen, setMoreOpen] = useState(false);
+  const [active, setActive] = useState<CustomerBrandHubId>("rocket");
 
   useEffect(() => {
     const b = params.get("brand");
-    if (b && brands.some((x) => x.id === b)) setActive(b);
-  }, [params]);
+    if (b && isCustomerBrandHubId(b)) setActive(b);
+    else if (b && !isCustomerBrandHubId(b)) {
+      router.replace("/brands?brand=rocket", { scroll: false });
+    }
+  }, [params, router]);
 
-  const brand = brands.find((b) => b.id === active) ?? brands[0];
-  const profile = getBrandProfile(active);
-  const copy = brandHubShortCopy[active] ?? brandHubShortCopy.rocket;
-  const featured = brandHubFeaturedByBrand[active] ?? brandHubFeaturedByBrand.rocket;
-  const isMainBrand = BRAND_HUB_MAIN_IDS.includes(active as (typeof BRAND_HUB_MAIN_IDS)[number]);
+  const theme = BRAND_HUB_THEMES[active];
+  const banner = BRAND_HUB_BANNER[active];
+  const insights = BRAND_HUB_INSIGHTS[active];
+  const codes = BRAND_HUB_FEATURED_CODES[active];
+  const imageBrandKey: BatteryBrandKey = active === "solite" ? "solite" : "rocket";
 
-  const selectBrand = (id: string) => {
+  const selectBrand = (id: CustomerBrandHubId) => {
     setActive(id);
-    setMoreOpen(false);
     router.replace(`/brands?brand=${id}`, { scroll: false });
   };
 
-  const mainBrands = brands.filter((b) => BRAND_HUB_MAIN_IDS.includes(b.id as (typeof BRAND_HUB_MAIN_IDS)[number]));
-  const refBrands = brands.filter((b) =>
-    BRAND_HUB_REFERENCE_IDS.includes(b.id as (typeof BRAND_HUB_REFERENCE_IDS)[number]),
-  );
-
   return (
-    <div className="brand-hub space-y-6">
-      {/* 메인 브랜드 */}
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {mainBrands.map((b) => {
-          const meta = brandSelectorMeta[b.id];
-          const selected = active === b.id;
-          const thumb = meta ? getBattery(meta.cardThumbCode, meta.imageBrandKey) : null;
+    <motion.div
+      className={clsx("brand-hub -mx-1 space-y-6 rounded-2xl px-1 py-2 sm:mx-0", theme.pageBg)}
+      layout
+      transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
+      data-brand-hub-active={active}
+    >
+      {/* 탭 — 로케트 / 쏠라이트 */}
+      <nav
+        className="flex gap-2 sm:gap-3"
+        role="tablist"
+        aria-label="브랜드 선택"
+      >
+        {CUSTOMER_BRAND_HUB_IDS.map((id) => {
+          const t = BRAND_HUB_THEMES[id];
+          const selected = active === id;
           return (
-            <motion.button
-              key={b.id}
+            <button
+              key={id}
               type="button"
-              onClick={() => selectBrand(b.id)}
+              role="tab"
+              aria-selected={selected}
+              onClick={() => selectBrand(id)}
               className={clsx(
-                "brand-hub-main-card overflow-hidden rounded-2xl border p-4 text-left transition",
-                selected
-                  ? "border-slate-800 bg-slate-900 text-white shadow-lg"
-                  : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md",
+                "min-h-[48px] flex-1 rounded-xl px-4 text-sm font-black transition sm:text-base",
+                selected ? t.tabActive : t.tabIdle,
               )}
-              whileHover={{ y: selected ? 0 : -2 }}
-              transition={{ duration: 0.18 }}
             >
-              {thumb?.images?.main ? (
-                <div
-                  className={clsx(
-                    "mb-3 overflow-hidden rounded-xl p-1.5 ring-1",
-                    selected ? "bg-white/95 ring-white/30" : "bg-slate-50 ring-slate-200/80",
-                  )}
-                >
-                  <div className="h-20">
-                    <BatteryThumbnail
-                      code={meta.cardThumbCode}
-                      imageSet={thumb.images}
-                      role="main"
-                      fit="contain"
-                      ratio="16/9"
-                      overlayLabel={false}
-                      darkOverlay={false}
-                      className="h-full"
-                    />
-                  </div>
-                </div>
-              ) : null}
-              <p className="text-lg font-black">{b.displayName}</p>
-              <p className={clsx("mt-1 text-xs font-bold", selected ? "text-slate-300" : "text-slate-500")}>
-                {b.id === "rocket"
-                  ? "GB·AGM 표기 중심"
-                  : b.id === "solite"
-                    ? "CMF·DIN 표기 중심"
-                    : b.id === "delco"
-                      ? "AGM 프리미엄"
-                      : "아트라스BX · AGM/DIN"}
-              </p>
-            </motion.button>
+              {t.label}
+            </button>
           );
         })}
-      </section>
+      </nav>
 
-      {/* 참고 브랜드 */}
-      <section>
-        <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">참고 브랜드</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {refBrands.map((b) => (
-            <button
-              key={b.id}
-              type="button"
-              onClick={() => selectBrand(b.id)}
-              className={clsx(
-                "rounded-full px-3 py-1.5 text-xs font-black transition",
-                active === b.id
-                  ? "bg-slate-800 text-white"
-                  : "bg-slate-100 text-slate-600 ring-1 ring-slate-200 hover:bg-white",
-              )}
-            >
-              {b.displayName}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* 선택 브랜드 요약 */}
-      <AnimatePresence mode="wait">
-        <motion.section
-          key={active}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.22 }}
-          className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
-        >
-          <h2 className="text-xl font-black text-slate-900">{copy.title}</h2>
-          <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-slate-600">{copy.body}</p>
-          <div className="mt-4">
-            <p className="text-[10px] font-black text-slate-400">대표 표기</p>
-            <p className="mt-1 text-sm font-bold text-slate-800">{copy.notation}</p>
-          </div>
-          {isMainBrand && profile.heroImageCodes[0] ? (
-            <div className="mt-4 max-w-[200px] overflow-hidden rounded-xl bg-slate-50 ring-1 ring-slate-200">
-              <div className="h-24">
-                <BatteryThumbnail
-                  code={profile.heroImageCodes[0]}
-                  imageSet={getBattery(profile.heroImageCodes[0], featured.imageBrandKey).images}
-                  role="main"
-                  fit={batteryImageFit(profile.heroImageCodes[0], featured.imageBrandKey)}
-                  ratio="16/9"
-                  overlayLabel={false}
-                  darkOverlay={false}
-                  className="h-full"
-                />
-              </div>
-            </div>
-          ) : null}
-        </motion.section>
-      </AnimatePresence>
-
-      {/* 대표 규격 */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <h2 className="text-lg font-black text-slate-900">{brand.displayName} 대표 규격</h2>
-        <p className="mt-1 text-xs font-semibold text-slate-500">자주 확인되는 규격만 먼저 보여드립니다.</p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.codes.map((code) => (
-            <FeaturedProductCard
-              key={code}
-              code={code}
-              imageBrandKey={featured.imageBrandKey}
-              blurb={brandHubCardBlurbs[code] ?? ""}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* 표기 차이표 — 로케트/쏠라이트 핵심 */}
-      {(isMainBrand || active === "rocket" || active === "solite") && (
-        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <h2 className="text-lg font-black text-slate-900">브랜드별 규격 표기 차이</h2>
-          <p className="mt-1 text-sm font-medium text-slate-500">
-            같은 계열이라도 브랜드마다 제품 코드가 다를 수 있습니다.
-          </p>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full min-w-[520px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 text-xs font-black text-slate-400">
-                  <th className="pb-3 pr-4">대표 규격</th>
-                  <th className="pb-3 pr-4">로케트</th>
-                  <th className="pb-3 pr-4">쏠라이트</th>
-                  <th className="pb-3">설명</th>
-                </tr>
-              </thead>
-              <tbody>
-                {brandSpecMatchingTable.map((row) => (
-                  <tr key={row.canonical} className="border-b border-slate-100">
-                    <td className="py-3 pr-4 font-black text-slate-800">{row.canonical}</td>
-                    <td className="py-3 pr-4 font-semibold text-slate-800">{row.rocket}</td>
-                    <td className="py-3 pr-4 font-semibold text-slate-800">{row.solite}</td>
-                    <td className="py-3 text-slate-600">{row.note}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
-
-      {/* 더 알아보기 */}
-      <section className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50">
-        <button
-          type="button"
-          onClick={() => setMoreOpen((v) => !v)}
-          className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left text-sm font-black text-slate-800"
-        >
-          더 알아보기
-          <ChevronDown className={clsx("size-4 transition", moreOpen && "rotate-180")} />
-        </button>
-        <AnimatePresence>
-          {moreOpen ? (
+      <div className="relative overflow-hidden rounded-2xl">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            role="tabpanel"
+            variants={panelVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={PANEL_TRANSITION}
+            className={clsx("relative space-y-5 sm:space-y-6", theme.panelBg)}
+          >
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden border-t border-slate-200"
-            >
-              <div className="grid gap-4 p-4 lg:grid-cols-2">
-                <div>
-                  <h3 className="text-xs font-black text-slate-500">관련 비교</h3>
-                  <ul className="mt-2 space-y-1.5">
-                    {profile.relatedComparisons.slice(0, 3).map((item) => (
-                      <li key={item.href}>
-                        <Link className="text-sm font-bold text-blue-700 hover:underline" href={item.href}>
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-xs font-black text-slate-500">관련 가이드</h3>
-                  <ul className="mt-2 space-y-1.5">
-                    {profile.relatedGuides.slice(0, 3).map((item) => (
-                      <li key={item.href}>
-                        <Link className="text-sm font-bold text-slate-700 hover:text-blue-700" href={item.href}>
-                          {item.label} →
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-20"
+              initial={{ x: "-120%", opacity: 0.9 }}
+              animate={{ x: "120%", opacity: 0 }}
+              transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1] }}
+              style={{ background: theme.washGradient }}
+            />
+
+            <BrandHeroBanner
+              theme={theme}
+              banner={banner}
+              imageBrandKey={imageBrandKey}
+            />
+
+            <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+              <InsightCard theme={theme} card={insights.advantage} />
+              <InsightCard theme={theme} card={insights.field} />
+            </div>
+
+            <section>
+              <h2 className={clsx("text-lg font-black sm:text-xl", theme.bannerText)}>
+                {theme.label} 대표 규격
+              </h2>
+              <p className={clsx("mt-1 text-sm font-medium", theme.bannerMuted)}>
+                자주 확인되는 규격만 카드로 정리했습니다.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {codes.map((code) => (
+                  <BrandSpecCard
+                    key={code}
+                    code={code}
+                    brandId={active}
+                    imageBrandKey={imageBrandKey}
+                    theme={theme}
+                  />
+                ))}
               </div>
-              <div className="border-t border-slate-200 px-4 pb-4 pt-3">
-                <Link className="text-sm font-black text-slate-800 hover:text-blue-700" href="/compare">
-                  배터리 용량 업그레이드 판단 →
-                </Link>
-                <span className="mx-2 text-slate-300">·</span>
-                <Link className="text-sm font-black text-slate-800 hover:text-blue-700" href="/vehicles">
-                  차량별 규격 확인 →
-                </Link>
-              </div>
-            </motion.div>
-          ) : null}
+            </section>
+
+            <p className={clsx("text-center text-xs font-semibold sm:text-sm", theme.bannerMuted)}>
+              {BRAND_HUB_FOOTNOTE[active]}
+            </p>
+          </motion.div>
         </AnimatePresence>
-      </section>
-    </div>
+      </div>
+    </motion.div>
   );
 }
 
-function FeaturedProductCard({
-  code,
+function BrandHeroBanner({
+  theme,
+  banner,
   imageBrandKey,
-  blurb,
+}: {
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  banner: (typeof BRAND_HUB_BANNER)[CustomerBrandHubId];
+  imageBrandKey: BatteryBrandKey;
+}) {
+  const product = getBattery(banner.heroCode, imageBrandKey === "solite" ? "solite" : "rocket");
+
+  return (
+    <section
+      className={clsx(
+        "relative overflow-hidden rounded-2xl p-4 sm:flex sm:items-center sm:gap-6 sm:p-6",
+        theme.bannerBg,
+      )}
+    >
+      <div className="relative z-10 min-w-0 flex-1">
+        <p className={clsx("text-xs font-black uppercase tracking-wide", theme.accent)}>
+          {theme.label}
+        </p>
+        <h2 className={clsx("mt-1 text-xl font-black sm:text-2xl", theme.bannerText)}>
+          {banner.title}
+        </h2>
+        <p className={clsx("mt-2 text-sm font-bold sm:text-base", theme.bannerText)}>
+          {banner.headline}
+        </p>
+        <p className={clsx("mt-2 max-w-xl text-sm font-medium leading-relaxed", theme.bannerMuted)}>
+          {banner.description}
+        </p>
+      </div>
+      <div
+        className={clsx(
+          "relative z-10 mt-4 shrink-0 overflow-hidden rounded-xl p-2 sm:mt-0 sm:w-[42%] sm:max-w-[280px]",
+          theme.id === "rocket" ? "bg-white/95 ring-1 ring-white/20" : "bg-white ring-1 ring-blue-100",
+        )}
+      >
+        <div className="h-36 sm:h-40">
+          <BatteryThumbnail
+            code={banner.heroCode}
+            imageSet={product.images}
+            role="main"
+            fit={batteryImageFit(banner.heroCode, imageBrandKey)}
+            ratio="16/9"
+            overlayLabel={false}
+            darkOverlay={false}
+            className="h-full"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InsightCard({
+  theme,
+  card,
+}: {
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  card: { title: string; lead: string; bullets: string[] };
+}) {
+  return (
+    <article className={clsx("rounded-2xl p-4 ring-1 sm:p-5", theme.cardBg, theme.cardRing)}>
+      <h3 className={clsx("text-sm font-black", theme.bannerText)}>{card.title}</h3>
+      <p className={clsx("mt-2 text-sm font-bold leading-snug", theme.bannerText)}>{card.lead}</p>
+      <ul className={clsx("mt-3 space-y-1.5 text-sm font-semibold", theme.bannerMuted)}>
+        {card.bullets.map((b) => (
+          <li key={b} className="flex gap-2">
+            <span
+              className={clsx(
+                "mt-1.5 size-1.5 shrink-0 rounded-full",
+                theme.id === "rocket" ? "bg-red-500" : "bg-blue-500",
+              )}
+            />
+            {b}
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
+
+function BrandSpecCard({
+  code,
+  brandId,
+  imageBrandKey,
+  theme,
 }: {
   code: string;
+  brandId: CustomerBrandHubId;
   imageBrandKey: BatteryBrandKey;
-  blurb: string;
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
 }) {
+  const spec = resolveBrandHubSpecCard(code, brandId);
   const product = getBattery(code, imageBrandKey === "solite" ? "solite" : "rocket");
+
   return (
     <Link
-      href={searchHref(code)}
-      className="brand-hub-spec-card flex h-full min-h-[280px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-slate-300 hover:shadow-md"
+      href={spec.detailHref}
+      className={clsx(
+        "brand-hub-spec-card group flex flex-col overflow-hidden rounded-xl ring-1 transition duration-200",
+        theme.cardBg,
+        theme.cardRing,
+        theme.specCardHover,
+      )}
     >
-      <div className="relative h-32 bg-slate-50 sm:h-36">
+      <div
+        className={clsx(
+          "relative h-28 sm:h-32",
+          theme.id === "rocket" ? "bg-slate-800/50" : "bg-sky-50/80",
+        )}
+      >
         <BatteryThumbnail
           code={code}
           imageSet={product.images}
@@ -301,10 +284,27 @@ function FeaturedProductCard({
           className="h-full"
         />
       </div>
-      <div className="flex flex-1 flex-col p-3">
-        <p className="brand-spec-code text-base font-black tracking-tight text-slate-900">{product.code}</p>
-        {blurb ? <p className="mt-1 line-clamp-2 text-xs font-semibold text-slate-600">{blurb}</p> : null}
-        <span className="mt-auto pt-3 text-xs font-black text-blue-600">상세 보기 →</span>
+      <div className="flex flex-1 flex-col gap-2 p-3 sm:p-4">
+        <p className={clsx("text-base font-black tracking-tight", theme.bannerText)}>
+          {spec.displayCode}
+        </p>
+        <dl className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-xs font-semibold">
+          <div>
+            <dt className={theme.bannerMuted}>CCA</dt>
+            <dd className={theme.bannerText}>{spec.cca}</dd>
+          </div>
+          <div>
+            <dt className={theme.bannerMuted}>RC</dt>
+            <dd className={theme.bannerText}>{spec.rc}</dd>
+          </div>
+          <div className="col-span-2">
+            <dt className={theme.bannerMuted}>사이즈</dt>
+            <dd className={clsx("text-[11px] leading-snug", theme.bannerText)}>{spec.size}</dd>
+          </div>
+        </dl>
+        <span className={clsx("mt-auto pt-1 text-xs font-black", theme.accent)}>
+          상세보기 →
+        </span>
       </div>
     </Link>
   );

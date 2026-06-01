@@ -2,8 +2,10 @@ import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 
 /** 브랜드 허브 — 메인/참고 브랜드·대표 규격·짧은 설명 */
 
-export const BRAND_HUB_MAIN_IDS = ["rocket", "solite", "delco", "varta"] as const;
-export const BRAND_HUB_REFERENCE_IDS = ["atk", "infinit"] as const;
+/** 고객 브랜드 허브 — 로케트·쏠라이트만 공개 */
+export const BRAND_HUB_MAIN_IDS = ["rocket", "solite"] as const;
+/** 내부 데이터용 — 고객 UI 미노출 */
+export const BRAND_HUB_REFERENCE_IDS = ["atk", "infinit", "delco", "varta"] as const;
 
 export type BrandHubMainId = (typeof BRAND_HUB_MAIN_IDS)[number];
 
@@ -44,12 +46,8 @@ export const brandHubShortCopy: Record<
 };
 
 export const brandHubFeaturedByBrand: Record<string, { codes: string[]; imageBrandKey: BatteryBrandKey }> = {
-  rocket: { codes: ["AGM80L", "GB80L", "GB100R", "GB57820"], imageBrandKey: "rocket" },
+  rocket: { codes: ["GB80L", "GB100R", "AGM80L", "AGM95L"], imageBrandKey: "rocket" },
   solite: { codes: ["CMF80L", "CMF100R", "CMF57412", "CMF54459"], imageBrandKey: "solite" },
-  delco: { codes: ["AGM92Ah"], imageBrandKey: "rocket" },
-  varta: { codes: ["AGM92Ah"], imageBrandKey: "rocket" },
-  atk: { codes: ["DIN74L"], imageBrandKey: "rocket" },
-  infinit: { codes: ["EV 12V"], imageBrandKey: "rocket" },
 };
 
 export const brandHubCardBlurbs: Record<string, string> = {
