@@ -8,7 +8,8 @@ import { HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
 
 export function BatteryDetailContentSlot({ code }: { code: string }) {
   const assetPath = `/assets/battery-detail/${code.toLowerCase()}.png`;
-  const [hasImage, setHasImage] = useState<boolean | null>(null);
+  /** 커스텀 상세 PNG 없으면 파란 규격 확인 배너를 기본 노출 (SSR 포함) */
+  const [hasImage, setHasImage] = useState(false);
 
   useEffect(() => {
     const img = new window.Image();
@@ -17,7 +18,7 @@ export function BatteryDetailContentSlot({ code }: { code: string }) {
     img.src = assetPath;
   }, [assetPath]);
 
-  if (hasImage === true) {
+  if (hasImage) {
     return (
       <section
         id="battery-detail-info"
@@ -38,9 +39,8 @@ export function BatteryDetailContentSlot({ code }: { code: string }) {
     );
   }
 
-  if (hasImage === false) {
-    return (
-      <section data-detail-content-slot={code} aria-label="규격 확인">
+  return (
+    <section data-detail-content-slot={code} aria-label="규격 확인">
         <div className="flex gap-3 rounded-xl bg-gradient-to-br from-slate-800 via-[#1e3a5f] to-blue-700 p-4 text-white sm:p-5">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20">
             <AppIcon iconKey="photoCheck" size="md" className="!text-white" />
@@ -59,8 +59,5 @@ export function BatteryDetailContentSlot({ code }: { code: string }) {
           </div>
         </div>
       </section>
-    );
-  }
-
-  return null;
+  );
 }
