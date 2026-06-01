@@ -40,3 +40,24 @@ next-env.d.ts
 tools/ux-audit/reports/screenshots/
 tools/ux-audit/playwright-report/
 tools/ux-audit/test-results/
+
+# AI audit — regenerated on every `npm run build`
+src/lib/ai-audit/audit-snapshot.json
+
+# Local font archives (only src/styles/fonts.css paths are deployed)
+/public/fonts/**
+!/public/fonts/GmarketSansTTF/
+!/public/fonts/GmarketSansTTF/*.ttf
+!/public/fonts/S-Core_Dream_OTF/
+!/public/fonts/S-Core_Dream_OTF/SCDream5.otf
+!/public/fonts/S-Core_Dream_OTF/SCDream6.otf
+!/public/fonts/Paperlogy-1.000/
+!/public/fonts/Paperlogy-1.000/Paperlogy-8ExtraBold.ttf
+!/public/fonts/Pretendard-1.3.9/
+!/public/fonts/Pretendard-1.3.9/web/
+!/public/fonts/Pretendard-1.3.9/web/variable/
+!/public/fonts/Pretendard-1.3.9/web/variable/woff2/
+!/public/fonts/Pretendard-1.3.9/web/variable/woff2/PretendardVariable.woff2
+
+# Normalized vehicle images staged for future catalog (not wired in app)
+/public/assets/cars-normalized/genesis/
