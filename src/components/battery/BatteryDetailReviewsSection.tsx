@@ -25,9 +25,6 @@ export function BatteryDetailReviewsSection({ code }: { code: string }) {
           리뷰 보기
         </Link>
       </div>
-      <p className="mt-3 text-[11px] font-semibold text-slate-500">
-        주문 전 같은 규격 후기를 보면 오주문을 줄일 수 있습니다.
-      </p>
     </section>
   );
 }
