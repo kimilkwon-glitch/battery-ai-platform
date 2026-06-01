@@ -174,8 +174,8 @@ export function resolveBrandHubSpecCard(
   const spec =
     getBrandSpecsByBrand(code, brand)[0] ??
     getPrimaryBrandSpec(code);
-  const displayCode = spec?.productName ?? spec?.code ?? code;
-  const detailHref = `/batteries/${encodeURIComponent(displayCode)}`;
+  const displayCode = code;
+  const detailHref = `/batteries/${encodeURIComponent(code)}`;
   const sizeStr = spec?.dimensionsMm
     ? (formatDimensionsDisplay(spec.dimensionsMm) ?? "—")
     : "—";
