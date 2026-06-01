@@ -133,7 +133,7 @@ export function RelatedSection({
 
 export function PortalHeader({
   title,
-  showSearch = true,
+  showSearch = false,
   searchPlaceholder = "차량명, 연식, 배터리 규격 검색",
   defaultQuery,
 }: {
@@ -147,7 +147,6 @@ export function PortalHeader({
       defaultQuery={defaultQuery}
       searchPlaceholder={searchPlaceholder}
       showSearch={showSearch}
-      title={title}
     />
   );
 }
@@ -157,7 +156,7 @@ export function PortalLayout({
   description,
   children,
   sidebar,
-  showSearch = true,
+  showSearch = false,
   defaultQuery,
   breadcrumbs,
   crossLinks,

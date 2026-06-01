@@ -2,101 +2,17 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Star } from "lucide-react";
-import clsx from "clsx";
 import { AppIcon } from "@/components/common/AppIcon";
-import { ReviewCardMedia } from "@/components/reviews/ReviewCardMedia";
+import { ReviewCard } from "@/components/reviews/ReviewCard";
+import clsx from "clsx";
 import {
-  reviewDisplayAuthor,
-  reviewDisplayDate,
-  reviewHasImages,
-} from "@/lib/review-card-utils";
-import {
-  REVIEW_BADGE_LABELS,
   REVIEW_FILTER_OPTIONS,
   REVIEWS_MOCK,
   type ReviewBadgeId,
-  type ReviewItem,
 } from "@/lib/reviews-mock-data";
 import { storeLinks } from "@/lib/external-links";
 import { bm } from "@/lib/design-tokens";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
-
-function ReviewBadge({ id }: { id: ReviewBadgeId }) {
-  return <span className="bm-badge bm-badge--review">{REVIEW_BADGE_LABELS[id]}</span>;
-}
-
-function ReviewCardBody({ item }: { item: ReviewItem }) {
-  return (
-    <div className={`${bm.cardPad} space-y-3`}>
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-0.5 text-amber-500">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              className={clsx("size-3.5", i < item.rating ? "fill-current" : "opacity-25")}
-            />
-          ))}
-        </div>
-        <span className="text-xs font-bold text-slate-500">
-          {reviewDisplayAuthor(item)}
-          {reviewDisplayDate(item) ? ` · ${reviewDisplayDate(item)}` : null}
-        </span>
-      </div>
-      <div className="flex flex-wrap gap-1">
-        {item.badges.map((b) => (
-          <ReviewBadge key={b} id={b} />
-        ))}
-      </div>
-      {(item.vehicleName || item.batteryCode) ? (
-        <p className="text-sm font-black text-slate-900">
-          {[item.vehicleName, item.batteryCode].filter(Boolean).join(" · ")}
-        </p>
-      ) : null}
-      <p className="text-sm font-medium leading-relaxed text-slate-700">{item.content}</p>
-      <div className="flex flex-wrap gap-2">
-        <Link href={item.productHref} className={`${bm.btnSecondary} text-xs`}>
-          해당 규격 보기
-        </Link>
-        {item.blogHref ? (
-          <a
-            href={item.blogHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${bm.btnTertiary} text-xs`}
-          >
-            블로그 후기
-          </a>
-        ) : null}
-      </div>
-      {item.operatorReply ? (
-        <div className="review-operator-reply rounded-xl border p-3">
-          <p className="review-operator-reply__label text-[10px] font-black">Battery Manager 답변</p>
-          {item.operatorSummary ? (
-            <p className="mt-1 text-xs font-bold text-slate-700">{item.operatorSummary}</p>
-          ) : null}
-          <p className="mt-1 text-xs font-medium text-slate-600">{item.operatorReply}</p>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function ReviewCard({ item }: { item: ReviewItem }) {
-  const withPhoto = reviewHasImages(item);
-
-  return (
-    <article
-      className={clsx(
-        `${bm.card} bm-card-unified review-card flex flex-col overflow-hidden`,
-        withPhoto ? "review-card--photo ring-1 ring-teal-100/80" : "review-card--text",
-      )}
-    >
-      {withPhoto ? <ReviewCardMedia item={item} /> : null}
-      <ReviewCardBody item={item} />
-    </article>
-  );
-}
 
 export function ReviewsPageClient({ initialBattery }: { initialBattery?: string }) {
   const [filter, setFilter] = useState<"all" | ReviewBadgeId>("all");
@@ -112,7 +28,7 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
   }, [filter, initialBattery]);
 
   return (
-    <div className="reviews-page bm-zone bm-zone--review space-y-6">
+    <div className="reviews-page bm-zone bm-zone--review space-y-5">
       {initialBattery ? (
         <p className="text-sm font-bold text-[var(--color-accent-review)]">
           필터: {initialBattery}{" "}
@@ -127,8 +43,7 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         <h2 className={`${bm.sectionTitle} mt-2`}>배터리 교체 후기</h2>
         <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
           실제 작업 후기를 기준으로 정리한 배터리 교체 사례입니다. 지점별 작업 후기와 고객 문의가
-          많은 차량을 함께 확인할 수 있습니다. 더 많은 후기는 각 지점 블로그에서 확인할 수
-          있습니다.
+          많은 차량을 함께 확인할 수 있습니다.
         </p>
       </section>
 
@@ -148,10 +63,14 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         ))}
       </div>
 
-      <div className="reviews-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((item) => (
-          <ReviewCard key={item.id} item={item} />
-        ))}
+      <div className="reviews-grid-wrap rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-5">
+        <ul className="reviews-grid grid list-none grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-7">
+          {filtered.map((item) => (
+            <li key={item.id} className="min-w-0">
+              <ReviewCard item={item} />
+            </li>
+          ))}
+        </ul>
       </div>
 
       {filtered.length === 0 ? (

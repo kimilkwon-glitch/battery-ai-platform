@@ -9,7 +9,6 @@ export default function GrandeurHubPage() {
 
   return (
     <PortalLayout
-      showSearch
       defaultQuery="그랜저 AGM80L"
       title={`${hub.brandDisplayName} ${hub.displayName}`}
       description="TG · HG · IG · 더 뉴 IG · 디 올 뉴 — 세대별 AGM/DIN·연료별 배터리 규격"

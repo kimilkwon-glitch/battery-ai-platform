@@ -10,7 +10,7 @@ export function PageShell({
   pageLabel,
   description,
   breadcrumbs,
-  showSearch = true,
+  showSearch = false,
   searchPlaceholder,
   defaultQuery,
   wide = false,

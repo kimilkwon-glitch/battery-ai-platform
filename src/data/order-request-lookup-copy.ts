@@ -2,7 +2,7 @@ import {
   CUSTOMER_CENTER_HUB,
   CUSTOMER_CENTER_ORDER_GUIDE,
   CUSTOMER_CENTER_USED_BATTERY,
-  ORDER_REQUEST_PAGE,
+  CHECKOUT_PAGE,
 } from "@/lib/customer-center-routes";
 
 export const ORDER_REQUEST_LOOKUP_COPY = {
@@ -29,6 +29,6 @@ export const ORDER_REQUEST_LOOKUP_CTAS = {
   photoCheck: { label: "사진 확인 먼저 하기", href: "/photo-check" },
   usedBattery: { label: "폐전지 안내 보기", href: CUSTOMER_CENTER_USED_BATTERY },
   orderGuide: { label: "주문 안내 보기", href: CUSTOMER_CENTER_ORDER_GUIDE },
-  retryRequest: { label: "상담 주문 요청 다시 하기", href: ORDER_REQUEST_PAGE },
+  retryRequest: { label: "상담 주문 요청 다시 하기", href: CHECKOUT_PAGE },
   home: { label: "메인으로 이동", href: "/" },
 } as const;

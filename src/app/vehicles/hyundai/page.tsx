@@ -8,7 +8,6 @@ export default function HyundaiVehiclesPage() {
 
   return (
     <PortalLayout
-      showSearch
       title="현대 차종"
       description="모델별 세대·연료·AGM/DIN 배터리 규격 — 그랜저부터 확장"
       breadcrumbs={[{ label: "홈", href: "/" }, { label: "차종 검색", href: "/vehicles" }, { label: "현대" }]}

@@ -17,7 +17,7 @@ export default async function AiChatPage({ searchParams }: { searchParams: Promi
 
   return (
     <main className="min-h-screen bg-[var(--bm-page-bg)] pb-24 text-slate-950">
-      <PortalHeader title="규격 문의" showSearch defaultQuery={answer.question} searchPlaceholder="배터리 증상·차종 질문" />
+      <PortalHeader title="규격 문의" />
       <section className="mx-auto max-w-[1280px] px-4 py-4">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
           <div>

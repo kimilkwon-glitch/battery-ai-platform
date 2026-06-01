@@ -60,7 +60,7 @@ export function TrendingPageClient() {
 
   return (
     <main className={bm.pageBg}>
-      <PortalHeader title="배터리 트렌드·주의" showSearch searchPlaceholder="차량·규격·증상 검색" />
+      <PortalHeader title="배터리 트렌드·주의" />
       <section className={`relative z-0 ${bm.pageContainer} scroll-mt-24`}>
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>

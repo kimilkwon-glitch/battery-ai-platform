@@ -25,6 +25,7 @@ import {
 import { validateContentWorkbench } from "@/lib/admin/validateContentWorkbench";
 import { ContentTypeThumbnail } from "@/components/content/ContentTypeThumbnail";
 import { ContentCoverImage } from "@/components/content/ContentCoverImage";
+import { AdminBatteryGuidePostsPanel } from "@/components/admin/AdminBatteryGuidePostsPanel";
 
 const TYPE_FILTERS: { id: AdminContentType | "all"; label: string }[] = [
   { id: "all", label: "전체" },
@@ -714,6 +715,8 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
             ) : null}
           </aside>
         </div>
+
+        <AdminBatteryGuidePostsPanel />
 
         <p className="mt-6 text-center text-[10px] font-semibold text-slate-400">
           운영 세션 · 접근 키는 URL 파라미터로 유지됩니다. 변경 사항은 현재 브라우저 세션에만 반영됩니다.

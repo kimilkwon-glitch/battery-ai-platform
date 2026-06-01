@@ -72,7 +72,7 @@ export function OrderRequestCompleteClient() {
         <p className="text-sm font-medium text-slate-600">
           최근 상담 주문 요청 정보가 없습니다. 먼저 요청 폼을 작성해 주세요.
         </p>
-        <Link href="/order-request" className={`${bm.btnNavy} text-sm`}>
+        <Link href="/checkout" className={`${bm.btnNavy} text-sm`}>
           상담 주문 요청하기
         </Link>
       </div>

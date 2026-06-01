@@ -88,7 +88,7 @@ export default async function VehicleDetailPage({
 
       <VehicleActivityTracker vehicleId={slug} />
 
-      <PortalHeader title={vehicle.model} showSearch searchPlaceholder={`${vehicle.model} 배터리 검색`} />
+      <PortalHeader />
 
 
 
@@ -112,7 +112,7 @@ export default async function VehicleDetailPage({
 
             <div className="grid gap-4 sm:grid-cols-[180px_1fr]">
 
-              <div className="overflow-hidden rounded-xl bg-white ring-1 ring-[var(--bm-border)]">
+              <div className="flex min-h-[200px] items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)] sm:min-h-[220px]">
 
                 {heroImage ? (
 

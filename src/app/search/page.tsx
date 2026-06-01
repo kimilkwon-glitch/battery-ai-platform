@@ -1,6 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { SearchActivityRecorder } from "@/components/platform/SearchActivityRecorder";
 import { SearchResultsView } from "@/components/platform/SearchResultsView";
+import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { Breadcrumb, PortalHeader } from "@/components/portal";
 import { bm } from "@/lib/design-tokens";
 import { getSearchHref } from "@/lib/battery-search";
@@ -50,9 +51,14 @@ export default async function SearchPage({
         matchedVehicle={ctxVehicle?.name}
         query={displayQuery}
       />
-      <PortalHeader showSearch defaultQuery={displayQuery} searchPlaceholder="차종, 증상, 배터리 규격 검색" />
+      <PortalHeader />
 
-      <section className="mx-auto max-w-[1280px] px-4 py-4">
+      <section className="mx-auto max-w-[1280px] space-y-4 px-4 py-4">
+        <VehicleSearchBox
+          className="max-w-2xl"
+          defaultQuery={displayQuery}
+          placeholder="차종, 증상, 배터리 규격 검색"
+        />
         <Breadcrumb
           items={[
             { label: "홈", href: "/" },

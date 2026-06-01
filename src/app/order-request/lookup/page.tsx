@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { PageShell } from "@/components/common/PageShell";
 import { OrderRequestLookupClient } from "@/components/order-request/OrderRequestLookupClient";
-import { ORDER_REQUEST_COMPLETE_PAGE, ORDER_REQUEST_PAGE } from "@/lib/customer-center-routes";
+import { CHECKOUT_PAGE, ORDER_REQUEST_COMPLETE_PAGE } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
 
 export default function OrderRequestLookupPage() {
@@ -16,8 +16,8 @@ export default function OrderRequestLookupPage() {
     >
       <div className="mx-auto max-w-2xl space-y-4">
         <div className="flex flex-wrap gap-2">
-          <Link href={ORDER_REQUEST_PAGE} className={`${bm.btnTertiary} text-xs`}>
-            ← 상담 주문 요청
+          <Link href={CHECKOUT_PAGE} className={`${bm.btnTertiary} text-xs`}>
+            ← 주문·상담 접수
           </Link>
           <Link href={ORDER_REQUEST_COMPLETE_PAGE} className={`${bm.btnTertiary} text-xs`}>
             접수 완료 화면

@@ -23,7 +23,7 @@ export default async function AiLandingPage({ searchParams }: { searchParams: Pr
 
   return (
     <main className="min-h-screen bg-[var(--bm-page-bg)] text-slate-950">
-      <PortalHeader title="규격 문의" showSearch searchPlaceholder="차량·규격·BMS 질문" />
+      <PortalHeader title="규격 문의" />
       <section className="relative z-0 mx-auto max-w-[1280px] scroll-mt-24 px-4 py-5">
         <div className="mb-4">
           <p className="text-[11px] font-black uppercase tracking-[0.08em] text-[#2563EB]">{BRAND_INQUIRY_LABEL}</p>

@@ -78,11 +78,18 @@ export function SearchVehicleResults({
 
             <Link className="contents" href={href}>
 
-              <span className={`relative block overflow-hidden rounded-xl ${compact ? "h-[88px]" : "h-[105px]"} ${bm.imageVehicle.replace("shrink-0", "")}`}>
+              <span
+                className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)] ${compact ? "h-[88px] w-[96px]" : "h-[105px] w-[116px]"}`}
+              >
 
                 {imageSrc && imageSrc.trim() ? (
 
-                  <CarGenerationImage alt={model} className="!h-full !w-full" size="compact" src={imageSrc} />
+                  <CarGenerationImage
+                    alt={model}
+                    commercial={/porter|봉고|마이티|k3|쿱|koup/i.test(model)}
+                    size="compact"
+                    src={imageSrc}
+                  />
 
                 ) : (
 

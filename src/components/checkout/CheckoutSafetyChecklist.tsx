@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   CHECKOUT_CHECKLIST_ITEMS,
@@ -27,59 +26,30 @@ export function CheckoutSafetyChecklist({
   }, [allRequiredChecked, onAllRequiredCheckedChange]);
 
   const toggle = (id: string) => {
-    setChecked((prev) => {
-      const next = { ...prev, [id]: !prev[id] };
-      const complete = requiredIds.every((rid) => next[rid]);
-      onAllRequiredCheckedChange?.(complete);
-      return next;
-    });
+    setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
     <section className={`${bm.card} ${bm.cardPad}`} id="checkout-safety-checklist">
-      <h2 className="text-sm font-black text-slate-900">주문 전 체크리스트</h2>
-      <p className="mt-1 text-xs font-medium text-slate-500">
-        아래 항목을 확인한 뒤 주문을 진행해 주세요.
-      </p>
+      <h2 className="text-sm font-black text-slate-900">최종 확인</h2>
+      <p className="mt-1 text-xs font-medium text-slate-500">{CHECKOUT_PAGE_COPY.checklistIntro}</p>
+      <p className="mt-2 text-[11px] font-medium text-slate-600">{CHECKOUT_PAGE_COPY.fitmentNote}</p>
+      <p className="text-[11px] font-medium text-slate-600">{CHECKOUT_PAGE_COPY.usedBatteryNote}</p>
       <ul className="mt-3 space-y-2">
-        {CHECKOUT_CHECKLIST_ITEMS.map((item) => {
-          const isChecked = !!checked[item.id];
-          return (
-            <li key={item.id}>
-              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-3 transition hover:bg-white has-[:checked]:border-blue-200 has-[:checked]:bg-blue-50/30">
-                <input
-                  type="checkbox"
-                  className="mt-0.5 size-5 shrink-0 rounded border-slate-300 accent-blue-600"
-                  checked={isChecked}
-                  onChange={() => toggle(item.id)}
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="block text-xs font-black text-slate-800">{item.label}</span>
-                  {item.description ? (
-                    <span className="mt-0.5 block text-[11px] font-medium text-slate-500">
-                      {item.description}
-                    </span>
-                  ) : null}
-                  {item.relatedLink ? (
-                    <Link
-                      href={item.relatedLink}
-                      className="mt-1 inline-block text-[10px] font-bold text-blue-700 hover:underline"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      관련 안내 보기 →
-                    </Link>
-                  ) : null}
-                </span>
-              </label>
-            </li>
-          );
-        })}
+        {CHECKOUT_CHECKLIST_ITEMS.map((item) => (
+          <li key={item.id}>
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 px-3 py-2.5 has-[:checked]:border-blue-200 has-[:checked]:bg-blue-50/30">
+              <input
+                type="checkbox"
+                className="size-4 shrink-0 accent-blue-600"
+                checked={!!checked[item.id]}
+                onChange={() => toggle(item.id)}
+              />
+              <span className="text-xs font-bold text-slate-800">{item.label}</span>
+            </label>
+          </li>
+        ))}
       </ul>
-      {!allRequiredChecked ? (
-        <p className="mt-3 text-[11px] font-bold text-amber-800">
-          {CHECKOUT_PAGE_COPY.proceedBlockedHint}
-        </p>
-      ) : null}
     </section>
   );
 }

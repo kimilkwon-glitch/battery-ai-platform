@@ -9,7 +9,6 @@ export default function BasicServiceBenefitPage() {
       pageLabel={BASIC_SERVICE_BENEFIT.label}
       title={BASIC_SERVICE_BENEFIT.title}
       description={BASIC_SERVICE_BENEFIT.description}
-      showSearch
       searchPlaceholder="차량명, 연식, 배터리 규격 검색"
     >
       <BenefitDetailClient benefit={BASIC_SERVICE_BENEFIT} />

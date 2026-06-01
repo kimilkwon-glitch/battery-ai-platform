@@ -14,7 +14,6 @@ export default async function QaHubPage({ searchParams }: { searchParams: Promis
   return (
     <PageShell
       pageLabel="배터리 Q&A"
-      showSearch
       searchPlaceholder="차종, 규격, 증상으로 질문 검색"
       wide={false}
       showFooter

@@ -22,7 +22,6 @@ export default async function GrandeurGenerationPage({
 
   return (
     <PortalLayout
-      showSearch
       defaultQuery={`${generation.displayName} ${generation.defaultBatteryCode}`}
       title={generation.displayName}
       description={`${generation.yearRange} · ${generation.batteryType} · AGM ${generation.agm} · DIN ${generation.din}`}

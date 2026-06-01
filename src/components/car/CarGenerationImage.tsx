@@ -60,11 +60,18 @@ export function CarGenerationImage({ src, alt, size = "compact", className = "",
     );
   }
 
-  const imgClass = commercial ? vehicleImageImgCommercialClass : vehicleImageImgClass;
-  const boxClass = commercial ? vehicleImageBoxCommercialClass : vehicleImageBoxClass;
+  const fillParent = /\bh-full\b/.test(className) || /\bw-full\b/.test(className);
+  const imgClass = fillParent
+    ? "max-h-[94%] max-w-[94%] object-contain object-center"
+    : commercial
+      ? vehicleImageImgCommercialClass
+      : vehicleImageImgClass;
+  const boxClass = fillParent
+    ? `flex h-full w-full items-center justify-center overflow-hidden ${className}`
+    : `${commercial ? vehicleImageBoxCommercialClass : vehicleImageBoxClass} ${className}`;
 
   return (
-    <div className={`${boxClass} ${className}`}>
+    <div className={boxClass}>
       <img
         src={imgSrc}
         alt={alt}

@@ -30,7 +30,7 @@ export default async function DiagnosisDetailPage({ params }: { params: Promise<
 
   return (
     <main className={bm.pageBg}>
-      <PortalHeader title="증상 확인" showSearch />
+      <PortalHeader title="증상 확인" />
       <section className={`${bm.pageContainer} pt-4`}>
         <Breadcrumb items={[{ label: "홈", href: "/" }, { label: "증상 확인", href: "/diagnosis" }, { label: diagnosis.title }]} />
 

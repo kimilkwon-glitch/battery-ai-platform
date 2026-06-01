@@ -225,8 +225,13 @@
 }
 
 /* —— 리뷰 —— */
-.bm-zone--review .review-card--photo {
-  box-shadow: 0 12px 32px rgba(15, 118, 110, 0.08);
+.bm-zone--review .review-card {
+  transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+}
+
+.bm-zone--review .review-card:hover {
+  border-color: #99f6e4;
+  box-shadow: var(--shadow-card-hover);
 }
 
 .bm-zone--review .review-card-media img {
@@ -234,7 +239,11 @@
 }
 
 .bm-zone--review .reviews-grid {
-  align-items: start;
+  align-items: stretch;
+}
+
+.bm-zone--review .reviews-grid-wrap {
+  overflow: visible;
 }
 
 .bm-zone--review .review-operator-reply {

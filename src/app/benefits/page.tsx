@@ -9,7 +9,6 @@ export default function BenefitsPage() {
       pageLabel="혜택"
       title={BENEFITS_HUB_TITLE}
       description={BENEFITS_HUB_SUBTITLE}
-      showSearch
       searchPlaceholder="차량명, 연식, 배터리 규격 검색"
     >
       <BenefitsHubClient />

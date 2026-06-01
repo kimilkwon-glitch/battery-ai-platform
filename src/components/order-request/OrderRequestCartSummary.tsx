@@ -17,7 +17,7 @@ import { bm } from "@/lib/design-tokens";
 export function OrderRequestCartSummary({ items }: { items: BatteryCartItem[] }) {
   return (
     <section className={`${bm.card} ${bm.cardPad} space-y-3`} id="order-request-cart-summary">
-      <h2 className="text-sm font-black text-slate-900">주문 상품 요약</h2>
+      <h2 className="text-sm font-black text-slate-900">주문 상품</h2>
       <div className="space-y-3">
         {items.map((item) => {
           const needsReview = checkoutItemNeedsReview(item);

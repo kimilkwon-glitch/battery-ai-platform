@@ -8,16 +8,20 @@ import { bm } from "@/lib/design-tokens";
 export function OrderRequestUsedBatteryFields({
   value,
   onChange,
+  compact = false,
 }: {
   value: OrderRequestUsedBatteryOption;
   onChange: (v: OrderRequestUsedBatteryOption) => void;
+  compact?: boolean;
 }) {
   return (
     <section className={`${bm.card} ${bm.cardPad} space-y-3`} id="order-request-used-battery">
       <h2 className="text-sm font-black text-slate-900">
         {ORDER_REQUEST_USED_BATTERY_COPY.sectionTitle}
       </h2>
-      <p className="text-xs font-medium text-slate-600">{ORDER_REQUEST_USED_BATTERY_COPY.hint}</p>
+      <p className="text-xs font-medium text-slate-600">
+        {compact ? "반납 여부에 따라 금액이 달라질 수 있습니다." : ORDER_REQUEST_USED_BATTERY_COPY.hint}
+      </p>
       <div className="flex flex-wrap gap-2">
         {ORDER_REQUEST_USED_BATTERY_COPY.options.map((opt) => (
           <button
@@ -34,12 +38,14 @@ export function OrderRequestUsedBatteryFields({
           </button>
         ))}
       </div>
-      <Link
-        href={ORDER_REQUEST_USED_BATTERY_COPY.href}
-        className="text-[11px] font-bold text-blue-700 hover:underline"
-      >
-        {ORDER_REQUEST_USED_BATTERY_COPY.linkLabel} →
-      </Link>
+      {!compact ? (
+        <Link
+          href={ORDER_REQUEST_USED_BATTERY_COPY.href}
+          className="text-[11px] font-bold text-blue-700 hover:underline"
+        >
+          {ORDER_REQUEST_USED_BATTERY_COPY.linkLabel} →
+        </Link>
+      ) : null}
     </section>
   );
 }
@@ -47,9 +53,11 @@ export function OrderRequestUsedBatteryFields({
 export function OrderRequestFulfillmentFields({
   values,
   onChange,
+  compact = false,
 }: {
   values: OrderRequestFulfillment;
   onChange: (patch: Partial<OrderRequestFulfillment>) => void;
+  compact?: boolean;
 }) {
   const showStore = values.method === "store_pickup";
   const showVisit = values.method === "visit_install";
@@ -57,7 +65,7 @@ export function OrderRequestFulfillmentFields({
   return (
     <section className={`${bm.card} ${bm.cardPad} space-y-3`} id="order-request-fulfillment">
       <h2 className="text-sm font-black text-slate-900">
-        {ORDER_REQUEST_FULFILLMENT_COPY.sectionTitle}
+        {compact ? "수령 방식" : ORDER_REQUEST_FULFILLMENT_COPY.sectionTitle}
       </h2>
       <div className="grid gap-2 sm:grid-cols-2">
         {ORDER_REQUEST_FULFILLMENT_COPY.methods.map((m) => (
@@ -100,12 +108,18 @@ export function OrderRequestFulfillmentFields({
 
       {showVisit ? (
         <div className="space-y-3 rounded-xl border border-violet-100 bg-violet-50/30 p-3">
-          <p className="text-xs font-medium text-violet-900">
-            {ORDER_REQUEST_FULFILLMENT_COPY.visitHint}
-          </p>
-          <p className="text-[11px] font-bold text-violet-800">
-            {ORDER_REQUEST_FULFILLMENT_COPY.visitAvailabilityNote}
-          </p>
+          {!compact ? (
+            <>
+              <p className="text-xs font-medium text-violet-900">
+                {ORDER_REQUEST_FULFILLMENT_COPY.visitHint}
+              </p>
+              <p className="text-[11px] font-bold text-violet-800">
+                {ORDER_REQUEST_FULFILLMENT_COPY.visitAvailabilityNote}
+              </p>
+            </>
+          ) : (
+            <p className="text-[11px] font-medium text-violet-900">출장 가능 여부는 상담 후 안내됩니다.</p>
+          )}
           <label className="block">
             <span className="text-xs font-black text-slate-800">지역</span>
             <input

@@ -8,12 +8,10 @@ import { CartHeaderLink } from "@/components/cart/CartHeaderLink";
 import { HUB_LOGIN, HUB_SIGNUP } from "@/lib/customer-hub-routes";
 
 export function PortalHeaderClient({
-  title,
-  showSearch = true,
+  showSearch = false,
   searchPlaceholder = "차량명, 연식, 배터리 규격을 검색하세요",
   defaultQuery,
 }: {
-  title?: string;
   showSearch?: boolean;
   searchPlaceholder?: string;
   defaultQuery?: string;
@@ -23,14 +21,8 @@ export function PortalHeaderClient({
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
       <div className="relative mx-auto max-w-[1440px] px-4 py-3.5 lg:px-6 lg:py-4">
-        <div className="portal-header-top-row relative flex min-h-[4.25rem] items-center gap-3 pl-[10.5rem] pr-[7.5rem] sm:min-h-[4.5rem] sm:pl-[12.5rem] sm:pr-[10.5rem] lg:min-h-20 lg:pl-[16rem] lg:pr-[11.5rem]">
+        <div className="portal-header-top-row relative flex min-h-[4.25rem] items-center gap-3 pl-[10.5rem] pr-[9.5rem] sm:min-h-[4.5rem] sm:pl-[12.5rem] sm:pr-[12rem] lg:min-h-20 lg:pl-[16rem] lg:pr-[13rem]">
           <BrandLogoLink className="portal-header-brand absolute left-0 top-1/2 z-[2] max-w-[calc(100%-5.5rem)] -translate-y-1/2 sm:max-w-[15rem] lg:max-w-[17.5rem]" />
-
-          {title ? (
-            <span className="absolute left-[12rem] top-1/2 hidden max-w-[18%] -translate-y-1/2 truncate text-xs font-black text-slate-400 lg:block xl:left-[15rem]">
-              {title}
-            </span>
-          ) : null}
 
           {viewport === "desktop" ? (
             <div className="flex min-w-0 flex-1 justify-center">
@@ -41,7 +33,6 @@ export function PortalHeaderClient({
           )}
 
           <div className="portal-header-auth absolute right-0 top-1/2 z-[2] flex -translate-y-1/2 items-center gap-1 sm:gap-1.5">
-            <CartHeaderLink />
             <Link
               href={HUB_LOGIN}
               className="hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:inline-flex lg:px-3 lg:text-xs"
@@ -54,6 +45,7 @@ export function PortalHeaderClient({
             >
               회원가입
             </Link>
+            <CartHeaderLink />
             <Link
               className="portal-header-my rounded-full px-3 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 lg:px-4 lg:py-2 lg:text-xs"
               href="/mypage"

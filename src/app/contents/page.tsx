@@ -18,7 +18,7 @@ const caseRows = [
 export default function ContentsPage() {
   return (
     <main className="min-h-screen bg-[var(--bm-page-bg)] text-slate-950">
-      <PortalHeader title="가이드" showSearch searchPlaceholder="AGM, BMS, EV 12V 가이드 검색" />
+      <PortalHeader title="가이드" />
       <section className="mx-auto grid max-w-[1280px] gap-3 px-4 py-4 lg:grid-cols-[240px_1fr_300px]">
         <aside className="space-y-3">
           <Panel title="가이드 카테고리">

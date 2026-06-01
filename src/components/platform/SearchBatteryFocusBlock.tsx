@@ -203,7 +203,8 @@ export function SearchBatteryFocusBlock({
             getVehicleImageUrlBySlug(vehicle.dbMatchKey ?? "") ||
             null
           }
-          className="max-h-[140px]"
+          className="max-h-[160px]"
+          objectFit="contain"
         />
       ) : null}
       {summaryRows.length > 0 ? <SearchResultCoreSummary rows={summaryRows} /> : null}

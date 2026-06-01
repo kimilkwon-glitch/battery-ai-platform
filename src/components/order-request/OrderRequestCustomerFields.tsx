@@ -22,7 +22,7 @@ export function OrderRequestCustomerFields({
       <div className="space-y-3">
         <label className="block">
           <span className="text-xs font-black text-slate-800">
-            이름 <span className="text-slate-400">(선택)</span>
+            이름 <span className="text-red-600">*</span>
           </span>
           <input
             type="text"

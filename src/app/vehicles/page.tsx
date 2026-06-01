@@ -4,7 +4,6 @@ import { VehiclesBrowseClient } from "@/components/platform/VehiclesBrowseClient
 export default function VehiclesPage() {
   return (
     <PortalLayout
-      showSearch
       title="차종별 배터리 정보"
       description="제조사·차종별 순정 규격, ISG/BMS, AGM 호환을 확인하세요"
       breadcrumbs={[{ label: "홈", href: "/" }, { label: "차종 검색" }]}

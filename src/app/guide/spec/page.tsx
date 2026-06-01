@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { ContentAreaFallback } from "@/components/common/ContentAreaFallback";
 import { PortalLayout } from "@/components/portal";
+import { BatteryGuidePostsHub } from "@/components/guide/BatteryGuidePostsHub";
 import { GuideHubClient } from "@/components/platform/GuideHubClient";
 import { compareHref, photoHref } from "@/lib/platform-data";
 
@@ -23,6 +24,9 @@ export default async function SpecGuidePage({ searchParams }: { searchParams: Pr
       <Suspense fallback={<ContentAreaFallback lines={3} />}>
         <GuideHubClient initialGuideId={guide} />
       </Suspense>
+      <div className="mt-8">
+        <BatteryGuidePostsHub category="battery_spec" showHeader={false} />
+      </div>
     </PortalLayout>
   );
 }

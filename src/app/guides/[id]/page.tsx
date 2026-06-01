@@ -41,7 +41,7 @@ export default async function GuideDetailPage({ params }: Props) {
   return (
     <main className="min-h-screen bg-[var(--bm-page-bg)] text-slate-950">
       <GuideActivityTracker articleId={article.id} batteryIds={article.batteryIds} vehicleIds={article.vehicleIds} />
-      <PortalHeader title="가이드" showSearch />
+      <PortalHeader title="가이드" />
       <section className="mx-auto max-w-[960px] space-y-4 px-4 py-4">
         <Breadcrumb
           items={[

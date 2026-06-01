@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState } from "react";
 import clsx from "clsx";
 import {
-  BRAND_LOGO_ALT,
   BRAND_LOGO_SRC,
   BRAND_LOGO_VISUAL_HEIGHT,
   BRAND_LOGO_VISUAL_WIDTH,
@@ -53,7 +52,6 @@ export function BrandLogoLink({ className }: { className?: string }) {
           Battery Manager
         </span>
       </span>
-      <span className="sr-only">{BRAND_LOGO_ALT}</span>
     </Link>
   );
 }

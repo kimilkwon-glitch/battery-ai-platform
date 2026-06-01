@@ -66,7 +66,7 @@ export default async function CommunityQuestionDetailPage({
   ].slice(0, 4);
 
   return (
-    <PageShell pageLabel="Q&A 상세" showSearch wide={false}>
+    <PageShell pageLabel="Q&A 상세" wide={false}>
       <Breadcrumb
         items={[
           { label: "홈", href: "/" },
