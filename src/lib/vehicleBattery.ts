@@ -23,6 +23,10 @@ import {
   queryMentionsKgMobilityBrand,
   stripKgMobilityBrandPrefix,
 } from "@/lib/search/kg-mobility-brand";
+import {
+  isCompactVehicleModelQuery,
+  vehicleRecordMatchesCompactQuery,
+} from "@/lib/search/vehicle-query-match";
 
 export type VehicleBatteryRecord = {
   id: string;
@@ -768,8 +772,15 @@ function scoreVehicleBatteryRecordsForQuery(
     let score = 0;
     const hay = norm(`${r.brand} ${r.model} ${r.displayName} ${r.detail} ${r.aliases.join(" ")} ${r.fuel ?? ""}`);
     if (hay.includes(q)) score += 80;
+    else if (isCompactVehicleModelQuery(q) && vehicleRecordMatchesCompactQuery(r, query)) score += 78;
     else if (stripped && stripped !== q && hay.includes(stripped)) score += 75;
-    else if (q.split("").every((c) => hay.includes(c)) && q.length >= 3) score += 40;
+    else if (
+      !isCompactVehicleModelQuery(q) &&
+      q.length >= 4 &&
+      q.split("").every((c) => hay.includes(c))
+    ) {
+      score += 40;
+    }
 
     if (kgQuery && isKgMobilityBrand(r.brand)) score += 30;
     if (fuelHint && r.fuel && norm(r.fuel).includes(fuelHint)) score += 20;
@@ -790,7 +801,10 @@ export function searchVehicleBatteryDb(query: string, limit = 12): VehicleSearch
     }
   }
 
-  const scored = [...bestByRecord.entries()].map(([record, score]) => ({ record, score }));
+  let scored = [...bestByRecord.entries()].map(([record, score]) => ({ record, score }));
+  if (isCompactVehicleModelQuery(normalizeSearchQuery(query))) {
+    scored = scored.filter(({ record }) => vehicleRecordMatchesCompactQuery(record, query));
+  }
 
   const qNorm = norm(normalizeSearchQuery(query));
   const fuelHint = ["가솔린", "디젤", "LPG", "하이브리드", "전기"].find((f) => qNorm.includes(norm(f)));

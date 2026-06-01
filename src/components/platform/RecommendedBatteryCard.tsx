@@ -9,7 +9,7 @@ import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSum
 import { bm } from "@/lib/design-tokens";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { getSpecCardCopy } from "@/lib/battery-knowledge";
-import { SHORT_EXCEPTION_NOTE, vehicleContextLine } from "@/lib/search/battery-recommendation-copy";
+import { vehicleContextLine } from "@/lib/search/battery-recommendation-copy";
 
 export type RecommendedBatteryCardProps = {
   code: string;
@@ -26,7 +26,7 @@ export function RecommendedBatteryCard({
   code,
   fieldLabel,
   vehicleLabel,
-  exceptionNote = SHORT_EXCEPTION_NOTE,
+  exceptionNote = null,
   ctas,
   secondaryLinks = [],
   primary = false,

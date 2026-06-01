@@ -6,6 +6,7 @@ import {
   homeSpecCardDetailHref,
   homeSpecCardSecondaryCtas,
 } from "@/lib/home-main-catalog-data";
+import { bm } from "@/lib/design-tokens";
 
 type Props = {
   product: HomeCatalogProduct;
@@ -17,6 +18,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
   const preferBrand = HOME_CATALOG_BRAND_KEY[brand];
   const secondaryCtas = homeSpecCardSecondaryCtas(searchCode);
   const detailHref = homeSpecCardDetailHref(searchCode);
+  const reviewsHref = `/batteries/${encodeURIComponent(searchCode)}#battery-reviews`;
 
   return (
     <article
@@ -53,17 +55,27 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
           {secondaryCtas.map((cta) => (
             <Link
               key={cta.key}
-              className="home-spec-cta-pill inline-flex min-h-[44px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800"
+              className={
+                cta.key === "order"
+                  ? `${bm.btnPrimary} min-h-[44px] justify-center text-sm`
+                  : "home-spec-cta-pill inline-flex min-h-[44px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-bold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800"
+              }
               href={cta.href}
             >
               {cta.label}
             </Link>
           ))}
+          <Link
+            className={`${bm.btnTertiary} col-span-2 min-h-[40px] justify-center text-xs`}
+            href={reviewsHref}
+          >
+            리뷰 보기
+          </Link>
         </div>
 
-        <div className="home-spec-card-fit mt-auto border-t border-slate-100 pt-4">
+        <div className="home-spec-card-fit mt-3 border-t border-slate-100 pt-3">
           <Link
-            className="inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[var(--bm-navy)] px-4 text-sm font-bold text-white transition hover:bg-[var(--bm-primary)]"
+            className={`${bm.btnSecondary} inline-flex min-h-[40px] w-full items-center justify-center text-sm`}
             href={detailHref}
           >
             규격 상세 보기

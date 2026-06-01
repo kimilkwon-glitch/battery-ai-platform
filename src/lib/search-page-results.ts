@@ -256,8 +256,7 @@ function buildSummaryKeywords(
 const ORDER_GUIDANCE_TEXT =
   "택배 주문 전에는 차량 연식·연료·단자 방향·현재 장착 배터리 사진 확인이 필요합니다.";
 
-const ALIAS_VEHICLE_NOTE =
-  "차량별 세부 규격은 연식·연료·현재 장착 배터리 사진 확인이 필요합니다.";
+const ALIAS_VEHICLE_NOTE = "연료를 선택하면 더 정확해집니다.";
 
 const UPGRADE_REVIEW_GUIDANCE =
   "업그레이드 후보 규격은 차량 트레이 공간, 단자 방향, ISG 여부, 현재 장착 배터리 기준으로 확인해야 합니다. 트레이 사이즈 정보가 없는 차량은 사진 확인 또는 문의 후 안내합니다.";
@@ -840,8 +839,7 @@ function buildHero(
 
   let status: SearchHeroResult["status"] = "needs_check";
   let statusLabel = "연식/연료/트림 확인 필요";
-  let message =
-    "연식·연료·트림에 따라 적용 규격이 달라질 수 있습니다. 차량 기준 페이지에서 연료와 연식을 함께 보는 것이 좋습니다.";
+  let message = "연료를 선택하면 더 정확해집니다.";
 
   if (slug && batteryCode) {
     const fitConfirmed = vehicleSpecFitConfirmed(slug, batteryCode);

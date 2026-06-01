@@ -35,8 +35,8 @@ import {
   NO_VEHICLE_MATCH_MESSAGE,
   PRIMARY_BATTERY_CTAS,
   secondaryNoteForTier,
-  SHORT_EXCEPTION_NOTE,
 } from "@/lib/search/battery-recommendation-copy";
+import { sanitizeCautionForVehicleSearch } from "@/lib/search/vehicle-query-match";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
 import { resolveFitmentOverride } from "@/lib/search/fitment-overrides";
 import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
@@ -46,7 +46,7 @@ export type RecognizedSpecResult = {
   spec: string;
   primaryBatteryCode: string;
   terminalDirection: string | null;
-  secondaryNote: string;
+  secondaryNote: string | null;
   ctas: { label: string; href: string }[];
   secondaryLinks: { label: string; href: string }[];
 };
@@ -167,7 +167,12 @@ export function buildSearchSummary(
           },
         ]
       : undefined;
-    const secondaryNote = batterySpec.caution ?? secondaryNoteForTier(batterySpec.tier);
+    const secondaryNote =
+      sanitizeCautionForVehicleSearch(
+        batterySpec.caution ?? secondaryNoteForTier(batterySpec.tier),
+        pipeline.normalizedQuery,
+        v.model,
+      ) ?? secondaryNoteForTier(batterySpec.tier);
     const basisLabel = basisLabelForTier(batterySpec.tier, batterySpec.source);
 
     recognizedVehicle = {
@@ -251,7 +256,7 @@ export function buildSearchSummary(
       spec: code,
       primaryBatteryCode: code,
       terminalDirection: terminal,
-      secondaryNote: SHORT_EXCEPTION_NOTE,
+      secondaryNote: secondaryNoteForTier("exact"),
       ctas: PRIMARY_BATTERY_CTAS(code),
       secondaryLinks: [{ label: "차량명으로 다시 검색", href: "/search" }],
     };

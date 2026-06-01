@@ -99,7 +99,7 @@ export function getVehicleFuelKnowledgeBlurb(fuelLabel: string | undefined): str
 }
 
 export function getDefaultVehicleFuelKnowledgeBlurb(): string {
-  return "같은 차종이라도 가솔린과 디젤은 시동 부하와 전장 구성 차이로 배터리 규격이 달라질 수 있습니다. 검색 결과는 차량별 데이터가 우선이며, 현재 장착 배터리 사진을 함께 보면 더 안전합니다.";
+  return "연료를 선택하면 더 정확해집니다.";
 }
 
 export function getDetailKnowledgeBullets(code: string): string[] {

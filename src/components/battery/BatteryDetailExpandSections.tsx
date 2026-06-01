@@ -75,7 +75,7 @@ export function BatteryDetailExpandSections({
           <li>트레이·홀드다운 고정 방식</li>
         </ul>
         <p className="mt-3 text-[11px] font-semibold text-slate-500">
-          위 항목은 상단 <strong className="text-slate-700">규격 확인</strong> 배너에서 사진으로 확인하세요.
+          라벨·단자는 <strong className="text-slate-700">규격 체크</strong>에서 사진으로 확인하세요.
         </p>
       </Collapsible>
 

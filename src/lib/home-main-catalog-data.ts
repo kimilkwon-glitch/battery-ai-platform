@@ -313,14 +313,18 @@ export const HOME_SPEC_CARD_ACTIONS = {
   detail: (code: string) => batteryDetailHref(code),
 } as const;
 
-/** 카드 상단 보조 CTA 2개 — 매장·출장 / 택배주문 */
+/** 카드 보조 CTA — 주문·상세 */
 export function homeSpecCardSecondaryCtas(code: string) {
   return [
-    { key: "store", label: "매장·출장 안내", href: HUB_STORE_DETAIL },
     {
-      key: "delivery",
-      label: "택배주문",
-      href: `${HOME_SPEC_CARD_ACTIONS.detail(code)}#battery-order`,
+      key: "order",
+      label: "주문하기",
+      href: `/shop?code=${encodeURIComponent(code)}`,
+    },
+    {
+      key: "detail",
+      label: "규격 상세 보기",
+      href: HOME_SPEC_CARD_ACTIONS.detail(code),
     },
   ] as const;
 }

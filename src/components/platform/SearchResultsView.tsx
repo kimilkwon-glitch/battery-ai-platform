@@ -248,9 +248,7 @@ export function SearchResultsView({ data }: Props) {
 
       {/^k3$/i.test((data.query || "").trim()) && visibleVehicles.length > 1 && !data.recognizedVehicle ? (
         <div className={`${bm.alertInfo} ${bm.cardPad}`}>
-          <p className="text-sm font-bold text-slate-900">
-            K3는 세대별로 배터리 규격이 다를 수 있어 아래에서 세대를 선택해 주세요.
-          </p>
+          <p className="text-sm font-bold text-slate-900">K3는 세대·연료별로 규격이 다릅니다. 아래에서 선택하세요.</p>
         </div>
       ) : null}
 

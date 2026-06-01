@@ -36,7 +36,7 @@ export function hubCtaForQuery(query: string): { label: string; href: string } |
     if (/주문\s*전|규격\s*확인/.test(query)) {
       return { label: "주문 전 규격 확인", href: HUB_SHOP_ANCHORS.orderCheck };
     }
-    return { label: "택배·쇼핑", href: HUB_SHOP };
+    return { label: "주문하기", href: HUB_SHOP };
   }
   return null;
 }
@@ -59,13 +59,13 @@ export function prependHubCtas(
   if (hub) add(hub.label, hub.href);
 
   if (flags.order && !hub) {
-    add("택배·쇼핑", HUB_SHOP);
+    add("주문하기", HUB_SHOP);
     add("주문 전 규격 확인", HUB_SHOP_ANCHORS.orderCheck);
   }
 
   if (flags.terminalDirection) {
     add("단자 방향 확인", HUB_SHOP_ANCHORS.terminal);
-    add("사진으로 확인", HUB_PHOTO);
+    add("사진으로 규격 확인", HUB_PHOTO);
   }
 
   for (const c of ctas) add(c.label, c.href);

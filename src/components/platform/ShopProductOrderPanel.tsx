@@ -147,10 +147,10 @@ export function ShopProductOrderPanel({
 
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Link href={inquiryHref} className={`${bm.btnPrimary} inline-flex justify-center text-sm`}>
-              택배주문 문의하기
+              상담 주문 요청
             </Link>
             <Link href={HUB_STORE_DETAIL} className={`${bm.btnSecondary} inline-flex justify-center text-sm`}>
-              매장·출장 안내
+              매장·출장 상담
             </Link>
             <Link
               href={detailHref}
@@ -172,8 +172,8 @@ export function ShopProductOrderPanel({
           반납 선택 시 폐배터리 회수 일정을 안내합니다.
         </p>
         <p>
-          <span className="font-black text-slate-800">오주문 방지: </span>
-          L/R·연식·ISG 여부를 주문 전 체크리스트로 확인하세요.
+          <span className="font-black text-slate-800">규격 체크: </span>
+          L/R·연식은 주문 전 체크리스트로 확인하세요.
         </p>
       </div>
 

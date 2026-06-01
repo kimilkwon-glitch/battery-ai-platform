@@ -1,9 +1,8 @@
 import type { VehicleBatterySpecTier } from "@/lib/search/resolve-vehicle-battery-spec";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 
-/** 검색·카드 전체에서 1회만 사용 */
-export const SHORT_EXCEPTION_NOTE =
-  "연식·트림에 따라 예외가 있을 수 있어 사진 확인을 권장합니다.";
+/** 검색·카드 — 확정 규격 외 보조 1줄 (과도한 방어 문구 금지) */
+export const SHORT_EXCEPTION_NOTE: string | null = null;
 
 /** @deprecated — SHORT_EXCEPTION_NOTE 사용 */
 export const SECONDARY_PHOTO_NOTE = SHORT_EXCEPTION_NOTE;
@@ -17,9 +16,10 @@ export const NO_VEHICLE_MATCH_MESSAGE =
 export type SearchCtaLink = { label: string; href: string };
 
 export const PRIMARY_BATTERY_CTAS = (code: string): SearchCtaLink[] => [
-  { label: "이 규격 자세히 보기", href: `/batteries/${encodeURIComponent(code)}` },
-  { label: "사진으로 확인", href: HUB_PHOTO },
-  { label: "문의하기", href: "/ai" },
+  { label: "주문하기", href: `/shop?code=${encodeURIComponent(code)}` },
+  { label: "규격 상세 보기", href: `/batteries/${encodeURIComponent(code)}` },
+  { label: "사진으로 규격 확인", href: HUB_PHOTO },
+  { label: "리뷰 보기", href: `/reviews?battery=${encodeURIComponent(code)}` },
 ];
 
 export function buildDbRegistrationHref(vehicleLabel: string, query?: string): string {
@@ -29,8 +29,8 @@ export function buildDbRegistrationHref(vehicleLabel: string, query?: string): s
 }
 
 export function secondaryNoteForTier(tier: VehicleBatterySpecTier): string | null {
-  if (tier === "exact" || tier === "db" || tier === "map") return SHORT_EXCEPTION_NOTE;
-  return null;
+  if (tier === "map") return "연료 선택 시 더 정확합니다.";
+  return SHORT_EXCEPTION_NOTE;
 }
 
 export function basisLabelForTier(

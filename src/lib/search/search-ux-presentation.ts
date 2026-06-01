@@ -473,10 +473,12 @@ export function buildSearchUxPresentation(
     knowledgeCard: specCode ? getKnowledgeCardForSpec(specCode) : null,
     vehicleFuelBlurb:
       isSorentoMq4AmbiguousQuery(query)
-        ? "쏘렌토 MQ4는 하이브리드(AGM60L)와 디젤·가솔린(AGM80L 후보)이 다릅니다. 아래 연료별 안내를 먼저 확인하세요."
-        : mode === "vehicle" && vehicle?.fuelLabel
-          ? getDefaultVehicleFuelKnowledgeBlurb()
-          : null,
+        ? "쏘렌토 MQ4는 하이브리드(AGM60L)와 디젤·가솔린(AGM80L)이 다릅니다. 연료를 선택하세요."
+        : /^k3$/i.test(query.trim())
+          ? "연료를 선택하면 더 정확해집니다."
+          : mode === "vehicle" && vehicle?.fuelLabel
+            ? getDefaultVehicleFuelKnowledgeBlurb()
+            : null,
     yearBranchHint:
       porter2ContextFromVehicle(query, vehicle) && vehicle?.yearBranchLinks?.length
         ? "연식에 따라 규격이 달라질 수 있습니다"

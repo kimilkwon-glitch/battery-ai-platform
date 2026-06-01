@@ -5,8 +5,10 @@ import { BatteryGallery } from "@/components/BatteryGallery";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryImageSetForCode } from "@/lib/battery-image";
+import { HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
 import { bm } from "@/lib/design-tokens";
 
 function orderHubHref(code: string): string {
@@ -26,6 +28,7 @@ export function BatteryDetailOrderPanel({
 }) {
   const spec = parseBatterySpecDisplay(code);
   const imageSet = batteryImageSetForCode(code);
+  const reviewsHref = `/reviews?battery=${encodeURIComponent(code)}`;
 
   return (
     <section
@@ -65,12 +68,25 @@ export function BatteryDetailOrderPanel({
             <BatteryAutoDiscountHint />
           </div>
 
-          <div className="mt-4 grid gap-2">
-            <a href="#battery-spec-check" className={`${bm.btnSecondary} text-center text-sm`}>
-              규격 확인하러가기
-            </a>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
             <Link href={orderHubHref(code)} className={`${bm.btnPrimary} text-center text-sm`}>
               주문하기
+            </Link>
+            <AddToCartButton
+              mode="battery"
+              variant="secondary"
+              className="w-full justify-center text-sm"
+              input={{
+                batteryCode: code,
+                fitmentStatus: vehicleSummary ? "needs_customer_confirm" : "unknown",
+                source: "battery_detail",
+              }}
+            />
+            <Link href={HUB_PHOTO_CHECK} className={`${bm.btnSecondary} text-center text-sm`}>
+              사진으로 규격 확인
+            </Link>
+            <Link href={reviewsHref} className={`${bm.btnTertiary} text-center text-sm`}>
+              리뷰 보기
             </Link>
           </div>
         </div>

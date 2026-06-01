@@ -6,6 +6,7 @@ import { BatteryDetailContentSlot } from "@/components/battery/BatteryDetailCont
 import { BatteryDetailExpandSections } from "@/components/battery/BatteryDetailExpandSections";
 import { BatteryDetailSectionNav } from "@/components/battery/BatteryDetailSectionNav";
 import { BatteryDetailReviewsSection } from "@/components/battery/BatteryDetailReviewsSection";
+import { BatteryDetailFooterCtas } from "@/components/battery/BatteryDetailFooterCtas";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
@@ -71,7 +72,7 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
           className={`${bm.btnSecondary} flex flex-1 items-center justify-center text-xs`}
           href="#battery-spec-check"
         >
-          규격 확인
+          규격 체크
         </a>
         <Link
           className={`${bm.btnNavy} flex flex-1 items-center justify-center text-xs`}
@@ -119,6 +120,8 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
       <BatteryDetailReviewsSection code={displayCode} />
 
       <BatteryDetailExpandSections hub={hub} vehicles={vehicleCards} />
+
+      <BatteryDetailFooterCtas code={displayCode} />
 
       <BatteryDetailMobileSticky code={displayCode} />
     </div>
