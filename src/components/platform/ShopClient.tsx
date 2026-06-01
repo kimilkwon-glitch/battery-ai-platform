@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
+import { BatteryProductCardActions } from "@/components/product/BatteryProductCardActions";
 import { useCart } from "@/components/platform/CartContext";
 import { ShopFindBatteryBar } from "@/components/platform/ShopFindBatteryBar";
 import { ShopProductOrderPanel } from "@/components/platform/ShopProductOrderPanel";
@@ -181,27 +182,10 @@ function ProductCard({
 
         <p className="mt-2 text-[10px] font-semibold text-slate-500">가격은 주문 상담 시 안내</p>
 
-        <div className="mt-auto space-y-1.5 pt-3">
-          <button
-            type="button"
-            onClick={() => onOrder(product)}
-            className={`${bm.btnPrimary} w-full justify-center py-2.5 text-[11px]`}
-          >
-            주문하기
-          </button>
-          <Link
-            href={`/batteries/${encodeURIComponent(product.batteryCode)}`}
-            className={`${bm.btnSecondary} w-full justify-center py-2 text-[11px]`}
-          >
-            규격 상세 보기
-          </Link>
-          <Link
-            href={`/batteries/${encodeURIComponent(product.batteryCode)}#battery-reviews`}
-            className={`${bm.btnTertiary} w-full justify-center text-[10px]`}
-          >
-            리뷰 보기
-          </Link>
-        </div>
+        <BatteryProductCardActions
+          batteryCode={product.batteryCode}
+          onOrder={() => onOrder(product)}
+        />
       </div>
     </article>
   );
