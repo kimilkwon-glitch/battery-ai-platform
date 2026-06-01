@@ -45,6 +45,8 @@ const panelVariants = {
   },
 };
 
+const PRODUCT_IMAGE_HEIGHT = "h-[9.5rem] sm:h-[10.5rem]";
+
 export function BrandHubClient() {
   const params = useSearchParams();
   const router = useRouter();
@@ -63,6 +65,7 @@ export function BrandHubClient() {
   const insights = BRAND_HUB_INSIGHTS[active];
   const products = useMemo(() => listBrandHubProducts(active), [active]);
   const imageBrandKey: BatteryBrandKey = active === "solite" ? "solite" : "rocket";
+  const dividerBorder = theme.id === "rocket" ? "border-[#242A36]" : "border-slate-200";
 
   const selectBrand = (id: CustomerBrandHubId) => {
     setActive(id);
@@ -71,12 +74,12 @@ export function BrandHubClient() {
 
   return (
     <motion.div
-      className={clsx("brand-hub -mx-1 space-y-6 rounded-2xl px-1 py-2 sm:mx-0", theme.pageBg)}
+      className={clsx("brand-hub -mx-1 space-y-5 rounded-2xl px-1 py-3 sm:mx-0 sm:space-y-6", theme.pageBg)}
       layout
       transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
       data-brand-hub-active={active}
     >
-      <nav className="flex gap-2 sm:gap-3" role="tablist" aria-label="브랜드 선택">
+      <nav className="flex gap-2.5 sm:gap-3" role="tablist" aria-label="브랜드 선택">
         {CUSTOMER_BRAND_HUB_IDS.map((id) => {
           const t = BRAND_HUB_THEMES[id];
           const selected = active === id;
@@ -88,7 +91,7 @@ export function BrandHubClient() {
               aria-selected={selected}
               onClick={() => selectBrand(id)}
               className={clsx(
-                "min-h-[52px] flex-1 rounded-xl px-4 text-sm font-black transition sm:text-base",
+                "flex min-h-[3.25rem] flex-1 items-center justify-center rounded-xl px-5 text-base font-black tracking-tight transition sm:min-h-[3.5rem] sm:text-[1.05rem]",
                 selected ? t.tabActive : t.tabIdle,
               )}
             >
@@ -108,7 +111,7 @@ export function BrandHubClient() {
             animate="animate"
             exit="exit"
             transition={PANEL_TRANSITION}
-            className={clsx("relative space-y-6 sm:space-y-8", theme.panelBg)}
+            className={clsx("relative space-y-7 sm:space-y-9", theme.panelBg)}
           >
             <motion.div
               aria-hidden
@@ -121,23 +124,21 @@ export function BrandHubClient() {
 
             <BrandHeroBanner theme={theme} banner={banner} imageBrandKey={imageBrandKey} />
 
-            <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
-              <InsightCard theme={theme} card={insights.advantage} variant="advantage" />
-              <InsightCard theme={theme} card={insights.field} variant="field" />
+            <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
+              <InsightCard theme={theme} card={insights.advantage} variant="advantage" dividerBorder={dividerBorder} />
+              <InsightCard theme={theme} card={insights.field} variant="field" dividerBorder={dividerBorder} />
             </div>
 
             <section>
-              <div className="flex flex-wrap items-end justify-between gap-2">
-                <div>
-                  <h2 className={clsx("text-xl font-black sm:text-2xl", theme.bannerText)}>
-                    {theme.label} 전 제품
-                  </h2>
-                  <p className={clsx("mt-1 text-sm font-semibold sm:text-base", theme.bannerMuted)}>
-                    등록된 {products.length}개 규격 · CCA·RC·사이즈를 카드에서 확인
-                  </p>
-                </div>
-              </div>
-              <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <header className="mb-5 sm:mb-6">
+                <h2 className={clsx("text-2xl font-black tracking-tight sm:text-3xl", theme.bannerText)}>
+                  {theme.label} 전 제품
+                </h2>
+                <p className={clsx("mt-2 text-base font-medium sm:text-[1.05rem]", theme.bannerMuted)}>
+                  등록된 {products.length}개 규격 · CCA·RC·사이즈를 카드에서 확인
+                </p>
+              </header>
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
                 {products.map((spec) => (
                   <BrandProductCard
                     key={spec.code}
@@ -145,12 +146,13 @@ export function BrandHubClient() {
                     brandId={active}
                     imageBrandKey={imageBrandKey}
                     theme={theme}
+                    dividerBorder={dividerBorder}
                   />
                 ))}
               </div>
             </section>
 
-            <p className={clsx("text-center text-xs font-semibold sm:text-sm", theme.bannerMuted)}>
+            <p className={clsx("text-center text-sm font-medium", theme.bannerMuted)}>
               {BRAND_HUB_FOOTNOTE[active]}
             </p>
           </motion.div>
@@ -174,47 +176,52 @@ function BrandHeroBanner({
   return (
     <section
       className={clsx(
-        "relative overflow-hidden rounded-2xl p-5 sm:flex sm:items-center sm:gap-8 sm:p-7",
+        "relative overflow-hidden rounded-2xl p-5 sm:flex sm:items-stretch sm:gap-6 sm:p-6 lg:gap-8 lg:p-8",
         theme.bannerBg,
       )}
     >
       <div
         aria-hidden
         className={clsx(
-          "pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full opacity-40 blur-3xl",
-          theme.id === "rocket" ? "bg-red-600" : "bg-blue-400",
+          "pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full blur-3xl",
+          theme.id === "rocket" ? "bg-[#E53935]/25" : "bg-blue-400/20",
         )}
       />
-      <div className="relative z-10 min-w-0 flex-1">
-        <p className={clsx("text-xs font-black uppercase tracking-widest", theme.accent)}>
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center">
+        <p className={clsx("text-[11px] font-black uppercase tracking-[0.2em]", theme.accent)}>
           {theme.label}
         </p>
-        <h2 className={clsx("mt-2 text-2xl font-black sm:text-3xl", theme.bannerText)}>
+        <h2 className={clsx("mt-2 text-3xl font-black leading-tight tracking-tight sm:text-4xl", theme.bannerText)}>
           {banner.title}
         </h2>
-        <p className={clsx("mt-2 text-base font-bold sm:text-lg", theme.bannerText)}>
+        <p className={clsx("mt-3 text-lg font-bold leading-snug sm:text-xl", theme.bannerText)}>
           {banner.headline}
         </p>
-        <p className={clsx("mt-3 max-w-xl text-sm font-medium leading-relaxed sm:text-base", theme.bannerMuted)}>
+        <p
+          className={clsx(
+            "mt-3 max-w-xl text-base font-medium leading-relaxed sm:text-[1.05rem]",
+            theme.bannerMuted,
+          )}
+        >
           {banner.description}
         </p>
       </div>
       <div
         className={clsx(
-          "relative z-10 mt-5 shrink-0 overflow-hidden rounded-2xl p-2.5 sm:mt-0 sm:w-[44%] sm:max-w-[300px]",
+          "relative z-10 mt-5 flex shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:mt-0 sm:w-[min(48%,22rem)] lg:w-[min(46%,24rem)]",
           theme.bannerImageWrap,
         )}
       >
-        <div className="h-40 sm:h-44">
+        <div className="flex h-48 w-full items-center justify-center p-1 sm:h-56 lg:h-[15.5rem]">
           <BatteryThumbnail
             code={banner.heroCode}
             imageSet={product.images}
             role="main"
-            fit={batteryImageFit(banner.heroCode, imageBrandKey)}
+            fit="contain"
             ratio="16/9"
             overlayLabel={false}
             darkOverlay={false}
-            className="h-full"
+            className="h-full w-full max-h-full [&_img]:mx-auto [&_img]:max-h-[92%] [&_img]:w-auto [&_img]:object-contain"
           />
         </div>
       </div>
@@ -226,49 +233,59 @@ function InsightCard({
   theme,
   card,
   variant,
+  dividerBorder,
 }: {
   theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
   card: BrandHubInsightCard;
   variant: "advantage" | "field";
+  dividerBorder: string;
 }) {
   const Icon = variant === "advantage" ? Sparkles : MessageCircle;
 
   return (
     <article
       className={clsx(
-        "relative min-h-[220px] overflow-hidden rounded-2xl p-6 sm:min-h-[240px] sm:p-7",
+        "relative flex min-h-[15.5rem] flex-col overflow-hidden rounded-2xl sm:min-h-[16.5rem]",
         theme.insightCard,
       )}
     >
-      <div className="flex items-start gap-4">
-        <div
+      <div className="flex flex-1 flex-col p-6 sm:p-8">
+        <div className="flex items-start gap-4 sm:gap-5">
+          <div
+            className={clsx(
+              "flex size-14 shrink-0 items-center justify-center rounded-xl sm:size-[3.75rem]",
+              theme.insightIconWrap,
+            )}
+          >
+            <Icon className="size-7 sm:size-8" strokeWidth={2} aria-hidden />
+          </div>
+          <div className="min-w-0 flex-1 pt-0.5">
+            <p className={clsx("text-xs font-black uppercase tracking-[0.14em]", theme.accent)}>
+              {card.title}
+            </p>
+            <h3 className={clsx("mt-2 text-xl font-black leading-snug sm:text-2xl", theme.bannerText)}>
+              {card.lead}
+            </h3>
+            <p className={clsx("mt-3 text-base font-medium leading-relaxed", theme.bannerMuted)}>
+              {card.body}
+            </p>
+          </div>
+        </div>
+        <ul
           className={clsx(
-            "flex size-12 shrink-0 items-center justify-center rounded-xl sm:size-14",
-            theme.insightIconWrap,
+            "mt-6 space-y-3 border-t pt-6 text-base font-semibold leading-relaxed",
+            dividerBorder,
+            theme.bannerMuted,
           )}
         >
-          <Icon className="size-6 sm:size-7" strokeWidth={2.25} aria-hidden />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className={clsx("text-xs font-black uppercase tracking-wide", theme.accent)}>
-            {card.title}
-          </p>
-          <h3 className={clsx("mt-2 text-lg font-black leading-snug sm:text-xl", theme.bannerText)}>
-            {card.lead}
-          </h3>
-          <p className={clsx("mt-2 text-sm font-medium leading-relaxed sm:text-[15px]", theme.bannerMuted)}>
-            {card.body}
-          </p>
-        </div>
+          {card.bullets.map((b) => (
+            <li key={b} className="flex items-start gap-3 pl-0.5">
+              <span className={clsx("mt-[0.65rem] h-0.5 w-5 shrink-0 rounded-full", theme.accentLine)} />
+              <span className={theme.bannerText}>{b}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul className={clsx("mt-5 space-y-2.5 border-t pt-5 text-sm font-semibold sm:text-[15px]", theme.bannerMuted, theme.id === "rocket" ? "border-zinc-800" : "border-slate-100")}>
-        {card.bullets.map((b) => (
-          <li key={b} className="flex items-start gap-3">
-            <span className={clsx("mt-2 h-0.5 w-5 shrink-0 rounded-full", theme.accentLine)} />
-            <span className={theme.bannerText}>{b}</span>
-          </li>
-        ))}
-      </ul>
     </article>
   );
 }
@@ -288,11 +305,13 @@ function BrandProductCard({
   brandId,
   imageBrandKey,
   theme,
+  dividerBorder,
 }: {
   spec: BatteryBrandSpec;
   brandId: CustomerBrandHubId;
   imageBrandKey: BatteryBrandKey;
   theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  dividerBorder: string;
 }) {
   const card = resolveBrandHubSpecCard(spec.code, brandId, spec);
   const family = familyLabelForSpec(spec);
@@ -306,69 +325,78 @@ function BrandProductCard({
     <Link
       href={card.detailHref}
       className={clsx(
-        "brand-hub-spec-card group flex flex-col overflow-hidden rounded-xl transition duration-200 motion-safe:hover:-translate-y-0.5",
+        "brand-hub-spec-card group flex h-full flex-col overflow-hidden rounded-xl transition duration-200 motion-safe:hover:-translate-y-0.5",
         theme.productCard,
         theme.productCardHover,
       )}
     >
-      <div className={clsx("relative h-32 sm:h-36", theme.productImageBg)}>
+      <div
+        className={clsx(
+          "relative flex items-center justify-center overflow-hidden",
+          PRODUCT_IMAGE_HEIGHT,
+          theme.productImageBg,
+        )}
+      >
         {hasImage ? (
           <BatteryThumbnail
             code={spec.code}
             imageSet={product.images}
             role="main"
-            fit={batteryImageFit(spec.code, imageBrandKey)}
+            fit="contain"
             ratio="16/9"
             overlayLabel={false}
             darkOverlay={false}
-            className="h-full"
+            className="h-full w-full px-1 [&_img]:mx-auto [&_img]:max-h-[88%] [&_img]:w-auto [&_img]:object-contain"
           />
         ) : (
-          <div className="flex h-full items-center justify-center px-3">
-            <p className={clsx("text-center text-sm font-black", theme.bannerMuted)}>
-              {card.displayCode}
-            </p>
-          </div>
+          <p className={clsx("px-3 text-center text-base font-black", theme.bannerMuted)}>
+            {card.displayCode}
+          </p>
         )}
         <span
           className={clsx(
-            "absolute left-2 top-2 rounded-md px-2 py-0.5 text-[10px] font-black ring-1",
+            "absolute left-2.5 top-2.5 rounded-md px-2 py-0.5 text-[11px] font-black",
             badgeClassForFamily(theme, family),
           )}
         >
           {family}
         </span>
       </div>
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <p className={clsx("text-base font-black tracking-tight sm:text-lg", theme.bannerText)}>
+      <div className="flex flex-1 flex-col p-4 sm:p-[1.125rem]">
+        <p className={clsx("text-lg font-black tracking-tight sm:text-xl", theme.bannerText)}>
           {card.displayCode}
         </p>
-        <dl className="space-y-2 text-sm font-semibold">
-          <div
-            className={clsx(
-              "flex justify-between gap-2 border-b border-dashed pb-2",
-              theme.id === "rocket" ? "border-zinc-700" : "border-slate-200",
-            )}
-          >
-            <dt className={theme.bannerMuted}>CCA</dt>
-            <dd className={theme.bannerText}>{card.cca}</dd>
-          </div>
-          <div
-            className={clsx(
-              "flex justify-between gap-2 border-b border-dashed pb-2",
-              theme.id === "rocket" ? "border-zinc-700" : "border-slate-200",
-            )}
-          >
-            <dt className={theme.bannerMuted}>RC</dt>
-            <dd className={theme.bannerText}>{card.rc}</dd>
-          </div>
-          <div>
-            <dt className={clsx("text-xs font-bold", theme.bannerMuted)}>사이즈 (mm)</dt>
-            <dd className={clsx("mt-0.5 text-[13px] leading-snug", theme.bannerText)}>{card.size}</dd>
-          </div>
+        <dl className={clsx("mt-3 space-y-0 text-sm", dividerBorder)}>
+          <SpecRow label="CCA" value={card.cca} theme={theme} dividerBorder={dividerBorder} />
+          <SpecRow label="RC" value={card.rc} theme={theme} dividerBorder={dividerBorder} />
         </dl>
-        <span className={clsx("mt-auto pt-1 text-sm font-black", theme.accent)}>상세보기 →</span>
+        <div className={clsx("mt-3 border-t pt-3", dividerBorder)}>
+          <p className={clsx("text-xs font-bold uppercase tracking-wide", theme.bannerMuted)}>사이즈 (mm)</p>
+          <p className={clsx("mt-1 text-sm font-semibold leading-snug tabular-nums", theme.bannerText)}>
+            {card.size}
+          </p>
+        </div>
+        <span className={clsx("mt-auto pt-4 text-sm font-black", theme.accent)}>상세보기 →</span>
       </div>
     </Link>
+  );
+}
+
+function SpecRow({
+  label,
+  value,
+  theme,
+  dividerBorder,
+}: {
+  label: string;
+  value: string;
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  dividerBorder: string;
+}) {
+  return (
+    <div className={clsx("flex items-center justify-between gap-3 border-b py-2.5 last:border-b-0", dividerBorder)}>
+      <dt className={clsx("text-xs font-bold uppercase tracking-wide", theme.bannerMuted)}>{label}</dt>
+      <dd className={clsx("text-base font-bold tabular-nums", theme.bannerText)}>{value}</dd>
+    </div>
   );
 }
