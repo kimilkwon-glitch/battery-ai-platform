@@ -3,6 +3,39 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      { source: "/customer", destination: "/support", permanent: false },
+      { source: "/customer/faq", destination: "/support/faq", permanent: false },
+      {
+        source: "/customer/order-guide",
+        destination: "/support/order-guide",
+        permanent: false,
+      },
+      {
+        source: "/customer/delivery",
+        destination: "/support/delivery",
+        permanent: false,
+      },
+      {
+        source: "/customer/return-exchange",
+        destination: "/support/return-exchange",
+        permanent: false,
+      },
+      {
+        source: "/customer/used-battery-return",
+        destination: "/support/used-battery-return",
+        permanent: false,
+      },
+      {
+        source: "/customer/message-guide",
+        destination: "/support/message-guide",
+        permanent: false,
+      },
+      { source: "/customer/cart-guide", destination: "/cart-design", permanent: false },
+      {
+        source: "/customer/order-complete",
+        destination: "/order-complete",
+        permanent: false,
+      },
       {
         source: "/analysis/photo",
         destination: "/photo-check",
