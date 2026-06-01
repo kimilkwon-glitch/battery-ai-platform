@@ -28,6 +28,8 @@ import {
   CART_PAGE,
   ORDER_REQUEST_COMPLETE_PAGE,
 } from "@/lib/customer-center-routes";
+import { HUB_SHOP } from "@/lib/customer-hub-routes";
+import { getSearchHref } from "@/lib/battery-search";
 import type { OrderRequestConfirmations } from "@/types/order-request";
 import type {
   OrderRequestFulfillment,
@@ -93,12 +95,6 @@ export function CheckoutOrderPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [website, setWebsite] = useState("");
-
-  useEffect(() => {
-    if (hydrated && items.length === 0) {
-      router.replace(CART_PAGE);
-    }
-  }, [hydrated, items.length, router]);
 
   useEffect(() => {
     if (!hydrated || items.length === 0) return;
@@ -199,14 +195,47 @@ export function CheckoutOrderPage() {
 
   if (!hydrated) {
     return (
-      <div className={`${bm.card} ${bm.cardPad} text-center text-sm text-slate-500`}>
-        불러오는 중…
+      <div
+        className={`${bm.card} ${bm.cardPad} text-center`}
+        role="status"
+        aria-live="polite"
+        data-checkout-state="loading"
+      >
+        <p className="text-sm font-bold text-slate-800">주문 정보를 불러오는 중입니다</p>
+        <p className="mt-1 text-xs font-medium text-slate-500">잠시만 기다려 주세요.</p>
       </div>
     );
   }
 
   if (items.length === 0) {
-    return null;
+    return (
+      <div
+        className={`${bm.card} ${bm.cardPad} space-y-4 text-center`}
+        data-checkout-state="empty"
+      >
+        <h2 className="text-base font-black text-slate-900">장바구니가 비어 있습니다</h2>
+        <p className="text-sm font-medium text-slate-600">
+          담은 배터리가 없습니다. 상품을 선택한 뒤 다시 주문해 주세요.
+        </p>
+        <p className="text-xs font-medium text-slate-500">
+          차량명 또는 배터리 규격으로 먼저 검색해 주세요.
+        </p>
+        <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+          <Link href={HUB_SHOP} className={`${bm.btnNavy} w-full justify-center text-sm sm:w-auto`}>
+            배터리 쇼핑 둘러보기
+          </Link>
+          <Link
+            href={getSearchHref("")}
+            className={`${bm.btnSecondary} w-full justify-center text-sm sm:w-auto`}
+          >
+            차량·규격 검색
+          </Link>
+        </div>
+        <Link href={CART_PAGE} className="inline-block text-xs font-bold text-blue-700 hover:underline">
+          장바구니로 이동
+        </Link>
+      </div>
+    );
   }
 
   return (

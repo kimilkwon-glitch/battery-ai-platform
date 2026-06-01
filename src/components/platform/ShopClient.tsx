@@ -17,11 +17,9 @@ import {
   filterShopProducts,
   findShopProductByCode,
   getProductMeta,
-  preOrderChecklist,
   shopBasicFilters,
   shopDetailFilters,
-  shopPopularComparisons,
-  shopSidebarLinks,
+  shopOrderBriefChecklist,
   specNotationRows,
   SHOP_PAGE_SIZE,
   type ShopBasicFilter,
@@ -209,64 +207,24 @@ function ProductCard({
 
 function ShopPageBottom() {
   return (
-    <div className="space-y-4 border-t border-slate-100 pt-4" data-ux="shop-page-bottom">
-      <section className="rounded-2xl border border-amber-100 bg-[#fdfbf7] p-4 shadow-sm" id="order-check">
-        <h2 className="text-base font-black text-slate-900">택배 주문 전 꼭 확인해주세요</h2>
-        <p className="mt-1 text-xs font-semibold text-slate-500">
-          차종·연식·단자·규격을 확인하면 오주문을 크게 줄일 수 있습니다.
-        </p>
-        <Link className="mt-2 inline-block text-[11px] font-bold text-blue-700 hover:underline" href="/order-checklist">
-          주문 전 체크리스트 전체 보기 →
-        </Link>
-        <ul className="mt-3 space-y-2">
-          {preOrderChecklist.map((item) => (
-            <li key={item} className="flex items-start gap-2 text-xs font-semibold text-slate-700">
-              <span className="mt-0.5 text-amber-500">✓</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-base font-black text-slate-900">많이 비교한 규격</h2>
-        <div className="mt-3 flex flex-col gap-1.5">
-          {shopPopularComparisons.map((c) => (
-            <Link key={c.label} href={c.href} className="text-xs font-bold text-blue-600 hover:underline">
-              {c.label}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-base font-black text-slate-900">빠른 이동</h2>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {shopSidebarLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="block rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-slate-100 hover:bg-blue-50">
-              <p className="text-xs font-black text-slate-800">{link.label}</p>
-              <p className="text-[10px] font-semibold text-slate-500">{link.desc}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" id="shop-contact">
-        <h2 className="text-base font-black text-slate-900">문의 · 다음 단계</h2>
-        <p className="mt-1 text-xs font-semibold text-slate-500">규격 확인 후 주문·매장 연결</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Link href="/ai" className={`${bm.btnPrimary} text-xs`}>
-            규격 문의하기
-          </Link>
-          <Link href="/analysis/photo" className={`${bm.btnSecondary} text-xs`}>
-            사진으로 확인
-          </Link>
-          <Link href="/service-center" className={`${bm.btnTertiary} text-xs`}>
-            매장·출장 안내
-          </Link>
-        </div>
-      </section>
-    </div>
+    <section
+      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+      id="order-check"
+      data-ux="shop-page-bottom"
+    >
+      <h2 className="text-sm font-black text-slate-900">주문 전 3가지 확인</h2>
+      <ol className="mt-3 list-decimal space-y-1.5 pl-4 text-xs font-semibold text-slate-700">
+        {shopOrderBriefChecklist.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ol>
+      <Link
+        className="mt-3 inline-block text-[11px] font-bold text-blue-700 hover:underline"
+        href="/order-checklist"
+      >
+        주문 전 체크리스트 전체 보기 →
+      </Link>
+    </section>
   );
 }
 

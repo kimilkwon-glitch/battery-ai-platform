@@ -145,27 +145,6 @@ export function BatteryDetailExpandSections({
           </div>
         </Collapsible>
       ) : null}
-
-      <section className={`${bm.card} ${bm.cardPad}`}>
-        <p className={bm.label}>다음 행동</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          <Link className={`${bm.btnNavy} text-xs`} href={HUB_PHOTO_CHECK}>
-            사진으로 확인
-          </Link>
-          <Link className={`${bm.btnSecondary} text-xs`} href="/order-checklist">
-            주문 전 체크
-          </Link>
-          <Link className={`${bm.btnTertiary} text-xs`} href="/support/order-guide">
-            주문 안내
-          </Link>
-          <Link className={`${bm.btnTertiary} text-xs`} href="/support">
-            고객센터
-          </Link>
-          <Link className={`${bm.btnSecondary} text-xs`} href="/service-center">
-            매장·출장 상담
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

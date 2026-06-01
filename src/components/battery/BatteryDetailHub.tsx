@@ -4,7 +4,6 @@ import Link from "next/link";
 import { BatteryDetailOrderPanel } from "@/components/battery/BatteryDetailOrderPanel";
 import { BatteryDetailContentSlot } from "@/components/battery/BatteryDetailContentSlot";
 import { BatteryDetailExpandSections } from "@/components/battery/BatteryDetailExpandSections";
-import { openChatInquiry } from "@/lib/chat-inquiry-events";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
@@ -72,15 +71,8 @@ function BatteryDetailMobileSticky({ code }: { code: string }) {
           className={`${bm.btnSecondary} flex flex-1 items-center justify-center text-xs`}
           href={HUB_STORE_DETAIL}
         >
-          매장·출장
+          매장·출장 상담
         </Link>
-        <button
-          type="button"
-          className={`${bm.btnSecondary} flex flex-1 items-center justify-center text-xs`}
-          onClick={() => openChatInquiry({ batteryCode: code })}
-        >
-          채팅
-        </button>
       </div>
     </div>
   );

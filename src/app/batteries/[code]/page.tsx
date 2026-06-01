@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { PageShell } from "@/components/common/PageShell";
 import { BatteryDetailHub } from "@/components/battery/BatteryDetailHub";
-import { BatteryNavFooter } from "@/components/battery/BatteryNavFooter";
 import { BatteryActivityTracker } from "@/components/battery/BatteryActivityTracker";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { isRetiredBatterySpec } from "@/lib/batteryNormalize";
@@ -40,9 +39,6 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
           relatedCodes={data.relatedCodes}
         />
       </Suspense>
-      <div className="mt-4">
-        <BatteryNavFooter code={displayCode} />
-      </div>
       </div>
     </PageShell>
   );

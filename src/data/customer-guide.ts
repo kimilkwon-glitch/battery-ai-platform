@@ -1,5 +1,4 @@
 import {
-  CART_DESIGN_PAGE,
   CUSTOMER_CENTER_DELIVERY,
   CUSTOMER_CENTER_FAQ,
   CUSTOMER_CENTER_GUEST_ORDER,
@@ -109,13 +108,6 @@ export const CUSTOMER_CENTER_HUB_CARDS: CustomerHubCard[] = [
     description: "입금 기한·자동 취소 정책·주문 완료 화면 예시",
     href: `${CUSTOMER_CENTER_ORDER_GUIDE}#bank-transfer`,
     cta: "무통장 입금 안내",
-  },
-  {
-    id: "cart-design",
-    title: "장바구니 기능 설계 (5차)",
-    description: "배터리 장바구니 UX·데이터 구조 미리보기 — 6차 개발 전 검토용",
-    href: CART_DESIGN_PAGE,
-    cta: "설계 미리보기 보기",
   },
 ];
 

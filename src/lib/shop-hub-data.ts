@@ -212,6 +212,13 @@ export const preOrderChecklist = [
   "오주문 주의: 유사 규격(AGM vs DIN, 90R vs 100R 등) 혼동 금지",
 ] as const;
 
+/** /shop 하단 — 주문 흐름용 짧은 확인 (3항목) */
+export const shopOrderBriefChecklist = [
+  "차량명·연식 확인",
+  "배터리 규격·L/R 단자 확인",
+  "폐전지 반납 여부 확인",
+] as const;
+
 export const specNotationRows = [
   { label: "100R", detail: "GB100R / CMF100R 계열 — 포터2 2020년 이후" },
   { label: "DIN74L", detail: "GB57820 / CMF57412 계열 — 일반 DIN H6" },

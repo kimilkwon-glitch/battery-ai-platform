@@ -7,6 +7,7 @@ import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { openChatInquiry } from "@/lib/chat-inquiry-events";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import { HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
 import {
   BATTERY_RETURN_OPTIONS,
   type BatteryReturnOption,
@@ -119,12 +120,21 @@ export function BatteryDetailOrderPanel({
             채팅 상담
           </button>
 
-          <p className="mt-3 text-center">
+          <p className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
+            <Link
+              href={HUB_PHOTO_CHECK}
+              className="text-[11px] font-semibold text-slate-500 hover:text-blue-700 hover:underline"
+            >
+              사진으로 규격 확인
+            </Link>
+            <span className="text-slate-200" aria-hidden>
+              ·
+            </span>
             <Link
               href={`/reviews?battery=${encodeURIComponent(code)}`}
-              className="text-[11px] font-bold text-blue-700 hover:underline"
+              className="text-[11px] font-semibold text-slate-500 hover:text-blue-700 hover:underline"
             >
-              이 규격 관련 후기 보기 →
+              이 규격 후기
             </Link>
           </p>
         </div>
