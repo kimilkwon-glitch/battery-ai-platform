@@ -190,10 +190,11 @@ const FAMILY_SORT: Record<string, number> = {
 
 function specPickScore(spec: BatteryBrandSpec, brandId: CustomerBrandHubId): number {
   let score = 0;
-  if (spec.code === spec.productName) score += 20;
-  if (brandId === "solite" && spec.code.startsWith("CMF")) score += 15;
-  if (brandId === "rocket" && (spec.code.startsWith("GB") || spec.code.startsWith("AGM"))) score += 15;
-  if (spec.code.length >= 5) score += 5;
+  if (brandId === "solite" && spec.code.startsWith("CMF")) score += 20;
+  if (brandId === "rocket" && (spec.code.startsWith("GB") || spec.code.startsWith("AGM"))) score += 20;
+  if (/[LR]$/.test(spec.code) || /Ah$/i.test(spec.code)) score += 25;
+  if (spec.code === spec.productName) score += 10;
+  score += spec.code.length;
   score += (spec.capacityAh20Hr ?? 0) / 100;
   return score;
 }
@@ -250,8 +251,8 @@ export function resolveBrandHubSpecCard(
     specInput ??
     getBrandSpecsByBrand(code, brand)[0] ??
     listBrandHubProducts(brandId).find((s) => s.code === code);
-  const displayCode = spec?.productName ?? code;
-  const detailHref = `/batteries/${encodeURIComponent(code)}`;
+  const displayCode = spec?.code ?? code;
+  const detailHref = `/batteries/${encodeURIComponent(displayCode)}`;
   const sizeStr = spec?.dimensionsMm
     ? (formatDimensionsDisplay(spec.dimensionsMm) ?? "—")
     : "—";
