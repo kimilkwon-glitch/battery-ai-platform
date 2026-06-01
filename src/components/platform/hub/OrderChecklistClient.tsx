@@ -11,7 +11,9 @@ import { BrandNoteStrip } from "@/components/battery/BrandNoteStrip";
 import { UPGRADE_PRINCIPLES } from "@/lib/battery-knowledge";
 import { ORDER_CHECKLIST_ITEMS, ORDER_CHECKLIST_SECTIONS } from "@/lib/platform-hub-content";
 import { HUB_PHOTO_CHECK, HUB_SYMPTOMS } from "@/lib/platform-hub-routes";
-import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
+import { HUB_PHOTO, HUB_QA, HUB_SHOP_ANCHORS, HUB_SUPPORT } from "@/lib/customer-hub-routes";
+import { UsedBatteryOrderPrecheck } from "@/components/customer/UsedBatteryOrderPrecheck";
+import { CUSTOMER_CENTER_ORDER_GUIDE } from "@/lib/customer-center-routes";
 import { ORDER_CHECKLIST_STEP_ICONS, ORDER_SECTION_ICON_FROM_TITLE } from "@/lib/icon-map";
 import type { IconKey } from "@/lib/icon-map";
 
@@ -85,6 +87,10 @@ export function OrderChecklistClient() {
         </div>
       </section>
 
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <UsedBatteryOrderPrecheck />
+      </section>
+
       <section className={bm.platformStrip}>
         <SectionHeader title="다음 단계" description="확인 후 이렇게 이어가 보세요" iconKey="route" />
         <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
@@ -107,6 +113,21 @@ export function OrderChecklistClient() {
           <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_SHOP_ANCHORS.orderCheck}>
             <AppIcon iconKey="delivery" size="sm" />
             택배 주문 전 보기
+          </Link>
+          <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={CUSTOMER_CENTER_ORDER_GUIDE}>
+            <AppIcon iconKey="checklist" size="sm" />
+            주문 안내
+          </Link>
+          <Link
+            className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`}
+            href={`${CUSTOMER_CENTER_ORDER_GUIDE}#used-battery-precheck`}
+          >
+            <AppIcon iconKey="batterySpec" size="sm" />
+            폐전지 반납
+          </Link>
+          <Link className={`${bm.btnGhost} inline-flex items-center gap-1.5 text-xs`} href={HUB_SUPPORT}>
+            <AppIcon iconKey="qna" size="sm" />
+            고객센터
           </Link>
         </div>
       </section>

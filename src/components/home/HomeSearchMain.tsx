@@ -11,15 +11,18 @@ export function HomeSearchMain() {
     <main className="min-h-screen bg-white text-[var(--bm-text)]" data-page="home-search-main">
       <PortalHeader showSearch={false} />
 
-      <div className="home-main-content mx-auto max-w-[1100px] space-y-10 px-4 pb-16 pt-6 sm:space-y-12 sm:px-6 sm:pb-20 sm:pt-8 lg:space-y-14 lg:pb-24 lg:pt-10">
+      <div className="home-main-hero-region mx-auto w-full max-w-[1320px] px-4 pb-1 pt-5 sm:px-6 sm:pb-2 sm:pt-6 lg:pt-8">
         <div className="home-hero-stack" data-home-section="hero-top">
-          <div className="home-hero-stack__banner home-hero-breakout">
+          <div className="home-hero-stack__banner">
             <HomeMainBanner />
           </div>
           <div className="home-hero-stack__search">
             <HomeMainHero />
           </div>
         </div>
+      </div>
+
+      <div className="home-main-content mx-auto max-w-[1100px] space-y-10 px-4 pb-16 sm:space-y-12 sm:px-6 sm:pb-20 lg:space-y-14 lg:pb-24">
         <HomeBenefitsCarousel />
         <HomeCatalogSection />
       </div>

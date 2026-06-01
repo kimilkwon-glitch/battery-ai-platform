@@ -80,7 +80,7 @@ export function SearchVehicleResults({
 
               <span className={`relative block overflow-hidden rounded-xl ${compact ? "h-[88px]" : "h-[105px]"} ${bm.imageVehicle.replace("shrink-0", "")}`}>
 
-                {imageSrc ? (
+                {imageSrc && imageSrc.trim() ? (
 
                   <CarGenerationImage alt={model} className="!h-full !w-full" size="compact" src={imageSrc} />
 

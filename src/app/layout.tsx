@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BatteryCartProvider } from "@/components/cart/BatteryCartProvider";
 import { CartProvider } from "@/components/platform/CartContext";
 import "./globals.css";
 
@@ -30,9 +31,11 @@ export default function RootLayout({
     <html lang="ko" data-build-version={BUILD_STAMP} data-build-rev="benefit-review-layout-fix-v1-20260530" className={cn("font-sans", geist.variable)}>
       <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="benefit-review-layout-fix-v1-20260530">
         <CartProvider>
-          {children}
-          <FloatingActionDock />
-          <BuildVersionStamp />
+          <BatteryCartProvider>
+            {children}
+            <FloatingActionDock />
+            <BuildVersionStamp />
+          </BatteryCartProvider>
         </CartProvider>
       </body>
     </html>

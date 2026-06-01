@@ -20,6 +20,8 @@ import {
   formatSearchVehicleDisplayLabel,
   formatSearchVehicleRowTitle,
 } from "@/lib/search/search-vehicle-display";
+import { isBatterySpecPrimaryQuery } from "@/lib/search/battery-spec-search-alias";
+import { applyStariaVehicleSearchRow } from "@/lib/search/staria-query-spec-guard";
 import { vehicles as catalogVehicles } from "@/lib/platform-data";
 
 export function assetToSearchRow(asset: VehicleAsset): VehicleSearchRow {
@@ -102,19 +104,22 @@ function resolveAliasDbHit(alias: SearchVehicleAliasMatch): ReturnType<typeof se
 
 function aliasFallbackRow(alias: SearchVehicleAliasMatch, query = ""): VehicleSearchRow {
   const brand = brandForAlias(alias);
-  const searchQ = `${alias.label} 배터리`.trim();
-  const model = query ? formatSearchVehicleDisplayLabel(query, alias) : displayModelWithBrand(brand, alias.label);
+  const formal = alias.formalDisplayName ?? alias.label;
+  const searchQ = `${formal} 배터리`.trim();
+  const model = query
+    ? formatSearchVehicleDisplayLabel(query, { ...alias, label: formal, formalDisplayName: formal })
+    : displayModelWithBrand(brand, formal);
   return {
-    model,
+    model: query ? formatSearchVehicleRowTitle(query, alias, model) : model,
     year: "연식별 확인",
     fuel: "연료별",
     origin: "사진 확인 권장",
     recommend: "문의·사진 확인",
     upgrade: "연식·연료 확인",
-    note: `${brand || "차량"} · 차량표 미등록 시 사진 확인·문의 권장`,
+    note: `${brand || "차량"} · 차량표 미등록 · 사진·문의로 확인`,
     href: `/search?q=${encodeURIComponent(searchQ)}`,
     imageSrc: null,
-    batteryNotes: "차량표에 쌍용 등록 차종과 연결됩니다. 확실하지 않으면 사진으로 확인해 주세요.",
+    batteryNotes: "차량 이미지가 없어도 정식 차량명 기준으로 안내합니다. 연식·연료는 사진 확인을 권장합니다.",
     needsReview: true,
   };
 }
@@ -128,8 +133,14 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
       const formal = alias.formalDisplayName ?? asset.displayName;
       const model =
         displayName ??
-        displayModelWithBrand(brandForAlias(alias, vehicleAssetBrandLabel(asset.brand)), formal, alias.label);
-      return { ...row, model: formatSearchVehicleRowTitle(query, alias, model) };
+        displayModelWithBrand(brandForAlias(alias, vehicleAssetBrandLabel(asset.brand)), formal);
+      const imageSrc = asset.image?.trim() ? asset.image : null;
+      return {
+        ...row,
+        model: formatSearchVehicleRowTitle(query, alias, model),
+        imageSrc,
+        needsReview: imageSrc ? row.needsReview : true,
+      };
     }
   }
   if (alias.catalogId) {
@@ -147,7 +158,11 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
   if (dbHit) {
     const h = dbHit;
     const model =
-      displayName ?? displayModelWithBrand(brandForAlias(alias, h.brand), alias.label || h.title);
+      displayName ??
+      displayModelWithBrand(
+        brandForAlias(alias, h.brand),
+        alias.formalDisplayName ?? (alias.label || h.title),
+      );
     return {
       model: formatSearchVehicleRowTitle(query, alias, model),
       year: h.yearRange,
@@ -166,14 +181,19 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
   return aliasFallbackRow(alias, query);
 }
 
+function finalizeVehicleSearchRow(row: VehicleSearchRow, query: string): VehicleSearchRow {
+  return applyStariaVehicleSearchRow(row, query);
+}
+
 function prependAliasRow(
   rows: VehicleSearchRow[],
   alias: SearchVehicleAliasMatch | null,
   query = "",
 ): VehicleSearchRow[] {
   if (!alias) return rows;
-  const aliasRow = rowFromAlias(alias, query);
-  if (!aliasRow) return rows;
+  const raw = rowFromAlias(alias, query);
+  if (!raw) return rows;
+  const aliasRow = finalizeVehicleSearchRow(raw, query);
   const key = aliasRow.href;
   const rest = rows.filter((r) => r.href !== key && !norm(r.model).includes(norm(alias.label)));
   return [aliasRow, ...rest];
@@ -188,8 +208,13 @@ export function vehicleAssetsToSearchRows(
   limit = 12,
   alias?: SearchVehicleAliasMatch | null,
 ): VehicleSearchRow[] {
-  const aliasMatch = alias ?? resolveSearchVehicleAlias(query);
-  const vehicleQuery = aliasMatch?.dbQuery ?? query;
+  const specPrimary = isBatterySpecPrimaryQuery(query);
+  const aliasMatch = specPrimary ? null : (alias ?? resolveSearchVehicleAlias(query));
+  const vehicleQuery = specPrimary ? query : (aliasMatch?.dbQuery ?? query);
+
+  if (specPrimary) {
+    return [];
+  }
 
   const expanded = resolveSpec(vehicleQuery);
   const dbQueries = [...new Set([vehicleQuery, query, ...expandKgMobilitySearchTerms(vehicleQuery), ...(expanded && expanded !== vehicleQuery ? [expanded] : [])])];
@@ -204,9 +229,11 @@ export function vehicleAssetsToSearchRows(
   let rows: VehicleSearchRow[];
   if (merged.length > 0) {
     rows = merged.map((h) => {
+      const titleForRow =
+        aliasMatch?.formalDisplayName ?? aliasMatch?.label ?? h.title;
       const base = displayModelWithBrand(
         aliasMatch ? brandForAlias(aliasMatch, h.brand) : h.brand,
-        aliasMatch?.label || h.title,
+        titleForRow,
       );
       const model = aliasMatch ? formatSearchVehicleRowTitle(query, aliasMatch, base) : base;
       return {
@@ -229,5 +256,7 @@ export function vehicleAssetsToSearchRows(
     rows = assets.map((asset) => assetToSearchRow(asset));
   }
 
-  return prependAliasRow(rows, aliasMatch, query).slice(0, limit);
+  return prependAliasRow(rows, aliasMatch, query)
+    .slice(0, limit)
+    .map((row) => finalizeVehicleSearchRow(row, query));
 }

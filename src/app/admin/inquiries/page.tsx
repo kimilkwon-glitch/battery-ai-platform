@@ -8,6 +8,8 @@ import {
   type InquiryRecord,
   type InquiryStatus,
 } from "@/lib/inquiry-storage";
+import { AdminPageNav } from "@/components/admin/AdminPageNav";
+import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { bm } from "@/lib/design-tokens";
 
 /**
@@ -29,10 +31,11 @@ export default function AdminInquiriesPage() {
         <p className="text-xs font-bold text-amber-800">
           운영용 임시 화면 — localStorage 저장·보안 없음. Supabase 등 DB 연동 권장.
         </p>
-        <div className="mt-2 flex flex-wrap items-center gap-3">
+        <AdminPageNav />
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-black text-slate-950">상담 접수 목록</h1>
-          <a href="/admin/coupons" className="text-xs font-bold text-blue-700 hover:underline">
-            쿠폰 목록 →
+          <a href={ADMIN_ROUTES.orderRequests} className="text-xs font-bold text-blue-700 hover:underline">
+            상담 주문 요청 →
           </a>
         </div>
         <button type="button" onClick={refresh} className={`${bm.btnSecondary} mt-4 text-xs`}>

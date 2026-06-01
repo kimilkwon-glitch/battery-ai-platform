@@ -11,6 +11,7 @@ import {
   BATTERY_RETURN_OPTIONS,
   type BatteryReturnOption,
 } from "@/lib/shop-order-types";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { OwnedCouponHint } from "@/components/benefits/CouponIssuerPanel";
 import { bm } from "@/lib/design-tokens";
 
@@ -97,6 +98,18 @@ export function BatteryDetailOrderPanel({
               매장·출장 안내
             </Link>
           </div>
+
+          <AddToCartButton
+            mode="battery"
+            variant="tertiary"
+            className="mt-2"
+            input={{
+              batteryCode: code,
+              fitmentStatus: vehicleSummary ? "needs_customer_confirm" : "unknown",
+              usedBatteryReturnOption: returnOption,
+              source: "battery_detail",
+            }}
+          />
 
           <button
             type="button"

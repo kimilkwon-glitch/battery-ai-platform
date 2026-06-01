@@ -1,5 +1,12 @@
-// Battery Manager Vehicle Alias DB v0.1
-// 목적: 고객이 실제로 부르는 이름/별칭/세대명/파생명 검색어를 정확한 차량 세대 slug로 매핑하기 위한 초안.
+// Battery Manager Vehicle Alias DB v0.3 (v0.1 구조 + v0.2/v0.3 확장 병합)
+// 목적: 고객 검색어/별칭/오타/연식/연료 표현을 기존 차량 DB slug로 연결 (기존 차량 DB 대체 아님).
+import { vehicleAliasDbV02Supplement } from "./vehicle-alias-v02-supplement";
+import {
+  vehicleAliasDbV03NewEntries,
+  vehicleAliasV03Augments,
+  type VehicleAliasV03Augment,
+} from "./vehicle-alias-v03-supplement";
+
 // 주의: 배터리 규격은 기존 Battery Manager DB를 우선 사용하고, 이 파일은 검색 alias/intent 매핑용으로 사용한다.
 // 원칙:
 // 1) aliases는 검색 매칭용 + 차량 상세 상단 "다르게 부르는 이름" 노출용.
@@ -28,7 +35,7 @@ export type VehicleAliasEntry = {
   notes?: string;
 };
 
-export const vehicleAliasDbV01: VehicleAliasEntry[] = [
+const vehicleAliasDbV01Core: VehicleAliasEntry[] = [
   // =========================================================
   // HYUNDAI - 현대
   // =========================================================
@@ -202,7 +209,7 @@ export const vehicleAliasDbV01: VehicleAliasEntry[] = [
     yearRange: '2018-2023',
     generationCode: 'TM',
     displayAliases: ['싼타페 TM', '더 뉴 싼타페', '싼타페 하이브리드 TM'],
-    aliases: ['싼타페TM', '산타페TM', 'TM싼타페', 'TM산타페', '더뉴싼타페', '더 뉴 싼타페', '더뉴산타페', '더 뉴 산타페', '싼타페 하이브리드', '싼타페TM 하이브리드', 'TM 하이브리드', '싼타페TM 디젤', '싼타페 4세대'],
+    aliases: ['싼타페TM', '산타페TM', 'TM싼타페', 'TM산타페', '더뉴싼타페', '더 뉴 싼타페', '더뉴산타페', '더 뉴 산타페', '싼타페 21년식', '싼타페 2021', '더뉴싼타페 21년식', '더 뉴 싼타페 21년식', '더뉴싼타페 2021', '더 뉴 싼타페 2021', '21년식 싼타페', '싼타페 하이브리드', '싼타페TM 하이브리드', 'TM 하이브리드', '싼타페TM 디젤', '싼타페 4세대'],
     intentTags: ['vehicle', 'generation', 'facelift', 'diesel', 'hev'],
     mapTo: { vehicleFamily: '싼타페', generation: 'TM' },
     notes: '21년식 더 뉴 싼타페는 TM 페이스리프트 계열로 연결.'
@@ -501,10 +508,10 @@ export const vehicleAliasDbV01: VehicleAliasEntry[] = [
     yearRange: '2020-현재',
     generationCode: 'MQ4',
     displayAliases: ['쏘렌토 MQ4', '쏘렌토 하이브리드', '쏘렌토 하브', '더 뉴 쏘렌토 MQ4'],
-    aliases: ['쏘렌토MQ4', '소렌토MQ4', 'MQ4쏘렌토', 'MQ4소렌토', 'mq4 쏘렌토', '쏘렌토 하이브리드', '쏘렌토 하브', '쏘렌토 HEV', '쏘렌토 hev', '쏘렌토MQ4 하이브리드', 'MQ4 하이브리드', '더뉴쏘렌토 MQ4', '더 뉴 쏘렌토 MQ4', '쏘렌토 4세대'],
-    intentTags: ['vehicle', 'generation', 'hev', 'diesel', 'gasoline'],
+    aliases: ['쏘렌토MQ4', '소렌토MQ4', 'MQ4쏘렌토', 'MQ4소렌토', 'mq4 쏘렌토', '쏘렌토 4세대', '쏘렌토 2020', '쏘렌토 20년식', '쏘렌토 2021', '쏘렌토 21년식', 'mq4쏘렌토', '더뉴쏘렌토 MQ4', '더 뉴 쏘렌토 MQ4'],
+    intentTags: ['vehicle', 'generation', 'diesel', 'gasoline'],
     mapTo: { vehicleFamily: '쏘렌토', generation: 'MQ4' },
-    notes: '하이브리드 검색은 AGM60L primary, 디젤/가솔린은 AGM80L 후보로 분기. 두 규격을 같은 확정 추천처럼 섞지 말 것.'
+    notes: '하이브리드는 kia-sorento-mq4-hev 항목으로 분리. 일반 MQ4는 AGM80L 후보.'
   },
   {
     brandGroup: 'kia',
@@ -1123,6 +1130,163 @@ export const vehicleAliasDbV01: VehicleAliasEntry[] = [
   }
 ];
 
+function applyVehicleAliasV03Augments(entries: VehicleAliasEntry[]): VehicleAliasEntry[] {
+  return entries.map((entry) => {
+    const aug: VehicleAliasV03Augment | undefined = vehicleAliasV03Augments[entry.slugHint];
+    if (!aug) return entry;
+
+    const aliasSet = new Set([...entry.aliases, ...(aug.aliases ?? [])]);
+    const displaySet = new Set([...entry.displayAliases, ...(aug.displayAliases ?? [])]);
+    const intentSet = new Set([...entry.intentTags, ...(aug.intentTags ?? [])]);
+
+    let mapTo = entry.mapTo;
+    if (aug.mapToFuel && mapTo) {
+      mapTo = { ...mapTo, fuel: aug.mapToFuel };
+    }
+
+    return {
+      ...entry,
+      aliases: [...aliasSet],
+      displayAliases: [...displaySet],
+      intentTags: [...intentSet],
+      mapTo,
+    };
+  });
+}
+
+/** v0.1 코어 + v0.2/v0.3 보강 — 검색 로직 import명 유지 */
+export const vehicleAliasDbV01: VehicleAliasEntry[] = applyVehicleAliasV03Augments([
+  ...vehicleAliasDbV01Core,
+  ...(vehicleAliasDbV02Supplement as VehicleAliasEntry[]),
+  ...(vehicleAliasDbV03NewEntries as VehicleAliasEntry[]),
+]);
+
+export type VehicleAliasDangerRule = {
+  id: string;
+  aliases: string[];
+  reason: string;
+  doNotSlugHints?: string[];
+  safeSlugHints?: string[];
+  preferAskOrShowMultiple?: boolean;
+  guardNotes?: string[];
+};
+
+export const vehicleAliasDangerRules: VehicleAliasDangerRule[] = [
+  {
+    id: "danger-genesis-coupe-vs-gv80-coupe",
+    aliases: ["제네시스 쿠페", "제네시스쿱", "젠쿱", "gv80 쿠페", "gv80쿱"],
+    reason: "제네시스 쿠페와 GV80 쿠페는 완전히 다른 차량.",
+    doNotSlugHints: ["genesis-gv80-jx1", "genesis-gv80-coupe", "genesis-coupe-bk"],
+    safeSlugHints: ["genesis-coupe-bk", "genesis-gv80-coupe"],
+    preferAskOrShowMultiple: true,
+  },
+  {
+    id: "danger-rexton-suv-vs-pickup",
+    aliases: ["렉스턴", "렉스턴칸", "렉스턴 스포츠", "렉스턴 스포츠 칸"],
+    reason: "렉스턴 SUV와 렉스턴 스포츠/칸은 차종·배터리 흐름 분리 필요.",
+    doNotSlugHints: ["kgm-rexton-g4", "kgm-rexton-y450", "kgm-rexton-sports-q200", "kgm-rexton-sports-khan"],
+    safeSlugHints: ["kgm-rexton-g4", "kgm-rexton-sports-q200", "kgm-rexton-sports-khan"],
+    preferAskOrShowMultiple: true,
+  },
+  {
+    id: "danger-santafe-the-prime-vs-tm-facelift",
+    aliases: ["더프라임", "싼타페 더프라임", "더 뉴 싼타페", "더뉴싼타페", "21년식 싼타페"],
+    reason: "싼타페 더 프라임은 DM 후기형, 더 뉴 싼타페 21년식은 TM 페이스리프트.",
+    doNotSlugHints: ["hyundai-santafe-dm", "hyundai-santafe-tm"],
+    safeSlugHints: ["hyundai-santafe-dm", "hyundai-santafe-tm"],
+    preferAskOrShowMultiple: true,
+  },
+  {
+    id: "danger-staria-agm80r-vs-l",
+    aliases: [
+      "스타리아 agm80l",
+      "스타리아 agm80",
+      "스타리아 cmf80l",
+      "스타리아 80l",
+      "스타리아 배터리 agm80l",
+    ],
+    reason: "스타리아는 AGM80R(R단자) 중심. AGM80L/CMF80L 검색어로 L단자 확정 금지.",
+    safeSlugHints: ["hyundai-staria-us4", "hyundai-staria-hev"],
+    preferAskOrShowMultiple: true,
+    guardNotes: ["규격 토큰은 참고용. 차량 확정 시 AGM80R DB 기준."],
+  },
+  {
+    id: "danger-porter2-90r-vs-100r",
+    aliases: [
+      "포터2 90r",
+      "포터2 100r",
+      "포터 90r",
+      "포터 100r",
+      "포터2 19년식",
+      "포터2 20년식",
+      "포터2 21년식",
+    ],
+    reason: "포터2는 2020년 전후 90R/100R 분기. 연식·연료 확인 필요.",
+    safeSlugHints: ["hyundai-porter2"],
+    preferAskOrShowMultiple: true,
+    guardNotes: ["2020년 이전 90R, 이후 100R. EV는 별도."],
+  },
+  {
+    id: "danger-porter2-diesel-vs-ev",
+    aliases: ["포터", "포터2", "포터 전기", "포터 ev", "포터 전기차"],
+    reason: "포터2 디젤과 포터 전기는 배터리 흐름이 다름.",
+    doNotSlugHints: ["hyundai-porter2"],
+    safeSlugHints: ["hyundai-porter2"],
+    preferAskOrShowMultiple: true,
+    guardNotes: ["포터2는 2020년 이전 90R / 이후 100R 분기 유지."],
+  },
+  {
+    id: "danger-staria-terminal-direction",
+    aliases: ["스타리아", "스타리아 배터리", "스타리아 agm80", "스타리아 cmf80l"],
+    reason: "스타리아는 AGM80R 중심. AGM80L/CMF80L 혼동 금지.",
+    safeSlugHints: ["hyundai-staria-us4", "hyundai-staria-hev"],
+    preferAskOrShowMultiple: true,
+  },
+  {
+    id: "danger-sorento-mq4-hev-vs-normal",
+    aliases: ["쏘렌토 mq4", "쏘렌토 하이브리드", "쏘렌토 hev", "mq4 하브"],
+    reason: "쏘렌토 MQ4 일반과 하이브리드는 배터리 후보가 다름.",
+    safeSlugHints: ["kia-sorento-mq4", "kia-sorento-mq4-hev"],
+    preferAskOrShowMultiple: true,
+    guardNotes: ["MQ4 HEV는 AGM60L primary, 일반 MQ4는 AGM80L 후보."],
+  },
+  {
+    id: "danger-agm95l-vs-100r",
+    aliases: ["agm95l", "agm 95 l", "100r", "100알", "agm95l 100r"],
+    reason: "AGM95L과 100R은 용도·차종이 다름. 추천/비교 묶음 금지.",
+    preferAskOrShowMultiple: true,
+    guardNotes: ["상용 R타입(100R)과 AGM95L 단일 확정 금지."],
+  },
+  {
+    id: "danger-bongo3-diesel-vs-ev",
+    aliases: ["봉고3", "봉고3 전기", "봉고 전기", "봉고3 ev", "봉고 ev"],
+    reason: "봉고3 디젤/LPG와 봉고3 EV 보조배터리 흐름 분리.",
+    safeSlugHints: ["kia-bongo3"],
+    preferAskOrShowMultiple: true,
+  },
+  {
+    id: "danger-tucson-nx4-hev-vs-normal",
+    aliases: ["투싼 nx4", "투싼 nx4 하브", "투싼 하이브리드", "nx4 hev"],
+    reason: "투싼 NX4 일반과 하이브리드 배터리 후보 분리.",
+    safeSlugHints: ["hyundai-tucson-nx4", "hyundai-tucson-nx4-hev"],
+    preferAskOrShowMultiple: true,
+  },
+  {
+    id: "danger-niro-fuel-split",
+    aliases: ["니로", "니로 하이브리드", "니로 ev", "니로 전기", "니로 phev", "니로 플러그인"],
+    reason: "니로 HEV/PHEV/EV 혼동 금지.",
+    safeSlugHints: ["kia-niro-de", "kia-niro-sg2"],
+    preferAskOrShowMultiple: true,
+  },
+  {
+    id: "danger-kona-fuel-split",
+    aliases: ["코나", "코나 ev", "코나 전기", "코나 하이브리드", "코나 hev"],
+    reason: "코나 일반·HEV·EV 혼동 금지.",
+    safeSlugHints: ["hyundai-kona-os", "hyundai-kona-sx2"],
+    preferAskOrShowMultiple: true,
+  },
+];
+
 // 검색 엔진 적용용 보조 인덱스 생성 예시
 export function buildAliasIndex(entries: VehicleAliasEntry[]) {
   const index: Record<string, VehicleAliasEntry[]> = {};
@@ -1145,12 +1309,84 @@ export function normalizeVehicleAlias(input: string) {
     .replace(/[·ㆍ._\-]/g, '')
     .replace(/Ⅱ/g, 'ii')
     .replace(/Ⅲ/g, 'iii')
+    .replace(/년식/g, '년')
+    .replace(/하이브리드/g, 'hev')
+    .replace(/하브/g, 'hev')
+    .replace(/전기차/g, 'ev')
+    .replace(/전기/g, 'ev')
+    .replace(/일렉트릭/g, 'ev')
+    .replace(/일렉트리파이드/g, 'ev')
+    .replace(/경유/g, '디젤')
+    .replace(/휘발유/g, '가솔린')
+    .replace(/엘피지/g, 'lpg')
+    .replace(/엘피이/g, 'lpe')
+    .replace(/가스/g, 'lpg')
+    .replace(/바이퓨얼/g, 'lpg')
+    .replace(/hybrid/g, 'hev')
+    .replace(/diesel/g, '디젤')
+    .replace(/gasoline/g, '가솔린')
+    .replace(/electric/g, 'ev')
     .replace(/그랜져/g, '그랜저')
     .replace(/산타페/g, '싼타페')
     .replace(/소나타/g, '쏘나타')
     .replace(/캡쳐/g, '캡처')
     .replace(/펠리세이드/g, '팰리세이드')
     .trim();
+}
+
+/** 위험/애매 검색어 — 단일 차량 강제 매핑 방지 (긴 alias·완전일치 우선) */
+export function findVehicleAliasDangerRule(query: string): VehicleAliasDangerRule | null {
+  const normalized = normalizeVehicleAlias(query);
+  let best: { rule: VehicleAliasDangerRule; score: number } | null = null;
+
+  for (const rule of vehicleAliasDangerRules) {
+    for (const alias of rule.aliases) {
+      const na = normalizeVehicleAlias(alias);
+      const matches =
+        normalized === na ||
+        (na.length >= 3 && normalized.includes(na)) ||
+        (normalized.length >= 3 && na.includes(normalized));
+      if (!matches) continue;
+      const score = na.length + (normalized === na ? 1000 : 0);
+      if (!best || score > best.score) {
+        best = { rule, score };
+      }
+    }
+  }
+  return best?.rule ?? null;
+}
+
+/** 검수용 — 매칭되는 모든 danger rule id */
+export function findAllVehicleAliasDangerRules(query: string): string[] {
+  const normalized = normalizeVehicleAlias(query);
+  const hits = new Set<string>();
+  for (const rule of vehicleAliasDangerRules) {
+    for (const alias of rule.aliases) {
+      const na = normalizeVehicleAlias(alias);
+      if (
+        normalized === na ||
+        (na.length >= 3 && normalized.includes(na)) ||
+        (normalized.length >= 3 && na.includes(normalized))
+      ) {
+        hits.add(rule.id);
+        break;
+      }
+    }
+  }
+  return [...hits];
+}
+
+/** slugHint가 car-assets / SLUG_HINT 맵에 연결되는지 검수용 */
+export function listUnmappedVehicleAliasSlugHints(
+  mappedSlugHints: ReadonlySet<string>,
+): string[] {
+  const missing = new Set<string>();
+  for (const entry of vehicleAliasDbV01) {
+    if (!mappedSlugHints.has(entry.slugHint)) {
+      missing.add(entry.slugHint);
+    }
+  }
+  return [...missing].sort();
 }
 
 // 고객 화면 노출 예시:

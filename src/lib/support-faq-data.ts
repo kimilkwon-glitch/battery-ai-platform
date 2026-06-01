@@ -1,4 +1,15 @@
-export type FaqCategory = "전체" | "규격" | "주문" | "출장" | "증상";
+import {
+  CUSTOMER_SERVICE_FAQ_ITEMS,
+  type CustomerServiceFaqCategory,
+} from "@/data/customer-faq";
+
+export type FaqCategory =
+  | "전체"
+  | "규격"
+  | "주문"
+  | "출장"
+  | "증상"
+  | CustomerServiceFaqCategory;
 
 export type SupportFaqItem = {
   id: string;
@@ -13,6 +24,12 @@ export const SUPPORT_FAQ_CATEGORIES: FaqCategory[] = [
   "주문",
   "출장",
   "증상",
+  "계정",
+  "조회",
+  "배송",
+  "교환·반품",
+  "폐전지",
+  "결제",
 ];
 
 export const SUPPORT_FAQ_ITEMS: SupportFaqItem[] = [
@@ -86,4 +103,5 @@ export const SUPPORT_FAQ_ITEMS: SupportFaqItem[] = [
     answer:
       "전기차(EV)도 12V 보조배터리를 사용합니다. 내연기관 승용차용 일반 규격과 장착 위치·용량·규격명이 다를 수 있어 혼동하면 오주문이 발생합니다.\n\nEV 전용 또는 보조 12V로 표기된 규격인지, 차종별 장착 공간과 단자 방향이 맞는지 확인해야 합니다. 일반 GB/CMF 규격을 EV에 무조건 대체하지 마세요.\n\n차종명·연식·기존 라벨 사진을 준비해 문의하시면 보조 12V 적합 여부를 상담할 수 있습니다.",
   },
+  ...CUSTOMER_SERVICE_FAQ_ITEMS,
 ];

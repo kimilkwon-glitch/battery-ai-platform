@@ -4,6 +4,7 @@ import Link from "next/link";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { PortalSiteNav, useNavViewport } from "@/components/platform/PortalHeaderNav";
 import { BrandLogoLink } from "@/components/common/BrandLogoLink";
+import { CartHeaderLink } from "@/components/cart/CartHeaderLink";
 import { HUB_LOGIN, HUB_SIGNUP } from "@/lib/customer-hub-routes";
 
 export function PortalHeaderClient({
@@ -40,6 +41,7 @@ export function PortalHeaderClient({
           )}
 
           <div className="portal-header-auth absolute right-0 top-1/2 z-[2] flex -translate-y-1/2 items-center gap-1 sm:gap-1.5">
+            <CartHeaderLink />
             <Link
               href={HUB_LOGIN}
               className="hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:inline-flex lg:px-3 lg:text-xs"

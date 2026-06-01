@@ -5,12 +5,16 @@ import {
   HUB_PHOTO,
   HUB_REVIEWS,
   HUB_STORE_DETAIL,
+  HUB_SUPPORT,
 } from "@/lib/customer-hub-routes";
+import { CUSTOMER_CENTER_USED_BATTERY } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
 import { OfficialChannelsStrip } from "@/components/common/OfficialChannelsStrip";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 
 const links = [
+  ["고객센터", HUB_SUPPORT],
+  ["폐전지 반납", CUSTOMER_CENTER_USED_BATTERY],
   ["브랜드 안내", HUB_BRANDS],
   ["매장·출장 안내", HUB_STORE_DETAIL],
   ["배터리 가이드", HUB_GUIDE],

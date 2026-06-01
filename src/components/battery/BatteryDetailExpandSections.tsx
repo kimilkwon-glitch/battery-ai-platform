@@ -155,6 +155,12 @@ export function BatteryDetailExpandSections({
           <Link className={`${bm.btnSecondary} text-xs`} href="/order-checklist">
             주문 전 체크
           </Link>
+          <Link className={`${bm.btnTertiary} text-xs`} href="/support/order-guide">
+            주문 안내
+          </Link>
+          <Link className={`${bm.btnTertiary} text-xs`} href="/support">
+            고객센터
+          </Link>
           <Link className={`${bm.btnSecondary} text-xs`} href="/service-center">
             매장·출장 상담
           </Link>

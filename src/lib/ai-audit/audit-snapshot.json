@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-30T11:16:30.550Z",
-  "gitCommit": "fe122e73e003c0e9c0088ff5be6ca4cf7a7433e8",
+  "generatedAt": "2026-06-01T05:24:07.113Z",
+  "gitCommit": "fe8f1c897138c2b64e3d92ca8d44597577f82cf9",
   "forbidden": {
     "hits": [
       {
@@ -10,10 +10,76 @@
         "text": "<p className=\"mt-0.5 text-[9px] font-bold text-amber-600\">준비 중</p>"
       },
       {
+        "keyword": "준비 중",
+        "file": "src/components/customer/UsedBatteryReturnGuide.tsx",
+        "line": 61,
+        "text": "실제 발송은 준비 중이며, 문구만 미리보기할 수 있습니다."
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/components/order/BankTransferPolicySection.tsx",
+        "line": 53,
+        "text": "실제 발송은 준비 중이며, 문구만 미리보기할 수 있습니다."
+      },
+      {
         "keyword": "준비중",
         "file": "src/lib/search/search-quality-rules.ts",
         "line": 180,
         "text": "for (const banned of [\"준비중\", \"샘플입니다\", \"UI 검증\", \"mock\", \"fixture\", \"TODO\", \"demo\"]) {"
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/data/cart-flow-guide.ts",
+        "line": 323,
+        "text": "\"주문하기 → 주문서 작성 단계 또는 준비 중 처리(결제 PG 미연동)\","
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/data/checkout-checklist.ts",
+        "line": 22,
+        "text": "orderPrepModalTitle: \"주문 기능 준비 중\","
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/data/checkout-checklist.ts",
+        "line": 24,
+        "text": "\"현재 주문 기능은 준비 중입니다. 상품 확인 후 고객센터 상담 또는 기존 주문 채널을 이용해 주세요.\","
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/data/customer-guide.ts",
+        "line": 169,
+        "text": "\"실제 문자·알림톡 자동 발송은 준비 중이며, 아래 페이지에서 문구 예시만 확인할 수 있습니다.\","
+      },
+      {
+        "keyword": "준비중",
+        "file": "src/data/order-message-templates.ts",
+        "line": 17,
+        "text": "| \"배송 준비중\""
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/data/order-message-templates.ts",
+        "line": 93,
+        "text": "\"실제 문자·알림톡 자동 발송 기능은 준비 중입니다. 현재는 운영 문구 확인 및 수정용 템플릿입니다.\","
+      },
+      {
+        "keyword": "준비중",
+        "file": "src/data/order-message-templates.ts",
+        "line": 236,
+        "text": "category: \"배송 준비중\","
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/data/order-message-templates.ts",
+        "line": 239,
+        "text": "title: \"상품 준비 중입니다\","
+      },
+      {
+        "keyword": "준비 중",
+        "file": "src/data/used-battery-return-guide.ts",
+        "line": 14,
+        "text": "\"실제 택배 회수 신청·자동 추가금 청구 기능은 준비 중입니다. 아래는 운영 안내 및 고객 확인용 절차입니다.\","
       }
     ],
     "byKeyword": [
@@ -26,9 +92,21 @@
             "file": "src/lib/search/search-quality-rules.ts",
             "line": 180,
             "text": "for (const banned of [\"준비중\", \"샘플입니다\", \"UI 검증\", \"mock\", \"fixture\", \"TODO\", \"demo\"]) {"
+          },
+          {
+            "keyword": "준비중",
+            "file": "src/data/order-message-templates.ts",
+            "line": 17,
+            "text": "| \"배송 준비중\""
+          },
+          {
+            "keyword": "준비중",
+            "file": "src/data/order-message-templates.ts",
+            "line": 236,
+            "text": "category: \"배송 준비중\","
           }
         ],
-        "matchCount": 1
+        "matchCount": 3
       },
       {
         "keyword": "준비 중",
@@ -39,9 +117,51 @@
             "file": "src/components/admin/AdminContentClient.tsx",
             "line": 368,
             "text": "<p className=\"mt-0.5 text-[9px] font-bold text-amber-600\">준비 중</p>"
+          },
+          {
+            "keyword": "준비 중",
+            "file": "src/components/customer/UsedBatteryReturnGuide.tsx",
+            "line": 61,
+            "text": "실제 발송은 준비 중이며, 문구만 미리보기할 수 있습니다."
+          },
+          {
+            "keyword": "준비 중",
+            "file": "src/components/order/BankTransferPolicySection.tsx",
+            "line": 53,
+            "text": "실제 발송은 준비 중이며, 문구만 미리보기할 수 있습니다."
+          },
+          {
+            "keyword": "준비 중",
+            "file": "src/data/cart-flow-guide.ts",
+            "line": 323,
+            "text": "\"주문하기 → 주문서 작성 단계 또는 준비 중 처리(결제 PG 미연동)\","
+          },
+          {
+            "keyword": "준비 중",
+            "file": "src/data/checkout-checklist.ts",
+            "line": 22,
+            "text": "orderPrepModalTitle: \"주문 기능 준비 중\","
+          },
+          {
+            "keyword": "준비 중",
+            "file": "src/data/checkout-checklist.ts",
+            "line": 24,
+            "text": "\"현재 주문 기능은 준비 중입니다. 상품 확인 후 고객센터 상담 또는 기존 주문 채널을 이용해 주세요.\","
+          },
+          {
+            "keyword": "준비 중",
+            "file": "src/data/customer-guide.ts",
+            "line": 169,
+            "text": "\"실제 문자·알림톡 자동 발송은 준비 중이며, 아래 페이지에서 문구 예시만 확인할 수 있습니다.\","
+          },
+          {
+            "keyword": "준비 중",
+            "file": "src/data/order-message-templates.ts",
+            "line": 93,
+            "text": "\"실제 문자·알림톡 자동 발송 기능은 준비 중입니다. 현재는 운영 문구 확인 및 수정용 템플릿입니다.\","
           }
         ],
-        "matchCount": 1
+        "matchCount": 10
       },
       {
         "keyword": "등록 예정",

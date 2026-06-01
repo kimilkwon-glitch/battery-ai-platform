@@ -21,11 +21,12 @@ type Props = {
 };
 
 export function CarGenerationImage({ src, alt, size = "compact", className = "", commercial = false }: Props) {
-  const [imgSrc, setImgSrc] = useState(src);
+  const safeSrc = src?.trim() ? src : CAR_IMAGE_FALLBACK;
+  const [imgSrc, setImgSrc] = useState(safeSrc);
   const [triedOriginal, setTriedOriginal] = useState(false);
 
   useEffect(() => {
-    setImgSrc(src);
+    setImgSrc(src?.trim() ? src : CAR_IMAGE_FALLBACK);
     setTriedOriginal(false);
   }, [src]);
 

@@ -19,7 +19,9 @@
     "verify:porter2": "npx tsx scripts/verify-porter2-regression.mjs",
     "verify:production": "node scripts/verify-production-evidence.mjs",
     "search:qa": "node tools/search-quality/run-search-quality.mjs",
-    "verify:alias-v01": "node tools/verify-alias-v01-production.mjs"
+    "verify:alias-v01": "node tools/verify-alias-v01-production.mjs",
+    "verify:alias-v021": "npx tsx scripts/probe-vehicle-alias-v021.mjs",
+    "verify:alias-v03": "npx tsx scripts/probe-vehicle-alias-v03.mjs"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",

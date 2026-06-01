@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { bm } from "@/lib/design-tokens";
 import { compareHref, guideHref } from "@/lib/platform-data";
+import {
+  CUSTOMER_CENTER_ORDER_GUIDE,
+  CUSTOMER_CENTER_USED_BATTERY,
+} from "@/lib/customer-center-routes";
+import { HUB_SUPPORT } from "@/lib/customer-hub-routes";
 
 export function BatteryNavFooter({ code }: { code: string }) {
   return (
@@ -25,9 +30,18 @@ export function BatteryNavFooter({ code }: { code: string }) {
           <Link className={`${bm.btnTertiary} text-[11px]`} href="/order-checklist">
             주문 전 체크
           </Link>
+          <Link className={`${bm.btnTertiary} text-[11px]`} href={CUSTOMER_CENTER_ORDER_GUIDE}>
+            주문 안내
+          </Link>
+          <Link className={`${bm.btnTertiary} text-[11px]`} href={CUSTOMER_CENTER_USED_BATTERY}>
+            폐전지 반납
+          </Link>
+          <Link className={`${bm.btnTertiary} text-[11px]`} href={HUB_SUPPORT}>
+            고객센터
+          </Link>
         </div>
       </details>
     </section>
   );
 }
-
+

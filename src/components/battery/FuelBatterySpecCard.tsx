@@ -6,6 +6,7 @@ import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail
 
 import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSummary";
 
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { bm } from "@/lib/design-tokens";
 
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
@@ -23,6 +24,9 @@ type Props = {
   showExceptionNote?: boolean;
   conditionNote?: string;
   compact?: boolean;
+  /** 차량 상세에서 담기 시 전달 */
+  vehicleSlug?: string;
+  vehicleTitle?: string;
 };
 
 
@@ -34,6 +38,8 @@ export function FuelBatterySpecCard({
   showExceptionNote = false,
   conditionNote,
   compact = false,
+  vehicleSlug,
+  vehicleTitle,
 }: Props) {
 
   const display = parseBatterySpecDisplay(batteryCode);
@@ -149,6 +155,17 @@ export function FuelBatterySpecCard({
           >
             사진으로 확인 (보조)
           </Link>
+          {vehicleSlug && vehicleTitle ? (
+            <AddToCartButton
+              mode="vehicle"
+              variant="tertiary"
+              label="장바구니 담기"
+              batteryCode={batteryCode}
+              vehicleSlug={vehicleSlug}
+              vehicleTitle={vehicleTitle}
+              fuelLabel={fuelLabel}
+            />
+          ) : null}
         </div>
 
       </div>

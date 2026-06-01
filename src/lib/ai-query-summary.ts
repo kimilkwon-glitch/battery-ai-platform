@@ -6,6 +6,7 @@ import {
   formatSearchVehicleDisplayLabel,
 } from "@/lib/search/search-vehicle-display";
 import { extractQuerySpecTokens } from "@/lib/search/search-query-specs";
+import { sanitizeStariaBatterySpecsForCustomer } from "@/lib/search/staria-query-spec-guard";
 import { detectQueryIntentFlags } from "@/lib/search/search-intent";
 import { extractPurposeKeywords } from "@/lib/search/search-purpose";
 
@@ -132,7 +133,11 @@ export function buildAiQuerySummary(rawQuery: string): AiQuerySummary | null {
   const alias = resolveSearchVehicleAlias(q);
   const intent = classifySearch(q);
   const flags = detectQueryIntentFlags(q);
-  const specTokens = extractQuerySpecTokens(q);
+  const specTokens = sanitizeStariaBatterySpecsForCustomer(
+    q,
+    alias,
+    extractQuerySpecTokens(q),
+  );
   const upgradeOnly = isUpgradeReviewWithoutSpecs(q, specTokens);
 
   let vehicleLabel: string | null = null;

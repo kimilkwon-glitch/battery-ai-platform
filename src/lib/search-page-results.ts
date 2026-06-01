@@ -8,6 +8,11 @@ import {
   formatSearchVehicleRowTitle,
 } from "@/lib/search/search-vehicle-display";
 import {
+  queryHasStariaMisleadingBatterySpec,
+  resolveStariaAliasHeroBatteryCode,
+  sanitizeStariaBatterySpecsForCustomer,
+} from "@/lib/search/staria-query-spec-guard";
+import {
   isKgMobilityBrand,
   KG_MOBILITY_CANONICAL_BRAND,
   queryMentionsKgMobilityBrand,
@@ -923,14 +928,18 @@ function buildAliasHero(
 ): SearchHeroResult {
   const label = formatSearchVehicleDisplayLabel(query, alias);
   const title = formatSearchVehicleRowTitle(query, alias, label);
+  const misleadingStaria = queryHasStariaMisleadingBatterySpec(query);
+  const batteryCode = resolveStariaAliasHeroBatteryCode(query, alias, specs);
   return {
     title,
     vehicleName: label,
-    batteryCode: specs[0],
+    batteryCode,
     status: "needs_check",
-    statusLabel: "연식/연료 확인 필요",
-    message: ALIAS_VEHICLE_NOTE,
-    href: `/search?q=${encodeURIComponent(`${alias.label} 배터리`)}`,
+    statusLabel: misleadingStaria ? "단자 방향 확인 필요" : "연식/연료 확인 필요",
+    message: misleadingStaria
+      ? "스타리아는 AGM80R(R단자) 기준입니다. AGM80L·CMF80L 표기는 혼동이 잦아 사진 확인을 권장합니다."
+      : ALIAS_VEHICLE_NOTE,
+    href: `/search?q=${encodeURIComponent(`${alias.formalDisplayName ?? alias.label} 배터리`)}`,
     detailLabel: "차량 상세 보기",
   };
 }
@@ -1062,6 +1071,9 @@ export function buildSearchPageResults(
         queryHasBatterySpec,
         summary.batterySpecs,
       );
+      if (alias) {
+        summary.batterySpecs = sanitizeStariaBatterySpecsForCustomer(query, alias, summary.batterySpecs);
+      }
     }
 
     if (recognizedVehicle) {

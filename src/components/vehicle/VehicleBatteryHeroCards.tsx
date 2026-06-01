@@ -61,6 +61,8 @@ export function VehicleBatteryHeroCards({
               conditionNote="연식별 확인이 필요할 수 있습니다."
               highlighted={highlightYear === line.highlightKey}
               showExceptionNote={highlightYear === line.highlightKey}
+              vehicleSlug={slug}
+              vehicleTitle={vehicleTitle}
             />
           ))}
         </div>
@@ -79,6 +81,8 @@ export function VehicleBatteryHeroCards({
                 }
                 highlighted={highlightFuel === group.fuelLabel}
                 showExceptionNote={highlightFuel === group.fuelLabel}
+                vehicleSlug={slug}
+                vehicleTitle={vehicleTitle}
               />
             ))}
           </div>
@@ -94,6 +98,8 @@ export function VehicleBatteryHeroCards({
                       batteryCode={resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel)}
                       compact
                       conditionNote="추가 후보 — 확인 필요할 수 있습니다."
+                      vehicleSlug={slug}
+                      vehicleTitle={vehicleTitle}
                     />
                   ))}
                 </div>

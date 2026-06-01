@@ -1,0 +1,1388 @@
+{
+  "at": "2026-06-01T05:23:48.188Z",
+  "version": "v0.3.1-stabilization",
+  "summary": {
+    "vehiclePass": 25,
+    "vehicleTotal": 25,
+    "specPass": 14,
+    "specTotal": 14,
+    "dangerPass": 22,
+    "dangerTotal": 22,
+    "assetIdFallbacks": [],
+    "uiFailures": [],
+    "specFailures": [],
+    "dangerFailures": []
+  },
+  "vehicleResults": [
+    {
+      "query": "케이쓰리",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "kia-k3-1st",
+      "assetId": "k3-yd",
+      "displayName": "기아 K3 1세대",
+      "imageSrc": "/assets/cars-normalized/kia/k3_yd.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "케이쓰리",
+      "firstRow": {
+        "model": "기아 K3 1세대",
+        "origin": "DIN62L",
+        "recommend": "DIN62L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "기아 K3 1세대",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "k3쿱",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "kia-k3-1st",
+      "assetId": "k3-yd",
+      "displayName": "기아 K3 1세대",
+      "imageSrc": "/assets/cars-normalized/kia/k3_yd.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "K3 쿱",
+      "firstRow": {
+        "model": "기아 K3 1세대",
+        "origin": "DIN62L",
+        "recommend": "DIN62L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "기아 K3 1세대",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "아반떼 cn7",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-avante-cn7",
+      "assetId": "avante-cn7",
+      "displayName": "현대 아반떼 CN7",
+      "imageSrc": "/assets/cars-normalized/hyundai/avante_cn7.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "아반떼 CN7",
+      "firstRow": {
+        "model": "현대 아반떼 CN7",
+        "origin": "AGM60L",
+        "recommend": "AGM60L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 아반떼 CN7",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "아반떼 21년식",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": null,
+      "assetId": "avante-cn7",
+      "displayName": "현대 아반떼 CN7",
+      "imageSrc": "/assets/cars-normalized/hyundai/avante_cn7.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": null,
+      "firstRow": {
+        "model": "현대 아반떼 CN7",
+        "origin": "AGM60L",
+        "recommend": "AGM60L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 아반떼 CN7",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "쏘나타 dn8 하브",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-sonata-dn8-hev",
+      "assetId": "sonata-dn8",
+      "displayName": "현대 쏘나타 DN8",
+      "imageSrc": "/assets/cars-normalized/hyundai/sonata_dn8.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "쏘나타 DN8 하이브리드",
+      "firstRow": {
+        "model": "현대 쏘나타 DN8",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 쏘나타 DN8",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "쏘나타 dn8 lpg",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-sonata-dn8",
+      "assetId": "sonata-dn8",
+      "displayName": "현대 쏘나타 DN8",
+      "imageSrc": "/assets/cars-normalized/hyundai/sonata_dn8.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "쏘나타 DN8",
+      "firstRow": {
+        "model": "현대 쏘나타 DN8",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 쏘나타 DN8",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "그랜저 ig",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-grandeur-ig",
+      "assetId": "grandeur-ig",
+      "displayName": "현대 그랜저 IG",
+      "imageSrc": "/assets/cars-normalized/hyundai/grandeur_ig.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "그랜저 IG",
+      "firstRow": {
+        "model": "현대 그랜저 IG",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 그랜저 IG",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "더뉴그랜저",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-grandeur-ig",
+      "assetId": "grandeur-ig-fl",
+      "displayName": "현대 더 뉴 그랜저 IG",
+      "imageSrc": "/assets/cars-normalized/hyundai/grandeur_ig_fl.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "더 뉴 그랜저",
+      "firstRow": {
+        "model": "현대 더 뉴 그랜저 IG",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 더 뉴 그랜저 IG",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "그랜저 gn7",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-grandeur-gn7",
+      "assetId": "grandeur-gn7",
+      "displayName": "현대 디 올 뉴 그랜저 GN7",
+      "imageSrc": "/assets/cars-normalized/hyundai/grandeur_new.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "그랜저 GN7",
+      "firstRow": {
+        "model": "현대 디 올 뉴 그랜저 GN7",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 디 올 뉴 그랜저 GN7",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "싼타페 더프라임",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-santafe-dm",
+      "assetId": "santafe-dm",
+      "displayName": "현대 싼타페 DM",
+      "imageSrc": "/assets/cars-normalized/hyundai/santafe_dm.png",
+      "fallback": false,
+      "dangerRuleId": "danger-santafe-the-prime-vs-tm-facelift",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "싼타페 더 프라임",
+      "firstRow": {
+        "model": "현대 싼타페 DM",
+        "origin": "80L",
+        "recommend": "80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 싼타페 DM",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "더 뉴 싼타페 21년식",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-santafe-tm",
+      "assetId": "santafe-tm",
+      "displayName": "현대 싼타페 TM",
+      "imageSrc": "/assets/cars-normalized/hyundai/santafe_tm.png",
+      "fallback": false,
+      "dangerRuleId": "danger-santafe-the-prime-vs-tm-facelift",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "더뉴싼타페 21년식",
+      "firstRow": {
+        "model": "현대 싼타페 TM",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 싼타페 TM",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "싼타페 mx5",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-santafe-mx5",
+      "assetId": "santafe-mx5",
+      "displayName": "현대 디 올 뉴 싼타페 MX5",
+      "imageSrc": "/assets/cars-normalized/hyundai/santafe_mx5.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "싼타페 MX5",
+      "firstRow": {
+        "model": "현대 디 올 뉴 싼타페 MX5",
+        "origin": "90R",
+        "recommend": "90R",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 디 올 뉴 싼타페 MX5",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "투싼 nx4 하브",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-tucson-nx4-hev",
+      "assetId": "tucson-nx4",
+      "displayName": "현대 투싼 4세대 NX4",
+      "imageSrc": "/assets/cars-normalized/hyundai/tucson_nx4.png",
+      "fallback": false,
+      "dangerRuleId": "danger-tucson-nx4-hev-vs-normal",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "투싼 NX4 하이브리드",
+      "firstRow": {
+        "model": "현대 투싼 4세대 NX4",
+        "origin": "AGM70L",
+        "recommend": "AGM70L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 투싼 4세대 NX4",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "투싼 nx4 디젤",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-tucson-nx4",
+      "assetId": "tucson-nx4",
+      "displayName": "현대 투싼 4세대 NX4",
+      "imageSrc": "/assets/cars-normalized/hyundai/tucson_nx4.png",
+      "fallback": false,
+      "dangerRuleId": "danger-tucson-nx4-hev-vs-normal",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "투싼 nx4 디젤",
+      "firstRow": {
+        "model": "현대 투싼 4세대 NX4",
+        "origin": "AGM70L",
+        "recommend": "AGM70L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 투싼 4세대 NX4",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "스타리아",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-staria-us4",
+      "assetId": "staria-us4",
+      "displayName": "현대 스타리아",
+      "imageSrc": "/assets/cars-normalized/hyundai/staria_lounge.png",
+      "fallback": false,
+      "dangerRuleId": "danger-staria-terminal-direction",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "스타리아",
+      "firstRow": {
+        "model": "현대 스타리아",
+        "origin": "AGM80R",
+        "recommend": "AGM80R",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 스타리아",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "스타리아 agm80l",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-staria-us4",
+      "assetId": "staria-us4",
+      "displayName": "현대 스타리아",
+      "imageSrc": "/assets/cars-normalized/hyundai/staria_lounge.png",
+      "fallback": false,
+      "dangerRuleId": "danger-staria-agm80r-vs-l",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "스타리아",
+      "firstRow": {
+        "model": "현대 스타리아",
+        "origin": "AGM80R",
+        "recommend": "AGM80R",
+        "needsReview": true
+      },
+      "ui": {
+        "displayName": "현대 스타리아",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "스타리아 agm80r",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-staria-us4",
+      "assetId": "staria-us4",
+      "displayName": "현대 스타리아",
+      "imageSrc": "/assets/cars-normalized/hyundai/staria_lounge.png",
+      "fallback": false,
+      "dangerRuleId": "danger-staria-agm80r-vs-l",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "스타리아 AGM80R",
+      "firstRow": {
+        "model": "현대 스타리아",
+        "origin": "AGM80R",
+        "recommend": "AGM80R",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 스타리아",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "포터2 19년식",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-porter2",
+      "assetId": "porter2-old",
+      "displayName": "현대 포터2",
+      "imageSrc": "/assets/cars-normalized/hyundai/porter2_old.png",
+      "fallback": false,
+      "dangerRuleId": "danger-porter2-90r-vs-100r",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "포터2 19년식",
+      "firstRow": {
+        "model": "현대 포터2",
+        "origin": "90R",
+        "recommend": "90R",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 포터2",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "포터2 21년식",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-porter2",
+      "assetId": "porter2-new",
+      "displayName": "현대 포터2 2020년형 이후",
+      "imageSrc": "/assets/cars-normalized/hyundai/porter2_new.png",
+      "fallback": false,
+      "dangerRuleId": "danger-porter2-90r-vs-100r",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "포터2 21년식",
+      "firstRow": {
+        "model": "현대 포터2 2020년형 이후",
+        "origin": "100R",
+        "recommend": "100R",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 포터2 2020년형 이후",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "포터 전기",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "hyundai-porter2",
+      "assetId": "porter2-ev",
+      "displayName": "현대 포터2 EV",
+      "imageSrc": "/assets/cars-normalized/hyundai/porter2_ev.png",
+      "fallback": false,
+      "dangerRuleId": "danger-porter2-diesel-vs-ev",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "포터 일렉트릭",
+      "firstRow": {
+        "model": "현대 포터2 EV",
+        "origin": "90R",
+        "recommend": "90R",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "현대 포터2 EV",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "봉고3 전기",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "kia-bongo3",
+      "assetId": "bongo3-ev",
+      "displayName": "기아 봉고3 EV",
+      "imageSrc": "/assets/cars-normalized/kia/bongo3_ev.png",
+      "fallback": false,
+      "dangerRuleId": "danger-bongo3-diesel-vs-ev",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "봉고3 EV",
+      "firstRow": {
+        "model": "기아 봉고3 EV",
+        "origin": "80L",
+        "recommend": "80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "기아 봉고3 EV",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "쏘렌토 mq4 하브",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "kia-sorento-mq4-hev",
+      "assetId": "sorento-mq4",
+      "displayName": "기아 쏘렌토 4세대 MQ4",
+      "imageSrc": "/assets/cars-normalized/kia/sorento_mq4.png",
+      "fallback": false,
+      "dangerRuleId": "danger-sorento-mq4-hev-vs-normal",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "쏘렌토 MQ4 하이브리드",
+      "firstRow": {
+        "model": "기아 쏘렌토 4세대 MQ4",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "기아 쏘렌토 4세대 MQ4",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "쏘렌토 mq4 디젤",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "kia-sorento-mq4",
+      "assetId": "sorento-mq4",
+      "displayName": "기아 쏘렌토 4세대 MQ4",
+      "imageSrc": "/assets/cars-normalized/kia/sorento_mq4.png",
+      "fallback": false,
+      "dangerRuleId": "danger-sorento-mq4-hev-vs-normal",
+      "dangerPreferMultiple": true,
+      "matchedAliasInternal": "쏘렌토 mq4 디젤",
+      "firstRow": {
+        "model": "기아 쏘렌토 4세대 MQ4",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "기아 쏘렌토 4세대 MQ4",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "카니발 ka4",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "kia-carnival-ka4",
+      "assetId": "carnival-ka4",
+      "displayName": "기아 카니발 4세대 KA4",
+      "imageSrc": "/assets/cars-normalized/kia/carnival_ka4.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "카니발 KA4",
+      "firstRow": {
+        "model": "기아 카니발 4세대 KA4",
+        "origin": "AGM80L",
+        "recommend": "AGM80L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "기아 카니발 4세대 KA4",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    },
+    {
+      "query": "셀토스 21년식",
+      "aliasMatch": true,
+      "matchedVia": "vehicle-canonical-registry",
+      "slugHint": "kia-seltos",
+      "assetId": "seltos-sp2",
+      "displayName": "기아 셀토스",
+      "imageSrc": "/assets/cars-normalized/kia/seltos_sp2.png",
+      "fallback": false,
+      "dangerRuleId": null,
+      "dangerPreferMultiple": false,
+      "matchedAliasInternal": "셀토스 21년식",
+      "firstRow": {
+        "model": "기아 셀토스",
+        "origin": "AGM60L",
+        "recommend": "AGM60L",
+        "needsReview": false
+      },
+      "ui": {
+        "displayName": "기아 셀토스",
+        "informalOnScreen": false,
+        "brandDuplicated": false,
+        "matchedAliasExposed": false,
+        "aliasesExposedOnScreen": false,
+        "imageSrcUndefined": false,
+        "imageSrcMissing": false,
+        "fallbackUsed": false
+      },
+      "pass": true
+    }
+  ],
+  "specResults": [
+    {
+      "query": "AGM60L",
+      "specCodes": [
+        "AGM60L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "AGM60L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "AGM70L",
+      "specCodes": [
+        "AGM70L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "AGM70L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "agm70",
+      "specCodes": [
+        "AGM70L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "AGM70L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "AGM80L",
+      "specCodes": [
+        "AGM80L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": "danger-staria-agm80r-vs-l",
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "AGM80L"
+      ],
+      "stariaInVehicles": false,
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "AGM80R",
+      "specCodes": [
+        "AGM80R"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "CMF80R"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "AGM95L",
+      "specCodes": [
+        "AGM95L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": "danger-agm95l-vs-100r",
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "AGM95L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "AGM105L",
+      "specCodes": [
+        "AGM105L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "AGM105L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "100R",
+      "specCodes": [
+        "100R"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": "danger-agm95l-vs-100r",
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "CMF100R"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "100알",
+      "specCodes": [
+        "100R"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": "danger-agm95l-vs-100r",
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "CMF100R"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "90R",
+      "specCodes": [
+        "90R"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": "danger-porter2-90r-vs-100r",
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "CMF90R"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "DIN62L",
+      "specCodes": [
+        "DIN62L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "DIN60L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "DIN74L",
+      "specCodes": [
+        "DIN74L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "DIN74L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "DIN80L",
+      "specCodes": [
+        "DIN80L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "DIN80L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    },
+    {
+      "query": "DIN100L",
+      "specCodes": [
+        "DIN100L"
+      ],
+      "specPrimary": true,
+      "aliasMatch": false,
+      "slugHint": null,
+      "dangerRuleId": null,
+      "vehicleRowCount": 0,
+      "pageVehicleCount": 0,
+      "pageBatteryCount": 1,
+      "primaryBatteryCodes": [
+        "DIN100L"
+      ],
+      "singleVehicleLock": false,
+      "agm95l100rBundled": false,
+      "forbiddenPairGuard": false,
+      "pass": true
+    }
+  ],
+  "dangerResults": [
+    {
+      "query": "스타리아 agm80l",
+      "note": "AGM80R≠AGM80L",
+      "expectRule": "danger-staria-agm80r-vs-l",
+      "dangerRuleId": "danger-staria-agm80r-vs-l",
+      "allDangerRuleIds": [
+        "danger-staria-agm80r-vs-l",
+        "danger-staria-terminal-direction"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-staria-us4",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "staria-us4",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "스타리아 agm80r",
+      "note": "스타리아 AGM80R",
+      "expectRule": "danger-staria-terminal-direction",
+      "dangerRuleId": "danger-staria-agm80r-vs-l",
+      "allDangerRuleIds": [
+        "danger-staria-agm80r-vs-l",
+        "danger-staria-terminal-direction"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-staria-us4",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "staria-us4",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "AGM95L",
+      "note": "AGM95L≠100R",
+      "expectRule": "danger-agm95l-vs-100r",
+      "dangerRuleId": "danger-agm95l-vs-100r",
+      "allDangerRuleIds": [
+        "danger-agm95l-vs-100r"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": null,
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "100R",
+      "note": "AGM95L≠100R",
+      "expectRule": "danger-agm95l-vs-100r",
+      "dangerRuleId": "danger-agm95l-vs-100r",
+      "allDangerRuleIds": [
+        "danger-porter2-90r-vs-100r",
+        "danger-agm95l-vs-100r"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": null,
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "포터2 19년식",
+      "note": "90R 연식",
+      "expectRule": "danger-porter2-90r-vs-100r",
+      "dangerRuleId": "danger-porter2-90r-vs-100r",
+      "allDangerRuleIds": [
+        "danger-porter2-90r-vs-100r",
+        "danger-porter2-diesel-vs-ev"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-porter2",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "porter2-old",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "포터2 21년식",
+      "note": "100R 연식",
+      "expectRule": "danger-porter2-90r-vs-100r",
+      "dangerRuleId": "danger-porter2-90r-vs-100r",
+      "allDangerRuleIds": [
+        "danger-porter2-90r-vs-100r",
+        "danger-porter2-diesel-vs-ev"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-porter2",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "porter2-new",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "포터2 디젤",
+      "note": "디젤≠EV",
+      "expectRule": "danger-porter2-diesel-vs-ev",
+      "dangerRuleId": "danger-porter2-diesel-vs-ev",
+      "allDangerRuleIds": [
+        "danger-porter2-diesel-vs-ev"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-porter2",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "포터 전기",
+      "note": "디젤≠EV",
+      "expectRule": "danger-porter2-diesel-vs-ev",
+      "dangerRuleId": "danger-porter2-diesel-vs-ev",
+      "allDangerRuleIds": [
+        "danger-porter2-diesel-vs-ev"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-porter2",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "porter2-ev",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "봉고3 디젤",
+      "note": "디젤≠EV",
+      "expectRule": "danger-bongo3-diesel-vs-ev",
+      "dangerRuleId": "danger-bongo3-diesel-vs-ev",
+      "allDangerRuleIds": [
+        "danger-bongo3-diesel-vs-ev"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "kia-bongo3",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "bongo3-truck",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "봉고3 전기",
+      "note": "디젤≠EV",
+      "expectRule": "danger-bongo3-diesel-vs-ev",
+      "dangerRuleId": "danger-bongo3-diesel-vs-ev",
+      "allDangerRuleIds": [
+        "danger-bongo3-diesel-vs-ev"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "kia-bongo3",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "bongo3-ev",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "쏘렌토 mq4 하브",
+      "note": "MQ4 HEV",
+      "expectRule": "danger-sorento-mq4-hev-vs-normal",
+      "dangerRuleId": "danger-sorento-mq4-hev-vs-normal",
+      "allDangerRuleIds": [
+        "danger-sorento-mq4-hev-vs-normal"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "kia-sorento-mq4-hev",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "sorento-mq4",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "쏘렌토 mq4 디젤",
+      "note": "MQ4 일반",
+      "expectRule": "danger-sorento-mq4-hev-vs-normal",
+      "dangerRuleId": "danger-sorento-mq4-hev-vs-normal",
+      "allDangerRuleIds": [
+        "danger-sorento-mq4-hev-vs-normal"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "kia-sorento-mq4",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "sorento-mq4",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "투싼 nx4 하브",
+      "note": "NX4 HEV",
+      "expectRule": "danger-tucson-nx4-hev-vs-normal",
+      "dangerRuleId": "danger-tucson-nx4-hev-vs-normal",
+      "allDangerRuleIds": [
+        "danger-tucson-nx4-hev-vs-normal"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-tucson-nx4-hev",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "tucson-nx4",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "투싼 nx4 디젤",
+      "note": "NX4 일반",
+      "expectRule": "danger-tucson-nx4-hev-vs-normal",
+      "dangerRuleId": "danger-tucson-nx4-hev-vs-normal",
+      "allDangerRuleIds": [
+        "danger-tucson-nx4-hev-vs-normal"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-tucson-nx4",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": "tucson-nx4",
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "니로 ev",
+      "note": "니로 EV",
+      "expectRule": "danger-niro-fuel-split",
+      "dangerRuleId": "danger-niro-fuel-split",
+      "allDangerRuleIds": [
+        "danger-niro-fuel-split"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "kia-niro-de",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "니로 하이브리드",
+      "note": "니로 HEV",
+      "expectRule": "danger-niro-fuel-split",
+      "dangerRuleId": "danger-niro-fuel-split",
+      "allDangerRuleIds": [
+        "danger-niro-fuel-split"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "kia-niro-de",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "코나 ev",
+      "note": "코나 EV",
+      "expectRule": "danger-kona-fuel-split",
+      "dangerRuleId": "danger-kona-fuel-split",
+      "allDangerRuleIds": [
+        "danger-kona-fuel-split"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "hyundai-kona-os",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "코나",
+      "note": "코나 일반",
+      "expectRule": "danger-kona-fuel-split",
+      "dangerRuleId": "danger-kona-fuel-split",
+      "allDangerRuleIds": [
+        "danger-kona-fuel-split"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": null,
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "제네시스 쿠페",
+      "note": "쿠페 분리",
+      "expectRule": "danger-genesis-coupe-vs-gv80-coupe",
+      "dangerRuleId": "danger-genesis-coupe-vs-gv80-coupe",
+      "allDangerRuleIds": [
+        "danger-genesis-coupe-vs-gv80-coupe"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "genesis-coupe-bk",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "gv80 쿠페",
+      "note": "GV80 쿠페",
+      "expectRule": "danger-genesis-coupe-vs-gv80-coupe",
+      "dangerRuleId": "danger-genesis-coupe-vs-gv80-coupe",
+      "allDangerRuleIds": [
+        "danger-genesis-coupe-vs-gv80-coupe"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "genesis-gv80-jx1",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "렉스턴",
+      "note": "SUV",
+      "expectRule": "danger-rexton-suv-vs-pickup",
+      "dangerRuleId": "danger-rexton-suv-vs-pickup",
+      "allDangerRuleIds": [
+        "danger-rexton-suv-vs-pickup"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": null,
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    },
+    {
+      "query": "렉스턴칸",
+      "note": "스포츠/칸",
+      "expectRule": "danger-rexton-suv-vs-pickup",
+      "dangerRuleId": "danger-rexton-suv-vs-pickup",
+      "allDangerRuleIds": [
+        "danger-rexton-suv-vs-pickup"
+      ],
+      "dangerPreferMultiple": true,
+      "slugHint": "kgm-rexton-sports-khan",
+      "aliasDbSlug": null,
+      "searchAliasAssetId": null,
+      "ruleHit": true,
+      "pass": true
+    }
+  ]
+}

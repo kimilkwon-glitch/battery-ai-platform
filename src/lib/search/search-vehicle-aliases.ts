@@ -5,6 +5,7 @@
 import { getVehicleAsset } from "@/lib/car-assets";
 import { normalizeQuery } from "@/lib/search/normalize-query";
 import { parseVehicleIntent } from "@/lib/search/parse-vehicle-intent";
+import { isBatterySpecPrimaryQuery } from "@/lib/search/battery-spec-search-alias";
 import { resolveVehicleAliasDbV01 } from "@/lib/search/resolve-vehicle-alias-v01";
 import {
   KG_MOBILITY_CANONICAL_BRAND,
@@ -177,6 +178,8 @@ function vehicleIntentToAlias(rawQuery: string): SearchVehicleAliasMatch | null 
 
 /** Vehicle-first canonical → alias DB v0.1 → regex alias 폴백 */
 export function resolveSearchVehicleAlias(rawQuery: string): SearchVehicleAliasMatch | null {
+  if (isBatterySpecPrimaryQuery(rawQuery)) return null;
+
   const canonical = vehicleIntentToAlias(rawQuery);
   if (canonical) return canonical;
 

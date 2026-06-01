@@ -3,6 +3,7 @@
  */
 import {
   buildAliasIndex,
+  findVehicleAliasDangerRule,
   normalizeVehicleAlias,
   vehicleAliasDbV01,
   type VehicleAliasEntry,
@@ -11,6 +12,7 @@ import { getVehicleAsset } from "@/lib/car-assets";
 import type { SearchVehicleAliasMatch } from "@/lib/search/search-vehicle-aliases";
 import { normalizeQuery } from "@/lib/search/normalize-query";
 import { isPorter2Query, parseVehicleYearHint } from "@/lib/search/parse-vehicle-year";
+import { stripBatterySpecTokensForVehicleMatch } from "@/lib/search/battery-spec-search-alias";
 import { resolveAssetIdFromSlugHint } from "@/lib/search/vehicle-alias-slug-map";
 
 /** 고객 화면·카드에 노출하지 않는 비공식/오타성 별칭 */
@@ -51,11 +53,11 @@ type ScoredMatch = {
 };
 
 function detectFuelFromQuery(q: string): string | null {
-  if (/하이브리드|hev|하브/i.test(q)) return "hev";
-  if (/전기|ev|일렉트릭|electric/i.test(q)) return "ev";
-  if (/디젤|diesel/i.test(q)) return "diesel";
-  if (/lpg|바이퓨얼|lpe/i.test(q)) return "lpg";
-  if (/가솔린|gasoline/i.test(q)) return "gasoline";
+  if (/하이브리드|hev|하브|hybrid/i.test(q)) return "hev";
+  if (/전기차|전기|ev|일렉트릭|electric|일렉트리파이드/i.test(q)) return "ev";
+  if (/디젤|경유|diesel/i.test(q)) return "diesel";
+  if (/lpg|lpe|엘피지|엘피이|가스|바이퓨얼/i.test(q)) return "lpg";
+  if (/가솔린|휘발유|gasoline/i.test(q)) return "gasoline";
   return null;
 }
 
@@ -101,6 +103,12 @@ function scoreEntry(
   if (yearHint.year === 2021 && entry.slugHint === "hyundai-santafe-dm") {
     score -= 80;
   }
+  if (yearHint.year === 2021 && entry.slugHint === "hyundai-avante-cn7") {
+    score += 70;
+  }
+  if (yearHint.year === 2021 && entry.slugHint === "hyundai-tucson-nx4-hev") {
+    score -= 90;
+  }
 
   if (/더\s*프라임|더프라임/i.test(rawQ) && entry.slugHint === "hyundai-santafe-dm") {
     score += 70;
@@ -121,8 +129,69 @@ function scoreEntry(
     score += 50;
   }
 
+  if (entry.slugHint === "kia-sorento-mq4-hev" && queryFuel === "hev") {
+    score += 90;
+  }
   if (entry.slugHint === "kia-sorento-mq4" && queryFuel === "hev") {
+    score -= 70;
+  }
+
+  if (entry.slugHint === "hyundai-staria-hev" && queryFuel === "hev") {
+    score += 85;
+  }
+  if (entry.slugHint === "hyundai-staria-us4" && queryFuel === "hev") {
+    score -= 60;
+  }
+
+  if (entry.slugHint === "hyundai-tucson-nx4-hev" && queryFuel === "hev") {
+    score += 80;
+  }
+  if (entry.slugHint === "hyundai-tucson-nx4" && queryFuel === "hev") {
+    score -= 55;
+  }
+
+  if (entry.slugHint === "hyundai-sonata-dn8-hev" && queryFuel === "hev") {
+    score += 75;
+  }
+  if (entry.slugHint === "hyundai-sonata-dn8" && queryFuel === "hev") {
+    score -= 50;
+  }
+
+  if (entry.slugHint === "hyundai-kona-os" && queryFuel === "ev") {
+    if (entry.mapTo?.fuel === "ev" || entry.intentTags.includes("ev")) score += 85;
+    else score -= 70;
+  }
+  if (entry.slugHint === "hyundai-kona-os" && queryFuel === "hev") {
+    if (entry.intentTags.includes("hev")) score += 60;
+    else score -= 40;
+  }
+  if (entry.slugHint === "hyundai-kona-sx2" && queryFuel === "ev") {
+    score += 80;
+  }
+
+  if (entry.slugHint === "kia-niro-de" && queryFuel === "ev") {
+    if (entry.intentTags.includes("ev")) score += 80;
+    else score -= 55;
+  }
+  if (entry.slugHint === "kia-niro-de" && queryFuel === "hev") {
+    if (entry.intentTags.includes("hev")) score += 75;
+    else score -= 50;
+  }
+  if (/phev|플러그인/i.test(rawQ) && entry.slugHint === "kia-niro-de") {
     score += 40;
+  }
+  if (entry.slugHint === "kia-niro-sg2" && queryFuel === "ev") {
+    score += 75;
+  }
+  if (entry.slugHint === "kia-niro-sg2" && queryFuel === "hev") {
+    score += 70;
+  }
+
+  if (entry.slugHint === "kia-bongo3" && queryFuel === "ev") {
+    score -= 65;
+  }
+  if (entry.slugHint === "hyundai-porter2" && queryFuel === "ev") {
+    score -= 60;
   }
 
   return score;
@@ -160,6 +229,7 @@ function collectMatches(rawQuery: string, nq: string, rawQ: string): ScoredMatch
     for (const alias of all) {
       const na = normalizeVehicleAlias(alias);
       if (na.length < 3 || na === nq) continue;
+      if (/^(1[6-9]|2[0-5])년(식)?$/.test(na)) continue;
       if (nq.includes(na)) {
         push(entry, alias, "partial");
       }
@@ -240,14 +310,62 @@ function formalLabelFor(entry: VehicleAliasEntry, assetId?: string): string {
   return entry.canonicalName;
 }
 
+export type VehicleAliasInspectResult = {
+  query: string;
+  dangerRuleId: string | null;
+  dangerPreferMultiple: boolean;
+  slugHint: string | null;
+  matchedAlias: string | null;
+  matchKind: string | null;
+  matchScore: number | null;
+  aliasDb: SearchVehicleAliasMatch | null;
+  searchAlias: SearchVehicleAliasMatch | null;
+};
+
+/** v0.2.1 QA — alias DB 단계별 해석 로그 (프로덕션 검색 경로와 동일 출처) */
+export function inspectVehicleAliasResolution(rawQuery: string): VehicleAliasInspectResult {
+  const { normalizedQuery } = normalizeQuery(rawQuery);
+  const rawQ = normalizedQuery.replace(/\s*배터리\s*$/i, "").trim();
+  const danger = rawQ ? findVehicleAliasDangerRule(rawQ) : null;
+  const nq = normalizeVehicleAlias(rawQ);
+  const scored = rawQ ? collectMatches(rawQuery, nq, rawQ) : [];
+  const top = scored[0];
+
+  const aliasDb = resolveVehicleAliasDbV01(rawQuery);
+
+  return {
+    query: rawQuery,
+    dangerRuleId: danger?.id ?? null,
+    dangerPreferMultiple: danger?.preferAskOrShowMultiple ?? false,
+    slugHint: top?.entry.slugHint ?? null,
+    matchedAlias: top?.matchedAlias ?? null,
+    matchKind: top?.matchKind ?? null,
+    matchScore: top?.score ?? null,
+    aliasDb,
+    searchAlias: null,
+  };
+}
+
 export function resolveVehicleAliasDbV01(rawQuery: string): SearchVehicleAliasMatch | null {
   const { normalizedQuery } = normalizeQuery(rawQuery);
   const rawQ = normalizedQuery.replace(/\s*배터리\s*$/i, "").trim();
   if (!rawQ) return null;
 
-  const nq = normalizeVehicleAlias(rawQ);
-  const scored = collectMatches(rawQuery, nq, rawQ);
+  const vehicleQ = stripBatterySpecTokensForVehicleMatch(rawQ);
+  const matchQ = vehicleQ || rawQ;
+  const nq = normalizeVehicleAlias(matchQ);
+  const scored = collectMatches(rawQuery, nq, matchQ);
   if (!scored.length) return null;
+
+  const danger = findVehicleAliasDangerRule(rawQ);
+  if (danger?.preferAskOrShowMultiple && danger.safeSlugHints?.length) {
+    const safeSet = new Set(danger.safeSlugHints);
+    const safeScored = scored.filter((s) => safeSet.has(s.entry.slugHint));
+    if (safeScored.length >= 2) {
+      const gap = safeScored[0].score - safeScored[1].score;
+      if (gap < 60) return null;
+    }
+  }
 
   const top = scored[0];
   const ambiguousK3 = nq === "k3" && isAmbiguousFamily(nq, scored, "k3");

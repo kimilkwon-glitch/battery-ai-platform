@@ -1,3 +1,5 @@
+import { resolveBatterySpecCodesFromQuery } from "@/lib/search/battery-spec-search-alias";
+
 /**
  * /search 상단 요약용 규격 토큰 — 검색어에 포함되면 DB 여부와 무관하게 표시
  */
@@ -9,12 +11,23 @@ export const SEARCH_SPEC_TOKENS = [
   "AGM95L",
   "AGM95R",
   "AGM105L",
+  "DIN44L",
   "DIN50L",
   "DIN60L",
   "DIN62L",
   "DIN74L",
+  "DIN80L",
   "DIN90L",
+  "DIN100L",
+  "40AL",
+  "50L",
+  "60L",
+  "60R",
+  "80L",
+  "80R",
+  "90L",
   "90R",
+  "100L",
   "100R",
   "115D31L",
   "115D31R",
@@ -50,6 +63,11 @@ function extractSpecsFromSegment(segment: string): string[] {
       const label = normalized;
       if (!found.some((f) => f.toUpperCase() === label)) found.push(label);
     }
+  }
+
+  const fromAlias = resolveBatterySpecCodesFromQuery(segment);
+  for (const code of fromAlias) {
+    if (!found.includes(code)) found.push(code);
   }
 
   return [...new Set(found)];

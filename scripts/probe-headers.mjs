@@ -1,0 +1,10 @@
+const u = `https://battery-ai-platform.vercel.app/?_cb=${Date.now()}`;
+const r = await fetch(u, { headers: { "Cache-Control": "no-cache" } });
+console.log("status", r.status);
+console.log("x-vercel-cache", r.headers.get("x-vercel-cache"));
+console.log("age", r.headers.get("age"));
+const h = await r.text();
+const rev = h.match(/data-build-rev="([^"]+)"/)?.[1];
+const stamp = h.match(/data-build-version="([^"]+)"/)?.[1];
+console.log("data-build-rev", rev);
+console.log("data-build-version", stamp);

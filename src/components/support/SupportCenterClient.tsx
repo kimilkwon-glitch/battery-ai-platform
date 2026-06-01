@@ -2,15 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Search } from "lucide-react";
 import clsx from "clsx";
 import { addInquiry } from "@/lib/inquiry-storage";
 import { SUPPORT_NOTICES } from "@/lib/support-notices-data";
-import {
-  SUPPORT_FAQ_CATEGORIES,
-  SUPPORT_FAQ_ITEMS,
-  type FaqCategory,
-} from "@/lib/support-faq-data";
+import { CustomerFaqAccordion } from "@/components/support/CustomerFaqAccordion";
+import { CUSTOMER_CENTER_FAQ } from "@/lib/customer-center-routes";
 import { OwnedCouponHint } from "@/components/benefits/CouponIssuerPanel";
 import { getUserCouponForBenefit } from "@/lib/coupon-storage";
 import { bm } from "@/lib/design-tokens";
@@ -28,10 +26,9 @@ const INQUIRY_TYPES = [
 type InquiryType = (typeof INQUIRY_TYPES)[number];
 
 export function SupportCenterClient() {
+  const searchParams = useSearchParams();
   const [tab, setTab] = useState<TabId>("notices");
   const [query, setQuery] = useState("");
-  const [faqCategory, setFaqCategory] = useState<FaqCategory>("전체");
-  const [openFaq, setOpenFaq] = useState<string | null>(null);
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
   const [form, setForm] = useState<{
     name: string;
@@ -54,6 +51,13 @@ export function SupportCenterClient() {
     if (held) setForm((f) => ({ ...f, couponCode: f.couponCode || held }));
   }, []);
 
+  useEffect(() => {
+    const t = searchParams.get("tab");
+    if (t === "faq" || t === "inquiry" || t === "notices") {
+      setTab(t);
+    }
+  }, [searchParams]);
+
   const q = query.trim().toLowerCase();
 
   const filteredNotices = useMemo(() => {
@@ -62,16 +66,6 @@ export function SupportCenterClient() {
       (n) => n.title.toLowerCase().includes(q) || n.date.includes(q),
     );
   }, [q]);
-
-  const filteredFaq = useMemo(() => {
-    return SUPPORT_FAQ_ITEMS.filter((item) => {
-      if (faqCategory !== "전체" && item.category !== faqCategory) return false;
-      if (!q) return true;
-      return (
-        item.question.toLowerCase().includes(q) || item.answer.toLowerCase().includes(q)
-      );
-    });
-  }, [q, faqCategory]);
 
   const handleInquiry = (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,52 +156,14 @@ export function SupportCenterClient() {
       ) : null}
 
       {tab === "faq" ? (
-        <section className="space-y-4">
-          <div className="flex flex-wrap gap-1.5">
-            {SUPPORT_FAQ_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setFaqCategory(cat)}
-                className={
-                  faqCategory === cat
-                    ? "rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-black text-white"
-                    : "rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold text-slate-600"
-                }
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-          <div className="space-y-2">
-            {filteredFaq.map((item) => {
-              const open = openFaq === item.id;
-              return (
-                <div key={item.id} className={`${bm.card} overflow-hidden`}>
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left sm:px-5"
-                    onClick={() => setOpenFaq(open ? null : item.id)}
-                    aria-expanded={open}
-                  >
-                    <span className="text-sm font-black text-slate-900">{item.question}</span>
-                    <ChevronDown
-                      className={clsx("size-4 shrink-0 text-slate-400 transition", open && "rotate-180")}
-                    />
-                  </button>
-                  {open ? (
-                    <div className="border-t border-slate-100 px-4 pb-4 pt-2 sm:px-5">
-                      <div className="space-y-2.5 text-sm font-medium leading-relaxed text-slate-600">
-                        {item.answer.split("\n\n").map((para, i) => (
-                          <p key={i}>{para}</p>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
+        <section className="space-y-3">
+          <Link
+            href={CUSTOMER_CENTER_FAQ}
+            className="text-[11px] font-black text-blue-700 hover:underline"
+          >
+            FAQ 전체 페이지 보기 →
+          </Link>
+          <CustomerFaqAccordion externalQuery={query} showSearch={false} />
         </section>
       ) : null}
 

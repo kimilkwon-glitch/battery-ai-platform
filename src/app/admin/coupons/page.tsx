@@ -9,6 +9,8 @@ import {
   type CouponRecord,
   type CouponStatus,
 } from "@/lib/coupon-storage";
+import { AdminPageNav } from "@/components/admin/AdminPageNav";
+import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { bm } from "@/lib/design-tokens";
 
 /**
@@ -31,10 +33,11 @@ export default function AdminCouponsPage() {
           운영용 임시 화면 — localStorage 저장·보안 없음. 이 브라우저에서 발급된 쿠폰만 표시됩니다. DB 연동·인증
           필요.
         </p>
-        <div className="mt-2 flex flex-wrap items-center gap-3">
+        <AdminPageNav />
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-black text-slate-950">쿠폰 발급 목록</h1>
-          <Link href="/admin/inquiries" className="text-xs font-bold text-blue-700 hover:underline">
-            ← 상담 목록
+          <Link href={ADMIN_ROUTES.orderRequests} className="text-xs font-bold text-blue-700 hover:underline">
+            상담 주문 요청 →
           </Link>
         </div>
         <button type="button" onClick={refresh} className={`${bm.btnSecondary} mt-4 text-xs`}>

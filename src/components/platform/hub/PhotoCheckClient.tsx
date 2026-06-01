@@ -9,6 +9,8 @@ import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { bm } from "@/lib/design-tokens";
 import { PHOTO_CHECK_EXAMPLES, PHOTO_CHECK_STEPS } from "@/lib/platform-hub-content";
 import { HUB_ORDER_CHECKLIST } from "@/lib/platform-hub-routes";
+import { CUSTOMER_CENTER_ORDER_GUIDE } from "@/lib/customer-center-routes";
+import { HUB_SUPPORT } from "@/lib/customer-hub-routes";
 import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
 import { QNA_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { resolveImageSlotAssetUrl } from "@/lib/media/resolve-asset-image";
@@ -116,6 +118,14 @@ export function PhotoCheckClient() {
           <Link className={`${bm.btnTertiary} inline-flex items-center gap-1.5 text-xs`} href={HUB_STORE}>
             <AppIcon iconKey="store" size="sm" />
             매장·출장 상담
+          </Link>
+          <Link className={`${bm.btnTertiary} inline-flex items-center gap-1.5 text-xs`} href={CUSTOMER_CENTER_ORDER_GUIDE}>
+            <AppIcon iconKey="checklist" size="sm" />
+            주문 안내
+          </Link>
+          <Link className={`${bm.btnTertiary} inline-flex items-center gap-1.5 text-xs`} href={HUB_SUPPORT}>
+            <AppIcon iconKey="qna" size="sm" />
+            고객센터
           </Link>
         </div>
       </section>

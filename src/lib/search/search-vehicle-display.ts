@@ -3,6 +3,7 @@ import type { SearchVehicleAliasMatch } from "@/lib/search/search-vehicle-aliase
 import { isKgMobilityBrand, queryMentionsKgMobilityBrand } from "@/lib/search/kg-mobility-brand";
 
 import { extractQuerySpecTokens } from "@/lib/search/search-query-specs";
+import { filterSpecsForStariaVehicleCardTitle } from "@/lib/search/staria-query-spec-guard";
 
 
 
@@ -19,6 +20,16 @@ export function extractVehicleTrimFromQuery(query: string): string | null {
 }
 
 
+
+const BRAND_PREFIX_RE =
+  /^(현대|기아|제네시스|KG모빌리티|KGM|KG\/쌍용|KG\/|KG|BMW|벤츠|아우디|Audi|쌍용|SsangYong)\s/i;
+
+function displayLabelAlreadyBranded(formal: string, brand?: string): boolean {
+  const t = formal.trim();
+  if (BRAND_PREFIX_RE.test(t)) return true;
+  if (brand && (t.startsWith(brand) || t.startsWith(`${brand} `))) return true;
+  return false;
+}
 
 /** KG/쌍용·렉스턴 등 검색·카드 표시용 차량 라벨 */
 
@@ -48,15 +59,15 @@ export function formatSearchVehicleDisplayLabel(
 
   if (kgModel && queryMentionsKgMobilityBrand(query)) {
 
-    base = `KG모빌리티 ${formal}`;
+    base = displayLabelAlreadyBranded(formal) ? formal : `KG모빌리티 ${formal}`;
 
   } else if (kgModel) {
 
-    base = `KG/쌍용 ${formal}`;
+    base = displayLabelAlreadyBranded(formal) ? formal : `KG/쌍용 ${formal}`;
 
   } else if (alias.brand) {
 
-    base = `${alias.brand} ${formal}`;
+    base = displayLabelAlreadyBranded(formal, alias.brand) ? formal : `${alias.brand} ${formal}`;
 
   } else {
 
@@ -102,7 +113,11 @@ export function formatSearchVehicleRowTitle(
 
 ): string {
 
-  const specs = extractQuerySpecTokens(query);
+  const specs = filterSpecsForStariaVehicleCardTitle(
+    query,
+    alias,
+    extractQuerySpecTokens(query),
+  );
 
   const primarySpec = specs[0];
 

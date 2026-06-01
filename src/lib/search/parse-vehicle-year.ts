@@ -36,6 +36,15 @@ export function parseVehicleYearHint(query: string): VehicleYearHint {
     return { year, era: null };
   }
 
+  const shortYear = q.match(/\b(1[6-9]|2[0-5])\s*년(?:\s*식)?\b/i);
+  if (shortYear) {
+    const yy = Number(shortYear[1]);
+    const year = yy >= 16 && yy <= 25 ? 2000 + yy : yy;
+    if (year >= 2020) return { year, era: "from2020" };
+    if (year <= 2019) return { year, era: "until2019" };
+    return { year, era: null };
+  }
+
   const fourDigit = q.match(/\b(20\d{2})\s*년?/i);
   if (fourDigit) {
     const year = Number(fourDigit[1]);
