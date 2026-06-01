@@ -20,17 +20,18 @@ export function BatteryDetailContentSlot({ code }: { code: string }) {
   if (hasImage === true) {
     return (
       <section
-        className={`${bm.card} ${bm.cardPad}`}
+        id="battery-detail-info"
+        className={`${bm.card} ${bm.cardPad} scroll-mt-24`}
         data-detail-content-slot={code}
         aria-label="상세 안내"
       >
-        <h2 className="text-sm font-black text-slate-900">상세 안내</h2>
+        <h2 className="text-sm font-black text-slate-900">상세 정보</h2>
         <div className="relative mt-4 aspect-[4/3] overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={assetPath}
             alt={`${code} 상세 안내`}
-            className="h-full w-full object-contain p-4"
+            className="h-full w-full object-contain p-2"
           />
         </div>
       </section>
@@ -39,11 +40,7 @@ export function BatteryDetailContentSlot({ code }: { code: string }) {
 
   if (hasImage === false) {
     return (
-      <section
-        className={`${bm.card} ${bm.cardPad}`}
-        data-detail-content-slot={code}
-        aria-label="규격 확인 안내"
-      >
+      <section data-detail-content-slot={code} aria-label="규격 확인">
         <div className="flex gap-3 rounded-xl bg-gradient-to-br from-slate-800 via-[#1e3a5f] to-blue-700 p-4 text-white sm:p-5">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20">
             <AppIcon iconKey="photoCheck" size="md" className="!text-white" />

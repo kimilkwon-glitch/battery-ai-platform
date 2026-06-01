@@ -76,7 +76,7 @@ export function BatteryThumbnail({
 
   const showGraphic = failed || !src || candidates.length === 0;
 
-  const areaClass = tall ? "h-[180px] w-full" : batteryRatioClass[ratio];
+  const areaClass = tall ? "h-[200px] w-full" : batteryRatioClass[ratio];
 
   const surfaceClass = surface === "transparent" ? "bg-transparent" : batteryThumbSurface;
 

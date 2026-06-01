@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
+import { BatteryGallery } from "@/components/BatteryGallery";
+import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { getBatteryImageSet } from "@/lib/battery-alias-map";
+import { batteryImageSetForCode } from "@/lib/battery-image";
 import { bm } from "@/lib/design-tokens";
-import { HUB_PHOTO, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import {
   BATTERY_RETURN_OPTIONS,
   type BatteryReturnOption,
@@ -33,11 +35,16 @@ export function ShopProductOrderPanel({
   const b = getBattery(product.batteryCode, product.brandId);
   const brand = getBrand(product.brandId);
   const imageSet =
-    product.brandId === "rocket" ? b.images : getBatteryImageSet(product.batteryCode, "solite");
+    product.brandId === "rocket"
+      ? b.images?.main
+        ? b.images
+        : batteryImageSetForCode(product.batteryCode)
+      : getBatteryImageSet(product.batteryCode, "solite");
   const parsed = parseBatterySpecDisplay(product.batteryCode);
   const metaVehicles = product.vehicleIds.slice(0, 4).map(getVehicleName).join(", ");
 
   const inquiryHref = `/ai?topic=shop&code=${encodeURIComponent(product.batteryCode)}&return=${returnOption}`;
+  const detailHref = `/batteries/${encodeURIComponent(product.batteryCode)}`;
 
   return (
     <section
@@ -46,7 +53,7 @@ export function ShopProductOrderPanel({
     >
       <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-4 py-3 sm:px-5">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-wide text-blue-600">택배 주문 상품</p>
+          <p className="text-[10px] font-black uppercase tracking-wide text-blue-600">주문하기</p>
           <h2 className="text-lg font-black text-slate-950">{product.batteryCode}</h2>
           <p className="text-xs font-bold text-slate-600">
             {brand.displayName} · {typeLabel(product)} · {product.capacity} · {product.cca} · {product.terminal}타입
@@ -63,18 +70,12 @@ export function ShopProductOrderPanel({
         ) : null}
       </div>
 
-      <div className="grid gap-4 p-4 sm:grid-cols-[minmax(0,200px)_1fr] sm:p-5">
-        <div className="relative h-44 overflow-hidden rounded-xl bg-slate-50 ring-1 ring-slate-100 sm:h-52">
-          <BatteryThumbnail
-            code={product.batteryCode}
-            imageSet={imageSet?.main ? imageSet : undefined}
-            role="main"
-            fit={batteryImageFit(product.batteryCode, product.brandId === "solite" ? "solite" : "rocket")}
-            ratio="4/3"
-            overlayLabel={false}
-            className="h-full"
-          />
-        </div>
+      <div className="grid gap-4 p-4 sm:grid-cols-[minmax(0,220px)_1fr] sm:p-5">
+        <BatteryGallery
+          code={product.batteryCode}
+          imageSet={imageSet?.main ? imageSet : undefined}
+          minHeightClass="min-h-[200px] sm:min-h-[240px]"
+        />
 
         <div className="space-y-4">
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
@@ -96,7 +97,9 @@ export function ShopProductOrderPanel({
             </div>
             <div>
               <dt className="font-bold text-slate-400">단자</dt>
-              <dd className="font-semibold text-slate-800">{product.terminal}타입 ({parsed.terminalLabel ?? "확인"})</dd>
+              <dd className="font-semibold text-slate-800">
+                {product.terminal}타입 ({parsed.terminalLabel ?? "확인"})
+              </dd>
             </div>
             <div>
               <dt className="font-bold text-slate-400">타입</dt>
@@ -111,10 +114,11 @@ export function ShopProductOrderPanel({
             </p>
           ) : null}
 
+          <BatteryAutoDiscountHint />
+
           <div className="rounded-xl border border-amber-100 bg-amber-50/40 p-3">
             <p className="text-xs font-black text-slate-900">폐배터리 반납 여부를 선택하세요</p>
             <p className="mt-1 text-[10px] font-semibold text-slate-500">
-              {/* TODO: 가격 정책 연결 필요 — 반납/미반납별 금액은 상담 시 안내 */}
               가격은 주문 상담 시 안내드립니다.
             </p>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -145,14 +149,14 @@ export function ShopProductOrderPanel({
             <Link href={inquiryHref} className={`${bm.btnPrimary} inline-flex justify-center text-sm`}>
               택배주문 문의하기
             </Link>
-            <Link
-              href={`/batteries/${encodeURIComponent(product.batteryCode)}`}
-              className={`${bm.btnSecondary} inline-flex justify-center text-xs`}
-            >
-              장착 가능 여부 확인
+            <Link href={HUB_STORE_DETAIL} className={`${bm.btnSecondary} inline-flex justify-center text-sm`}>
+              매장·출장 안내
             </Link>
-            <Link href={HUB_PHOTO} className="text-xs font-bold text-slate-500 hover:text-blue-700 hover:underline">
-              사진으로 규격 확인 (보조)
+            <Link
+              href={detailHref}
+              className="inline-flex justify-center text-xs font-bold text-slate-500 hover:text-blue-700 hover:underline"
+            >
+              규격 상세 보기
             </Link>
           </div>
         </div>
@@ -176,10 +180,6 @@ export function ShopProductOrderPanel({
       <div className="flex flex-wrap gap-2 border-t border-slate-100 px-4 py-3 sm:px-5">
         <Link href="/order-checklist" className="text-[11px] font-bold text-blue-700 hover:underline">
           주문 전 체크리스트 →
-        </Link>
-        <span className="text-slate-300">·</span>
-        <Link href={HUB_STORE_DETAIL} className="text-[11px] font-bold text-slate-600 hover:underline">
-          매장·출장 안내
         </Link>
       </div>
     </section>

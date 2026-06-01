@@ -1,20 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { BatteryImageStage } from "@/components/media/BatteryImageStage";
+import { BatteryGallery } from "@/components/BatteryGallery";
 import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
-import { openChatInquiry } from "@/lib/chat-inquiry-events";
+import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
+import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
-import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
-import { HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
-import {
-  BATTERY_RETURN_OPTIONS,
-  type BatteryReturnOption,
-} from "@/lib/shop-order-types";
-import { AddToCartButton } from "@/components/cart/AddToCartButton";
-import { OwnedCouponHint } from "@/components/benefits/CouponIssuerPanel";
+import { batteryImageSetForCode } from "@/lib/battery-image";
 import { bm } from "@/lib/design-tokens";
+
+function orderHubHref(code: string): string {
+  return `/shop?code=${encodeURIComponent(code)}`;
+}
 
 export function BatteryDetailOrderPanel({
   code,
@@ -27,9 +24,8 @@ export function BatteryDetailOrderPanel({
   positioning: string;
   vehicleSummary?: string;
 }) {
-  const [returnOption, setReturnOption] = useState<BatteryReturnOption>("return");
   const spec = parseBatterySpecDisplay(code);
-  const orderAnchor = "#battery-order";
+  const imageSet = batteryImageSetForCode(code);
 
   return (
     <section
@@ -38,13 +34,17 @@ export function BatteryDetailOrderPanel({
       data-battery-product={code}
     >
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-        <div className="space-y-3">
-          <BatteryImageStage code={code} variant="hero" className="mx-auto w-full max-w-md lg:mx-0" />
+        <div className="relative space-y-2">
+          <BatteryGallery code={code} imageSet={imageSet} minHeightClass="min-h-[240px] sm:min-h-[280px] md:min-h-[300px]" />
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <div className="relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
+            <BatteryWishlistButton code={code} />
+          </div>
+
           <p className="text-[10px] font-black uppercase tracking-wide text-blue-600">배터리 규격</p>
-          <h1 className={`${bm.specTitle} mt-0.5`} data-spec-code>
+          <h1 className={`${bm.specTitle} mt-0.5 pr-12`} data-spec-code>
             {code}
           </h1>
           <p className="mt-2 text-sm font-semibold text-slate-600">{positioning}</p>
@@ -60,91 +60,20 @@ export function BatteryDetailOrderPanel({
               {vehicleSummary}
             </p>
           ) : null}
-          <p className="mt-2 text-[10px] font-medium text-amber-800/90">
-            차종·연식·연료에 따라 달라질 수 있습니다. 주문 전 규격을 다시 확인하세요.
-          </p>
 
-          <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/40 p-3">
-            <p className="text-xs font-black text-slate-900">폐배터리 반납 여부</p>
-            <p className="mt-1 text-[10px] text-slate-500">가격·조건은 주문 상담 시 안내드립니다.</p>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {BATTERY_RETURN_OPTIONS.map((opt) => (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => setReturnOption(opt.id)}
-                  className={`rounded-lg border p-2.5 text-left text-[11px] ${
-                    returnOption === opt.id
-                      ? "border-blue-400 bg-white ring-2 ring-blue-100"
-                      : "border-slate-200 bg-white"
-                  }`}
-                >
-                  <span className="font-black text-slate-900">{opt.label}</span>
-                  <span className="mt-0.5 block font-semibold text-slate-500">{opt.description}</span>
-                </button>
-              ))}
-            </div>
+          <div className="mt-4">
+            <BatteryAutoDiscountHint />
           </div>
 
-          <OwnedCouponHint />
-
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
-            <Link
-              href={`/ai?topic=order&code=${encodeURIComponent(code)}&return=${returnOption}`}
-              className={`${bm.btnPrimary} text-center text-sm`}
-            >
-              택배주문
-            </Link>
-            <Link href={HUB_STORE_DETAIL} className={`${bm.btnSecondary} text-center text-sm`}>
-              매장·출장 안내
+          <div className="mt-4 grid gap-2">
+            <a href="#battery-spec-check" className={`${bm.btnSecondary} text-center text-sm`}>
+              규격 확인하러가기
+            </a>
+            <Link href={orderHubHref(code)} className={`${bm.btnPrimary} text-center text-sm`}>
+              주문하기
             </Link>
           </div>
-
-          <AddToCartButton
-            mode="battery"
-            variant="tertiary"
-            className="mt-2"
-            input={{
-              batteryCode: code,
-              fitmentStatus: vehicleSummary ? "needs_customer_confirm" : "unknown",
-              usedBatteryReturnOption: returnOption,
-              source: "battery_detail",
-            }}
-          />
-
-          <button
-            type="button"
-            className={`${bm.btnTertiary} mt-2 w-full text-xs`}
-            onClick={() => openChatInquiry({ batteryCode: code, returnOption })}
-          >
-            채팅 상담
-          </button>
-
-          <p className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
-            <Link
-              href={HUB_PHOTO_CHECK}
-              className="text-[11px] font-semibold text-slate-500 hover:text-blue-700 hover:underline"
-            >
-              사진으로 규격 확인
-            </Link>
-            <span className="text-slate-200" aria-hidden>
-              ·
-            </span>
-            <Link
-              href={`/reviews?battery=${encodeURIComponent(code)}`}
-              className="text-[11px] font-semibold text-slate-500 hover:text-blue-700 hover:underline"
-            >
-              이 규격 후기
-            </Link>
-          </p>
         </div>
-      </div>
-
-      <div className={`${bm.card} ${bm.cardPad} text-sm font-medium text-slate-600`}>
-        <p>{positioning}</p>
-        <p className="mt-2 text-xs text-slate-500">
-          택배 발송 전 규격·L/R·연식을 확인하세요. 반납 선택 시 폐배터리 회수 일정을 안내합니다.
-        </p>
       </div>
     </section>
   );

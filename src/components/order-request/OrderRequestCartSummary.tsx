@@ -1,5 +1,7 @@
 "use client";
 
+import { BatteryGallery } from "@/components/BatteryGallery";
+import { batteryImageSetForCode } from "@/lib/battery-image";
 import {
   FITMENT_STATUS_LABELS,
   FULFILLMENT_METHOD_LABELS,
@@ -14,10 +16,29 @@ import {
 import type { BatteryCartItem } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
 
+function itemBatteryCode(item: BatteryCartItem): string | null {
+  const spec = item.batterySpec?.trim();
+  if (spec) return spec;
+  const fromName = item.productName?.match(/\b[A-Z]{1,4}\d{2,3}[A-Z]{0,3}\b/i);
+  return fromName?.[0]?.toUpperCase() ?? null;
+}
+
 export function OrderRequestCartSummary({ items }: { items: BatteryCartItem[] }) {
+  const showGallery = items.length === 1;
+  const singleCode = showGallery ? itemBatteryCode(items[0]!) : null;
+
   return (
     <section className={`${bm.card} ${bm.cardPad} space-y-3`} id="order-request-cart-summary">
       <h2 className="text-sm font-black text-slate-900">주문 상품</h2>
+
+      {showGallery && singleCode ? (
+        <BatteryGallery
+          code={singleCode}
+          imageSet={batteryImageSetForCode(singleCode)}
+          minHeightClass="min-h-[200px] sm:min-h-[240px]"
+        />
+      ) : null}
+
       <div className="space-y-3">
         {items.map((item) => {
           const needsReview = checkoutItemNeedsReview(item);

@@ -8,15 +8,16 @@ import { BATTERY_DETAIL_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { getCustomerBrandSpecs } from "@/lib/battery-knowledge";
 import { bm } from "@/lib/design-tokens";
 import type { BatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-content";
-import { HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
 import { getSearchHref } from "@/lib/battery-search";
 
 function Collapsible({
+  id,
   title,
   summary,
   children,
   defaultOpen = false,
 }: {
+  id?: string;
   title: string;
   summary?: string;
   children: React.ReactNode;
@@ -24,7 +25,7 @@ function Collapsible({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <section className={`${bm.card} overflow-hidden`}>
+    <section id={id} className={`${bm.card} scroll-mt-24 overflow-hidden`}>
       <button
         type="button"
         className="flex w-full items-start justify-between gap-3 p-4 text-left"
@@ -58,7 +59,7 @@ export function BatteryDetailExpandSections({
   );
 
   return (
-    <div className="space-y-3">
+    <div id="battery-detail-info" className="scroll-mt-24 space-y-3">
       <Collapsible
         title="제품 확인 포인트"
         summary="라벨·단자·크기 — 사진으로 최종 확인"
@@ -73,9 +74,9 @@ export function BatteryDetailExpandSections({
           <li>L/R 단자 방향과 케이블 길이</li>
           <li>트레이·홀드다운 고정 방식</li>
         </ul>
-        <Link className={`${bm.btnSecondary} mt-3 inline-flex text-xs`} href={HUB_PHOTO_CHECK}>
-          사진으로 단자 확인하기
-        </Link>
+        <p className="mt-3 text-[11px] font-semibold text-slate-500">
+          위 항목은 상단 <strong className="text-slate-700">규격 확인</strong> 배너에서 사진으로 확인하세요.
+        </p>
       </Collapsible>
 
       {brandSpecs.length > 0 ? (
@@ -115,10 +116,7 @@ export function BatteryDetailExpandSections({
             </ul>
           ) : null}
           {is100R ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Link className={`${bm.btnNavy} text-xs`} href={HUB_PHOTO_CHECK}>
-                L/R 단자 방향 확인하기
-              </Link>
+            <div className="mt-3">
               <Link className={`${bm.btnSecondary} text-xs`} href={getSearchHref("포터2 배터리")}>
                 상용차 배터리 확인하기
               </Link>
@@ -129,6 +127,7 @@ export function BatteryDetailExpandSections({
 
       {vehicles.length > 0 ? (
         <Collapsible
+          id="battery-vehicles"
           title="대표 적용 차량"
           summary={vehicles.map((v) => v.title).join(" · ")}
         >

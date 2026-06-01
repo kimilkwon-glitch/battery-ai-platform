@@ -41,21 +41,24 @@ export const batteryImageStageHeight: Record<BatteryImageStageVariant, string> =
   card: "h-[128px] min-h-[128px] md:h-full md:min-h-[156px]",
   cardRow: "h-[128px] min-h-[128px] md:h-full md:min-h-[156px]",
   cardCompact: "h-[120px] min-h-[120px] md:h-full md:min-h-[148px]",
-  hero: "h-[200px] sm:h-[220px]",
+  hero: "h-[260px] sm:h-[300px] md:min-h-[320px]",
   search: "h-[128px] min-h-[128px] md:h-full md:min-h-[156px]",
   compare: "h-[128px] min-h-[128px] md:h-full md:min-h-[152px]",
   compareRow: "h-[128px] min-h-[128px] md:h-full md:min-h-[152px]",
 };
 
 export const batteryImageStageInset =
-  "flex h-full w-full items-center justify-center overflow-visible px-1 py-1";
+  "flex h-full w-full items-center justify-center overflow-visible px-0.5 py-0.5";
+
+export const batteryImageStageHeroInset =
+  "flex h-full w-full items-center justify-center overflow-visible px-0 py-0";
 
 /** img height 135~150px — width auto, height 기준 only */
 export const batteryImageStageImgHeight: Record<BatteryImageStageVariant, string> = {
-  card: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
+  card: "h-[128px] min-h-[128px] md:h-[152px] md:min-h-[152px]",
   cardRow: "h-[118px] min-h-[118px] md:h-[145px] md:min-h-[145px]",
   cardCompact: "h-[110px] min-h-[110px] md:h-[132px] md:min-h-[132px]",
-  hero: "h-[176px] sm:h-[196px]",
+  hero: "h-[228px] sm:h-[268px] md:h-[288px]",
   search: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
   compare: "h-[116px] min-h-[116px] md:h-[138px] md:min-h-[138px]",
   compareRow: "h-[116px] min-h-[116px] md:h-[140px] md:min-h-[140px]",
@@ -68,7 +71,7 @@ export const batteryImageStagePhotoScale: Record<BatteryImageStageVariant, strin
   card: "inline-flex origin-center scale-[1.2] md:scale-[1.24]",
   cardRow: "inline-flex origin-center scale-[1.2] md:scale-[1.26]",
   cardCompact: "inline-flex origin-center scale-[1.14] md:scale-[1.18]",
-  hero: "inline-flex origin-center",
+  hero: "inline-flex origin-center scale-[1.06] sm:scale-[1.1] md:scale-[1.12]",
   search: "inline-flex origin-center scale-[1.2] md:scale-[1.24]",
   compare: "inline-flex origin-center scale-[1.12] md:scale-[1.16]",
   compareRow: "inline-flex origin-center scale-[1.14] md:scale-[1.2]",

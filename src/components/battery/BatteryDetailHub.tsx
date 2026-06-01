@@ -4,7 +4,9 @@ import Link from "next/link";
 import { BatteryDetailOrderPanel } from "@/components/battery/BatteryDetailOrderPanel";
 import { BatteryDetailContentSlot } from "@/components/battery/BatteryDetailContentSlot";
 import { BatteryDetailExpandSections } from "@/components/battery/BatteryDetailExpandSections";
-import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import { BatteryDetailSectionNav } from "@/components/battery/BatteryDetailSectionNav";
+import { BatteryDetailReviewsSection } from "@/components/battery/BatteryDetailReviewsSection";
+import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
 import type { HubFeaturedVehicle } from "@/lib/battery-detail/battery-detail-hub-content";
@@ -57,22 +59,27 @@ function mergeFeaturedVehicles(
   return out;
 }
 
+function orderHubHref(code: string): string {
+  return `/shop?code=${encodeURIComponent(code)}`;
+}
+
 function BatteryDetailMobileSticky({ code }: { code: string }) {
   return (
     <div className={bm.stickyMobileBar} data-battery-detail-sticky>
-      <div className="mx-auto flex max-w-[1280px] gap-2">
+      <div className="mx-auto flex max-w-[1280px] items-center gap-2">
+        <a
+          className={`${bm.btnSecondary} flex flex-1 items-center justify-center text-xs`}
+          href="#battery-spec-check"
+        >
+          규격 확인
+        </a>
         <Link
           className={`${bm.btnNavy} flex flex-1 items-center justify-center text-xs`}
-          href={`/ai?topic=order&code=${encodeURIComponent(code)}`}
+          href={orderHubHref(code)}
         >
-          택배주문
+          주문하기
         </Link>
-        <Link
-          className={`${bm.btnSecondary} flex flex-1 items-center justify-center text-xs`}
-          href={HUB_STORE_DETAIL}
-        >
-          매장·출장 상담
-        </Link>
+        <BatteryWishlistButton code={code} size="sm" />
       </div>
     </div>
   );
@@ -103,7 +110,13 @@ export function BatteryDetailHub({ code, vehicles, relatedCodes = [] }: Props) {
         vehicleSummary={vehicleSummary}
       />
 
+      <BatteryDetailSectionNav />
+
+      <div id="battery-spec-check" className="scroll-mt-28 h-0 w-full" tabIndex={-1} aria-hidden />
+
       <BatteryDetailContentSlot code={displayCode} />
+
+      <BatteryDetailReviewsSection code={displayCode} />
 
       <BatteryDetailExpandSections hub={hub} vehicles={vehicleCards} />
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
 import { CheckoutSafetyChecklist } from "@/components/checkout/CheckoutSafetyChecklist";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
 import {
@@ -257,6 +258,8 @@ export function CheckoutOrderPage() {
       </section>
 
       <OrderRequestCartSummary items={items} />
+
+      <BatteryAutoDiscountHint variant="checkout" />
 
       <OrderRequestCustomerFields
         values={customer}

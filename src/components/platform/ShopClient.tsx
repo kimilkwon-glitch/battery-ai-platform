@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
+import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { useCart } from "@/components/platform/CartContext";
 import { ShopFindBatteryBar } from "@/components/platform/ShopFindBatteryBar";
 import { ShopProductOrderPanel } from "@/components/platform/ShopProductOrderPanel";
@@ -26,7 +27,6 @@ import {
   type ShopDetailFilter,
 } from "@/lib/shop-hub-data";
 import {
-  compareHref,
   getBattery,
   getBrand,
   getVehicleName,
@@ -82,7 +82,7 @@ function FeaturedSpecsSection({ onSelect }: { onSelect: (code: string) => void }
                     onClick={() => onSelect(spec.productCode)}
                     className={`${bm.btnPrimary} w-full py-2 text-[10px]`}
                   >
-                    상품 상세보기
+                    주문하기
                   </button>
                   <Link href={spec.href} className={`${bm.btnSecondary} text-center text-[10px]`}>
                     내 차 기준 검색
@@ -124,14 +124,10 @@ function SpecNotationGuide() {
 
 function ProductCard({
   product,
-  onDetail,
-  onInquiry,
-  onCompare,
+  onOrder,
 }: {
   product: ShopProduct;
-  onDetail: (p: ShopProduct) => void;
-  onInquiry: (p: ShopProduct) => void;
-  onCompare: (p: ShopProduct) => void;
+  onOrder: (p: ShopProduct) => void;
 }) {
   const b = getBattery(product.batteryCode, product.brandId);
   const imageSet = product.brandId === "rocket" ? b.images : getBatteryImageSet(product.batteryCode, "solite");
@@ -140,7 +136,8 @@ function ProductCard({
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl bg-white ring-1 ring-slate-200">
-      <div className="relative h-[180px] shrink-0 bg-slate-50">
+      <div className="relative h-[200px] shrink-0 bg-slate-50">
+        <BatteryWishlistButton code={product.batteryCode} overlay size="sm" />
         <BatteryThumbnail
           code={product.batteryCode}
           imageSet={imageSet?.main ? imageSet : undefined}
@@ -184,21 +181,26 @@ function ProductCard({
 
         <p className="mt-2 text-[10px] font-semibold text-slate-500">가격은 주문 상담 시 안내</p>
 
-        <div className="mt-auto space-y-2 pt-3">
+        <div className="mt-auto space-y-1.5 pt-3">
           <button
             type="button"
-            onClick={() => onDetail(product)}
+            onClick={() => onOrder(product)}
             className={`${bm.btnPrimary} w-full justify-center py-2.5 text-[11px]`}
           >
-            택배주문 보기
+            주문하기
           </button>
-          <button
-            type="button"
-            onClick={() => onCompare(product)}
-            className={`${bm.btnTertiary} w-full justify-center text-[11px]`}
+          <Link
+            href={`/batteries/${encodeURIComponent(product.batteryCode)}`}
+            className={`${bm.btnSecondary} w-full justify-center py-2 text-[11px]`}
           >
-            규격 비교
-          </button>
+            규격 상세 보기
+          </Link>
+          <Link
+            href={`/batteries/${encodeURIComponent(product.batteryCode)}#battery-reviews`}
+            className={`${bm.btnTertiary} w-full justify-center text-[10px]`}
+          >
+            리뷰 보기
+          </Link>
         </div>
       </div>
     </article>
@@ -278,11 +280,6 @@ export function ShopClient() {
         document.getElementById("shop-order-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
-  };
-
-  const handleCompare = (p: ShopProduct) => {
-    const b = getBattery(p.batteryCode, p.brandId);
-    window.location.href = compareHref(p.batteryCode, b.compareWith[0]);
   };
 
   return (
@@ -389,9 +386,12 @@ export function ShopClient() {
                 <ProductCard
                   key={p.id}
                   product={p}
-                  onDetail={setDetail}
-                  onInquiry={setInquiry}
-                  onCompare={handleCompare}
+                  onOrder={(prod) => {
+                    setDetail(prod);
+                    requestAnimationFrame(() => {
+                      document.getElementById("shop-order-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    });
+                  }}
                 />
               ))}
             </div>
