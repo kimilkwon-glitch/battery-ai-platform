@@ -224,46 +224,69 @@ const BRAND_KEY: Record<CustomerBrandHubId, BatteryBrand> = {
   solite: "SOLITE",
 };
 
+/** 브랜드 안내 제품 분류 탭 (ROCKET/SOLITE 제원 DB family 기준) */
+export const BRAND_HUB_FAMILY_TABS = [
+  { id: "general", label: "일반형" },
+  { id: "din", label: "DIN" },
+  { id: "agm", label: "AGM" },
+] as const;
+
+export type BrandHubFamilyTabId = (typeof BRAND_HUB_FAMILY_TABS)[number]["id"];
+
 const FAMILY_SORT: Record<string, number> = {
   AGM: 0,
-  CMF: 1,
-  GB: 2,
-  DIN: 3,
+  DIN: 1,
+  CMF: 2,
+  GB: 3,
   COMMERCIAL: 4,
 };
 
-function specPickScore(spec: BatteryBrandSpec, brandId: CustomerBrandHubId): number {
-  let score = 0;
-  if (brandId === "solite" && spec.code.startsWith("CMF")) score += 20;
-  if (brandId === "rocket" && (spec.code.startsWith("GB") || spec.code.startsWith("AGM"))) score += 20;
-  if (/[LR]$/.test(spec.code) || /Ah$/i.test(spec.code)) score += 25;
-  if (spec.code === spec.productName) score += 10;
-  score += spec.code.length;
-  score += (spec.capacityAh20Hr ?? 0) / 100;
-  return score;
+function compareBrandHubSpecs(a: BatteryBrandSpec, b: BatteryBrandSpec): number {
+  const fa = FAMILY_SORT[a.family] ?? 9;
+  const fb = FAMILY_SORT[b.family] ?? 9;
+  if (fa !== fb) return fa - fb;
+  return (
+    (a.capacityAh20Hr ?? 0) - (b.capacityAh20Hr ?? 0) ||
+    a.code.localeCompare(b.code, "ko")
+  );
 }
 
-function dedupeBrandSpecs(specs: BatteryBrandSpec[], brandId: CustomerBrandHubId): BatteryBrandSpec[] {
-  const byNorm = new Map<string, BatteryBrandSpec>();
-  for (const s of specs) {
-    const prev = byNorm.get(s.normalizedCode);
-    if (!prev || specPickScore(s, brandId) > specPickScore(prev, brandId)) {
-      byNorm.set(s.normalizedCode, s);
-    }
-  }
-  return [...byNorm.values()].sort((a, b) => {
-    const fa = FAMILY_SORT[a.family] ?? 9;
-    const fb = FAMILY_SORT[b.family] ?? 9;
-    if (fa !== fb) return fa - fb;
-    return (a.capacityAh20Hr ?? 0) - (b.capacityAh20Hr ?? 0) || a.code.localeCompare(b.code);
-  });
+/** 일반형 = CMF·GB·상용(COMMERCIAL) */
+export function specMatchesBrandHubFamilyTab(
+  spec: BatteryBrandSpec,
+  tab: BrandHubFamilyTabId,
+): boolean {
+  if (tab === "agm") return spec.family === "AGM";
+  if (tab === "din") return spec.family === "DIN";
+  return spec.family === "CMF" || spec.family === "GB" || spec.family === "COMMERCIAL";
 }
 
-/** 브랜드 제원 DB — 고객 노출 제품 전체 */
+function brandSpecPool(brandId: CustomerBrandHubId): BatteryBrandSpec[] {
+  return brandId === "rocket" ? ROCKET_SPECS : SOLITE_SPECS;
+}
+
+/** 브랜드 제원 DB 전체 (코드별 1카드, normalizedCode 병합 없음) */
 export function listBrandHubProducts(brandId: CustomerBrandHubId): BatteryBrandSpec[] {
-  const pool = brandId === "rocket" ? ROCKET_SPECS : SOLITE_SPECS;
-  const visible = pool.filter((s) => s.exposeToCustomer !== false && s.brand === BRAND_KEY[brandId]);
-  return dedupeBrandSpecs(visible, brandId);
+  return brandSpecPool(brandId)
+    .filter((s) => s.brand === BRAND_KEY[brandId])
+    .sort(compareBrandHubSpecs);
+}
+
+export function listBrandHubProductsForTab(
+  brandId: CustomerBrandHubId,
+  tab: BrandHubFamilyTabId,
+): BatteryBrandSpec[] {
+  return listBrandHubProducts(brandId).filter((s) => specMatchesBrandHubFamilyTab(s, tab));
+}
+
+export function countBrandHubProductsByTab(
+  brandId: CustomerBrandHubId,
+): Record<BrandHubFamilyTabId, number> {
+  return {
+    general: listBrandHubProductsForTab(brandId, "general").length,
+    din: listBrandHubProductsForTab(brandId, "din").length,
+    agm: listBrandHubProductsForTab(brandId, "agm").length,
+  };
 }
 
 export type BrandHubSpecCardData = {
@@ -279,9 +302,8 @@ export type BrandHubSpecCardData = {
 export function familyLabelForSpec(spec: BatteryBrandSpec): string {
   if (spec.family === "AGM") return "AGM";
   if (spec.family === "DIN") return "DIN";
-  if (spec.family === "CMF") return "일반형";
-  if (spec.family === "COMMERCIAL") return "상용";
-  if (spec.family === "GB") return "일반형";
+  if (spec.family === "COMMERCIAL") return "일반형";
+  if (spec.family === "CMF" || spec.family === "GB") return "일반형";
   return spec.family ?? "배터리";
 }
 

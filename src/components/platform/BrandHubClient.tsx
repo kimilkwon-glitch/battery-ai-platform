@@ -12,15 +12,18 @@ import { hasRocketBatteryAssets, hasSoliteBatteryAssets } from "@/lib/battery-al
 import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import {
   BRAND_HUB_BANNER,
+  BRAND_HUB_FAMILY_TABS,
   BRAND_HUB_FOOTNOTE,
   BRAND_HUB_INSIGHTS,
   BRAND_HUB_LOGOS,
   BRAND_HUB_THEMES,
   CUSTOMER_BRAND_HUB_IDS,
+  countBrandHubProductsByTab,
   familyLabelForSpec,
   isCustomerBrandHubId,
-  listBrandHubProducts,
+  listBrandHubProductsForTab,
   resolveBrandHubSpecCard,
+  type BrandHubFamilyTabId,
   type BrandHubInsightCard,
   type CustomerBrandHubId,
 } from "@/lib/brand-hub-customer";
@@ -56,6 +59,7 @@ export function BrandHubClient() {
   const params = useSearchParams();
   const router = useRouter();
   const [active, setActive] = useState<CustomerBrandHubId>("rocket");
+  const [familyTab, setFamilyTab] = useState<BrandHubFamilyTabId>("general");
 
   useEffect(() => {
     const b = params.get("brand");
@@ -65,10 +69,18 @@ export function BrandHubClient() {
     }
   }, [params, router]);
 
+  useEffect(() => {
+    setFamilyTab("general");
+  }, [active]);
+
   const theme = BRAND_HUB_THEMES[active];
   const banner = BRAND_HUB_BANNER[active];
   const insights = BRAND_HUB_INSIGHTS[active];
-  const products = useMemo(() => listBrandHubProducts(active), [active]);
+  const tabCounts = useMemo(() => countBrandHubProductsByTab(active), [active]);
+  const products = useMemo(
+    () => listBrandHubProductsForTab(active, familyTab),
+    [active, familyTab],
+  );
   const imageBrandKey: BatteryBrandKey = active === "solite" ? "solite" : "rocket";
   const dividerBorder = theme.id === "rocket" ? "border-[#2d3544]" : "border-slate-200";
   const labelMuted =
@@ -151,27 +163,91 @@ export function BrandHubClient() {
             </div>
 
             <section className="pt-1">
-              <header className="mb-6 sm:mb-8">
+              <header className="mb-5 sm:mb-6">
                 <h2 className={clsx("text-3xl font-black tracking-tight sm:text-4xl", theme.bannerText)}>
                   {theme.label} 전 제품
                 </h2>
                 <p className={clsx("mt-3 text-lg font-medium", theme.bannerMuted)}>
-                  등록된 {products.length}개 규격 · CCA·RC·사이즈를 카드에서 확인
+                  제원 DB 기준 · 일반형 / DIN / AGM 분류별 전체 규격
                 </p>
               </header>
-              <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
-                {products.map((spec) => (
-                  <BrandProductCard
-                    key={spec.code}
-                    spec={spec}
-                    brandId={active}
-                    imageBrandKey={imageBrandKey}
-                    theme={theme}
-                    dividerBorder={dividerBorder}
-                    labelMuted={labelMuted}
-                  />
-                ))}
-              </div>
+
+              <nav
+                className={clsx(
+                  "mb-6 flex flex-wrap gap-2 rounded-xl p-2 sm:gap-2.5",
+                  theme.id === "rocket"
+                    ? "bg-[#111318]/80 ring-1 ring-[#2d3544]"
+                    : "bg-slate-100/90 ring-1 ring-slate-200",
+                )}
+                role="tablist"
+                aria-label="제품 분류"
+              >
+                {BRAND_HUB_FAMILY_TABS.map((tab) => {
+                  const selected = familyTab === tab.id;
+                  const count = tabCounts[tab.id];
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={selected}
+                      onClick={() => setFamilyTab(tab.id)}
+                      className={clsx(
+                        "min-h-[2.75rem] rounded-lg px-4 text-base font-black transition duration-200 sm:px-5 sm:text-lg",
+                        selected
+                          ? theme.id === "rocket"
+                            ? "bg-[#E53935] text-white shadow-md"
+                            : "bg-[#2563EB] text-white shadow-md"
+                          : theme.id === "rocket"
+                            ? "text-[#CBD5E1] hover:bg-[#1a2030] hover:text-white"
+                            : "text-slate-600 hover:bg-white hover:text-slate-900",
+                      )}
+                    >
+                      {tab.label}
+                      <span
+                        className={clsx(
+                          "ml-2 text-sm font-bold tabular-nums",
+                          selected ? "text-white/90" : theme.bannerMuted,
+                        )}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </nav>
+
+              <p className={clsx("mb-5 text-base font-semibold", theme.bannerMuted)}>
+                {BRAND_HUB_FAMILY_TABS.find((t) => t.id === familyTab)?.label} · {products.length}개
+                규격
+              </p>
+
+              {products.length === 0 ? (
+                <p
+                  className={clsx(
+                    "rounded-xl border border-dashed px-6 py-12 text-center text-lg font-semibold",
+                    theme.id === "rocket"
+                      ? "border-[#2d3544] text-[#AEB8C6]"
+                      : "border-slate-200 text-slate-500",
+                  )}
+                >
+                  이 분류에 등록된 제품이 없습니다.
+                </p>
+              ) : (
+                <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                  {products.map((spec) => (
+                    <BrandProductCard
+                      key={spec.code}
+                      spec={spec}
+                      brandId={active}
+                      imageBrandKey={imageBrandKey}
+                      theme={theme}
+                      dividerBorder={dividerBorder}
+                      labelMuted={labelMuted}
+                    />
+                  ))}
+                </div>
+              )}
             </section>
 
             <p className={clsx("pt-2 text-center text-base font-medium", theme.bannerMuted)}>
