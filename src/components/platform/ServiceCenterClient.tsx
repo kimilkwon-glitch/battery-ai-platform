@@ -25,12 +25,16 @@ export function ServiceCenterClient({
 
   useEffect(() => {
     if (!activeStore) return;
-    const timer = window.setTimeout(() => {
+    const scrollTimer = window.setTimeout(() => {
       document
         .getElementById(`store-${activeStore}`)
         ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 120);
-    return () => window.clearTimeout(timer);
+    const clearTimer = window.setTimeout(() => setActiveStore(null), 2200);
+    return () => {
+      window.clearTimeout(scrollTimer);
+      window.clearTimeout(clearTimer);
+    };
   }, [activeStore]);
 
   return (

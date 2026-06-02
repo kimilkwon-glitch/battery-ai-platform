@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { AppIcon } from "@/components/common/AppIcon";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
 import clsx from "clsx";
 import {
@@ -10,9 +9,7 @@ import {
   REVIEWS_MOCK,
   type ReviewBadgeId,
 } from "@/lib/reviews-mock-data";
-import { storeLinks } from "@/lib/external-links";
 import { bm } from "@/lib/design-tokens";
-import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 
 export function ReviewsPageClient({ initialBattery }: { initialBattery?: string }) {
   const [filter, setFilter] = useState<"all" | ReviewBadgeId>("all");
@@ -76,38 +73,6 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
       {filtered.length === 0 ? (
         <p className="text-center text-sm font-medium text-slate-500">해당 조건의 후기가 없습니다.</p>
       ) : null}
-
-      <section className={bm.platformStrip}>
-        <p className={bm.label}>더 보기 · 상담</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <a
-            href={storeLinks.deokcheon.blog}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs`}
-          >
-            <AppIcon iconKey="guide" size="sm" />
-            덕천점 블로그 후기 보기
-          </a>
-          <a
-            href={storeLinks.hakjang.blog}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs`}
-          >
-            <AppIcon iconKey="guide" size="sm" />
-            학장점 블로그 후기 보기
-          </a>
-          <Link className={`${bm.btnNavy} inline-flex items-center gap-1.5 text-xs`} href="/vehicles">
-            <AppIcon iconKey="vehicle" size="sm" className="!text-white" />
-            내 차 배터리 상담하기
-          </Link>
-          <Link className={`${bm.btnSecondary} inline-flex items-center gap-1.5 text-xs`} href={HUB_PHOTO}>
-            <AppIcon iconKey="photoCheck" size="sm" />
-            사진으로 확인하기
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

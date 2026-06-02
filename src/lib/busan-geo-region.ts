@@ -50,11 +50,12 @@ export function storeLabelForRegion(region: BusanGeoRegion): string | null {
   return null;
 }
 
-/** 지도·패널용 구 단위 대표 권역 (강서구는 학장점 기준, 대저1동은 패널 보조 안내) */
+/** 지도·클릭용 구 단위 대표 권역 (강서구는 동별 담당이 달라 구 클릭만으로 지점 배정하지 않음) */
 export function assignBusanGuRegion(gu: string): BusanGeoRegion {
   const g = gu.trim();
   if (g === "북구" || g === "금정구" || g === "연제구") return "deokcheon";
-  if (g === "사상구" || g === "사하구" || g === "부산진구" || g === "강서구") return "hakjang";
+  if (g === "사상구" || g === "사하구" || g === "부산진구") return "hakjang";
+  if (g === "강서구") return "neutral";
   return "neutral";
 }
 

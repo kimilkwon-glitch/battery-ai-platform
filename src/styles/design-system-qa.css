@@ -296,6 +296,21 @@
     0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
+.busan-map-hover-tip,
+.busan-map-click-popover {
+  will-change: transform;
+}
+
+@media (max-width: 1023px) {
+  .busan-map-legend {
+    order: 2;
+  }
+
+  .busan-map-canvas {
+    order: 1;
+  }
+}
+
 .bm-store-badge--deokcheon {
   background: var(--bm-info-soft);
   color: var(--color-accent-store-blue);
