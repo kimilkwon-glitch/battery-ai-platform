@@ -29,7 +29,7 @@ export function HomeMainHero() {
         <div className="home-search-example-chips">
           {HOME_MAIN_SEARCH_EXAMPLES.map((ex) => (
             <Link
-              key={ex.href}
+              key={ex.label}
               className="home-search-example-chip"
               href={ex.href}
             >
