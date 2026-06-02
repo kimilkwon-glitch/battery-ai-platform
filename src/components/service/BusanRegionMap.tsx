@@ -8,8 +8,14 @@ import { geoCentroid, geoMercator, geoPath } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import {
   assignBusanGeoRegion,
+  assignBusanGuRegion,
+  BUSAN_GU_MAP_LABELS,
+  guHasDongLevelExceptions,
   guLabel,
+  guPanelCoverage,
+  guTooltipHint,
   regionLabel,
+  resolveGuFromSearch,
   storeLabelForRegion,
   type BusanGeoRegion,
   type BusanHangjeongProps,
@@ -29,12 +35,12 @@ import { BUSAN_REGION_FOOTNOTE } from "@/lib/busan-service-hub-data";
 const GEOJSON_URL = "/assets/maps/busan-hangjeongdong.geojson";
 
 const FILL = {
-  deokcheon: { rest: 0.62, hover: 0.78, active: 0.88 },
-  hakjang: { rest: 0.6, hover: 0.76, active: 0.86 },
-  neutral: { rest: 0.32, hover: 0.44, active: 0.5 },
+  deokcheon: { rest: 0.7, hover: 0.88, active: 0.95, dim: 0.12 },
+  hakjang: { rest: 0.68, hover: 0.86, active: 0.93, dim: 0.12 },
+  neutral: { rest: 0.38, hover: 0.52, active: 0.58, dim: 0.1 },
 } as const;
 
-type EnrichedFeature = {
+type DongPath = {
   adm_cd: string;
   adm_nm: string;
   gu: string;
@@ -43,65 +49,84 @@ type EnrichedFeature = {
   label: string;
 };
 
-type SelectedDistrict = {
+type GuUnit = {
   gu: string;
-  dongLabel: string;
   region: BusanGeoRegion;
+  dongs: DongPath[];
+  labelX: number;
+  labelY: number;
+  showLabel: boolean;
+};
+
+type SelectedGu = {
+  gu: string;
+  region: BusanGeoRegion;
+  matchedDong?: string;
 };
 
 type MapTooltip = {
   x: number;
   y: number;
   gu: string;
-  dongLabel: string;
   region: BusanGeoRegion;
+  matchedDong?: string;
 };
-
-function featureOpacity(
-  district: EnrichedFeature,
-  activeStore: BusanStoreId | null,
-  hoveredStore: BusanStoreId | null,
-  hoveredGu: string | null,
-  searchHighlight: boolean,
-  isPathHovered: boolean,
-): number {
-  const { region, gu } = district;
-  const levels = FILL[region];
-  const guHighlighted = hoveredGu === gu;
-  const storeHighlighted =
-    region !== "neutral" && (activeStore === region || hoveredStore === region);
-
-  if (searchHighlight) return 0.22;
-
-  if (region === "neutral") {
-    if (guHighlighted || isPathHovered) return levels.hover;
-    return levels.rest;
-  }
-
-  if (storeHighlighted || guHighlighted) return levels.active;
-  if (isPathHovered) return levels.hover;
-  if (activeStore && activeStore !== region) return 0.14;
-  if (hoveredStore && hoveredStore !== region) return 0.18;
-  return levels.rest;
-}
-
-function strokeForRegion(region: BusanGeoRegion, emphasized: boolean): string {
-  if (region === "neutral") return BUSAN_MAP_PALETTE.neutral.stroke;
-  return emphasized ? BUSAN_MAP_PALETTE[region].stroke : `${BUSAN_MAP_PALETTE[region].stroke}99`;
-}
 
 function normalizeSearch(q: string): string {
   return q.trim().toLowerCase().replace(/\s+/g, "");
 }
 
-function matchesSearch(district: EnrichedFeature, searchQuery: string | null): boolean {
+function dongMatchesSearch(dong: DongPath, searchQuery: string | null): boolean {
   if (!searchQuery) return false;
   const q = normalizeSearch(searchQuery);
   if (!q) return false;
-  const gu = district.gu.toLowerCase();
-  const dong = district.label.toLowerCase();
-  const full = district.adm_nm.toLowerCase().replace(/\s+/g, "");
-  return gu.includes(q) || dong.includes(q) || full.includes(q);
+  const gu = dong.gu.toLowerCase();
+  const label = dong.label.toLowerCase();
+  const full = dong.adm_nm.toLowerCase().replace(/\s+/g, "");
+  return gu.includes(q) || label.includes(q) || full.includes(q);
+}
+
+function guSearchHit(gu: GuUnit, searchQuery: string | null, resolvedGu: string | null): boolean {
+  if (resolvedGu && resolvedGu === gu.gu) return true;
+  if (!searchQuery?.trim()) return false;
+  return gu.dongs.some((d) => dongMatchesSearch(d, searchQuery));
+}
+
+function pathStyle(
+  dong: DongPath,
+  gu: GuUnit,
+  opts: {
+    activeStore: BusanStoreId | null;
+    hoveredGu: string | null;
+    selectedGu: string | null;
+    searchHighlightGu: boolean;
+    searchDim: boolean;
+    guHover: boolean;
+  },
+): { fillOpacity: number; stroke: string; strokeWidth: number } {
+  const { region } = dong;
+  const palette =
+    region === "neutral" ? BUSAN_MAP_PALETTE.neutral : BUSAN_MAP_PALETTE[region];
+  const levels = FILL[region];
+  const guActive =
+    opts.hoveredGu === gu.gu || opts.selectedGu === gu.gu || opts.searchHighlightGu;
+
+  let fillOpacity: number = levels.rest;
+  if (opts.searchDim) fillOpacity = levels.dim;
+  else if (guActive || opts.guHover) fillOpacity = levels.active;
+  else if (opts.activeStore && region !== "neutral" && opts.activeStore !== region) {
+    fillOpacity = levels.dim + 0.06;
+  }
+
+  const emphasized = guActive || opts.guHover;
+  const stroke = emphasized
+    ? "#ffffff"
+    : region === "neutral"
+      ? palette.stroke
+      : palette.fill;
+  const strokeWidth = emphasized ? 2.4 : region === "neutral" ? 1.15 : 0.85;
+
+  return { fillOpacity, stroke, strokeWidth };
 }
 
 export function BusanRegionMap({
@@ -120,9 +145,8 @@ export function BusanRegionMap({
     null,
   );
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [hoveredCd, setHoveredCd] = useState<string | null>(null);
   const [hoveredGu, setHoveredGu] = useState<string | null>(null);
-  const [selectedDistrict, setSelectedDistrict] = useState<SelectedDistrict | null>(null);
+  const [selectedGu, setSelectedGu] = useState<SelectedGu | null>(null);
   const [tooltip, setTooltip] = useState<MapTooltip | null>(null);
 
   useEffect(() => {
@@ -144,16 +168,16 @@ export function BusanRegionMap({
     };
   }, []);
 
-  const { paths, pins, hoveredStore } = useMemo(() => {
+  const { guUnits, pins } = useMemo(() => {
     if (!collection) {
-      return { paths: [] as EnrichedFeature[], pins: pinsForStores({}), hoveredStore: null as BusanStoreId | null };
+      return { guUnits: [] as GuUnit[], pins: pinsForStores({}) };
     }
 
     const projection = geoMercator();
     const pathGen = geoPath(projection);
     projection.fitSize([BUSAN_MAP_WIDTH, BUSAN_MAP_HEIGHT], collection);
 
-    const enriched: EnrichedFeature[] = [];
+    const dongs: DongPath[] = [];
     const centroidSum: Record<BusanStoreId, { x: number; y: number; n: number }> = {
       deokcheon: { x: 0, y: 0, n: 0 },
       hakjang: { x: 0, y: 0, n: 0 },
@@ -166,14 +190,15 @@ export function BusanRegionMap({
       const pathD = pathGen(feature as Feature<Geometry, BusanHangjeongProps>);
       if (!pathD) continue;
 
-      enriched.push({
+      const dong: DongPath = {
         adm_cd: props.adm_cd,
         adm_nm: props.adm_nm,
         gu: guLabel(props),
         region,
         pathD,
         label: regionLabel(props.adm_nm),
-      });
+      };
+      dongs.push(dong);
 
       if (region === "deokcheon" || region === "hakjang") {
         const c = pathGen.centroid(feature as Feature<Geometry, BusanHangjeongProps>);
@@ -182,6 +207,38 @@ export function BusanRegionMap({
         centroidSum[region].n += 1;
       }
     }
+
+    const byGu = new Map<string, DongPath[]>();
+    for (const d of dongs) {
+      const list = byGu.get(d.gu) ?? [];
+      list.push(d);
+      byGu.set(d.gu, list);
+    }
+
+    const guUnits: GuUnit[] = [];
+    for (const [gu, guDongs] of byGu) {
+      let sx = 0;
+      let sy = 0;
+      let sn = 0;
+      for (const d of guDongs) {
+        const feat = collection.features.find((f) => f.properties?.adm_cd === d.adm_cd);
+        if (!feat) continue;
+        const c = pathGen.centroid(feat as Feature<Geometry, BusanHangjeongProps>);
+        sx += c[0];
+        sy += c[1];
+        sn += 1;
+      }
+      guUnits.push({
+        gu,
+        region: assignBusanGuRegion(gu),
+        dongs: guDongs,
+        labelX: sn ? sx / sn : 0,
+        labelY: sn ? sy / sn : 0,
+        showLabel: BUSAN_GU_MAP_LABELS.has(gu),
+      });
+    }
+
+    guUnits.sort((a, b) => a.gu.localeCompare(b.gu, "ko"));
 
     const storeCentroids: Partial<Record<BusanStoreId, { x: number; y: number }>> = {};
     (["deokcheon", "hakjang"] as const).forEach((id) => {
@@ -203,65 +260,72 @@ export function BusanRegionMap({
       }
     });
 
-    const hovered = hoveredCd ? enriched.find((p) => p.adm_cd === hoveredCd) : null;
-    const hoveredStoreId =
-      hovered?.region === "deokcheon" || hovered?.region === "hakjang" ? hovered.region : null;
+    return { guUnits, pins: pinsForStores(storeCentroids) };
+  }, [collection]);
 
-    return {
-      paths: enriched,
-      pins: pinsForStores(storeCentroids),
-      hoveredStore: hoveredStoreId,
-    };
-  }, [collection, hoveredCd]);
+  const knownGu = useMemo(() => guUnits.map((g) => g.gu), [guUnits]);
+  const searchResolved = useMemo(
+    () => (searchQuery?.trim() ? resolveGuFromSearch(searchQuery, knownGu) : null),
+    [searchQuery, knownGu],
+  );
 
-  const displayStore = activeStore ?? hoveredStore;
+  const searchHighlightGu = searchResolved?.gu ?? null;
+  const hasSearch = Boolean(searchQuery?.trim());
 
-  const showTooltip = (district: EnrichedFeature, clientX: number, clientY: number) => {
+  const displayStore = useMemo(() => {
+    if (selectedGu?.region === "deokcheon" || selectedGu?.region === "hakjang") {
+      return selectedGu.region;
+    }
+    if (activeStore) return activeStore;
+    if (hoveredGu) {
+      const g = guUnits.find((u) => u.gu === hoveredGu);
+      if (g?.region === "deokcheon" || g?.region === "hakjang") return g.region;
+    }
+    return null;
+  }, [selectedGu, activeStore, hoveredGu, guUnits]);
+
+  const showTooltip = (gu: GuUnit, clientX: number, clientY: number, matchedDong?: string) => {
     const el = mapCanvasRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
     setTooltip({
-      x: clientX - rect.left + 12,
-      y: clientY - rect.top - 8,
-      gu: district.gu,
-      dongLabel: district.label,
-      region: district.region,
+      x: Math.min(clientX - rect.left + 14, rect.width - 200),
+      y: Math.max(clientY - rect.top - 12, 8),
+      gu: gu.gu,
+      region: gu.region,
+      matchedDong,
     });
   };
 
-  const handleDistrictEnter = (district: EnrichedFeature, clientX: number, clientY: number) => {
-    setHoveredCd(district.adm_cd);
-    setHoveredGu(district.gu);
-    showTooltip(district, clientX, clientY);
-    if (district.region === "deokcheon" || district.region === "hakjang") {
-      onHoverStore?.(district.region);
+  const handleGuEnter = (gu: GuUnit, clientX: number, clientY: number) => {
+    setHoveredGu(gu.gu);
+    showTooltip(gu, clientX, clientY, searchResolved?.matchedDong);
+    if (gu.region === "deokcheon" || gu.region === "hakjang") {
+      onHoverStore?.(gu.region);
     } else {
       onHoverStore?.(null);
     }
   };
 
-  const handleDistrictLeave = () => {
-    setHoveredCd(null);
+  const handleGuLeave = () => {
     setHoveredGu(null);
     setTooltip(null);
     onHoverStore?.(null);
   };
 
-  const handleDistrictClick = (district: EnrichedFeature) => {
-    setSelectedDistrict({
-      gu: district.gu,
-      dongLabel: district.label,
-      region: district.region,
+  const handleGuClick = (gu: GuUnit) => {
+    const matchedDong = gu.dongs.find((d) => dongMatchesSearch(d, searchQuery ?? null))?.label;
+    setSelectedGu({
+      gu: gu.gu,
+      region: gu.region,
+      matchedDong: searchResolved?.matchedDong ?? matchedDong,
     });
-    if (district.region === "deokcheon" || district.region === "hakjang") {
-      onSelect(district.region);
+    if (gu.region === "deokcheon" || gu.region === "hakjang") {
+      onSelect(gu.region);
     }
   };
 
-  const panelDistrict = selectedDistrict;
-  const panelStore = panelDistrict?.region === "deokcheon" || panelDistrict?.region === "hakjang"
-    ? panelDistrict.region
-    : displayStore;
+  const panelGu = selectedGu;
 
   return (
     <section
@@ -271,8 +335,8 @@ export function BusanRegionMap({
       <div>
         <h3 className="text-xl font-black text-slate-950 sm:text-2xl">부산 권역 지도</h3>
         <p className="mt-2 text-base font-semibold text-slate-600">
-          구 단위로 담당 지점을 확인할 수 있습니다. 구역에 마우스를 올리거나 클릭하고, 동네명 검색으로
-          해당 영역을 강조할 수 있습니다.
+          구 단위로 담당 지점을 확인할 수 있습니다. 구에 마우스를 올리거나 클릭하고, 동네명 검색으로
+          해당 구를 강조할 수 있습니다.
         </p>
       </div>
 
@@ -282,21 +346,21 @@ export function BusanRegionMap({
           className="busan-map-canvas relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-50/80 p-3 sm:p-4"
         >
           <div
-            className="pointer-events-none absolute right-3 top-3 z-10 rounded-xl border border-slate-200/90 bg-white/95 px-4 py-3 shadow-md backdrop-blur-sm"
+            className="pointer-events-none absolute right-3 top-3 z-10 min-w-[148px] rounded-xl border border-slate-200 bg-white px-4 py-3.5 shadow-lg ring-1 ring-slate-100/80"
             aria-label="지도 범례"
           >
-            <p className="text-xs font-black uppercase tracking-wide text-slate-500">권역 범례</p>
-            <ul className="mt-2.5 space-y-2 text-sm font-bold text-slate-800">
-              <li className="flex items-center gap-2.5">
-                <span className="size-3.5 shrink-0 rounded-sm bg-blue-500 shadow-sm" aria-hidden />
+            <p className="text-sm font-black text-slate-700">권역 범례</p>
+            <ul className="mt-3 space-y-2.5 text-base font-bold text-slate-900">
+              <li className="flex items-center gap-3">
+                <span className="size-4 shrink-0 rounded-sm bg-blue-500 shadow-sm" aria-hidden />
                 덕천점 권역
               </li>
-              <li className="flex items-center gap-2.5">
-                <span className="size-3.5 shrink-0 rounded-sm bg-teal-600 shadow-sm" aria-hidden />
+              <li className="flex items-center gap-3">
+                <span className="size-4 shrink-0 rounded-sm bg-teal-600 shadow-sm" aria-hidden />
                 학장점 권역
               </li>
-              <li className="flex items-center gap-2.5">
-                <span className="size-3.5 shrink-0 rounded-sm bg-slate-300 shadow-sm" aria-hidden />
+              <li className="flex items-center gap-3">
+                <span className="size-4 shrink-0 rounded-sm bg-slate-300 shadow-sm" aria-hidden />
                 기타 · 상담 후 안내
               </li>
             </ul>
@@ -314,85 +378,96 @@ export function BusanRegionMap({
           ) : (
             <svg
               viewBox={BUSAN_MAP_VIEWBOX}
-              className="busan-map-svg mx-auto h-auto w-full max-w-[520px]"
+              className="busan-map-svg mx-auto h-auto w-full max-w-[520px] touch-manipulation"
               role="img"
-              aria-label="부산 행정동 권역 안내 지도"
+              aria-label="부산 구별 권역 안내 지도"
             >
               <defs>
-                <filter id="busan-geo-shadow" x="-4%" y="-4%" width="108%" height="108%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodOpacity="0.2" />
+                <filter id="busan-gu-glow" x="-8%" y="-8%" width="116%" height="116%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="5" floodColor="#1e3a5f" floodOpacity="0.35" />
                 </filter>
               </defs>
 
-              {paths.map((district) => {
-                const palette =
-                  district.region === "neutral"
-                    ? BUSAN_MAP_PALETTE.neutral
-                    : BUSAN_MAP_PALETTE[district.region];
-                const isPathHovered = hoveredCd === district.adm_cd;
-                const guHover = hoveredGu === district.gu;
-                const searchHit = matchesSearch(district, searchQuery ?? null);
-                const searchDim = Boolean(searchQuery?.trim()) && !searchHit;
-                const opacity = featureOpacity(
-                  district,
-                  activeStore,
-                  hoveredStore,
-                  hoveredGu,
-                  searchDim,
-                  isPathHovered || guHover,
-                );
-                const emphasized =
-                  district.region !== "neutral" &&
-                  (activeStore === district.region ||
-                    hoveredStore === district.region ||
-                    guHover ||
-                    searchHit);
-                const clickable = true;
+              {guUnits.map((gu) => {
+                const guHover = hoveredGu === gu.gu;
+                const guSelected = selectedGu?.gu === gu.gu;
+                const searchHit = guSearchHit(gu, searchQuery ?? null, searchHighlightGu);
+                const searchDim = hasSearch && !searchHit;
+                const guEmphasis = guHover || guSelected || searchHit;
 
                 return (
-                  <g
-                    key={district.adm_cd}
-                    filter={emphasized ? "url(#busan-geo-shadow)" : undefined}
+                  <motion.g
+                    key={gu.gu}
+                    className="busan-map-gu cursor-pointer"
+                    filter={guEmphasis ? "url(#busan-gu-glow)" : undefined}
+                    initial={false}
+                    animate={{
+                      scale: guEmphasis ? 1.018 : 1,
+                    }}
+                    style={{ transformOrigin: `${gu.labelX}px ${gu.labelY}px` }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    onMouseEnter={(e) => handleGuEnter(gu, e.clientX, e.clientY)}
+                    onMouseMove={(e) => showTooltip(gu, e.clientX, e.clientY, searchResolved?.matchedDong)}
+                    onMouseLeave={handleGuLeave}
+                    onClick={() => handleGuClick(gu)}
+                    onFocus={(e) => {
+                      const rect = (e.currentTarget as SVGGElement).getBoundingClientRect();
+                      handleGuEnter(gu, rect.left + rect.width / 2, rect.top + rect.height / 2);
+                    }}
+                    onBlur={handleGuLeave}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`${gu.gu} — ${storeLabelForRegion(gu.region) ?? "상담 후 안내"}`}
                   >
-                    <motion.path
-                      d={district.pathD}
-                      fill={palette.fill}
-                      stroke={strokeForRegion(district.region, emphasized)}
-                      strokeWidth={emphasized ? 1.4 : 0.5}
-                      vectorEffect="non-scaling-stroke"
-                      className={clsx(
-                        "busan-map-district transition-[stroke-width]",
-                        clickable ? "cursor-pointer" : "cursor-default",
-                      )}
-                      initial={false}
-                      animate={{
-                        fillOpacity: opacity,
-                        scale: isPathHovered || guHover ? 1.012 : 1,
-                      }}
-                      style={{ transformOrigin: "center" }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      onClick={() => handleDistrictClick(district)}
-                      onMouseEnter={(e) =>
-                        handleDistrictEnter(district, e.clientX, e.clientY)
-                      }
-                      onMouseMove={(e) => showTooltip(district, e.clientX, e.clientY)}
-                      onMouseLeave={handleDistrictLeave}
-                      onFocus={(e) => {
-                        const rect = (e.target as SVGPathElement).getBoundingClientRect();
-                        handleDistrictEnter(
-                          district,
-                          rect.left + rect.width / 2,
-                          rect.top + rect.height / 2,
-                        );
-                      }}
-                      onBlur={handleDistrictLeave}
-                      tabIndex={0}
-                      role="button"
-                      aria-label={`${district.gu} ${district.label} — ${
-                        storeLabelForRegion(district.region) ?? "기타 권역"
-                      }`}
-                    />
-                  </g>
+                    {gu.dongs.map((dong) => {
+                      const palette =
+                        dong.region === "neutral"
+                          ? BUSAN_MAP_PALETTE.neutral
+                          : BUSAN_MAP_PALETTE[dong.region];
+                      const style = pathStyle(dong, gu, {
+                        activeStore,
+                        hoveredGu,
+                        selectedGu: selectedGu?.gu ?? null,
+                        searchHighlightGu: searchHit,
+                        searchDim,
+                        guHover,
+                      });
+
+                      return (
+                        <path
+                          key={dong.adm_cd}
+                          d={dong.pathD}
+                          fill={palette.fill}
+                          fillOpacity={style.fillOpacity}
+                          stroke={style.stroke}
+                          strokeWidth={style.strokeWidth}
+                          strokeLinejoin="round"
+                          vectorEffect="non-scaling-stroke"
+                          className="pointer-events-none"
+                        />
+                      );
+                    })}
+
+                    {gu.showLabel ? (
+                      <text
+                        x={gu.labelX}
+                        y={gu.labelY}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        className={clsx(
+                          "pointer-events-none select-none font-black",
+                          guEmphasis ? "fill-slate-900 text-[13px]" : "fill-slate-800/90 text-[11px]",
+                        )}
+                        style={{
+                          paintOrder: "stroke fill",
+                          stroke: "#fff",
+                          strokeWidth: guEmphasis ? 4 : 3,
+                        }}
+                      >
+                        {gu.gu}
+                      </text>
+                    ) : null}
+                  </motion.g>
                 );
               })}
 
@@ -404,24 +479,28 @@ export function BusanRegionMap({
                   <g
                     key={storeId}
                     className="cursor-pointer"
-                    onClick={() => onSelect(storeId)}
+                    onClick={() => {
+                      onSelect(storeId);
+                      setSelectedGu(null);
+                    }}
                     role="presentation"
                   >
                     <motion.circle
                       cx={pin.x}
                       cy={pin.y}
-                      r={pinActive ? 11 : 8}
+                      r={pinActive ? 12 : 9}
                       fill={palette.fill}
                       stroke="#fff"
                       strokeWidth={2.5}
-                      animate={{ scale: pinActive ? 1.08 : 1 }}
+                      animate={{ scale: pinActive ? 1.1 : 1 }}
                       transition={{ duration: 0.2 }}
                     />
                     <text
                       x={pin.x}
-                      y={pin.y - 16}
+                      y={pin.y - 18}
                       textAnchor="middle"
-                      className="pointer-events-none fill-slate-900 text-[11px] font-black"
+                      className="pointer-events-none fill-slate-900 text-[12px] font-black"
+                      style={{ stroke: "#fff", strokeWidth: 3, paintOrder: "stroke fill" }}
                     >
                       {pin.label}
                     </text>
@@ -434,19 +513,26 @@ export function BusanRegionMap({
           <AnimatePresence>
             {tooltip ? (
               <motion.div
-                key={`${tooltip.gu}-${tooltip.dongLabel}`}
-                initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                key={tooltip.gu}
+                initial={{ opacity: 0, y: 8, scale: 0.94 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 4, scale: 0.96 }}
-                transition={{ duration: 0.15 }}
-                className="pointer-events-none absolute z-20 max-w-[220px] rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-lg"
+                exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                transition={{ duration: 0.14 }}
+                className="pointer-events-none absolute z-20 max-w-[240px] rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-xl"
                 style={{ left: tooltip.x, top: tooltip.y }}
               >
-                <p className="text-sm font-black text-slate-900">{tooltip.gu}</p>
-                <p className="text-xs font-semibold text-slate-600">{tooltip.dongLabel}</p>
+                <p className="text-base font-black text-slate-900">{tooltip.gu}</p>
                 <p className="mt-1 text-sm font-bold text-blue-800">
                   담당: {storeLabelForRegion(tooltip.region) ?? "전화 상담 후 안내"}
                 </p>
+                <p className="mt-1.5 text-sm font-medium leading-snug text-slate-600">
+                  {guTooltipHint(tooltip.gu, tooltip.region)}
+                </p>
+                {tooltip.matchedDong ? (
+                  <p className="mt-1 text-xs font-semibold text-slate-500">
+                    검색: {tooltip.matchedDong}
+                  </p>
+                ) : null}
               </motion.div>
             ) : null}
           </AnimatePresence>
@@ -461,74 +547,78 @@ export function BusanRegionMap({
 
         <div className="flex flex-col gap-4">
           <AnimatePresence mode="wait">
-            {panelDistrict ? (
+            {panelGu ? (
               <motion.div
-                key={`${panelDistrict.gu}-${panelDistrict.dongLabel}`}
+                key={panelGu.gu}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.22 }}
                 className={clsx(
                   "rounded-xl border p-5",
-                  panelDistrict.region === "deokcheon"
+                  panelGu.region === "deokcheon"
                     ? "border-blue-200 bg-blue-50/60"
-                    : panelDistrict.region === "hakjang"
+                    : panelGu.region === "hakjang"
                       ? "border-teal-200 bg-teal-50/60"
                       : "border-slate-200 bg-slate-50/90",
                 )}
               >
                 <p className="text-xs font-black uppercase tracking-wide text-slate-500">선택한 구</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">{panelDistrict.gu}</p>
-                {panelDistrict.dongLabel !== panelDistrict.gu ? (
+                <p className="mt-1 text-2xl font-black text-slate-900">{panelGu.gu}</p>
+                {panelGu.matchedDong ? (
                   <p className="mt-1 text-sm font-semibold text-slate-600">
-                    참고 동: {panelDistrict.dongLabel}
+                    검색 참고: {panelGu.matchedDong}
                   </p>
                 ) : null}
-                <p className="mt-3 text-sm font-bold text-slate-700">
+                <p className="mt-3 text-base font-bold text-slate-800">
                   담당 지점:{" "}
-                  <span className="text-base font-black text-slate-900">
-                    {storeLabelForRegion(panelDistrict.region) ?? "전화 상담 후 배정"}
+                  <span className="text-lg font-black text-slate-900">
+                    {storeLabelForRegion(panelGu.region) ?? "전화 상담 후 배정"}
                   </span>
                 </p>
-                {panelStore && panelDistrict.region !== "neutral" ? (
-                  <>
-                    <p className="mt-2 text-sm font-bold text-slate-600">
-                      {BUSAN_REGION_DISPLAY[panelStore].regions}
-                    </p>
-                    <p className="mt-2 text-base font-medium leading-relaxed text-slate-600">
-                      {BUSAN_REGION_DISPLAY[panelStore].blurb}
-                    </p>
-                  </>
+                <p className="mt-2 text-sm font-bold leading-relaxed text-slate-700">
+                  {guPanelCoverage(panelGu.gu, panelGu.region)}
+                </p>
+                {guHasDongLevelExceptions(panelGu.gu) ? (
+                  <p className="mt-2 text-sm font-medium text-amber-800/90">
+                    강서구 내 대저1동·명지 등은 동별 담당이 다를 수 있습니다. 동네명 검색 또는 전화로
+                    확인해 주세요.
+                  </p>
+                ) : null}
+                {panelGu.region === "deokcheon" || panelGu.region === "hakjang" ? (
+                  <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+                    {BUSAN_REGION_DISPLAY[panelGu.region].blurb}
+                  </p>
                 ) : (
-                  <p className="mt-2 text-base font-medium leading-relaxed text-slate-600">
+                  <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
                     해당 구는 직영점 권역 밖일 수 있습니다. 전화로 위치를 알려주시면 가까운 지점을
                     안내드립니다.
                   </p>
                 )}
               </motion.div>
-            ) : panelStore ? (
+            ) : displayStore ? (
               <motion.div
-                key={panelStore}
+                key={displayStore}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.22 }}
                 className={clsx(
                   "rounded-xl border p-5",
-                  panelStore === "deokcheon"
+                  displayStore === "deokcheon"
                     ? "border-blue-200 bg-blue-50/50"
                     : "border-teal-200 bg-teal-50/50",
                 )}
               >
                 <p className="text-xs font-black uppercase tracking-wide text-slate-500">추천 지점</p>
                 <p className="mt-1 text-2xl font-black text-slate-900">
-                  {BUSAN_REGION_DISPLAY[panelStore].label}
+                  {BUSAN_REGION_DISPLAY[displayStore].label}
                 </p>
                 <p className="mt-2 text-sm font-bold text-slate-700">
-                  {BUSAN_REGION_DISPLAY[panelStore].regions}
+                  {BUSAN_REGION_DISPLAY[displayStore].regions}
                 </p>
                 <p className="mt-2 text-base font-medium leading-relaxed text-slate-600">
-                  {BUSAN_REGION_DISPLAY[panelStore].blurb}
+                  {BUSAN_REGION_DISPLAY[displayStore].blurb}
                 </p>
               </motion.div>
             ) : (
@@ -548,7 +638,7 @@ export function BusanRegionMap({
           </AnimatePresence>
 
           {(["deokcheon", "hakjang"] as const).map((id) => {
-            const active = panelStore === id;
+            const active = displayStore === id;
             const meta = BUSAN_REGION_DISPLAY[id];
             const palette = BUSAN_MAP_PALETTE[id];
             return (
@@ -557,7 +647,7 @@ export function BusanRegionMap({
                 type="button"
                 onClick={() => {
                   onSelect(id);
-                  setSelectedDistrict(null);
+                  setSelectedGu(null);
                 }}
                 className={clsx(
                   "rounded-xl border p-4 text-left transition-shadow",
