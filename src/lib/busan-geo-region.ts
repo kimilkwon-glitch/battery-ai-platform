@@ -35,3 +35,17 @@ export function regionLabel(adm_nm: string): string {
   const parts = short.split(/\s+/);
   return parts[parts.length - 1] ?? short;
 }
+
+/** 행정구(區) 이름 — 지도 구 단위 그룹·툴팁용 */
+export function guLabel(props: BusanHangjeongProps): string {
+  const gu = props.sggnm?.trim();
+  if (gu) return gu;
+  const short = props.adm_nm.replace(/^부산광역시\s*/, "");
+  return short.split(/\s+/)[0] ?? short;
+}
+
+export function storeLabelForRegion(region: BusanGeoRegion): string | null {
+  if (region === "deokcheon") return "덕천점";
+  if (region === "hakjang") return "학장점";
+  return null;
+}

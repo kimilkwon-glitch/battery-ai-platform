@@ -23,6 +23,7 @@ export function ServiceCenterClient({
   const context = [vehicleLabel, battery, symptom].filter(Boolean);
   const [activeStore, setActiveStore] = useState<BusanStoreId | null>(null);
   const [hoveredStore, setHoveredStore] = useState<BusanStoreId | null>(null);
+  const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
   const highlightStore = activeStore ?? hoveredStore;
 
   return (
@@ -33,10 +34,15 @@ export function ServiceCenterClient({
         </p>
       ) : null}
 
-      <StoreNeighborhoodSearch activeStore={highlightStore} onMatch={setActiveStore} />
+      <StoreNeighborhoodSearch
+        activeStore={highlightStore}
+        onMatch={setActiveStore}
+        onSearchQuery={setMapSearchQuery}
+      />
 
       <BusanRegionMap
         activeStore={activeStore}
+        searchQuery={mapSearchQuery}
         onHoverStore={setHoveredStore}
         onSelect={setActiveStore}
       />
@@ -46,30 +52,20 @@ export function ServiceCenterClient({
 
       <StoreHubCompactCards highlightId={highlightStore} />
 
-      <section className={`${bm.card} ${bm.cardPad}`}>
-        <h3 className="text-base font-black text-slate-950">배송·출장·택배 전체 안내</h3>
-        <p className="mt-1 text-sm font-medium text-slate-600">
-          택배 주문·출장 교체·야간 무인 시스템은 서비스 허브에서 한눈에 볼 수 있습니다.
-        </p>
-        <Link className={`${bm.btnSecondary} mt-3 inline-flex text-xs`} href="/service">
-          서비스 안내 보기 →
-        </Link>
-      </section>
-
       <section className={`${bm.card} ${bm.cardPad}`} id="visit-prep">
-        <h3 className="text-base font-black text-slate-950">방문·출장 전 알려주시면 좋은 정보</h3>
-        <p className="mt-2 text-sm font-semibold text-slate-600">
+        <h3 className="text-xl font-black text-slate-950 sm:text-2xl">방문·출장 전 알려주시면 좋은 정보</h3>
+        <p className="mt-3 text-base font-semibold leading-relaxed text-slate-600 sm:text-lg">
           이 정보가 있으면 가까운 지점과 작업 가능 시간을 더 빠르게 안내드릴 수 있습니다.
         </p>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
           {VISIT_OUTBOUND_PREP_ITEMS.map((item) => (
-            <li className="flex items-start gap-2 text-sm font-medium text-slate-700" key={item}>
-              <CheckCircle className="mt-0.5 size-4 shrink-0 text-emerald-600" aria-hidden />
+            <li className="flex items-start gap-3 text-base font-semibold text-slate-800" key={item}>
+              <CheckCircle className="mt-0.5 size-5 shrink-0 text-emerald-600" aria-hidden />
               {item}
             </li>
           ))}
         </ul>
-        <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold">
+        <div className="mt-5 flex flex-wrap gap-2.5 text-sm font-bold">
           <Link className="text-blue-700 hover:underline" href="/order-checklist">
             주문·교체 체크리스트 →
           </Link>

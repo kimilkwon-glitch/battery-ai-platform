@@ -14,17 +14,21 @@ import {
 export function StoreNeighborhoodSearch({
   onMatch,
   activeStore,
+  onSearchQuery,
 }: {
   onMatch: (storeId: BusanStoreId | null) => void;
   activeStore: BusanStoreId | null;
+  onSearchQuery?: (query: string | null) => void;
 }) {
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmed = query.trim();
     const result = recommendBusanStore(query);
-    setSubmitted(query.trim());
+    setSubmitted(trimmed);
+    onSearchQuery?.(trimmed || null);
     if (result.status === "matched") {
       onMatch(result.storeId);
     } else {
