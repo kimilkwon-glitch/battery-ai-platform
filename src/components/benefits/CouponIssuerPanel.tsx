@@ -66,9 +66,10 @@ export function CouponIssuerPanel({
           <Ticket className="size-5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-black text-amber-900">쿠폰 발급 (상담 시 제시)</p>
-          <p className="mt-0.5 text-[11px] font-medium text-amber-800/80">
-            자동 결제 할인이 아닙니다. 주문·택배 상담 시 코드를 알려 주세요.
+          <p className="text-xs font-black text-amber-900">첫 주문 3% 쿠폰 자동 적용</p>
+          <p className="mt-0.5 text-[11px] font-medium leading-relaxed text-amber-800/80">
+            회원가입 후 첫 주문 조건을 만족하면 주문 단계에서 자동 반영됩니다. 이 브라우저에서 쿠폰을
+            받아 두면 주문·결제 시 적용됩니다.
           </p>
         </div>
       </div>
@@ -104,7 +105,7 @@ export function CouponIssuerPanel({
           onClick={handleIssue}
           className="mt-4 w-full rounded-xl bg-amber-600 px-4 py-3 text-sm font-black text-white shadow-md transition hover:bg-amber-700 disabled:opacity-60 sm:w-auto"
         >
-          쿠폰 발급하기
+          회원가입 후 혜택 받기
         </button>
       )}
 

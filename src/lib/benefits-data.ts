@@ -49,9 +49,9 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
   {
     id: "first-order-3",
     title: "첫 주문 3% 혜택",
-    label: "회원 가입",
-    description: "조건 확인 후 적용 가능한 혜택입니다.",
-    note: "회원 가입 후 첫 주문 시 1회",
+    label: "자동 적용",
+    description: "회원가입 후 첫 주문 시 주문 단계에서 자동 적용됩니다.",
+    note: "회원가입 후 첫 주문 1회",
     image: BENEFIT_3PERCENT_CARD_SRC,
     imageAlt: "첫 주문 3% 혜택 카드",
     fallbackIcon: "percent",
@@ -59,10 +59,10 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     href: HUB_BENEFIT_FIRST_ORDER_3,
     couponBenefitId: "first-order-3",
     detailIntro:
-      "첫 주문 고객을 위한 3% 혜택입니다. 적용 가능 여부와 조건은 주문 상담 시 확인됩니다. 발급한 쿠폰 코드를 택배주문·채팅상담·고객센터 문의 시 제시해 주세요.",
+      "첫 주문 고객을 위한 3% 혜택입니다. 회원가입 후 첫 주문 조건을 만족하면 주문·결제 단계에서 자동으로 반영됩니다.",
     detailBullets: [
       "일부 상품·차량·규격에만 적용될 수 있습니다.",
-      "첫 주문 여부·반납 조건·프로모션 중복 여부는 상담 시 확인합니다.",
+      "첫 주문 여부·반납 조건·프로모션 중복 여부는 주문 전 확인합니다.",
       "정확한 할인 금액은 주문 확정 전 안내드립니다.",
     ],
   },

@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { BenefitCardVisual } from "@/components/benefits/BenefitCardVisual";
+import { BenefitsNotices } from "@/components/benefits/BenefitsNotices";
 import { BenefitsSectionHeader } from "@/components/benefits/BenefitsSectionHeader";
+import { FirstOrder3AutoApplyPanel } from "@/components/benefits/FirstOrder3AutoApplyPanel";
 import { BENEFIT_CARDS, BENEFITS_HUB_TITLE } from "@/lib/benefits-data";
 
 function useVisibleCount() {
@@ -96,12 +98,12 @@ export function HomeBenefitsCarousel() {
         pausedRef.current = false;
       }}
     >
-      <BenefitsSectionHeader className="mb-6 sm:mb-8" />
+      <BenefitsSectionHeader className="mb-5 sm:mb-7" />
 
       <div className="home-benefits-carousel-shell relative mx-auto max-w-[1100px] px-10 sm:px-11">
         <div ref={viewportRef} className="home-benefits-viewport overflow-hidden rounded-2xl">
           <div
-            className="home-benefits-track flex items-start gap-3"
+            className="home-benefits-track flex items-stretch gap-3"
             style={{
               transform: slideStep ? `translateX(-${index * slideStep}px)` : undefined,
             }}
@@ -109,7 +111,7 @@ export function HomeBenefitsCarousel() {
             {cards.map((card, i) => (
               <div
                 key={card.id}
-                className="home-benefit-slide flex shrink-0"
+                className="home-benefit-slide flex h-auto shrink-0"
                 style={{
                   width: slideStep
                     ? slideStep - 12
@@ -161,6 +163,11 @@ export function HomeBenefitsCarousel() {
             ))}
           </div>
         ) : null}
+      </div>
+
+      <div className="home-benefits-footer mx-auto mt-6 max-w-[1100px] space-y-4 px-4 sm:mt-7 sm:px-6">
+        <FirstOrder3AutoApplyPanel compact />
+        <BenefitsNotices />
       </div>
     </section>
   );

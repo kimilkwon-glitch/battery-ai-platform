@@ -2272,7 +2272,6 @@
 /* 메인 혜택 캐러셀 — 프로모 카드 (배너 높이와 분리) */
 .home-benefits-carousel-shell {
   --home-benefit-gap: 12px;
-  --home-benefit-media-h: 8.125rem;
 }
 
 .home-benefits-viewport {
@@ -2280,27 +2279,15 @@
 }
 
 .home-benefits-track {
-  align-items: flex-start;
+  align-items: stretch;
   transition: transform 320ms ease-out;
-}
-
-@media (min-width: 640px) {
-  .home-benefits-carousel-shell {
-    --home-benefit-media-h: 9.375rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .home-benefits-carousel-shell {
-    --home-benefit-media-h: 10.25rem;
-  }
 }
 
 .home-benefit-slide > a,
 .home-benefit-slide > article,
 .home-benefit-slide .home-benefit-card {
-  height: auto;
-  min-height: 0;
+  height: 100%;
+  min-height: 100%;
 }
 
 .bm-zone--benefit .home-benefit-card.bm-card-unified {
@@ -2308,22 +2295,33 @@
 }
 
 .home-benefit-card-media--carousel {
-  aspect-ratio: 16 / 9;
-  height: var(--home-benefit-media-h, 8.125rem);
+  aspect-ratio: 5 / 3;
+  width: 100%;
+  height: auto;
   min-height: 0;
-  max-height: 10.625rem;
+  max-height: none;
+  background: #f8fafc;
 }
 
 .home-benefit-card-media--detail {
+  aspect-ratio: 5 / 3;
+  width: 100%;
+  height: auto;
   min-height: 12.5rem;
-  height: 12.5rem;
+  max-height: 18.75rem;
+  background: #f8fafc;
 }
 
 @media (min-width: 640px) {
   .home-benefit-card-media--detail {
-    min-height: 15rem;
-    height: 15rem;
+    min-height: 14rem;
+    max-height: 20rem;
   }
+}
+
+.home-benefit-card-media--detail.home-benefit-card-media--photo .home-benefit-card-media__img {
+  object-fit: contain;
+  object-position: center center;
 }
 
 /* 혜택 카드 — hover flicker 제거 */
@@ -2348,8 +2346,30 @@
 .home-benefit-card-media--photo .home-benefit-card-media__img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center center;
+}
+
+.home-benefit-card__body {
+  min-height: 9.5rem;
+}
+
+.home-benefits-footer {
+  padding-inline: max(1rem, env(safe-area-inset-left, 0px));
+}
+
+.home-benefit-auto-apply__cta {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .home-benefit-auto-apply__cta {
+    width: auto;
+  }
+
+  .home-benefit-card__body {
+    min-height: 10rem;
+  }
 }
 
 /* 리뷰 카드 — 썸네일 높이는 Tailwind(h-44/sm:h-48)로 고정, 배너 min-height 미적용 */

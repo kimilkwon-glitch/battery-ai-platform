@@ -23,13 +23,13 @@ export function BenefitCardVisual({
   const inner = (
     <article
       className={clsx(
-        "home-benefit-card bm-card-unified flex flex-col overflow-hidden rounded-2xl bg-white",
+        "home-benefit-card bm-card-unified flex h-full flex-col overflow-hidden rounded-2xl bg-white",
         active ? "home-benefit-card--active border-amber-200/80" : "border-slate-200/90 bg-slate-50/50",
         !active && "cursor-default",
       )}
     >
       <BenefitCardMedia card={toMediaCard(card)} priority={priority} />
-      <div className="home-benefit-card__body flex flex-1 flex-col gap-2 p-4 pb-5 sm:p-5">
+      <div className="home-benefit-card__body flex flex-1 flex-col gap-1.5 p-4 pb-4 sm:gap-2 sm:p-5 sm:pb-5">
         <span
           className={clsx(
             "inline-flex w-fit rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wide",
@@ -61,7 +61,7 @@ export function BenefitCardVisual({
   }
 
   return (
-    <Link href={card.href} className="block rounded-2xl outline-none ring-amber-200 focus-visible:ring-2">
+    <Link href={card.href} className="block h-full rounded-2xl outline-none ring-amber-200 focus-visible:ring-2">
       {inner}
     </Link>
   );
