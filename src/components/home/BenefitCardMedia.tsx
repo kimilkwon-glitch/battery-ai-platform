@@ -40,6 +40,7 @@ export function BenefitCardMedia({
         hasImage && "home-benefit-card-media--photo",
         active && "home-benefit-card-media--active",
       )}
+      data-benefit-id={!isDetail ? card.id : undefined}
     >
       {card.image && !imageFailed ? (
         <Image

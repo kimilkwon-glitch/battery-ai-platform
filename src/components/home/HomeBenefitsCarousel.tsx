@@ -109,7 +109,7 @@ export function HomeBenefitsCarousel() {
             {cards.map((card, i) => (
               <div
                 key={card.id}
-                className="home-benefit-slide flex h-auto shrink-0"
+                className="home-benefit-slide flex h-full shrink-0 self-stretch"
                 style={{
                   width: slideStep
                     ? slideStep - 12

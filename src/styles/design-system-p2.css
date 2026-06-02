@@ -2342,15 +2342,44 @@
   transition: transform 320ms ease-out;
 }
 
+.home-benefit-slide {
+  display: flex;
+  align-items: stretch;
+}
+
 .home-benefit-slide > a,
 .home-benefit-slide > article,
 .home-benefit-slide .home-benefit-card {
   height: 100%;
+  width: 100%;
   min-height: 100%;
 }
 
 .bm-zone--benefit .home-benefit-card.bm-card-unified {
   min-height: 0;
+}
+
+/* 메인 혜택 캐러셀 — 카드·이미지 높이 통일 */
+.home-benefits-carousel--main .home-benefit-slide > a {
+  display: flex;
+  height: 100%;
+  min-height: 100%;
+}
+
+.home-benefits-carousel--main .home-benefit-card {
+  min-height: 22.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.home-benefits-carousel--main .home-benefit-card--active {
+  border-color: rgb(254 215 170 / 0.9);
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.08);
+}
+
+.home-benefits-carousel--main .home-benefit-card--active:hover {
+  border-color: rgb(253 186 116 / 0.95);
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.1);
 }
 
 .home-benefit-card-media--carousel {
@@ -2360,6 +2389,27 @@
   min-height: 0;
   max-height: none;
   background: #f8fafc;
+}
+
+.home-benefits-carousel--main .home-benefit-card-media--carousel {
+  aspect-ratio: auto;
+  flex-shrink: 0;
+  width: 100%;
+  height: 10rem;
+  min-height: 10rem;
+  max-height: 10rem;
+}
+
+@media (min-width: 640px) {
+  .home-benefits-carousel--main .home-benefit-card-media--carousel {
+    height: 11rem;
+    min-height: 11rem;
+    max-height: 11rem;
+  }
+
+  .home-benefits-carousel--main .home-benefit-card {
+    min-height: 23.5rem;
+  }
 }
 
 .home-benefit-card-media--detail {
@@ -2394,6 +2444,10 @@
   box-shadow: 0 4px 20px rgba(234, 88, 12, 0.08);
 }
 
+.bm-zone--benefit .home-benefits-carousel--main .home-benefit-card.bm-card-unified:hover {
+  transform: none !important;
+}
+
 .home-benefit-card-media,
 .home-benefit-card-media__img,
 .home-benefit-card:hover .home-benefit-card-media__img {
@@ -2407,6 +2461,38 @@
   height: 100%;
   object-fit: contain;
   object-position: center center;
+}
+
+.home-benefits-carousel--main .home-benefit-card-media--photo .home-benefit-card-media__img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.home-benefits-carousel--main .home-benefit-card-media[data-benefit-id="first-order-3"] .home-benefit-card-media__img {
+  object-position: center 42%;
+}
+
+.home-benefits-carousel--main .home-benefit-card-media[data-benefit-id="replacement-service"] .home-benefit-card-media__img {
+  object-position: center 38%;
+}
+
+.home-benefits-carousel--main
+  .home-benefit-card-media[data-benefit-id="store-visit-discount-5000"]
+  .home-benefit-card-media__img {
+  object-position: center 35%;
+}
+
+.home-benefits-carousel--main .home-benefit-card__body {
+  flex: 1 1 auto;
+  min-height: 11.25rem;
+}
+
+.home-benefits-carousel--main .home-benefit-card__title {
+  min-height: 2.75rem;
+}
+
+.home-benefits-carousel--main .home-benefit-card__desc {
+  min-height: 3.25rem;
 }
 
 .home-benefit-card__body {
