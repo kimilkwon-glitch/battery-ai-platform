@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { BusanRegionMap } from "@/components/service/BusanRegionMap";
@@ -8,8 +7,6 @@ import { StoreHubCompactCards } from "@/components/service/StoreHubCompactCards"
 import { StoreNeighborhoodSearch } from "@/components/service/StoreNeighborhoodSearch";
 import { VISIT_OUTBOUND_PREP_ITEMS } from "@/lib/busan-service-hub-data";
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
-import { HUB_PHOTO } from "@/lib/customer-hub-routes";
-import { bm } from "@/lib/design-tokens";
 
 export function ServiceCenterClient({
   vehicleLabel,
@@ -52,32 +49,27 @@ export function ServiceCenterClient({
 
       <StoreHubCompactCards highlightId={highlightStore} />
 
-      <section className={`${bm.card} ${bm.cardPad}`} id="visit-prep">
-        <h3 className="text-xl font-black text-slate-950 sm:text-2xl">방문·출장 전 알려주시면 좋은 정보</h3>
-        <p className="mt-3 text-base font-semibold leading-relaxed text-slate-600 sm:text-lg">
-          이 정보가 있으면 가까운 지점과 작업 가능 시간을 더 빠르게 안내드릴 수 있습니다.
+      <section
+        className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm sm:p-7"
+        id="visit-prep"
+      >
+        <h3 className="text-xl font-black text-slate-950 sm:text-2xl">
+          방문·출장 전 알려주시면 좋은 정보
+        </h3>
+        <p className="mt-2 max-w-2xl text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+          아래 정보가 있으면 가까운 지점과 작업 가능 시간을 더 빠르게 안내드릴 수 있습니다.
         </p>
-        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {VISIT_OUTBOUND_PREP_ITEMS.map((item) => (
-            <li className="flex items-start gap-3 text-base font-semibold text-slate-800" key={item}>
-              <CheckCircle className="mt-0.5 size-5 shrink-0 text-emerald-600" aria-hidden />
+            <li
+              className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3.5 text-base font-semibold text-slate-800 sm:text-lg"
+              key={item}
+            >
+              <CheckCircle className="size-5 shrink-0 text-emerald-600 sm:size-6" aria-hidden />
               {item}
             </li>
           ))}
         </ul>
-        <div className="mt-5 flex flex-wrap gap-2.5 text-sm font-bold">
-          <Link className="text-blue-700 hover:underline" href="/order-checklist">
-            주문·교체 체크리스트 →
-          </Link>
-          <span className="text-slate-300">·</span>
-          <Link className="text-slate-600 hover:text-blue-700 hover:underline" href={HUB_PHOTO}>
-            사진으로 규격 확인 (보조)
-          </Link>
-          <span className="text-slate-300">·</span>
-          <Link className="text-slate-600 hover:text-blue-700 hover:underline" href="/ai">
-            문의하기
-          </Link>
-        </div>
       </section>
     </div>
   );

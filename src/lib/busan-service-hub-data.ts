@@ -65,7 +65,17 @@ export const BUSAN_CAPABILITIES = [
 
 
 
+/** 매장·출장 안내 — 방문 전 고객이 알려주면 좋은 최소 정보 */
 export const VISIT_OUTBOUND_PREP_ITEMS = [
+  "차량명",
+  "연식",
+  "연료",
+  "현재 배터리 규격 (알고 있으면)",
+  "방전 증상",
+  "시동 가능 여부",
+] as const;
+
+export const CONSULT_PREP_ITEMS = [
   "차량명",
   "연식",
   "현재 배터리 규격",
@@ -73,8 +83,6 @@ export const VISIT_OUTBOUND_PREP_ITEMS = [
   "지하주차장 여부",
   "시동 가능 여부",
 ] as const;
-
-export const CONSULT_PREP_ITEMS = VISIT_OUTBOUND_PREP_ITEMS;
 
 export const OUTBOUND_PREP_ITEMS = [
   "차량 위치·연락 가능 번호",
