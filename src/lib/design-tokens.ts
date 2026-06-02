@@ -202,6 +202,11 @@ export const bm = {
   /** @see battery-image-stage.ts */
   batteryImageStageBase:
     "battery-image-stage relative w-full overflow-hidden bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)]/80",
+  /** 차량 카드 이미지 슬롯 — VehicleCardMedia / VehicleCardImage */
+  vehicleCardMedia: "bm-vehicle-card-media",
+  vehicleCardMediaThumb: "bm-vehicle-card-media bm-vehicle-card-media--thumb",
+  /** CarGenerationImage 내부 프레임(배경 없음) — 바깥은 vehicleCardMedia */
+  vehicleCardMediaInner: "bm-vehicle-card-media__inner",
   /** @deprecated VehicleCardMedia 사용 */
   imageVehicle: "bm-vehicle-card-media bm-vehicle-card-media--thumb",
   /** @deprecated VehicleCardMedia + commercial prop */
@@ -231,14 +236,14 @@ export const productCardShell = bm.cardInteractive;
 export const batteryThumbSurface = "bg-[var(--bm-image-bg)]";
 export const vehicleCardShell =
   "group bm-card-vehicle-match flex min-h-0 items-stretch overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/25";
-export const vehicleImageBoxClass = bm.imageVehicle;
-export const vehicleImageBoxCommercialClass = bm.imageVehicleCommercial;
+export const vehicleImageBoxClass = bm.vehicleCardMediaInner;
+export const vehicleImageBoxCommercialClass = bm.vehicleCardMediaInner;
 export const vehicleImageImgClass = "block max-h-[96%] max-w-[96%] object-contain object-center";
 export const vehicleImageImgCommercialClass = "block max-h-[94%] max-w-[96%] object-contain object-center";
 export const vehicleCardTextCol =
   "flex min-w-0 flex-1 flex-col justify-center gap-1 py-2.5 pl-3 pr-3";
 export const productCardPadding = "p-4";
-export const carHeroSurface = "bg-[var(--bm-card)]";
+export const carHeroSurface = "bg-[var(--bm-vehicle-surface)]";
 export const carSurface = "bg-[var(--bm-card)]";
 export const carImageCompactClass = "h-full w-full object-contain object-center";
 export const carImageEdgeSoftenFilter = "brightness(1.01)";

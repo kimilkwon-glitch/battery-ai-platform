@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { CarGenerationImage } from "@/components/car/CarGenerationImage";
+import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { BatteryMiniSpecLink } from "@/components/battery/BatteryMiniSpecLink";
 import { BatteryContentThumb } from "@/components/BatteryThumbnail";
 import { ContentCoverImage } from "@/components/content/ContentCoverImage";
@@ -74,9 +74,9 @@ export function HomePopularGuides() {
                   </span>
                 </div>
               ) : (
-              <div className="relative h-[160px] overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50/40">
+              <div className="relative h-[160px] overflow-hidden">
                 {primaryCode ? (
-                  <div className="flex h-full items-center justify-center p-6">
+                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50/40 p-6">
                     <BatteryContentThumb
                       code={primaryCode}
                       fit="contain"
@@ -85,14 +85,12 @@ export function HomePopularGuides() {
                     />
                   </div>
                 ) : vehicleImage ? (
-                  <div className="flex h-full items-end justify-center pb-2">
-                    <CarGenerationImage
-                      alt={c.title}
-                      className="!h-[85%] !w-[70%]"
-                      size="compact"
-                      src={vehicleImage}
-                    />
-                  </div>
+                  <VehicleCardMedia
+                    alt={c.title}
+                    className="bm-vehicle-card-media--bleed h-full min-h-[160px] rounded-none"
+                    src={vehicleImage}
+                    variant="card"
+                  />
                 ) : null}
                 <span className="absolute left-3 top-3 rounded-md bg-white/90 px-2 py-0.5 text-[10px] font-black text-blue-700 shadow-sm ring-1 ring-blue-100">
                   {c.category}

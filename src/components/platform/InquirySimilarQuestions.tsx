@@ -12,15 +12,23 @@ function CardImage({ item }: { item: FeaturedSimilarQuestion }) {
   const battery = item.batteryCode ? getBattery(item.batteryCode) : null;
 
   return (
-    <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-slate-50 to-blue-50/40 ring-1 ring-slate-100 sm:h-full sm:w-32">
+    <div
+      className={
+        item.imageKind === "vehicle"
+          ? "relative h-28 w-full shrink-0 overflow-hidden rounded-lg sm:h-full sm:w-32"
+          : "relative h-28 w-full shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-slate-50 to-blue-50/40 ring-1 ring-slate-100 sm:h-full sm:w-32"
+      }
+    >
       {item.imageKind === "vehicle" && vehicleSrc ? (
-        <Image
-          src={vehicleSrc}
-          alt=""
-          fill
-          className="object-contain object-center p-2"
-          sizes="128px"
-        />
+        <div className="bm-vehicle-card-media bm-vehicle-card-media--bleed h-full min-h-28 w-full rounded-lg sm:min-h-full">
+          <Image
+            src={vehicleSrc}
+            alt=""
+            fill
+            className="object-contain object-center !bg-transparent p-1"
+            sizes="128px"
+          />
+        </div>
       ) : item.imageKind === "battery" && battery ? (
         <div className="flex h-full items-center justify-center p-2">
           <BatteryMiniThumb

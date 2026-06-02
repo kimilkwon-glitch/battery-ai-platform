@@ -13,15 +13,17 @@ export function ImageFallback({
 }) {
   const boxClass =
     variant === "vehicle"
-      ? `${bm.imageVehicle} rounded-xl ring-1 ring-slate-100`
+      ? `${bm.vehicleCardMediaThumb} rounded-xl`
       : `${bm.imageBattery} rounded-t-2xl ring-1 ring-slate-100`;
 
   return (
-    <div className={`${boxClass} ${className}`}>
+    <div className={`${boxClass} ${className}`} data-image-slot-state="placeholder">
       <div className="flex flex-col items-center justify-center px-4 text-center">
         <div
-          className={`mb-2 flex items-center justify-center rounded-xl bg-gradient-to-br from-slate-100 to-blue-50 ring-1 ring-slate-200/80 ${
-            variant === "battery" ? "size-14" : "size-12"
+          className={`mb-2 flex items-center justify-center rounded-lg ${
+            variant === "battery"
+              ? "size-14 bg-gradient-to-br from-slate-100 to-blue-50 ring-1 ring-slate-200/80"
+              : "size-12 bg-transparent ring-0"
           }`}
         >
           <svg className="size-6 text-slate-400" fill="none" viewBox="0 0 24 24" aria-hidden>

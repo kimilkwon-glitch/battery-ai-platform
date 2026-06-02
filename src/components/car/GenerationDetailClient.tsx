@@ -24,7 +24,9 @@ export function GenerationDetailClient({ generation }: { generation: CarGenerati
   return (
     <div className="space-y-4">
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <CarGenerationImage src={imageSrc} alt={generation.displayName} size="hero" />
+        <div className="bm-vehicle-card-media bm-vehicle-card-media--bleed min-h-[240px] rounded-none">
+          <CarGenerationImage src={imageSrc} alt={generation.displayName} size="hero" />
+        </div>
         <div className="grid gap-4 p-4 lg:grid-cols-[1fr_auto]">
           <div>
             <p className="text-[10px] font-black text-blue-600">현대 · 그랜저 · {generation.yearRange}</p>

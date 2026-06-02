@@ -1,6 +1,7 @@
 "use client";
 
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
+import { bm } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 export type VehicleCardMediaVariant = "card" | "thumb";
@@ -28,8 +29,7 @@ export function VehicleCardMedia({
   slug,
   placeholderTitle,
 }: Props) {
-  const surfaceClass =
-    variant === "thumb" ? "bm-vehicle-card-media bm-vehicle-card-media--thumb" : "bm-vehicle-card-media";
+  const surfaceClass = variant === "thumb" ? bm.vehicleCardMediaThumb : bm.vehicleCardMedia;
 
   if (src?.trim()) {
     return (

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { carOriginalFromDisplayUrl } from "@/lib/car-image-url";
 import {
   CAR_IMAGE_FALLBACK,
-  carHeroSurface,
   vehicleImageBoxClass,
   vehicleImageBoxCommercialClass,
   vehicleImageImgClass,
@@ -45,14 +44,14 @@ export function CarGenerationImage({ src, alt, size = "compact", className = "",
   if (size === "hero") {
     return (
       <div
-        className={`flex w-full items-center justify-center ${carHeroSurface} ${className}`}
+        className={`bm-vehicle-card-media__inner flex w-full items-center justify-center bg-transparent ${className}`}
         style={{ minHeight: "240px" }}
       >
         <img
           src={imgSrc}
           alt={alt}
           loading="lazy"
-          className="max-h-[220px] w-full max-w-full object-contain object-center px-6 py-4 opacity-100 select-none"
+          className="max-h-[220px] w-full max-w-full object-contain object-center px-2 py-2 opacity-100 select-none"
           draggable={false}
           onError={handleError}
         />
