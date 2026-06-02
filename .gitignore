@@ -61,3 +61,6 @@ src/lib/ai-audit/audit-snapshot.json
 
 # Normalized vehicle images staged for future catalog (not wired in app)
 /public/assets/cars-normalized/genesis/
+
+# Local originals before batch normalize (npm run normalize:vehicles)
+/public/assets/vehicles-original-backup/

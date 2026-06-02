@@ -43,11 +43,11 @@
   --bm-border-blue: #bfdbfe;
   --bm-border-strong: #cbd5e1;
   --bm-image-bg: #eef4fc;
-  /** 차종 카드 이미지 영역 — 사이트 전역 단일 톤 (연한 블루그레이) */
-  --bm-vehicle-surface: #eef3f8;
-  --bm-vehicle-surface-top: #f3f6fa;
-  --bm-vehicle-surface-bottom: #eef3f8;
-  --bm-vehicle-surface-border: rgba(148, 163, 184, 0.18);
+  /** 차종 카드 이미지 영역 — 노멀라이즈 PNG(흰 배경)와 동일 */
+  --bm-vehicle-surface: #ffffff;
+  --bm-vehicle-surface-top: #ffffff;
+  --bm-vehicle-surface-bottom: #ffffff;
+  --bm-vehicle-surface-border: rgba(226, 232, 240, 0.9);
   --bm-catalog-bg: #f8fafc;
   --bm-success: #059669;
   --bm-success-soft: #ecfdf5;

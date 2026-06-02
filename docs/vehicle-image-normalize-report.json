@@ -1,0 +1,33 @@
+{
+  "at": "2026-06-02T11:10:41.879Z",
+  "canvas": {
+    "w": 640,
+    "h": 360,
+    "ratio": "16:9"
+  },
+  "background": "#ffffff",
+  "processedCount": 313,
+  "failed": [],
+  "sample": [
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_all_new_cruze_2017.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_aveo_2011.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_bolt_ev_2017.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_captiva_2011.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_captiva_2016.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_colorado_2019.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_colorado_2021.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_cruze_2011.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_equinox_2018.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_equinox_2022.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_impala_2016.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_malibu_2011.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_malibu_2016.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_malibu_2019.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_orlando_2011.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_spark_2011.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_spark_2015.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_spark_2018.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_spark_2021.png",
+    "cars-normalized/chevrolet-gmdaewoo\\chevrolet_spark_s_2013.png"
+  ]
+}

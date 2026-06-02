@@ -290,11 +290,7 @@
   justify-content: center;
   overflow: hidden;
   background-color: var(--bm-vehicle-surface);
-  background-image: linear-gradient(
-    180deg,
-    var(--bm-vehicle-surface-top) 0%,
-    var(--bm-vehicle-surface-bottom) 100%
-  );
+  background-image: none;
   box-shadow: inset 0 0 0 1px var(--bm-vehicle-surface-border);
   padding: 0.125rem 0.25rem;
   border-radius: 0.625rem;
@@ -302,11 +298,7 @@
 
 .bm-vehicle-card-media[data-image-slot-state="placeholder"] {
   background-color: var(--bm-vehicle-surface);
-  background-image: linear-gradient(
-    180deg,
-    var(--bm-vehicle-surface-top) 0%,
-    var(--bm-vehicle-surface-bottom) 100%
-  );
+  background-image: none;
 }
 
 /* hover/active row — 이미지 슬롯 배경 유지 */
@@ -316,11 +308,7 @@
 .bm-search-vehicle-card:hover .bm-vehicle-card-media,
 .bm-search-vehicle-card__primary:hover .bm-vehicle-card-media {
   background-color: var(--bm-vehicle-surface);
-  background-image: linear-gradient(
-    180deg,
-    var(--bm-vehicle-surface-top) 0%,
-    var(--bm-vehicle-surface-bottom) 100%
-  );
+  background-image: none;
 }
 
 .bm-vehicle-card-media__inner,

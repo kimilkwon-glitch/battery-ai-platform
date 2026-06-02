@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220" fill="none">
-  <rect width="400" height="220" fill="#eef3f8"/>
-  <path d="M60 150 Q80 90 140 85 L260 80 Q320 80 340 110 L355 150 Z" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
-  <circle cx="110" cy="155" r="22" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
-  <circle cx="290" cy="155" r="22" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
-  <text x="200" y="195" text-anchor="middle" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="12" font-weight="700">차량 이미지</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" fill="none">
+  <rect width="640" height="360" fill="#ffffff"/>
+  <path d="M96 250 Q128 150 224 145 L416 140 Q512 140 544 200 L560 250 Z" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="176" cy="258" r="36" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="464" cy="258" r="36" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="320" y="320" text-anchor="middle" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="14" font-weight="700">차량 이미지</text>
 </svg>
