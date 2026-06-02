@@ -1,6 +1,6 @@
 /** 차량 PNG 경로 — 정규화 우선, 원본 fallback (CarGenerationImage onError) */
 
-export type CarImageBrandKey = "hyundai" | "kia";
+export type CarImageBrandKey = "hyundai" | "kia" | "chevrolet-gmdaewoo";
 
 export function carOriginalImageUrl(brand: CarImageBrandKey, imageFile: string): string {
   return `/assets/cars/${brand}/${imageFile}`;
@@ -35,5 +35,7 @@ export function carOriginalFromDisplayUrl(displayUrl: string): string | null {
 }
 
 export function isCommercialCarImageFile(imageFile: string): boolean {
-  return /porter|bongo/i.test(imageFile);
+  return /porter|bongo|labo|damas|colorado|traverse|winstorm|captiva|trailblazer|orlando|equinox/i.test(
+    imageFile,
+  );
 }

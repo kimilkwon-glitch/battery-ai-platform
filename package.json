@@ -9,6 +9,7 @@
     "lint": "eslint",
     "brand-logos": "node scripts/convert-brand-logos.mjs",
     "normalize:cars": "node scripts/normalize-car-assets.mjs",
+    "normalize:chevrolet": "node scripts/normalize-chevrolet-car-assets.mjs",
     "generate:mock-activity": "npx tsx scripts/generate-mock-activity.ts",
     "generate:content-workbench": "npx tsx scripts/generate-content-workbench.ts",
     "ux:audit:quick": "node tools/ux-audit/run-cli.mjs 30",

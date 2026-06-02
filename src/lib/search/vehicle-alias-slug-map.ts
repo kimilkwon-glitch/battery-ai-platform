@@ -3,6 +3,10 @@
  * car-assets · platform-catalog · vehicle-battery-enrichment 기준
  */
 import type { VehicleYearEra } from "@/lib/search/parse-vehicle-year";
+import { resolveChevroletCoarseSlug } from "@/lib/search/chevrolet-slug-resolve";
+import {
+  CHEVROLET_SLUG_HINT_TO_ASSET_ID,
+} from "@/lib/vehicle-asset-chevrolet";
 import {
   LEGACY_SLUG_HINT_TO_V04,
   V04_SLUG_HINT_TO_ASSET_ID,
@@ -10,6 +14,7 @@ import {
 
 export const SLUG_HINT_TO_ASSET_ID: Record<string, string> = {
   ...V04_SLUG_HINT_TO_ASSET_ID,
+  ...CHEVROLET_SLUG_HINT_TO_ASSET_ID,
   ...LEGACY_SLUG_HINT_TO_V04,
   "hyundai-avante-md": "avante-md",
   "hyundai-avante-ad": "avante-ad",
@@ -139,6 +144,9 @@ export function resolveAssetIdFromSlugHint(
   if (fuelMap && fuelKey === "hev") {
     return SLUG_HINT_TO_ASSET_ID[slugHint];
   }
+
+  const chevrolet = resolveChevroletCoarseSlug(slugHint, ctx);
+  if (chevrolet) return chevrolet;
 
   return SLUG_HINT_TO_ASSET_ID[slugHint];
 }

@@ -5,9 +5,10 @@
 import type { VehicleBodyType } from "@/components/VehicleThumbnail";
 import { catalogVehicles } from "./platform-catalog";
 import { carDisplayImageUrl } from "./car-image-url";
+import { vehicleAssetsChevrolet } from "@/lib/vehicle-asset-chevrolet";
 import { vehicleAssetsV04 } from "@/lib/vehicle-asset-v04";
 
-export type CarBrandKey = "hyundai" | "kia" | "renault" | "ssangyong" | "kg";
+export type CarBrandKey = "hyundai" | "kia" | "renault" | "ssangyong" | "kg" | "chevrolet-gmdaewoo";
 
 export interface VehicleAsset {
   id: string;
@@ -440,6 +441,7 @@ export const vehicleAssets: VehicleAsset[] = [
   ...HYUNDAI_ASSETS,
   ...KIA_ASSETS,
   ...vehicleAssetsV04,
+  ...vehicleAssetsChevrolet,
 ];
 
 /** 이미지 파일 누락 — 디스크에 없거나 이번 연결 제외 */
@@ -492,6 +494,7 @@ const BRAND_LABELS: Record<CarBrandKey, string> = {
   renault: "르노코리아",
   ssangyong: "쌍용",
   kg: "KGM",
+  "chevrolet-gmdaewoo": "쉐보레/GM",
 };
 
 export function vehicleAssetBrandLabel(brand: CarBrandKey): string {
