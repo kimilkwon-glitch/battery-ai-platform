@@ -121,25 +121,25 @@ export function HomeBatteryShowcaseCard({
       </div>
 
       <div className="flex flex-1 flex-col gap-1.5 border-t border-blue-50 p-4">
-        <p className="text-lg font-black tracking-tight text-slate-950 group-hover:text-blue-700">
+        <p className="text-xl font-black tracking-tight text-slate-950 group-hover:text-blue-700">
           {code}
         </p>
-        <p className="text-xs font-bold text-slate-600">
+        <p className="text-sm font-bold text-slate-600">
           {bat.capacity}
           {bat.cca ? ` · ${bat.cca}` : ""}
           {terminalLabel ? ` · ${terminalLabel}` : ""}
         </p>
         {bat.type ? (
-          <span className="inline-flex w-fit rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-black text-blue-700">
+          <span className="inline-flex w-fit rounded-md bg-blue-50 px-2 py-0.5 text-sm font-black text-blue-700">
             {bat.type}
           </span>
         ) : null}
         {meta ? (
-          <p className="mt-1 line-clamp-2 text-[10px] font-semibold leading-relaxed text-slate-500">
+          <p className="mt-1 line-clamp-2 text-sm font-semibold leading-relaxed text-slate-500">
             {meta}
           </p>
         ) : null}
-        <span className="mt-auto pt-2 text-[11px] font-black text-blue-600">상세 보기 →</span>
+        <span className="mt-auto pt-2 text-sm font-black text-blue-600">상세 보기 →</span>
       </div>
     </Link>
   );

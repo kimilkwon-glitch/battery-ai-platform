@@ -98,12 +98,15 @@
 
 html {
   scroll-behavior: smooth;
+  /** 고객 화면 기본 가독성 — rem 기반 Tailwind 한 단계 상향 (16px → 17px) */
+  font-size: 106.25%;
 }
 
 body {
   margin: 0;
   background: var(--bm-page-bg);
   font-family: var(--font-body);
+  font-size: 1rem;
   line-height: 1.55;
   font-feature-settings: "rlig" 1, "calt" 1;
   text-rendering: optimizeLegibility;
@@ -122,6 +125,20 @@ h3 {
   text-shadow: none;
   transform: none;
   filter: none;
+}
+
+/** 다크 브랜드 허브 — globals heading 색이 배너·카드 제목을 덮지 않도록 */
+.brand-hub h1,
+.brand-hub h2,
+.brand-hub h3 {
+  color: inherit;
+}
+
+.brand-hub[data-brand-hub-active="rocket"] {
+  --bm-dark-title: #ffffff;
+  --bm-dark-body: #f8fafc;
+  --bm-dark-muted: #d1d5db;
+  --bm-dark-accent: #ff4b4b;
 }
 
 .font-heading {

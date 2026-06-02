@@ -91,7 +91,7 @@ export function BrandHubClient() {
               aria-selected={selected}
               onClick={() => selectBrand(id)}
               className={clsx(
-                "flex min-h-[3.25rem] flex-1 items-center justify-center rounded-xl px-5 text-base font-black tracking-tight transition sm:min-h-[3.5rem] sm:text-[1.05rem]",
+                "flex min-h-[3.5rem] flex-1 items-center justify-center rounded-xl px-5 text-lg font-black tracking-tight transition sm:min-h-[3.75rem] sm:text-xl",
                 selected ? t.tabActive : t.tabIdle,
               )}
             >
@@ -131,10 +131,10 @@ export function BrandHubClient() {
 
             <section>
               <header className="mb-5 sm:mb-6">
-                <h2 className={clsx("text-2xl font-black tracking-tight sm:text-3xl", theme.bannerText)}>
+                <h2 className={clsx("text-3xl font-black tracking-tight sm:text-4xl", theme.bannerText)}>
                   {theme.label} 전 제품
                 </h2>
-                <p className={clsx("mt-2 text-base font-medium sm:text-[1.05rem]", theme.bannerMuted)}>
+                <p className={clsx("mt-2 text-lg font-medium", theme.bannerMuted)}>
                   등록된 {products.length}개 규격 · CCA·RC·사이즈를 카드에서 확인
                 </p>
               </header>
@@ -152,7 +152,7 @@ export function BrandHubClient() {
               </div>
             </section>
 
-            <p className={clsx("text-center text-sm font-medium", theme.bannerMuted)}>
+            <p className={clsx("text-center text-base font-medium", theme.bannerMuted)}>
               {BRAND_HUB_FOOTNOTE[active]}
             </p>
           </motion.div>
@@ -188,21 +188,18 @@ function BrandHeroBanner({
         )}
       />
       <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center">
-        <p className={clsx("text-[11px] font-black uppercase tracking-[0.2em]", theme.accent)}>
-          {theme.label}
-        </p>
-        <h2 className={clsx("mt-2 text-3xl font-black leading-tight tracking-tight sm:text-4xl", theme.bannerText)}>
-          {banner.title}
-        </h2>
-        <p className={clsx("mt-3 text-lg font-bold leading-snug sm:text-xl", theme.bannerText)}>
-          {banner.headline}
-        </p>
-        <p
+        <h2
           className={clsx(
-            "mt-3 max-w-xl text-base font-medium leading-relaxed sm:text-[1.05rem]",
-            theme.bannerMuted,
+            "text-4xl font-black leading-tight tracking-tight sm:text-5xl",
+            theme.bannerText,
           )}
         >
+          {banner.title}
+        </h2>
+        <p className={clsx("mt-4 text-xl font-bold leading-snug sm:text-2xl", theme.bannerText)}>
+          {banner.headline}
+        </p>
+        <p className={clsx("mt-4 max-w-xl text-lg font-medium leading-relaxed", theme.bannerMuted)}>
           {banner.description}
         </p>
       </div>
@@ -249,33 +246,32 @@ function InsightCard({
         theme.insightCard,
       )}
     >
-      <div className="flex flex-1 flex-col p-6 sm:p-8">
+      <div className="flex flex-1 flex-col p-7 sm:p-9">
         <div className="flex items-start gap-4 sm:gap-5">
           <div
             className={clsx(
-              "flex size-14 shrink-0 items-center justify-center rounded-xl sm:size-[3.75rem]",
+              "flex size-14 shrink-0 items-center justify-center rounded-xl sm:size-16",
               theme.insightIconWrap,
             )}
           >
             <Icon className="size-7 sm:size-8" strokeWidth={2} aria-hidden />
           </div>
           <div className="min-w-0 flex-1 pt-0.5">
-            <p className={clsx("text-xs font-black uppercase tracking-[0.14em]", theme.accent)}>
+            <p className={clsx("text-sm font-black uppercase tracking-[0.14em]", theme.accent)}>
               {card.title}
             </p>
-            <h3 className={clsx("mt-2 text-xl font-black leading-snug sm:text-2xl", theme.bannerText)}>
+            <h3 className={clsx("mt-2 text-2xl font-black leading-snug sm:text-3xl", theme.bannerText)}>
               {card.lead}
             </h3>
-            <p className={clsx("mt-3 text-base font-medium leading-relaxed", theme.bannerMuted)}>
+            <p className={clsx("mt-3 text-lg font-medium leading-relaxed", theme.bannerMuted)}>
               {card.body}
             </p>
           </div>
         </div>
         <ul
           className={clsx(
-            "mt-6 space-y-3 border-t pt-6 text-base font-semibold leading-relaxed",
+            "mt-7 space-y-3.5 border-t pt-7 text-lg font-semibold leading-relaxed",
             dividerBorder,
-            theme.bannerMuted,
           )}
         >
           {card.bullets.map((b) => (
@@ -355,28 +351,28 @@ function BrandProductCard({
         )}
         <span
           className={clsx(
-            "absolute left-2.5 top-2.5 rounded-md px-2 py-0.5 text-[11px] font-black",
+            "absolute left-2.5 top-2.5 rounded-md px-2 py-0.5 text-sm font-black",
             badgeClassForFamily(theme, family),
           )}
         >
           {family}
         </span>
       </div>
-      <div className="flex flex-1 flex-col p-4 sm:p-[1.125rem]">
-        <p className={clsx("text-lg font-black tracking-tight sm:text-xl", theme.bannerText)}>
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <p className={clsx("text-xl font-black tracking-tight sm:text-2xl", theme.bannerText)}>
           {card.displayCode}
         </p>
-        <dl className={clsx("mt-3 space-y-0 text-sm", dividerBorder)}>
+        <dl className={clsx("mt-4 space-y-0", dividerBorder)}>
           <SpecRow label="CCA" value={card.cca} theme={theme} dividerBorder={dividerBorder} />
           <SpecRow label="RC" value={card.rc} theme={theme} dividerBorder={dividerBorder} />
         </dl>
-        <div className={clsx("mt-3 border-t pt-3", dividerBorder)}>
-          <p className={clsx("text-xs font-bold uppercase tracking-wide", theme.bannerMuted)}>사이즈 (mm)</p>
-          <p className={clsx("mt-1 text-sm font-semibold leading-snug tabular-nums", theme.bannerText)}>
+        <div className={clsx("mt-4 border-t pt-4", dividerBorder)}>
+          <p className={clsx("text-sm font-bold uppercase tracking-wide", theme.bannerMuted)}>사이즈 (mm)</p>
+          <p className={clsx("mt-1.5 text-base font-semibold leading-snug tabular-nums", theme.bannerText)}>
             {card.size}
           </p>
         </div>
-        <span className={clsx("mt-auto pt-4 text-sm font-black", theme.accent)}>상세보기 →</span>
+        <span className={clsx("mt-auto pt-5 text-base font-black", theme.accent)}>상세보기 →</span>
       </div>
     </Link>
   );
@@ -394,9 +390,9 @@ function SpecRow({
   dividerBorder: string;
 }) {
   return (
-    <div className={clsx("flex items-center justify-between gap-3 border-b py-2.5 last:border-b-0", dividerBorder)}>
-      <dt className={clsx("text-xs font-bold uppercase tracking-wide", theme.bannerMuted)}>{label}</dt>
-      <dd className={clsx("text-base font-bold tabular-nums", theme.bannerText)}>{value}</dd>
+    <div className={clsx("flex items-center justify-between gap-3 border-b py-3 last:border-b-0", dividerBorder)}>
+      <dt className={clsx("text-sm font-bold uppercase tracking-wide", theme.bannerMuted)}>{label}</dt>
+      <dd className={clsx("text-lg font-bold tabular-nums", theme.bannerText)}>{value}</dd>
     </div>
   );
 }

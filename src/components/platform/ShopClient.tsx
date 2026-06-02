@@ -151,29 +151,29 @@ function ProductCard({
         />
       </div>
 
-      <div className="flex flex-1 flex-col p-3">
+      <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-sm font-black text-slate-950">{product.batteryCode}</p>
-            <p className="mt-0.5 text-[11px] font-bold text-slate-500">
+            <p className="text-lg font-black text-slate-950">{product.batteryCode}</p>
+            <p className="mt-1 text-sm font-bold text-slate-500">
               {product.capacity} · {product.cca} · {product.type} · {product.terminal}타입
             </p>
           </div>
-          <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-600">
+          <span className="shrink-0 rounded bg-slate-100 px-2 py-0.5 text-sm font-black text-slate-600">
             {brand.displayName}
           </span>
         </div>
 
-        <p className="mt-2 text-[10px] font-semibold text-slate-600">
+        <p className="mt-2.5 text-sm font-semibold text-slate-600">
           대표 차량: {meta.featuredVehicles.slice(0, 3).join(", ")}
         </p>
-        <p className="mt-1 text-[10px] font-medium text-slate-500">{meta.usage}</p>
+        <p className="mt-1 text-sm font-medium text-slate-500">{meta.usage}</p>
 
-        <div className="mt-2 flex flex-wrap gap-1">
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
           {meta.badges.map((badge) => (
             <span
               key={badge.label}
-              className={`rounded px-1.5 py-0.5 text-[9px] font-black ring-1 ${badgeToneClass(badge.tone)}`}
+              className={`rounded px-2 py-0.5 text-sm font-black ring-1 ${badgeToneClass(badge.tone)}`}
             >
               {badge.label}
             </span>

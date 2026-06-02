@@ -46,28 +46,28 @@ export const bm = {
   intentSummary:
     "rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-surface-soft)] p-4 sm:p-5 shadow-[var(--bm-shadow-sm)]",
   intentBadge:
-    "inline-flex items-center rounded-lg bg-[var(--bm-surface-blue)] px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-[var(--bm-primary)] ring-1 ring-[var(--bm-border-blue)]",
+    "inline-flex items-center rounded-lg bg-[var(--bm-surface-blue)] px-2.5 py-1 text-sm font-bold uppercase tracking-wide text-[var(--bm-primary)] ring-1 ring-[var(--bm-border-blue)]",
 
   /** 타이포 스케일 — eyebrow / hero / section / card / badge / button */
   typoEyebrow:
-    "text-xs font-semibold uppercase tracking-wide text-[var(--bm-primary)] sm:text-sm",
-  typoCaption: "text-xs font-medium leading-snug text-[var(--bm-text-sub)] sm:text-sm",
+    "text-sm font-semibold uppercase tracking-wide text-[var(--bm-primary)] sm:text-base",
+  typoCaption: "text-sm font-medium leading-snug text-[var(--bm-text-sub)] sm:text-base",
   /** 메인 hero H1 — mobile ~3xl, desktop ≤5xl 권장 상한 */
   heroDisplay:
-    "bm-section-title text-3xl leading-[1.2] text-[var(--bm-text)] sm:text-4xl lg:text-[2.75rem]",
+    "bm-section-title text-4xl leading-[1.2] text-[var(--bm-text)] sm:text-5xl lg:text-[3rem]",
   heroLead:
-    "text-base font-semibold leading-relaxed tracking-normal text-[var(--bm-primary-dark)] sm:text-lg",
+    "text-lg font-semibold leading-relaxed tracking-normal text-[var(--bm-primary-dark)] sm:text-xl",
   /** 페이지·섹션 제목 (SectionHeader 기본) */
   sectionTitle:
-    "bm-section-title text-xl leading-snug text-[var(--bm-text)] sm:text-2xl",
-  sectionTitleLg:
     "bm-section-title text-2xl leading-snug text-[var(--bm-text)] sm:text-3xl",
-  titleLg: "bm-section-title text-2xl leading-snug text-[var(--bm-text)] sm:text-3xl",
+  sectionTitleLg:
+    "bm-section-title text-3xl leading-snug text-[var(--bm-text)] sm:text-4xl",
+  titleLg: "bm-section-title text-3xl leading-snug text-[var(--bm-text)] sm:text-4xl",
   specData:
-    "spec-code text-xs font-bold tabular-nums tracking-wide text-slate-600 sm:text-sm",
-  titleMd: "bm-section-title text-xl leading-snug text-[var(--bm-text)] sm:text-2xl",
-  cardTitle: "text-base font-bold leading-snug text-[var(--bm-text)] sm:text-lg",
-  specTitle: "spec-code text-xl font-bold tracking-normal text-[var(--bm-text)] sm:text-2xl",
+    "spec-code text-sm font-bold tabular-nums tracking-wide text-slate-600 sm:text-base",
+  titleMd: "bm-section-title text-2xl leading-snug text-[var(--bm-text)] sm:text-3xl",
+  cardTitle: "text-lg font-bold leading-snug text-[var(--bm-text)] sm:text-xl",
+  specTitle: "spec-code text-2xl font-bold tracking-normal text-[var(--bm-text)] sm:text-3xl",
   sectionHead: "bm-section-head",
   sectionBlock:
     "bm-card-surface overflow-visible rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-md)]",
@@ -88,14 +88,14 @@ export const bm = {
   cardInfoIconBadge:
     "inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-[var(--bm-surface-blue)] ring-1 ring-[var(--bm-border-blue)]",
   cardInfoTitle:
-    "text-base font-bold leading-tight text-[var(--bm-text)] group-hover:text-[var(--bm-primary)]",
-  cardInfoSpec: "spec-code text-sm font-bold leading-none text-[var(--bm-primary)]",
-  cardInfoDesc: "text-sm font-medium leading-snug text-[var(--bm-text-sub)] line-clamp-2",
+    "text-lg font-bold leading-tight text-[var(--bm-text)] group-hover:text-[var(--bm-primary)]",
+  cardInfoSpec: "spec-code text-base font-bold leading-none text-[var(--bm-primary)]",
+  cardInfoDesc: "text-base font-medium leading-snug text-[var(--bm-text-sub)] line-clamp-2",
   cardInfoBadgeRow: "flex flex-wrap gap-1.5",
-  cardInfoMeta: "text-xs font-medium leading-snug text-[var(--bm-text-muted)] line-clamp-2",
+  cardInfoMeta: "text-sm font-medium leading-snug text-[var(--bm-text-muted)] line-clamp-2",
   cardInfoActions: "mt-3 flex shrink-0 flex-wrap items-center gap-2",
   cardInfoCtaLink:
-    "inline-flex items-center gap-1 rounded-lg bg-[var(--bm-surface-blue)] px-2.5 py-1.5 text-xs font-bold text-[var(--bm-primary)] ring-1 ring-[var(--bm-border-blue)] transition group-hover:bg-[var(--bm-info-soft)] group-hover:ring-[var(--bm-primary)]/30",
+    "inline-flex items-center gap-1 rounded-lg bg-[var(--bm-surface-blue)] px-2.5 py-1.5 text-sm font-bold text-[var(--bm-primary)] ring-1 ring-[var(--bm-border-blue)] transition group-hover:bg-[var(--bm-info-soft)] group-hover:ring-[var(--bm-primary)]/30",
   cardSymptom: "bm-card-symptom flex flex-col p-4",
   cardPhotoCheck: "bm-card-photo-check",
   cardServiceStore: "bm-card-service-store",
@@ -113,7 +113,7 @@ export const bm = {
   sectionRhythmOrder: "bm-section-rhythm bm-section-rhythm--order",
   heroDark: "bm-hero-dark",
   heroDarkAccent: "bm-hero-dark-accent",
-  heroLeadP2: "text-base font-semibold leading-relaxed text-[var(--bm-text-on-dark-sub)] sm:text-lg",
+  heroLeadP2: "text-lg font-semibold leading-relaxed text-[var(--bm-text-on-dark-sub)] sm:text-xl",
   heroMuted: "text-[var(--bm-text-on-dark-sub)]",
   heroPreviewPanel: "bm-hero-dark-side",
   hubPhoto: "bm-hub-rhythm--photo space-y-5",
@@ -121,56 +121,56 @@ export const bm = {
   hubServicePage: "bm-hub-rhythm--service-page space-y-5",
   hubOrder: "bm-hub-rhythm--order space-y-5",
   hubCatalog: "bm-hub-rhythm--catalog space-y-5",
-  alertInfo: "bm-alert-info text-sm font-medium text-slate-700",
-  alertWarn: "bm-alert-warn text-sm font-medium text-amber-950",
-  alertSuccess: "bm-alert-success text-sm font-medium text-emerald-900",
+  alertInfo: "bm-alert-info text-base font-medium text-slate-700",
+  alertWarn: "bm-alert-warn text-base font-medium text-amber-950",
+  alertSuccess: "bm-alert-success text-base font-medium text-emerald-900",
   stepItem: "bm-step-item",
   stepNum: "bm-step-num",
-  textSub: "text-sm font-medium leading-relaxed text-[var(--bm-text-sub)] sm:text-base",
+  textSub: "text-base font-medium leading-relaxed text-[var(--bm-text-sub)] sm:text-lg",
   muted: "text-[var(--bm-text-muted)]",
-  label: "text-xs font-semibold uppercase tracking-wide text-[var(--bm-primary)] sm:text-sm",
+  label: "text-sm font-semibold uppercase tracking-wide text-[var(--bm-primary)] sm:text-base",
 
   btnPrimary:
-    "inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[var(--bm-primary)] px-5 text-sm font-black text-white shadow-sm transition motion-safe:hover:bg-[var(--bm-primary-hover)] motion-safe:hover:shadow-[var(--bm-shadow-sm)]",
+    "inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--bm-primary)] px-5 text-base font-black text-white shadow-sm transition motion-safe:hover:bg-[var(--bm-primary-hover)] motion-safe:hover:shadow-[var(--bm-shadow-sm)]",
   btnSecondary:
-    "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[var(--bm-border)] bg-[var(--bm-card)] px-5 text-sm font-black text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)]",
+    "inline-flex min-h-[48px] items-center justify-center rounded-xl border border-[var(--bm-border)] bg-[var(--bm-card)] px-5 text-base font-black text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)]",
   btnTertiary:
-    "inline-flex min-h-[40px] items-center justify-center px-1 text-sm font-bold text-[var(--bm-primary)] underline-offset-2 transition motion-safe:hover:underline",
+    "inline-flex min-h-[44px] items-center justify-center px-1 text-base font-bold text-[var(--bm-primary)] underline-offset-2 transition motion-safe:hover:underline",
   btnNavy:
-    "inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[var(--bm-navy)] px-5 text-sm font-black text-white transition motion-safe:hover:bg-slate-800",
+    "inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--bm-navy)] px-5 text-base font-black text-white transition motion-safe:hover:bg-slate-800",
   btnAccent:
-    "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[var(--bm-accent)]/35 bg-[var(--bm-accent-soft)] px-5 text-sm font-black text-cyan-900 transition motion-safe:hover:border-[var(--bm-accent)] motion-safe:hover:bg-cyan-50",
+    "inline-flex min-h-[48px] items-center justify-center rounded-xl border border-[var(--bm-accent)]/35 bg-[var(--bm-accent-soft)] px-5 text-base font-black text-cyan-900 transition motion-safe:hover:border-[var(--bm-accent)] motion-safe:hover:bg-cyan-50",
   btnGhost:
-    "inline-flex min-h-9 items-center justify-center rounded-lg px-3 text-xs font-bold text-slate-700 ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+    "inline-flex min-h-10 items-center justify-center rounded-lg px-3 text-sm font-bold text-slate-700 ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
 
   /** 배터리 상품 카드 하단·CTA — 이미지보다 약하게 */
   batteryCardBody:
     "flex flex-1 flex-col gap-1 border-t border-slate-100 px-2.5 pb-2 pt-1.5 md:border-t-0 md:px-0 md:pb-0 md:pt-0",
   batteryCardBtnRow: "flex flex-wrap items-center gap-2",
   btnCardNavy:
-    "inline-flex h-9 min-h-9 items-center justify-center rounded-lg bg-[var(--bm-navy)] px-3 text-xs font-bold text-white transition motion-safe:hover:bg-slate-800 sm:text-sm",
+    "inline-flex h-10 min-h-10 items-center justify-center rounded-lg bg-[var(--bm-navy)] px-3 text-sm font-bold text-white transition motion-safe:hover:bg-slate-800 sm:text-base",
   btnCardSecondary:
-    "inline-flex h-9 min-h-9 items-center justify-center rounded-lg border border-[var(--bm-border)] bg-[var(--bm-card)] px-3 text-xs font-bold text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)] sm:text-sm",
+    "inline-flex h-10 min-h-10 items-center justify-center rounded-lg border border-[var(--bm-border)] bg-[var(--bm-card)] px-3 text-sm font-bold text-[var(--bm-text)] transition motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:bg-[var(--bm-accent-soft)] sm:text-base",
   btnCardGhost:
-    "inline-flex h-9 min-h-9 items-center justify-center rounded-lg px-2.5 text-xs font-semibold text-slate-700 ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+    "inline-flex h-10 min-h-10 items-center justify-center rounded-lg px-2.5 text-sm font-semibold text-slate-700 ring-1 ring-[var(--bm-border)] transition motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
   btnWarning:
-    "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-orange-200 bg-[var(--bm-warning-bg)] px-5 text-sm font-black text-orange-900 transition motion-safe:hover:border-orange-300 motion-safe:hover:bg-orange-50",
+    "inline-flex min-h-[48px] items-center justify-center rounded-xl border border-orange-200 bg-[var(--bm-warning-bg)] px-5 text-base font-black text-orange-900 transition motion-safe:hover:border-orange-300 motion-safe:hover:bg-orange-50",
   btnDanger:
-    "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-red-200 bg-[var(--bm-danger-bg)] px-5 text-sm font-black text-red-800 transition motion-safe:hover:border-red-300",
+    "inline-flex min-h-[48px] items-center justify-center rounded-xl border border-red-200 bg-[var(--bm-danger-bg)] px-5 text-base font-black text-red-800 transition motion-safe:hover:border-red-300",
   chipExample:
-    "rounded-full border border-[var(--bm-border)] bg-[var(--bm-card)] px-3 py-1.5 text-xs font-bold text-[var(--bm-text)] shadow-[var(--bm-shadow-sm)] transition motion-safe:hover:-translate-y-px motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:shadow-[var(--bm-shadow-sm)]",
+    "rounded-full border border-[var(--bm-border)] bg-[var(--bm-card)] px-3 py-1.5 text-sm font-bold text-[var(--bm-text)] shadow-[var(--bm-shadow-sm)] transition motion-safe:hover:-translate-y-px motion-safe:hover:border-[var(--bm-accent)]/40 motion-safe:hover:shadow-[var(--bm-shadow-sm)]",
   /** 필터·연식·연료 칩 — badge보다 강조, 카드 CTA보다 작음 */
-  filterChipRowLabel: "w-[4.25rem] shrink-0 text-xs font-semibold text-[var(--bm-text-sub)] sm:w-16",
+  filterChipRowLabel: "w-[4.25rem] shrink-0 text-sm font-semibold text-[var(--bm-text-sub)] sm:w-16",
   filterChip:
-    "inline-flex min-h-8 items-center justify-center rounded-full px-2.5 py-1.5 text-xs font-bold leading-none transition sm:px-3",
+    "inline-flex min-h-9 items-center justify-center rounded-full px-2.5 py-1.5 text-sm font-bold leading-none transition sm:px-3",
   filterChipOn:
     "bg-[var(--bm-primary)] text-white shadow-sm ring-1 ring-[var(--bm-primary)] hover:bg-[var(--bm-primary-hover)]",
   filterChipOff:
     "bg-[var(--bm-surface-muted)] text-[var(--bm-text-sub)] ring-1 ring-[var(--bm-border)] hover:bg-[var(--bm-surface-blue)]",
   tabBtn:
-    "shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 ring-1 ring-[var(--bm-border)] bg-[var(--bm-surface-muted)] transition duration-200 motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
+    "shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-base font-bold text-slate-600 ring-1 ring-[var(--bm-border)] bg-[var(--bm-surface-muted)] transition duration-200 motion-safe:hover:bg-white motion-safe:hover:text-[var(--bm-text)]",
   tabBtnActive:
-    "shrink-0 whitespace-nowrap rounded-xl bg-[var(--bm-navy)] px-4 py-2.5 text-sm font-bold text-white shadow-[var(--bm-shadow-sm)] ring-1 ring-[var(--bm-navy)]",
+    "shrink-0 whitespace-nowrap rounded-xl bg-[var(--bm-navy)] px-4 py-2.5 text-base font-bold text-white shadow-[var(--bm-shadow-sm)] ring-1 ring-[var(--bm-navy)]",
   nextStepCard:
     "bm-card-surface group block rounded-[18px] border border-[var(--bm-border)] bg-gradient-to-br from-white to-[var(--bm-surface-muted)] p-3 shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/30 motion-safe:hover:shadow-[var(--bm-shadow-md)]",
   searchInset:

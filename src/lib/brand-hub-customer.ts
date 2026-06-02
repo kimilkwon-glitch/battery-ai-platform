@@ -37,17 +37,17 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     id: "rocket",
     label: "로케트",
     pageBg: "bg-[#0B0D12]",
-    panelBg: "text-[#F3F4F6]",
+    panelBg: "text-[#F8FAFC]",
     bannerBg:
       "bg-gradient-to-br from-[#0B0D12] via-[#111318] to-[#1a0f10] ring-1 ring-[#242A36] shadow-[0_24px_48px_-24px_rgba(229,57,53,0.35)]",
-    bannerText: "text-[#F3F4F6]",
-    bannerMuted: "text-[#B6BDC9]",
+    bannerText: "text-white",
+    bannerMuted: "text-[#D1D5DB]",
     bannerImageWrap: "bg-[#151922] ring-1 ring-[#242A36]",
     tabActive:
       "bg-[#E53935] text-white shadow-[0_8px_24px_-8px_rgba(229,57,53,0.55)] ring-2 ring-[#F20D0D]/50",
     tabIdle:
       "bg-[#151922] text-[#B6BDC9] ring-1 ring-[#242A36] hover:bg-[#1a1f28] hover:text-[#F3F4F6]",
-    accent: "text-[#F87171]",
+    accent: "text-[#FF4B4B]",
     accentLine: "bg-[#E53935]",
     insightCard:
       "border-l-4 border-[#E53935] bg-[#151922] ring-1 ring-[#242A36] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]",
