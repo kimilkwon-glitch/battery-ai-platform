@@ -63,20 +63,24 @@ export function guHasDongLevelExceptions(gu: string): boolean {
   return gu.trim() === "강서구";
 }
 
-/** 지도에 구 이름 라벨을 표시할 주요 구 */
+/** 지도에 구 이름 라벨 표시 (전 구 — 작은 구는 작은 글씨) */
 export const BUSAN_GU_MAP_LABELS = new Set([
+  "강서구",
+  "금정구",
+  "기장군",
+  "남구",
+  "동구",
+  "동래구",
+  "부산진구",
   "북구",
   "사상구",
   "사하구",
-  "강서구",
-  "금정구",
-  "연제구",
-  "부산진구",
-  "해운대구",
-  "동래구",
-  "남구",
+  "서구",
   "수영구",
-  "기장군",
+  "연제구",
+  "영도구",
+  "중구",
+  "해운대구",
 ]);
 
 export function guTooltipHint(gu: string, region: BusanGeoRegion): string {

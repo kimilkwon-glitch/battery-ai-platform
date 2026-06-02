@@ -1,20 +1,24 @@
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
 
-export const BUSAN_MAP_WIDTH = 520;
-export const BUSAN_MAP_HEIGHT = 420;
+/** 지도 SVG 좌표계 — 화면에서는 width 100%로 확대 표시 */
+export const BUSAN_MAP_WIDTH = 760;
+export const BUSAN_MAP_HEIGHT = 580;
 export const BUSAN_MAP_VIEWBOX = `0 0 ${BUSAN_MAP_WIDTH} ${BUSAN_MAP_HEIGHT}`;
 
 export const BUSAN_MAP_PALETTE = {
   deokcheon: {
-    fill: "#3b82f6",
-    stroke: "#2563eb",
+    fill: "#60a5fa",
+    fillHover: "#3b82f6",
+    stroke: "#1d4ed8",
   },
   hakjang: {
-    fill: "#0d9488",
-    stroke: "#0f766e",
+    fill: "#4ade80",
+    fillHover: "#22c55e",
+    stroke: "#15803d",
   },
   neutral: {
-    fill: "#cbd5e1",
+    fill: "#e2e8f0",
+    fillHover: "#cbd5e1",
     stroke: "#94a3b8",
   },
 } as const;
@@ -32,13 +36,13 @@ export function pinsForStores(
 ): Record<BusanStoreId, BusanMapPin> {
   return {
     deokcheon: {
-      x: storeCentroids.deokcheon?.x ?? 260,
-      y: storeCentroids.deokcheon?.y ?? 140,
+      x: storeCentroids.deokcheon?.x ?? 380,
+      y: storeCentroids.deokcheon?.y ?? 190,
       label: "덕천점",
     },
     hakjang: {
-      x: storeCentroids.hakjang?.x ?? 200,
-      y: storeCentroids.hakjang?.y ?? 260,
+      x: storeCentroids.hakjang?.x ?? 290,
+      y: storeCentroids.hakjang?.y ?? 360,
       label: "학장점",
     },
   };

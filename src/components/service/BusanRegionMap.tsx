@@ -12,7 +12,6 @@ import {
   guHasDongLevelExceptions,
   guLabel,
   guPanelCoverage,
-  guTooltipHint,
   regionLabel,
   resolveGuFromSearch,
   storeLabelForRegion,
@@ -33,11 +32,7 @@ import { BUSAN_REGION_FOOTNOTE } from "@/lib/busan-service-hub-data";
 
 const GEOJSON_URL = "/assets/maps/busan-hangjeongdong.geojson";
 
-const FILL = {
-  deokcheon: { rest: 0.7, hover: 0.88, active: 0.95, dim: 0.12 },
-  hakjang: { rest: 0.68, hover: 0.86, active: 0.93, dim: 0.12 },
-  neutral: { rest: 0.38, hover: 0.52, active: 0.58, dim: 0.1 },
-} as const;
+const GU_BOUNDARY = "#f8fafc";
 
 type DongPath = {
   adm_cd: string;
@@ -91,8 +86,8 @@ function guSearchHit(gu: GuUnit, searchQuery: string | null, resolvedGu: string 
   return gu.dongs.some((d) => dongMatchesSearch(d, searchQuery));
 }
 
+/** 구 단위 단색 — 동 경계는 fill과 동일 stroke로 숨기고, 구 경계만 밝게 */
 function pathStyle(
-  dong: DongPath,
   gu: GuUnit,
   opts: {
     activeStore: BusanStoreId | null;
@@ -100,31 +95,33 @@ function pathStyle(
     selectedGu: string | null;
     searchHighlightGu: boolean;
     searchDim: boolean;
-    guHover: boolean;
   },
-): { fillOpacity: number; stroke: string; strokeWidth: number } {
-  const { region } = dong;
+): { fill: string; fillOpacity: number; stroke: string; strokeWidth: number } {
+  const region = gu.region;
   const palette =
     region === "neutral" ? BUSAN_MAP_PALETTE.neutral : BUSAN_MAP_PALETTE[region];
-  const levels = FILL[region];
   const guActive =
-    opts.hoveredGu === gu.gu || opts.selectedGu === gu.gu || opts.searchHighlightGu;
+    opts.hoveredGu === gu.gu ||
+    opts.selectedGu === gu.gu ||
+    opts.searchHighlightGu;
 
-  let fillOpacity: number = levels.rest;
-  if (opts.searchDim) fillOpacity = levels.dim;
-  else if (guActive || opts.guHover) fillOpacity = levels.active;
-  else if (opts.activeStore && region !== "neutral" && opts.activeStore !== region) {
-    fillOpacity = levels.dim + 0.06;
+  let fill: string = palette.fill;
+  let fillOpacity = 0.88;
+  if (opts.searchDim) fillOpacity = 0.14;
+  else if (guActive) {
+    fill = palette.fillHover;
+    fillOpacity = 0.98;
+  } else if (opts.activeStore && region !== "neutral" && opts.activeStore !== region) {
+    fillOpacity = 0.42;
   }
 
-  const emphasized = guActive || opts.guHover;
-  const stroke = emphasized
-    ? "#ffffff"
-    : region === "neutral"
-      ? palette.stroke
-      : palette.fill;
-
-  return { fillOpacity, stroke, strokeWidth: 1.1 };
+  const emphasized = guActive;
+  return {
+    fill,
+    fillOpacity,
+    stroke: emphasized ? "#ffffff" : GU_BOUNDARY,
+    strokeWidth: emphasized ? 2.4 : 1.4,
+  };
 }
 
 const PANEL_SHELL =
@@ -133,7 +130,7 @@ const PANEL_SHELL =
 function panelShellClass(region: BusanGeoRegion | null, dashed = false): string {
   if (dashed) return clsx(PANEL_SHELL, "border-dashed border-slate-200 bg-slate-50/80");
   if (region === "deokcheon") return clsx(PANEL_SHELL, "border-blue-200 bg-blue-50/60");
-  if (region === "hakjang") return clsx(PANEL_SHELL, "border-teal-200 bg-teal-50/60");
+  if (region === "hakjang") return clsx(PANEL_SHELL, "border-emerald-200 bg-emerald-50/60");
   return clsx(PANEL_SHELL, "border-slate-200 bg-slate-50/90");
 }
 
@@ -289,17 +286,7 @@ export function BusanRegionMap({
     return null;
   }, [selectedGu, activeStore]);
 
-  const panelPreview = useMemo((): SelectedGu | null => {
-    if (selectedGu) return selectedGu;
-    if (!hoveredGu) return null;
-    const g = guUnits.find((u) => u.gu === hoveredGu);
-    if (!g) return null;
-    return {
-      gu: g.gu,
-      region: g.region,
-      matchedDong: searchResolved?.matchedDong,
-    };
-  }, [selectedGu, hoveredGu, guUnits, searchResolved?.matchedDong]);
+  const panelGu = selectedGu;
 
   const showTooltip = (gu: GuUnit, clientX: number, clientY: number, matchedDong?: string) => {
     const el = mapCanvasRef.current;
@@ -342,8 +329,6 @@ export function BusanRegionMap({
     }
   };
 
-  const panelIsHoverOnly = Boolean(hoveredGu && !selectedGu);
-
   return (
     <section
       className="busan-region-map rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6"
@@ -357,27 +342,27 @@ export function BusanRegionMap({
         </p>
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,300px)] xl:items-start">
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,300px)] lg:items-stretch">
         <div
           ref={mapCanvasRef}
-          className="busan-map-canvas relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-50/80 p-3 sm:p-4"
+          className="busan-map-canvas relative min-h-[440px] overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-50/80 p-4 sm:min-h-[500px] sm:p-5 lg:min-h-[560px]"
         >
           <div
-            className="pointer-events-none absolute right-3 top-3 z-10 min-w-[148px] rounded-xl border border-slate-200 bg-white px-4 py-3.5 shadow-lg ring-1 ring-slate-100/80"
+            className="pointer-events-none absolute right-4 top-4 z-10 min-w-[160px] rounded-xl border border-slate-200 bg-white/95 px-4 py-4 shadow-lg backdrop-blur-sm"
             aria-label="지도 범례"
           >
-            <p className="text-sm font-black text-slate-700">권역 범례</p>
-            <ul className="mt-3 space-y-2.5 text-base font-bold text-slate-900">
+            <p className="text-base font-black text-slate-800">권역 범례</p>
+            <ul className="mt-3 space-y-3 text-base font-bold text-slate-900">
               <li className="flex items-center gap-3">
-                <span className="size-4 shrink-0 rounded-sm bg-blue-500 shadow-sm" aria-hidden />
+                <span className="size-5 shrink-0 rounded-sm bg-blue-400 shadow-sm ring-1 ring-blue-600/30" aria-hidden />
                 덕천점 권역
               </li>
               <li className="flex items-center gap-3">
-                <span className="size-4 shrink-0 rounded-sm bg-teal-600 shadow-sm" aria-hidden />
+                <span className="size-5 shrink-0 rounded-sm bg-green-400 shadow-sm ring-1 ring-green-700/30" aria-hidden />
                 학장점 권역
               </li>
               <li className="flex items-center gap-3">
-                <span className="size-4 shrink-0 rounded-sm bg-slate-300 shadow-sm" aria-hidden />
+                <span className="size-5 shrink-0 rounded-sm bg-slate-300 shadow-sm" aria-hidden />
                 기타 · 상담 후 안내
               </li>
             </ul>
@@ -387,7 +372,7 @@ export function BusanRegionMap({
             <p className="py-16 text-center text-sm font-semibold text-red-600">{loadError}</p>
           ) : !collection ? (
             <div
-              className="mx-auto flex h-[280px] max-w-[520px] animate-pulse items-center justify-center rounded-xl bg-slate-100/80 text-sm font-bold text-slate-400"
+              className="flex min-h-[400px] animate-pulse items-center justify-center rounded-xl bg-slate-100/80 text-base font-bold text-slate-400 sm:min-h-[480px]"
               aria-busy
             >
               행정동 지도 불러오는 중…
@@ -395,10 +380,16 @@ export function BusanRegionMap({
           ) : (
             <svg
               viewBox={BUSAN_MAP_VIEWBOX}
-              className="busan-map-svg mx-auto h-auto w-full max-w-[520px] touch-manipulation"
+              className="busan-map-svg mx-auto h-full min-h-[400px] w-full max-w-none touch-manipulation sm:min-h-[480px] lg:min-h-[520px]"
               role="img"
               aria-label="부산 구별 권역 안내 지도"
+              preserveAspectRatio="xMidYMid meet"
             >
+              <defs>
+                <filter id="busan-gu-lift" x="-12%" y="-12%" width="124%" height="124%">
+                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#0f172a" floodOpacity="0.28" />
+                </filter>
+              </defs>
               {guUnits.map((gu) => {
                 const guHover = hoveredGu === gu.gu;
                 const guSelected = selectedGu?.gu === gu.gu;
@@ -410,6 +401,11 @@ export function BusanRegionMap({
                   <g
                     key={gu.gu}
                     className="busan-map-gu cursor-pointer"
+                    filter={guEmphasis ? "url(#busan-gu-lift)" : undefined}
+                    style={{
+                      transform: guEmphasis ? "translate(0px, -2px)" : undefined,
+                      transition: "filter 0.15s ease, transform 0.15s ease",
+                    }}
                     onMouseEnter={(e) => handleGuEnter(gu, e.clientX, e.clientY)}
                     onMouseMove={(e) => showTooltip(gu, e.clientX, e.clientY, searchResolved?.matchedDong)}
                     onMouseLeave={handleGuLeave}
@@ -424,28 +420,24 @@ export function BusanRegionMap({
                     aria-label={`${gu.gu} — ${storeLabelForRegion(gu.region) ?? "상담 후 안내"}`}
                   >
                     {gu.dongs.map((dong) => {
-                      const palette =
-                        dong.region === "neutral"
-                          ? BUSAN_MAP_PALETTE.neutral
-                          : BUSAN_MAP_PALETTE[dong.region];
-                      const style = pathStyle(dong, gu, {
+                      const style = pathStyle(gu, {
                         activeStore,
                         hoveredGu,
                         selectedGu: selectedGu?.gu ?? null,
                         searchHighlightGu: searchHit,
                         searchDim,
-                        guHover,
                       });
 
                       return (
                         <path
                           key={dong.adm_cd}
                           d={dong.pathD}
-                          fill={palette.fill}
+                          fill={style.fill}
                           fillOpacity={style.fillOpacity}
                           stroke={style.stroke}
                           strokeWidth={style.strokeWidth}
                           strokeLinejoin="round"
+                          strokeLinecap="round"
                           vectorEffect="non-scaling-stroke"
                           className="pointer-events-none"
                         />
@@ -460,7 +452,13 @@ export function BusanRegionMap({
                         dominantBaseline="middle"
                         className={clsx(
                           "pointer-events-none select-none font-black",
-                          guEmphasis ? "fill-slate-900 text-[13px]" : "fill-slate-800/90 text-[11px]",
+                          gu.gu.length > 4
+                            ? guEmphasis
+                              ? "fill-slate-900 text-[10px]"
+                              : "fill-slate-800/90 text-[9px]"
+                            : guEmphasis
+                              ? "fill-slate-900 text-[13px]"
+                              : "fill-slate-800/90 text-[11px]",
                         )}
                         style={{
                           paintOrder: "stroke fill",
@@ -518,18 +516,21 @@ export function BusanRegionMap({
               className="pointer-events-none absolute z-20 max-w-[240px] rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-xl"
               style={{ left: tooltip.x, top: tooltip.y }}
             >
-              <p className="text-base font-black text-slate-900">{tooltip.gu}</p>
-              <p className="mt-1 text-sm font-bold text-blue-800">
-                담당: {storeLabelForRegion(tooltip.region) ?? "전화 상담 후 안내"}
+              <p className="text-lg font-black text-slate-900">{tooltip.gu}</p>
+              <p
+                className={clsx(
+                  "mt-1 text-base font-bold",
+                  tooltip.region === "deokcheon"
+                    ? "text-blue-700"
+                    : tooltip.region === "hakjang"
+                      ? "text-green-700"
+                      : "text-slate-600",
+                )}
+              >
+                {storeLabelForRegion(tooltip.region)
+                  ? `${storeLabelForRegion(tooltip.region)} 담당`
+                  : "전화 상담 후 안내"}
               </p>
-              <p className="mt-1.5 text-sm font-medium leading-snug text-slate-600">
-                {guTooltipHint(tooltip.gu, tooltip.region)}
-              </p>
-              {tooltip.matchedDong ? (
-                <p className="mt-1 text-xs font-semibold text-slate-500">
-                  검색: {tooltip.matchedDong}
-                </p>
-              ) : null}
             </div>
           ) : null}
 
@@ -544,67 +545,60 @@ export function BusanRegionMap({
         <div className="flex flex-col gap-4">
           <div
             className={panelShellClass(
-              panelPreview?.region ?? (displayStore && !panelPreview ? displayStore : null),
-              !panelPreview && !displayStore,
+              panelGu?.region ?? (displayStore && !panelGu ? displayStore : null),
+              !panelGu && !displayStore,
             )}
             aria-live="polite"
           >
-            {panelPreview ? (
+            {panelGu ? (
               <>
-                <p className="text-xs font-black uppercase tracking-wide text-slate-500">
-                  {panelIsHoverOnly ? "미리보기" : "선택한 구"}
-                </p>
-                <p className="mt-1 min-h-[2rem] text-2xl font-black text-slate-900">{panelPreview.gu}</p>
-                <p className="mt-1 min-h-[1.25rem] text-sm font-semibold text-slate-600">
-                  {panelPreview.matchedDong ? `검색 참고: ${panelPreview.matchedDong}` : "\u00a0"}
-                </p>
-                <div className="mt-3 min-h-[9.5rem] space-y-2">
-                  <p className="text-base font-bold text-slate-800">
+                <p className="text-xs font-black uppercase tracking-wide text-slate-500">선택한 구</p>
+                <p className="mt-2 min-h-[2.25rem] text-2xl font-black text-slate-900">{panelGu.gu}</p>
+                <div className="mt-4 min-h-[8rem] space-y-3">
+                  <p className="text-lg font-bold text-slate-800">
                     담당 지점:{" "}
-                    <span className="text-lg font-black text-slate-900">
-                      {storeLabelForRegion(panelPreview.region) ?? "전화 상담 후 배정"}
+                    <span
+                      className={clsx(
+                        "text-xl font-black",
+                        panelGu.region === "deokcheon"
+                          ? "text-blue-700"
+                          : panelGu.region === "hakjang"
+                            ? "text-green-700"
+                            : "text-slate-900",
+                      )}
+                    >
+                      {storeLabelForRegion(panelGu.region) ?? "전화 상담 후 배정"}
                     </span>
                   </p>
-                  <p className="text-sm font-bold leading-relaxed text-slate-700">
-                    {guPanelCoverage(panelPreview.gu, panelPreview.region)}
+                  <p className="text-sm font-medium leading-relaxed text-slate-600">
+                    {guPanelCoverage(panelGu.gu, panelGu.region)}
                   </p>
-                  {guHasDongLevelExceptions(panelPreview.gu) ? (
+                  {guHasDongLevelExceptions(panelGu.gu) ? (
                     <p className="text-sm font-medium text-amber-800/90">
-                      강서구 내 대저1동·명지 등은 동별 담당이 다를 수 있습니다. 동네명 검색 또는 전화로
-                      확인해 주세요.
+                      강서구는 대저1동·명지 등 동별 담당이 다를 수 있습니다.
                     </p>
-                  ) : (
-                    <p className="min-h-[2.5rem] text-sm font-medium leading-relaxed text-slate-600">
-                      {panelPreview.region === "deokcheon" || panelPreview.region === "hakjang"
-                        ? BUSAN_REGION_DISPLAY[panelPreview.region].blurb
-                        : "해당 구는 직영점 권역 밖일 수 있습니다. 전화로 위치를 알려주시면 가까운 지점을 안내드립니다."}
-                    </p>
-                  )}
+                  ) : null}
                 </div>
               </>
             ) : displayStore ? (
               <>
                 <p className="text-xs font-black uppercase tracking-wide text-slate-500">추천 지점</p>
-                <p className="mt-1 min-h-[2rem] text-2xl font-black text-slate-900">
+                <p className="mt-2 min-h-[2.25rem] text-2xl font-black text-slate-900">
                   {BUSAN_REGION_DISPLAY[displayStore].label}
                 </p>
-                <p className="mt-1 min-h-[1.25rem] text-sm font-semibold text-slate-600">&nbsp;</p>
-                <div className="mt-3 min-h-[9.5rem] space-y-2">
+                <div className="mt-4 min-h-[8rem] space-y-2">
                   <p className="text-sm font-bold text-slate-700">
                     {BUSAN_REGION_DISPLAY[displayStore].regions}
-                  </p>
-                  <p className="text-sm font-medium leading-relaxed text-slate-600">
-                    {BUSAN_REGION_DISPLAY[displayStore].blurb}
                   </p>
                 </div>
               </>
             ) : (
               <>
-                <p className="text-base font-black text-slate-800">권역을 선택해 주세요</p>
-                <p className="mt-2 min-h-[2rem] text-sm font-semibold leading-relaxed text-slate-600">
-                  지도에서 구를 클릭하거나 동네명을 검색하면 담당 지점과 권역 안내가 표시됩니다.
+                <p className="text-lg font-black text-slate-800">구를 선택해 주세요</p>
+                <p className="mt-3 min-h-[8rem] text-sm font-semibold leading-relaxed text-slate-600">
+                  지도에서 구를 클릭하면 담당 지점이 표시됩니다. 동네명 검색으로 해당 구를 강조할 수
+                  있습니다.
                 </p>
-                <div className="mt-3 min-h-[9.5rem]" aria-hidden />
               </>
             )}
           </div>
@@ -626,7 +620,7 @@ export function BusanRegionMap({
                   active
                     ? id === "deokcheon"
                       ? "border-blue-300 bg-blue-50/90 shadow-md shadow-blue-100/60"
-                      : "border-teal-300 bg-teal-50/90 shadow-md shadow-teal-100/60"
+                      : "border-emerald-300 bg-emerald-50/90 shadow-md shadow-emerald-100/60"
                     : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm",
                 )}
               >
