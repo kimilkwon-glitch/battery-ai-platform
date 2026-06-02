@@ -8,8 +8,10 @@ import { HOME_MAIN_SEARCH_EXAMPLES } from "@/lib/home-main-catalog-data";
 export function HomeMainHero() {
   return (
     <section className="home-main-hero" data-home-section="search-hero">
-      <div className="home-main-search-shell">
-        <HomeHeroSearch />
+      <div className="home-main-search-aura">
+        <div className="home-main-search-shell">
+          <HomeHeroSearch />
+        </div>
       </div>
 
       <div className="home-main-hero-chips">
@@ -18,7 +20,7 @@ export function HomeMainHero() {
           {HOME_MAIN_SEARCH_EXAMPLES.map((ex) => (
             <Link
               key={ex.href}
-              className="home-search-example-chip rounded-full bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-200/90 transition hover:bg-white hover:text-blue-700 hover:ring-blue-200"
+              className="home-search-example-chip"
               href={ex.href}
             >
               {ex.label}

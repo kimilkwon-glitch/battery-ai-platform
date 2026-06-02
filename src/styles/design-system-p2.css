@@ -513,6 +513,485 @@
   }
 }
 
+/* Home — 프리미엄 다크 히어로 (검색 중심, 신뢰감 있는 테크 톤) */
+.home-premium-hero {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.home-premium-hero__inner {
+  position: relative;
+  z-index: 2;
+}
+
+.home-hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.home-hero-backdrop__base {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(56, 189, 248, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 45% at 0% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 48%),
+    linear-gradient(165deg, #0b1224 0%, #0f172a 38%, #111827 72%, #0c1428 100%);
+}
+
+.home-hero-backdrop__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 35%, black 20%, transparent 78%);
+}
+
+.home-hero-backdrop__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  opacity: 0.55;
+}
+
+.home-hero-backdrop__glow--a {
+  width: min(28rem, 55vw);
+  height: min(28rem, 55vw);
+  top: -12%;
+  right: 8%;
+  background: rgba(37, 99, 235, 0.22);
+  animation: home-hero-glow-drift-a 22s ease-in-out infinite alternate;
+}
+
+.home-hero-backdrop__glow--b {
+  width: min(22rem, 45vw);
+  height: min(22rem, 45vw);
+  bottom: 5%;
+  left: -6%;
+  background: rgba(14, 165, 233, 0.14);
+  animation: home-hero-glow-drift-b 26s ease-in-out infinite alternate;
+}
+
+.home-hero-backdrop__glow--c {
+  width: min(18rem, 38vw);
+  height: min(18rem, 38vw);
+  top: 42%;
+  left: 42%;
+  background: rgba(99, 102, 241, 0.1);
+  animation: home-hero-glow-drift-c 30s ease-in-out infinite alternate;
+}
+
+.home-hero-backdrop__arc {
+  position: absolute;
+  top: 18%;
+  right: -8%;
+  width: min(42rem, 70vw);
+  height: min(42rem, 70vw);
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 62%);
+  opacity: 0.7;
+}
+
+.home-hero-backdrop__decor {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .home-hero-backdrop__decor {
+    display: block;
+    position: absolute;
+    top: 2.5rem;
+    right: 2%;
+    width: 13.5rem;
+    height: calc(100% - 4rem);
+    max-height: 22rem;
+  }
+
+  .home-hero-decor-card {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 0.875rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+    font-family: var(--font-body);
+  }
+
+  .home-hero-decor-card--vehicle {
+    top: 0;
+    right: 0;
+    animation: home-hero-float-a 14s ease-in-out infinite;
+  }
+
+  .home-hero-decor-card--spec {
+    top: 38%;
+    right: 1.5rem;
+    animation: home-hero-float-b 16s ease-in-out infinite;
+  }
+
+  .home-hero-decor-card--data {
+    bottom: 8%;
+    right: 2.5rem;
+    animation: home-hero-float-c 18s ease-in-out infinite;
+  }
+
+  .home-hero-decor-card__badge {
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(125, 211, 252, 0.9);
+  }
+
+  .home-hero-decor-card__title {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: rgba(248, 250, 252, 0.95);
+  }
+
+  .home-hero-decor-card__meta {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: rgba(148, 163, 184, 0.85);
+  }
+}
+
+@media (min-width: 1280px) {
+  .home-hero-backdrop__decor {
+    right: 4%;
+    width: 14.5rem;
+  }
+}
+
+@keyframes home-hero-glow-drift-a {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-2%, 4%) scale(1.06);
+  }
+}
+
+@keyframes home-hero-glow-drift-b {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(3%, -3%);
+  }
+}
+
+@keyframes home-hero-glow-drift-c {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-2%, 2%);
+  }
+}
+
+@keyframes home-hero-float-a {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes home-hero-float-b {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+@keyframes home-hero-float-c {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.home-premium-hero__header {
+  position: relative;
+  z-index: 2;
+  max-width: 46rem;
+  margin-inline: auto;
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .home-premium-hero__header {
+    margin-inline: 0;
+    margin-right: auto;
+    text-align: left;
+    padding-bottom: 1.25rem;
+    max-width: 52rem;
+  }
+}
+
+.home-premium-hero__eyebrow {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(125, 211, 252, 0.92);
+}
+
+@media (min-width: 640px) {
+  .home-premium-hero__eyebrow {
+    font-size: 0.75rem;
+  }
+}
+
+.home-premium-hero__title {
+  margin: 0.625rem 0 0;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: clamp(1.5rem, 5.2vw, 2.375rem);
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+  color: #f8fafc;
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+}
+
+.home-premium-hero__lead {
+  margin: 0.75rem 0 0;
+  font-size: clamp(0.9375rem, 2.8vw, 1.125rem);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+  color: rgba(226, 232, 240, 0.92);
+}
+
+.home-premium-hero__tagline {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(148, 163, 184, 0.88);
+}
+
+@media (min-width: 640px) {
+  .home-premium-hero__tagline {
+    font-size: 0.875rem;
+  }
+}
+
+.home-premium-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .home-premium-hero__ctas {
+    justify-content: flex-start;
+  }
+}
+
+.home-premium-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.home-premium-hero__cta--primary {
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.55) 0%, rgba(29, 78, 216, 0.65) 100%);
+  color: #f8fafc;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+}
+
+.home-premium-hero__cta--primary:hover {
+  border-color: rgba(125, 211, 252, 0.6);
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.32);
+  transform: translateY(-1px);
+}
+
+.home-premium-hero__cta--secondary {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(226, 232, 240, 0.95);
+  backdrop-filter: blur(8px);
+}
+
+.home-premium-hero__cta--secondary:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 검색창 주변 은은한 aura */
+.home-main-search-aura {
+  position: relative;
+  width: 100%;
+  max-width: 75rem;
+  margin-inline: auto;
+}
+
+.home-main-search-aura::before {
+  content: "";
+  position: absolute;
+  inset: -0.65rem -0.5rem;
+  z-index: 0;
+  border-radius: 1.75rem;
+  background: radial-gradient(
+    ellipse 100% 80% at 50% 50%,
+    rgba(59, 130, 246, 0.28) 0%,
+    rgba(37, 99, 235, 0.08) 45%,
+    transparent 72%
+  );
+  opacity: 0.85;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.home-main-search-aura:focus-within::before {
+  opacity: 1;
+  background: radial-gradient(
+    ellipse 100% 85% at 50% 50%,
+    rgba(96, 165, 250, 0.35) 0%,
+    rgba(59, 130, 246, 0.12) 50%,
+    transparent 75%
+  );
+}
+
+.home-main-search-aura .home-main-search-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.home-hero-search-compound--premium {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.04),
+    0 4px 6px rgba(15, 23, 42, 0.04),
+    0 20px 48px rgba(15, 23, 42, 0.18),
+    0 0 40px rgba(59, 130, 246, 0.12);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.home-hero-search-compound--premium:hover {
+  border-color: rgba(147, 197, 253, 0.65);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.08),
+    0 8px 24px rgba(15, 23, 42, 0.14),
+    0 24px 56px rgba(37, 99, 235, 0.16),
+    0 0 48px rgba(59, 130, 246, 0.18);
+}
+
+.home-hero-search-compound--premium:focus-within {
+  border-color: rgba(59, 130, 246, 0.75);
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.22),
+    0 0 0 1px rgba(37, 99, 235, 0.15),
+    0 12px 40px rgba(37, 99, 235, 0.2),
+    0 0 56px rgba(96, 165, 250, 0.22);
+  transform: translateY(-1px);
+}
+
+.home-premium-hero .home-hero-carousel__frame {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+}
+
+.home-premium-hero .home-hero-carousel__frame:hover {
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+.home-premium-hero .home-main-hero-chips__label {
+  color: rgba(203, 213, 225, 0.92);
+}
+
+.home-premium-hero .home-search-example-chip {
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgba(226, 232, 240, 0.95);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+@media (min-width: 640px) {
+  .home-premium-hero .home-search-example-chip {
+    font-size: 0.875rem;
+    padding: 0.4rem 0.95rem;
+  }
+}
+
+.home-premium-hero .home-search-example-chip:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(147, 197, 253, 0.45);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-backdrop__glow,
+  .home-hero-decor-card {
+    animation: none !important;
+  }
+
+  .home-hero-search-compound--premium:focus-within {
+    transform: none;
+  }
+}
+
 /* Home — 카드형 히어 (컨테이너 내부, 100vw breakout 없음) */
 .home-main-hero-region {
   width: 100%;

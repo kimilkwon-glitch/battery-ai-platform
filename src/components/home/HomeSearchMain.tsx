@@ -2,8 +2,7 @@ import { PortalHeader } from "@/components/portal";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { HomeBenefitsCarousel } from "@/components/home/HomeBenefitsCarousel";
 import { HomeCatalogSection } from "@/components/home/HomeCatalogSection";
-import { HomeMainBanner } from "@/components/home/HomeMainBanner";
-import { HomeMainHero } from "@/components/home/HomeMainHero";
+import { HomePremiumHero } from "@/components/home/HomePremiumHero";
 
 /** 메인배너 → 검색 Hero → 혜택 → 배터리 라인업 */
 export function HomeSearchMain() {
@@ -11,16 +10,7 @@ export function HomeSearchMain() {
     <main className="min-h-screen bg-white text-[var(--bm-text)]" data-page="home-search-main">
       <PortalHeader showSearch={false} />
 
-      <div className="home-main-hero-region mx-auto w-full max-w-[1320px] px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-6 lg:pb-10 lg:pt-8">
-        <div className="home-hero-stack" data-home-section="hero-top">
-          <div className="home-hero-stack__banner">
-            <HomeMainBanner />
-          </div>
-          <div className="home-hero-stack__search">
-            <HomeMainHero />
-          </div>
-        </div>
-      </div>
+      <HomePremiumHero />
 
       <div className="home-main-content mx-auto max-w-[1100px] space-y-10 px-4 pb-16 sm:space-y-12 sm:px-6 sm:pb-20 lg:space-y-14 lg:pb-24">
         <HomeBenefitsCarousel />

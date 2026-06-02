@@ -22,7 +22,7 @@ export function HomeHeroSearch({ inputClassName }: Props) {
       className="home-hero-search w-full"
       data-home-search-type={searchType}
     >
-      <div className="home-hero-search-compound flex w-full flex-col overflow-visible rounded-2xl border-2 border-slate-300/95 bg-white shadow-[0_8px_32px_rgba(37,99,235,0.1),0_4px_16px_rgba(15,23,42,0.06)] transition hover:border-blue-300/90 focus-within:border-blue-500 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.18),0_10px_36px_rgba(37,99,235,0.12)] sm:flex-row sm:items-stretch">
+      <div className="home-hero-search-compound home-hero-search-compound--premium flex w-full flex-col overflow-visible sm:flex-row sm:items-stretch">
         <HomeSearchTypeDropdown value={searchType} onChange={setSearchType} />
         <div className="hidden w-px shrink-0 bg-slate-200/90 sm:block" aria-hidden />
         <VehicleSearchBox
