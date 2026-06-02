@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AppIcon } from "@/components/common/AppIcon";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
+import { batteryDetailHref, batterySpecHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 import { compareHref } from "@/lib/platform-data";
 
@@ -11,7 +12,7 @@ export function VehicleNavFooter({
   vehicleId: string;
   batteryCode?: string;
 }) {
-  const specHref = `/batteries/${encodeURIComponent(batteryCode)}`;
+  const specHref = batterySpecHref(batteryCode);
 
   return (
     <section className={`${bm.card} ${bm.cardPad}`} data-ux="vehicle-nav-footer" data-primary-battery={batteryCode}>
@@ -22,7 +23,7 @@ export function VehicleNavFooter({
       <CtaHierarchy
         ctas={[
           { label: "해당 규격 보기", href: specHref },
-          { label: "택배주문", href: `/shop?code=${encodeURIComponent(batteryCode)}#shop-order-panel` },
+          { label: "택배주문", href: `${batteryDetailHref(batteryCode)}#battery-order` },
         ]}
         links={[
           { label: "매장·출장 안내", href: "/service-center" },

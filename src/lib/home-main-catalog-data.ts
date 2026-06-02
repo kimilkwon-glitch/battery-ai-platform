@@ -6,7 +6,7 @@ import {
   type BatterySpecEntry,
 } from "@/lib/battery-alias-map";
 import { getHomeSearchHref } from "@/lib/home-search-types";
-import { batteryDetailHref } from "@/lib/home-upgrade-v2-data";
+import { batteryDetailHref, batterySpecHref } from "@/lib/canonical-battery-code";
 import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 export type HomeCatalogBrandId = "rocket" | "solite";
 
@@ -310,25 +310,25 @@ export const HOME_SPEC_CARD_ACTIONS = {
   outbound: HUB_STORE_ANCHORS.regions,
   store: HUB_STORE_ANCHORS.visit,
   delivery: HUB_SHOP_ANCHORS.delivery,
-  detail: (code: string) => batteryDetailHref(code),
+  detail: (code: string) => batterySpecHref(code),
 } as const;
 
-/** 카드 보조 CTA — 주문·상세 */
+/** 카드 보조 CTA — 주문·규격 (레거시 링크 헬퍼) */
 export function homeSpecCardSecondaryCtas(code: string) {
   return [
     {
       key: "order",
       label: "주문하기",
-      href: `/shop?code=${encodeURIComponent(code)}`,
+      href: batteryDetailHref(code),
     },
     {
       key: "detail",
-      label: "규격 상세 보기",
-      href: HOME_SPEC_CARD_ACTIONS.detail(code),
+      label: "규격 보기",
+      href: batterySpecHref(code),
     },
   ] as const;
 }
 
 export function homeSpecCardDetailHref(code: string) {
-  return HOME_SPEC_CARD_ACTIONS.detail(code);
+  return batterySpecHref(code);
 }

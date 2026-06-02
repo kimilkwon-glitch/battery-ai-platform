@@ -3,7 +3,7 @@
  * images 없음/빈 배열이면 카드에 이미지 영역을 렌더하지 않음.
  */
 
-import { batteryDetailHref } from "@/lib/canonical-battery-code";
+import { batterySpecHref } from "@/lib/canonical-battery-code";
 
 export type ReviewBranchName = "덕천점" | "학장점";
 export type ReviewServiceType = "내방교체" | "출장교체" | "택배주문";
@@ -104,7 +104,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     ],
     operatorReply: "차종·연료·ISG 확인 후 장착 안내드렸습니다. 이용해 주셔서 감사합니다.",
     operatorSummary: "AGM80L · ISG 차량 매장 교체",
-    productHref: batteryDetailHref("AGM80L"),
+    productHref: batterySpecHref("AGM80L"),
   },
   {
     id: "rv-2",
@@ -121,7 +121,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     images: [REVIEW_PHOTO.cmf100rMain, REVIEW_PHOTO.cmf100rLabel, REVIEW_PHOTO.hakjang],
     operatorReply: "포터2 연식 기준 CMF100R 확인 후 출장 작업 완료.",
     operatorSummary: "CMF100R · 포터2 출장",
-    productHref: batteryDetailHref("CMF100R"),
+    productHref: batterySpecHref("CMF100R"),
   },
   {
     id: "rv-3",
@@ -135,7 +135,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     batteryCode: "DIN74L",
     content: "택배 수령 전 규격·반납 여부를 전화로 다시 확인해 주셨습니다.",
     operatorSummary: "DIN74L · 택배 발송 전 확인",
-    productHref: batteryDetailHref("DIN74L"),
+    productHref: batterySpecHref("DIN74L"),
   },
   {
     id: "rv-4",
@@ -149,7 +149,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     batteryCode: "AGM60L",
     content:
       "시동 지연 증상으로 문의했고, ISG·AGM 규격을 설명해 주셔서 이해하기 쉬웠습니다.",
-    productHref: batteryDetailHref("AGM60L"),
+    productHref: batterySpecHref("AGM60L"),
   },
   {
     id: "rv-5",
@@ -165,7 +165,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
       "대형 SUV AGM95L 교체. 다른 규격과 헷갈릴 수 있는 부분을 미리 안내해 주셨습니다.",
     images: [REVIEW_PHOTO.agm95lMain],
     operatorReply: "AGM95L 단독 규격 기준으로 안내·교체 완료.",
-    productHref: batteryDetailHref("AGM95L"),
+    productHref: batterySpecHref("AGM95L"),
   },
   {
     id: "rv-6",
@@ -178,7 +178,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     vehicleName: "레이",
     batteryCode: "CMF80L",
     content: "블랙박스 방전으로 방문했습니다. 용량·단자 확인 후 교체했습니다.",
-    productHref: batteryDetailHref("CMF80L"),
+    productHref: batterySpecHref("CMF80L"),
   },
   {
     id: "rv-7",
@@ -190,7 +190,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     vehicleName: "스타리아",
     batteryCode: "AGM70L",
     content: "반납/미반납 옵션 설명이 명확해서 선택하기 편했습니다.",
-    productHref: batteryDetailHref("AGM70L"),
+    productHref: batterySpecHref("AGM70L"),
   },
   {
     id: "rv-8",
@@ -204,7 +204,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     batteryCode: "GB100R",
     content: "로케트 GB100R로 교체. 라벨 사진 보내 확인 후 작업해 주셨습니다.",
     images: [REVIEW_PHOTO.gb100rMain, REVIEW_PHOTO.agm80lLabel],
-    productHref: batteryDetailHref("GB100R"),
+    productHref: batterySpecHref("GB100R"),
   },
 ];
 

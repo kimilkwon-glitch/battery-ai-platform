@@ -25,6 +25,7 @@ function typeLabel(product: ShopProduct): string {
   return "일반형";
 }
 
+/** @deprecated 고객 카드 CTA는 /batteries/[code]로 이동. 레거시 직접 링크용으로만 유지 */
 export function ShopProductOrderPanel({
   product,
   onClose,

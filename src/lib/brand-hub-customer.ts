@@ -10,6 +10,7 @@ import {
   specMatchesBrandHubFamilyTab,
 } from "@/lib/brand-hub-catalog";
 import type { BatteryBrand, BatteryBrandSpec } from "@/data/battery/types";
+import { batterySpecHref } from "@/lib/canonical-battery-code";
 
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
@@ -311,7 +312,7 @@ export function resolveBrandHubSpecCard(
     brandSpecPool(brandId).find((s) => s.brand === brand && s.code === code);
   const spec = raw ? mergeBrandSpecWithBaseNorm(raw) : undefined;
   const detailCode = spec?.code ?? code;
-  const detailHref = `/batteries/${encodeURIComponent(detailCode)}`;
+  const detailHref = batterySpecHref(detailCode);
   const sizeStr = spec?.dimensionsMm
     ? (formatDimensionsDisplay(spec.dimensionsMm) ?? "—")
     : "—";

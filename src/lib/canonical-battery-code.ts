@@ -36,10 +36,20 @@ export function canonicalBatteryCode(raw: string | null | undefined): string {
   return normalizeBatteryCode(trimmed) || upper;
 }
 
+/** 상품 상세·구매 (/batteries/[code]) */
 export function batteryDetailHref(raw: string | null | undefined): string {
   const code = canonicalBatteryCode(raw);
   return code ? `/batteries/${encodeURIComponent(code)}` : "/batteries";
 }
+
+/** 규격 확인 전용 (/battery-specs/[code]) — 주문·구매 UI 없음 */
+export function batterySpecHref(raw: string | null | undefined): string {
+  const code = canonicalBatteryCode(raw);
+  return code ? `/battery-specs/${encodeURIComponent(code)}` : "/battery-specs";
+}
+
+/** @deprecated 고객 카드 CTA는 batteryDetailHref / batterySpecHref 사용 */
+export const batteryPurchaseHref = batteryDetailHref;
 
 /** DB 매칭·비교용 family key (내부) */
 export function batteryFamilyKey(raw: string | null | undefined): string {

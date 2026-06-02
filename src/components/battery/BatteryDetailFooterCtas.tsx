@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { CUSTOMER_CENTER_HUB } from "@/lib/customer-center-routes";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
@@ -13,7 +14,7 @@ export function BatteryDetailFooterCtas({ code }: { code: string }) {
       data-battery-detail-footer-ctas
     >
       <Link
-        href={`/shop?code=${encodeURIComponent(code)}`}
+        href={`${batteryDetailHref(code)}#battery-order`}
         className={`${bm.btnPrimary} flex-1 justify-center text-sm sm:flex-none`}
       >
         주문하기

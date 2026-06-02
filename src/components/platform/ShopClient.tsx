@@ -2,18 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { BatteryProductCardActions } from "@/components/product/BatteryProductCardActions";
 import { useCart } from "@/components/platform/CartContext";
 import { ShopFindBatteryBar } from "@/components/platform/ShopFindBatteryBar";
-import { ShopProductOrderPanel } from "@/components/platform/ShopProductOrderPanel";
+import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
-import { HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 import {
-  BRAND_SHOP_LABEL,
   badgeToneClass,
   featuredSpecs,
   filterShopProducts,
@@ -30,19 +28,13 @@ import {
 import {
   getBattery,
   getBrand,
-  getVehicleName,
-  searchHref,
   serviceHref,
   shopProducts,
   type ShopProduct,
 } from "@/lib/platform-data";
 import { getBatteryImageSet } from "@/lib/battery-alias-map";
 
-function ShopHero() {
-  return null;
-}
-
-function FeaturedSpecsSection({ onSelect }: { onSelect: (code: string) => void }) {
+function FeaturedSpecsSection() {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <h2 className="text-base font-black text-slate-900">2. 많이 찾는 배터리 상품</h2>
@@ -51,6 +43,7 @@ function FeaturedSpecsSection({ onSelect }: { onSelect: (code: string) => void }
         {featuredSpecs.map((spec) => {
           const imageSet = getBatteryImageSet(spec.productCode, spec.brandId === "solite" ? "solite" : "rocket");
           const parsed = parseBatterySpecDisplay(spec.productCode);
+          const purchaseHref = batteryDetailHref(spec.productCode);
           return (
             <div
               key={spec.displayCode}
@@ -78,13 +71,9 @@ function FeaturedSpecsSection({ onSelect }: { onSelect: (code: string) => void }
                   대표 차량: {spec.vehicles.join(", ")}
                 </p>
                 <div className="mt-auto flex flex-col gap-1.5 pt-3">
-                  <button
-                    type="button"
-                    onClick={() => onSelect(spec.productCode)}
-                    className={`${bm.btnPrimary} w-full py-2 text-[10px]`}
-                  >
+                  <Link href={purchaseHref} className={`${bm.btnPrimary} w-full py-2 text-center text-[10px]`}>
                     구매하기
-                  </button>
+                  </Link>
                   <Link href={spec.href} className={`${bm.btnSecondary} text-center text-[10px]`}>
                     내 차 기준 검색
                   </Link>
@@ -123,13 +112,7 @@ function SpecNotationGuide() {
   );
 }
 
-function ProductCard({
-  product,
-  onOrder,
-}: {
-  product: ShopProduct;
-  onOrder: (p: ShopProduct) => void;
-}) {
+function ProductCard({ product }: { product: ShopProduct }) {
   const b = getBattery(product.batteryCode, product.brandId);
   const imageSet = product.brandId === "rocket" ? b.images : getBatteryImageSet(product.batteryCode, "solite");
   const meta = getProductMeta(product);
@@ -182,10 +165,7 @@ function ProductCard({
 
         <p className="mt-2 text-[10px] font-semibold text-slate-500">가격은 주문 상담 시 안내</p>
 
-        <BatteryProductCardActions
-          batteryCode={product.batteryCode}
-          onOrder={() => onOrder(product)}
-        />
+        <BatteryProductCardActions batteryCode={product.batteryCode} />
       </div>
     </article>
   );
@@ -216,20 +196,22 @@ function ShopPageBottom() {
 
 export function ShopClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { add, count } = useCart();
   const [basicFilter, setBasicFilter] = useState<ShopBasicFilter>("전체");
   const [detailFilters, setDetailFilters] = useState<Set<ShopDetailFilter>>(new Set());
   const [detailOpen, setDetailOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(SHOP_PAGE_SIZE);
-  const [detail, setDetail] = useState<ShopProduct | null>(null);
   const [inquiry, setInquiry] = useState<ShopProduct | null>(null);
 
+  /** 레거시 /shop?code= — 상품 상세로 이동 (인라인 주문 패널 미사용) */
   useEffect(() => {
     const code = searchParams.get("code");
     if (!code) return;
     const product = findShopProductByCode(code);
-    if (product) setDetail(product);
-  }, [searchParams]);
+    const target = product ? batteryDetailHref(product.batteryCode) : batteryDetailHref(code);
+    router.replace(target);
+  }, [searchParams, router]);
 
   const filtered = useMemo(
     () => filterShopProducts(shopProducts, basicFilter, detailFilters),
@@ -254,25 +236,12 @@ export function ShopClient() {
     setVisibleCount(SHOP_PAGE_SIZE);
   };
 
-  const scrollToProduct = (code: string) => {
-    const product = findShopProductByCode(code);
-    if (product) {
-      setDetail(product);
-      setBasicFilter("전체");
-      setDetailFilters(new Set());
-      requestAnimationFrame(() => {
-        document.getElementById("shop-order-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div className="space-y-4">
         <ShopFindBatteryBar />
-        {detail ? <ShopProductOrderPanel product={detail} onClose={() => setDetail(null)} /> : null}
         <section id="shop-products" className="scroll-mt-4">
-          <FeaturedSpecsSection onSelect={scrollToProduct} />
+          <FeaturedSpecsSection />
         </section>
 
         {/* 필터 */}
@@ -367,16 +336,7 @@ export function ShopClient() {
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {visible.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  onOrder={(prod) => {
-                    setDetail(prod);
-                    requestAnimationFrame(() => {
-                      document.getElementById("shop-order-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    });
-                  }}
-                />
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           )}

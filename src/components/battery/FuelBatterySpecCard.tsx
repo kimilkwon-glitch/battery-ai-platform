@@ -9,6 +9,7 @@ import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSum
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { bm } from "@/lib/design-tokens";
 
+import { batterySpecHref } from "@/lib/canonical-battery-code";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { hasBrandSpecData } from "@/lib/battery-knowledge";
@@ -144,7 +145,7 @@ export function FuelBatterySpecCard({
         <div className="mt-auto flex flex-col gap-2 pt-3">
           <Link
             className={`${bm.btnPrimary} inline-flex w-full items-center justify-center gap-1.5 text-xs`}
-            href={`/batteries/${encodeURIComponent(batteryCode)}`}
+            href={batterySpecHref(batteryCode)}
           >
             <AppIcon iconKey="batterySpec" size="sm" className="!text-white" />
             해당 규격 보기

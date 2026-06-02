@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { batteryDetailHref, batterySpecHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 
 type Props = {
   batteryCode: string;
-  /** /shop 주문 패널 등 — 버튼 클릭 */
+  /** 레거시 — shop 패널 등. 미지정 시 구매 상세(/batteries)로 이동 */
   onOrder?: () => void;
   /** 주문하기 링크 (onOrder 없을 때) */
   orderHref?: string;
@@ -13,9 +14,9 @@ type Props = {
 
 export function BatteryProductCardActions({ batteryCode, onOrder, orderHref }: Props) {
   const code = batteryCode.trim();
-  const detailHref = `/batteries/${encodeURIComponent(code)}`;
-  const reviewsHref = `${detailHref}#battery-reviews`;
-  const shopOrderHref = orderHref ?? `/shop?code=${encodeURIComponent(code)}`;
+  const specHref = batterySpecHref(code);
+  const purchaseHref = orderHref ?? batteryDetailHref(code);
+  const reviewsHref = `${batteryDetailHref(code)}#battery-reviews`;
 
   return (
     <div className="mt-auto flex flex-col gap-2.5 pt-3" data-product-card-actions={code}>
@@ -26,10 +27,10 @@ export function BatteryProductCardActions({ batteryCode, onOrder, orderHref }: P
         리뷰 보기
       </Link>
       <Link
-        href={detailHref}
+        href={specHref}
         className={`${bm.btnSecondary} w-full justify-center py-3 text-sm font-black transition hover:shadow-sm sm:text-base`}
       >
-        규격 상세 보기
+        규격 보기
       </Link>
       {onOrder ? (
         <button
@@ -37,14 +38,14 @@ export function BatteryProductCardActions({ batteryCode, onOrder, orderHref }: P
           onClick={onOrder}
           className={`${bm.btnPrimary} w-full justify-center py-4 text-base font-black shadow-sm transition hover:shadow-md`}
         >
-          구매하기
+          주문하기
         </button>
       ) : (
         <Link
-          href={shopOrderHref}
+          href={purchaseHref}
           className={`${bm.btnPrimary} w-full justify-center py-4 text-base font-black shadow-sm transition hover:shadow-md`}
         >
-          구매하기
+          주문하기
         </Link>
       )}
     </div>

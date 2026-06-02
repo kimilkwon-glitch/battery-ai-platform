@@ -13,10 +13,8 @@ import {
 } from "@/components/cards/CardHorizontalInfo";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
-import {
-  HOME_POPULAR_BATTERIES,
-  batteryDetailHref,
-} from "@/lib/home-upgrade-v2-data";
+import { batterySpecHref } from "@/lib/canonical-battery-code";
+import { HOME_POPULAR_BATTERIES } from "@/lib/home-upgrade-v2-data";
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { bm } from "@/lib/design-tokens";
 
@@ -55,7 +53,7 @@ export function HomePopularBatteryRanking() {
               <CardInfoMeta>{item.useCase}</CardInfoMeta>
             </CardInfoStack>
             <CardInfoActions>
-              <Link className={`${bm.btnCardNavy} inline-flex items-center gap-1`} href={batteryDetailHref(item.code)}>
+              <Link className={`${bm.btnCardNavy} inline-flex items-center gap-1`} href={batterySpecHref(item.code)}>
                 <AppIcon iconKey="batterySpec" size="xs" className="!text-white" />
                 이 규격 보기
               </Link>

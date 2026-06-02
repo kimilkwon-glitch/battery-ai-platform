@@ -44,10 +44,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
           {summary}
         </p>
 
-        <BatteryProductCardActions
-          batteryCode={searchCode}
-          orderHref={`/shop?code=${encodeURIComponent(searchCode)}`}
-        />
+        <BatteryProductCardActions batteryCode={searchCode} />
       </div>
     </article>
   );
