@@ -25,6 +25,7 @@ const DEOKCHEON_KEYWORDS = [
   "연산",
   "연산동",
   "동래",
+  "동래구",
   "대저",
 ] as const;
 
@@ -77,7 +78,7 @@ export function recommendBusanStore(raw: string): StoreMatchResult {
 export const BUSAN_REGION_DISPLAY = {
   deokcheon: {
     label: "덕천점",
-    regions: "북구 · 대저1동 · 금정 · 연제",
+    regions: "북구 · 대저1동 · 금정 · 연제 · 동래",
     blurb: "북구·금정·연제권은 덕천점 기준으로 우선 안내드립니다.",
   },
   hakjang: {

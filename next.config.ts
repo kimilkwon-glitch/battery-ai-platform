@@ -41,6 +41,7 @@ const nextConfig: NextConfig = {
         destination: "/photo-check",
         permanent: true,
       },
+      { source: "/order", destination: "/support/order-guide", permanent: false },
     ];
   },
   async rewrites() {

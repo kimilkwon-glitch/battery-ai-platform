@@ -23,7 +23,7 @@ export function assignBusanGeoRegion(props: BusanHangjeongProps): BusanGeoRegion
 
   const gu = sggnm?.trim() || adm_nm.replace(/^부산광역시\s*/, "").split(/\s/)[0] || "";
 
-  if (gu === "북구" || gu === "금정구" || gu === "연제구") return "deokcheon";
+  if (gu === "북구" || gu === "금정구" || gu === "연제구" || gu === "동래구") return "deokcheon";
   if (gu === "사상구" || gu === "사하구" || gu === "부산진구") return "hakjang";
   if (gu === "강서구") return "hakjang";
 
@@ -53,7 +53,7 @@ export function storeLabelForRegion(region: BusanGeoRegion): string | null {
 /** 지도·클릭용 구 단위 대표 권역 (강서구는 동별 담당이 달라 구 클릭만으로 지점 배정하지 않음) */
 export function assignBusanGuRegion(gu: string): BusanGeoRegion {
   const g = gu.trim();
-  if (g === "북구" || g === "금정구" || g === "연제구") return "deokcheon";
+  if (g === "북구" || g === "금정구" || g === "연제구" || g === "동래구") return "deokcheon";
   if (g === "사상구" || g === "사하구" || g === "부산진구") return "hakjang";
   if (g === "강서구") return "neutral";
   return "neutral";
@@ -98,7 +98,8 @@ export function guPanelCoverage(gu: string, region: BusanGeoRegion): string {
     if (gu === "북구") return "북구 · 대저1동 · 금곡 · 연제 인근 우선 안내";
     if (gu === "금정구") return "금정·구서·장전권 덕천점 기준 출장·내방";
     if (gu === "연제구") return "연산·온천·연제권 덕천점 기준 안내";
-    return "북구 · 대저1동 · 금정 · 연제 권역";
+    if (gu === "동래구") return "연산·온천·사직·동래권 덕천점 기준 안내";
+    return "북구 · 대저1동 · 금정 · 연제 · 동래 권역";
   }
   if (region === "hakjang") {
     if (gu === "사상구") return "사상 · 엄궁 · 괘법권 학장점 중심";
