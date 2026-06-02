@@ -117,6 +117,12 @@
   box-shadow: 0 0 0 1px #ccfbf1;
 }
 
+.bm-badge--review-mood {
+  background: #fffbeb;
+  color: #92400e;
+  box-shadow: 0 0 0 1px #fde68a;
+}
+
 .bm-badge--guide {
   background: var(--color-accent-guide-soft);
   color: #3730a3;
@@ -250,13 +256,93 @@
   overflow: visible;
 }
 
+.bm-zone--review .reviews-filter-main .bm-tab-rail__btn {
+  min-height: 44px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+}
+
+.bm-zone--review .reviews-filter-topic__chip {
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #64748b;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.bm-zone--review .reviews-filter-topic__chip:hover {
+  border-color: #99f6e4;
+  background: #f0fdfa;
+  color: #0f766e;
+}
+
+.bm-zone--review .reviews-filter-topic__chip--active {
+  border-color: #5eead4;
+  background: var(--color-accent-review-soft);
+  color: #0f766e;
+}
+
 .bm-zone--review .review-operator-reply {
-  border-color: #99f6e4 !important;
-  background: var(--color-accent-review-soft) !important;
+  border: 1px solid #99f6e4;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #f0fdfa 0%, #ecfeff 100%);
+  padding: 1rem 1.125rem;
+}
+
+@media (min-width: 640px) {
+  .bm-zone--review .review-operator-reply {
+    padding: 1.125rem 1.25rem;
+  }
+}
+
+.bm-zone--review .review-operator-reply__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bm-zone--review .review-operator-reply__icon {
+  display: flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #ccfbf1;
+  color: #0f766e;
 }
 
 .bm-zone--review .review-operator-reply__label {
+  font-size: 0.8125rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
   color: #0f766e !important;
+}
+
+.bm-zone--review .review-operator-reply__summary {
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  line-height: 1.45;
+  color: #134e4a;
+}
+
+.bm-zone--review .review-operator-reply__body {
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.65;
+  color: #334155;
+}
+
+@media (min-width: 640px) {
+  .bm-zone--review .review-operator-reply__body {
+    font-size: 0.9375rem;
+  }
 }
 
 /* —— 고객센터 —— */

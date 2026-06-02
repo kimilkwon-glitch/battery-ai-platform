@@ -19,7 +19,15 @@ export type ReviewBadgeId =
   | "porter2"
   | "hybrid"
   | "discharge"
-  | "slow_start";
+  | "slow_start"
+  | "affordable"
+  | "good_value"
+  | "kind"
+  | "easy_explain"
+  | "fast_fix"
+  | "revisit"
+  | "spec_easy"
+  | "accurate_consult";
 
 /** 고객 후기 카드 — 사진은 선택( images ) */
 export type ReviewItem = {
@@ -43,31 +51,24 @@ export type ReviewItem = {
 export const REVIEW_BADGE_LABELS: Record<ReviewBadgeId, string> = {
   deokcheon: "덕천점",
   hakjang: "학장점",
-  outbound: "출장교체",
+  outbound: "출장방문",
   visit: "매장방문",
-  delivery: "택배주문",
+  delivery: "셀프교체",
   agm: "AGM",
   din: "DIN",
   porter2: "포터2",
   hybrid: "하이브리드",
   discharge: "방전",
   slow_start: "시동지연",
+  affordable: "싸요",
+  good_value: "가성비가 좋아요",
+  kind: "친절해요",
+  easy_explain: "설명이 쉬워요",
+  fast_fix: "빠르게 해결됐어요",
+  revisit: "재방문 의사 있어요",
+  spec_easy: "규격 확인이 편해요",
+  accurate_consult: "상담이 정확해요",
 };
-
-export const REVIEW_FILTER_OPTIONS: { id: "all" | ReviewBadgeId; label: string }[] = [
-  { id: "all", label: "전체" },
-  { id: "deokcheon", label: "덕천점" },
-  { id: "hakjang", label: "학장점" },
-  { id: "outbound", label: "출장교체" },
-  { id: "visit", label: "매장방문" },
-  { id: "delivery", label: "택배주문" },
-  { id: "agm", label: "AGM" },
-  { id: "din", label: "DIN" },
-  { id: "porter2", label: "포터2" },
-  { id: "hybrid", label: "하이브리드" },
-  { id: "discharge", label: "방전" },
-  { id: "slow_start", label: "시동지연" },
-];
 
 const REVIEW_PHOTO = {
   agm80lMain: "/assets/batteries/AGM80L/01-main.png",
@@ -89,7 +90,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     createdAt: "2025-11-12",
     branchName: "덕천점",
     serviceType: "내방교체",
-    badges: ["deokcheon", "visit", "agm"],
+    badges: ["deokcheon", "visit", "agm", "kind", "spec_easy"],
     vehicleName: "쏘렌토 MQ4",
     batteryCode: "AGM80L",
     content:
@@ -112,7 +113,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     createdAt: "2025-10-28",
     branchName: "학장점",
     serviceType: "출장교체",
-    badges: ["hakjang", "outbound", "porter2"],
+    badges: ["hakjang", "outbound", "porter2", "accurate_consult", "fast_fix"],
     vehicleName: "포터2",
     batteryCode: "CMF100R",
     content:
@@ -129,7 +130,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     createdAt: "2025-10-05",
     branchName: "학장점",
     serviceType: "택배주문",
-    badges: ["hakjang", "delivery", "din"],
+    badges: ["hakjang", "delivery", "din", "easy_explain"],
     vehicleName: "그랜저 IG",
     batteryCode: "DIN74L",
     content: "택배 수령 전 규격·반납 여부를 전화로 다시 확인해 주셨습니다.",
@@ -143,7 +144,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     createdAt: "2025-09-20",
     branchName: "덕천점",
     serviceType: "출장교체",
-    badges: ["deokcheon", "outbound", "hybrid", "slow_start"],
+    badges: ["deokcheon", "outbound", "hybrid", "slow_start", "easy_explain"],
     vehicleName: "아반떼 CN7",
     batteryCode: "AGM60L",
     content:
@@ -157,7 +158,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     createdAt: "2025-09-02",
     branchName: "덕천점",
     serviceType: "내방교체",
-    badges: ["deokcheon", "visit", "agm"],
+    badges: ["deokcheon", "visit", "agm", "good_value", "accurate_consult"],
     vehicleName: "팰리세이드",
     batteryCode: "AGM95L",
     content:
@@ -173,7 +174,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     createdAt: "2025-08-15",
     branchName: "학장점",
     serviceType: "내방교체",
-    badges: ["hakjang", "visit", "discharge"],
+    badges: ["hakjang", "visit", "discharge", "good_value"],
     vehicleName: "레이",
     batteryCode: "CMF80L",
     content: "블랙박스 방전으로 방문했습니다. 용량·단자 확인 후 교체했습니다.",
@@ -185,7 +186,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "윤*아",
     createdAt: "2025-07-30",
     serviceType: "택배주문",
-    badges: ["delivery", "agm"],
+    badges: ["delivery", "agm", "affordable", "spec_easy"],
     vehicleName: "스타리아",
     batteryCode: "AGM70L",
     content: "반납/미반납 옵션 설명이 명확해서 선택하기 편했습니다.",
@@ -198,7 +199,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     createdAt: "2025-07-08",
     branchName: "학장점",
     serviceType: "출장교체",
-    badges: ["hakjang", "outbound", "porter2"],
+    badges: ["hakjang", "outbound", "porter2", "accurate_consult", "fast_fix"],
     vehicleName: "포터2",
     batteryCode: "GB100R",
     content: "로케트 GB100R로 교체. 라벨 사진 보내 확인 후 작업해 주셨습니다.",

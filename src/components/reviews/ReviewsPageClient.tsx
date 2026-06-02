@@ -5,14 +5,18 @@ import { useMemo, useState } from "react";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
 import clsx from "clsx";
 import {
-  REVIEW_FILTER_OPTIONS,
-  REVIEWS_MOCK,
-  type ReviewBadgeId,
-} from "@/lib/reviews-mock-data";
+  REVIEW_MAIN_FILTER_OPTIONS,
+  REVIEW_TOPIC_FILTER_OPTIONS,
+  reviewMatchesMainFilter,
+  reviewMatchesTopicFilter,
+  type ReviewMainFilterId,
+} from "@/lib/review-badge-utils";
+import { REVIEWS_MOCK, type ReviewBadgeId } from "@/lib/reviews-mock-data";
 import { bm } from "@/lib/design-tokens";
 
 export function ReviewsPageClient({ initialBattery }: { initialBattery?: string }) {
-  const [filter, setFilter] = useState<"all" | ReviewBadgeId>("all");
+  const [mainFilter, setMainFilter] = useState<ReviewMainFilterId>("all");
+  const [topicFilter, setTopicFilter] = useState<ReviewBadgeId | null>(null);
 
   const filtered = useMemo(() => {
     let list = REVIEWS_MOCK;
@@ -20,9 +24,10 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
       const b = initialBattery.trim().toUpperCase();
       list = list.filter((r) => (r.batteryCode ?? "").toUpperCase() === b);
     }
-    if (filter === "all") return list;
-    return list.filter((r) => r.badges.includes(filter));
-  }, [filter, initialBattery]);
+    return list.filter(
+      (r) => reviewMatchesMainFilter(r, mainFilter) && reviewMatchesTopicFilter(r, topicFilter),
+    );
+  }, [mainFilter, topicFilter, initialBattery]);
 
   return (
     <div className="reviews-page bm-zone bm-zone--review space-y-5">
@@ -44,20 +49,58 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         </p>
       </section>
 
-      <div className="bm-tab-rail bm-tab-rail--review overflow-x-auto flex-nowrap sm:flex-wrap">
-        {REVIEW_FILTER_OPTIONS.map((opt) => (
+      <div className="space-y-2.5">
+        <div
+          className="bm-tab-rail bm-tab-rail--review reviews-filter-main overflow-x-auto flex-nowrap"
+          role="tablist"
+          aria-label="작업 유형 필터"
+        >
+          {REVIEW_MAIN_FILTER_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              role="tab"
+              aria-selected={mainFilter === opt.id}
+              onClick={() => setMainFilter(opt.id)}
+              className={clsx(
+                "bm-tab-rail__btn shrink-0",
+                mainFilter === opt.id && "bm-tab-rail__btn--active",
+              )}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
+        <div
+          className="reviews-filter-topic flex flex-wrap items-center gap-1.5"
+          role="group"
+          aria-label="지점·규격·증상 보조 필터"
+        >
           <button
-            key={opt.id}
             type="button"
-            onClick={() => setFilter(opt.id)}
+            onClick={() => setTopicFilter(null)}
             className={clsx(
-              "bm-tab-rail__btn shrink-0",
-              filter === opt.id && "bm-tab-rail__btn--active",
+              "reviews-filter-topic__chip",
+              topicFilter === null && "reviews-filter-topic__chip--active",
             )}
           >
-            {opt.label}
+            주제 전체
           </button>
-        ))}
+          {REVIEW_TOPIC_FILTER_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => setTopicFilter(topicFilter === opt.id ? null : opt.id)}
+              className={clsx(
+                "reviews-filter-topic__chip",
+                topicFilter === opt.id && "reviews-filter-topic__chip--active",
+              )}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="reviews-grid-wrap rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-5">
