@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { BusanRegionMap } from "@/components/service/BusanRegionMap";
 import { StoreHubCompactCards } from "@/components/service/StoreHubCompactCards";
@@ -22,6 +22,16 @@ export function ServiceCenterClient({
   const [hoveredStore, setHoveredStore] = useState<BusanStoreId | null>(null);
   const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
   const highlightStore = activeStore ?? hoveredStore;
+
+  useEffect(() => {
+    if (!activeStore) return;
+    const timer = window.setTimeout(() => {
+      document
+        .getElementById(`store-${activeStore}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [activeStore]);
 
   return (
     <div className="busan-service-hub space-y-6 pb-8">

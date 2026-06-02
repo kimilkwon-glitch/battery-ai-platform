@@ -1,26 +1,35 @@
 import type { ReviewItem } from "@/lib/reviews-mock-data";
 
+export const REVIEW_MAX_IMAGES = 5;
+
 export function reviewHasImages(item: ReviewItem): boolean {
-  return Array.isArray(item.images) && item.images.filter(Boolean).length > 0;
+  return reviewGalleryImages(item).length > 0;
+}
+
+/** 최대 5장 — 카드·갤러리 공통 */
+export function reviewGalleryImages(item: ReviewItem): string[] {
+  return (item.images ?? []).filter(Boolean).slice(0, REVIEW_MAX_IMAGES);
 }
 
 export function reviewPrimaryImage(item: ReviewItem): string | undefined {
-  return item.images?.find(Boolean);
+  return reviewGalleryImages(item)[0];
 }
 
 export function reviewExtraImageCount(item: ReviewItem): number {
-  const n = item.images?.filter(Boolean).length ?? 0;
+  const n = reviewGalleryImages(item).length;
   return n > 1 ? n - 1 : 0;
 }
 
-/** 차량·규격·지점 기반 alt — placeholder 문구 없음 */
-export function reviewImageAlt(item: ReviewItem): string {
+/** 차량·규격·지점 기반 alt */
+export function reviewImageAlt(item: ReviewItem, index = 0): string {
   const vehicle = item.vehicleName?.trim();
   const code = item.batteryCode?.trim();
   const branch = item.branchName?.trim();
   const parts = [vehicle, code, branch].filter(Boolean);
-  if (parts.length === 0) return "배터리 교체 후기 사진";
-  return `${parts.join(" ")} 교체 후기 사진`;
+  const base = parts.length === 0 ? "배터리 교체 후기 사진" : `${parts.join(" ")} 교체 후기 사진`;
+  const total = reviewGalleryImages(item).length;
+  if (total <= 1) return base;
+  return `${base} (${index + 1}/${total})`;
 }
 
 export function reviewDisplayAuthor(item: ReviewItem): string {

@@ -94,7 +94,13 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     batteryCode: "AGM80L",
     content:
       "연식·ISG 여부를 먼저 확인해 주셔서 오주문 없이 교체했습니다. 매장 대기 시간도 짧았습니다.",
-    images: [REVIEW_PHOTO.agm80lMain, REVIEW_PHOTO.deokcheon],
+    images: [
+      REVIEW_PHOTO.agm80lMain,
+      REVIEW_PHOTO.agm80lLabel,
+      REVIEW_PHOTO.agm95lMain,
+      REVIEW_PHOTO.deokcheon,
+      REVIEW_PHOTO.cmf100rMain,
+    ],
     operatorReply: "차종·연료·ISG 확인 후 장착 안내드렸습니다. 이용해 주셔서 감사합니다.",
     operatorSummary: "AGM80L · ISG 차량 매장 교체",
     productHref: batteryDetailHref("AGM80L"),

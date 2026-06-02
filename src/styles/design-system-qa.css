@@ -239,7 +239,11 @@
 }
 
 .bm-zone--review .reviews-grid {
-  align-items: stretch;
+  align-items: start;
+}
+
+.bm-zone--review .review-card--text {
+  height: auto;
 }
 
 .bm-zone--review .reviews-grid-wrap {
@@ -268,12 +272,28 @@
 }
 
 /* —— 지점 —— */
+.bm-store-card--active {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.95),
+    0 12px 32px -8px rgba(15, 23, 42, 0.18);
+}
+
 .bm-store-card--deokcheon.bm-store-card--active {
-  ring-color: #93c5fd;
+  border-color: #93c5fd !important;
+  box-shadow:
+    0 0 0 3px rgba(147, 197, 253, 0.55),
+    0 0 28px -4px rgba(59, 130, 246, 0.45),
+    0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
 .bm-store-card--hakjang.bm-store-card--active {
-  ring-color: #6ee7b7;
+  border-color: #6ee7b7 !important;
+  box-shadow:
+    0 0 0 3px rgba(110, 231, 183, 0.5),
+    0 0 28px -4px rgba(16, 185, 129, 0.4),
+    0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
 .bm-store-badge--deokcheon {
