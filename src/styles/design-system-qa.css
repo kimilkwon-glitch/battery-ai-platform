@@ -382,6 +382,26 @@
     0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
+/* —— 브랜드 안내 — 로고·카드 텍스트 scope 분리 —— */
+.brand-hub-logo-badge {
+  isolation: isolate;
+}
+
+.brand-hub-logo-glass {
+  line-height: 0;
+}
+
+.brand-hub-logo-image {
+  filter: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+.brand-hub .brand-hub-logo-badge,
+.brand-hub .brand-hub-logo-glass {
+  color: inherit;
+}
+
 /* 부산 권역 지도 — hover/click 안정화 (레이아웃·포커스 박스) */
 .busan-map-canvas {
   contain: layout paint;

@@ -13,6 +13,9 @@ import type { BatteryBrand, BatteryBrandSpec } from "@/data/battery/types";
 import { batterySpecHref } from "@/lib/canonical-battery-code";
 
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
+
+/** 배너 로고 캐시 무효화 */
+export const BRAND_HUB_LOGO_REV = "20260602-original-logo-v1";
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
 export type BrandHubLogoAssets = {
@@ -49,23 +52,17 @@ export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
   },
 };
 
-/** 배너 배경에 맞는 로고 경로 */
-export function brandHubBannerLogoSrc(
-  brandId: CustomerBrandHubId,
-  themeId: CustomerBrandHubId,
-): string {
+/** 배너 — 원본 로고(PNG) 색상 유지, 명패 배경으로 대비 */
+export function brandHubBannerLogoSrc(brandId: CustomerBrandHubId): string {
   const assets = BRAND_HUB_LOGOS[brandId];
-  if (themeId === "rocket") {
-    return assets.logoLight ?? assets.src;
-  }
-  return assets.logoDark ?? assets.src;
+  return `${assets.src}?v=${BRAND_HUB_LOGO_REV}`;
 }
 
 export type BrandHubTheme = {
   id: CustomerBrandHubId;
   label: string;
-  /** 로고 이미지 래퍼 (밝은 배경 로고를 다크 배너에 올릴 때 등) */
-  logoWrap?: string;
+  /** 배너 로고 — 글래스 명패 */
+  logoGlass: string;
   /** 탭 바깥 래퍼 — 밝은 컨트롤 영역 */
   tabRail: string;
   /** 브랜드 무드 패널 셸 */
@@ -74,6 +71,13 @@ export type BrandHubTheme = {
   bannerBg: string;
   bannerText: string;
   bannerMuted: string;
+  /** 패널·제품 카드 등 (밝은/어두운 영역별 가독성) */
+  contentTitle: string;
+  contentMuted: string;
+  /** 인사이트 카드 전용 — 로고/배너 토큰과 분리 */
+  insightTitle: string;
+  insightBody: string;
+  insightBullet: string;
   bannerImageWrap: string;
   tabActive: string;
   tabIdle: string;
@@ -102,9 +106,15 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     panelBg: "text-[#CBD5E1]",
     bannerBg:
       "bg-gradient-to-br from-[#111318] via-[#151922] to-[#1a0f10] ring-1 ring-[#2d3544] shadow-[0_20px_40px_-24px_rgba(229,57,53,0.28)]",
-    logoWrap: "inline-flex max-w-full rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-white/20",
+    logoGlass:
+      "brand-hub-logo-glass inline-flex w-fit max-w-full shrink-0 rounded-lg border border-white/30 bg-white/[0.92] px-2.5 py-1.5 shadow-[0_4px_16px_-8px_rgba(0,0,0,0.45)]",
     bannerText: "!text-[#E5E7EB]",
     bannerMuted: "text-[#CBD5E1]",
+    contentTitle: "text-[#E5E7EB]",
+    contentMuted: "text-[#AEB8C6]",
+    insightTitle: "text-[#F1F5F9]",
+    insightBody: "text-[#CBD5E1]",
+    insightBullet: "text-[#E5E7EB]",
     bannerImageWrap: "bg-[#151922] ring-1 ring-[#2d3544]",
     tabActive:
       "bg-[#E53935] text-white shadow-[0_10px_28px_-10px_rgba(229,57,53,0.65)] ring-2 ring-[#F87171]/40 motion-safe:hover:-translate-y-0.5",
@@ -135,10 +145,17 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     panelShell: "bg-gradient-to-b from-[#F8FAFC] via-white to-[#EFF6FF] ring-1 ring-slate-200/80",
     panelBg: "text-slate-800",
     bannerBg:
-      "bg-gradient-to-br from-white via-[#F0F7FF] to-[#DBEAFE] ring-1 ring-[#BFDBFE] shadow-[0_12px_32px_-20px_rgba(37,99,235,0.18)]",
-    bannerText: "text-slate-950",
-    bannerMuted: "text-slate-600",
-    bannerImageWrap: "bg-white ring-1 ring-[#BFDBFE] shadow-sm",
+      "bg-gradient-to-br from-[#0c1220] via-[#111827] to-[#0f1a2e] ring-1 ring-[#1e3a5f]/80 shadow-[0_20px_40px_-24px_rgba(37,99,235,0.32)]",
+    logoGlass:
+      "brand-hub-logo-glass inline-flex w-fit max-w-full shrink-0 rounded-lg border border-white/28 bg-white/[0.94] px-2.5 py-1.5 shadow-[0_4px_16px_-8px_rgba(0,0,0,0.4)]",
+    bannerText: "!text-[#E5E7EB]",
+    bannerMuted: "text-[#CBD5E1]",
+    contentTitle: "text-[#0F172A]",
+    contentMuted: "text-[#475569]",
+    insightTitle: "text-[#111827]",
+    insightBody: "text-[#334155]",
+    insightBullet: "text-[#1F2937]",
+    bannerImageWrap: "bg-[#111827]/90 ring-1 ring-[#1e3a5f]/70",
     tabActive:
       "bg-[#2563EB] text-white shadow-[0_10px_28px_-10px_rgba(37,99,235,0.45)] ring-2 ring-[#93C5FD]/50 motion-safe:hover:-translate-y-0.5",
     tabIdle:

@@ -84,8 +84,7 @@ export function BrandHubClient() {
   );
   const imageBrandKey: BatteryBrandKey = active === "solite" ? "solite" : "rocket";
   const dividerBorder = theme.id === "rocket" ? "border-[#2d3544]" : "border-slate-200";
-  const labelMuted =
-    theme.id === "rocket" ? "text-[#AEB8C6]" : "text-slate-500";
+  const labelMuted = theme.contentMuted;
 
   const selectBrand = (id: CustomerBrandHubId) => {
     setActive(id);
@@ -165,10 +164,10 @@ export function BrandHubClient() {
 
             <section className="pt-1">
               <header className="mb-5 sm:mb-6">
-                <h2 className={clsx("text-3xl font-black tracking-tight sm:text-4xl", theme.bannerText)}>
+                <h2 className={clsx("text-3xl font-black tracking-tight sm:text-4xl", theme.contentTitle)}>
                   {theme.label} 전 제품
                 </h2>
-                <p className={clsx("mt-3 text-lg font-medium", theme.bannerMuted)}>
+                <p className={clsx("mt-3 text-lg font-medium", theme.contentMuted)}>
                   제원 DB 기준 · 일반형 / DIN / AGM 분류별 전체 규격
                 </p>
               </header>
@@ -208,7 +207,7 @@ export function BrandHubClient() {
                       <span
                         className={clsx(
                           "ml-2 text-sm font-bold tabular-nums",
-                          selected ? "text-white/90" : theme.bannerMuted,
+                          selected ? "text-white/90" : theme.contentMuted,
                         )}
                       >
                         {count}
@@ -218,7 +217,7 @@ export function BrandHubClient() {
                 })}
               </nav>
 
-              <p className={clsx("mb-5 text-base font-semibold", theme.bannerMuted)}>
+              <p className={clsx("mb-5 text-base font-semibold", theme.contentMuted)}>
                 {BRAND_HUB_FAMILY_TABS.find((t) => t.id === familyTab)?.label} · {products.length}개
                 규격
               </p>
@@ -251,7 +250,7 @@ export function BrandHubClient() {
               )}
             </section>
 
-            <p className={clsx("pt-2 text-center text-base font-medium", theme.bannerMuted)}>
+            <p className={clsx("pt-2 text-center text-base font-medium", theme.contentMuted)}>
               {BRAND_HUB_FOOTNOTE[active]}
             </p>
           </motion.div>
@@ -272,7 +271,7 @@ function BrandHubBannerLogo({
 }) {
   const assets = BRAND_HUB_LOGOS[brandId];
   const [imgError, setImgError] = useState(false);
-  const logoSrc = brandHubBannerLogoSrc(brandId, theme.id);
+  const logoSrc = brandHubBannerLogoSrc(brandId);
 
   if (imgError) {
     return (
@@ -293,13 +292,17 @@ function BrandHubBannerLogo({
       alt={assets.alt}
       width={assets.width}
       height={assets.height}
-      className="h-9 w-auto max-w-[min(100%,20rem)] object-contain object-left sm:h-11 md:h-12 lg:max-h-16 lg:h-auto"
+      className="brand-hub-logo-image h-11 w-auto max-w-[min(100%,17rem)] object-contain object-center sm:h-12 md:h-[3.25rem] md:max-w-[18rem]"
       priority
       onError={() => setImgError(true)}
     />
   );
 
-  return theme.logoWrap ? <div className={theme.logoWrap}>{logo}</div> : logo;
+  return (
+    <div className="brand-hub-logo-badge shrink-0">
+      <div className={theme.logoGlass}>{logo}</div>
+    </div>
+  );
 }
 
 function BrandHeroBanner({
@@ -329,9 +332,9 @@ function BrandHeroBanner({
           theme.id === "rocket" ? "bg-[#E53935]/20" : "bg-blue-400/20",
         )}
       />
-      <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center">
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-0">
         <BrandHubBannerLogo brandId={brandId} theme={theme} fallbackTitle={banner.title} />
-        <p className={clsx("mt-5 text-xl font-bold leading-snug sm:text-2xl", theme.bannerText)}>
+        <p className={clsx("mt-4 text-xl font-bold leading-snug sm:mt-5 sm:text-2xl", theme.bannerText)}>
           {banner.headline}
         </p>
         <p className={clsx("mt-4 max-w-xl text-lg font-medium leading-relaxed", theme.bannerMuted)}>
@@ -395,10 +398,10 @@ function InsightCard({
             <p className={clsx("text-sm font-bold uppercase tracking-[0.14em]", theme.accent)}>
               {card.title}
             </p>
-            <h3 className={clsx("mt-2 text-2xl font-black leading-snug sm:text-3xl", theme.bannerText)}>
+            <h3 className={clsx("mt-2 text-2xl font-black leading-snug sm:text-3xl", theme.insightTitle)}>
               {card.lead}
             </h3>
-            <p className={clsx("mt-3 text-lg font-medium leading-relaxed", theme.bannerMuted)}>
+            <p className={clsx("mt-3 text-lg font-medium leading-relaxed", theme.insightBody)}>
               {card.body}
             </p>
           </div>
@@ -412,7 +415,7 @@ function InsightCard({
           {card.bullets.map((b) => (
             <li key={b} className="flex items-start gap-3 pl-0.5">
               <span className={clsx("mt-[0.65rem] h-0.5 w-5 shrink-0 rounded-full", theme.accentLine)} />
-              <span className={theme.bannerText}>{b}</span>
+              <span className={theme.insightBullet}>{b}</span>
             </li>
           ))}
         </ul>
@@ -482,7 +485,7 @@ function BrandProductCard({
             className="h-full w-full px-1.5 [&_img]:mx-auto [&_img]:max-h-[88%] [&_img]:w-auto [&_img]:object-contain"
           />
         ) : (
-          <p className={clsx("px-3 text-center text-base font-bold", theme.bannerMuted)}>
+          <p className={clsx("px-3 text-center text-base font-bold", theme.contentMuted)}>
             {card.displayCode}
           </p>
         )}
@@ -496,7 +499,7 @@ function BrandProductCard({
         </span>
       </div>
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className={clsx("text-xl font-black tracking-tight sm:text-2xl", theme.bannerText)}>
+        <p className={clsx("text-xl font-black tracking-tight sm:text-2xl", theme.contentTitle)}>
           {card.displayCode}
         </p>
         {card.manufacturerLine ? (
@@ -520,7 +523,7 @@ function BrandProductCard({
         </dl>
         <div className={clsx("mt-4 border-t pt-4", dividerBorder)}>
           <p className={clsx("text-sm font-bold uppercase tracking-wide", labelMuted)}>사이즈 (mm)</p>
-          <p className={clsx("mt-1.5 text-base font-semibold leading-snug tabular-nums", theme.bannerText)}>
+          <p className={clsx("mt-1.5 text-base font-semibold leading-snug tabular-nums", theme.contentTitle)}>
             {card.size}
           </p>
         </div>
@@ -546,7 +549,7 @@ function SpecRow({
   return (
     <div className={clsx("flex items-center justify-between gap-3 border-b py-3 last:border-b-0", dividerBorder)}>
       <dt className={clsx("text-sm font-bold uppercase tracking-wide", labelMuted)}>{label}</dt>
-      <dd className={clsx("text-lg font-bold tabular-nums", theme.bannerText)}>{value}</dd>
+      <dd className={clsx("text-lg font-bold tabular-nums", theme.contentTitle)}>{value}</dd>
     </div>
   );
 }

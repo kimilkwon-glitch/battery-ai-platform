@@ -6,9 +6,9 @@ import { ReviewCard } from "@/components/reviews/ReviewCard";
 import clsx from "clsx";
 import {
   REVIEW_MAIN_FILTER_OPTIONS,
-  REVIEW_TOPIC_FILTER_OPTIONS,
+  REVIEW_MOOD_FILTER_OPTIONS,
   reviewMatchesMainFilter,
-  reviewMatchesTopicFilter,
+  reviewMatchesMoodFilter,
   type ReviewMainFilterId,
 } from "@/lib/review-badge-utils";
 import { REVIEWS_MOCK, type ReviewBadgeId } from "@/lib/reviews-mock-data";
@@ -16,7 +16,7 @@ import { bm } from "@/lib/design-tokens";
 
 export function ReviewsPageClient({ initialBattery }: { initialBattery?: string }) {
   const [mainFilter, setMainFilter] = useState<ReviewMainFilterId>("all");
-  const [topicFilter, setTopicFilter] = useState<ReviewBadgeId | null>(null);
+  const [moodFilter, setMoodFilter] = useState<ReviewBadgeId | null>(null);
 
   const filtered = useMemo(() => {
     let list = REVIEWS_MOCK;
@@ -25,9 +25,9 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
       list = list.filter((r) => (r.batteryCode ?? "").toUpperCase() === b);
     }
     return list.filter(
-      (r) => reviewMatchesMainFilter(r, mainFilter) && reviewMatchesTopicFilter(r, topicFilter),
+      (r) => reviewMatchesMainFilter(r, mainFilter) && reviewMatchesMoodFilter(r, moodFilter),
     );
-  }, [mainFilter, topicFilter, initialBattery]);
+  }, [mainFilter, moodFilter, initialBattery]);
 
   return (
     <div className="reviews-page bm-zone bm-zone--review space-y-5">
@@ -75,26 +75,16 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         <div
           className="reviews-filter-topic flex flex-wrap items-center gap-1.5"
           role="group"
-          aria-label="지점·규격·증상 보조 필터"
+          aria-label="후기 성격 보조 필터"
         >
-          <button
-            type="button"
-            onClick={() => setTopicFilter(null)}
-            className={clsx(
-              "reviews-filter-topic__chip",
-              topicFilter === null && "reviews-filter-topic__chip--active",
-            )}
-          >
-            주제 전체
-          </button>
-          {REVIEW_TOPIC_FILTER_OPTIONS.map((opt) => (
+          {REVIEW_MOOD_FILTER_OPTIONS.map((opt) => (
             <button
               key={opt.id}
               type="button"
-              onClick={() => setTopicFilter(topicFilter === opt.id ? null : opt.id)}
+              onClick={() => setMoodFilter(moodFilter === opt.id ? null : opt.id)}
               className={clsx(
                 "reviews-filter-topic__chip",
-                topicFilter === opt.id && "reviews-filter-topic__chip--active",
+                moodFilter === opt.id && "reviews-filter-topic__chip--active",
               )}
             >
               {opt.label}

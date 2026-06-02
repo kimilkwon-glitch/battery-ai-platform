@@ -10,17 +10,20 @@ export const REVIEW_MAIN_FILTER_OPTIONS: { id: ReviewMainFilterId; label: string
   { id: "self", label: "셀프교체" },
 ];
 
-/** 2차 칩 — 지점·규격·증상 (메인 필터보다 작게) */
-export const REVIEW_TOPIC_FILTER_OPTIONS: { id: ReviewBadgeId; label: string }[] = [
-  { id: "deokcheon", label: "덕천점" },
-  { id: "hakjang", label: "학장점" },
-  { id: "agm", label: "AGM" },
-  { id: "din", label: "DIN" },
-  { id: "porter2", label: "포터2" },
-  { id: "hybrid", label: "하이브리드" },
-  { id: "discharge", label: "방전" },
-  { id: "slow_start", label: "시동지연" },
+/** 2차 칩 — 고객 후기 성격 (메인 필터보다 작게) */
+export const REVIEW_MOOD_FILTER_OPTIONS: { id: ReviewBadgeId; label: string }[] = [
+  { id: "affordable", label: "싸요" },
+  { id: "good_value", label: "가성비가 좋아요" },
+  { id: "kind", label: "친절해요" },
+  { id: "easy_explain", label: "설명이 쉬워요" },
+  { id: "fast_fix", label: "빠르게 해결됐어요" },
+  { id: "revisit", label: "재방문 의사 있어요" },
+  { id: "spec_easy", label: "규격 확인이 편해요" },
+  { id: "accurate_consult", label: "상담이 정확해요" },
 ];
+
+/** @deprecated REVIEW_MOOD_FILTER_OPTIONS 사용 */
+export const REVIEW_TOPIC_FILTER_OPTIONS = REVIEW_MOOD_FILTER_OPTIONS;
 
 const MOOD_BADGE_IDS = new Set<ReviewBadgeId>([
   "affordable",
@@ -55,7 +58,12 @@ export function reviewCardDisplayBadgeIds(badges: ReviewBadgeId[]): ReviewBadgeI
   return ordered.slice(0, 4);
 }
 
+export function reviewMatchesMoodFilter(item: ReviewItem, mood: ReviewBadgeId | null): boolean {
+  if (!mood) return true;
+  return item.badges.includes(mood);
+}
+
+/** @deprecated reviewMatchesMoodFilter 사용 */
 export function reviewMatchesTopicFilter(item: ReviewItem, topic: ReviewBadgeId | null): boolean {
-  if (!topic) return true;
-  return item.badges.includes(topic);
+  return reviewMatchesMoodFilter(item, topic);
 }
