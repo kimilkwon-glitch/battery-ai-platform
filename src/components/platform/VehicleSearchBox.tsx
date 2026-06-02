@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { AppIcon } from "@/components/common/AppIcon";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
@@ -27,7 +28,9 @@ type Props = {
   /** 메인 Hero 통합 검색바 — 타입 선택과 한 줄로 붙임 */
   compoundBar?: boolean;
   /** 메인 히어로 — 자동완성 패널을 검색바 전체 폭에 맞춤 */
-  autocompleteLayout?: "default" | "hero-compound";
+  autocompleteLayout?: "default" | "hero-compound" | "hero-flow";
+  /** 메인 히어로 — document flow 호스트(검색바 아래, 혜택 섹션 밀림) */
+  autocompleteHostEl?: HTMLDivElement | null;
   /** 자동완성 패널 열림 상태 (추천 칩 숨김 등) */
   onAutocompleteOpenChange?: (open: boolean) => void;
 };
@@ -43,6 +46,7 @@ export function VehicleSearchBox({
   searchType,
   compoundBar = false,
   autocompleteLayout = "default",
+  autocompleteHostEl,
   onAutocompleteOpenChange,
 }: Props) {
   const [query, setQuery] = useState(defaultQuery);
@@ -111,8 +115,13 @@ export function VehicleSearchBox({
   const defaultInputClass =
     "h-9 w-full rounded-lg bg-slate-50 px-3 text-xs font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300";
 
-  const autocompleteLayoutResolved: "default" | "hero-compound" =
-    autocompleteLayout === "hero-compound" || compoundBar ? "hero-compound" : "default";
+  const useFlowHost = Boolean(autocompleteHostEl);
+  const autocompleteLayoutResolved: "default" | "hero-compound" | "hero-flow" =
+    autocompleteLayout === "hero-flow" || useFlowHost
+      ? "hero-flow"
+      : autocompleteLayout === "hero-compound" || compoundBar
+        ? "hero-compound"
+        : "default";
 
   const autocompletePanel = panelOpen ? (
     <VehicleSearchAutocomplete
@@ -121,9 +130,20 @@ export function VehicleSearchBox({
       onHoverIndex={setActiveIndex}
       onPick={pick}
       suggestions={suggestions}
-      className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[80]"
+      className={
+        useFlowHost
+          ? "home-hero-autocomplete-panel mt-2 w-full"
+          : "absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[80]"
+      }
     />
   ) : null;
+
+  const autocompletePanelRendered =
+    useFlowHost && autocompleteHostEl && autocompletePanel
+      ? createPortal(autocompletePanel, autocompleteHostEl)
+      : useFlowHost
+        ? null
+        : autocompletePanel;
 
   const hasQuery = query.trim().length > 0;
 
@@ -211,7 +231,7 @@ export function VehicleSearchBox({
             </button>
           )}
         </form>
-        {autocompletePanel}
+        {autocompletePanelRendered}
       </div>
     );
   }
@@ -235,7 +255,7 @@ export function VehicleSearchBox({
         />
         {renderClearButton(false)}
       </form>
-      {autocompletePanel}
+      {autocompletePanelRendered}
     </div>
   );
 }

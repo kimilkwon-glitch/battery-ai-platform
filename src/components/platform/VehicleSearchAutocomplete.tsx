@@ -11,7 +11,7 @@ type Props = {
   onPick: (asset: VehicleAsset) => void;
   onHoverIndex: (index: number) => void;
   /** 메인 통합 검색바 — 타입 선택 영역까지 패널 폭 확장 */
-  layout?: "default" | "hero-compound";
+  layout?: "default" | "hero-compound" | "hero-flow";
   className?: string;
 };
 
@@ -30,6 +30,7 @@ export function VehicleSearchAutocomplete({
       className={cn(
         "bm-search-autocomplete",
         layout === "hero-compound" && "bm-search-autocomplete--hero-compound",
+        layout === "hero-flow" && "bm-search-autocomplete--hero-flow",
         className,
       )}
       role="listbox"
