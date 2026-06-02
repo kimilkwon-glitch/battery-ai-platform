@@ -253,15 +253,22 @@ export function SearchResultsView({ data }: Props) {
       ) : null}
 
       {visibleVehicles.length > 0 && !data.recognizedVehicle ? (
-        <Section desc="검색어와 가장 가까운 차량" title="관련 차량">
-          <SearchVehicleResults compact searchLayout rows={visibleVehicles} />
+        <section
+          className={`${bm.sectionBlock} ${bm.sectionBlockPad} motion-safe:transition motion-safe:duration-200 motion-safe:hover:shadow-[var(--bm-shadow-md)]`}
+          data-search-section="vehicles"
+        >
+          <SearchVehicleResults
+            query={data.displayQuery || data.query}
+            rows={visibleVehicles}
+            totalCount={data.vehiclesTotal}
+          />
           <ExpandToggle
             expanded={vehiclesOpen}
             hiddenCount={data.vehiclesTotal - limit}
             label="차량 결과"
             onToggle={() => setVehiclesOpen((v) => !v)}
           />
-        </Section>
+        </section>
       ) : null}
 
       {visibleBatteriesFiltered.length > 0 ? (

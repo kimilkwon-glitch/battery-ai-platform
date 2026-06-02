@@ -1,163 +1,59 @@
-import Link from "next/link";
-
-import { BatteryMiniThumb } from "@/components/BatteryThumbnail";
-
-import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
-
-import { bm } from "@/lib/design-tokens";
-
-import { getBattery } from "@/lib/platform-data";
-
-
+import { SearchVehicleResultCard } from "@/components/platform/SearchVehicleResultCard";
 
 export type VehicleSearchRow = {
-
   model: string;
-
   year: string;
-
   fuel: string;
-
   origin: string;
-
   recommend: string;
-
   upgrade: string;
-
   note?: string;
-
   href: string;
-
   imageSrc?: string | null;
-
   batteryNotes?: string;
-
   fuelHref?: string;
-
   needsReview?: boolean;
-
 };
 
-
-
-export function SearchVehicleResults({
-  rows,
-  compact = false,
-  searchLayout = false,
-}: {
+type Props = {
   rows: VehicleSearchRow[];
-  compact?: boolean;
-  searchLayout?: boolean;
-}) {
+  /** 검색 결과 헤더 — 쿼리 표시 */
+  query?: string;
+  /** 전체 결과 수 (더보기 전) */
+  totalCount?: number;
+};
 
-  const agm60 = getBattery("AGM60L");
-
-
+export function SearchVehicleResults({ rows, query, totalCount }: Props) {
+  const count = totalCount ?? rows.length;
+  const displayQuery = query?.trim();
 
   return (
-
-    <div className="space-y-2">
-
-      {rows.map((row, index) => {
-
-        const { model, year, fuel, origin, recommend, upgrade, note, href, imageSrc, batteryNotes, fuelHref, needsReview } = row;
-
-        const showBatteryThumb = recommend === "AGM60L" || origin === "AGM60L";
-
-
-
-        return (
-
-          <div
-
-            className={`grid gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-[var(--bm-border)] hover:bg-white hover:shadow-sm ${compact ? "md:grid-cols-[minmax(7.5rem,10.75rem)_1fr_auto]" : "md:grid-cols-[minmax(8.5rem,11.5rem)_1fr_190px]"}`}
-
-            key={`${model}-${index}`}
-
-          >
-
-            <Link className="contents" href={href}>
-
-              <span className="relative block w-full max-w-[10.75rem] shrink-0">
-                <VehicleCardMedia
-                  alt={model}
-                  commercial={/porter|봉고|마이티|k3|쿱|koup/i.test(model)}
-                  placeholderTitle={model}
-                  src={imageSrc?.trim() ? imageSrc : null}
-                  variant="thumb"
-                />
-                {showBatteryThumb ? (
-                  <span className="absolute bottom-1.5 right-1.5 z-10">
-                    <BatteryMiniThumb code="AGM60L" imageSet={agm60.images} role="main" className="h-10 w-10 shadow-sm" />
-                  </span>
-                ) : null}
-              </span>
-
-              <span>
-                <span className={`block font-black tracking-[-0.02em] text-slate-950 ${compact || searchLayout ? "text-base" : "mt-2 text-lg"}`}>{model}</span>
-
-                <span className="mt-1 block text-xs font-medium text-slate-500">
-                  연식 {year} · {fuel}
-                  {!compact && !searchLayout && note ? ` · ${note}` : ""}
-                </span>
-
-                {(searchLayout || compact) && recommend && !model.toUpperCase().includes(recommend.toUpperCase().replace(/\s+/g, "")) ? (
-                  <span className="mt-1 block text-[11px] font-semibold text-slate-600">추천 규격 {recommend}</span>
-                ) : null}
-
-                {!compact && !searchLayout && batteryNotes ? (
-                  <span className="mt-1 block text-[11px] font-semibold leading-relaxed text-slate-600">{batteryNotes}</span>
-                ) : null}
-
-                {!compact && !searchLayout ? (
-                  <span className="mt-2 flex flex-wrap gap-1.5">
-                    <span className={`${bm.badge} ${bm.badgeGray}`}>순정 {origin}</span>
-                    <span className={`${bm.badge} ${bm.badgeBlue}`}>추천 {recommend}</span>
-                  </span>
-                ) : null}
-              </span>
-
-            </Link>
-
-            <span className="flex shrink-0 items-center">
-
-              <Link className={compact || searchLayout ? `${bm.btnPrimary} whitespace-nowrap px-3 py-2 text-xs` : bm.btnSecondary} href={href}>
-
-                {compact || searchLayout ? "차량 상세 보기" : "상세보기"}
-
-              </Link>
-
-              {!compact && fuelHref ? (
-
-                <Link className={`${bm.btnPrimary} ml-2`} href={fuelHref}>
-
-                  연료별 배터리
-
-                </Link>
-
-              ) : null}
-
-              {!compact && !fuelHref ? (
-
-                <Link className={`${bm.btnNavy} ml-2`} href={href}>
-
-                  차량 보기
-
-                </Link>
-
-              ) : null}
-
-            </span>
-
+    <div className="bm-search-vehicles" data-search-vehicle-results>
+      {displayQuery ? (
+        <header className="bm-search-vehicles__header">
+          <div className="bm-search-vehicles__header-top">
+            <h2 className="bm-search-vehicles__title">
+              <span className="bm-search-vehicles__query">&ldquo;{displayQuery}&rdquo;</span> 검색 결과
+            </h2>
+            <span className="bm-search-vehicles__count">{count}개 모델</span>
           </div>
+          <p className="bm-search-vehicles__hint">이미지와 연식으로 내 차량을 선택하세요.</p>
+        </header>
+      ) : null}
 
-        );
-
-      })}
-
+      <div className="bm-search-vehicles__grid">
+        {rows.map((row, index) => {
+          const showBatteryThumb =
+            row.recommend === "AGM60L" || row.origin === "AGM60L";
+          return (
+            <SearchVehicleResultCard
+              key={`${row.model}-${row.href}-${index}`}
+              row={row}
+              showBatteryThumb={showBatteryThumb}
+            />
+          );
+        })}
+      </div>
     </div>
-
   );
-
 }
-
