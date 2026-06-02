@@ -382,16 +382,33 @@
     0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
-/* —— 브랜드 안내 — 로고·카드 텍스트 scope 분리 —— */
+/* —— 브랜드 안내 — 배너 로고(제목) 크기·명패 —— */
 .brand-hub-logo-badge {
   isolation: isolate;
+  display: block;
+  width: 100%;
 }
 
 .brand-hub-logo-glass {
   line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.375rem 0.5rem;
 }
 
 .brand-hub-logo-image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 3rem;
+  margin-inline: auto;
+  object-fit: contain;
+  object-position: center;
   filter: none;
   opacity: 1;
   mix-blend-mode: normal;
@@ -400,6 +417,104 @@
 .brand-hub .brand-hub-logo-badge,
 .brand-hub .brand-hub-logo-glass {
   color: inherit;
+}
+
+@media (min-width: 640px) {
+  .brand-hub-logo-badge {
+    width: auto;
+    max-width: min(100%, 22rem);
+  }
+
+  .brand-hub-logo-glass {
+    width: auto;
+    min-width: 17rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .brand-hub-logo-image {
+    max-height: 3.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .brand-hub-logo-image {
+    max-height: 4.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brand-hub-logo-badge {
+    max-width: min(100%, 30rem);
+  }
+
+  .brand-hub-logo-glass {
+    min-width: 20rem;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .brand-hub-logo-image {
+    max-height: 5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .brand-hub-logo-badge {
+    max-width: min(100%, 34rem);
+  }
+
+  .brand-hub-logo-glass {
+    min-width: 22rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .brand-hub-logo-image {
+    max-height: 5.5rem;
+  }
+}
+
+/* 쏠라이트 — 긴 가로형 로고 비율 */
+.brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
+    max-width: min(100%, 28rem);
+  }
+
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass {
+    min-width: 19rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
+    max-width: min(100%, 36rem);
+  }
+
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass {
+    min-width: 26rem;
+    padding-inline: 0.75rem;
+  }
+
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image {
+    width: 100%;
+    min-width: 18rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
+    max-width: min(100%, 40rem);
+  }
+
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass {
+    min-width: 28rem;
+  }
+
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image {
+    min-width: 20rem;
+  }
 }
 
 /* 부산 권역 지도 — hover/click 안정화 (레이아웃·포커스 박스) */

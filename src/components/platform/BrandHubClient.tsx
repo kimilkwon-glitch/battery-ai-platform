@@ -292,7 +292,8 @@ function BrandHubBannerLogo({
       alt={assets.alt}
       width={assets.width}
       height={assets.height}
-      className="brand-hub-logo-image h-11 w-auto max-w-[min(100%,17rem)] object-contain object-center sm:h-12 md:h-[3.25rem] md:max-w-[18rem]"
+      className="brand-hub-logo-image"
+      sizes="(max-width: 639px) 100vw, (max-width: 1023px) 20rem, 32rem"
       priority
       onError={() => setImgError(true)}
     />
@@ -334,7 +335,7 @@ function BrandHeroBanner({
       />
       <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-0">
         <BrandHubBannerLogo brandId={brandId} theme={theme} fallbackTitle={banner.title} />
-        <p className={clsx("mt-4 text-xl font-bold leading-snug sm:mt-5 sm:text-2xl", theme.bannerText)}>
+        <p className={clsx("mt-5 text-xl font-bold leading-snug sm:mt-6 sm:text-2xl", theme.bannerText)}>
           {banner.headline}
         </p>
         <p className={clsx("mt-4 max-w-xl text-lg font-medium leading-relaxed", theme.bannerMuted)}>
