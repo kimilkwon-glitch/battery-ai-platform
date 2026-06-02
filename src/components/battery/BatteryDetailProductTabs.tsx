@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { VehicleCardImage } from "@/components/media/VehicleCardImage";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
+import { BatteryDetailBodyImages } from "@/components/battery/BatteryDetailBodyImages";
 import { BATTERY_DETAIL_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
+import { getBattery } from "@/lib/platform-data";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { CUSTOMER_CENTER_HUB } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
@@ -28,6 +30,7 @@ export function BatteryDetailProductTabs({ code, vehicles }: Props) {
   const [tab, setTab] = useState<TabId>("detail");
   const spec = parseBatterySpecDisplay(code);
   const summary = getNormalizedBatterySummary(code);
+  const catalogBattery = getBattery(code);
   const detailAsset = `/assets/battery-detail/${code.toLowerCase()}.png`;
   const reviewsHref = `/reviews?battery=${encodeURIComponent(code)}`;
 
@@ -137,6 +140,16 @@ export function BatteryDetailProductTabs({ code, vehicles }: Props) {
                 </dd>
               </div>
             </dl>
+          </div>
+
+          <div id="battery-detail-body-guide">
+            <h3 className="text-sm font-black text-slate-900">상품 안내</h3>
+            <p className="mt-1 text-xs font-medium text-slate-500">
+              정품·주문·배송·회수·A/S 안내입니다. 브랜드에 따라 2번 안내 이미지가 달라집니다.
+            </p>
+            <div className="mt-4">
+              <BatteryDetailBodyImages code={code} brandId={catalogBattery.brandId} />
+            </div>
           </div>
 
           <div>
