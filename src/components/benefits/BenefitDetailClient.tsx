@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { BenefitCardMedia } from "@/components/home/BenefitCardMedia";
+import { BenefitsNotices } from "@/components/benefits/BenefitsNotices";
 import { CouponIssuerPanel } from "@/components/benefits/CouponIssuerPanel";
+import { FirstOrder3AutoApplyPanel } from "@/components/benefits/FirstOrder3AutoApplyPanel";
 import {
   type BenefitCardConfig,
   HUB_BENEFITS,
@@ -73,11 +75,15 @@ export function BenefitDetailClient({ benefit }: { benefit: BenefitCardConfig })
         </section>
       ) : null}
 
+      {benefit.id === "first-order-3" ? <FirstOrder3AutoApplyPanel /> : null}
+
       {benefit.couponBenefitId ? (
         <section className="rounded-xl border border-amber-100 bg-amber-50/50 px-4 py-3 text-[11px] font-medium text-amber-900/90">
           쿠폰은 localStorage에 임시 저장됩니다. 운영용 발급·중복 방지·만료 관리는 DB·인증 연동이 필요합니다.
         </section>
       ) : null}
+
+      <BenefitsNotices />
     </div>
   );
 }

@@ -1696,6 +1696,11 @@
   padding-top: 0.25rem;
 }
 
+.home-main-content .home-benefits-carousel--main {
+  margin-bottom: 0 !important;
+  padding-bottom: 0.5rem;
+}
+
 @media (min-width: 640px) {
   .home-main-content .home-benefits-carousel {
     margin-top: 2.5rem !important;

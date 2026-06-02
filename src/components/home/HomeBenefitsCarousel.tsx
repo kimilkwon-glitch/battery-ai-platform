@@ -4,9 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { BenefitCardVisual } from "@/components/benefits/BenefitCardVisual";
-import { BenefitsNotices } from "@/components/benefits/BenefitsNotices";
 import { BenefitsSectionHeader } from "@/components/benefits/BenefitsSectionHeader";
-import { FirstOrder3AutoApplyPanel } from "@/components/benefits/FirstOrder3AutoApplyPanel";
 import { BENEFIT_CARDS, BENEFITS_HUB_TITLE } from "@/lib/benefits-data";
 
 function useVisibleCount() {
@@ -88,7 +86,7 @@ export function HomeBenefitsCarousel() {
 
   return (
     <section
-      className="home-benefits-carousel bm-zone bm-zone--benefit"
+      className="home-benefits-carousel home-benefits-carousel--main bm-zone bm-zone--benefit pb-2 sm:pb-3"
       data-home-section="benefits-carousel"
       aria-label={BENEFITS_HUB_TITLE}
       onMouseEnter={() => {
@@ -147,8 +145,8 @@ export function HomeBenefitsCarousel() {
           </>
         ) : null}
 
-        {cards.length > 1 ? (
-          <div className="mt-4 flex justify-center gap-1.5">
+        {cards.length > visibleCount ? (
+          <div className="mt-3 flex justify-center gap-1.5">
             {Array.from({ length: maxIndex + 1 }, (_, i) => (
               <button
                 key={i}
@@ -163,11 +161,6 @@ export function HomeBenefitsCarousel() {
             ))}
           </div>
         ) : null}
-      </div>
-
-      <div className="home-benefits-footer mx-auto mt-6 max-w-[1100px] space-y-4 px-4 sm:mt-7 sm:px-6">
-        <FirstOrder3AutoApplyPanel compact />
-        <BenefitsNotices />
       </div>
     </section>
   );
