@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { X } from "lucide-react";
 import { AppIcon } from "@/components/common/AppIcon";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
-import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
+import { VehicleSearchAutocomplete } from "@/components/platform/VehicleSearchAutocomplete";
 import { recordSearch, recordVehicleClick } from "@/lib/activity";
 import {
   searchVehicleAssets,
-  vehicleAssetBrandLabel,
   vehicleAssetHref,
   type VehicleAsset,
 } from "@/lib/car-assets";
+import { cn } from "@/lib/utils";
 
 type Props = {
   defaultQuery?: string;
@@ -25,6 +26,10 @@ type Props = {
   searchType?: string;
   /** 메인 Hero 통합 검색바 — 타입 선택과 한 줄로 붙임 */
   compoundBar?: boolean;
+  /** 메인 히어로 — 자동완성 패널을 검색바 전체 폭에 맞춤 */
+  autocompleteLayout?: "default" | "hero-compound";
+  /** 자동완성 패널 열림 상태 (추천 칩 숨김 등) */
+  onAutocompleteOpenChange?: (open: boolean) => void;
 };
 
 export function VehicleSearchBox({
@@ -37,6 +42,8 @@ export function VehicleSearchBox({
   shimmerSubmit = false,
   searchType,
   compoundBar = false,
+  autocompleteLayout = "default",
+  onAutocompleteOpenChange,
 }: Props) {
   const [query, setQuery] = useState(defaultQuery);
   const [open, setOpen] = useState(false);
@@ -55,6 +62,12 @@ export function VehicleSearchBox({
   useEffect(() => {
     setActiveIndex(0);
   }, [suggestions.length, query]);
+
+  const panelOpen = open && suggestions.length > 0;
+
+  useEffect(() => {
+    onAutocompleteOpenChange?.(panelOpen);
+  }, [panelOpen, onAutocompleteOpenChange]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -98,47 +111,44 @@ export function VehicleSearchBox({
   const defaultInputClass =
     "h-9 w-full rounded-lg bg-slate-50 px-3 text-xs font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300";
 
-  const dropdown =
-    open && suggestions.length > 0 ? (
-      <ul className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-80 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
-        {suggestions.map((asset, index) => (
-          <li key={asset.id}>
-            <button
-              className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-blue-50 ${
-                index === activeIndex ? "bg-blue-50" : ""
-              }`}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                pick(asset);
-              }}
-              type="button"
-            >
-              <span className="block w-[4.5rem] shrink-0">
-                <VehicleCardMedia
-                  alt={asset.displayName}
-                  placeholderTitle={asset.displayName}
-                  src={asset.image}
-                  variant="thumb"
-                />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-xs font-black text-slate-900">{asset.displayName}</span>
-                {asset.generationName ? (
-                  <span className="block truncate text-[10px] font-bold text-slate-500">{asset.generationName}</span>
-                ) : null}
-                <span className="mt-0.5 block truncate text-[10px] font-semibold text-slate-400">
-                  {vehicleAssetBrandLabel(asset.brand)}
-                  {asset.yearRange ? ` · ${asset.yearRange}` : ""}
-                </span>
-                {asset.batteryNotes ? (
-                  <span className="mt-0.5 line-clamp-1 text-[10px] font-medium text-blue-600">{asset.batteryNotes}</span>
-                ) : null}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
-    ) : null;
+  const autocompleteLayoutResolved: "default" | "hero-compound" =
+    autocompleteLayout === "hero-compound" || compoundBar ? "hero-compound" : "default";
+
+  const autocompletePanel = panelOpen ? (
+    <VehicleSearchAutocomplete
+      activeIndex={activeIndex}
+      layout={autocompleteLayoutResolved}
+      onHoverIndex={setActiveIndex}
+      onPick={pick}
+      suggestions={suggestions}
+      className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[80]"
+    />
+  ) : null;
+
+  const hasQuery = query.trim().length > 0;
+
+  function clearQuery() {
+    setQuery("");
+    setOpen(false);
+  }
+
+  function renderClearButton(inputTall: boolean) {
+    if (!hasQuery) return null;
+    return (
+      <button
+        type="button"
+        className={cn(
+          "bm-search-input-clear absolute top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60",
+          inputTall ? "right-3 size-9" : "right-2 size-8",
+        )}
+        aria-label="검색어 지우기"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={clearQuery}
+      >
+        <X className={inputTall ? "size-4" : "size-3.5"} aria-hidden />
+      </button>
+    );
+  }
 
   if (showButton) {
     const submitBtnClass = compoundBar
@@ -161,10 +171,11 @@ export function VehicleSearchBox({
           <div className="relative min-w-0 flex-1">
             <input
               autoComplete="off"
-              className={
+              className={cn(
                 inputClassName ||
-                "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300"
-              }
+                  "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300",
+                hasQuery && (compoundBar ? "pr-12 sm:pr-14" : "pr-10"),
+              )}
               name="q"
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -176,7 +187,7 @@ export function VehicleSearchBox({
               type="search"
               value={query}
             />
-            {dropdown}
+            {renderClearButton(compoundBar)}
           </div>
           {shimmerSubmit ? (
             <ShimmerButton
@@ -200,16 +211,17 @@ export function VehicleSearchBox({
             </button>
           )}
         </form>
+        {autocompletePanel}
       </div>
     );
   }
 
   return (
     <div className={`relative min-w-0 flex-1 ${className}`} ref={wrapRef}>
-      <form action="/search" onSubmit={() => onSearchSubmit()}>
+      <form action="/search" className="relative" onSubmit={() => onSearchSubmit()}>
         <input
           autoComplete="off"
-          className={inputClassName || defaultInputClass}
+          className={cn(inputClassName || defaultInputClass, hasQuery && "pr-10")}
           name="q"
           onChange={(e) => {
             setQuery(e.target.value);
@@ -221,8 +233,9 @@ export function VehicleSearchBox({
           type="search"
           value={query}
         />
+        {renderClearButton(false)}
       </form>
-      {dropdown}
+      {autocompletePanel}
     </div>
   );
 }
