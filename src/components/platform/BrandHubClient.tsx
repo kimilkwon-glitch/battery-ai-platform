@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -13,6 +14,7 @@ import {
   BRAND_HUB_BANNER,
   BRAND_HUB_FOOTNOTE,
   BRAND_HUB_INSIGHTS,
+  BRAND_HUB_LOGOS,
   BRAND_HUB_THEMES,
   CUSTOMER_BRAND_HUB_IDS,
   familyLabelForSpec,
@@ -131,7 +133,7 @@ export function BrandHubClient() {
               style={{ background: theme.washGradient }}
             />
 
-            <BrandHeroBanner theme={theme} banner={banner} imageBrandKey={imageBrandKey} />
+            <BrandHeroBanner theme={theme} banner={banner} imageBrandKey={imageBrandKey} brandId={active} />
 
             <div className="grid gap-5 lg:grid-cols-2 lg:gap-7">
               <InsightCard
@@ -182,14 +184,56 @@ export function BrandHubClient() {
   );
 }
 
+function BrandHubBannerLogo({
+  brandId,
+  theme,
+  fallbackTitle,
+}: {
+  brandId: CustomerBrandHubId;
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  fallbackTitle: string;
+}) {
+  const assets = BRAND_HUB_LOGOS[brandId];
+  const [imgError, setImgError] = useState(false);
+
+  if (imgError) {
+    return (
+      <h2
+        className={clsx(
+          "text-4xl font-black leading-tight tracking-tight sm:text-5xl",
+          theme.bannerText,
+        )}
+      >
+        {fallbackTitle}
+      </h2>
+    );
+  }
+
+  const logo = (
+    <Image
+      src={assets.src}
+      alt={assets.alt}
+      width={assets.width}
+      height={assets.height}
+      className="h-9 w-auto max-w-[min(100%,18rem)] object-contain object-left sm:h-11 md:h-12 lg:h-[3.5rem]"
+      priority
+      onError={() => setImgError(true)}
+    />
+  );
+
+  return theme.logoWrap ? <div className={theme.logoWrap}>{logo}</div> : logo;
+}
+
 function BrandHeroBanner({
   theme,
   banner,
   imageBrandKey,
+  brandId,
 }: {
   theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
   banner: (typeof BRAND_HUB_BANNER)[CustomerBrandHubId];
   imageBrandKey: BatteryBrandKey;
+  brandId: CustomerBrandHubId;
 }) {
   const product = getBattery(banner.heroCode, imageBrandKey === "solite" ? "solite" : "rocket");
 
@@ -208,14 +252,7 @@ function BrandHeroBanner({
         )}
       />
       <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center">
-        <h2
-          className={clsx(
-            "text-4xl font-black leading-tight tracking-tight sm:text-5xl",
-            theme.bannerText,
-          )}
-        >
-          {banner.title}
-        </h2>
+        <BrandHubBannerLogo brandId={brandId} theme={theme} fallbackTitle={banner.title} />
         <p className={clsx("mt-5 text-xl font-bold leading-snug sm:text-2xl", theme.bannerText)}>
           {banner.headline}
         </p>

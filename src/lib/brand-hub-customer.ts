@@ -7,9 +7,36 @@ import type { BatteryBrand, BatteryBrandSpec } from "@/data/battery/types";
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
+export type BrandHubLogoAssets = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  fallbackText: string;
+};
+
+export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
+  rocket: {
+    src: "/assets/brand/rocket-logo.png",
+    width: 574,
+    height: 280,
+    alt: "로케트 배터리 로고",
+    fallbackText: "로케트 배터리",
+  },
+  solite: {
+    src: "/assets/brand/solite-logo.png",
+    width: 921,
+    height: 280,
+    alt: "쏠라이트 배터리 로고",
+    fallbackText: "쏠라이트 배터리",
+  },
+};
+
 export type BrandHubTheme = {
   id: CustomerBrandHubId;
   label: string;
+  /** 로고 이미지 래퍼 (밝은 배경 로고를 다크 배너에 올릴 때 등) */
+  logoWrap?: string;
   /** 탭 바깥 래퍼 — 밝은 컨트롤 영역 */
   tabRail: string;
   /** 브랜드 무드 패널 셸 */
@@ -46,6 +73,7 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     panelBg: "text-[#CBD5E1]",
     bannerBg:
       "bg-gradient-to-br from-[#111318] via-[#151922] to-[#1a0f10] ring-1 ring-[#2d3544] shadow-[0_20px_40px_-24px_rgba(229,57,53,0.28)]",
+    logoWrap: "inline-flex max-w-full rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-white/20",
     bannerText: "!text-[#E5E7EB]",
     bannerMuted: "text-[#CBD5E1]",
     bannerImageWrap: "bg-[#151922] ring-1 ring-[#2d3544]",

@@ -7,6 +7,7 @@
     "build": "node scripts/generate-ai-audit-snapshot.mjs && next build",
     "start": "next start",
     "lint": "eslint",
+    "brand-logos": "node scripts/convert-brand-logos.mjs",
     "normalize:cars": "node scripts/normalize-car-assets.mjs",
     "generate:mock-activity": "npx tsx scripts/generate-mock-activity.ts",
     "generate:content-workbench": "npx tsx scripts/generate-content-workbench.ts",
@@ -51,7 +52,8 @@
     "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
-    "sharp": "^0.34.2",
+    "pdf-to-img": "^6.1.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "latest",
     "typescript": "latest"
   }

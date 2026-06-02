@@ -130,10 +130,10 @@ export function terminalTypeLabel(t: TerminalType | undefined): string {
   }
 }
 
+/** L×W×H mm — 고객 노출용 (총 높이 괄호 표기 없음) */
 export function formatDimensionsDisplay(d: BatteryDimensionsMm | undefined): string | undefined {
   if (!d) return undefined;
-  const th = d.totalHeight != null ? ` (총 ${d.totalHeight})` : "";
-  return `${d.length}×${d.width}×${d.height}mm${th}`;
+  return `${d.length} × ${d.width} × ${d.height} mm`;
 }
 
 /** 비교표 — 참고 필드 열 표시 여부 */
