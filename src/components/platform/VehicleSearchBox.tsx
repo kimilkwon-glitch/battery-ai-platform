@@ -7,11 +7,12 @@ import { AppIcon } from "@/components/common/AppIcon";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { VehicleSearchAutocomplete } from "@/components/platform/VehicleSearchAutocomplete";
 import { recordSearch, recordVehicleClick } from "@/lib/activity";
+import { vehicleAssetHref } from "@/lib/car-assets";
 import {
-  searchVehicleAssets,
-  vehicleAssetHref,
-  type VehicleAsset,
-} from "@/lib/car-assets";
+  customerSuggestionHref,
+  searchCustomerSuggestions,
+  type CustomerSearchSuggestion,
+} from "@/lib/search/customer-search-autocomplete";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -60,7 +61,7 @@ export function VehicleSearchBox({
 
   const suggestions = useMemo(() => {
     if (query.trim().length < 1) return [];
-    return searchVehicleAssets(query, 8);
+    return searchCustomerSuggestions(query, 8);
   }, [query]);
 
   useEffect(() => {
@@ -81,13 +82,21 @@ export function VehicleSearchBox({
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
-  function pick(asset: VehicleAsset) {
-    recordSearch(asset.displayName, {
-      matchedVehicle: asset.displayName,
-      matchedBattery: asset.batteryNotes?.match(/AGM\d+[LR]|DIN\d+[LR]|\d+R/i)?.[0],
-    });
-    recordVehicleClick(asset.catalogId ?? asset.id);
-    window.location.href = vehicleAssetHref(asset);
+  function pick(item: CustomerSearchSuggestion) {
+    if (item.kind === "vehicle") {
+      const { asset } = item;
+      recordSearch(asset.displayName, {
+        matchedVehicle: asset.displayName,
+        matchedBattery:
+          asset.defaultBatteryCode ??
+          item.batterySummary.match(/AGM\d+[LR]|DIN\d+[LR]|\d+[LR]/i)?.[0],
+      });
+      recordVehicleClick(asset.catalogId ?? asset.id);
+      window.location.href = vehicleAssetHref(asset);
+      return;
+    }
+    recordSearch(item.code, { matchedBattery: item.code });
+    window.location.href = customerSuggestionHref(item);
   }
 
   function onSearchSubmit() {

@@ -22,6 +22,10 @@ import {
 } from "@/lib/search/search-vehicle-display";
 import { isBatterySpecPrimaryQuery } from "@/lib/search/battery-spec-search-alias";
 import { applyStariaVehicleSearchRow } from "@/lib/search/staria-query-spec-guard";
+import {
+  formatCustomerBatterySummaryForAsset,
+  sanitizeCustomerBatterySummary,
+} from "@/lib/search/customer-search-display";
 import { vehicles as catalogVehicles } from "@/lib/platform-data";
 
 export function assetToSearchRow(asset: VehicleAsset): VehicleSearchRow {
@@ -49,7 +53,9 @@ export function assetToSearchRow(asset: VehicleAsset): VehicleSearchRow {
     note: `${vehicleAssetBrandLabel(asset.brand)} · ${asset.tags?.slice(0, 2).join(" · ") ?? "차량"}`,
     href: vehicleAssetHref(asset),
     imageSrc: asset.image || null,
-    batteryNotes: asset.batteryNotes,
+    batteryNotes:
+      sanitizeCustomerBatterySummary(asset.batteryNotes) ??
+      formatCustomerBatterySummaryForAsset(asset),
     needsReview: needsBatteryReview || db.needsPhotoReview,
   };
 }

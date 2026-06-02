@@ -3,6 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { BatteryMiniThumb } from "@/components/BatteryThumbnail";
 import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { getBattery } from "@/lib/platform-data";
+import { sanitizeCustomerBatterySummary } from "@/lib/search/customer-search-display";
 import { cn } from "@/lib/utils";
 import type { VehicleSearchRow } from "@/components/platform/SearchVehicleResults";
 
@@ -44,6 +45,7 @@ export function SearchVehicleResultCard({ row, showBatteryThumb }: Props) {
     upgrade,
   } = row;
   const spec = pickSpecLabel(row);
+  const customerNotes = sanitizeCustomerBatterySummary(batteryNotes);
   const agm60 = getBattery("AGM60L");
   const metaLine = [fuel, upgrade && upgrade !== "규격 확인" ? upgrade : null, note]
     .filter(Boolean)
@@ -75,8 +77,8 @@ export function SearchVehicleResultCard({ row, showBatteryThumb }: Props) {
             <span className="bm-search-vehicle-card__year">{year}</span>
           ) : null}
           {metaLine ? <p className="bm-search-vehicle-card__meta">{metaLine}</p> : null}
-          {batteryNotes ? (
-            <p className="bm-search-vehicle-card__notes">{batteryNotes}</p>
+          {customerNotes ? (
+            <p className="bm-search-vehicle-card__notes">{customerNotes}</p>
           ) : null}
           <div className="bm-search-vehicle-card__spec-row">
             <span

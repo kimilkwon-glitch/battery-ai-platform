@@ -57,7 +57,7 @@ export default async function SearchPage({
         <VehicleSearchBox
           className="max-w-2xl"
           defaultQuery={displayQuery}
-          placeholder="차종, 증상, 배터리 규격 검색"
+          placeholder="차종·배터리 규격 검색"
         />
         <Breadcrumb
           items={[

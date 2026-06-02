@@ -6,9 +6,18 @@ import type { VehicleBodyType } from "@/components/VehicleThumbnail";
 import { catalogVehicles } from "./platform-catalog";
 import { carDisplayImageUrl } from "./car-image-url";
 import { vehicleAssetsChevrolet } from "@/lib/vehicle-asset-chevrolet";
+import { vehicleAssetsGenesis } from "@/lib/vehicle-asset-genesis";
 import { vehicleAssetsV04 } from "@/lib/vehicle-asset-v04";
+import { displayNameSearchPenalty } from "@/lib/search/customer-search-display";
 
-export type CarBrandKey = "hyundai" | "kia" | "renault" | "ssangyong" | "kg" | "chevrolet-gmdaewoo";
+export type CarBrandKey =
+  | "hyundai"
+  | "kia"
+  | "renault"
+  | "ssangyong"
+  | "kg"
+  | "chevrolet-gmdaewoo"
+  | "genesis";
 
 export interface VehicleAsset {
   id: string;
@@ -33,8 +42,7 @@ export interface VehicleAsset {
   yearStart?: number;
 }
 
-const DEFAULT_NOTE =
-  "연식, 연료, ISG 여부에 따라 배터리 규격 확인이 필요합니다.";
+const DEFAULT_NOTE = "연료·옵션별 상담 확인 권장";
 
 type LegacyCarBrandKey = "hyundai" | "kia";
 
@@ -216,6 +224,8 @@ const HYUNDAI_ASSETS: VehicleAsset[] = [
     yearRange: "2021-현재",
     tags: ["상용차", "밴"],
     aliases: ["스타리아", "현대 스타리아", "스타리아 카고", "스타리아 라운지", "스타리아 투어러"],
+    defaultBatteryCode: "AGM80R",
+    batteryNotes: "연료·옵션별 상담 확인 권장",
   }),
   asset("kona-os", "hyundai", "kona", "코나", "kona_os.png", {
     yearRange: "2017-2023",
@@ -440,6 +450,7 @@ const KIA_ASSETS: VehicleAsset[] = [
 export const vehicleAssets: VehicleAsset[] = [
   ...HYUNDAI_ASSETS,
   ...KIA_ASSETS,
+  ...vehicleAssetsGenesis,
   ...vehicleAssetsV04,
   ...vehicleAssetsChevrolet,
 ];
@@ -495,6 +506,7 @@ const BRAND_LABELS: Record<CarBrandKey, string> = {
   ssangyong: "쌍용",
   kg: "KGM",
   "chevrolet-gmdaewoo": "쉐보레/GM",
+  genesis: "제네시스",
 };
 
 export function vehicleAssetBrandLabel(brand: CarBrandKey): string {
@@ -543,10 +555,12 @@ export function searchVehicleAssets(query: string, limit = 12): VehicleAsset[] {
   for (const a of pool) {
     let score = 0;
     if (norm(a.displayName) === q) score += 100;
+    else if (a.aliases.some((al) => norm(al) === q)) score += 95;
     else if (matchesQuery(a.displayName, q)) score += 80;
     else if (a.aliases.some((al) => matchesQuery(al, q))) score += 60;
     else if (matchesQuery(a.modelGroup, q)) score += 40;
     else if (a.tags?.some((t) => matchesQuery(t, q))) score += 20;
+    score -= displayNameSearchPenalty(a.displayName);
 
     if (score > 0) scored.push({ asset: a, score });
   }

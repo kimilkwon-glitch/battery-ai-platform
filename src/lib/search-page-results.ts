@@ -54,6 +54,8 @@ import {
 } from "@/lib/search/search-vehicle-questions";
 import { computeTopFoldLimits } from "@/lib/search/search-top-fold";
 import type { RunBatterySearchOptions } from "@/lib/search/run-battery-search-options";
+import { isCustomerCatalogSearchType } from "@/lib/home-search-types";
+import { isCustomerGuideSymptomOnlyQuery } from "@/lib/search/customer-search-display";
 import {
   buildSearchUxPresentation,
   emptySearchUx,
@@ -949,12 +951,15 @@ export function buildSearchPageResults(
   const pipeline = buildSearchIntent(rawQuery ?? "");
   const query = pipeline.normalizedQuery;
   const displayQuery = pipeline.displayQuery;
+  const searchType = options?.searchType ?? "all";
+  const customerCatalogOnly = isCustomerCatalogSearchType(searchType);
   const baseIntent = classifySearch(query);
   const alias = resolveSearchVehicleAlias(rawQuery ?? "");
   const intentFlags = pipeline.flags;
   const specTokens = extractOrderedQuerySpecs(query);
   const specs = extractBatterySpecs(query);
-  const symptomDiagnosisFirst = isSymptomDiagnosisPrimaryQuery(query, intentFlags);
+  const symptomDiagnosisFirst =
+    customerCatalogOnly ? false : isSymptomDiagnosisPrimaryQuery(query, intentFlags);
   const queryHasBatterySpec = specTokens.length > 0 || pipeline.batterySpec.hasSpec;
   const upgradeReviewOnly = isUpgradeReviewWithoutSpecs(query, specTokens);
   const intent = {
@@ -985,6 +990,22 @@ export function buildSearchPageResults(
 
   if (!query) {
     return emptyResults({ query: "", displayQuery: "", intent, chips: [], summary });
+  }
+
+  if (customerCatalogOnly && isCustomerGuideSymptomOnlyQuery(query)) {
+    return emptyResults({
+      query,
+      displayQuery,
+      intent,
+      chips,
+      summary,
+      insufficientMessage: "증상·가이드 키워드는 검색창이 아닌 배터리 가이드·증상 페이지에서 확인할 수 있습니다.",
+      ctas: [
+        { label: "배터리 가이드", href: "/guides" },
+        { label: "증상 진단", href: "/symptoms" },
+      ],
+      isSparse: true,
+    });
   }
 
   try {
@@ -1034,6 +1055,10 @@ export function buildSearchPageResults(
       intentFlags,
       hasVehicleIntent,
     );
+    if (customerCatalogOnly) {
+      topFold.maxQuestions = 0;
+      topFold.maxGuides = 0;
+    }
 
     let vehiclesForRender = upgradeReviewOnly
       ? sanitizeVehicleRowsForUpgrade(finalVehicles)

@@ -72,8 +72,15 @@ export const SLUG_HINT_TO_ASSET_ID: Record<string, string> = {
   "kia-bongo3": "bongo3-truck",
   "kia-ev6-cv": "ev6",
 
-  "genesis-g80-rg3": "g80-rg3",
-  "genesis-g70-ik": "g70-ik",
+  "genesis-g80-rg3": "genesis-g80-rg3",
+  "genesis-g70-ik": "genesis-g70",
+  "genesis-gv60-jw": "genesis-gv60",
+  "genesis-gv70-jk1": "genesis-gv70",
+  "genesis-gv80-jx1": "genesis-gv80",
+  "genesis-g80-dh": "genesis-g80-dh",
+  "genesis-eq900-g90-hi": "genesis-eq900",
+  "genesis-dh": "genesis-dh",
+  "kgm-korando-c": "ssangyong-korando-c-2011",
 };
 
 export const SLUG_HINT_FUEL_ASSET: Record<string, Partial<Record<string, string>>> = {

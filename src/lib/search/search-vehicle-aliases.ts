@@ -47,11 +47,17 @@ const ALIAS_RULES: AliasRule[] = [
 
   // 제네시스
   { label: "G80 RG3", brand: "제네시스", pattern: /G80\s*RG3|RG3\s*G80/i, dbQuery: "G80 RG3" },
-  { label: "GV70 JK1", brand: "제네시스", pattern: /GV70\s*JK1|JK1\s*GV70/i, dbQuery: "GV70" },
-  { label: "GV80 JX1", brand: "제네시스", pattern: /GV80\s*JX1|JX1\s*GV80/i, dbQuery: "GV80" },
-  { label: "GV70", brand: "제네시스", pattern: /\bGV70\b/i, dbQuery: "GV70" },
-  { label: "GV80", brand: "제네시스", pattern: /\bGV80\b/i, dbQuery: "GV80" },
-  { label: "G80", brand: "제네시스", pattern: /\bG80\b/i, dbQuery: "G80" },
+  { label: "GV60", brand: "제네시스", pattern: /\bGV60\b|지브이\s*60/i, assetId: "genesis-gv60", catalogId: "genesis-gv60", dbQuery: "GV60" },
+  { label: "GV70 JK1", brand: "제네시스", pattern: /GV70\s*JK1|JK1\s*GV70/i, assetId: "genesis-gv70", catalogId: "gv70", dbQuery: "GV70" },
+  { label: "GV80 JX1", brand: "제네시스", pattern: /GV80\s*JX1|JX1\s*GV80/i, assetId: "genesis-gv80", catalogId: "gv80", dbQuery: "GV80" },
+  { label: "GV70", brand: "제네시스", pattern: /\bGV70\b|지브이\s*70/i, assetId: "genesis-gv70", catalogId: "gv70", dbQuery: "GV70" },
+  { label: "GV80", brand: "제네시스", pattern: /\bGV80\b|지브이\s*80/i, assetId: "genesis-gv80", catalogId: "gv80", dbQuery: "GV80" },
+  { label: "G70", brand: "제네시스", pattern: /\bG70\b/i, assetId: "genesis-g70", catalogId: "g70-ik", dbQuery: "G70" },
+  { label: "G80 RG3", brand: "제네시스", pattern: /G80\s*RG3|RG3\s*G80/i, assetId: "genesis-g80-rg3", catalogId: "g80-rg3", dbQuery: "G80" },
+  { label: "G80", brand: "제네시스", pattern: /\bG80\b|지에이티|지팔공/i, assetId: "genesis-g80-rg3", catalogId: "g80-rg3", dbQuery: "G80" },
+  { label: "G90", brand: "제네시스", pattern: /\bG90\b|지구공/i, assetId: "genesis-g90", catalogId: "g90", dbQuery: "G90" },
+  { label: "EQ900", brand: "제네시스", pattern: /\bEQ900\b|이큐\s*900/i, assetId: "genesis-eq900", catalogId: "genesis-eq900", dbQuery: "EQ900" },
+  { label: "제네시스 DH", brand: "제네시스", pattern: /제네시스\s*DH|DH\s*제네시스/i, assetId: "genesis-dh", catalogId: "genesis-dh", dbQuery: "제네시스 DH" },
 
   // KG/쌍용
   {

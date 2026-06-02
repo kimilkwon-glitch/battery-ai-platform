@@ -2,13 +2,17 @@
 
 import { ChevronRight } from "lucide-react";
 import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
-import { vehicleAssetBrandLabel, type VehicleAsset } from "@/lib/car-assets";
+import {
+  customerSuggestionBrandLabel,
+  customerSuggestionTitle,
+  type CustomerSearchSuggestion,
+} from "@/lib/search/customer-search-autocomplete";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  suggestions: VehicleAsset[];
+  suggestions: CustomerSearchSuggestion[];
   activeIndex: number;
-  onPick: (asset: VehicleAsset) => void;
+  onPick: (item: CustomerSearchSuggestion) => void;
   onHoverIndex: (index: number) => void;
   /** 메인 통합 검색바 — 타입 선택 영역까지 패널 폭 확장 */
   layout?: "default" | "hero-compound" | "hero-flow";
@@ -34,15 +38,48 @@ export function VehicleSearchAutocomplete({
         className,
       )}
       role="listbox"
-      aria-label="차량 검색 결과"
+      aria-label="검색 자동완성"
     >
       <div className="bm-search-autocomplete__head">
-        <p className="bm-search-autocomplete__head-title">세대별 차량을 선택하세요</p>
+        <p className="bm-search-autocomplete__head-title">차종·배터리 규격</p>
         <span className="bm-search-autocomplete__head-count">{suggestions.length}건</span>
       </div>
       <ul className="bm-search-autocomplete__list">
-        {suggestions.map((asset, index) => {
+        {suggestions.map((item, index) => {
           const isActive = index === activeIndex;
+          const title = customerSuggestionTitle(item);
+          const brand = customerSuggestionBrandLabel(item);
+
+          if (item.kind === "battery") {
+            return (
+              <li key={item.id} className="bm-search-autocomplete__item">
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={isActive}
+                  className={cn("bm-search-autocomplete__row", isActive && "is-active")}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    onPick(item);
+                  }}
+                  onMouseEnter={() => onHoverIndex(index)}
+                >
+                  <span className="bm-search-autocomplete__body">
+                    <span className="bm-search-autocomplete__title-row">
+                      <span className="bm-search-autocomplete__title">{title}</span>
+                    </span>
+                    <span className="bm-search-autocomplete__meta-row">
+                      <span className="bm-search-autocomplete__brand">{brand}</span>
+                    </span>
+                    <span className="bm-search-autocomplete__hint">{item.subtitle}</span>
+                  </span>
+                  <ChevronRight className="bm-search-autocomplete__chevron" aria-hidden />
+                </button>
+              </li>
+            );
+          }
+
+          const { asset, batterySummary } = item;
           const yearBadge = asset.yearRange?.trim();
           return (
             <li key={asset.id} className="bm-search-autocomplete__item">
@@ -53,7 +90,7 @@ export function VehicleSearchAutocomplete({
                 className={cn("bm-search-autocomplete__row", isActive && "is-active")}
                 onMouseDown={(e) => {
                   e.preventDefault();
-                  onPick(asset);
+                  onPick(item);
                 }}
                 onMouseEnter={() => onHoverIndex(index)}
               >
@@ -75,13 +112,13 @@ export function VehicleSearchAutocomplete({
                     ) : null}
                   </span>
                   <span className="bm-search-autocomplete__meta-row">
-                    <span className="bm-search-autocomplete__brand">{vehicleAssetBrandLabel(asset.brand)}</span>
+                    <span className="bm-search-autocomplete__brand">{brand}</span>
                     {yearBadge ? (
                       <span className="bm-search-autocomplete__year-badge">{yearBadge}</span>
                     ) : null}
                   </span>
-                  {asset.batteryNotes ? (
-                    <span className="bm-search-autocomplete__hint">{asset.batteryNotes}</span>
+                  {batterySummary ? (
+                    <span className="bm-search-autocomplete__hint">{batterySummary}</span>
                   ) : null}
                 </span>
                 <ChevronRight className="bm-search-autocomplete__chevron" aria-hidden />

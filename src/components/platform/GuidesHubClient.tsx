@@ -103,6 +103,17 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
 
   const activeLabel = GUIDE_FILTER_CATEGORIES.find((c) => c.key === active)?.label ?? "전체 가이드";
 
+  const symptomTopics = [
+    { label: "완전방전", href: "/symptoms" },
+    { label: "시동지연", href: "/symptoms" },
+    { label: "블랙박스 방전", href: "/diagnosis/blackbox-drain" },
+    { label: "장기주차 방전", href: "/symptoms" },
+    { label: "AGM 배터리 차이", href: "/guides/knowledge/bk-agm-vs-din" },
+    { label: "하이브리드 보조배터리", href: "/guides/knowledge/bk-ev-aux-12v" },
+    { label: "배터리 규격 보는 법", href: "/guide/spec" },
+    { label: "주문 전 확인사항", href: "/order-checklist" },
+  ] as const;
+
   const quickTopics = [
     { label: "자주 묻는 질문", href: "/qa" },
     { label: "오주문 방지", href: "/guides?category=오주문 방지" },
@@ -183,6 +194,25 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
             가이드 → 규격 상세 → Q&A → 사진 확인 순으로 이어가면 오주문을 줄일 수 있습니다.
           </p>
         </div>
+
+        <section className={`${bm.card} ${bm.cardPad}`}>
+          <SectionHeader
+            label="증상·주문 전 확인"
+            title="검색창이 아닌 가이드에서 확인할 주제"
+            description="완전방전·시동지연 등은 메인 검색 자동완성에 넣지 않고, 여기서 안내합니다."
+          />
+          <div className="mt-3 flex flex-wrap gap-2">
+            {symptomTopics.map((t) => (
+              <Link
+                key={t.label}
+                href={t.href}
+                className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-900 ring-1 ring-amber-200 hover:bg-amber-100"
+              >
+                {t.label}
+              </Link>
+            ))}
+          </div>
+        </section>
 
         <section className={`${bm.card} ${bm.cardPad}`}>
           <SectionHeader label="주제별 바로가기" title="배터리 가이드 주제" />

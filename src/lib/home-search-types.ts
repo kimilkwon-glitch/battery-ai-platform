@@ -8,28 +8,25 @@ export type HomeSearchTypeMenuItem = {
   hint: string;
 };
 
+/** 고객 검색창 — 차종·규격만 (증상·Q&A는 가이드·증상 페이지) */
 export const HOME_SEARCH_TYPE_OPTIONS: { id: HomeSearchType; label: string }[] = [
   { id: "all", label: "전체" },
   { id: "vehicle", label: "차종" },
   { id: "battery", label: "규격" },
-  { id: "symptom", label: "증상" },
-  { id: "qa", label: "Q&A" },
 ];
 
 export const HOME_SEARCH_TYPE_MENU: HomeSearchTypeMenuItem[] = [
-  { id: "all", label: "전체", hint: "차량·규격·증상 통합 검색" },
-  { id: "vehicle", label: "차종", hint: "K3, 쏘렌토, 스타리아" },
-  { id: "battery", label: "규격", hint: "AGM70L, 100R, DIN74L" },
-  { id: "symptom", label: "증상", hint: "시동지연, 방전, 블랙박스" },
-  { id: "qa", label: "Q&A", hint: "궁금한 내용으로 찾기" },
+  { id: "all", label: "전체", hint: "차종·배터리 규격 통합 검색" },
+  { id: "vehicle", label: "차종", hint: "GV80, 쏘렌토 MQ4, 스타리아" },
+  { id: "battery", label: "규격", hint: "AGM80L, AGM95R, DIN74L, 100R" },
 ];
 
 export const HOME_SEARCH_PLACEHOLDERS: Record<HomeSearchType, string> = {
-  all: "차종·연식·규격을 입력하세요",
-  vehicle: "예: 쏘렌토 MQ4, K3, 스타리아",
-  battery: "예: AGM70L, 100R, DIN74L",
-  symptom: "예: 시동지연, 방전, 블랙박스 방전",
-  qa: "궁금한 내용을 입력하세요",
+  all: "차종·배터리 규격을 입력하세요",
+  vehicle: "예: GV80, 쏘렌토 MQ4, 스타리아",
+  battery: "예: AGM80L, AGM95R, DIN74L, 100R",
+  symptom: "증상은 배터리 가이드·증상 페이지에서 확인",
+  qa: "궁금한 내용은 Q&A에서 확인",
 };
 
 export function getHomeSearchHref(query: string, type: HomeSearchType = "all"): string {
@@ -44,4 +41,9 @@ export function getHomeSearchHref(query: string, type: HomeSearchType = "all"): 
 export function parseHomeSearchType(raw: string | null | undefined): HomeSearchType {
   if (raw === "vehicle" || raw === "battery" || raw === "symptom" || raw === "qa") return raw;
   return "all";
+}
+
+/** 차종·규격 검색만 — 가이드/증상 Q&A 섹션 숨김 */
+export function isCustomerCatalogSearchType(type: HomeSearchType): boolean {
+  return type === "all" || type === "vehicle" || type === "battery";
 }
