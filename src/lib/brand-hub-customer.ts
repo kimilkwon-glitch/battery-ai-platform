@@ -46,7 +46,7 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     panelBg: "text-[#CBD5E1]",
     bannerBg:
       "bg-gradient-to-br from-[#111318] via-[#151922] to-[#1a0f10] ring-1 ring-[#2d3544] shadow-[0_20px_40px_-24px_rgba(229,57,53,0.28)]",
-    bannerText: "text-[#E5E7EB]",
+    bannerText: "!text-[#E5E7EB]",
     bannerMuted: "text-[#CBD5E1]",
     bannerImageWrap: "bg-[#151922] ring-1 ring-[#2d3544]",
     tabActive:
