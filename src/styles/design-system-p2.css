@@ -276,9 +276,10 @@
 }
 
 /* 차량 카드 이미지 — 전역 가로 16:9 · 스튜디오 배경 통일 */
-.bm-vehicle-card-media {
-  --bm-vehicle-image-bg-top: #f4f6f9;
-  --bm-vehicle-image-bg-bottom: #e8edf3;
+.bm-vehicle-card-media,
+.bm-vehicle-card-media--thumb,
+.bm-vehicle-card-media--autocomplete,
+.bm-vehicle-card-media--search-result {
   position: relative;
   display: flex;
   width: 100%;
@@ -288,19 +289,31 @@
   overflow: hidden;
   background: linear-gradient(
     180deg,
-    var(--bm-vehicle-image-bg-top) 0%,
-    var(--bm-vehicle-image-bg-bottom) 100%
+    var(--bm-vehicle-surface-top) 0%,
+    var(--bm-vehicle-surface-bottom) 100%
   );
-  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+  box-shadow: inset 0 0 0 1px var(--bm-vehicle-surface-border);
   padding: 0.35rem 0.5rem;
 }
 
 .bm-vehicle-card-media[data-image-slot-state="placeholder"] {
   background: linear-gradient(
     180deg,
-    var(--bm-vehicle-image-bg-top) 0%,
-    var(--bm-vehicle-image-bg-bottom) 100%
+    var(--bm-vehicle-surface-top) 0%,
+    var(--bm-vehicle-surface-bottom) 100%
   );
+}
+
+.bm-vehicle-card-media > div,
+.bm-vehicle-card-media--thumb > div,
+.bm-vehicle-card-media--autocomplete > div,
+.bm-vehicle-card-media--search-result > div {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
 }
 
 .bm-vehicle-card-media img {
@@ -331,7 +344,7 @@
   height: 100%;
   min-height: 7.75rem;
   border-radius: 0;
-  box-shadow: none;
+  box-shadow: inset 0 0 0 1px var(--bm-vehicle-surface-border);
 }
 
 @media (min-width: 768px) {
@@ -359,7 +372,7 @@
   width: 100%;
   max-width: none;
   min-height: 4.25rem;
-  border-radius: 0.75rem;
+  border-radius: 0.625rem;
 }
 
 @media (min-width: 640px) {
@@ -464,6 +477,22 @@
   display: block;
   width: 7.25rem;
   flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: transparent;
+}
+
+.bm-search-autocomplete__media .bm-vehicle-card-media {
+  width: 100%;
+  height: 100%;
+  min-height: 4.25rem;
+  aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 640px) {
+  .bm-search-autocomplete__media .bm-vehicle-card-media {
+    min-height: 4.75rem;
+  }
 }
 
 @media (min-width: 640px) {
@@ -602,7 +631,7 @@
   min-height: 9.5rem;
   height: 100%;
   border-radius: 0;
-  box-shadow: none;
+  box-shadow: inset 0 0 0 1px var(--bm-vehicle-surface-border);
 }
 
 @media (min-width: 768px) {
@@ -719,7 +748,7 @@
   height: 100%;
   min-height: 100%;
   border-radius: 0;
-  box-shadow: none;
+  box-shadow: inset 0 0 0 1px var(--bm-vehicle-surface-border);
 }
 
 @media (max-width: 767px) {

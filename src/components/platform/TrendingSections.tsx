@@ -114,7 +114,7 @@ export function TrendingVehicleGrid({ items }: { items: TrendVehicleItem[] }) {
           <Link
             key={item.vehicleId}
             href={item.href}
-            className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-3 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+            className="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3 transition hover:border-blue-200 hover:shadow-sm"
           >
             <VehicleThumb vehicleId={item.vehicleId} label={item.label} />
             <div className="min-w-0 flex-1">

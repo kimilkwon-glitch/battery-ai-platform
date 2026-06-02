@@ -112,17 +112,17 @@ export default async function VehicleDetailPage({
 
             <div className="grid gap-4 sm:grid-cols-[180px_1fr]">
 
-              <div className="flex min-h-[200px] items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)] sm:min-h-[220px]">
+              <div className="bm-vehicle-card-media flex min-h-[200px] items-center justify-center overflow-hidden rounded-xl sm:min-h-[220px]">
 
                 {heroImage ? (
 
-                  <CarGenerationImage alt={displayTitle} size="hero" src={heroImage} />
+                  <CarGenerationImage alt={displayTitle} className="!bg-transparent" size="hero" src={heroImage} />
 
                 ) : (
 
-                  <div className={`flex h-[105px] items-center justify-center ${vehicle.imageTone} text-white`}>
+                  <div className="flex h-full min-h-[105px] w-full flex-col items-center justify-center gap-1 px-2">
 
-                    <span className="text-xs font-black">차량</span>
+                    <span className="text-xs font-black text-slate-400">차량</span>
 
                   </div>
 
