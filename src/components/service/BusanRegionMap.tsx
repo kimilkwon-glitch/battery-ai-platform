@@ -71,8 +71,8 @@ type ClickPopover = {
   matchedDong?: string;
 };
 
+/** hover/click 시 stroke 두께를 바꾸지 않음 — 인접 path 경계가 흔들리지 않게 */
 const PATH_STROKE = 1.5;
-const PATH_STROKE_EMPHASIS = 2;
 
 function regionLine(gu: string, region: BusanGeoRegion): string {
   const store = storeLabelForRegion(region);
@@ -114,7 +114,13 @@ function pathStyle(
     searchHighlightGu: boolean;
     searchDim: boolean;
   },
-): { fill: string; fillOpacity: number; stroke: string; strokeWidth: number } {
+): {
+  fill: string;
+  fillOpacity: number;
+  stroke: string;
+  strokeWidth: number;
+  strokeOpacity: number;
+} {
   const palette =
     region === "neutral" ? BUSAN_MAP_PALETTE.neutral : BUSAN_MAP_PALETTE[region];
   const guActive =
@@ -137,7 +143,8 @@ function pathStyle(
     fill,
     fillOpacity,
     stroke: emphasized ? "#ffffff" : GU_BOUNDARY,
-    strokeWidth: emphasized ? PATH_STROKE_EMPHASIS : PATH_STROKE,
+    strokeWidth: PATH_STROKE,
+    strokeOpacity: emphasized ? 1 : 0.9,
   };
 }
 
@@ -187,6 +194,8 @@ export function BusanRegionMap({
   onHoverStore?: (id: BusanStoreId | null) => void;
 }) {
   const mapCanvasRef = useRef<HTMLDivElement>(null);
+  const tooltipRafRef = useRef<number | null>(null);
+  const pendingTooltipRef = useRef<MapTooltip | null>(null);
   const [collection, setCollection] = useState<FeatureCollection<Geometry, BusanHangjeongProps> | null>(
     null,
   );
@@ -293,14 +302,25 @@ export function BusanRegionMap({
     const el = mapCanvasRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    setTooltip({
+    pendingTooltipRef.current = {
       x: Math.min(clientX - rect.left + 14, rect.width - 200),
       y: Math.max(clientY - rect.top - 12, 8),
       gu: gu.gu,
       region: gu.region,
       matchedDong,
+    };
+    if (tooltipRafRef.current != null) return;
+    tooltipRafRef.current = requestAnimationFrame(() => {
+      tooltipRafRef.current = null;
+      if (pendingTooltipRef.current) setTooltip(pendingTooltipRef.current);
     });
   };
+
+  useEffect(() => {
+    return () => {
+      if (tooltipRafRef.current != null) cancelAnimationFrame(tooltipRafRef.current);
+    };
+  }, []);
 
   const handleGuEnter = (gu: GuUnit, clientX: number, clientY: number) => {
     setHoveredGu(gu.gu);
@@ -355,30 +375,26 @@ export function BusanRegionMap({
       <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-4">
         <div
           ref={mapCanvasRef}
-          className="busan-map-canvas relative min-h-[440px] min-w-0 flex-1 overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-50/80 p-3 sm:min-h-[500px] sm:p-4 lg:min-h-[560px]"
+          className="busan-map-canvas relative h-[440px] min-w-0 flex-1 overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-50/80 sm:h-[500px] lg:h-[560px]"
         >
           {loadError ? (
             <p className="py-16 text-center text-sm font-semibold text-red-600">{loadError}</p>
           ) : !collection ? (
             <div
-              className="flex min-h-[400px] animate-pulse items-center justify-center rounded-xl bg-slate-100/80 text-base font-bold text-slate-400 sm:min-h-[480px]"
+              className="flex h-full min-h-[360px] animate-pulse items-center justify-center rounded-xl bg-slate-100/80 text-base font-bold text-slate-400"
               aria-busy
             >
               행정동 지도 불러오는 중…
             </div>
           ) : (
-            <svg
-              viewBox={BUSAN_MAP_VIEWBOX}
-              className="busan-map-svg mx-auto h-full min-h-[400px] w-full max-w-none touch-manipulation sm:min-h-[480px] lg:min-h-[520px]"
-              role="img"
-              aria-label="부산 구별 권역 안내 지도"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              <defs>
-                <filter id="busan-gu-lift" x="-12%" y="-12%" width="124%" height="124%">
-                  <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#0f172a" floodOpacity="0.28" />
-                </filter>
-              </defs>
+            <div className="busan-map-svg-stage absolute inset-3 sm:inset-4">
+              <svg
+                viewBox={BUSAN_MAP_VIEWBOX}
+                className="busan-map-svg block h-full w-full max-w-none touch-manipulation"
+                role="img"
+                aria-label="부산 구별 권역 안내 지도"
+                preserveAspectRatio="xMidYMid meet"
+              >
               {guUnits.map((gu) => {
                 const guHover = hoveredGu === gu.gu;
                 const guSelected = selectedGu?.gu === gu.gu;
@@ -389,11 +405,10 @@ export function BusanRegionMap({
                 return (
                   <g
                     key={gu.gu}
-                    className="busan-map-gu cursor-pointer"
-                    filter={guEmphasis ? "url(#busan-gu-lift)" : undefined}
-                    style={{
-                      transition: "filter 0.15s ease",
-                    }}
+                    className={clsx(
+                      "busan-map-gu cursor-pointer",
+                      guEmphasis && "busan-map-gu--active",
+                    )}
                     onMouseEnter={(e) => handleGuEnter(gu, e.clientX, e.clientY)}
                     onMouseMove={(e) => showTooltip(gu, e.clientX, e.clientY, searchResolved?.matchedDong)}
                     onMouseLeave={handleGuLeave}
@@ -424,6 +439,7 @@ export function BusanRegionMap({
                           fillOpacity={style.fillOpacity}
                           stroke={style.stroke}
                           strokeWidth={style.strokeWidth}
+                          strokeOpacity={style.strokeOpacity}
                           strokeLinejoin="round"
                           strokeLinecap="round"
                           vectorEffect="non-scaling-stroke"
@@ -459,13 +475,14 @@ export function BusanRegionMap({
                   </g>
                 );
               })}
-            </svg>
+              </svg>
+            </div>
           )}
 
           {tooltip ? (
             <div
               className="busan-map-hover-tip pointer-events-none absolute z-20 max-w-[220px] rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg"
-              style={{ left: tooltip.x, top: tooltip.y }}
+              style={{ transform: `translate(${tooltip.x}px, ${tooltip.y}px)` }}
             >
               <p className="text-sm font-black text-slate-900">{tooltip.gu}</p>
               <p
@@ -485,7 +502,7 @@ export function BusanRegionMap({
 
           {clickPopover ? (
             <div
-              className="busan-map-click-popover pointer-events-none absolute z-30 max-w-[min(220px,42vw)] rounded-lg border border-slate-300 bg-white px-3 py-2 shadow-xl ring-1 ring-slate-900/5"
+              className="busan-map-click-popover pointer-events-none absolute z-30 max-w-[min(220px,42vw)] rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg"
               style={{
                 left: `${clickPopover.xPct}%`,
                 top: `${clickPopover.yPct}%`,
@@ -521,7 +538,7 @@ export function BusanRegionMap({
 
       <div className="mt-4">
         <p
-          className="mt-4 rounded-xl border border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-semibold leading-relaxed text-slate-700"
+          className="busan-map-selection-bar mt-4 min-h-[5.25rem] rounded-xl border border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-semibold leading-relaxed text-slate-700"
           aria-live="polite"
         >
           {selectedGu ? (

@@ -382,9 +382,39 @@
     0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
+/* 부산 권역 지도 — hover/click 안정화 (레이아웃·포커스 박스) */
+.busan-map-canvas {
+  contain: layout paint;
+}
+
+.busan-map-svg-stage {
+  pointer-events: auto;
+}
+
+.busan-map-gu {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.busan-map-gu:focus,
+.busan-map-gu:focus-visible {
+  outline: none;
+}
+
+.busan-map-gu--active path {
+  filter: drop-shadow(0 2px 5px rgba(15, 23, 42, 0.22));
+}
+
+.busan-map-gu:focus-visible path {
+  stroke: #fff;
+  stroke-opacity: 1;
+}
+
 .busan-map-hover-tip,
 .busan-map-click-popover {
-  will-change: transform;
+  left: 0;
+  top: 0;
+  will-change: auto;
 }
 
 @media (max-width: 1023px) {
