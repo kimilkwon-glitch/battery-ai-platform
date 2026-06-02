@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { BatteryMiniThumb } from "@/components/BatteryThumbnail";
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
 import { getBattery } from "@/lib/platform-data";
@@ -92,20 +92,16 @@ export function TrendingTopicsSection({ featured, rest }: { featured: TrendTopic
   );
 }
 
-function VehicleThumb({ vehicleId }: { vehicleId: string }) {
+function VehicleThumb({ vehicleId, label }: { vehicleId: string; label: string }) {
   const src = carImageForPlatformVehicleId(vehicleId);
   return (
-    <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200">
-      {src ? (
-        <Image src={src} alt="" fill className="object-contain object-center p-1" sizes="80px" />
-      ) : (
-        <div className="flex h-full items-center justify-center text-slate-300">
-          <svg className="size-6" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path d="M4 14h16l-1.5-5H5.5L4 14z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-          </svg>
-        </div>
-      )}
-    </div>
+    <VehicleCardMedia
+      alt={label}
+      placeholderTitle={label}
+      slug={vehicleId}
+      src={src}
+      variant="thumb"
+    />
   );
 }
 
@@ -120,7 +116,7 @@ export function TrendingVehicleGrid({ items }: { items: TrendVehicleItem[] }) {
             href={item.href}
             className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-3 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
           >
-            <VehicleThumb vehicleId={item.vehicleId} />
+            <VehicleThumb vehicleId={item.vehicleId} label={item.label} />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-black text-slate-900">{item.label}</p>
               <p className="mt-0.5 text-xs font-medium text-slate-500">{item.reason}</p>
@@ -182,7 +178,7 @@ export function TrendingPhotoReviewSection({
             href={item.href}
             className="flex items-start gap-3 rounded-xl border border-amber-100/80 bg-white/90 p-3 transition hover:border-amber-200 hover:shadow-sm"
           >
-            <VehicleThumb vehicleId={item.vehicleId} />
+            <VehicleThumb vehicleId={item.vehicleId} label={item.label} />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-black text-slate-900">{item.label}</p>
               <p className="mt-0.5 text-xs font-medium text-slate-600">{item.reason}</p>

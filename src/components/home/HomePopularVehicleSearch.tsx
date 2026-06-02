@@ -30,7 +30,7 @@ export function HomePopularVehicleSearch() {
             className={`${bm.cardVehicleMatch} group`}
             href={v.href}
             key={v.slug}
-            imagePanel={<VehicleCardImage slug={v.slug} title={v.title} layout="row" />}
+            imagePanel={<VehicleCardImage slug={v.slug} title={v.title} />}
           >
             <CardInfoStack>
               <CardInfoTitleRow iconKey="vehicle" title={v.title} />

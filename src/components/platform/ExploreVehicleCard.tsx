@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CarGenerationImage } from "@/components/car/CarGenerationImage";
+import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
 import {
   CardInfoActions,
@@ -39,19 +39,15 @@ export function ExploreVehicleCard({
       as={Link}
       className={`${bm.cardVehicleMatch} group h-full`}
       href={href}
-      mediaClassName="!min-h-[120px] md:!min-h-[150px]"
+      mediaClassName="!p-0"
       imagePanel={
-        imageSrc ? (
-          <CarGenerationImage
-            alt={title}
-            className={isCommercial ? "!h-[86%] !w-[92%] !max-w-[95%]" : "!h-[90%] !w-[94%] !max-w-[95%]"}
-            commercial={isCommercial}
-            size="compact"
-            src={imageSrc}
-          />
-        ) : (
-          <span className="text-[10px] font-black text-slate-500">{title}</span>
-        )
+        <VehicleCardMedia
+          alt={title}
+          commercial={isCommercial}
+          placeholderTitle={title}
+          slug={vehicleId}
+          src={imageSrc}
+        />
       }
     >
       <CardInfoStack>

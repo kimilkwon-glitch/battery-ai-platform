@@ -202,10 +202,10 @@ export const bm = {
   /** @see battery-image-stage.ts */
   batteryImageStageBase:
     "battery-image-stage relative w-full overflow-hidden bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)]/80",
-  imageVehicle:
-    "relative flex h-[105px] w-[150px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-card)] ring-1 ring-[var(--bm-border)]",
-  imageVehicleCommercial:
-    "relative flex h-[105px] w-[165px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-card)] ring-1 ring-[var(--bm-border)]",
+  /** @deprecated VehicleCardMedia 사용 */
+  imageVehicle: "bm-vehicle-card-media bm-vehicle-card-media--thumb",
+  /** @deprecated VehicleCardMedia + commercial prop */
+  imageVehicleCommercial: "bm-vehicle-card-media bm-vehicle-card-media--thumb",
   imageContain: "max-h-full max-w-full object-contain object-center",
 
   warningPanel:
@@ -230,11 +230,11 @@ export const bm = {
 export const productCardShell = bm.cardInteractive;
 export const batteryThumbSurface = "bg-[var(--bm-image-bg)]";
 export const vehicleCardShell =
-  "group flex min-h-[105px] items-center overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/25";
+  "group bm-card-vehicle-match flex min-h-0 items-stretch overflow-hidden rounded-[22px] border border-[var(--bm-border)] bg-[var(--bm-card)] shadow-[var(--bm-shadow-sm)] transition duration-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[var(--bm-primary)]/25";
 export const vehicleImageBoxClass = bm.imageVehicle;
 export const vehicleImageBoxCommercialClass = bm.imageVehicleCommercial;
-export const vehicleImageImgClass = "block h-[92%] w-[92%] object-contain object-center";
-export const vehicleImageImgCommercialClass = "block h-[90%] w-[90%] object-contain object-center";
+export const vehicleImageImgClass = "block max-h-[96%] max-w-[96%] object-contain object-center";
+export const vehicleImageImgCommercialClass = "block max-h-[94%] max-w-[96%] object-contain object-center";
 export const vehicleCardTextCol =
   "flex min-w-0 flex-1 flex-col justify-center gap-1 py-2.5 pl-3 pr-3";
 export const productCardPadding = "p-4";
@@ -243,5 +243,5 @@ export const carSurface = "bg-[var(--bm-card)]";
 export const carImageCompactClass = "h-full w-full object-contain object-center";
 export const carImageEdgeSoftenFilter = "brightness(1.01)";
 export const carThumbPlaceholderClass =
-  "relative flex h-[105px] w-[150px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-card)] text-slate-400 ring-1 ring-[var(--bm-border)]";
+  "bm-vehicle-card-media bm-vehicle-card-media--thumb text-slate-400";
 export const CAR_IMAGE_FALLBACK = "/fallback/car-placeholder.svg";

@@ -275,6 +275,72 @@
   transform: translateY(-2px);
 }
 
+/* 차량 카드 이미지 — 전역 가로 16:9 · 스튜디오 배경 통일 */
+.bm-vehicle-card-media {
+  --bm-vehicle-image-bg-top: #f6f8fb;
+  --bm-vehicle-image-bg-bottom: #e9eef4;
+  position: relative;
+  display: flex;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    var(--bm-vehicle-image-bg-top) 0%,
+    var(--bm-vehicle-image-bg-bottom) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.14);
+  padding: 0.2rem 0.35rem;
+}
+
+.bm-vehicle-card-media--thumb {
+  width: 100%;
+  max-width: 9.5rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .bm-vehicle-card-media--thumb {
+    max-width: 10.75rem;
+  }
+}
+
+.bm-card-vehicle-match .bm-card-horizontal__media {
+  min-height: 0;
+  padding: 0;
+  border-bottom: 0;
+  background: transparent;
+}
+
+.bm-card-vehicle-match .bm-card-horizontal__media .bm-vehicle-card-media {
+  height: 100%;
+  min-height: 7.75rem;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  .bm-card-vehicle-match .bm-card-horizontal__media .bm-vehicle-card-media {
+    min-height: 9.75rem;
+    border-radius: 16px 0 0 16px;
+  }
+}
+
+/* portal VehicleCard · GenerationCard — 가로 썸네일 */
+.bm-vehicle-card-row-media {
+  width: 42%;
+  max-width: 11.5rem;
+  min-width: 7.5rem;
+  flex-shrink: 0;
+}
+
+.bm-vehicle-card-row-media .bm-vehicle-card-media--thumb {
+  max-width: none;
+  width: 100%;
+}
+
 .bm-card-symptom {
   border-radius: 14px;
   border: 1px solid rgba(251, 191, 36, 0.2);

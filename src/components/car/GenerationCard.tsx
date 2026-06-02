@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { CarGeneration } from "@/data/cars/types";
 import { carGenerationHref, carGenerationImageSrc } from "@/lib/car-data";
+import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { vehicleCardShell, vehicleCardTextCol } from "./car-card-styles";
-import { CarGenerationImage } from "./CarGenerationImage";
 
 function SpecBadge({ children }: { children: string }) {
   return (
@@ -19,7 +19,9 @@ export function GenerationCard({ generation }: { generation: CarGeneration }) {
 
   return (
     <Link href={href} className={`flex items-stretch ${vehicleCardShell}`}>
-      <CarGenerationImage src={imageSrc} alt={generation.displayName} size="compact" />
+      <span className="bm-vehicle-card-row-media">
+        <VehicleCardMedia alt={generation.displayName} src={imageSrc} variant="thumb" />
+      </span>
       <div className={vehicleCardTextCol}>
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-base font-black tracking-[-0.03em] text-slate-950 group-hover:text-blue-700">

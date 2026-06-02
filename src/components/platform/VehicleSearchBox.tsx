@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppIcon } from "@/components/common/AppIcon";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
-import { CarGenerationImage } from "@/components/car/CarGenerationImage";
+import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { recordSearch, recordVehicleClick } from "@/lib/activity";
 import {
   searchVehicleAssets,
@@ -113,12 +113,12 @@ export function VehicleSearchBox({
               }}
               type="button"
             >
-              <span className="h-12 w-[72px] shrink-0 overflow-hidden rounded-lg bg-slate-50">
-                <CarGenerationImage
+              <span className="block w-[4.5rem] shrink-0">
+                <VehicleCardMedia
                   alt={asset.displayName}
-                  className="!h-12 !w-[72px]"
-                  size="compact"
+                  placeholderTitle={asset.displayName}
                   src={asset.image}
+                  variant="thumb"
                 />
               </span>
               <span className="min-w-0 flex-1">

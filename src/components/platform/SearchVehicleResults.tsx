@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { BatteryMiniThumb } from "@/components/BatteryThumbnail";
 
-import { CarGenerationImage } from "@/components/car/CarGenerationImage";
+import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 
 import { bm } from "@/lib/design-tokens";
 
@@ -70,7 +70,7 @@ export function SearchVehicleResults({
 
           <div
 
-            className={`grid gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-[var(--bm-border)] hover:bg-white hover:shadow-sm ${compact ? "md:grid-cols-[96px_1fr_auto]" : "md:grid-cols-[116px_1fr_190px]"}`}
+            className={`grid gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-[var(--bm-border)] hover:bg-white hover:shadow-sm ${compact ? "md:grid-cols-[minmax(7.5rem,10.75rem)_1fr_auto]" : "md:grid-cols-[minmax(8.5rem,11.5rem)_1fr_190px]"}`}
 
             key={`${model}-${index}`}
 
@@ -78,35 +78,19 @@ export function SearchVehicleResults({
 
             <Link className="contents" href={href}>
 
-              <span
-                className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)] ${compact ? "h-[88px] w-[96px]" : "h-[105px] w-[116px]"}`}
-              >
-
-                {imageSrc && imageSrc.trim() ? (
-
-                  <CarGenerationImage
-                    alt={model}
-                    commercial={/porter|봉고|마이티|k3|쿱|koup/i.test(model)}
-                    size="compact"
-                    src={imageSrc}
-                  />
-
-                ) : (
-
-                  <span className="flex h-full items-center justify-center bg-slate-100 text-[10px] font-black text-slate-400">{model}</span>
-
-                )}
-
+              <span className="relative block w-full max-w-[10.75rem] shrink-0">
+                <VehicleCardMedia
+                  alt={model}
+                  commercial={/porter|봉고|마이티|k3|쿱|koup/i.test(model)}
+                  placeholderTitle={model}
+                  src={imageSrc?.trim() ? imageSrc : null}
+                  variant="thumb"
+                />
                 {showBatteryThumb ? (
-
-                  <span className="absolute bottom-2 right-2 z-10">
-
-                    <BatteryMiniThumb code="AGM60L" imageSet={agm60.images} role="main" className="h-12 w-12 shadow-sm" />
-
+                  <span className="absolute bottom-1.5 right-1.5 z-10">
+                    <BatteryMiniThumb code="AGM60L" imageSet={agm60.images} role="main" className="h-10 w-10 shadow-sm" />
                   </span>
-
                 ) : null}
-
               </span>
 
               <span>

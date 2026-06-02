@@ -1,7 +1,8 @@
 "use client";
 
-import { CarGenerationImage } from "@/components/car/CarGenerationImage";
+import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { carThumbPlaceholderClass } from "@/components/car/car-card-styles";
+import { cn } from "@/lib/utils";
 
 export type VehicleBodyType = "sedan" | "suv" | "compactSuv" | "ev" | "van" | "truck";
 
@@ -44,19 +45,23 @@ export function VehicleThumbnail({
 }) {
   if (imageSrc) {
     return (
-      <CarGenerationImage
-        alt={label ?? "차량"}
-        className={className}
-        commercial={commercial}
-        size="compact"
-        src={imageSrc}
-      />
+      <span className={cn("bm-vehicle-card-row-media", className)}>
+        <VehicleCardMedia
+          alt={label ?? "차량"}
+          commercial={commercial}
+          placeholderTitle={label}
+          src={imageSrc}
+          variant="thumb"
+        />
+      </span>
     );
   }
 
   return (
-    <div className={`${carThumbPlaceholderClass} ${className}`} aria-hidden>
+    <span className={cn("bm-vehicle-card-row-media", className)} aria-hidden>
+    <div className={carThumbPlaceholderClass}>
       <Silhouette type={bodyType} />
     </div>
+    </span>
   );
 }
