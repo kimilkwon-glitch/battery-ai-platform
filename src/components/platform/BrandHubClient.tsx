@@ -17,6 +17,7 @@ import {
   BRAND_HUB_INSIGHTS,
   BRAND_HUB_LOGOS,
   BRAND_HUB_THEMES,
+  brandHubBannerLogoSrc,
   CUSTOMER_BRAND_HUB_IDS,
   countBrandHubProductsByTab,
   familyLabelForSpec,
@@ -271,6 +272,7 @@ function BrandHubBannerLogo({
 }) {
   const assets = BRAND_HUB_LOGOS[brandId];
   const [imgError, setImgError] = useState(false);
+  const logoSrc = brandHubBannerLogoSrc(brandId, theme.id);
 
   if (imgError) {
     return (
@@ -287,11 +289,11 @@ function BrandHubBannerLogo({
 
   const logo = (
     <Image
-      src={assets.src}
+      src={logoSrc}
       alt={assets.alt}
       width={assets.width}
       height={assets.height}
-      className="h-9 w-auto max-w-[min(100%,18rem)] object-contain object-left sm:h-11 md:h-12 lg:h-[3.5rem]"
+      className="h-9 w-auto max-w-[min(100%,20rem)] object-contain object-left sm:h-11 md:h-12 lg:max-h-16 lg:h-auto"
       priority
       onError={() => setImgError(true)}
     />

@@ -8,7 +8,12 @@ export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
 export type BrandHubLogoAssets = {
+  /** 배너 기본(밝은 배경용) */
   src: string;
+  /** 어두운 배너 배경용 */
+  logoLight?: string;
+  /** 밝은 배너 배경용(진한 로고) */
+  logoDark?: string;
   width: number;
   height: number;
   alt: string;
@@ -18,6 +23,8 @@ export type BrandHubLogoAssets = {
 export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
   rocket: {
     src: "/assets/brand/rocket-logo.png",
+    logoLight: "/assets/brand/rocket-logo-light.png",
+    logoDark: "/assets/brand/rocket-logo-dark.png",
     width: 574,
     height: 280,
     alt: "로케트 배터리 로고",
@@ -25,12 +32,26 @@ export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
   },
   solite: {
     src: "/assets/brand/solite-logo.png",
-    width: 921,
-    height: 280,
+    logoLight: "/assets/brand/solite-logo-light.png",
+    logoDark: "/assets/brand/solite-logo-dark.png",
+    width: 472,
+    height: 196,
     alt: "쏠라이트 배터리 로고",
     fallbackText: "쏠라이트 배터리",
   },
 };
+
+/** 배너 배경에 맞는 로고 경로 */
+export function brandHubBannerLogoSrc(
+  brandId: CustomerBrandHubId,
+  themeId: CustomerBrandHubId,
+): string {
+  const assets = BRAND_HUB_LOGOS[brandId];
+  if (themeId === "rocket") {
+    return assets.logoLight ?? assets.src;
+  }
+  return assets.logoDark ?? assets.src;
+}
 
 export type BrandHubTheme = {
   id: CustomerBrandHubId;
