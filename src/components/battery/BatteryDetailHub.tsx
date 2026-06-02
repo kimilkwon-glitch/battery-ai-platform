@@ -31,7 +31,7 @@ export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
 
   return (
     <div
-      className="space-y-8 pb-20 md:pb-6"
+      className="mx-auto w-full max-w-6xl space-y-10 pb-20 md:space-y-12 md:pb-6"
       data-battery-detail-hub={displayCode}
       data-battery-detail-build-stamp={BATTERY_DETAIL_BUILD_STAMP}
     >

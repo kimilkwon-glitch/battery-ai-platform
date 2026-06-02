@@ -1,0 +1,242 @@
+/* 상품 상세 — 하단 상세 콘텐츠 영역 */
+
+.battery-detail-content {
+  --bdc-max: 56rem;
+  --bdc-pad-x: clamp(1rem, 3vw, 1.5rem);
+  --bdc-section-gap: clamp(2.5rem, 5vw, 3.5rem);
+  --bdc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.battery-detail-content__inner {
+  margin-inline: auto;
+  max-width: var(--bdc-max);
+  padding-inline: var(--bdc-pad-x);
+}
+
+.battery-detail-content__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bdc-section-gap);
+  padding-block: clamp(1.5rem, 4vw, 2.25rem) clamp(2rem, 5vw, 3rem);
+}
+
+.battery-detail-section {
+  scroll-margin-top: 7rem;
+}
+
+.battery-detail-section__head {
+  margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--bm-border);
+}
+
+.battery-detail-section__title {
+  font-family: var(--font-section);
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--bm-text);
+}
+
+.battery-detail-section__lead {
+  margin-top: 0.5rem;
+  max-width: 42rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--bm-text-sub);
+}
+
+.battery-detail-section--hero .battery-detail-section__frame {
+  border-radius: 1.25rem;
+  border: 1px solid var(--bm-border);
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  box-shadow: var(--bm-shadow-sm);
+}
+
+.battery-detail-section--brand {
+  margin-top: 0.25rem;
+}
+
+.battery-detail-section--brand .battery-detail-section__frame {
+  margin-top: 0.5rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--bm-border);
+  background: var(--bm-surface-soft);
+  padding: clamp(1.25rem, 4vw, 2rem) clamp(1rem, 3vw, 1.75rem);
+}
+
+.battery-detail-section--cards .battery-detail-section__grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .battery-detail-section--cards .battery-detail-section__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.battery-detail-point-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--bm-border);
+  background: var(--bm-card);
+  padding: 1.25rem 1.125rem;
+  box-shadow: var(--bm-shadow-sm);
+  transition:
+    transform 0.22s var(--bdc-ease),
+    box-shadow 0.22s var(--bdc-ease),
+    border-color 0.22s var(--bdc-ease);
+}
+
+@media (hover: hover) {
+  .battery-detail-point-card:hover {
+    transform: translateY(-2px);
+    border-color: rgb(37 99 235 / 0.2);
+    box-shadow: var(--bm-shadow-md);
+  }
+}
+
+.battery-detail-point-card--emphasis {
+  border-color: rgb(37 99 235 / 0.35);
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 72%);
+  box-shadow:
+    var(--bm-shadow-sm),
+    0 0 0 1px rgb(37 99 235 / 0.12);
+}
+
+.battery-detail-point-card__title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--bm-text);
+}
+
+.battery-detail-point-card__body {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--bm-text-sub);
+}
+
+.battery-detail-section--muted {
+  border-radius: 1.25rem;
+  background: var(--bm-surface-soft);
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border: 1px solid var(--bm-border);
+}
+
+.battery-detail-section--gallery .battery-detail-section__gallery {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.battery-detail-section__figure {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgb(226 232 240 / 0.9);
+  background: #fff;
+}
+
+.battery-detail-section__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.battery-detail-tabs {
+  scroll-margin-top: 5rem;
+}
+
+.battery-detail-tabs__nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin-inline: calc(-1 * var(--bdc-pad-x));
+  padding-inline: var(--bdc-pad-x);
+  padding-block: 0.75rem 0;
+  background: linear-gradient(180deg, rgb(248 250 252 / 0.98) 70%, rgb(248 250 252 / 0));
+  backdrop-filter: blur(8px);
+}
+
+.battery-detail-tabs__rail {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border-radius: 1rem;
+  border: 1px solid var(--bm-border);
+  background: var(--bm-card);
+  padding: 0.35rem;
+  box-shadow: var(--bm-shadow-sm);
+  -webkit-overflow-scrolling: touch;
+}
+
+.battery-detail-tabs__tab {
+  position: relative;
+  flex: 1;
+  min-width: 6.5rem;
+  min-height: 2.75rem;
+  border: none;
+  border-radius: 0.65rem;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--bm-text-sub);
+  transition: color 0.2s var(--bdc-ease);
+  cursor: pointer;
+}
+
+.battery-detail-tabs__tab:hover {
+  color: var(--bm-primary);
+}
+
+.battery-detail-tabs__tab[aria-selected="true"] {
+  color: var(--bm-primary);
+}
+
+.battery-detail-tabs__indicator {
+  position: absolute;
+  inset: auto 0.5rem 0.35rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--bm-primary);
+}
+
+.battery-detail-tabs__panel {
+  scroll-margin-top: 7.5rem;
+  padding-top: 0.5rem;
+}
+
+.battery-detail-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.battery-detail-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.4s var(--bdc-ease),
+    transform 0.4s var(--bdc-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .battery-detail-point-card {
+    transition: none;
+  }
+  .battery-detail-point-card:hover {
+    transform: none;
+  }
+  .battery-detail-reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .battery-detail-reveal.is-visible {
+    transition: none;
+  }
+}
