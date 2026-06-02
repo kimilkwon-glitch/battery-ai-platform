@@ -41,14 +41,16 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
       className="battery-product-detail scroll-mt-24"
       data-battery-product={code}
     >
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-8">
-        <BatteryGallery
-          code={code}
-          imageSet={imageSet}
-          minHeightClass="min-h-[260px] sm:min-h-[300px] lg:min-h-[360px]"
-        />
+      <div className="battery-product-detail__grid">
+        <div className="battery-product-detail__gallery">
+          <BatteryGallery
+            code={code}
+            imageSet={imageSet}
+            minHeightClass="battery-product-detail__gallery-main"
+          />
+        </div>
 
-        <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="battery-product-detail__info relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="absolute right-4 top-4">
             <BatteryWishlistButton code={code} />
           </div>

@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import {
   batteryDetailBodySectionsForCode,
   type DetailBodySection,
@@ -17,15 +15,17 @@ type Props = {
   brand?: string;
 };
 
-const revealEase = [0.22, 1, 0.36, 1] as const;
-
 export function BatteryDetailBodyImages({ code, brandId, manufacturer, brand }: Props) {
-  const sections = batteryDetailBodySectionsForCode(code, { brandId, manufacturer, brand });
+  const sections = batteryDetailBodySectionsForCode(code, { brandId, manufacturer, brand }).filter(
+    (section) => (section.images?.length ?? 0) > 0 || (section.cards?.length ?? 0) > 0,
+  );
+
+  if (sections.length === 0) return null;
 
   return (
     <div className="battery-detail-content__sections" aria-label="상품 상세 안내" data-battery-detail-body-content={code}>
-      {sections.map((section, index) => (
-        <DetailSectionBlock key={section.id} section={section} index={index} productCode={code} />
+      {sections.map((section) => (
+        <DetailSectionBlock key={section.id} section={section} productCode={code} />
       ))}
     </div>
   );
@@ -33,84 +33,28 @@ export function BatteryDetailBodyImages({ code, brandId, manufacturer, brand }: 
 
 function DetailSectionBlock({
   section,
-  index,
   productCode,
 }: {
   section: DetailBodySection;
-  index: number;
   productCode: string;
 }) {
-  const reduceMotion = useReducedMotion();
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(Boolean(reduceMotion));
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [reduceMotion]);
-
   const variantClass = variantClassName(section.variant);
-  const motionProps = reduceMotion
-    ? {}
-    : {
-        initial: { opacity: 0, y: 16 },
-        animate: visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 },
-        transition: { duration: 0.38, delay: Math.min(index * 0.06, 0.24), ease: revealEase },
-      };
-
-  if (reduceMotion) {
-    return (
-      <section
-        ref={ref}
-        id={`battery-detail-section-${section.id}`}
-        className={`battery-detail-section battery-detail-reveal is-visible ${variantClass}`}
-        data-detail-section={section.id}
-      >
-        <SectionBody section={section} productCode={productCode} reduceMotion />
-      </section>
-    );
-  }
+  const showHead = Boolean(section.title && (section.lead || section.variant !== "gallery"));
 
   return (
-    <motion.section
-      ref={ref}
+    <section
       id={`battery-detail-section-${section.id}`}
-      className={`battery-detail-section battery-detail-reveal ${variantClass} ${visible ? "is-visible" : ""}`}
+      className={`battery-detail-section ${variantClass}`}
       data-detail-section={section.id}
-      {...motionProps}
     >
-      <SectionBody section={section} productCode={productCode} reduceMotion={reduceMotion} />
-    </motion.section>
-  );
-}
-
-function SectionBody({
-  section,
-  productCode,
-  reduceMotion,
-}: {
-  section: DetailBodySection;
-  productCode: string;
-  reduceMotion: boolean | null;
-}) {
-  return (
-    <>
-      <header className="battery-detail-section__head">
-        <h3 className="battery-detail-section__title">{section.title}</h3>
-        {section.lead ? <p className="battery-detail-section__lead">{section.lead}</p> : null}
-      </header>
+      {showHead ? (
+        <header className="battery-detail-section__head">
+          <h3 className="battery-detail-section__title">{section.title}</h3>
+          {section.lead ? <p className="battery-detail-section__lead">{section.lead}</p> : null}
+        </header>
+      ) : section.title ? (
+        <h3 className="battery-detail-section__title battery-detail-section__title--compact">{section.title}</h3>
+      ) : null}
 
       {section.cards?.length ? (
         <div className="battery-detail-section__grid">
@@ -128,18 +72,12 @@ function SectionBody({
               : "battery-detail-section__frame"
           }
         >
-          {section.images.map((img, imgIndex) => (
-            <DetailImageFigure
-              key={img.src}
-              item={img}
-              productCode={productCode}
-              delayIndex={imgIndex}
-              reduceMotion={reduceMotion}
-            />
+          {section.images.map((img) => (
+            <DetailImageFigure key={img.src} item={img} productCode={productCode} />
           ))}
         </div>
       ) : null}
-    </>
+    </section>
   );
 }
 
@@ -173,15 +111,11 @@ function PointCard({ card }: { card: DetailPointCard }) {
 function DetailImageFigure({
   item,
   productCode,
-  delayIndex,
-  reduceMotion,
 }: {
   item: BatteryDetailBodyImage;
   productCode: string;
-  delayIndex: number;
-  reduceMotion: boolean | null;
 }) {
-  const inner = (
+  return (
     <figure className="battery-detail-section__figure m-0">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -193,18 +127,5 @@ function DetailImageFigure({
         data-product-code={productCode}
       />
     </figure>
-  );
-
-  if (reduceMotion) return inner;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -6% 0px" }}
-      transition={{ duration: 0.34, delay: delayIndex * 0.05, ease: revealEase }}
-    >
-      {inner}
-    </motion.div>
   );
 }
