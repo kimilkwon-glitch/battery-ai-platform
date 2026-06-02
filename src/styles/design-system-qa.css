@@ -382,7 +382,7 @@
     0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
-/* —— 브랜드 안내 — 배너 로고(제목) 크기·명패 —— */
+/* —— 브랜드 안내 — 배너 로고(제목)·명패(브랜드 톤 배경) —— */
 .brand-hub-logo-badge {
   isolation: isolate;
   display: block;
@@ -397,7 +397,63 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 0.375rem 0.5rem;
+  padding: 0.3125rem 0.4375rem;
+  border-radius: 0.875rem;
+}
+
+/* 로케트 — warm neutral + subtle red (다크 배너와 연결) */
+.brand-hub-logo-glass--rocket {
+  background: linear-gradient(
+    165deg,
+    rgba(255, 252, 250, 0.96) 0%,
+    rgba(248, 250, 252, 0.92) 52%,
+    rgba(243, 240, 236, 0.9) 100%
+  );
+  border: 1px solid rgba(252, 165, 165, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 10px 32px -14px rgba(229, 57, 53, 0.28),
+    0 4px 14px -6px rgba(15, 23, 42, 0.35);
+}
+
+.brand-hub-logo-glass--rocket .brand-hub-logo-image-surface {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(252, 248, 245, 0.96) 100%
+  );
+}
+
+/* 쏠라이트 — cool blue-gray (다크 블루 배너와 연결) */
+.brand-hub-logo-glass--solite {
+  background: linear-gradient(
+    165deg,
+    rgba(241, 245, 249, 0.96) 0%,
+    rgba(232, 240, 248, 0.92) 50%,
+    rgba(226, 232, 240, 0.9) 100%
+  );
+  border: 1px solid rgba(147, 197, 253, 0.32);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset,
+    0 10px 32px -14px rgba(37, 99, 235, 0.26),
+    0 4px 14px -6px rgba(15, 23, 42, 0.32);
+}
+
+.brand-hub-logo-glass--solite .brand-hub-logo-image-surface {
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0.98) 0%,
+    rgba(237, 245, 252, 0.96) 100%
+  );
+}
+
+.brand-hub-logo-image-surface {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  padding: 0.125rem 0.25rem;
 }
 
 .brand-hub-logo-image {
@@ -405,7 +461,7 @@
   width: auto;
   max-width: 100%;
   height: auto;
-  max-height: 3rem;
+  max-height: 3.25rem;
   margin-inline: auto;
   object-fit: contain;
   object-position: center;
@@ -422,49 +478,34 @@
 @media (min-width: 640px) {
   .brand-hub-logo-badge {
     width: auto;
-    max-width: min(100%, 22rem);
+    max-width: min(100%, 24rem);
   }
 
   .brand-hub-logo-glass {
     width: auto;
-    min-width: 17rem;
-    padding: 0.5rem 0.625rem;
+    min-width: 18rem;
+    padding: 0.4375rem 0.5625rem;
   }
 
   .brand-hub-logo-image {
-    max-height: 3.75rem;
+    max-height: 4rem;
   }
 }
 
 @media (min-width: 768px) {
   .brand-hub-logo-image {
-    max-height: 4.25rem;
+    max-height: 4.75rem;
   }
 }
 
 @media (min-width: 1024px) {
   .brand-hub-logo-badge {
-    max-width: min(100%, 30rem);
-  }
-
-  .brand-hub-logo-glass {
-    min-width: 20rem;
-    padding: 0.625rem 0.875rem;
-  }
-
-  .brand-hub-logo-image {
-    max-height: 5rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .brand-hub-logo-badge {
-    max-width: min(100%, 34rem);
+    max-width: min(100%, 32rem);
   }
 
   .brand-hub-logo-glass {
     min-width: 22rem;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
   }
 
   .brand-hub-logo-image {
@@ -472,48 +513,95 @@
   }
 }
 
-/* 쏠라이트 — 긴 가로형 로고 비율 */
-.brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
+@media (min-width: 1280px) {
+  .brand-hub-logo-badge {
+    max-width: min(100%, 36rem);
+  }
+
+  .brand-hub-logo-glass {
+    min-width: 24rem;
+    padding: 0.5625rem 0.875rem;
+  }
+
+  .brand-hub-logo-image {
+    max-height: 6rem;
+  }
+}
+
+/* 쏠라이트 — 긴 가로형 로고 */
+.brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
+.brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
   max-width: 100%;
 }
 
 @media (min-width: 640px) {
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
-    max-width: min(100%, 28rem);
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
+  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 30rem);
   }
 
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass {
-    min-width: 19rem;
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass,
+  .brand-hub-logo-glass--solite {
+    min-width: 20rem;
   }
 }
 
 @media (min-width: 1024px) {
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
-    max-width: min(100%, 36rem);
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
+  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 38rem);
   }
 
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass {
-    min-width: 26rem;
-    padding-inline: 0.75rem;
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass,
+  .brand-hub-logo-glass--solite {
+    min-width: 28rem;
+    padding-inline: 0.625rem;
   }
 
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image {
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image,
+  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] .brand-hub-logo-image {
     width: 100%;
-    min-width: 18rem;
+    min-width: 19rem;
   }
 }
 
 @media (min-width: 1280px) {
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge {
-    max-width: min(100%, 40rem);
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
+  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 42rem);
   }
 
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass {
-    min-width: 28rem;
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass,
+  .brand-hub-logo-glass--solite {
+    min-width: 30rem;
   }
 
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image {
-    min-width: 20rem;
+  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image,
+  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] .brand-hub-logo-image {
+    min-width: 22rem;
+  }
+}
+
+/* 로케트 가로폭 */
+@media (min-width: 1024px) {
+  .brand-hub[data-brand-hub-active="rocket"] .brand-hub-logo-badge,
+  .brand-hub-logo-badge[data-brand-logo-plaque="rocket"] {
+    max-width: min(100%, 34rem);
+  }
+
+  .brand-hub-logo-glass--rocket {
+    min-width: 23rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .brand-hub[data-brand-hub-active="rocket"] .brand-hub-logo-badge,
+  .brand-hub-logo-badge[data-brand-logo-plaque="rocket"] {
+    max-width: min(100%, 38rem);
+  }
+
+  .brand-hub-logo-glass--rocket {
+    min-width: 26rem;
   }
 }
 

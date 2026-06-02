@@ -293,15 +293,17 @@ function BrandHubBannerLogo({
       width={assets.width}
       height={assets.height}
       className="brand-hub-logo-image"
-      sizes="(max-width: 639px) 100vw, (max-width: 1023px) 20rem, 32rem"
+      sizes="(max-width: 639px) 100vw, (max-width: 1023px) 22rem, 36rem"
       priority
       onError={() => setImgError(true)}
     />
   );
 
   return (
-    <div className="brand-hub-logo-badge shrink-0">
-      <div className={theme.logoGlass}>{logo}</div>
+    <div className="brand-hub-logo-badge shrink-0" data-brand-logo-plaque={brandId}>
+      <div className={theme.logoGlass}>
+        <div className="brand-hub-logo-image-surface">{logo}</div>
+      </div>
     </div>
   );
 }
