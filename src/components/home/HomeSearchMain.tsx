@@ -11,7 +11,7 @@ export function HomeSearchMain() {
     <main className="min-h-screen bg-white text-[var(--bm-text)]" data-page="home-search-main">
       <PortalHeader showSearch={false} />
 
-      <div className="home-main-hero-region mx-auto w-full max-w-[1320px] px-4 pb-1 pt-5 sm:px-6 sm:pb-2 sm:pt-6 lg:pt-8">
+      <div className="home-main-hero-region mx-auto w-full max-w-[1320px] px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-6 lg:pb-10 lg:pt-8">
         <div className="home-hero-stack" data-home-section="hero-top">
           <div className="home-hero-stack__banner">
             <HomeMainBanner />

@@ -13,7 +13,7 @@ export function HomeMainHero() {
       </div>
 
       <div className="home-main-hero-chips">
-        <p className="home-main-hero-chips__label text-[11px] font-bold text-slate-400">검색 예시</p>
+        <p className="home-main-hero-chips__label">검색 예시</p>
         <div className="home-search-example-chips">
           {HOME_MAIN_SEARCH_EXAMPLES.map((ex) => (
             <Link
