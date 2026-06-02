@@ -196,6 +196,8 @@ export function BusanRegionMap({
   const mapCanvasRef = useRef<HTMLDivElement>(null);
   const tooltipRafRef = useRef<number | null>(null);
   const pendingTooltipRef = useRef<MapTooltip | null>(null);
+  /** 클릭 직후 focus가 hover 말풍선을 다시 띄우지 않도록 (state 배치 전 동기 차단) */
+  const clickPopoverGuRef = useRef<string | null>(null);
   const [collection, setCollection] = useState<FeatureCollection<Geometry, BusanHangjeongProps> | null>(
     null,
   );
@@ -298,7 +300,7 @@ export function BusanRegionMap({
   const hasSearch = Boolean(searchQuery?.trim());
 
   const showTooltip = (gu: GuUnit, clientX: number, clientY: number, matchedDong?: string) => {
-    if (clickPopover?.gu === gu.gu) return;
+    if (clickPopoverGuRef.current === gu.gu) return;
     const el = mapCanvasRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -339,6 +341,7 @@ export function BusanRegionMap({
   };
 
   const handleGuClick = (gu: GuUnit) => {
+    clickPopoverGuRef.current = gu.gu;
     const matchedDong = gu.dongs.find((d) => dongMatchesSearch(d, searchQuery ?? null))?.label;
     const selection: SelectedGu = {
       gu: gu.gu,
@@ -412,7 +415,10 @@ export function BusanRegionMap({
                     onMouseEnter={(e) => handleGuEnter(gu, e.clientX, e.clientY)}
                     onMouseMove={(e) => showTooltip(gu, e.clientX, e.clientY, searchResolved?.matchedDong)}
                     onMouseLeave={handleGuLeave}
-                    onClick={() => handleGuClick(gu)}
+                    onClick={(e) => {
+                      handleGuClick(gu);
+                      (e.currentTarget as SVGGElement).blur();
+                    }}
                     onFocus={(e) => {
                       const rect = (e.currentTarget as SVGGElement).getBoundingClientRect();
                       handleGuEnter(gu, rect.left + rect.width / 2, rect.top + rect.height / 2);
