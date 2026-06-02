@@ -91,10 +91,6 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
   if (!input.vehicle?.displayName) {
     warnings.push("차량 정보가 없습니다. 호환 여부를 다시 확인해 주세요.");
   }
-  if (usedOption === "undecided") {
-    warnings.push("폐전지 반납 여부를 선택해 주세요.");
-  }
-
   const priceImpact =
     usedOption === "return" ? -10000 : usedOption === "no_return" ? 10000 : undefined;
 

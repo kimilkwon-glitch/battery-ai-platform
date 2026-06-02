@@ -32,12 +32,13 @@ import {
   CHECKOUT_PAGE,
   ORDER_REQUEST_COMPLETE_PAGE,
 } from "@/lib/customer-center-routes";
+import {
+  initialUsedBatteryFromCart,
+  isUsedBatterySelected,
+  type UsedBatteryFormSelection,
+} from "@/lib/order-request/order-request-form-helpers";
 import type { OrderRequestConfirmations } from "@/types/order-request";
-import type {
-  OrderRequestFulfillment,
-  OrderRequestUsedBatteryOption,
-  OrderRequestVehicle,
-} from "@/types/order-request";
+import type { OrderRequestFulfillment, OrderRequestVehicle } from "@/types/order-request";
 import { bm } from "@/lib/design-tokens";
 
 function phoneValid(phone: string): boolean {
@@ -59,16 +60,6 @@ function initialVehicleFromCart(
   };
 }
 
-function initialUsedBatteryFromCart(
-  items: ReturnType<typeof useBatteryCart>["items"],
-): OrderRequestUsedBatteryOption {
-  const opts = items.map((i) => i.usedBatteryReturn.option);
-  if (opts.every((o) => o === "no_return")) return "no_return";
-  if (opts.every((o) => o === "return")) return "return";
-  if (opts.some((o) => o === "undecided")) return "unknown";
-  return "unknown";
-}
-
 export function OrderRequestForm() {
   const router = useRouter();
   const { items, hydrated } = useBatteryCart();
@@ -80,7 +71,7 @@ export function OrderRequestForm() {
     orderMemo: "",
   });
   const [vehicle, setVehicle] = useState<OrderRequestVehicle>({});
-  const [usedBattery, setUsedBattery] = useState<OrderRequestUsedBatteryOption>("unknown");
+  const [usedBattery, setUsedBattery] = useState<UsedBatteryFormSelection>(null);
   const [fulfillment, setFulfillment] = useState<OrderRequestFulfillment>({
     method: "undecided",
     storeId: "undecided",
@@ -99,16 +90,7 @@ export function OrderRequestForm() {
   useEffect(() => {
     if (!hydrated || items.length === 0) return;
     setVehicle((prev) => (prev.name ? prev : initialVehicleFromCart(items)));
-    setUsedBattery((prev) =>
-      prev !== "unknown" ? prev : initialUsedBatteryFromCart(items),
-    );
-    const cartFulfillment = items[0]?.fulfillment;
-    if (cartFulfillment && cartFulfillment.method !== "undecided") {
-      setFulfillment({
-        method: cartFulfillment.method,
-        storeId: cartFulfillment.storeId ?? "undecided",
-      });
-    }
+    setUsedBattery((prev) => (prev != null ? prev : initialUsedBatteryFromCart(items)));
   }, [hydrated, items]);
 
   const allConfirmationsChecked = useMemo(
@@ -119,6 +101,7 @@ export function OrderRequestForm() {
   const canSubmit =
     customer.name.trim().length > 0 &&
     phoneValid(customer.phone) &&
+    isUsedBatterySelected(usedBattery) &&
     allConfirmationsChecked &&
     !submitting;
 
@@ -130,9 +113,10 @@ export function OrderRequestForm() {
     e.preventDefault();
     setSubmitError(null);
     if (!canSubmit) {
-      setSubmitError("이름, 연락처, 필수 확인 항목을 모두 입력·체크해 주세요.");
+      setSubmitError("이름, 연락처, 폐전지 반납 여부, 필수 확인 항목을 확인해 주세요.");
       return;
     }
+    const usedBatteryOption = usedBattery;
     setSubmitting(true);
     const now = new Date().toISOString();
     const staffSummary = buildStaffSummary({
@@ -140,7 +124,7 @@ export function OrderRequestForm() {
       customerName: customer.name.trim(),
       customerPhone: customer.phone.trim(),
       vehicle,
-      usedBatteryReturnOption: usedBattery,
+      usedBatteryReturnOption: usedBatteryOption,
       fulfillment,
       memo: [memo, customer.orderMemo].filter(Boolean).join("\n"),
     });
@@ -155,7 +139,7 @@ export function OrderRequestForm() {
         orderMemo: customer.orderMemo.trim() || undefined,
       },
       vehicle: Object.keys(vehicle).length ? vehicle : undefined,
-      usedBatteryReturnOption: usedBattery,
+      usedBatteryReturnOption: usedBatteryOption,
       fulfillment,
       memo: memo.trim() || undefined,
       confirmations,
@@ -171,7 +155,7 @@ export function OrderRequestForm() {
       customerEmail: customer.email.trim() || undefined,
       customerOrderMemo: customer.orderMemo.trim() || undefined,
       vehicle: Object.keys(vehicle).length ? vehicle : undefined,
-      usedBatteryReturnOption: usedBattery,
+      usedBatteryReturnOption: usedBatteryOption,
       fulfillment,
       items,
       memo: memo.trim() || undefined,

@@ -172,8 +172,6 @@ export function itemNeedsReview(item: BatteryCartItem): boolean {
     item.fitmentStatus !== "confirmed" ||
     item.terminalDirection === "unknown" ||
     !item.terminalDirection ||
-    item.usedBatteryReturn.option === "undecided" ||
-    item.fulfillment.method === "undecided" ||
     !item.vehicle?.displayName
   );
 }

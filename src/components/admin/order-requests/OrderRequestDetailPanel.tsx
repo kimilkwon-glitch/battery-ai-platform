@@ -18,9 +18,9 @@ import type {
 import { bm } from "@/lib/design-tokens";
 
 const USED_BATTERY_FORM = {
-  return: "폐전지 반납 예정",
-  no_return: "폐전지 미반납",
-  unknown: "아직 모르겠음",
+  return: "반납",
+  no_return: "미반납",
+  unknown: "상담 시 확인",
 } as const;
 
 const WORKFLOW_OPTIONS = (

@@ -33,6 +33,11 @@ export function validateCreateOrderRequestInput(
     errors.push("장바구니 상품이 1개 이상 필요합니다.");
   }
 
+  const usedBattery = b.usedBatteryReturnOption;
+  if (usedBattery !== "return" && usedBattery !== "no_return") {
+    errors.push("폐전지 반납 여부를 선택해 주세요.");
+  }
+
   const confirmations = b.confirmations as Record<string, boolean> | undefined;
   if (!confirmations) {
     errors.push("필수 확인 항목이 누락되었습니다.");

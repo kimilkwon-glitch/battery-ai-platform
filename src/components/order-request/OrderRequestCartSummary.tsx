@@ -43,8 +43,14 @@ export function OrderRequestCartSummary({ items }: { items: BatteryCartItem[] })
         {items.map((item) => {
           const needsReview = checkoutItemNeedsReview(item);
           const fit = FITMENT_STATUS_LABELS[item.fitmentStatus];
-          const ub = USED_BATTERY_RETURN_LABELS[item.usedBatteryReturn.option];
-          const fulfillment = FULFILLMENT_METHOD_LABELS[item.fulfillment.method];
+          const ub =
+            item.usedBatteryReturn.option === "undecided"
+              ? null
+              : USED_BATTERY_RETURN_LABELS[item.usedBatteryReturn.option];
+          const fulfillment =
+            item.fulfillment.method === "undecided"
+              ? null
+              : FULFILLMENT_METHOD_LABELS[item.fulfillment.method];
 
           return (
             <article
@@ -72,14 +78,18 @@ export function OrderRequestCartSummary({ items }: { items: BatteryCartItem[] })
                   <span className="font-bold text-slate-500">차량 </span>
                   {formatCheckoutVehicle(item)}
                 </div>
-                <div>
-                  <span className="font-bold text-slate-500">폐전지 </span>
-                  {ub.short}
-                </div>
-                <div>
-                  <span className="font-bold text-slate-500">수령 </span>
-                  {fulfillment}
-                </div>
+                {ub ? (
+                  <div>
+                    <span className="font-bold text-slate-500">폐전지 </span>
+                    {ub.short}
+                  </div>
+                ) : null}
+                {fulfillment ? (
+                  <div>
+                    <span className="font-bold text-slate-500">수령 </span>
+                    {fulfillment}
+                  </div>
+                ) : null}
               </dl>
               <div className="flex flex-wrap gap-1.5">
                 <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-slate-700 ring-1 ring-slate-200">

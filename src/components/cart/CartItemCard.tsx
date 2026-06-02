@@ -1,18 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
-import {
-  FITMENT_STATUS_LABELS,
-  FULFILLMENT_METHOD_LABELS,
-  USED_BATTERY_RETURN_CARD_MESSAGES,
-} from "@/data/cart-flow-guide";
-import { CUSTOMER_CENTER_USED_BATTERY } from "@/lib/customer-center-routes";
-import type {
-  BatteryCartItem,
-  FulfillmentMethod,
-  UsedBatteryReturnOption,
-} from "@/types/cart";
+import { FITMENT_STATUS_LABELS } from "@/data/cart-flow-guide";
+import type { BatteryCartItem } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
 
@@ -45,26 +35,6 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
       return;
     }
     updateItem(item.id, { quantity: qty });
-  };
-
-  const setUsedBattery = (option: UsedBatteryReturnOption) => {
-    const priceImpact =
-      option === "return" ? -10000 : option === "no_return" ? 10000 : undefined;
-    const base = item.basePrice;
-    updateItem(item.id, {
-      usedBatteryReturn: {
-        ...item.usedBatteryReturn,
-        option,
-        priceImpact,
-        guideRequired: option !== "no_return",
-      },
-      finalPrice: base != null && priceImpact != null ? base + priceImpact : item.finalPrice,
-      warnings: item.warnings.filter((w) => !w.includes("폐전지 반납")),
-    });
-  };
-
-  const setFulfillment = (method: FulfillmentMethod) => {
-    updateItem(item.id, { fulfillment: { ...item.fulfillment, method } });
   };
 
   return (
@@ -126,61 +96,6 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
             </ul>
           ) : null}
         </div>
-      </div>
-
-      <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-3 space-y-2">
-        <p className="text-xs font-black text-slate-900">폐전지 반납 여부</p>
-        <p className="text-[11px] font-medium text-slate-600">
-          {USED_BATTERY_RETURN_CARD_MESSAGES[item.usedBatteryReturn.option]}
-        </p>
-        <div className="flex flex-wrap gap-1.5">
-          {(
-            [
-              ["return", "반납"],
-              ["no_return", "미반납"],
-              ["undecided", "미선택"],
-            ] as const
-          ).map(([opt, label]) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => setUsedBattery(opt)}
-              className={`rounded-lg px-2.5 py-1.5 text-[11px] font-black ${
-                item.usedBatteryReturn.option === opt
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-slate-700 ring-1 ring-slate-200"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <Link
-          href={CUSTOMER_CENTER_USED_BATTERY}
-          className="text-[10px] font-bold text-blue-700 hover:underline"
-        >
-          폐전지 반납 안내 보기 →
-        </Link>
-      </div>
-
-      <div className="rounded-xl border border-slate-200 p-3">
-        <label className="text-xs font-black text-slate-900" htmlFor={`fulfillment-${item.id}`}>
-          수령 방식
-        </label>
-        <select
-          id={`fulfillment-${item.id}`}
-          className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-bold text-slate-800"
-          value={item.fulfillment.method}
-          onChange={(e) => setFulfillment(e.target.value as FulfillmentMethod)}
-        >
-          {(
-            Object.entries(FULFILLMENT_METHOD_LABELS) as [FulfillmentMethod, string][]
-          ).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">

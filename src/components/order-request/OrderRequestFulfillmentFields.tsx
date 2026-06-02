@@ -1,16 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { ORDER_REQUEST_FULFILLMENT_COPY, ORDER_REQUEST_USED_BATTERY_COPY } from "@/data/order-request-copy";
 import type { OrderRequestFulfillment, OrderRequestUsedBatteryOption } from "@/types/order-request";
+import type { UsedBatteryFormSelection } from "@/lib/order-request/order-request-form-helpers";
 import { bm } from "@/lib/design-tokens";
 
 export function OrderRequestUsedBatteryFields({
   value,
   onChange,
-  compact = false,
 }: {
-  value: OrderRequestUsedBatteryOption;
+  value: UsedBatteryFormSelection;
   onChange: (v: OrderRequestUsedBatteryOption) => void;
   compact?: boolean;
 }) {
@@ -19,16 +18,14 @@ export function OrderRequestUsedBatteryFields({
       <h2 className="text-sm font-black text-slate-900">
         {ORDER_REQUEST_USED_BATTERY_COPY.sectionTitle}
       </h2>
-      <p className="text-xs font-medium text-slate-600">
-        {compact ? "반납 여부에 따라 금액이 달라질 수 있습니다." : ORDER_REQUEST_USED_BATTERY_COPY.hint}
-      </p>
+      <p className="text-xs font-medium text-slate-600">{ORDER_REQUEST_USED_BATTERY_COPY.hint}</p>
       <div className="flex flex-wrap gap-2">
         {ORDER_REQUEST_USED_BATTERY_COPY.options.map((opt) => (
           <button
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`rounded-xl px-3 py-2 text-xs font-black ${
+            className={`rounded-xl px-4 py-2.5 text-xs font-black ${
               value === opt.value
                 ? "bg-blue-600 text-white"
                 : "bg-white text-slate-700 ring-1 ring-slate-200"
@@ -38,14 +35,6 @@ export function OrderRequestUsedBatteryFields({
           </button>
         ))}
       </div>
-      {!compact ? (
-        <Link
-          href={ORDER_REQUEST_USED_BATTERY_COPY.href}
-          className="text-[11px] font-bold text-blue-700 hover:underline"
-        >
-          {ORDER_REQUEST_USED_BATTERY_COPY.linkLabel} →
-        </Link>
-      ) : null}
     </section>
   );
 }
@@ -62,17 +51,28 @@ export function OrderRequestFulfillmentFields({
   const showStore = values.method === "store_pickup";
   const showVisit = values.method === "visit_install";
 
+  const selectMethod = (method: OrderRequestFulfillment["method"]) => {
+    const patch: Partial<OrderRequestFulfillment> = { method };
+    if (method === "store_pickup" && (!values.storeId || values.storeId === "undecided")) {
+      patch.storeId = "deokcheon";
+    }
+    onChange(patch);
+  };
+
   return (
     <section className={`${bm.card} ${bm.cardPad} space-y-3`} id="order-request-fulfillment">
       <h2 className="text-sm font-black text-slate-900">
-        {compact ? "수령 방식" : ORDER_REQUEST_FULFILLMENT_COPY.sectionTitle}
+        {ORDER_REQUEST_FULFILLMENT_COPY.sectionTitle}
       </h2>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <p className="text-xs font-medium text-slate-600">
+        {ORDER_REQUEST_FULFILLMENT_COPY.sectionHint}
+      </p>
+      <div className="grid gap-2 sm:grid-cols-3">
         {ORDER_REQUEST_FULFILLMENT_COPY.methods.map((m) => (
           <button
             key={m.value}
             type="button"
-            onClick={() => onChange({ method: m.value })}
+            onClick={() => selectMethod(m.value)}
             className={`rounded-xl px-3 py-2.5 text-left text-xs font-black ${
               values.method === m.value
                 ? "bg-blue-600 text-white"
@@ -86,7 +86,7 @@ export function OrderRequestFulfillmentFields({
 
       {showStore ? (
         <div className="space-y-2 rounded-xl border border-slate-200 p-3">
-          <p className="text-xs font-black text-slate-800">매장 선택</p>
+          <p className="text-xs font-black text-slate-800">매장</p>
           <div className="flex flex-wrap gap-2">
             {ORDER_REQUEST_FULFILLMENT_COPY.stores.map((s) => (
               <button
@@ -108,18 +108,9 @@ export function OrderRequestFulfillmentFields({
 
       {showVisit ? (
         <div className="space-y-3 rounded-xl border border-violet-100 bg-violet-50/30 p-3">
-          {!compact ? (
-            <>
-              <p className="text-xs font-medium text-violet-900">
-                {ORDER_REQUEST_FULFILLMENT_COPY.visitHint}
-              </p>
-              <p className="text-[11px] font-bold text-violet-800">
-                {ORDER_REQUEST_FULFILLMENT_COPY.visitAvailabilityNote}
-              </p>
-            </>
-          ) : (
-            <p className="text-[11px] font-medium text-violet-900">출장 가능 여부는 상담 후 안내됩니다.</p>
-          )}
+          <p className="text-[11px] font-medium text-violet-900">
+            {ORDER_REQUEST_FULFILLMENT_COPY.visitHint}
+          </p>
           <label className="block">
             <span className="text-xs font-black text-slate-800">지역</span>
             <input
@@ -130,16 +121,18 @@ export function OrderRequestFulfillmentFields({
               placeholder="예: 부산 북구"
             />
           </label>
-          <label className="block">
-            <span className="text-xs font-black text-slate-800">희망 날짜/시간</span>
-            <input
-              type="text"
-              className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium"
-              value={values.preferredTime ?? ""}
-              onChange={(e) => onChange({ preferredTime: e.target.value })}
-              placeholder="예: 주말 오전"
-            />
-          </label>
+          {!compact ? (
+            <label className="block">
+              <span className="text-xs font-black text-slate-800">희망 날짜/시간</span>
+              <input
+                type="text"
+                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium"
+                value={values.preferredTime ?? ""}
+                onChange={(e) => onChange({ preferredTime: e.target.value })}
+                placeholder="예: 주말 오전"
+              />
+            </label>
+          ) : null}
         </div>
       ) : null}
     </section>

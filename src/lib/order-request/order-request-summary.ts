@@ -9,16 +9,16 @@ import type {
 } from "@/types/order-request";
 
 const USED_BATTERY_LABELS: Record<OrderRequestUsedBatteryOption, string> = {
-  return: "폐전지 반납 예정",
-  no_return: "폐전지 미반납",
-  unknown: "폐전지 반납 여부 미정",
+  return: "반납",
+  no_return: "미반납",
+  unknown: "상담 시 확인",
 };
 
 const FULFILLMENT_LABELS: Record<OrderRequestFulfillment["method"], string> = {
-  delivery: "택배 수령",
-  store_pickup: "매장 방문 수령",
-  visit_install: "출장 교체 상담",
-  undecided: "수령 방식 미정",
+  delivery: "택배수령",
+  store_pickup: "매장방문",
+  visit_install: "출장상담",
+  undecided: "상담 시 정리",
 };
 
 const STORE_LABELS = {
@@ -80,7 +80,7 @@ export function buildStaffSummary(params: {
     }
   }
   if (params.usedBatteryReturnOption === "unknown") {
-    reviewFlags.push("폐전지 반납 여부 미정");
+    reviewFlags.push("폐전지 반납 — 상담 시 확인");
   }
   if (params.fulfillment.method === "visit_install" && !params.fulfillment.region?.trim()) {
     reviewFlags.push("출장 가능 지역 확인 필요");

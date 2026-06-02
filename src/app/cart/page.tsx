@@ -7,7 +7,7 @@ export default function CartPage() {
       zone="support"
       pageLabel="장바구니"
       title="장바구니"
-      description="주문 전 차량·규격·폐전지 반납 여부를 확인하세요."
+      description="담긴 상품과 수량·금액을 확인한 뒤 주문을 진행하세요."
       searchPlaceholder="차량·규격 검색"
     >
       <div className="mx-auto max-w-2xl">

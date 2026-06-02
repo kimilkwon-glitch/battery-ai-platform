@@ -19,9 +19,9 @@ import type { OrderRequest } from "@/types/order-request";
 import { bm } from "@/lib/design-tokens";
 
 const USED_BATTERY_DISPLAY = {
-  return: "폐전지 반납 예정",
-  no_return: "폐전지 미반납",
-  unknown: "아직 모르겠음",
+  return: "반납",
+  no_return: "미반납",
+  unknown: "상담 시 확인",
 } as const;
 
 export function OrderRequestCompleteClient() {

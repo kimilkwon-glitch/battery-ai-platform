@@ -18,9 +18,9 @@ const STORE_LABELS: Record<Exclude<OrderRequestStoreId, "undecided">, string> = 
 };
 
 const USED_BATTERY_LABELS: Record<OrderRequestUsedBatteryOption, string> = {
-  return: "폐전지 반납 예정",
-  no_return: "폐전지 미반납",
-  unknown: "아직 미정",
+  return: "반납",
+  no_return: "미반납",
+  unknown: "상담 시 확인",
 };
 
 export function normalizePhoneDigits(phone: string): string {

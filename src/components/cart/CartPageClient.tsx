@@ -47,7 +47,7 @@ export function CartPageClient() {
       <section className={`${bm.card} ${bm.cardPad} border-blue-100/80 bg-gradient-to-br from-white to-blue-50/20`}>
         <h1 className="text-lg font-black text-slate-950 sm:text-xl">장바구니</h1>
         <p className="mt-1 text-sm font-medium text-slate-600">
-          주문 전 차량 정보, 배터리 규격, 폐전지 반납 여부를 다시 확인해 주세요.
+          담긴 상품과 수량·금액을 확인한 뒤 주문을 진행해 주세요.
         </p>
       </section>
 
@@ -63,11 +63,6 @@ export function CartPageClient() {
             <dd className="text-base font-black text-blue-700">{priceLabel}</dd>
           </div>
         </dl>
-        {summary.hasNoReturnItem ? (
-          <p className="mt-2 text-[11px] font-medium text-slate-600">
-            미반납 조건 상품이 포함되어 있습니다. 폐전지 회수가 없습니다.
-          </p>
-        ) : null}
         {summary.hasNeedsReviewItem ? (
           <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-950 ring-1 ring-amber-200">
             확인이 필요한 항목이 있습니다. 아래 안내를 확인한 뒤 주문해 주세요.
