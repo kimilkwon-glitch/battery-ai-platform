@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CartItemCard } from "@/components/cart/CartItemCard";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
 import { CART_NEEDS_REVIEW_COPY } from "@/data/cart-flow-guide";
+import { clearBuyNowCheckoutItems } from "@/lib/cart/checkout-flow";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
 
@@ -87,7 +88,11 @@ export function CartPageClient() {
           <Link href="/shop" className={`${bm.btnTertiary} text-xs`}>
             계속 쇼핑하기
           </Link>
-          <Link href={CHECKOUT_PAGE} className={`${bm.btnNavy} text-xs`}>
+          <Link
+            href={`${CHECKOUT_PAGE}?flow=cart`}
+            className={`${bm.btnNavy} min-h-[3rem] flex-1 justify-center text-sm font-black sm:flex-none sm:px-8`}
+            onClick={() => clearBuyNowCheckoutItems()}
+          >
             주문하기
           </Link>
         </div>

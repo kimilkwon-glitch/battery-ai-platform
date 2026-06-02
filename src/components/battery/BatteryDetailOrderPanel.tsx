@@ -92,15 +92,16 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-2">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <BuyNowButton
               batteryCode={code}
               returnOption={returnOption}
-              className="w-full py-3.5 text-base"
+              className="min-h-[3.25rem] w-full py-4 text-base sm:text-lg"
             />
             <AddToCartButton
               mode="battery"
-              variant="secondary"
+              variant="navy"
+              returnOption={returnOption}
               className="w-full"
               input={{
                 batteryCode: code,

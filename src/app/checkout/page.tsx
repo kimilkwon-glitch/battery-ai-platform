@@ -1,8 +1,7 @@
-import Link from "next/link";
+import { Suspense } from "react";
+import { ContentAreaFallback } from "@/components/common/ContentAreaFallback";
 import { PageShell } from "@/components/common/PageShell";
 import { CheckoutOrderPage } from "@/components/checkout/CheckoutOrderPage";
-import { CART_PAGE } from "@/lib/customer-center-routes";
-import { bm } from "@/lib/design-tokens";
 
 export default function CheckoutPage() {
   return (
@@ -14,10 +13,9 @@ export default function CheckoutPage() {
       searchPlaceholder="차량·규격 검색"
     >
       <div className="mx-auto max-w-2xl space-y-4">
-        <Link href={CART_PAGE} className={`${bm.btnTertiary} text-xs`}>
-          ← 장바구니
-        </Link>
-        <CheckoutOrderPage />
+        <Suspense fallback={<ContentAreaFallback lines={4} />}>
+          <CheckoutOrderPage />
+        </Suspense>
       </div>
     </PageShell>
   );

@@ -7,17 +7,20 @@ import {
   createCartItemFromVehicleBattery,
   type CreateCartItemInput,
 } from "@/lib/cart/cart-item-factory";
+import { cartItemMergeKey, getCartItems } from "@/lib/cart/cart-storage";
 import { CART_PAGE } from "@/lib/customer-center-routes";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
 import { bm } from "@/lib/design-tokens";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
-import { CartToast } from "@/components/cart/CartToast";
+import { CartAddedModal } from "@/components/cart/CartAddedModal";
+import type { BatteryCartItem } from "@/types/cart";
 
 type Props = {
   className?: string;
   label?: string;
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: "primary" | "secondary" | "tertiary" | "navy";
   showViewCartLink?: boolean;
+  returnOption?: BatteryReturnOption;
 } & (
   | {
       mode: "battery";
@@ -33,15 +36,22 @@ type Props = {
     }
 );
 
+function resolveAddedLine(item: BatteryCartItem): BatteryCartItem {
+  const key = cartItemMergeKey(item);
+  const stored = getCartItems().find((i) => cartItemMergeKey(i) === key);
+  return stored ?? item;
+}
+
 export function AddToCartButton({
   className,
   label = "장바구니 담기",
   variant = "secondary",
   showViewCartLink = false,
+  returnOption,
   ...props
 }: Props) {
   const { addItem } = useBatteryCart();
-  const [toast, setToast] = useState(false);
+  const [modalItem, setModalItem] = useState<BatteryCartItem | null>(null);
 
   const onAdd = useCallback(() => {
     const item =
@@ -55,20 +65,39 @@ export function AddToCartButton({
           })
         : createCartItemFromBattery(props.input);
     addItem(item);
-    setToast(true);
+    setModalItem(resolveAddedLine(item));
   }, [addItem, props]);
 
   const btnClass =
     variant === "primary"
       ? bm.btnPrimary
-      : variant === "tertiary"
-        ? bm.btnTertiary
-        : bm.btnSecondary;
+      : variant === "navy"
+        ? bm.btnNavy
+        : variant === "tertiary"
+          ? bm.btnTertiary
+          : bm.btnSecondary;
+
+  const modalReturnOption =
+    returnOption ??
+    (props.mode === "battery"
+      ? (props.input.usedBatteryReturnOption === "no-return" ||
+        props.input.usedBatteryReturnOption === "no_return"
+          ? "no-return"
+          : props.input.usedBatteryReturnOption === "return"
+            ? "return"
+            : undefined)
+      : props.mode === "vehicle"
+        ? props.usedBatteryReturnOption
+        : undefined);
 
   return (
     <>
       <div className={className ?? "flex flex-col gap-2"}>
-        <button type="button" className={`${btnClass} text-xs sm:text-sm`} onClick={onAdd}>
+        <button
+          type="button"
+          className={`${btnClass} cursor-pointer justify-center font-black ${variant === "navy" || variant === "primary" ? "" : "text-sm"}`}
+          onClick={onAdd}
+        >
           {label}
         </button>
         {showViewCartLink ? (
@@ -77,7 +106,11 @@ export function AddToCartButton({
           </Link>
         ) : null}
       </div>
-      <CartToast message="장바구니에 담았습니다." visible={toast} onDismiss={() => setToast(false)} />
+      <CartAddedModal
+        item={modalItem}
+        returnOption={modalReturnOption}
+        onClose={() => setModalItem(null)}
+      />
     </>
   );
 }

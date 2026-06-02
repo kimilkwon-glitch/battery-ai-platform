@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
+import { setBuyNowCheckoutItems } from "@/lib/cart/checkout-flow";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
 import { bm } from "@/lib/design-tokens";
-import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
 
 type Props = {
   batteryCode: string;
@@ -20,23 +20,22 @@ export function BuyNowButton({
   className = "",
   fitmentStatus = "needs_customer_confirm",
 }: Props) {
-  const { addItem } = useBatteryCart();
   const router = useRouter();
 
   return (
     <button
       type="button"
-      className={`${bm.btnPrimary} justify-center text-sm font-black ${className}`}
+      className={`${bm.btnPrimary} cursor-pointer justify-center font-black ${className}`}
       onClick={() => {
-        addItem(
-          createCartItemFromBattery({
-            batteryCode,
-            usedBatteryReturnOption: returnOption,
-            fitmentStatus,
-            source: "battery_detail",
-          }),
-        );
-        router.push(CHECKOUT_PAGE);
+        const item = createCartItemFromBattery({
+          batteryCode,
+          usedBatteryReturnOption: returnOption,
+          fitmentStatus,
+          source: "battery_detail",
+          quantity: 1,
+        });
+        setBuyNowCheckoutItems([item]);
+        router.push(`${CHECKOUT_PAGE}?flow=buy_now`);
       }}
     >
       구매하기

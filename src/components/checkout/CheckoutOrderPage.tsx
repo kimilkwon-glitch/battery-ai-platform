@@ -1,11 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
 import { CheckoutSafetyChecklist } from "@/components/checkout/CheckoutSafetyChecklist";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
+import {
+  clearBuyNowCheckoutItems,
+  getBuyNowCheckoutItems,
+  resolveCheckoutFlowMode,
+} from "@/lib/cart/checkout-flow";
 import {
   OrderRequestCustomerFields,
   type CustomerFormValues,
@@ -38,6 +43,8 @@ import {
   type UsedBatteryFormSelection,
 } from "@/lib/order-request/order-request-form-helpers";
 import type { OrderRequestFulfillment, OrderRequestVehicle } from "@/types/order-request";
+import type { BatteryCartItem } from "@/types/cart";
+import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 
 function phoneValid(phone: string): boolean {
@@ -45,16 +52,17 @@ function phoneValid(phone: string): boolean {
   return digits.length >= 9;
 }
 
-function initialVehicleFromCart(
-  items: ReturnType<typeof useBatteryCart>["items"],
-): OrderRequestVehicle {
-  const v = items.find((i) => i.vehicle?.displayName)?.vehicle;
-  if (!v) return {};
+function initialVehicleFromCart(items: BatteryCartItem[]): OrderRequestVehicle {
+  const line = items.find((i) => i.vehicle?.displayName || i.customerMemo?.trim());
+  if (!line) return {};
+  const v = line.vehicle;
+  const name = v?.displayName?.trim() || line.customerMemo?.trim();
+  if (!name) return {};
   return {
-    name: v.displayName,
-    year: v.year,
-    fuelType: v.fuelType,
-    currentBatterySpec: items[0]?.batterySpec,
+    name,
+    year: v?.year,
+    fuelType: v?.fuelType,
+    currentBatterySpec: line.batterySpec ?? items[0]?.batterySpec,
   };
 }
 
@@ -69,7 +77,26 @@ function confirmationsFromChecklist(): OrderRequestConfirmations {
 
 export function CheckoutOrderPage() {
   const router = useRouter();
-  const { items, hydrated } = useBatteryCart();
+  const searchParams = useSearchParams();
+  const flow = resolveCheckoutFlowMode(searchParams);
+  const isBuyNow = flow === "buy_now";
+  const { items: cartItems, hydrated } = useBatteryCart();
+  const [buyNowItems, setBuyNowItems] = useState<BatteryCartItem[] | null>(null);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (isBuyNow) {
+      setBuyNowItems(getBuyNowCheckoutItems());
+    } else {
+      clearBuyNowCheckoutItems();
+      setBuyNowItems(null);
+    }
+  }, [hydrated, isBuyNow]);
+
+  const items = useMemo(() => {
+    if (isBuyNow) return buyNowItems ?? [];
+    return cartItems;
+  }, [isBuyNow, buyNowItems, cartItems]);
   const [customer, setCustomer] = useState<CustomerFormValues>({
     name: "",
     phone: "",
@@ -165,6 +192,7 @@ export function CheckoutOrderPage() {
           requestNumber: result.request.requestNumber,
           id: result.request.id,
         });
+        clearBuyNowCheckoutItems();
         router.push(`${ORDER_REQUEST_COMPLETE_PAGE}?${sp.toString()}`);
         return;
       }
@@ -198,9 +226,13 @@ export function CheckoutOrderPage() {
         className={`${bm.card} ${bm.cardPad} space-y-4 text-center`}
         data-checkout-state="empty"
       >
-        <h2 className="text-base font-black text-slate-900">장바구니가 비어 있습니다</h2>
+        <h2 className="text-base font-black text-slate-900">
+          {isBuyNow ? "즉시구매 상품 정보가 없습니다" : "장바구니가 비어 있습니다"}
+        </h2>
         <p className="text-sm font-medium text-slate-600">
-          담은 배터리가 없습니다. 상품을 선택한 뒤 다시 주문해 주세요.
+          {isBuyNow
+            ? "상품 상세에서 구매하기를 다시 눌러 주세요."
+            : "담은 배터리가 없습니다. 상품을 선택한 뒤 다시 주문해 주세요."}
         </p>
         <p className="text-xs font-medium text-slate-500">
           차량명 또는 배터리 규격으로 먼저 검색해 주세요.
@@ -239,6 +271,15 @@ export function CheckoutOrderPage() {
       <section className={`${bm.card} ${bm.cardPad}`}>
         <h1 className="text-lg font-black text-slate-950">{CHECKOUT_PAGE_COPY.title}</h1>
         <p className="mt-2 text-sm font-medium text-slate-600">{CHECKOUT_PAGE_COPY.description}</p>
+        {isBuyNow ? (
+          <p className="mt-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-900 ring-1 ring-blue-100">
+            즉시구매 주문 — 선택하신 상품으로 바로 주문합니다.
+          </p>
+        ) : (
+          <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 ring-1 ring-slate-100">
+            장바구니 주문 — 담긴 상품 기준으로 주문합니다.
+          </p>
+        )}
       </section>
 
       <OrderRequestCartSummary items={items} />
@@ -290,9 +331,18 @@ export function CheckoutOrderPage() {
       ) : null}
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Link href={CART_PAGE} className={`${bm.btnTertiary} justify-center text-sm`}>
-          {CHECKOUT_PAGE_COPY.backToCart}
-        </Link>
+        {isBuyNow && items[0]?.batterySpec ? (
+          <Link
+            href={batteryDetailHref(items[0].batterySpec)}
+            className={`${bm.btnTertiary} justify-center text-sm`}
+          >
+            ← 상품 상세
+          </Link>
+        ) : (
+          <Link href={CART_PAGE} className={`${bm.btnTertiary} justify-center text-sm`}>
+            {CHECKOUT_PAGE_COPY.backToCart}
+          </Link>
+        )}
         <button
           type="submit"
           disabled={!canSubmit}
