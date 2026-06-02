@@ -135,10 +135,10 @@ h3 {
 }
 
 .brand-hub[data-brand-hub-active="rocket"] {
-  --bm-dark-title: #ffffff;
-  --bm-dark-body: #f8fafc;
-  --bm-dark-muted: #d1d5db;
-  --bm-dark-accent: #ff4b4b;
+  --bm-dark-title: #e5e7eb;
+  --bm-dark-body: #cbd5e1;
+  --bm-dark-muted: #aeb8c6;
+  --bm-dark-accent: #f87171;
 }
 
 .font-heading {

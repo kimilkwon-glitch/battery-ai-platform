@@ -10,7 +10,10 @@ export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 export type BrandHubTheme = {
   id: CustomerBrandHubId;
   label: string;
-  pageBg: string;
+  /** 탭 바깥 래퍼 — 밝은 컨트롤 영역 */
+  tabRail: string;
+  /** 브랜드 무드 패널 셸 */
+  panelShell: string;
   panelBg: string;
   bannerBg: string;
   bannerText: string;
@@ -36,59 +39,67 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
   rocket: {
     id: "rocket",
     label: "로케트",
-    pageBg: "bg-[#0B0D12]",
-    panelBg: "text-[#F8FAFC]",
+    tabRail:
+      "rounded-2xl border border-slate-200/90 bg-white/95 p-3 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.12)] backdrop-blur-sm sm:p-4",
+    panelShell:
+      "bg-[#0B0D12] ring-1 ring-[#242A36] shadow-[0_20px_48px_-28px_rgba(0,0,0,0.55)]",
+    panelBg: "text-[#CBD5E1]",
     bannerBg:
-      "bg-gradient-to-br from-[#0B0D12] via-[#111318] to-[#1a0f10] ring-1 ring-[#242A36] shadow-[0_24px_48px_-24px_rgba(229,57,53,0.35)]",
-    bannerText: "text-white",
-    bannerMuted: "text-[#D1D5DB]",
-    bannerImageWrap: "bg-[#151922] ring-1 ring-[#242A36]",
+      "bg-gradient-to-br from-[#111318] via-[#151922] to-[#1a0f10] ring-1 ring-[#2d3544] shadow-[0_20px_40px_-24px_rgba(229,57,53,0.28)]",
+    bannerText: "text-[#E5E7EB]",
+    bannerMuted: "text-[#CBD5E1]",
+    bannerImageWrap: "bg-[#151922] ring-1 ring-[#2d3544]",
     tabActive:
-      "bg-[#E53935] text-white shadow-[0_8px_24px_-8px_rgba(229,57,53,0.55)] ring-2 ring-[#F20D0D]/50",
+      "bg-[#E53935] text-white shadow-[0_10px_28px_-10px_rgba(229,57,53,0.65)] ring-2 ring-[#F87171]/40 motion-safe:hover:-translate-y-0.5",
     tabIdle:
-      "bg-[#151922] text-[#B6BDC9] ring-1 ring-[#242A36] hover:bg-[#1a1f28] hover:text-[#F3F4F6]",
-    accent: "text-[#FF4B4B]",
+      "bg-slate-50 text-slate-600 ring-1 ring-slate-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:text-slate-900 motion-safe:hover:shadow-[0_10px_24px_-14px_rgba(229,57,53,0.35)] motion-safe:hover:ring-red-200/80",
+    accent: "text-[#F87171]",
     accentLine: "bg-[#E53935]",
     insightCard:
-      "border-l-4 border-[#E53935] bg-[#151922] ring-1 ring-[#242A36] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]",
-    insightIconWrap: "bg-[#E53935]/15 text-[#F87171] ring-1 ring-[#E53935]/35",
-    productCard: "bg-[#151922] ring-1 ring-[#242A36]",
+      "border-l-4 border-[#E53935] bg-[#171c26] ring-1 ring-[#2d3544] shadow-[0_16px_40px_-24px_rgba(0,0,0,0.55)]",
+    insightIconWrap: "bg-[#3A1F28] text-[#FCA5A5] ring-1 ring-[#7F1D1D]/60",
+    productCard:
+      "bg-[#171c26] ring-1 ring-[#2d3544] shadow-[0_12px_32px_-20px_rgba(0,0,0,0.5)]",
     productImageBg: "bg-[#111318]",
     productCardHover:
-      "hover:ring-[#E53935]/70 hover:shadow-[0_12px_32px_-14px_rgba(229,57,53,0.45)]",
-    badgeAgm: "bg-[#E53935]/20 text-[#FECACA] ring-1 ring-[#E53935]/40",
-    badgeDin: "bg-[#1a1f28] text-[#E5E7EB] ring-1 ring-[#242A36]",
-    badgeCmf: "bg-[#1a1f28] text-[#D1D5DB] ring-1 ring-[#242A36]",
-    badgeDefault: "bg-[#1a1f28] text-[#D1D5DB] ring-1 ring-[#242A36]",
+      "motion-safe:hover:-translate-y-1 hover:ring-[#E53935]/60 hover:shadow-[0_16px_36px_-14px_rgba(229,57,53,0.4)]",
+    badgeAgm: "bg-[#3A1F28] text-[#FCA5A5] ring-1 ring-[#7F1D1D] font-semibold",
+    badgeDin: "bg-[#1E293B] text-[#93C5FD] ring-1 ring-[#334155] font-semibold",
+    badgeCmf: "bg-[#2A2F38] text-[#D1D5DB] ring-1 ring-[#475569] font-semibold",
+    badgeDefault: "bg-[#2A2F38] text-[#CBD5E1] ring-1 ring-[#475569] font-semibold",
     washGradient:
-      "linear-gradient(100deg, transparent 0%, rgba(229,57,53,0.32) 42%, rgba(11,13,18,0.92) 100%)",
+      "linear-gradient(100deg, transparent 0%, rgba(229,57,53,0.28) 42%, rgba(11,13,18,0.92) 100%)",
   },
   solite: {
     id: "solite",
     label: "쏠라이트",
-    pageBg: "bg-gradient-to-b from-[#F8FAFC] via-white to-[#EFF6FF]",
-    panelBg: "text-slate-900",
+    tabRail:
+      "rounded-2xl border border-slate-200/90 bg-white p-3 shadow-sm sm:p-4",
+    panelShell: "bg-gradient-to-b from-[#F8FAFC] via-white to-[#EFF6FF] ring-1 ring-slate-200/80",
+    panelBg: "text-slate-800",
     bannerBg:
       "bg-gradient-to-br from-white via-[#F0F7FF] to-[#DBEAFE] ring-1 ring-[#BFDBFE] shadow-[0_12px_32px_-20px_rgba(37,99,235,0.18)]",
     bannerText: "text-slate-950",
     bannerMuted: "text-slate-600",
     bannerImageWrap: "bg-white ring-1 ring-[#BFDBFE] shadow-sm",
     tabActive:
-      "bg-[#2563EB] text-white shadow-[0_8px_24px_-8px_rgba(37,99,235,0.35)] ring-2 ring-[#93C5FD]/60",
+      "bg-[#2563EB] text-white shadow-[0_10px_28px_-10px_rgba(37,99,235,0.45)] ring-2 ring-[#93C5FD]/50 motion-safe:hover:-translate-y-0.5",
     tabIdle:
-      "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-[#EFF6FF] hover:text-[#1D4ED8] hover:ring-[#BFDBFE]",
+      "bg-slate-50 text-slate-700 ring-1 ring-slate-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:text-[#1D4ED8] motion-safe:hover:shadow-[0_10px_24px_-14px_rgba(37,99,235,0.28)] motion-safe:hover:ring-[#BFDBFE]",
     accent: "text-[#2563EB]",
     accentLine: "bg-[#3B82F6]",
     insightCard:
-      "border-l-4 border-[#2563EB] bg-white ring-1 ring-slate-200/90 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.08)]",
+      "border-l-4 border-[#2563EB] bg-white ring-1 ring-slate-200/90 shadow-[0_12px_32px_-18px_rgba(15,23,42,0.1)]",
     insightIconWrap: "bg-[#EFF6FF] text-[#2563EB] ring-1 ring-[#BFDBFE]",
-    productCard: "bg-white ring-1 ring-slate-200/90 shadow-sm",
+    productCard:
+      "bg-white ring-1 ring-slate-200/90 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.08)]",
     productImageBg: "bg-gradient-to-b from-[#F0F9FF] to-white",
-    productCardHover: "hover:ring-[#3B82F6]/55 hover:shadow-[0_12px_28px_-12px_rgba(37,99,235,0.2)]",
-    badgeAgm: "bg-violet-50 text-violet-800 ring-1 ring-violet-200",
-    badgeDin: "bg-sky-50 text-sky-800 ring-1 ring-sky-200",
-    badgeCmf: "bg-slate-100 text-slate-700 ring-1 ring-slate-200",
-    badgeDefault: "bg-slate-100 text-slate-700 ring-1 ring-slate-200",
+    productCardHover:
+      "motion-safe:hover:-translate-y-1 hover:ring-[#3B82F6]/55 hover:shadow-[0_14px_32px_-12px_rgba(37,99,235,0.22)]",
+    badgeAgm: "bg-violet-50 text-violet-800 ring-1 ring-violet-200 font-semibold",
+    badgeDin: "bg-sky-50 text-sky-800 ring-1 ring-sky-200 font-semibold",
+    badgeCmf: "bg-slate-100 text-slate-700 ring-1 ring-slate-200 font-semibold",
+    badgeDefault: "bg-slate-100 text-slate-700 ring-1 ring-slate-200 font-semibold",
     washGradient:
       "linear-gradient(100deg, transparent 0%, rgba(59,130,246,0.22) 40%, rgba(255,255,255,0.96) 100%)",
   },
