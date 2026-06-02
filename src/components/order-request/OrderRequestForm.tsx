@@ -49,13 +49,16 @@ function phoneValid(phone: string): boolean {
 function initialVehicleFromCart(
   items: ReturnType<typeof useBatteryCart>["items"],
 ): OrderRequestVehicle {
-  const v = items.find((i) => i.vehicle?.displayName)?.vehicle;
-  if (!v) return {};
+  const line = items.find((i) => i.vehicle?.displayName || i.customerMemo?.trim());
+  if (!line) return {};
+  const v = line.vehicle;
+  const name = v?.displayName?.trim() || line.customerMemo?.trim();
+  if (!name) return {};
   return {
-    name: v.displayName,
-    year: v.year,
-    fuelType: v.fuelType,
-    currentBatterySpec: items[0]?.batterySpec,
+    name,
+    year: v?.year,
+    fuelType: v?.fuelType,
+    currentBatterySpec: line.batterySpec ?? items[0]?.batterySpec,
     photoCheckNeeded: items.some((i) => i.fitmentStatus === "needs_photo_check"),
   };
 }

@@ -367,18 +367,16 @@
 }
 
 .bm-store-card--deokcheon.bm-store-card--active {
-  border-color: #93c5fd !important;
   box-shadow:
-    0 0 0 3px rgba(147, 197, 253, 0.55),
-    0 0 28px -4px rgba(59, 130, 246, 0.45),
+    inset 0 0 0 2px rgba(147, 197, 253, 0.85),
+    0 0 28px -4px rgba(59, 130, 246, 0.35),
     0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 
 .bm-store-card--hakjang.bm-store-card--active {
-  border-color: #6ee7b7 !important;
   box-shadow:
-    0 0 0 3px rgba(110, 231, 183, 0.5),
-    0 0 28px -4px rgba(16, 185, 129, 0.4),
+    inset 0 0 0 2px rgba(110, 231, 183, 0.85),
+    0 0 28px -4px rgba(16, 185, 129, 0.32),
     0 12px 32px -8px rgba(15, 23, 42, 0.15);
 }
 

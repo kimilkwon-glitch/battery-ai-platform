@@ -15,7 +15,7 @@ export const BUSAN_STORES = [
     id: "deokcheon",
     name: "덕천점",
     tagline: "북구·금정·연제권 생활권",
-    displayRegions: "북구 · 금정구 · 연제구 · 대저1동",
+    displayRegions: "북구 · 금정구 · 연제구 · 동래구 · 대저1동",
     areas: ["덕천", "구포", "만덕", "화명", "금정", "연산"],
     scenarios: ["아파트 지하주차장", "출근 전 시동불량", "생활권 출장 중심"],
     visit: "내방 교체",
@@ -70,7 +70,7 @@ export const VISIT_OUTBOUND_PREP_ITEMS = [
   "차량명",
   "연식",
   "연료",
-  "현재 배터리 규격 (알고 있으면)",
+  "현재 배터리 규격",
   "방전 증상",
   "시동 가능 여부",
 ] as const;
@@ -96,5 +96,9 @@ export const OUTBOUND_PREP_ITEMS = [
 
 export const BUSAN_REGION_FOOTNOTE =
   "가까운 직영점 기준으로 우선 안내하며, 일정과 현장 상황에 따라 조정될 수 있습니다.";
+
+/** 대표 권역 외 지역 클릭 시 정보 패널 안내 */
+export const BUSAN_OUTBOUND_FEE_NOTE =
+  "대표 권역 외 지역은 거리와 일정에 따라 별도 출장비가 발생할 수 있습니다. 정확한 가능 여부와 비용은 상담 후 안내드립니다.";
 
 

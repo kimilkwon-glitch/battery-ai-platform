@@ -13,7 +13,7 @@ import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import {
   BRAND_HUB_BANNER,
   BRAND_HUB_FAMILY_TABS,
-  BRAND_HUB_FOOTNOTE,
+  BRAND_HUB_CCA_RC_GUIDE,
   BRAND_HUB_INSIGHTS,
   BRAND_HUB_LOGOS,
   BRAND_HUB_THEMES,
@@ -250,9 +250,15 @@ export function BrandHubClient() {
               )}
             </section>
 
-            <p className={clsx("pt-2 text-center text-base font-medium", theme.contentMuted)}>
-              {BRAND_HUB_FOOTNOTE[active]}
-            </p>
+            <div
+              className={clsx(
+                "mx-auto max-w-2xl space-y-2 pt-4 text-center text-sm font-medium leading-relaxed sm:text-base",
+                theme.contentMuted,
+              )}
+            >
+              <p>{BRAND_HUB_CCA_RC_GUIDE.cca}</p>
+              <p>{BRAND_HUB_CCA_RC_GUIDE.rc}</p>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>

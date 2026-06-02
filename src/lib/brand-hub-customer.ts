@@ -260,9 +260,16 @@ export const BRAND_HUB_INSIGHTS: Record<
   },
 };
 
+/** 브랜드 안내 페이지 하단 — CCA·RC 고객용 안내 */
+export const BRAND_HUB_CCA_RC_GUIDE = {
+  cca: "CCA는 추운 날에도 시동을 걸어주는 힘을 뜻합니다. 숫자가 높을수록 초기 시동 성능이 여유롭습니다.",
+  rc: "RC는 배터리가 전기를 버텨주는 시간에 가까운 값입니다. 숫자가 높을수록 전장품 사용 여유가 더 좋습니다.",
+} as const;
+
+/** @deprecated BRAND_HUB_CCA_RC_GUIDE 사용 */
 export const BRAND_HUB_FOOTNOTE: Record<CustomerBrandHubId, string> = {
-  rocket: "표기·제조 시기에 따라 수치가 달라질 수 있습니다. 주문 전 차종·라벨을 함께 확인하세요.",
-  solite: "CMF·DIN 품번은 라벨과 함께 대조하는 것이 안전합니다. 상세 제원은 규격 상세에서 확인하세요.",
+  rocket: BRAND_HUB_CCA_RC_GUIDE.cca,
+  solite: BRAND_HUB_CCA_RC_GUIDE.rc,
 };
 
 const BRAND_KEY: Record<CustomerBrandHubId, BatteryBrand> = {

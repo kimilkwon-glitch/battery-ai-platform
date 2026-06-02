@@ -61,7 +61,10 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
               type="button"
               role="tab"
               aria-selected={mainFilter === opt.id}
-              onClick={() => setMainFilter(opt.id)}
+              onClick={() => {
+                setMainFilter(opt.id);
+                if (opt.id === "all") setMoodFilter(null);
+              }}
               className={clsx(
                 "bm-tab-rail__btn shrink-0",
                 mainFilter === opt.id && "bm-tab-rail__btn--active",

@@ -17,6 +17,7 @@ import {
   type BusanGeoRegion,
   type BusanHangjeongProps,
 } from "@/lib/busan-geo-region";
+import { BUSAN_OUTBOUND_FEE_NOTE } from "@/lib/busan-service-hub-data";
 import {
   BUSAN_MAP_DISCLAIMER,
   BUSAN_MAP_HEIGHT,
@@ -76,7 +77,7 @@ const PATH_STROKE = 1.5;
 
 function regionLine(gu: string, region: BusanGeoRegion): string {
   const store = storeLabelForRegion(region);
-  if (store) return `${store} 담당`;
+  if (store) return `기본 출장 가능 권역 · ${store} 담당`;
   if (guHasDongLevelExceptions(gu)) {
     return "대저1동·대저2동 — 상담 시 지점 안내";
   }
@@ -460,14 +461,8 @@ export function BusanRegionMap({
                         textAnchor="middle"
                         dominantBaseline="middle"
                         className={clsx(
-                          "pointer-events-none select-none font-black",
-                          gu.gu.length > 4
-                            ? guEmphasis
-                              ? "fill-slate-900 text-[10px]"
-                              : "fill-slate-800/90 text-[9px]"
-                            : guEmphasis
-                              ? "fill-slate-900 text-[13px]"
-                              : "fill-slate-800/90 text-[11px]",
+                          "pointer-events-none select-none font-black text-[11px]",
+                          guEmphasis ? "fill-slate-900" : "fill-slate-800/90",
                         )}
                         style={{
                           paintOrder: "stroke fill",
@@ -543,40 +538,50 @@ export function BusanRegionMap({
       </div>
 
       <div className="mt-4">
-        <p
-          className="busan-map-selection-bar mt-4 min-h-[5.25rem] rounded-xl border border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-semibold leading-relaxed text-slate-700"
+        <div
+          className="busan-map-selection-bar mt-4 min-h-[7.5rem] rounded-xl border border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-semibold leading-relaxed text-slate-700"
           aria-live="polite"
         >
           {selectedGu ? (
             <>
-              <span className="font-black text-slate-900">{selectedGu.gu}</span>
-              {" · "}
-              담당:{" "}
-              <span
-                className={clsx(
-                  "font-black",
-                  selectedGu.region === "deokcheon"
-                    ? "text-blue-700"
-                    : selectedGu.region === "hakjang"
-                      ? "text-green-700"
-                      : "text-slate-800",
-                )}
-              >
-                {storeLabelForRegion(selectedGu.region) ?? "전화 상담 후 안내"}
-              </span>
-              {selectedGu.matchedDong ? (
-                <span className="text-slate-600"> ({selectedGu.matchedDong} 검색)</span>
+              <p>
+                <span className="font-black text-slate-900">{selectedGu.gu}</span>
+                {" · "}
+                담당:{" "}
+                <span
+                  className={clsx(
+                    "font-black",
+                    selectedGu.region === "deokcheon"
+                      ? "text-blue-700"
+                      : selectedGu.region === "hakjang"
+                        ? "text-green-700"
+                        : "text-slate-800",
+                  )}
+                >
+                  {storeLabelForRegion(selectedGu.region) ?? "전화 상담 후 안내"}
+                </span>
+                {selectedGu.matchedDong ? (
+                  <span className="text-slate-600"> ({selectedGu.matchedDong} 검색)</span>
+                ) : null}
+              </p>
+              {selectedGu.region === "deokcheon" || selectedGu.region === "hakjang" ? (
+                <p className="mt-2 text-sm font-medium text-slate-600">기본 출장 가능 권역</p>
+              ) : null}
+              {selectedGu.region === "neutral" ? (
+                <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+                  {BUSAN_OUTBOUND_FEE_NOTE}
+                </p>
               ) : null}
               {guHasDongLevelExceptions(selectedGu.gu) ? (
-                <span className="mt-1 block text-xs font-medium text-amber-800">
+                <p className="mt-2 text-xs font-medium text-amber-800">
                   {guTooltipHint(selectedGu.gu, selectedGu.region)}
-                </span>
+                </p>
               ) : null}
             </>
           ) : (
-            "지도에서 구를 선택하면 아래 덕천점·학장점 카드가 강조됩니다."
+            <p>지도에서 구를 선택하면 아래 덕천점·학장점 카드가 강조됩니다.</p>
           )}
-        </p>
+        </div>
 
         <p className="mt-3 text-center text-xs font-medium leading-relaxed text-slate-500 sm:text-sm">
           {BUSAN_MAP_DISCLAIMER}

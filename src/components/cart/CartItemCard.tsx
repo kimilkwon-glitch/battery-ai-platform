@@ -25,9 +25,30 @@ function terminalLabel(dir?: BatteryCartItem["terminalDirection"]): string {
   return "확인 필요";
 }
 
+function vehicleInfoValue(item: BatteryCartItem): string {
+  if (item.vehicle?.displayName) return item.vehicle.displayName;
+  return item.customerMemo?.trim() ?? "";
+}
+
 export function CartItemCard({ item }: { item: BatteryCartItem }) {
   const { updateItem, removeItem } = useBatteryCart();
   const fit = FITMENT_STATUS_LABELS[item.fitmentStatus];
+  const vehicleText = vehicleInfoValue(item);
+
+  const setVehicleInfo = (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) {
+      updateItem(item.id, {
+        vehicle: undefined,
+        customerMemo: undefined,
+      });
+      return;
+    }
+    updateItem(item.id, {
+      vehicle: { displayName: trimmed },
+      customerMemo: trimmed,
+    });
+  };
 
   const setQty = (qty: number) => {
     if (qty < 1) {
@@ -69,17 +90,21 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
             <p className="text-sm font-black text-blue-700 tabular-nums">{formatPrice(item)}</p>
           </div>
 
-          {item.vehicle?.displayName ? (
-            <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
-              {item.vehicle.displayName}
-              {item.vehicle.generationName ? ` · ${item.vehicle.generationName}` : ""}
-              {item.vehicle.year ? ` · ${item.vehicle.year}` : ""}
+          <label className="block">
+            <span className="sr-only">차량 정보</span>
+            <textarea
+              rows={2}
+              value={vehicleText}
+              onChange={(e) => setVehicleInfo(e.target.value)}
+              placeholder="차량명·연식·현재 배터리 규격을 적어주세요"
+              className="w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-medium leading-relaxed text-slate-800 placeholder:font-medium placeholder:text-slate-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            />
+          </label>
+          {!vehicleText.trim() ? (
+            <p className="rounded-lg border border-amber-100 bg-amber-50/90 px-3 py-2 text-[11px] font-semibold leading-relaxed text-amber-950">
+              차량 정보 미기재 시 규격 확인이 어려워 공구가 제공되지 않을 수 있습니다.
             </p>
-          ) : (
-            <p className="rounded-lg border border-dashed border-slate-300 px-3 py-2 text-xs font-bold text-slate-500">
-              차량 정보 미입력
-            </p>
-          )}
+          ) : null}
 
           <span
             className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-black ring-1 ${fitmentTone(item.fitmentStatus)}`}

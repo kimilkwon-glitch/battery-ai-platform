@@ -47,7 +47,7 @@ export function buildStaffSummary(params: {
 }): OrderRequestStaffSummary {
   const specs = [...new Set(params.items.map((i) => i.batterySpec).filter(Boolean))];
   const vehicles = params.items
-    .map((i) => i.vehicle?.displayName)
+    .map((i) => i.vehicle?.displayName?.trim() || i.customerMemo?.trim())
     .filter(Boolean) as string[];
   const vehicleName =
     params.vehicle?.name?.trim() ||
@@ -62,7 +62,9 @@ export function buildStaffSummary(params: {
     .join(" · ");
 
   const reviewFlags: string[] = [];
-  if (!params.vehicle?.name?.trim() && vehicles.length === 0) {
+  const hasVehicleInfo =
+    Boolean(params.vehicle?.name?.trim()) || vehicles.length > 0;
+  if (!hasVehicleInfo) {
     reviewFlags.push("차량 정보 미입력");
   }
   for (const item of params.items) {

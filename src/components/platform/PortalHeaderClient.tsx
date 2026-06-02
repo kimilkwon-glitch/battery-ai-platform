@@ -35,13 +35,15 @@ export function PortalHeaderClient({
           <div className="portal-header-auth flex shrink-0 items-center gap-1 sm:gap-1.5">
             <Link
               href={HUB_LOGIN}
-              className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:inline-flex lg:px-2.5 lg:text-xs xl:px-3"
+              aria-label="로그인"
+              className="portal-header-auth-btn inline-flex cursor-pointer rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 lg:px-2.5 lg:text-xs xl:px-3"
             >
               로그인
             </Link>
             <Link
               href={HUB_SIGNUP}
-              className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:inline-flex lg:px-2.5 lg:text-xs xl:px-3"
+              aria-label="회원가입"
+              className="portal-header-auth-btn inline-flex cursor-pointer rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:inline-flex lg:px-2.5 lg:text-xs xl:px-3"
             >
               회원가입
             </Link>

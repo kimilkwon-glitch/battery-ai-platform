@@ -27,7 +27,10 @@ export function formatCheckoutPrice(item: BatteryCartItem): string {
 }
 
 export function formatCheckoutVehicle(item: BatteryCartItem): string {
-  if (!item.vehicle?.displayName) return "차량 정보 미입력";
+  const memo = item.customerMemo?.trim();
+  if (!item.vehicle?.displayName) {
+    return memo || "차량 정보 미입력";
+  }
   const parts = [
     item.vehicle.displayName,
     item.vehicle.generationName,

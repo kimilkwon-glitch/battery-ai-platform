@@ -5,7 +5,6 @@ import { VehicleCardImage } from "@/components/media/VehicleCardImage";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
-import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import { bm } from "@/lib/design-tokens";
 
@@ -124,21 +123,12 @@ export function BatterySpecDetailView({ code, vehicles }: Props) {
         </section>
       ) : null}
 
-      <section className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:p-6">
-        <h2 className="text-base font-black text-slate-900">규격 확인 포인트</h2>
-        <ul className="mt-3 space-y-2 text-sm font-medium leading-relaxed text-slate-700">
-          <li>· 배터리 라벨의 규격 코드({code})</li>
-          <li>· 단자 방향 L/R</li>
-          <li>· 트레이·고정 방식과 외형 치수</li>
-        </ul>
-      </section>
-
-      <section className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <Link href={batteryDetailHref(code)} className={`${bm.btnPrimary} justify-center px-8 py-3.5 text-base`}>
+      <section className="mt-2 pt-4 sm:pt-6">
+        <Link
+          href={batteryDetailHref(code)}
+          className={`${bm.btnPrimary} flex min-h-[3.5rem] w-full items-center justify-center rounded-2xl px-8 py-4 text-lg font-black sm:min-h-[3.75rem] sm:text-xl`}
+        >
           주문하기
-        </Link>
-        <Link href={HUB_PHOTO} className={`${bm.btnSecondary} justify-center px-6 py-3.5 text-base`}>
-          사진으로 규격 확인
         </Link>
       </section>
     </div>

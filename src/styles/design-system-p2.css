@@ -1576,9 +1576,15 @@
 }
 
 .home-main-hero-chips {
-  margin-top: 0.75rem;
+  margin-top: 1.25rem;
   padding-bottom: 1rem;
   text-align: center;
+}
+
+@media (min-width: 640px) {
+  .home-main-hero-chips {
+    margin-top: 1.5rem;
+  }
 }
 
 @media (min-width: 640px) {
@@ -1630,6 +1636,36 @@
 .home-search-example-chip {
   flex: 0 0 auto;
   max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #334155;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.home-search-example-chip:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+@media (min-width: 640px) {
+  .home-search-example-chip {
+    font-size: 0.875rem;
+    padding: 0.5625rem 1rem;
+  }
 }
 
 @media (min-width: 768px) {
