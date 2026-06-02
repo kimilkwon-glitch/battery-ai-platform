@@ -94,12 +94,14 @@ export function BatterySpecDetailView({ code, vehicles }: Props) {
               <li key={v.slug}>
                 <Link
                   href={`/vehicle/${v.slug}`}
-                  className="group flex overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-blue-200 hover:shadow-md"
+                  className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-blue-200 hover:shadow-md"
                 >
-                  <VehicleCardImage slug={v.slug} title={v.title} layout="row" heightClass="h-20 w-28" />
-                  <span className="flex min-w-0 flex-1 items-center px-3 text-sm font-bold text-slate-800 group-hover:text-blue-700">
-                    {v.title}
-                  </span>
+                  <VehicleCardImage slug={v.slug} title={v.title} layout="stack" heightClass="h-28 sm:h-32" />
+                  <div className="border-t border-slate-100 px-3 py-2.5">
+                    <p className="text-sm font-bold text-slate-800 group-hover:text-blue-700">{v.title}</p>
+                    <p className="mt-0.5 text-xs font-semibold text-slate-500">{code}</p>
+                    <span className="mt-1 inline-block text-xs font-black text-blue-600">차량 상세 보기 →</span>
+                  </div>
                 </Link>
               </li>
             ))}

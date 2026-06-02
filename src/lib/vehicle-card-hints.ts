@@ -1,7 +1,7 @@
 import { hyundaiGrandeurGenerations } from "@/data/cars";
 import type { VehicleBadgeToken } from "@/components/car/VehicleSpecBadge";
 import { getVehicleAsset } from "@/lib/car-assets";
-import { resolveBatteryDisplay } from "@/lib/batteryNormalize";
+import { customerFacingBatteryCode } from "@/lib/canonical-battery-code";
 import { getBattery, getVehicle, vehicles } from "@/lib/platform-data";
 import { getVehicleCardBatteryInfo } from "@/lib/vehicleBattery";
 import {
@@ -133,7 +133,7 @@ function resolvePrimaryCode(
   }
   if (fallback) {
     return {
-      primaryCode: resolveBatteryDisplay(fallback).displayCode,
+      primaryCode: customerFacingBatteryCode(fallback),
       needsPhotoReview: db.needsPhotoReview,
     };
   }
@@ -210,7 +210,7 @@ export function getVehicleCardHints(vehicleId: string): VehicleCardHints {
 
   return {
     tokens,
-    primaryCode: resolved.primaryCode || resolveBatteryDisplay(v.batteryCode).displayCode,
+    primaryCode: resolved.primaryCode || customerFacingBatteryCode(v.batteryCode),
     yearLine: v.yearRange.replace(/~/g, "-"),
     needsPhotoReview: resolved.needsPhotoReview,
   };

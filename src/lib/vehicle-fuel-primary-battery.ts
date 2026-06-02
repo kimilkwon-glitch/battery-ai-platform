@@ -23,6 +23,20 @@ type EnrichmentRow = {
 
 const enrichments = (enrichmentJson as { records?: EnrichmentRow[] }).records ?? [];
 
+/** 차량 slug 단일 대표 규격 — 연료 미지정·카드·검색 히어로 */
+export const OPERATOR_SLUG_PRIMARY_BATTERY: Record<string, string> = {
+  gv70: "AGM80R",
+  gv80: "AGM95R",
+  "g80-rg3": "AGM95R",
+  g90: "AGM95R",
+  "genesis-gv70": "AGM80R",
+  "genesis-gv80": "AGM95R",
+  "genesis-gv60": "AGM60L",
+  "staria-us4": "AGM80R",
+  "porter2-new": "100R",
+  "hyundai-porter2-from2020": "100R",
+};
+
 /** P0 합의 — DB·enrichment·legacy raw 불일치 시 운영 단일 기준 (검색·히어로·CTA·상세표 동일) */
 const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
   "grandeur-ig": {
@@ -186,6 +200,9 @@ export function resolveVehicleFuelPrimaryBattery(
   fuelRaw: string | null | undefined,
   options?: { yearChipId?: string | null; fallback?: string | null },
 ): string {
+  const slugPrimary = OPERATOR_SLUG_PRIMARY_BATTERY[slug];
+  if (slugPrimary) return canonicalBatteryCode(slugPrimary);
+
   const fuel = normalizeVehicleFuelParam(fuelRaw);
   const operator = fuel ? OPERATOR_FUEL_PRIMARY[slug]?.[fuel] : undefined;
   if (operator) return canonicalBatteryCode(operator);

@@ -1,4 +1,4 @@
-import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { canonicalBatteryCode, customerFacingBatteryCode } from "@/lib/canonical-battery-code";
 import { normalizeBatteryCode } from "@/lib/batteryNormalize";
 import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import {
@@ -59,10 +59,10 @@ function pickConfirmedRecords(
 function codesFromRecords(recs: VehicleBatteryRecord[]): string[] {
   const codes: string[] = [];
   for (const r of recs) {
-    const p = canonicalBatteryCode(r.primaryBattery);
+    const p = customerFacingBatteryCode(r.primaryBattery);
     if (p) codes.push(p);
     for (const o of r.batteryOptions) {
-      const c = canonicalBatteryCode(o);
+      const c = customerFacingBatteryCode(o);
       if (c) codes.push(c);
     }
   }
@@ -208,9 +208,7 @@ function lookupVehicleBatteryByDbQuery(
 }
 
 function formatDisplayValue(codes: string[], useSeriesSuffix: boolean): string {
-  const unique = [
-    ...new Set(codes.map((c) => canonicalBatteryCode(c) || normalizeBatteryCode(c)).filter(Boolean)),
-  ];
+  const unique = [...new Set(codes.map((c) => customerFacingBatteryCode(c)).filter(Boolean))];
   if (!unique.length) return "";
   if (!useSeriesSuffix && unique.length === 1) return unique[0]!;
   return `${unique[0]} 계열`;

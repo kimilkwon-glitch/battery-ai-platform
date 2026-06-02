@@ -72,6 +72,22 @@ export const CANONICAL_DB_BRIDGE: Record<string, CanonicalDbBridge> = {
     dbSlugs: ["porter2-new", "porter2-old"],
     displayNamePatterns: [/포터\s*II|포터2/i],
   },
+  "genesis-gv70": {
+    dbSlugs: ["gv70"],
+    displayNamePatterns: [/GV70|제네시스\s*GV70/i],
+  },
+  "genesis-gv80": {
+    dbSlugs: ["gv80"],
+    displayNamePatterns: [/GV80|제네시스\s*GV80/i],
+  },
+  "genesis-gv60": {
+    dbSlugs: ["gv60"],
+    displayNamePatterns: [/GV60|제네시스\s*GV60/i],
+  },
+  "hyundai-staria-us4": {
+    dbSlugs: ["staria-us4"],
+    displayNamePatterns: [/스타리아/i],
+  },
 };
 
 export function resolveDbBridge(

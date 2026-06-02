@@ -24,7 +24,7 @@ function aliasFromVehicleIntent(v: VehicleIntent): SearchVehicleAliasMatch | nul
 }
 import { formatSearchVehicleDisplayLabel } from "@/lib/search/search-vehicle-display";
 import { resolveVehicleBatterySpecForSearch } from "@/lib/search/resolve-vehicle-battery-spec";
-import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { canonicalBatteryCode, customerFacingBatteryCode } from "@/lib/canonical-battery-code";
 import { resolvePrimaryBatteryCode } from "@/lib/battery-spec-display";
 import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import {
@@ -146,11 +146,11 @@ export function buildSearchSummary(
               ? resolvePrimaryBatteryCode(batterySpec.displayValue, batterySpec.primaryCodes)
               : null);
     const specDisplayResolved = isMultiCandidate
-      ? multiCodes.join(" / ")
+      ? multiCodes.map((c) => customerFacingBatteryCode(c)).join(" / ")
       : primaryBatteryCode
-        ? canonicalBatteryCode(primaryBatteryCode)
+        ? customerFacingBatteryCode(primaryBatteryCode)
         : hasSpecLine && batterySpec.displayValue
-          ? canonicalBatteryCode(batterySpec.displayValue)
+          ? customerFacingBatteryCode(batterySpec.displayValue)
           : null;
     const porterDual =
       isMultiCandidate && (v.canonicalKey?.includes("porter2") || v.model === "포터2");

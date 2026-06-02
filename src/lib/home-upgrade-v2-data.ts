@@ -130,7 +130,7 @@ export const HOME_POPULAR_VEHICLES = [
     title: "스타리아",
     hint: "디젤 CMF80L — 연식까지 같이 보는 것이 안전합니다.",
     spec: "CMF80L",
-    href: getSearchHref("스타리아 CMF80L"),
+    href: getSearchHref("스타리아 AGM80R"),
     slug: "staria-us4",
   },
   {
@@ -205,7 +205,7 @@ export const HOME_TRENDING_PATTERNS = [
   { label: "포터2 90R/100R", href: getSearchHref("포터2 배터리"), tag: "연식" },
   { label: "그랜저 IG AGM70L/AGM80L", href: getSearchHref("그랜저 IG 가솔린"), tag: "연료" },
   { label: "스포티지 NQ5 하이브리드 AGM60L", href: getSearchHref("스포티지 NQ5 하이브리드"), tag: "HEV" },
-  { label: "스타리아 CMF80L", href: getSearchHref("스타리아 CMF80L"), tag: "CMF" },
+  { label: "스타리아 AGM80R", href: getSearchHref("스타리아 AGM80R"), tag: "AGM" },
   { label: "AGM95L 제원", href: getBatteryHref("AGM95L"), tag: "AGM" },
   { label: "EV6 EV 12V", href: getBatteryHref("EV 12V"), tag: "EV" },
   { label: "레이 블랙박스 방전", href: getSearchHref("레이 블랙박스 방전"), tag: "증상" },

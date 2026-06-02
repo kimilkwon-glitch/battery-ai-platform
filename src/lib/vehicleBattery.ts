@@ -9,8 +9,10 @@ import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { mapCustomerFuelLabel } from "@/lib/vehicle-fuel-display";
 import {
   mergeOperatorFuelGroups,
+  OPERATOR_SLUG_PRIMARY_BATTERY,
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
+import { customerFacingBatteryCode } from "@/lib/canonical-battery-code";
 import {
   normalizeBatteryCode,
   productBatteryCode,
@@ -978,10 +980,23 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
   const source = hasConfirmedDb ? confirmed : recs;
   const groups = groupRecordsByFuel(source);
   const primaryRaw = groups[0]?.primaryBattery ?? source[0]?.primaryBattery ?? "";
-  const displayCode = primaryRaw ? resolveBatteryDisplay(primaryRaw).displayCode : "";
-  const batteryOptions = [
-    ...new Set(groups.flatMap((g) => g.batteryOptions.map((c) => resolveBatteryDisplay(c).displayCode))),
+  const slugPrimary = OPERATOR_SLUG_PRIMARY_BATTERY[slug];
+  const displayCode = slugPrimary
+    ? customerFacingBatteryCode(slugPrimary)
+    : primaryRaw
+      ? customerFacingBatteryCode(primaryRaw)
+      : "";
+  let batteryOptions = [
+    ...new Set(
+      groups.flatMap((g) => g.batteryOptions.map((c) => customerFacingBatteryCode(c))),
+    ),
   ].filter(Boolean);
+  if (slug === "staria-us4") {
+    batteryOptions = batteryOptions.filter((c) => !/^(AGM80L|CMF80L|80L)$/i.test(c));
+    if (displayCode && !batteryOptions.includes(displayCode)) {
+      batteryOptions = [displayCode, ...batteryOptions];
+    }
+  }
 
   return {
     displayCode,

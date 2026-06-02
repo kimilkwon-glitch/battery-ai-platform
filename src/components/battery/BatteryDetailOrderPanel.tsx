@@ -8,8 +8,8 @@ import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { BuyNowButton } from "@/components/cart/BuyNowButton";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryImageSetForCode } from "@/lib/battery-image";
+import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
-import { HUB_PHOTO_CHECK } from "@/lib/platform-hub-routes";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import {
   BATTERY_RETURN_OPTIONS,
@@ -17,17 +17,10 @@ import {
 } from "@/lib/shop-order-types";
 import { bm } from "@/lib/design-tokens";
 
-type VehicleChip = { slug: string; title: string };
-
-export function BatteryDetailOrderPanel({
-  code,
-  vehicles = [],
-}: {
-  code: string;
-  vehicles?: VehicleChip[];
-}) {
+export function BatteryDetailOrderPanel({ code }: { code: string }) {
   const [returnOption, setReturnOption] = useState<BatteryReturnOption>("return");
   const spec = parseBatterySpecDisplay(code);
+  const summary = getNormalizedBatterySummary(code);
   const imageSet = batteryImageSetForCode(code);
   const bat = getBattery(code);
   const brand = getBrand(bat.brandId);
@@ -40,6 +33,7 @@ export function BatteryDetailOrderPanel({
   ]
     .filter(Boolean)
     .join(" · ");
+  const sizeMm = formatDimensions(summary?.dimensionsMm ?? null);
 
   return (
     <section
@@ -64,21 +58,8 @@ export function BatteryDetailOrderPanel({
           </h1>
           <p className="mt-2 text-base font-semibold text-slate-600">{specLine}</p>
 
-          {vehicles.length > 0 ? (
-            <div className="mt-4">
-              <p className="text-sm font-black text-slate-500">대표 적용 차량</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {vehicles.map((v) => (
-                  <Link
-                    key={v.slug}
-                    href={`/vehicle/${v.slug}`}
-                    className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-800 ring-1 ring-slate-200 transition hover:bg-blue-50 hover:text-blue-800 hover:ring-blue-200"
-                  >
-                    {v.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
+          {sizeMm ? (
+            <p className="mt-2 text-sm font-medium text-slate-500">사이즈 {sizeMm}</p>
           ) : null}
 
           <p className="mt-5 text-xl font-black text-slate-900">
@@ -114,7 +95,6 @@ export function BatteryDetailOrderPanel({
               batteryCode={code}
               returnOption={returnOption}
               className="w-full py-3.5 text-base"
-              fitmentStatus={vehicles.length ? "needs_customer_confirm" : "unknown"}
             />
             <AddToCartButton
               mode="battery"
@@ -123,21 +103,15 @@ export function BatteryDetailOrderPanel({
               input={{
                 batteryCode: code,
                 usedBatteryReturnOption: returnOption,
-                fitmentStatus: vehicles.length ? "needs_customer_confirm" : "unknown",
+                fitmentStatus: "needs_customer_confirm",
                 source: "battery_detail",
               }}
             />
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-3 border-t border-slate-100 pt-4">
-            <Link href={HUB_STORE_DETAIL} className="text-base font-bold text-slate-600 hover:text-blue-700">
+          <div className="mt-4 border-t border-slate-100 pt-4">
+            <Link href={HUB_STORE_DETAIL} className="text-sm font-bold text-slate-600 hover:text-blue-700">
               매장·출장 상담
-            </Link>
-            <span className="text-slate-200" aria-hidden>
-              |
-            </span>
-            <Link href={HUB_PHOTO_CHECK} className="text-base font-bold text-slate-600 hover:text-blue-700">
-              사진으로 규격 확인
             </Link>
           </div>
         </div>

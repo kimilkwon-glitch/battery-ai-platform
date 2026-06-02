@@ -3,7 +3,11 @@
  * CMF80L 등 prefix 포함 전체 코드 유지. 80L 등은 family/별칭 매칭에만 사용.
  */
 import { getCanonicalBatteryCode } from "@/lib/battery-alias-map";
-import { normalizeBatteryCode, productBatteryCode } from "@/lib/batteryNormalize";
+import {
+  BATTERY_ALIAS_MAP,
+  normalizeBatteryCode,
+  productBatteryCode,
+} from "@/lib/batteryNormalize";
 
 /** 화면 표시·href·displayCode·specDisplay·data-primary-battery */
 const PREFIXED_PRODUCT_INPUT =
@@ -50,6 +54,35 @@ export function batterySpecHref(raw: string | null | undefined): string {
 
 /** @deprecated 고객 카드 CTA는 batteryDetailHref / batterySpecHref 사용 */
 export const batteryPurchaseHref = batteryDetailHref;
+
+/**
+ * 고객 화면 표시용 — AGM80R 등 prefix 유지, 80R 단독 표기는 AGM 계열이면 AGM 접두어 복원
+ * (100R·90R 등 CMF/GB 상용 규격은 family 표기 유지)
+ */
+export function customerFacingBatteryCode(raw: string | null | undefined): string {
+  if (!raw?.trim()) return "";
+  const trimmed = raw.trim();
+  const upper = trimmed.replace(/\s+/g, "").toUpperCase();
+
+  const viaCanon = canonicalBatteryCode(trimmed);
+  if (/^(AGM|DIN|CMF|GB|DF|EFB|MF|EV)/i.test(viaCanon)) return viaCanon;
+
+  const viaProduct = productBatteryCode(trimmed);
+  if (/^(AGM|DIN|CMF|GB|DF|EFB|MF|EV)/i.test(viaProduct)) return viaProduct;
+
+  if (/^AGM/i.test(upper)) {
+    return viaCanon || viaProduct || upper;
+  }
+
+  const family = normalizeBatteryCode(trimmed);
+  const agmKey = `AGM${family}`;
+  if (family && BATTERY_ALIAS_MAP[agmKey] && /^\d+[LR]$/i.test(family)) {
+    const agm = productBatteryCode(agmKey);
+    if (agm && /^AGM/i.test(agm)) return agm;
+  }
+
+  return viaCanon || viaProduct || upper;
+}
 
 /** DB 매칭·비교용 family key (내부) */
 export function batteryFamilyKey(raw: string | null | undefined): string {

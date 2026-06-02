@@ -158,8 +158,21 @@ export type BatteryDisplayResolved = {
   productCandidates: string[];
 };
 
+function displayCodeForCustomer(raw: string): string {
+  let displayCode = productBatteryCode(raw) || raw.trim().replace(/\s+/g, "").toUpperCase();
+  if (/^(AGM|DIN|CMF|GB|DF|EFB|MF|EV)/i.test(displayCode)) return displayCode;
+  if (/^AGM/i.test(displayCode)) return displayCode;
+  const family = normalizeBatteryCode(raw);
+  const agmKey = `AGM${family}`;
+  if (family && BATTERY_ALIAS_MAP[agmKey]) {
+    const agm = productBatteryCode(agmKey);
+    if (agm && /^AGM/i.test(agm)) return agm;
+  }
+  return displayCode;
+}
+
 export function resolveBatteryDisplay(code: string): BatteryDisplayResolved {
-  const displayCode = productBatteryCode(code) || code.trim().replace(/\s+/g, "").toUpperCase();
+  const displayCode = displayCodeForCustomer(code);
   const familyKey = normalizeBatteryCode(displayCode);
   const aliases = getBatteryAliases(familyKey);
   return {

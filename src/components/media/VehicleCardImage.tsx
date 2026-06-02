@@ -1,9 +1,7 @@
 "use client";
 
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
-import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import { getVehicleImageUrlBySlug } from "@/lib/media/resolve-asset-image";
-import { HOME_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 
 type Props = {
   slug: string;
@@ -13,7 +11,7 @@ type Props = {
   layout?: "stack" | "row";
 };
 
-/** 차량 asset 있으면 실차 PNG, 없으면 placeholder 슬롯 */
+/** 차량 asset 있으면 실차 PNG, 없으면 심플 텍스트 플레이스홀더 */
 export function VehicleCardImage({
   slug,
   title,
@@ -22,29 +20,23 @@ export function VehicleCardImage({
   layout = "row",
 }: Props) {
   const src = getVehicleImageUrlBySlug(slug);
-  const commercial = /porter|봉고|마이티/i.test(title);
-  const stackHeight = heightClass ?? "h-[120px] sm:h-[128px]";
+  const commercial = /porter|봉고|마이티|스타리아/i.test(title);
+  const stackHeight = heightClass ?? "h-[7.5rem] sm:h-[8.5rem]";
   const areaClass =
     layout === "row"
-      ? "relative h-full min-h-[132px] w-full overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)] md:min-h-[158px]"
-      : `relative overflow-hidden rounded-xl bg-[var(--bm-image-bg)] ring-1 ring-[var(--bm-border)] ${stackHeight} w-full`;
+      ? "relative flex h-full min-h-[132px] w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-slate-50 to-white ring-1 ring-slate-200/80 md:min-h-[158px]"
+      : `relative flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-50 to-white ring-1 ring-slate-200/80 ${stackHeight} w-full`;
 
   if (src) {
     return (
       <div
         className={`${areaClass} ${className}`}
-        data-image-slot={`home.vehicle.quick.${slug}`}
+        data-image-slot={`vehicle.card.${slug}`}
         data-image-slot-state="ready"
       >
         <CarGenerationImage
           alt={title}
-          className={
-            layout === "row"
-              ? commercial
-                ? "!h-[86%] !w-[92%] !max-w-[95%]"
-                : "!h-[90%] !w-[94%] !max-w-[95%]"
-              : "h-full w-full"
-          }
+          className="h-full w-full !max-h-full !max-w-[98%]"
           commercial={commercial}
           size="compact"
           src={src}
@@ -54,10 +46,13 @@ export function VehicleCardImage({
   }
 
   return (
-    <MediaImageSlot
-      slot={HOME_IMAGE_SLOTS.vehicleQuick(slug, title)}
-      className={`${areaClass} ${className}`}
-      compact={layout === "row"}
-    />
+    <div
+      className={`${areaClass} flex flex-col items-center justify-center gap-1 px-3 ${className}`}
+      data-image-slot={`vehicle.card.${slug}`}
+      data-image-slot-state="placeholder"
+    >
+      <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400">차량</span>
+      <span className="line-clamp-2 text-center text-xs font-bold leading-snug text-slate-600">{title}</span>
+    </div>
   );
 }
