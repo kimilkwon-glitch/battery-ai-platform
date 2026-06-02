@@ -20,10 +20,12 @@ export function CartHeaderLink() {
     return () => window.removeEventListener(CART_UPDATED_EVENT, sync);
   }, [ctx?.items]);
 
+  const badgeLabel = count > 99 ? "99+" : String(count);
+
   return (
     <Link
       href={CART_PAGE}
-      className="relative inline-flex size-9 shrink-0 items-center justify-center rounded-full text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 sm:size-10"
+      className="portal-cart-link relative inline-flex size-9 shrink-0 items-center justify-center rounded-full text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 sm:size-10"
       aria-label={count > 0 ? `장바구니 ${count}개` : "장바구니"}
       title="장바구니"
     >
@@ -31,8 +33,11 @@ export function CartHeaderLink() {
         🛒
       </span>
       {count > 0 ? (
-        <span className="min-w-[1.125rem] rounded-full bg-blue-600 px-1 text-center text-[9px] font-black leading-4 text-white">
-          {count > 99 ? "99+" : count}
+        <span
+          className="portal-cart-link__badge pointer-events-none absolute -right-0.5 -top-0.5 z-[1] min-w-[1.125rem] max-w-[2.25rem] truncate rounded-full bg-blue-600 px-1 text-center text-[9px] font-black leading-4 text-white ring-2 ring-white"
+          aria-hidden
+        >
+          {badgeLabel}
         </span>
       ) : null}
     </Link>

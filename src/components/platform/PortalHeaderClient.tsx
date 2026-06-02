@@ -19,35 +19,35 @@ export function PortalHeaderClient({
   const viewport = useNavViewport();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
-      <div className="relative mx-auto max-w-[1440px] px-4 py-3.5 lg:px-6 lg:py-4">
-        <div className="portal-header-top-row relative flex min-h-[4.25rem] items-center gap-3 pl-[10.5rem] pr-[9.5rem] sm:min-h-[4.5rem] sm:pl-[12.5rem] sm:pr-[12rem] lg:min-h-20 lg:pl-[16rem] lg:pr-[13rem]">
-          <BrandLogoLink className="portal-header-brand absolute left-0 top-1/2 z-[2] max-w-[calc(100%-5.5rem)] -translate-y-1/2 sm:max-w-[15rem] lg:max-w-[17.5rem]" />
+    <header className="portal-site-header sticky top-0 z-50 max-w-[100vw] overflow-x-clip border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
+      <div className="portal-header-inner relative mx-auto box-border w-full max-w-[1440px] px-6 py-3.5 lg:px-8 lg:py-4">
+        <div className="portal-header-top-row flex min-h-[4.25rem] min-w-0 items-center gap-2 sm:gap-3 lg:min-h-20 lg:gap-4">
+          <BrandLogoLink className="portal-header-brand max-w-[min(42vw,11.5rem)] shrink-0 sm:max-w-[13rem] lg:max-w-[15.5rem] xl:max-w-[17.5rem]" />
 
           {viewport === "desktop" ? (
-            <div className="flex min-w-0 flex-1 justify-center">
+            <div className="portal-header-nav-slot flex min-w-0 flex-1 justify-center overflow-hidden">
               <PortalSiteNav variant="desktop" />
             </div>
           ) : (
             <div className="min-w-0 flex-1" aria-hidden />
           )}
 
-          <div className="portal-header-auth absolute right-0 top-1/2 z-[2] flex -translate-y-1/2 items-center gap-1 sm:gap-1.5">
+          <div className="portal-header-auth flex shrink-0 items-center gap-1 sm:gap-1.5">
             <Link
               href={HUB_LOGIN}
-              className="hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:inline-flex lg:px-3 lg:text-xs"
+              className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:inline-flex lg:px-2.5 lg:text-xs xl:px-3"
             >
               로그인
             </Link>
             <Link
               href={HUB_SIGNUP}
-              className="hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:inline-flex lg:px-3 lg:text-xs"
+              className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:inline-flex lg:px-2.5 lg:text-xs xl:px-3"
             >
               회원가입
             </Link>
             <CartHeaderLink />
             <Link
-              className="portal-header-my rounded-full px-3 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 lg:px-4 lg:py-2 lg:text-xs"
+              className="portal-header-my portal-header-auth-btn rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 lg:px-3 lg:text-xs"
               href="/mypage"
             >
               MY
@@ -67,7 +67,7 @@ export function PortalHeaderClient({
       </div>
 
       {showSearch ? (
-        <div className="border-t border-slate-100 px-4 py-2 md:hidden">
+        <div className="border-t border-slate-100 px-6 py-2 md:hidden">
           <VehicleSearchBox defaultQuery={defaultQuery} placeholder={searchPlaceholder} />
         </div>
       ) : null}

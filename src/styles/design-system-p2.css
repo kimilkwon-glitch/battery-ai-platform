@@ -961,10 +961,75 @@
   }
 }
 
+/* 상단 포털 헤더 — 로고 / nav / 유저 영역 flex */
+.portal-site-header {
+  box-sizing: border-box;
+}
+
+.portal-header-inner {
+  box-sizing: border-box;
+}
+
+.portal-header-top-row {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.portal-header-nav-slot {
+  box-sizing: border-box;
+}
+
+.portal-header-auth {
+  box-sizing: border-box;
+}
+
+.portal-header-auth-btn {
+  white-space: nowrap;
+}
+
+.portal-cart-link {
+  box-sizing: border-box;
+}
+
+.portal-cart-link__badge {
+  box-sizing: border-box;
+}
+
 /* 상단 포털 네비 — 데스크톱 한 줄 */
 @media (min-width: 1024px) {
   .portal-header-desktop-nav {
     flex-wrap: nowrap !important;
+  }
+
+  .portal-header-brand .portal-brand-lockup__logo-img {
+    height: 3.5rem;
+  }
+
+  .portal-header-brand .portal-brand-lockup__title {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .portal-header-brand .portal-brand-lockup__logo-img {
+    height: 4rem;
+  }
+
+  .portal-header-brand .portal-brand-lockup__title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .portal-header-desktop-nav .portal-nav-link {
+    padding-left: 0.4375rem;
+    padding-right: 0.4375rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .portal-header-desktop-nav .portal-nav-link__text {
+    letter-spacing: -0.03em;
   }
 }
 
@@ -999,13 +1064,21 @@
 
 @media (min-width: 1024px) {
   .portal-nav-link {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+}
+
+@media (min-width: 1280px) {
+  .portal-nav-link {
     padding: 0.5625rem 0.875rem;
     font-size: 1rem;
     font-weight: 600;
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1440px) {
   .portal-nav-link {
     padding: 0.625rem 1rem;
     font-size: 1.0625rem;

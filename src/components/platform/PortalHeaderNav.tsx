@@ -73,7 +73,7 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
   if (variant === "desktop") {
     return (
       <nav
-        className="portal-header-desktop-nav flex w-full flex-nowrap items-center justify-center gap-1 lg:gap-1.5 xl:gap-2"
+        className="portal-header-desktop-nav flex w-full max-w-full flex-nowrap items-center justify-center gap-0.5 lg:gap-1 xl:gap-1.5"
         aria-label="주요 메뉴"
       >
         {portalNavPrimary.slice(0, 2).map(([label, href]) => (
