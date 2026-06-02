@@ -499,6 +499,9 @@ function BrandProductCard({
         <p className={clsx("text-xl font-black tracking-tight sm:text-2xl", theme.bannerText)}>
           {card.displayCode}
         </p>
+        {card.manufacturerLine ? (
+          <p className={clsx("mt-1.5 text-sm font-semibold", labelMuted)}>{card.manufacturerLine}</p>
+        ) : null}
         <dl className={clsx("mt-4 space-y-0", dividerBorder)}>
           <SpecRow
             label="CCA"

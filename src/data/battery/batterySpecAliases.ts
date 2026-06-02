@@ -165,6 +165,7 @@ export const CUSTOMER_FACING_NORM_CODES = new Set([
   "DIN50L",
   "DIN62L",
   "DIN74L",
+  "DIN78L",
   "DIN80L",
   "DIN90L",
   "DIN100L",

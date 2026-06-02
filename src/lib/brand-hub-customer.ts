@@ -1,7 +1,14 @@
-import { ROCKET_SPECS } from "@/data/battery/brands/rocket-specs";
-import { SOLITE_SPECS } from "@/data/battery/brands/solite-specs";
 import { getBrandSpecsByBrand } from "@/data/battery/batterySpecIndex";
 import { formatDimensionsDisplay } from "@/data/battery/spec-helpers";
+import {
+  auditBrandHubFieldGaps,
+  brandHubManufacturerLine,
+  brandHubPrimaryTitle,
+  brandSpecPool,
+  listBrandHubCatalogForTab,
+  mergeBrandSpecWithBaseNorm,
+  specMatchesBrandHubFamilyTab,
+} from "@/lib/brand-hub-catalog";
 import type { BatteryBrand, BatteryBrandSpec } from "@/data/battery/types";
 
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
@@ -254,65 +261,29 @@ export const BRAND_HUB_FAMILY_TABS = [
 
 export type BrandHubFamilyTabId = (typeof BRAND_HUB_FAMILY_TABS)[number]["id"];
 
-const FAMILY_SORT: Record<string, number> = {
-  AGM: 0,
-  DIN: 1,
-  CMF: 2,
-  GB: 3,
-  COMMERCIAL: 4,
-};
-
-function compareBrandHubSpecs(a: BatteryBrandSpec, b: BatteryBrandSpec): number {
-  const fa = FAMILY_SORT[a.family] ?? 9;
-  const fb = FAMILY_SORT[b.family] ?? 9;
-  if (fa !== fb) return fa - fb;
-  return (
-    (a.capacityAh20Hr ?? 0) - (b.capacityAh20Hr ?? 0) ||
-    a.code.localeCompare(b.code, "ko")
-  );
-}
-
-/** 일반형 = CMF·GB·상용(COMMERCIAL) */
-export function specMatchesBrandHubFamilyTab(
-  spec: BatteryBrandSpec,
-  tab: BrandHubFamilyTabId,
-): boolean {
-  if (tab === "agm") return spec.family === "AGM";
-  if (tab === "din") return spec.family === "DIN";
-  return spec.family === "CMF" || spec.family === "GB" || spec.family === "COMMERCIAL";
-}
-
-function brandSpecPool(brandId: CustomerBrandHubId): BatteryBrandSpec[] {
-  return brandId === "rocket" ? ROCKET_SPECS : SOLITE_SPECS;
-}
-
-/** 브랜드 제원 DB 전체 (코드별 1카드, normalizedCode 병합 없음) */
-export function listBrandHubProducts(brandId: CustomerBrandHubId): BatteryBrandSpec[] {
-  return brandSpecPool(brandId)
-    .filter((s) => s.brand === BRAND_KEY[brandId])
-    .sort(compareBrandHubSpecs);
-}
+export { specMatchesBrandHubFamilyTab, auditBrandHubFieldGaps };
 
 export function listBrandHubProductsForTab(
   brandId: CustomerBrandHubId,
   tab: BrandHubFamilyTabId,
 ): BatteryBrandSpec[] {
-  return listBrandHubProducts(brandId).filter((s) => specMatchesBrandHubFamilyTab(s, tab));
+  return listBrandHubCatalogForTab(brandId, tab);
 }
 
 export function countBrandHubProductsByTab(
   brandId: CustomerBrandHubId,
 ): Record<BrandHubFamilyTabId, number> {
   return {
-    general: listBrandHubProductsForTab(brandId, "general").length,
-    din: listBrandHubProductsForTab(brandId, "din").length,
-    agm: listBrandHubProductsForTab(brandId, "agm").length,
+    general: listBrandHubCatalogForTab(brandId, "general").length,
+    din: listBrandHubCatalogForTab(brandId, "din").length,
+    agm: listBrandHubCatalogForTab(brandId, "agm").length,
   };
 }
 
 export type BrandHubSpecCardData = {
   code: string;
   displayCode: string;
+  manufacturerLine: string | null;
   familyLabel: string;
   cca: string;
   rc: string;
@@ -334,19 +305,21 @@ export function resolveBrandHubSpecCard(
   specInput?: BatteryBrandSpec,
 ): BrandHubSpecCardData {
   const brand = BRAND_KEY[brandId];
-  const spec =
+  const raw =
     specInput ??
     getBrandSpecsByBrand(code, brand)[0] ??
-    listBrandHubProducts(brandId).find((s) => s.code === code);
-  const displayCode = spec?.code ?? code;
-  const detailHref = `/batteries/${encodeURIComponent(displayCode)}`;
+    brandSpecPool(brandId).find((s) => s.brand === brand && s.code === code);
+  const spec = raw ? mergeBrandSpecWithBaseNorm(raw) : undefined;
+  const detailCode = spec?.code ?? code;
+  const detailHref = `/batteries/${encodeURIComponent(detailCode)}`;
   const sizeStr = spec?.dimensionsMm
     ? (formatDimensionsDisplay(spec.dimensionsMm) ?? "—")
     : "—";
 
   return {
-    code,
-    displayCode,
+    code: detailCode,
+    displayCode: spec ? brandHubPrimaryTitle(spec) : code,
+    manufacturerLine: spec ? brandHubManufacturerLine(spec, brandId) : null,
     familyLabel: spec ? familyLabelForSpec(spec) : "—",
     cca: spec?.cca != null ? String(spec.cca) : "—",
     rc: spec?.rc != null ? String(spec.rc) : "—",

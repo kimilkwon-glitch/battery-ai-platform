@@ -114,12 +114,13 @@ export const ROCKET_SPECS: BatteryBrandSpec[] = [
     dimensionsMm: dims(315, 175, 169),
     exposeToCustomer: true,
   }),
-  rocketGbStub("GB80R", "80R", ["AGM80R"], "R", "AGM", {
+  rocketGbStub("GB80R", "80R", ["AGM80R", "CMF80R"], "R", "CMF", {
     capacityAh20Hr: 80,
     cca: 800,
     dimensionsMm: dims(315, 175, 169),
-    terminalType: "AGM_DIN",
+    terminalType: "JIS",
     exposeToCustomer: false,
+    cautionNotes: ["AGM80L과 타입·충전계 구분 — R단자 일반형"],
   }),
 
   ...[
