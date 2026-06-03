@@ -8,11 +8,18 @@ import { storeLinks } from "@/lib/external-links";
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
 import { bm } from "@/lib/design-tokens";
 
-export function StoreHubCompactCards({ highlightId }: { highlightId: BusanStoreId | null }) {
+export function StoreHubCompactCards({
+  highlightId,
+  activeId,
+}: {
+  highlightId: BusanStoreId | null;
+  activeId?: BusanStoreId | null;
+}) {
   return (
     <section className="grid gap-6 lg:grid-cols-2 lg:items-stretch" id="stores">
       {BUSAN_STORES.map((store) => {
-        const active = highlightId === store.id;
+        const highlighted = highlightId === store.id;
+        const selected = activeId === store.id;
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.mapsQuery)}`;
         const blogHref = storeLinks[store.id].blog;
 
@@ -20,10 +27,12 @@ export function StoreHubCompactCards({ highlightId }: { highlightId: BusanStoreI
           <article
             key={store.id}
             id={`store-${store.id}`}
+            tabIndex={selected ? 0 : -1}
             className={clsx(
-              `${bm.card} bm-card-unified bm-store-card flex h-full flex-col overflow-hidden transition`,
+              `${bm.card} bm-card-unified bm-store-card flex h-full flex-col overflow-hidden transition outline-none`,
               store.id === "deokcheon" ? "bm-store-card--deokcheon" : "bm-store-card--hakjang",
-              active && "bm-store-card--active",
+              highlighted && "bm-store-card--active",
+              selected && "bm-store-card--selected",
             )}
           >
             <div className="relative aspect-[16/10] w-full shrink-0 bg-slate-100 sm:aspect-[16/9]">
@@ -44,6 +53,7 @@ export function StoreHubCompactCards({ highlightId }: { highlightId: BusanStoreI
                     className={clsx(
                       "bm-store-badge mr-2 inline-flex rounded-full px-3 py-1.5 text-sm font-black",
                       store.id === "deokcheon" ? "bm-store-badge--deokcheon" : "bm-store-badge--hakjang",
+                      selected && "ring-2 ring-white/90",
                     )}
                   >
                     {store.name}
@@ -53,7 +63,12 @@ export function StoreHubCompactCards({ highlightId }: { highlightId: BusanStoreI
 
               <div className="mt-6 shrink-0">
                 <p className="text-sm font-bold uppercase tracking-wide text-slate-500">대표 권역</p>
-                <p className="mt-2 min-h-[3.25rem] text-xl font-black leading-snug text-slate-900 sm:text-[1.35rem]">
+                <p
+                  className={clsx(
+                    "mt-2 min-h-[3.25rem] text-xl font-black leading-snug sm:text-[1.35rem]",
+                    selected ? "text-blue-800" : "text-slate-900",
+                  )}
+                >
                   {store.displayRegions}
                 </p>
               </div>

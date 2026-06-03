@@ -5,7 +5,7 @@
 
 export type InquiryStatus = "new" | "reviewed" | "done";
 
-export type InquirySource = "chat" | "support";
+export type InquirySource = "chat" | "support" | "product_detail";
 
 export type InquiryRecord = {
   id: string;

@@ -10,6 +10,7 @@ import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import { openProductInquiry } from "@/lib/chat-inquiry-events";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import {
   BATTERY_RETURN_OPTIONS,
@@ -50,7 +51,7 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
           />
         </div>
 
-        <div className="battery-product-detail__info relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="battery-product-detail__info relative min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="absolute right-4 top-4">
             <BatteryWishlistButton code={code} />
           </div>
@@ -69,20 +70,19 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
             <span className="ml-2 text-sm font-semibold text-slate-400">가격·배송</span>
           </p>
 
-          <div className="mt-4">
+          <div className="mt-4 min-w-0">
             <p className="text-sm font-black text-slate-700">폐배터리 반납</p>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="battery-order-panel__return mt-2" role="group" aria-label="폐배터리 반납 선택">
               {BATTERY_RETURN_OPTIONS.map((opt) => {
                 const selected = returnOption === opt.id;
                 return (
                   <button
                     key={opt.id}
                     type="button"
+                    aria-pressed={selected}
                     onClick={() => setReturnOption(opt.id)}
-                    className={`rounded-lg px-4 py-3 text-base font-black transition ring-1 ${
-                      selected
-                        ? "bg-blue-600 text-white ring-blue-600"
-                        : "bg-white text-slate-700 ring-slate-200 hover:ring-slate-300"
+                    className={`battery-order-panel__return-btn${
+                      selected ? " battery-order-panel__return-btn--active" : ""
                     }`}
                   >
                     {opt.label}
@@ -92,7 +92,7 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <div className="battery-order-panel__cta-row mt-5">
             <BuyNowButton
               batteryCode={code}
               returnOption={returnOption}
@@ -102,7 +102,7 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
               mode="battery"
               variant="navy"
               returnOption={returnOption}
-              className="w-full"
+              className="w-full min-h-[3.25rem]"
               input={{
                 batteryCode: code,
                 usedBatteryReturnOption: returnOption,
@@ -112,8 +112,19 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
             />
           </div>
 
+          <button
+            type="button"
+            className="battery-product-inquiry-cta mt-3 w-full"
+            onClick={() => openProductInquiry({ batteryCode: code })}
+          >
+            이 규격 제품 문의
+          </button>
+
           <div className="mt-4 border-t border-slate-100 pt-4">
-            <Link href={HUB_STORE_DETAIL} className="text-sm font-bold text-slate-600 hover:text-blue-700">
+            <Link
+              href={HUB_STORE_DETAIL}
+              className="text-sm font-bold text-slate-600 hover:text-blue-700"
+            >
               매장·출장 상담
             </Link>
           </div>

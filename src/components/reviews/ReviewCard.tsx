@@ -25,7 +25,7 @@ function ReviewBadge({ id }: { id: ReviewBadgeId }) {
   return (
     <span
       className={clsx(
-        "bm-badge",
+        "bm-badge shrink-0",
         mood ? "bm-badge--review-mood" : "bm-badge--review",
       )}
     >
@@ -38,17 +38,23 @@ function ReviewOperatorReply({ item }: { item: ReviewItem }) {
   if (!item.operatorReply) return null;
 
   return (
-    <div className="review-operator-reply mt-4">
-      <div className="review-operator-reply__head">
-        <span className="review-operator-reply__icon" aria-hidden>
+    <div className="review-operator-reply mt-4 min-w-0 max-w-full rounded-xl border border-teal-100 bg-teal-50/50 p-4">
+      <div className="review-operator-reply__head flex items-center gap-2">
+        <span className="review-operator-reply__icon flex size-8 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700" aria-hidden>
           <MessageCircle className="size-4" strokeWidth={2.25} />
         </span>
-        <p className="review-operator-reply__label">배터리매니저 답변</p>
+        <p className="review-operator-reply__label text-sm font-black text-teal-900">
+          배터리매니저 답변
+        </p>
       </div>
       {item.operatorSummary ? (
-        <p className="review-operator-reply__summary">{item.operatorSummary}</p>
+        <p className="review-operator-reply__summary mt-2 text-sm font-bold text-teal-900/90">
+          {item.operatorSummary}
+        </p>
       ) : null}
-      <p className="review-operator-reply__body">{item.operatorReply}</p>
+      <p className="review-operator-reply__body mt-2 text-sm font-medium leading-relaxed text-slate-700">
+        {item.operatorReply}
+      </p>
     </div>
   );
 }
@@ -57,9 +63,9 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
   const displayBadges = reviewCardDisplayBadgeIds(item.badges);
 
   return (
-    <>
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-0.5 text-amber-500">
+    <div className="review-card__body flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        <div className="flex shrink-0 items-center gap-0.5 text-amber-500" aria-label={`${item.rating}점`}>
           {Array.from({ length: 5 }).map((_, i) => (
             <Star
               key={i}
@@ -67,14 +73,14 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
             />
           ))}
         </div>
-        <span className="text-xs font-bold text-slate-500 sm:text-sm">
+        <span className="min-w-0 text-xs font-bold text-slate-600 sm:text-sm">
           {reviewDisplayAuthor(item)}
           {reviewDisplayDate(item) ? ` · ${reviewDisplayDate(item)}` : null}
         </span>
       </div>
 
       {displayBadges.length > 0 ? (
-        <div className="mt-2.5 flex flex-wrap gap-1.5">
+        <div className="mt-2.5 flex min-w-0 flex-wrap gap-1.5">
           {displayBadges.map((b) => (
             <ReviewBadge key={b} id={b} />
           ))}
@@ -82,15 +88,15 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
       ) : null}
 
       {(item.vehicleName || item.batteryCode) ? (
-        <p className="mt-2.5 text-sm font-black text-slate-900 line-clamp-1 sm:text-base">
+        <p className="mt-2.5 min-w-0 text-sm font-black text-slate-900 sm:text-base">
           {[item.vehicleName, item.batteryCode].filter(Boolean).join(" · ")}
         </p>
       ) : null}
 
       <p
         className={clsx(
-          "mt-2.5 text-sm font-medium leading-relaxed text-slate-700 sm:text-[15px] sm:leading-relaxed",
-          compact ? "line-clamp-4" : "line-clamp-3",
+          "review-card__content mt-2.5 text-sm font-medium leading-relaxed text-slate-700 sm:text-[15px]",
+          compact ? "line-clamp-4" : undefined,
         )}
       >
         {item.content}
@@ -98,8 +104,11 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
 
       <ReviewOperatorReply item={item} />
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Link href={item.productHref} className={`${bm.btnSecondary} text-xs sm:text-sm`}>
+      <div className="review-card__actions mt-auto flex min-w-0 flex-wrap gap-2 pt-4">
+        <Link
+          href={item.productHref}
+          className={`${bm.btnSecondary} shrink-0 text-xs sm:text-sm`}
+        >
           해당 규격 보기
         </Link>
         {item.blogHref ? (
@@ -107,13 +116,13 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
             href={item.blogHref}
             target="_blank"
             rel="noopener noreferrer"
-            className={`${bm.btnTertiary} text-xs sm:text-sm`}
+            className={`${bm.btnTertiary} shrink-0 text-xs sm:text-sm`}
           >
             블로그 후기
           </a>
         ) : null}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -124,7 +133,7 @@ export function ReviewCard({ item }: { item: ReviewItem }) {
     return (
       <article
         className={clsx(
-          "review-card review-card--text flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5",
+          "review-card review-card--text flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5",
         )}
       >
         <ReviewCardBody item={item} compact />
@@ -135,11 +144,11 @@ export function ReviewCard({ item }: { item: ReviewItem }) {
   return (
     <article
       className={clsx(
-        "review-card review-card--photo flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
+        "review-card review-card--photo flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
       )}
     >
-      <ReviewCardMedia item={item} />
-      <div className="flex flex-col p-4 sm:p-5">
+      <ReviewCardMedia item={item} className="review-card-media w-full shrink-0" />
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col p-4 sm:p-5">
         <ReviewCardBody item={item} />
       </div>
     </article>

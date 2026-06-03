@@ -394,7 +394,7 @@ export function BusanRegionMap({
             <div className="busan-map-svg-stage absolute inset-3 sm:inset-4">
               <svg
                 viewBox={BUSAN_MAP_VIEWBOX}
-                className="busan-map-svg block h-full w-full max-w-none touch-manipulation"
+                className="busan-map-svg block h-full w-full max-w-none"
                 role="img"
                 aria-label="부산 구별 권역 안내 지도"
                 preserveAspectRatio="xMidYMid meet"

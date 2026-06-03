@@ -1,0 +1,244 @@
+/* 상품 상세 · 문의 · 업그레이드 · 지점 · 리뷰 UX 정리 */
+
+.bm-inquiry-field {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.bm-inquiry-field input,
+.bm-inquiry-field select,
+.bm-inquiry-field textarea {
+  margin-top: 0.375rem;
+  width: 100%;
+  max-width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.625rem;
+  border: 1px solid #e2e8f0;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.bm-inquiry-field textarea {
+  min-height: 6.5rem;
+  resize: vertical;
+}
+
+.bm-inquiry-modal {
+  max-height: min(85vh, 640px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 상품 상세 주문 박스 */
+.battery-order-panel__return {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.battery-order-panel__return-btn {
+  flex: 1 1 calc(50% - 0.25rem);
+  min-width: 0;
+  min-height: 3rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #334155;
+}
+
+.battery-order-panel__return-btn--active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.battery-order-panel__cta-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .battery-order-panel__cta-row {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.battery-order-panel__cta-row .bm-btn-primary,
+.battery-order-panel__cta-row .bm-btn-navy,
+.battery-order-panel__cta-row button {
+  min-height: 3.25rem !important;
+  width: 100%;
+  padding-top: 0.875rem !important;
+  padding-bottom: 0.875rem !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  white-space: nowrap;
+}
+
+.battery-product-inquiry-cta {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #0f172a;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.battery-product-inquiry-cta:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* 부산 지도 — 페이지 세로 스크롤 유지 */
+.busan-map-canvas {
+  overscroll-behavior: contain;
+  touch-action: pan-y pinch-zoom;
+}
+
+.busan-map-svg-stage {
+  pointer-events: auto;
+}
+
+.bm-store-card--active {
+  border-width: 3px !important;
+  border-color: #2563eb !important;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 45%) !important;
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.12),
+    0 16px 40px -12px rgba(15, 23, 42, 0.22) !important;
+  transform: translateY(-2px);
+}
+
+.bm-store-card--deokcheon.bm-store-card--active {
+  border-color: #2563eb !important;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 50%) !important;
+}
+
+.bm-store-card--hakjang.bm-store-card--active {
+  border-color: #059669 !important;
+  background: linear-gradient(180deg, #ecfdf5 0%, #fff 50%) !important;
+  box-shadow:
+    0 0 0 4px rgba(16, 185, 129, 0.12),
+    0 16px 40px -12px rgba(15, 23, 42, 0.2) !important;
+}
+
+.bm-store-card--active .bm-store-badge {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.bm-store-card--selected {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+.busan-region-map {
+  overflow: visible;
+}
+
+.busan-map-svg {
+  touch-action: pan-y pinch-zoom;
+}
+
+/* 리뷰 카드 */
+.bm-zone--review .review-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+
+.bm-zone--review .review-card--text,
+.bm-zone--review .review-card--photo > .flex {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.bm-zone--review .review-card__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bm-zone--review .review-card__actions {
+  margin-top: auto;
+  padding-top: 1rem;
+  flex-shrink: 0;
+}
+
+.bm-zone--review .bm-badge--review,
+.bm-zone--review .bm-badge--review-mood {
+  border-radius: 9999px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  line-height: 1.3;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.bm-zone--review .bm-badge--review-mood {
+  border-color: #99f6e4;
+  background: #f0fdfa;
+  color: #0f766e;
+}
+
+.bm-zone--review .review-card__content {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.bm-zone--review .review-operator-reply {
+  border-left: 4px solid #14b8a6;
+}
+
+.bm-zone--review .review-card-media {
+  aspect-ratio: 16 / 10;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.bm-zone--review .review-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 업그레이드 조회 */
+.upgrade-lookup-result {
+  overflow-wrap: break-word;
+  word-break: keep-all;
+  min-width: 0;
+}

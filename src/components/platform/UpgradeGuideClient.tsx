@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { AppIcon } from "@/components/common/AppIcon";
+import { UpgradeBatteryLookup } from "@/components/platform/UpgradeBatteryLookup";
 import { bm } from "@/lib/design-tokens";
-import { getSearchHref } from "@/lib/battery-search";
-import { HUB_PHOTO, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 
 const REVIEW_CASES = [
   "장기주차가 잦은 차량",
@@ -45,18 +45,12 @@ export function UpgradeGuideClient() {
           배터리 용량 업그레이드
         </h1>
         <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
-          장기주차, 블랙박스 사용, 전장품 사용이 많다면 용량 업그레이드를 검토할 수 있습니다. 단,
-          차량 구조에 맞는 경우에만 안전하게 장착해야 합니다.
+          장기주차, 블랙박스 사용, 전장품 사용이 많다면 용량 업그레이드를 검토할 수 있습니다. 차량명으로
+          먼저 조회한 뒤, 공간·단자가 맞는 경우에만 안전하게 장착하세요.
         </p>
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-          <Link href={HUB_STORE_DETAIL} className={`${bm.btnPrimary} min-h-[3rem] justify-center text-sm font-black`}>
-            내 차 업그레이드 가능 여부 상담하기
-          </Link>
-          <Link href={getSearchHref("AGM70L")} className={`${bm.btnNavy} min-h-[3rem] justify-center text-sm font-black`}>
-            배터리 규격 검색하기
-          </Link>
-        </div>
       </section>
+
+      <UpgradeBatteryLookup />
 
       <section className="grid gap-4 md:grid-cols-3">
         <article className={`${bm.card} ${bm.cardPad}`}>
@@ -121,30 +115,20 @@ export function UpgradeGuideClient() {
         </div>
       </section>
 
-      <section className={`${bm.card} ${bm.cardPad} space-y-4`}>
-        <h2 className="text-lg font-black text-slate-950">
-          업그레이드 가능 여부는 사진이나 차량 정보로 확인할 수 있습니다.
-        </h2>
-        <p className="text-sm font-medium leading-relaxed text-slate-600">
-          공간과 단자 방향이 맞지 않으면 장착이 어려울 수 있습니다. 상담 시 차량명과 현재 배터리
-          규격을 알려주시면 더 빠르게 확인할 수 있습니다.
-        </p>
-        <ul className="grid gap-2 text-sm font-bold text-slate-800 sm:grid-cols-3">
-          <li className="rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-100">차량명</li>
-          <li className="rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-100">연식</li>
-          <li className="rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-100">현재 배터리 규격</li>
-        </ul>
-        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-          <Link href={HUB_PHOTO} className={`${bm.btnSecondary} min-h-[3rem] justify-center text-sm font-black`}>
-            사진 확인하기
-          </Link>
-          <Link href={HUB_STORE_DETAIL} className={`${bm.btnPrimary} min-h-[3rem] justify-center text-sm font-black`}>
-            상담하기
-          </Link>
-          <Link href={getSearchHref("")} className={`${bm.btnTertiary} min-h-[3rem] justify-center text-sm font-black`}>
-            규격 검색
-          </Link>
+      <section className={`${bm.card} ${bm.cardPad} flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between`}>
+        <div>
+          <h2 className="text-lg font-black text-slate-950">추가 확인이 필요하신가요?</h2>
+          <p className="mt-2 max-w-xl text-sm font-medium leading-relaxed text-slate-600">
+            조회 결과로 확인이 어려우면 차량명·현재 규격을 알려주시면 장착 공간과 단자 방향을 함께
+            점검해 드립니다.
+          </p>
         </div>
+        <Link
+          href={HUB_STORE_DETAIL}
+          className={`${bm.btnPrimary} min-h-[3rem] w-full shrink-0 justify-center text-sm font-black sm:w-auto`}
+        >
+          상담하기
+        </Link>
       </section>
     </div>
   );

@@ -25,8 +25,15 @@ export function ServiceCenterClient({
 
   useEffect(() => {
     if (!activeStore) return;
-    const clearTimer = window.setTimeout(() => setActiveStore(null), 3500);
-    return () => window.clearTimeout(clearTimer);
+    const el = document.getElementById(`store-${activeStore}`);
+    if (!el) return;
+    const timer = window.requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (el instanceof HTMLElement) {
+        el.focus({ preventScroll: true });
+      }
+    });
+    return () => window.cancelAnimationFrame(timer);
   }, [activeStore]);
 
   return (
@@ -53,7 +60,7 @@ export function ServiceCenterClient({
         지도가 보이지 않으면 가까운 지점으로 전화 상담해 주세요.
       </p>
 
-      <StoreHubCompactCards highlightId={highlightStore} />
+      <StoreHubCompactCards highlightId={highlightStore} activeId={activeStore} />
 
       <section
         className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm sm:p-7"
