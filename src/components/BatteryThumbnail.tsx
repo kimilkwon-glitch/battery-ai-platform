@@ -18,6 +18,7 @@ import {
   batteryImageStageImgMaxWidth,
   batteryImageStageInset,
 } from "@/lib/battery-image-stage";
+import { getBatteryImageFit } from "@/lib/battery-image-presentation";
 
 function BatteryGraphic({ code }: { code: string }) {
   return (
@@ -172,7 +173,7 @@ export function BatteryImageCard({
         capacity={capacity}
         cca={cca}
         ratio={ratio}
-        fit={fit ?? batteryImageFit(code, imageBrandKey)}
+        fit={fit ?? getBatteryImageFit(code, imageBrandKey)}
         tall
         overlayLabel={false}
         darkOverlay={false}
@@ -210,9 +211,7 @@ export function hasSoliteProductAssets(code: string): boolean {
   return hasSoliteBatteryAssets(code);
 }
 
-export function batteryImageFit(_code: string, _brandKey: BatteryBrandKey = "rocket"): "contain" {
-  return "contain";
-}
+export { getBatteryImageFit as batteryImageFit } from "@/lib/battery-image-presentation";
 
 /** 가이드·Q&A 리스트 커버 */
 export function BatteryContentThumb({

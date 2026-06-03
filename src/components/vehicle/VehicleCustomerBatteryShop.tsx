@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BatteryThumbnail, batteryImageFit } from "@/components/BatteryThumbnail";
+import { BatteryThumbnail } from "@/components/BatteryThumbnail";
+import { getBatteryImageFit } from "@/lib/battery-image-presentation";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { getBatteryImageSet } from "@/lib/battery-alias-map";
@@ -30,6 +31,7 @@ function BrandProductCard({
   vehicleSlug: string;
 }) {
   const imageSet = getBatteryImageSet(batteryCode, brandId);
+  const hasImageSet = Boolean(imageSet?.main?.trim());
   const display = parseBatterySpecDisplay(batteryCode);
   const detailHref = `${batteryDetailHref(batteryCode)}?brand=${brandId}`;
 
@@ -38,9 +40,9 @@ function BrandProductCard({
       <div className="vehicle-brand-product__media">
         <BatteryThumbnail
           code={batteryCode}
-          imageSet={imageSet?.main ? imageSet : undefined}
+          imageSet={hasImageSet ? imageSet : undefined}
           role="main"
-          fit={batteryImageFit(batteryCode)}
+          fit={getBatteryImageFit(batteryCode, brandId)}
           tall
           overlayLabel={false}
           surface="transparent"
