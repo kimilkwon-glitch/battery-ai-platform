@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { AppIcon } from "@/components/common/AppIcon";
 import { bm } from "@/lib/design-tokens";
+import { getCustomerVehicles } from "@/lib/customer-vehicles-storage";
 import {
   HUB_BENEFITS,
   HUB_GUIDE,
   HUB_LOGIN,
-  HUB_PHOTO,
-  HUB_REVIEWS,
   HUB_SIGNUP,
   HUB_STORE_DETAIL,
 } from "@/lib/customer-hub-routes";
@@ -26,7 +26,7 @@ const MAIN_CARDS = [
     title: "내 차량 정보",
     body: "자주 쓰는 차량명·연식·배터리 규격을 정리해 두세요.",
     cta: "차량 정보 등록",
-    href: "/vehicles",
+    href: "/vehicles?register=1",
     icon: "vehicle" as const,
   },
   {
@@ -46,13 +46,17 @@ const MAIN_CARDS = [
 ] as const;
 
 const QUICK_LINKS = [
-  { label: "최근 본 배터리", href: HUB_REVIEWS },
   { label: "장바구니 바로가기", href: CART_PAGE },
-  { label: "사진으로 규격 확인", href: HUB_PHOTO },
   { label: "매장·출장 안내", href: HUB_STORE_DETAIL },
 ] as const;
 
 export function MyPageClient() {
+  const [vehicles, setVehicles] = useState<ReturnType<typeof getCustomerVehicles>>([]);
+
+  useEffect(() => {
+    setVehicles(getCustomerVehicles());
+  }, []);
+
   return (
     <div className="mypage-hub space-y-6" data-page="mypage">
       <section className={`${bm.card} ${bm.cardPad}`}>
@@ -61,9 +65,11 @@ export function MyPageClient() {
           주문 내역, 차량 정보, 쿠폰 혜택을 한곳에서 확인하세요.
         </p>
         <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/80">
-          <p className="text-sm font-bold text-slate-800">로그인 후 이용할 수 있습니다.</p>
-          <p className="mt-1 text-xs font-medium text-slate-500">
-            상담·택배 주문은 로그인 없이도 배터리 상세·장바구니에서 진행할 수 있습니다.
+          <p className="text-sm font-bold text-slate-800">
+            로그인하면 주문 내역, 내 차량 정보, 혜택을 확인할 수 있습니다.
+          </p>
+          <p className="mt-1 text-sm font-medium text-slate-600">
+            아직 가입 전이라면 회원가입 후 첫 주문 혜택을 확인해 보세요.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link href={HUB_LOGIN} className={`${bm.btnPrimary} text-sm font-black`}>
@@ -76,15 +82,36 @@ export function MyPageClient() {
         </div>
       </section>
 
+      {vehicles.length > 0 ? (
+        <section className={`${bm.card} ${bm.cardPad}`}>
+          <h2 className="text-base font-black text-slate-900">등록한 차량</h2>
+          <ul className="mt-3 space-y-2">
+            {vehicles.map((v) => (
+              <li key={v.id}>
+                <Link
+                  href={v.href}
+                  className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 px-4 py-3 text-sm font-bold text-slate-800 hover:border-blue-200 hover:bg-blue-50/40"
+                >
+                  {v.displayName}
+                  <span className="text-blue-700">규격 보기 →</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {MAIN_CARDS.map((card) => (
           <article key={card.title} className={`${bm.card} ${bm.cardPad} flex flex-col`}>
             <AppIcon iconKey={card.icon} size="md" />
             <h2 className="mt-3 text-base font-black text-slate-900">{card.title}</h2>
-            <p className="mt-1 flex-1 text-xs font-medium leading-relaxed text-slate-600">{card.body}</p>
+            <p className="mt-1 flex-1 text-sm font-medium leading-relaxed text-slate-600">
+              {card.body}
+            </p>
             <Link
               href={card.href}
-              className={`${bm.btnNavy} mt-4 w-full justify-center text-xs font-black sm:text-sm`}
+              className={`${bm.btnNavy} mt-4 w-full justify-center text-sm font-black`}
             >
               {card.cta}
             </Link>
@@ -120,9 +147,6 @@ export function MyPageClient() {
             </Link>
           </li>
         </ul>
-        <p className="mt-3 text-center text-xs font-medium text-slate-500">
-          주문 내역·저장 정보는 로그인 연동 후 표시됩니다.
-        </p>
       </section>
     </div>
   );

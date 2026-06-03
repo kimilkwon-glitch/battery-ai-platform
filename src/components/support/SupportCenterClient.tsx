@@ -1,60 +1,46 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import clsx from "clsx";
 import { addInquiry } from "@/lib/inquiry-storage";
+import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { SUPPORT_NOTICES } from "@/lib/support-notices-data";
 import { CustomerFaqAccordion } from "@/components/support/CustomerFaqAccordion";
 import { CUSTOMER_CENTER_FAQ } from "@/lib/customer-center-routes";
-import { OwnedCouponHint } from "@/components/benefits/CouponIssuerPanel";
-import { getUserCouponForBenefit } from "@/lib/coupon-storage";
 import { bm } from "@/lib/design-tokens";
 
 type TabId = "notices" | "faq" | "inquiry";
-
-const INQUIRY_TYPES = [
-  "배터리 규격 문의",
-  "출장/방문 문의",
-  "택배주문 문의",
-  "반납/미반납 문의",
-  "기타",
-] as const;
-
-type InquiryType = (typeof INQUIRY_TYPES)[number];
+type InquiryKind = "general" | "return";
 
 export function SupportCenterClient() {
   const searchParams = useSearchParams();
   const [tab, setTab] = useState<TabId>("notices");
   const [query, setQuery] = useState("");
+  const [inquiryKind, setInquiryKind] = useState<InquiryKind>("general");
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
-  const [form, setForm] = useState<{
-    name: string;
-    contact: string;
-    vehicle: string;
-    inquiryType: InquiryType;
-    message: string;
-    couponCode: string;
-  }>({
+  const [generalForm, setGeneralForm] = useState({
     name: "",
     contact: "",
     vehicle: "",
-    inquiryType: INQUIRY_TYPES[0],
     message: "",
-    couponCode: "",
+  });
+  const [returnForm, setReturnForm] = useState({
+    name: "",
+    contact: "",
+    region: "",
+    message: "",
   });
 
   useEffect(() => {
-    const held = getUserCouponForBenefit("first-order-3")?.code;
-    if (held) setForm((f) => ({ ...f, couponCode: f.couponCode || held }));
-  }, []);
-
-  useEffect(() => {
     const t = searchParams.get("tab");
-    if (t === "faq" || t === "inquiry" || t === "notices") {
-      setTab(t);
+    if (t === "faq" || t === "inquiry" || t === "notices") setTab(t);
+    const kind = searchParams.get("kind");
+    if (kind === "return") {
+      setTab("inquiry");
+      setInquiryKind("return");
     }
   }, [searchParams]);
 
@@ -67,16 +53,33 @@ export function SupportCenterClient() {
     );
   }, [q]);
 
-  const handleInquiry = (e: React.FormEvent) => {
+  const submitGeneral = (e: React.FormEvent) => {
     e.preventDefault();
     addInquiry({
-      name: form.name.trim() || "고객",
-      contact: form.contact.trim(),
-      vehicle: form.vehicle.trim() || undefined,
-      message: `[${form.inquiryType}] ${form.message.trim()}`,
+      name: generalForm.name.trim() || "고객",
+      contact: generalForm.contact.trim(),
+      vehicle: generalForm.vehicle.trim() || undefined,
+      message: generalForm.message.trim(),
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
       source: "support",
-      inquiryType: form.inquiryType,
+      inquiryType: "일반문의",
+    });
+    setInquirySubmitted(true);
+  };
+
+  const submitReturn = (e: React.FormEvent) => {
+    e.preventDefault();
+    const region = returnForm.region.trim();
+    const body = returnForm.message.trim();
+    addInquiry({
+      name: returnForm.name.trim() || "고객",
+      contact: returnForm.contact.trim(),
+      message: [region ? `회수 지역: ${region}` : null, body || "폐배터리 회수 신청"]
+        .filter(Boolean)
+        .join("\n"),
+      pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
+      source: "support",
+      inquiryType: "폐배터리회수",
     });
     setInquirySubmitted(true);
   };
@@ -133,7 +136,7 @@ export function SupportCenterClient() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       {notice.important ? (
-                        <span className="rounded bg-red-50 px-1.5 py-0.5 text-[10px] font-black text-red-700 ring-1 ring-red-100">
+                        <span className="rounded bg-red-50 px-1.5 py-0.5 text-xs font-black text-red-700 ring-1 ring-red-100">
                           중요
                         </span>
                       ) : null}
@@ -159,7 +162,7 @@ export function SupportCenterClient() {
         <section className="space-y-3">
           <Link
             href={CUSTOMER_CENTER_FAQ}
-            className="text-[11px] font-black text-blue-700 hover:underline"
+            className="text-sm font-black text-blue-700 hover:underline"
           >
             FAQ 전체 페이지 보기 →
           </Link>
@@ -169,71 +172,152 @@ export function SupportCenterClient() {
 
       {tab === "inquiry" ? (
         <section className={`${bm.card} ${bm.cardPad} max-w-xl`}>
+          <p className="text-sm font-medium leading-relaxed text-slate-600">
+            문의를 남겨주시면 확인 후 연락드리겠습니다. 정확한 안내를 위해 연락처를 남겨주세요.
+          </p>
+
           {inquirySubmitted ? (
-            <p className="rounded-xl bg-emerald-50 px-4 py-6 text-center text-sm font-bold text-emerald-800 ring-1 ring-emerald-100">
+            <p className="mt-4 rounded-xl bg-emerald-50 px-4 py-6 text-center text-sm font-bold text-emerald-800 ring-1 ring-emerald-100">
               문의가 접수되었습니다. 확인 후 연락드리겠습니다.
             </p>
           ) : (
-            <form className="space-y-4" onSubmit={handleInquiry}>
-              <OwnedCouponHint />
-              <p className="text-xs font-semibold text-slate-500">
-                접수된 문의는 채팅상담과 함께 운영자 화면에서 확인됩니다. (localStorage 임시 저장)
-              </p>
-              {(["name", "contact", "vehicle"] as const).map((field) => (
-                <label key={field} className="block text-xs font-bold text-slate-700">
-                  {field === "name" ? "이름" : field === "contact" ? "연락처" : "차량명"}
-                  <input
-                    required={field !== "vehicle"}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold"
-                    value={form[field]}
-                    onChange={(e) => setForm((f) => ({ ...f, [field]: e.target.value }))}
-                  />
-                </label>
-              ))}
-              <label className="block text-xs font-bold text-slate-700">
-                문의 유형
-                <select
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold"
-                  value={form.inquiryType}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      inquiryType: e.target.value as InquiryType,
-                    }))
-                  }
+            <>
+              <div className="bm-inquiry-tabs mt-4" role="tablist" aria-label="문의 목적">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={inquiryKind === "general"}
+                  className={clsx(
+                    "bm-inquiry-tabs__btn",
+                    inquiryKind === "general" && "bm-inquiry-tabs__btn--active",
+                  )}
+                  onClick={() => setInquiryKind("general")}
                 >
-                  {INQUIRY_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-xs font-bold text-slate-700">
-                쿠폰 코드 (선택)
-                <input
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 font-mono text-sm font-semibold"
-                  placeholder={
-                    getUserCouponForBenefit("first-order-3")?.code ?? "BM-FIRST3-XXXX"
-                  }
-                  value={form.couponCode}
-                  onChange={(e) => setForm((f) => ({ ...f, couponCode: e.target.value }))}
-                />
-              </label>
-              <label className="block text-xs font-bold text-slate-700">
-                문의 내용
-                <textarea
-                  required
-                  rows={5}
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold"
-                  value={form.message}
-                  onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                />
-              </label>
-              <button type="submit" className={bm.btnPrimary}>
-                문의 접수하기
-              </button>
-            </form>
+                  일반 문의
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={inquiryKind === "return"}
+                  className={clsx(
+                    "bm-inquiry-tabs__btn",
+                    inquiryKind === "return" && "bm-inquiry-tabs__btn--active",
+                  )}
+                  onClick={() => setInquiryKind("return")}
+                >
+                  폐배터리 회수 신청
+                </button>
+              </div>
+
+              {inquiryKind === "general" ? (
+                <form className="mt-4 space-y-3.5" onSubmit={submitGeneral}>
+                  <label className="bm-inquiry-field">
+                    이름
+                    <input
+                      required
+                      value={generalForm.name}
+                      onChange={(e) =>
+                        setGeneralForm((f) => ({ ...f, name: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <label className="bm-inquiry-field">
+                    연락처
+                    <input
+                      required
+                      type="tel"
+                      placeholder="010-0000-0000"
+                      value={generalForm.contact}
+                      onChange={(e) =>
+                        setGeneralForm((f) => ({ ...f, contact: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <label className="bm-inquiry-field">
+                    차량명 (선택)
+                    <select
+                      value={generalForm.vehicle}
+                      onChange={(e) =>
+                        setGeneralForm((f) => ({ ...f, vehicle: e.target.value }))
+                      }
+                    >
+                      {INQUIRY_VEHICLE_OPTIONS.map((opt) => (
+                        <option key={opt.value || "empty"} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="bm-inquiry-field">
+                    문의 내용
+                    <textarea
+                      required
+                      rows={5}
+                      value={generalForm.message}
+                      onChange={(e) =>
+                        setGeneralForm((f) => ({ ...f, message: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <button type="submit" className={`${bm.btnPrimary} min-h-[3.25rem] w-full`}>
+                    문의 접수하기
+                  </button>
+                </form>
+              ) : (
+                <form className="mt-4 space-y-3.5" onSubmit={submitReturn}>
+                  <p className="text-sm font-medium text-slate-600">
+                    회수 가능 지역 확인 후 안내드리겠습니다.
+                  </p>
+                  <label className="bm-inquiry-field">
+                    이름
+                    <input
+                      required
+                      value={returnForm.name}
+                      onChange={(e) =>
+                        setReturnForm((f) => ({ ...f, name: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <label className="bm-inquiry-field">
+                    연락처
+                    <input
+                      required
+                      type="tel"
+                      placeholder="010-0000-0000"
+                      value={returnForm.contact}
+                      onChange={(e) =>
+                        setReturnForm((f) => ({ ...f, contact: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <label className="bm-inquiry-field">
+                    회수 지역 또는 주소
+                    <input
+                      required
+                      placeholder="예: 부산 북구, 덕천동"
+                      value={returnForm.region}
+                      onChange={(e) =>
+                        setReturnForm((f) => ({ ...f, region: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <label className="bm-inquiry-field">
+                    요청 내용 (선택)
+                    <textarea
+                      rows={3}
+                      placeholder="배터리 수량, 방문 가능 시간 등"
+                      value={returnForm.message}
+                      onChange={(e) =>
+                        setReturnForm((f) => ({ ...f, message: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <button type="submit" className={`${bm.btnPrimary} min-h-[3.25rem] w-full`}>
+                    회수 신청하기
+                  </button>
+                </form>
+              )}
+            </>
           )}
         </section>
       ) : null}

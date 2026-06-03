@@ -1,0 +1,122 @@
+/* 고객센터 · 회원 · 차량 등록 · 차량 상세 가독성 */
+
+.bm-inquiry-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bm-inquiry-tabs__btn {
+  min-height: 2.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.bm-inquiry-tabs__btn--active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.vehicle-register-banner {
+  border-radius: 1rem;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff 0%, #fff 60%);
+  padding: 1rem 1.25rem;
+}
+
+.vehicle-browse-card {
+  min-width: 0;
+}
+
+.vehicle-browse-card .vehicle-browse-card__title {
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+@media (min-width: 640px) {
+  .vehicle-browse-card .vehicle-browse-card__title {
+    font-size: 1.125rem;
+  }
+}
+
+.vehicle-browse-card .vehicle-browse-card__meta,
+.vehicle-browse-card .vehicle-browse-card__spec {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.vehicle-browse-card .vehicle-browse-card__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.vehicle-customer-battery {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+
+.vehicle-customer-battery__spec-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.vehicle-brand-product {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 0.875rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.vehicle-brand-product__media {
+  aspect-ratio: 16 / 9;
+  background: #f8fafc;
+}
+
+.vehicle-brand-product__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0.875rem;
+  min-width: 0;
+}
+
+.vehicle-brand-product__actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.vehicle-detail-customer h1 {
+  font-size: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .vehicle-detail-customer h1 {
+    font-size: 1.75rem;
+  }
+}
+
+.vehicle-detail-customer .vehicle-detail-customer__meta {
+  font-size: 0.875rem;
+  font-weight: 700;
+}

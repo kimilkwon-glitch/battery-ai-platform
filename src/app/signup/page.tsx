@@ -1,16 +1,19 @@
 import { PageShell } from "@/components/common/PageShell";
-import { SignupStubForm } from "@/components/auth/AuthStubForms";
+import { SignupForm } from "@/components/auth/SignupForm";
 import { bm } from "@/lib/design-tokens";
 
 export default function SignupPage() {
   return (
     <PageShell zone="auth" pageLabel="회원가입" title="회원가입" showSearch={false}>
       <div className={`${bm.card} ${bm.cardPad} bm-auth-card`}>
-        <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200">
-          상담·택배 주문은 배터리 상세 페이지에서 계속 이용하실 수 있습니다. 회원가입·주문 내역 저장은
-          인증 연동 후 제공됩니다.
+        <p className="text-sm font-medium leading-relaxed text-slate-700">
+          회원가입 후 주문 내역과 자주 찾는 차량 정보를 편하게 관리할 수 있습니다. 첫 주문 혜택과
+          매장 상담 내역을 더 쉽게 확인할 수 있습니다.
         </p>
-        <SignupStubForm />
+        <p className="mt-2 text-sm font-semibold text-slate-600">
+          상담·택배 주문은 회원가입 없이도 배터리 상세·장바구니에서 이용하실 수 있습니다.
+        </p>
+        <SignupForm />
       </div>
     </PageShell>
   );
