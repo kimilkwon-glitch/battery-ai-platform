@@ -5,6 +5,7 @@
 import enrichmentJson from "@/data/vehicle-battery-enrichment.json";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { mapCustomerFuelLabel, sortFuelGroupsByDisplayOrder } from "@/lib/vehicle-fuel-display";
+import { prepareCustomerFacingFuelGroups } from "@/lib/vehicle-detail-recommendation";
 import {
   getRecordFuelLabel,
   getRecordsForSlug,
@@ -119,7 +120,7 @@ export function buildFuelHeroCardGroups(
     });
   }
 
-  return sortFuelGroupsByDisplayOrder(cards);
+  return prepareCustomerFacingFuelGroups(slug, sortFuelGroupsByDisplayOrder(cards));
 }
 
 function decodeFuelQueryParam(raw: string | null | undefined): string | null {

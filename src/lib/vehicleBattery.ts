@@ -6,6 +6,7 @@ import { isDeprioritizedBatterySpec } from "@/lib/battery-detail/deprioritized-s
 import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { prepareCustomerFacingFuelGroups } from "@/lib/vehicle-detail-recommendation";
 import { mapCustomerFuelLabel } from "@/lib/vehicle-fuel-display";
 import {
   mergeOperatorFuelGroups,
@@ -1197,7 +1198,8 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
     hasConfirmedDb,
     hasUsableDb,
     dbLinkTier,
-    needsPhotoReview: !hasConfirmedDb && (hasUsableDb || recs.some(needsPhotoReview)),
+    needsPhotoReview:
+      !hasConfirmedDb && !hasUsableDb && recs.some(needsPhotoReview),
   };
 }
 
@@ -1207,18 +1209,20 @@ export function getVehicleBatteryPageData(slug: string) {
   const linkable = recs.filter(
     (r) => hasConfirmedBatteryData(r) || isUsableDbCandidate(r, profile),
   );
-  const fuelGroups = mergeOperatorFuelGroups(
+  const fuelGroupsRaw = mergeOperatorFuelGroups(
     slug,
     groupRecordsByFuel(linkable.length ? linkable : recs).map((g) => {
       const unified = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
       return unified ? { ...g, primaryBattery: unified } : g;
     }),
   );
+  const fuelGroups = prepareCustomerFacingFuelGroups(slug, fuelGroupsRaw);
   const yearChips = getYearChipsForSlug(slug, recs);
   const relatedVehicles = getRelatedVehicleSlugs(slug);
   const hasConfirmedDb = recs.some(hasConfirmedBatteryData);
   const hasUsableDb = recs.some((r) => isUsableDbCandidate(r, profile));
-  const needsAnyReview = !hasConfirmedDb && (hasUsableDb || recs.some(needsPhotoReview));
+  const needsAnyReview =
+    !hasConfirmedDb && !hasUsableDb && recs.some(needsPhotoReview);
   const summary = buildVehicleBatterySummary(slug, fuelGroups);
 
   return {
@@ -1253,7 +1257,8 @@ export function buildVehicleBatterySummary(
   slug: string,
   fuelGroups: FuelBatteryGroup[],
 ): VehicleBatterySummary | null {
-  if (fuelGroups.length === 0) return null;
+  const facing = prepareCustomerFacingFuelGroups(slug, fuelGroups);
+  if (facing.length === 0) return null;
 
   const lines: VehicleBatterySummaryLine[] = [];
   const gasPrimary = resolveVehicleFuelPrimaryBattery(slug, "가솔린");
@@ -1266,7 +1271,7 @@ export function buildVehicleBatterySummary(
     if (dieselPrimary) lines.push({ label: "디젤", battery: dieselPrimary });
   }
 
-  for (const g of fuelGroups) {
+  for (const g of facing) {
     if (g.fuelLabel === "가솔린" || g.fuelLabel === "디젤") {
       if (gasPrimary && dieselPrimary && gasPrimary === dieselPrimary) continue;
     }
@@ -1277,16 +1282,16 @@ export function buildVehicleBatterySummary(
   }
 
   const alternatives = [
-    ...new Set(fuelGroups.flatMap((g) => g.batteryOptions).filter(Boolean)),
+    ...new Set(facing.flatMap((g) => g.batteryOptions).filter(Boolean)),
   ].slice(0, 4);
 
   const checkPoints = ["연료/트림 확인"];
-  const cautionText = fuelGroups.map((g) => g.caution).join(" ");
+  const cautionText = facing.map((g) => g.caution).join(" ");
   if (/ISG|IBS|하이브리드|스마트/i.test(cautionText)) checkPoints.push("ISG 여부");
   if (/단자|L\/R|좌\/우/i.test(cautionText)) checkPoints.push("단자 방향");
 
   const representativeBattery =
-    gasPrimary || dieselPrimary || fuelGroups[0]?.primaryBattery || "";
+    gasPrimary || dieselPrimary || facing[0]?.primaryBattery || "";
 
   const verdictNotes: string[] = [];
   if (representativeBattery) verdictNotes.push(`대표 규격 ${representativeBattery}`);

@@ -11,6 +11,7 @@ import {
   normalizeVehicleFuelParam,
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
+import { hasStructuredFuelRecommendations } from "@/lib/vehicle-detail-recommendation";
 import type { FuelBatteryGroup, YearChip } from "@/lib/vehicleBattery";
 
 type Props = {
@@ -36,6 +37,7 @@ export function VehicleBatteryHeroCards({
   const [expanded, setExpanded] = useState(false);
 
   const fuelCards = buildFuelHeroCardGroups(slug, fuelGroups, highlightFuelRaw);
+  const structuredRecs = hasStructuredFuelRecommendations(slug, fuelGroups);
 
   if (fuelCards.length === 0) return null;
 
@@ -48,7 +50,11 @@ export function VehicleBatteryHeroCards({
         label="추천 배터리"
         iconKey="batterySpec"
         title={`${vehicleTitle} · 연료별 규격`}
-        description="대표 규격만 먼저 보여드립니다. 연료·ISG·연식에 따라 달라질 수 있습니다."
+        description={
+          structuredRecs
+            ? "연료별 대표 규격과 주문 가능한 상품을 확인할 수 있습니다."
+            : "대표 규격만 먼저 보여드립니다. 연료·ISG·연식에 따라 달라질 수 있습니다."
+        }
       />
 
       {useYearCards ? (
@@ -75,9 +81,11 @@ export function VehicleBatteryHeroCards({
                 fuelLabel={group.fuelLabel}
                 batteryCode={resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel)}
                 conditionNote={
-                  group.fuelLabel === "확인 필요"
-                    ? "연식·트림 확인 후 규격을 확정하세요."
-                    : "연료·트림에 따라 예외가 있을 수 있습니다."
+                  structuredRecs
+                    ? undefined
+                    : group.fuelLabel === "확인 필요"
+                      ? "연식·트림 확인 후 규격을 확정하세요."
+                      : "연료·트림에 따라 예외가 있을 수 있습니다."
                 }
                 highlighted={highlightFuel === group.fuelLabel}
                 showExceptionNote={highlightFuel === group.fuelLabel}
@@ -97,7 +105,7 @@ export function VehicleBatteryHeroCards({
                       fuelLabel={group.fuelLabel}
                       batteryCode={resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel)}
                       compact
-                      conditionNote="추가 후보 — 확인 필요할 수 있습니다."
+                      conditionNote={structuredRecs ? undefined : "추가 후보 — 확인 필요할 수 있습니다."}
                       vehicleSlug={slug}
                       vehicleTitle={vehicleTitle}
                     />

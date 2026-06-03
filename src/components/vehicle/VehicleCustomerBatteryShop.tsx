@@ -10,6 +10,10 @@ import {
   buildFuelHeroCardGroups,
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
+import {
+  shouldShowVehicleTrimCautionNotice,
+  VEHICLE_TRIM_CAUTION_COPY,
+} from "@/lib/vehicle-detail-recommendation";
 import type { FuelBatteryGroup } from "@/lib/vehicleBattery";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
@@ -94,6 +98,7 @@ export function VehicleCustomerBatteryShop({
   yearRange,
 }: Props) {
   const fuelCards = buildFuelHeroCardGroups(slug, fuelGroups, highlightFuel);
+  const showTrimCaution = shouldShowVehicleTrimCautionNotice(slug, fuelGroups);
 
   if (fuelCards.length === 0) {
     return (
@@ -150,10 +155,11 @@ export function VehicleCustomerBatteryShop({
               ))}
             </div>
 
-            <p className="mt-4 rounded-lg bg-amber-50/80 px-3 py-2 text-sm font-medium text-amber-950">
-              연식·트림·ISG 여부에 따라 규격이 달라질 수 있습니다. 장착 전 단자 방향과 트레이 공간을
-              확인해 주세요.
-            </p>
+            {showTrimCaution ? (
+              <p className="mt-4 rounded-lg bg-amber-50/80 px-3 py-2 text-sm font-medium text-amber-950">
+                {VEHICLE_TRIM_CAUTION_COPY}
+              </p>
+            ) : null}
           </section>
         );
       })}

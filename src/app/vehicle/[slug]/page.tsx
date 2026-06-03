@@ -7,6 +7,7 @@ import { VehicleCustomerBatteryShop } from "@/components/vehicle/VehicleCustomer
 import { bm } from "@/lib/design-tokens";
 import { getVehicleAsset } from "@/lib/car-assets";
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
+import { customerFacingRepresentativeBattery } from "@/lib/vehicle-detail-recommendation";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
 import { getVehicleDetail, getVehicleSlugs } from "@/lib/vehicle-data";
 
@@ -34,7 +35,11 @@ export default async function VehicleDetailPage({
   const displayTitle = batteryPage.profile?.title ?? vehicle.model;
   const highlightFuel = sp.fuel?.trim() || null;
   const repBattery =
-    batteryPage.summary?.representativeBattery ?? vehicle.recommendedBattery;
+    customerFacingRepresentativeBattery(
+      slug,
+      batteryPage.fuelGroups,
+      batteryPage.summary?.representativeBattery,
+    ) || vehicle.recommendedBattery;
 
   return (
     <main className={`${bm.pageBg} vehicle-detail-customer`} data-page="vehicle-detail">
