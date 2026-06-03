@@ -1,6 +1,6 @@
 # Vehicle DB Integrity Audit
 
-생성: 2026-06-03T04:01:48.950Z
+생성: 2026-06-03T07:43:43.748Z
 
 ## 1. 요약
 
@@ -14,15 +14,15 @@
 | chevroletAssets | 36 |
 | aliasEntries | 339 |
 | forbiddenCopyFindings | 0 |
-| unmatchedAssets | 120 |
+| unmatchedAssets | 84 |
 | unmatchedA | 0 |
-| unmatchedB | 112 |
+| unmatchedB | 76 |
 | unmatchedC | 8 |
 | riskyDisplayAliases | 0 |
 | searchFailures | 0 |
 | directionMismatches | 0 |
 | searchContamination | 0 |
-| totalFindings | 123 |
+| totalFindings | 87 |
 | p0Count | 0 |
 | searchPassCount | 26 |
 | searchTotal | 26 |
@@ -43,44 +43,12 @@
 | 분류 | 건수 | 조치 |
 |------|------|------|
 | A DB연결가능 | 0 | slug/dbModels 보강 |
-| B 미확정 | 112 | 상담 확인만 |
+| B 미확정 | 76 | 상담 확인만 |
 | C 노출제외 | 8 | recommendExcluded |
 
 | assetId | displayName | 분류 | 사유 |
 |---------|-------------|------|------|
-| sonata-nf | 쏘나타 NF | B | DB 매칭 없음 — 상담 확인만 |
-| sonata-yf | YF 쏘나타 | B | DB 매칭 없음 — 상담 확인만 |
-| sonata-lf | LF 쏘나타 | B | DB 매칭 없음 — 상담 확인만 |
-| avante-hd | 아반떼 HD | B | DB 매칭 없음 — 상담 확인만 |
-| avante-md | 아반떼 MD | B | DB 매칭 없음 — 상담 확인만 |
-| avante-ad | 아반떼 AD | B | DB 매칭 없음 — 상담 확인만 |
-| tucson-jm | 투싼 | B | DB 매칭 없음 — 상담 확인만 |
-| tucson-lm | 투싼 ix | B | DB 매칭 없음 — 상담 확인만 |
-| tucson-tl | 올 뉴 투싼 | B | DB 매칭 없음 — 상담 확인만 |
-| santafe-cm | 싼타페 CM | B | DB 매칭 없음 — 상담 확인만 |
-| santafe-dm | 싼타페 DM | B | DB 매칭 없음 — 상담 확인만 |
-| santafe-mx5 | 디 올 뉴 싼타페 | B | DB 매칭 없음 — 상담 확인만 |
 | santafe-mx5-hev | 싼타페 하이브리드 | B | DB 매칭 없음 — 상담 확인만 |
-| kona-os | 코나 | B | DB 매칭 없음 — 상담 확인만 |
-| kona-sx2 | 디 올 뉴 코나 | B | DB 매칭 없음 — 상담 확인만 |
-| k8-gl3 | K8 | B | DB 매칭 없음 — 상담 확인만 |
-| k8-gl3-fl | 더 뉴 K8 | B | DB 매칭 없음 — 상담 확인만 |
-| sportage-nq5 | 스포티지 5세대 | B | DB 매칭 없음 — 상담 확인만 |
-| carnival-vq | 그랜드 카니발 | B | DB 매칭 없음 — 상담 확인만 |
-| carnival-yp | 올 뉴 카니발 | B | DB 매칭 없음 — 상담 확인만 |
-| carnival-yp-fl | 더 뉴 카니발 | B | DB 매칭 없음 — 상담 확인만 |
-| carnival-ka4-fl | 더 뉴 카니발 | B | DB 매칭 없음 — 상담 확인만 |
-| morning-sa | 뉴 모닝 | B | DB 매칭 없음 — 상담 확인만 |
-| morning-ta | 올 뉴 모닝 | B | DB 매칭 없음 — 상담 확인만 |
-| morning-ja | 모닝 3세대 | B | DB 매칭 없음 — 상담 확인만 |
-| morning-ja-fl | 더 뉴 모닝 | B | DB 매칭 없음 — 상담 확인만 |
-| ray-tam | 레이 | B | DB 매칭 없음 — 상담 확인만 |
-| ray-tam-2fl | 더 뉴 기아 레이 | B | DB 매칭 없음 — 상담 확인만 |
-| niro-de | 니로 | B | DB 매칭 없음 — 상담 확인만 |
-| niro-de-fl | 더 뉴 니로 | B | DB 매칭 없음 — 상담 확인만 |
-| niro-sg2 | 디 올 뉴 니로 | B | DB 매칭 없음 — 상담 확인만 |
-| bongo3-truck | 봉고3 | B | DB 매칭 없음 — 상담 확인만 |
-| bongo3-ev | 봉고3 EV | B | DB 매칭 없음 — 상담 확인만 |
 | renault-samsung-sm3-2005 | SM3 | B | DB 매칭 없음 — 상담 확인만 |
 | renault-samsung-new-sm3-2009 | 뉴 SM3 | B | DB 매칭 없음 — 상담 확인만 |
 | renault-samsung-sm3-neo-2014 | SM3 네오 | B | DB 매칭 없음 — 상담 확인만 |
@@ -88,8 +56,40 @@
 | renault-samsung-sm5-new-impression-2007 | SM5 뉴 임프레션 | B | DB 매칭 없음 — 상담 확인만 |
 | renault-samsung-new-sm5-2010 | 뉴 SM5 | B | DB 매칭 없음 — 상담 확인만 |
 | renault-samsung-sm5-nova-2015 | SM5 노바 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-sm6-2016 | SM6 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-the-new-sm6-2020 | 더 뉴 SM6 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-sm7-new-art-2008 | SM7 뉴 아트 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-all-new-sm7-2011 | 올 뉴 SM7 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-sm7-nova-2014 | SM7 노바 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-qm5-2007 | QM5 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-qm3-2013 | QM3 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-qm6-2016 | QM6 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-the-new-qm6-2019 | 더 뉴 QM6 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-qm6-quest-2023 | QM6 퀘스트 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-samsung-xm3-2020 | XM3 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-arkana-2024 | 아르카나 | B | DB 매칭 없음 — 상담 확인만 |
+| renault-master-2018 | 르노 마스터 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-tivoli-2015 | 티볼리 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-tivoli-armour-2017 | 티볼리 아머 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-tivoli-air-2016 | 티볼리 에어 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-tivoli-air-2021 | 티볼리 에어 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-very-new-tivoli-2019 | 베리 뉴 티볼리 | B | DB 매칭 없음 — 상담 확인만 |
+| kg-the-new-tivoli-2023 | 더 뉴 티볼리 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-korando-c-2011 | 코란도 C | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-new-korando-c-2013 | 코란도 C | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-new-style-korando-c-2017 | 코란도 C | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-viewtiful-korando-2019 | 뷰티풀 코란도 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-korando-emotion-2022 | 코란도 이모션 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-korando-sports-2012 | 코란도 스포츠 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-korando-turismo-2013 | 코란도 투리스모 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-actyon-2005 | 액티언 | C | 레거시·노출 제외 후보 |
+| ssangyong-actyon-sports-2006 | 액티언 스포츠 | C | 레거시·노출 제외 후보 |
+| ssangyong-kyron-2005 | 카이런 | C | 레거시·노출 제외 후보 |
+| ssangyong-g4-rexton-2017 | G4 렉스턴 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-all-new-rexton-2020 | 올 뉴 렉스턴 | B | DB 매칭 없음 — 상담 확인만 |
+| ssangyong-rexton-sports-2018 | 렉스턴 스포츠 | B | DB 매칭 없음 — 상담 확인만 |
 
-*(80건 추가 — JSON `unmatchedClassifications`)*
+*(44건 추가 — JSON `unmatchedClassifications`)*
 
 ## 6. 검색 검수 결과
 
@@ -105,14 +105,14 @@
 | 스타리아 AGM80L | ✅ | 현대 스타리아 | AGM80R |  |
 | K3 | ✅ | 기아 K3 | DIN62L |  |
 | 올뉴 K3 | ✅ | 기아 올 뉴 K3 | DIN62L |  |
-| 쏘나타 | ✅ | 현대 쏘나타 NF | AGM80L |  |
+| 쏘나타 | ✅ | 현대 쏘나타 NF | — |  |
 | 쏘나타 DN8 | ✅ | 현대 쏘나타 DN8 | AGM80L |  |
 | 코란도 | ✅ | KG/쌍용 코란도 C | — |  |
 | 코란도 C | ✅ | KG/쌍용 코란도 C | — |  |
 | 티볼리 | ✅ | KG/쌍용 티볼리 | — |  |
 | 포터2 | ✅ | 현대 포터2 | — |  |
 | 포터2 2020년식 | ✅ | 현대 포터2 2020년형 이후 | 100R |  |
-| 쏘렌토 MQ4 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM60L |  |
+| 쏘렌토 MQ4 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM95L |  |
 | 쏘렌토 MQ4 하이브리드 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM60L |  |
 | 소렌토 MQ4 하브 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM60L |  |
 | 21년식 싼타페 | ✅ | 현대 싼타페 TM | AGM80L |  |

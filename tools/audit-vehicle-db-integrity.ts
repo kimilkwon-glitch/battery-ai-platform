@@ -19,7 +19,13 @@ import { vehicleAssets, type VehicleAsset } from "../src/lib/car-assets";
 import { vehicleAssetsGenesis } from "../src/lib/vehicle-asset-genesis";
 import { vehicleAssetsV04 } from "../src/lib/vehicle-asset-v04";
 import { vehicleAssetsChevrolet } from "../src/lib/vehicle-asset-chevrolet";
-import { getVehicleCardBatteryInfo, getRecordsForSlug } from "../src/lib/vehicleBattery";
+import {
+  getVehicleCardBatteryInfo,
+  getRecordsForSlug,
+  getVehicleBatteryPageData,
+  hasUsableBatteryData,
+  getVehicleDbProfile,
+} from "../src/lib/vehicleBattery";
 import { vehicleAssetsToSearchRows } from "../src/lib/vehicle-search";
 import { resolveSearchVehicleAlias } from "../src/lib/search/search-vehicle-aliases";
 import {
@@ -264,11 +270,17 @@ function classifyUnmatchedAssets() {
   for (const a of collectAssets()) {
     const slug = a.catalogId ?? a.id;
     const db = getVehicleCardBatteryInfo(slug);
+    const page = getVehicleBatteryPageData(slug);
+    const profile = getVehicleDbProfile(slug);
     const hasDefault = Boolean(a.defaultBatteryCode);
-    const hasDb = db.hasConfirmedDb && Boolean(db.displayCode);
-    if (hasDefault || hasDb) continue;
+    const hasLinkedDb =
+      hasDefault ||
+      (db.hasConfirmedDb && Boolean(db.displayCode)) ||
+      (db.hasUsableDb && page.hasData);
+    if (hasLinkedDb) continue;
 
     const recs = getRecordsForSlug(slug);
+    const dbHasUsable = recs.some((r) => hasUsableBatteryData(r, profile));
     const dbHasConfirmed = recs.some(
       (r) => r.status === "confirmed" && Boolean(r.primaryBattery?.trim()),
     );
@@ -278,9 +290,11 @@ function classifyUnmatchedAssets() {
     if (a.recommendExcluded || (a.yearStart != null && a.yearStart < 2005)) {
       cls = "C";
       reason = "레거시·노출 제외 후보";
-    } else if (dbHasConfirmed) {
+    } else if (dbHasUsable || dbHasConfirmed) {
       cls = "A";
-      reason = "DB confirmed 있음 — slug/dbModels 연결 필요";
+      reason = dbHasConfirmed
+        ? "DB confirmed 있음 — slug/dbModels 연결 필요"
+        : "DB usable 후보 있음 — slug/연식/세대 연결 필요";
     } else {
       cls = "B";
       reason = "DB 매칭 없음 — 상담 확인만";

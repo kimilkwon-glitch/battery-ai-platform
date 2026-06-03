@@ -73,11 +73,16 @@ function resolveAssetRowBattery(asset: VehicleAsset, query: string): { battery: 
   const needsBatteryReview = asset.batteryMatchStatus === "needsReview";
   const battery = needsBatteryReview
     ? "상담 확인 필요"
-    : (db.hasConfirmedDb && db.displayCode) ||
-      db.displayCode ||
-      asset.defaultBatteryCode ||
-      (db.needsPhotoReview ? "사진 확인 권장" : "상담 확인 필요");
-  return { battery, needsReview: needsBatteryReview || db.needsPhotoReview };
+    : db.hasConfirmedDb && db.displayCode
+      ? db.displayCode
+      : db.hasUsableDb
+        ? "연식·옵션별 확인 필요"
+        : asset.defaultBatteryCode ||
+          (db.needsPhotoReview ? "사진 확인 권장" : "상담 확인 필요");
+  return {
+    battery,
+    needsReview: needsBatteryReview || db.needsPhotoReview || (db.hasUsableDb && !db.hasConfirmedDb),
+  };
 }
 
 export function assetToSearchRow(asset: VehicleAsset, query = ""): VehicleSearchRow {

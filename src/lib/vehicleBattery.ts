@@ -154,26 +154,59 @@ const GENERATION_TOKEN: Record<string, string[]> = {
   "tucson-nx4-fl": ["NX4", "더 뉴 투싼"],
   "sorento-mq4": ["MQ4"],
   "sorento-mq4-fl": ["MQ4"],
-  "sportage-nq5": ["NQ5", "5세대"],
+  "sportage-nq5": ["NQ5", "5세대", "스포티지 5세대"],
+  "sportage-ql": ["QL", "4세대"],
   "k5-dl3": ["DL3", "K5 3"],
   "k8-gl3": ["GL3", "K8"],
+  "k8-gl3-fl": ["GL3", "K8", "더 뉴 K8"],
   "carnival-ka4": ["KA4", "4세대"],
+  "carnival-vq": ["VQ", "그랜드 카니발"],
+  "carnival-yp": ["YP", "올 뉴 카니발"],
+  "carnival-yp-fl": ["YP", "더 뉴 카니발"],
+  "carnival-ka4-fl": ["KA4", "더 뉴 카니발"],
+  "morning-sa": ["SA", "뉴 모닝"],
+  "morning-ta": ["TA", "올 뉴 모닝"],
+  "morning-ja": ["JA", "모닝 3세대"],
+  "morning-ja-fl": ["JA", "더 뉴 모닝"],
+  "niro-de": ["DE", "니로"],
+  "niro-de-fl": ["더 뉴 니로", "DE"],
+  "niro-sg2": ["SG2", "디 올 뉴 니로"],
+  "ray-tam": ["TAM", "레이"],
+  "ray-tam-2fl": ["TAM", "더 뉴 레이"],
+  "sonata-lf": ["LF"],
+  "sonata-yf": ["YF"],
+  "sonata-nf": ["NF"],
+  "avante-hd": ["HD"],
+  "avante-md": ["MD"],
+  "avante-ad": ["AD"],
+  "tucson-lm": ["LM", "투싼 ix", "ix"],
+  "tucson-tl": ["TL", "올 뉴 투싼"],
+  "santafe-cm": ["CM"],
+  "santafe-dm": ["DM"],
+  "santafe-mx5": ["MX5", "디 올 뉴 싼타페"],
+  "santafe-mx5-hev": ["MX5", "하이브리드"],
+  "kona-os": ["OS", "코나"],
+  "kona-sx2": ["SX2", "디 올 뉴 코나"],
+  "hyundai-grand-starex-2007": ["그랜드 스타렉스", "스타렉스"],
+  "kia-mohave-2008": ["모하비"],
+  "kia-soul-2008": ["쏘울"],
+  "kia-all-new-carens-2013": ["올 뉴 카렌스"],
+  "chevrolet-cruze-2011": ["크루즈"],
+  "chevrolet-the-new-cruze-2015": ["더 뉴 크루즈"],
+  "chevrolet-all-new-cruze-2017": ["올 뉴 크루즈"],
+  "daewoo-lacetti-premiere-2008": ["라세티", "프리미어"],
   "porter2-old": ["포터 II", "04년", "19년"],
   "porter2-new": ["포터 II", "20년"],
   "porter2-ev": ["포터 II EV", "EV"],
   "bongo3-truck": ["봉고", "BONGO"],
   "bongo3-ev": ["봉고3 EV"],
   "staria-us4": ["스타리아"],
-  "hyundai-grand-starex-2007": ["그랜드 스타렉스", "스타렉스"],
-  "kia-mohave-2008": ["모하비"],
   "kia-the-new-mohave-2016": ["더 뉴 모하비"],
   "kia-mohave-the-master-2019": ["더 마스터", "모하비 더 마스터"],
   "kia-k9-2012": ["K9"],
   "kia-the-k9-2018": ["더 K9"],
-  "kia-soul-2008": ["쏘울"],
   "kia-soul-booster-2019": ["부스터", "쏘울 부스터"],
   "kia-carens-2006": ["카렌스"],
-  "kia-all-new-carens-2013": ["올 뉴 카렌스", "올뉴카렌스"],
 };
 
 const VEHICLE_SUBTITLES: Record<string, string> = {
@@ -248,7 +281,11 @@ export function getVehicleDbProfile(slug: string): VehicleDbProfile | null {
               ? "쌍용"
               : asset.brand === "kg"
                 ? "KGM"
-                : "";
+                : asset.brand === "chevrolet-gmdaewoo"
+                  ? "쉐보레"
+                  : asset.brand === "genesis"
+                    ? "제네시스"
+                    : "";
     const dbModels = asset.dbModels?.length
       ? asset.dbModels
       : [
@@ -281,6 +318,28 @@ export function getVehicleDbProfile(slug: string): VehicleDbProfile | null {
   };
 }
 
+function profileAssetYearInterval(profile: VehicleDbProfile): { start: number; end: number | null } | null {
+  const asset = getVehicleAsset(profile.slug);
+  if (profile.yearRange) {
+    const parsed = normalizeYearRange(profile.yearRange);
+    if (parsed) return { start: parsed.start, end: parsed.end };
+  }
+  if (asset?.yearStart != null) {
+    const parsed = asset.yearRange ? normalizeYearRange(asset.yearRange) : null;
+    return { start: asset.yearStart, end: parsed?.end ?? null };
+  }
+  return null;
+}
+
+function recordHasBatterySpec(r: VehicleBatteryRecord): boolean {
+  const primary = normalizeBatteryCode(r.primaryBattery);
+  if (primary && !isDeprioritizedBatterySpec(primary)) return true;
+  return r.batteryOptions.some((b) => {
+    const code = normalizeBatteryCode(b);
+    return Boolean(code) && !isDeprioritizedBatterySpec(code);
+  });
+}
+
 function slugYearMatchesRecord(slug: string, r: VehicleBatteryRecord): boolean {
   if (slug === "porter2-new") {
     if ((r.startYear ?? 0) >= 2020) return true;
@@ -296,10 +355,27 @@ function slugYearMatchesRecord(slug: string, r: VehicleBatteryRecord): boolean {
   return true;
 }
 
+const PROFILE_BRAND_ALIASES: Record<string, string[]> = {
+  쉐보레: ["쉐보레", "GM대우", "GM", "대우", "쉐보레/GM"],
+  KGM: ["KGM", "KG", "쌍용", "KG모빌리티"],
+  쌍용: ["KGM", "KG", "쌍용", "KG모빌리티"],
+  르노코리아: ["르노코리아", "르노삼성", "르노"],
+};
+
+function profileBrandMatchesRecord(profileBrand: string, recordBrand: string): boolean {
+  if (!profileBrand) return true;
+  const rb = norm(recordBrand);
+  const aliases = PROFILE_BRAND_ALIASES[profileBrand] ?? [profileBrand];
+  return aliases.some((a) => {
+    const na = norm(a);
+    return rb === na || rb.includes(na) || na.includes(rb);
+  });
+}
+
 function recordMatchesProfile(r: VehicleBatteryRecord, profile: VehicleDbProfile): boolean {
-  if (profile.brand && r.brand !== profile.brand && !profile.brand.includes(r.brand)) {
+  if (profile.brand && !profileBrandMatchesRecord(profile.brand, r.brand)) {
     const importMatch = IMPORT_BRANDS.has(r.brand);
-    if (!importMatch && profile.brand) return false;
+    if (!importMatch) return false;
   }
 
   const modelOk = profile.dbModels.some(
@@ -309,22 +385,79 @@ function recordMatchesProfile(r: VehicleBatteryRecord, profile: VehicleDbProfile
 
   if (!slugYearMatchesRecord(profile.slug, r)) return false;
 
+  const assetYears = profileAssetYearInterval(profile);
+  if (assetYears) {
+    const recYears = recordYearInterval(r);
+    if (recYears && !yearIntervalsOverlap(assetYears, recYears)) return false;
+  }
+
   if (profile.generationTokens.length === 0) return true;
 
-  // 세대 토큰은 표시명·상세만 — 공통 alias "IG" 등으로 HG·FL 레코드가 섞이지 않게
-  const hay = norm(`${r.displayName} ${r.detail}`);
-  return profile.generationTokens.some((t) => hay.includes(norm(t)));
+  const hay = norm(`${r.displayName} ${r.detail} ${r.years ?? ""}`);
+  const tokenHit = profile.generationTokens.some((t) => {
+    const nt = norm(t);
+    return nt.length >= 2 && hay.includes(nt);
+  });
+  if (tokenHit) return true;
+
+  // DB에 플랫폼코드(MX5/SG2 등) 미기재 — 연식·모델·차명 키워드 일치 시 허용
+  const titleNorm = norm(profile.title);
+  const displayStem = titleNorm
+    .replace(/디올뉴|더뉴|올뉴|thenew|allnew/gi, "")
+    .replace(/하이브리드|hev|phev/gi, "");
+  const recordStem = hay.replace(/디올뉴|더뉴|올뉴/gi, "");
+  const modelStem = norm(profile.dbModels[0] ?? "");
+  const nameOverlap =
+    (displayStem.length >= 2 && recordStem.includes(displayStem)) ||
+    (modelStem.length >= 2 && recordStem.includes(modelStem)) ||
+    hay.includes(norm(profile.title.split(" ").pop() ?? ""));
+  const recYears = recordYearInterval(r);
+  const yearOk =
+    assetYears && recYears ? yearIntervalsOverlap(assetYears, recYears) : false;
+  if (yearOk && nameOverlap) {
+    if (/하이브리드|hev|phev/i.test(profile.title)) {
+      return /하이브리드|hev|phev|hybrid/i.test(`${r.fuel ?? ""} ${r.displayName}`);
+    }
+    return true;
+  }
+
+  return false;
+}
+
+/** confirmed 외 raw/medium — 연식·브랜드·모델 일치 시 상세·resolver에서 사용 */
+export function isUsableDbCandidate(
+  record: VehicleBatteryRecord,
+  profile: VehicleDbProfile | null,
+): boolean {
+  if (!recordHasBatterySpec(record)) return false;
+  if (hasConfirmedBatteryData(record)) return true;
+  if (!profile || !recordMatchesProfile(record, profile)) return false;
+  if (record.status === "confirmed") return true;
+  if (record.status === "raw" || record.status === "needs_review") {
+    return record.confidence === "medium" || record.confidence === "high" || record.confidence === "low";
+  }
+  return false;
+}
+
+export function hasUsableBatteryData(
+  record: VehicleBatteryRecord,
+  profile: VehicleDbProfile | null,
+): boolean {
+  return isUsableDbCandidate(record, profile);
 }
 
 export function getRecordsForSlug(slug: string): VehicleBatteryRecord[] {
   const profile = getVehicleDbProfile(slug);
+  let matched: VehicleBatteryRecord[];
   if (!profile) {
     const q = norm(slug);
-    return records.filter(
+    matched = records.filter(
       (r) => norm(r.displayName).includes(q) || r.aliases.some((a) => norm(a).includes(q)),
     );
+  } else {
+    matched = records.filter((r) => recordMatchesProfile(r, profile));
   }
-  return records.filter((r) => recordMatchesProfile(r, profile));
+  return matched.filter(recordHasBatterySpec);
 }
 
 export type BatteryAlternativeKind = "upgrade" | "alternate";
@@ -987,32 +1120,51 @@ export function getRecordsForBattery(code: string, limit = 24): VehicleBatteryRe
     .slice(0, limit);
 }
 
+export type VehicleDbLinkTier = "confirmed" | "usable" | "none";
+
 export type VehicleCardBatteryInfo = {
   displayCode: string;
   productCode?: string;
   batteryOptions: string[];
   hasConfirmedDb: boolean;
+  /** raw/medium + 연식·모델 일치 DB 후보 연결 */
+  hasUsableDb: boolean;
+  dbLinkTier: VehicleDbLinkTier;
   needsPhotoReview: boolean;
 };
 
 /** 차량 카드·검색 — DB confirmed 배터리 우선, 이미지 미매칭과 무관 */
 export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo {
+  const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
   if (!recs.length) {
-    return { displayCode: "", batteryOptions: [], hasConfirmedDb: false, needsPhotoReview: false };
+    return {
+      displayCode: "",
+      batteryOptions: [],
+      hasConfirmedDb: false,
+      hasUsableDb: false,
+      dbLinkTier: "none",
+      needsPhotoReview: false,
+    };
   }
 
   const confirmed = recs.filter(hasConfirmedBatteryData);
+  const usable = recs.filter((r) => isUsableDbCandidate(r, profile));
   const hasConfirmedDb = confirmed.length > 0;
-  const source = hasConfirmedDb ? confirmed : recs;
+  const hasUsableDb = usable.length > 0;
+  const source = hasConfirmedDb ? confirmed : hasUsableDb ? usable : recs;
   const groups = groupRecordsByFuel(source);
   const primaryRaw = groups[0]?.primaryBattery ?? source[0]?.primaryBattery ?? "";
   const slugPrimary = OPERATOR_SLUG_PRIMARY_BATTERY[slug];
-  const displayCode = slugPrimary
-    ? customerFacingBatteryCode(slugPrimary)
-    : primaryRaw
-      ? customerFacingBatteryCode(primaryRaw)
-      : "";
+  const multiFuelDistinct =
+    groups.length > 1 &&
+    new Set(groups.map((g) => normalizeBatteryCode(g.primaryBattery)).filter(Boolean)).size > 1;
+  const displayCode =
+    slugPrimary && hasConfirmedDb
+      ? customerFacingBatteryCode(slugPrimary)
+      : hasConfirmedDb && primaryRaw && !multiFuelDistinct
+        ? customerFacingBatteryCode(primaryRaw)
+        : "";
   let batteryOptions = [
     ...new Set(
       groups.flatMap((g) => g.batteryOptions.map((c) => customerFacingBatteryCode(c))),
@@ -1025,21 +1177,32 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
     }
   }
 
+  const dbLinkTier: VehicleDbLinkTier = hasConfirmedDb
+    ? "confirmed"
+    : hasUsableDb
+      ? "usable"
+      : "none";
+
   return {
     displayCode,
     productCode: displayCode ? findBatteryProductByCode(displayCode) : undefined,
     batteryOptions,
     hasConfirmedDb,
-    needsPhotoReview: !hasConfirmedDb && recs.some(needsPhotoReview),
+    hasUsableDb,
+    dbLinkTier,
+    needsPhotoReview: !hasConfirmedDb && (hasUsableDb || recs.some(needsPhotoReview)),
   };
 }
 
 export function getVehicleBatteryPageData(slug: string) {
   const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
+  const linkable = recs.filter(
+    (r) => hasConfirmedBatteryData(r) || isUsableDbCandidate(r, profile),
+  );
   const fuelGroups = mergeOperatorFuelGroups(
     slug,
-    groupRecordsByFuel(recs).map((g) => {
+    groupRecordsByFuel(linkable.length ? linkable : recs).map((g) => {
       const unified = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
       return unified ? { ...g, primaryBattery: unified } : g;
     }),
@@ -1047,7 +1210,8 @@ export function getVehicleBatteryPageData(slug: string) {
   const yearChips = getYearChipsForSlug(slug, recs);
   const relatedVehicles = getRelatedVehicleSlugs(slug);
   const hasConfirmedDb = recs.some(hasConfirmedBatteryData);
-  const needsAnyReview = !hasConfirmedDb && recs.some(needsPhotoReview);
+  const hasUsableDb = recs.some((r) => isUsableDbCandidate(r, profile));
+  const needsAnyReview = !hasConfirmedDb && (hasUsableDb || recs.some(needsPhotoReview));
   const summary = buildVehicleBatterySummary(slug, fuelGroups);
 
   return {
@@ -1057,7 +1221,9 @@ export function getVehicleBatteryPageData(slug: string) {
     yearChips,
     relatedVehicles,
     needsAnyReview,
-    hasData: recs.length > 0,
+    hasConfirmedDb,
+    hasUsableDb,
+    hasData: fuelGroups.length > 0,
     summary,
   };
 }
