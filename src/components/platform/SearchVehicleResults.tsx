@@ -13,6 +13,8 @@ export type VehicleSearchRow = {
   batteryNotes?: string;
   fuelHref?: string;
   needsReview?: boolean;
+  /** 고객 직렬화 — 사진·상담 확인 권장 카드 */
+  needsPhotoCheck?: boolean;
 };
 
 type Props = {

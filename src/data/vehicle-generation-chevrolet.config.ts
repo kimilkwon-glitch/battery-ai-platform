@@ -3,8 +3,8 @@
  */
 
 export type ChevroletBatteryLink =
-  | { status: "needsReview"; note?: string }
-  | { status: "linked"; defaultBatteryCode?: string; note?: string };
+  | { status: "needsReview"; customerNote?: string; internalNote?: string }
+  | { status: "linked"; defaultBatteryCode?: string; customerNote?: string; internalNote?: string };
 
 export type VehicleGenerationChevrolet = {
   id: string;
@@ -32,9 +32,10 @@ const C = (
   ...e,
 });
 
-const needsReview = (note: string): ChevroletBatteryLink => ({
+const needsReview = (internalNote: string): ChevroletBatteryLink => ({
   status: "needsReview",
-  note,
+  customerNote: "상담 확인 필요",
+  internalNote,
 });
 
 export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [

@@ -44,6 +44,33 @@ export interface VehicleAsset {
 
 const DEFAULT_NOTE = "연료·옵션별 상담 확인 권장";
 
+/** vehicle-battery-db model 매칭 — asset.dbModels 미지정 시 modelGroup 기본값 */
+const MODEL_GROUP_DB_MODELS: Partial<Record<string, string[]>> = {
+  sonata: ["쏘나타", "소나타"],
+  avante: ["아반떼"],
+  santafe: ["싼타페"],
+  tucson: ["투싼"],
+  grandeur: ["그랜저"],
+  palisade: ["팰리세이드"],
+  kona: ["코나"],
+  staria: ["스타리아"],
+  porter2: ["포터", "포터2", "포터 II"],
+  k3: ["K3", "케이3"],
+  k5: ["K5", "케이5", "올 뉴 K5"],
+  k8: ["K8", "케이8"],
+  sportage: ["스포티지"],
+  sorento: ["쏘렌토", "소렌토"],
+  carnival: ["카니발"],
+  morning: ["모닝"],
+  ray: ["레이"],
+  niro: ["니로"],
+  seltos: ["셀토스"],
+  bongo3: ["봉고", "봉고3"],
+  korando: ["코란도"],
+  tivoli: ["티볼리"],
+  rexton: ["렉스턴"],
+};
+
 type LegacyCarBrandKey = "hyundai" | "kia";
 
 const PNG = {
@@ -64,6 +91,7 @@ function asset(
     yearRange?: string;
     catalogId?: string;
     defaultBatteryCode?: string;
+    dbModels?: string[];
   } = {},
 ): VehicleAsset {
   const aliases = opts.aliases ?? [displayName];
@@ -82,6 +110,7 @@ function asset(
     yearRange: opts.yearRange,
     catalogId: opts.catalogId,
     defaultBatteryCode: opts.defaultBatteryCode,
+    dbModels: opts.dbModels ?? MODEL_GROUP_DB_MODELS[modelGroup],
   };
 }
 
@@ -173,13 +202,11 @@ const HYUNDAI_ASSETS: VehicleAsset[] = [
     yearRange: "2006-2012",
     tags: ["SUV"],
     aliases: ["싼타페", "CM", "현대 싼타페"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("santafe-dm", "hyundai", "santafe", "싼타페 DM", "santafe_dm.png", {
     yearRange: "2012-2018",
     tags: ["SUV"],
     aliases: ["싼타페", "DM", "현대 싼타페"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("santafe-tm", "hyundai", "santafe", "싼타페 TM", "santafe_tm.png", {
     yearRange: "2018-2023",
@@ -187,19 +214,16 @@ const HYUNDAI_ASSETS: VehicleAsset[] = [
     tags: ["SUV"],
     aliases: ["싼타페", "TM", "현대 싼타페"],
     defaultBatteryCode: "AGM80L",
-    batteryNotes: "디젤/가솔린/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("santafe-mx5", "hyundai", "santafe", "디 올 뉴 싼타페", "santafe_mx5.png", {
     yearRange: "2023-현재",
     tags: ["SUV"],
     aliases: ["싼타페", "디 올 뉴 싼타페", "MX5", "현대 싼타페"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("santafe-mx5-hev", "hyundai", "santafe", "싼타페 하이브리드", "santafe_mx5_hev.png", {
     yearRange: "2023-현재",
     tags: ["SUV", "하이브리드"],
     aliases: ["싼타페", "싼타페 하이브리드", "싼타페 HEV", "현대 싼타페"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("palisade-lx2", "hyundai", "palisade", "팰리세이드", "palisade_lx2.png", {
     yearRange: "2019-2022",
@@ -337,19 +361,16 @@ const KIA_ASSETS: VehicleAsset[] = [
     yearRange: "2009-2014",
     tags: ["SUV"],
     aliases: ["쏘렌토", "소렌토", "쏘렌토 R", "기아 쏘렌토"],
-    batteryNotes: "가솔린/디젤/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("sorento-um", "kia", "sorento", "올 뉴 쏘렌토", "sorento_um.png", {
     yearRange: "2014-2017",
     tags: ["SUV"],
     aliases: ["쏘렌토", "소렌토", "올 뉴 쏘렌토", "기아 쏘렌토"],
-    batteryNotes: "가솔린/디젤/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("sorento-um-fl", "kia", "sorento", "더 뉴 쏘렌토", "sorento_um_fl.png", {
     yearRange: "2017-2020",
     tags: ["SUV"],
     aliases: ["쏘렌토", "소렌토", "더 뉴 쏘렌토", "쏘렌토 페이스리프트", "기아 쏘렌토"],
-    batteryNotes: "가솔린/디젤/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("sorento-mq4", "kia", "sorento", "쏘렌토 4세대", "sorento_mq4.png", {
     yearRange: "2020-2023",
@@ -357,32 +378,27 @@ const KIA_ASSETS: VehicleAsset[] = [
     tags: ["SUV"],
     aliases: ["쏘렌토", "소렌토", "쏘렌토 4세대", "MQ4", "기아 쏘렌토"],
     defaultBatteryCode: "AGM95L",
-    batteryNotes: "가솔린/디젤/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("sorento-mq4-fl", "kia", "sorento", "더 뉴 쏘렌토", "sorento_mq4_fl.png", {
     yearRange: "2023-현재",
     tags: ["SUV"],
     aliases: ["쏘렌토", "소렌토", "더 뉴 쏘렌토 MQ4", "기아 쏘렌토"],
     defaultBatteryCode: "AGM95L",
-    batteryNotes: "가솔린/디젤/하이브리드 및 ISG 여부에 따라 배터리 규격 확인이 필요합니다.",
   }),
   asset("carnival-vq", "kia", "carnival", "그랜드 카니발", "carnival_vq.png", {
     yearRange: "2006-2014",
     tags: ["밴"],
     aliases: ["카니발", "그랜드 카니발", "기아 카니발"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 하이리무진 여부에 따라 배터리 확인이 필요합니다.",
   }),
   asset("carnival-yp", "kia", "carnival", "올 뉴 카니발", "carnival_yp.png", {
     yearRange: "2014-2020",
     tags: ["밴"],
     aliases: ["카니발", "올 뉴 카니발", "기아 카니발"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 하이리무진 여부에 따라 배터리 확인이 필요합니다.",
   }),
   asset("carnival-yp-fl", "kia", "carnival", "더 뉴 카니발", "carnival_yp_fl.png", {
     yearRange: "2018-2020",
     tags: ["밴"],
     aliases: ["카니발", "더 뉴 카니발", "기아 카니발"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 하이리무진 여부에 따라 배터리 확인이 필요합니다.",
   }),
   asset("carnival-ka4", "kia", "carnival", "카니발 4세대", "carnival_ka4.png", {
     yearRange: "2020-2023",
@@ -390,13 +406,11 @@ const KIA_ASSETS: VehicleAsset[] = [
     tags: ["밴"],
     aliases: ["카니발", "카니발 4세대", "KA4", "기아 카니발"],
     defaultBatteryCode: "AGM95L",
-    batteryNotes: "디젤/가솔린/하이브리드 및 하이리무진 여부에 따라 배터리 확인이 필요합니다.",
   }),
   asset("carnival-ka4-fl", "kia", "carnival", "더 뉴 카니발", "carnival_ka4_fl.png", {
     yearRange: "2023-현재",
     tags: ["밴"],
     aliases: ["카니발", "더 뉴 카니발", "카니발 4세대 FL", "기아 카니발"],
-    batteryNotes: "디젤/가솔린/하이브리드 및 하이리무진 여부에 따라 배터리 확인이 필요합니다.",
   }),
   asset("k3-yd", "kia", "k3", "K3 1세대", "k3_yd.png", { yearRange: "2012-2018", tags: ["세단"], aliases: ["K3", "케이쓰리", "기아 K3"] }),
   asset("k3-bd", "kia", "k3", "올 뉴 K3", "k3_bd.png", { yearRange: "2018-2021", tags: ["세단"], aliases: ["K3", "케이쓰리", "올 뉴 K3", "기아 K3"] }),

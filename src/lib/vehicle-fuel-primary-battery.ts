@@ -47,6 +47,8 @@ const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
   },
   "sportage-nq5": { 하이브리드: "AGM60L" },
   "k8-gl3": { 하이브리드: "AGM60L" },
+  "sorento-mq4": { 하이브리드: "AGM60L" },
+  "sorento-mq4-fl": { 하이브리드: "AGM60L" },
 };
 
 function syntheticFuelGroup(fuelLabel: string, primary: string): FuelBatteryGroup {

@@ -697,7 +697,7 @@ export const VEHICLE_GENERATIONS_V04: VehicleGenerationV04[] = [
     tags: ["밴", "상용차"],
     battery: {
       status: "linked",
-      note: "vehicle-battery-db 스타렉스/그랜드스타렉스 LPG 80R — 연료별 확인",
+      note: "LPG 80R — 연식·옵션별 확인 필요",
     },
     dbModels: ["스타렉스", "그랜드 스타렉스"],
     searchAliases: ["그랜드스타렉스", "그랜드 스타렉스", "스타렉스", "grand starex"],
@@ -713,7 +713,7 @@ export const VEHICLE_GENERATIONS_V04: VehicleGenerationV04[] = [
     tags: ["SUV"],
     battery: {
       status: "linked",
-      note: "07~15년 연료별 80L/90L/100L — vehicle-battery-db",
+      note: "07~15년 80L/90L/100L — 연식·옵션별 확인 필요",
     },
     dbModels: ["모하비"],
     searchAliases: ["모하비", "mohave"],
@@ -797,7 +797,7 @@ export const VEHICLE_GENERATIONS_V04: VehicleGenerationV04[] = [
     tags: ["SUV"],
     battery: {
       status: "linked",
-      note: "08~13년 가솔린/디젤 60AL·80L — 연료별 확인",
+      note: "08~13년 60AL·80L — 연식·옵션별 확인 필요",
     },
     dbModels: ["쏘울"],
     searchAliases: ["쏘울", "soul"],
@@ -849,7 +849,7 @@ export const VEHICLE_GENERATIONS_V04: VehicleGenerationV04[] = [
     tags: ["MPV"],
     battery: {
       status: "linked",
-      note: "올뉴카렌스 14~16 / 뉴카렌스 07~13 — vehicle-battery-db 연료별",
+      note: "14~16 / 07~13 — 연식·옵션별 확인 필요",
     },
     dbModels: ["카렌스"],
     searchAliases: ["올뉴카렌스", "올 뉴 카렌스", "all new carens"],

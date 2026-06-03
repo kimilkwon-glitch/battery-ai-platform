@@ -55,7 +55,11 @@ import {
 import { computeTopFoldLimits } from "@/lib/search/search-top-fold";
 import type { RunBatterySearchOptions } from "@/lib/search/run-battery-search-options";
 import { isCustomerCatalogSearchType } from "@/lib/home-search-types";
-import { isCustomerGuideSymptomOnlyQuery } from "@/lib/search/customer-search-display";
+import {
+  isCustomerGuideSymptomOnlyQuery,
+  sanitizeCustomerBatterySummary,
+  toCustomerVehicleSearchRow,
+} from "@/lib/search/customer-search-display";
 import {
   buildSearchUxPresentation,
   emptySearchUx,
@@ -82,10 +86,11 @@ export type RecognizedVehicleResult = {
   yearBranchLinks?: SearchCta[];
   bodyMessage: string | null;
   confidenceLabel: string | null;
-  specSource: "vehicle-battery-db" | "fitment-override" | "car-asset-default" | "candidate-map" | null;
-  dbMatchKey: string | null;
-  dbRecordId: string | null;
-  dbRecordDisplayName: string | null;
+  /** 고객 응답에서는 제외 — 운영자 디버그용 */
+  specSource?: "vehicle-battery-db" | "fitment-override" | "car-asset-default" | "candidate-map" | null;
+  dbMatchKey?: string | null;
+  dbRecordId?: string | null;
+  dbRecordDisplayName?: string | null;
   primaryBatteryCode: string | null;
   secondaryNote: string | null;
   basisLabel: string | null;
@@ -896,6 +901,26 @@ function sanitizeVehicleRowsForUpgrade(rows: VehicleSearchRow[]): VehicleSearchR
   }));
 }
 
+function toCustomerRecognizedVehicle(
+  rv: RecognizedVehicleResult | null,
+): RecognizedVehicleResult | null {
+  if (!rv) return null;
+  const {
+    specSource: _specSource,
+    dbMatchKey: _dbMatchKey,
+    dbRecordId: _dbRecordId,
+    dbRecordDisplayName: _dbRecordDisplayName,
+    ...rest
+  } = rv;
+  return {
+    ...rest,
+    secondaryNote: sanitizeCustomerBatterySummary(rv.secondaryNote) ?? rv.secondaryNote,
+    guidance: sanitizeCustomerBatterySummary(rv.guidance) ?? rv.guidance,
+    fallbackMessage: sanitizeCustomerBatterySummary(rv.fallbackMessage) ?? rv.fallbackMessage,
+    bodyMessage: sanitizeCustomerBatterySummary(rv.bodyMessage) ?? rv.bodyMessage,
+  };
+}
+
 function filterHitsWithoutBatteryCodes(hits: UnifiedSearchResult[]): UnifiedSearchResult[] {
   return hits.filter((h) => !/\b(AGM|DIN|CMF|EFB)\d+[LR]?\b/i.test(h.title));
 }
@@ -1268,6 +1293,9 @@ export function buildSearchPageResults(
           ? GUIDANCE_NOTE
           : null;
 
+    const customerVehicles = vehiclesForRender.map(toCustomerVehicleSearchRow);
+    const customerRecognizedVehicle = toCustomerRecognizedVehicle(recognizedVehicle);
+
     return {
       query,
       displayQuery,
@@ -1276,14 +1304,14 @@ export function buildSearchPageResults(
       summary,
       ctas,
       hero,
-      vehicles: vehiclesForRender,
-      vehiclesTotal: vehiclesForRender.length,
+      vehicles: customerVehicles,
+      vehiclesTotal: customerVehicles.length,
       orderGuidance: intentFlags.order ? ORDER_GUIDANCE_TEXT : null,
       compareIntent: intentFlags.compare,
       aliasVehicleNote: alias?.searchRecognitionNote ?? (alias ? ALIAS_VEHICLE_NOTE : null),
       searchRecognitionNote: alias?.searchRecognitionNote ?? null,
       upgradeGuidance: upgradeReviewOnly ? UPGRADE_REVIEW_GUIDANCE : null,
-      recognizedVehicle,
+      recognizedVehicle: customerRecognizedVehicle,
       recognizedSpec,
       batteries: batteriesLimited,
       batteriesTotal: batteries.length,
@@ -1325,9 +1353,9 @@ export function buildSearchPageResults(
         symptomDiagnosisFirst,
         compareIntent: intentFlags.compare,
         compareBatteryCodes,
-        recognizedVehicle,
+        recognizedVehicle: customerRecognizedVehicle,
         recognizedSpec,
-        vehicles: vehiclesForRender,
+        vehicles: customerVehicles,
         intentMessage,
         intentFlags,
       }),

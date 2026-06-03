@@ -142,6 +142,18 @@ export function displayNameSearchPenalty(displayName: string): number {
   return 0;
 }
 
+import type { VehicleSearchRow } from "@/components/platform/SearchVehicleResults";
+
+/** 검색 페이지·RSC 직렬화 — needsReview 등 내부 필드 제거 */
+export function toCustomerVehicleSearchRow(
+  row: VehicleSearchRow,
+): Omit<VehicleSearchRow, "needsReview"> & { needsPhotoCheck?: boolean } {
+  const clean = sanitizeSearchRowCustomerCopy(row, row.recommend);
+  const { needsReview, ...rest } = row;
+  const merged = { ...rest, ...clean };
+  return needsReview ? { ...merged, needsPhotoCheck: true } : merged;
+}
+
 export function batterySpecTerminalHint(code: string): string {
   const m = code.match(/^(\d+)([LR])$/i);
   if (m) return `${m[1]}Ah · ${m[2].toUpperCase()}단자`;

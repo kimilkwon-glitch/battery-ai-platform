@@ -20,7 +20,7 @@ function pickSpecLabel(row: VehicleSearchRow): { label: string; tone: "spec" | "
   if (isConcreteSpec(candidate)) {
     return { label: candidate, tone: "spec" };
   }
-  if (row.needsReview) {
+  if ("needsPhotoCheck" in row && row.needsPhotoCheck) {
     return { label: "대표 규격 확인", tone: "hint" };
   }
   return { label: "대표 규격 확인", tone: "hint" };

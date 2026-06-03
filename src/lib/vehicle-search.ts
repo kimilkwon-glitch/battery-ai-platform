@@ -27,38 +27,83 @@ import {
   sanitizeCustomerBatterySummary,
   sanitizeSearchRowCustomerCopy,
 } from "@/lib/search/customer-search-display";
+import { normalizeQuery } from "@/lib/search/normalize-query";
+import { parseVehicleIntent } from "@/lib/search/parse-vehicle-intent";
+import { resolveVehicleBatterySpecForSearch } from "@/lib/search/resolve-vehicle-battery-spec";
+import { customerFacingBatteryCode } from "@/lib/canonical-battery-code";
 import { vehicles as catalogVehicles } from "@/lib/platform-data";
 
-export function assetToSearchRow(asset: VehicleAsset): VehicleSearchRow {
+function assetMatchesIntent(asset: VehicleAsset, intent: ReturnType<typeof parseVehicleIntent>): boolean {
+  if (!intent.hasVehicle) return false;
+  const slug = asset.catalogId ?? asset.id;
+  if (intent.assetId === slug || intent.assetId === asset.id || intent.catalogId === slug) {
+    return true;
+  }
+  if (intent.model && norm(intent.model) === norm(asset.modelGroup)) return true;
+  return norm(asset.displayName).includes(norm(intent.model ?? ""));
+}
+
+function resolveAssetRowBattery(asset: VehicleAsset, query: string): { battery: string; needsReview: boolean } {
+  const { normalizedQuery } = normalizeQuery(query);
+  const intent = parseVehicleIntent(normalizedQuery);
+  if (assetMatchesIntent(asset, intent)) {
+    const spec = resolveVehicleBatterySpecForSearch({
+      exactSpec: null,
+      canonicalKey: intent.canonicalKey,
+      assetId: asset.catalogId ?? asset.id,
+      fuel: intent.fuel,
+      displayName: intent.displayName ?? asset.displayName,
+      normalizedQuery,
+      model: intent.model,
+      year: intent.year,
+      dbQuery: intent.dbQuery,
+    });
+    const code = spec.primaryCodes[0]
+      ? customerFacingBatteryCode(spec.primaryCodes[0])
+      : spec.displayValue
+        ? customerFacingBatteryCode(spec.displayValue)
+        : "";
+    if (code) {
+      return { battery: code, needsReview: spec.tier === "none" };
+    }
+  }
+
   const db = getVehicleCardBatteryInfo(asset.catalogId ?? asset.id);
   const needsBatteryReview = asset.batteryMatchStatus === "needsReview";
   const battery = needsBatteryReview
-    ? "규격 확인 필요"
+    ? "상담 확인 필요"
     : (db.hasConfirmedDb && db.displayCode) ||
       db.displayCode ||
       asset.defaultBatteryCode ||
-      (db.needsPhotoReview ? "사진 확인 필요" : "규격 확인 필요");
+      (db.needsPhotoReview ? "사진 확인 권장" : "상담 확인 필요");
+  return { battery, needsReview: needsBatteryReview || db.needsPhotoReview };
+}
+
+export function assetToSearchRow(asset: VehicleAsset, query = ""): VehicleSearchRow {
+  const { battery, needsReview } = resolveAssetRowBattery(asset, query);
   const fuel = asset.tags?.includes("EV")
     ? "전기"
     : asset.tags?.includes("하이브리드")
       ? "하이브리드"
       : "연료별";
 
-  return {
+  const draft: VehicleSearchRow = {
     model: `${vehicleAssetBrandLabel(asset.brand)} ${asset.displayName}`,
     year: asset.yearRange ?? "-",
     fuel,
     origin: battery,
     recommend: battery,
-    upgrade: asset.tags?.slice(0, 1).join(" · ") || "규격 확인",
-    note: `${vehicleAssetBrandLabel(asset.brand)} · ${asset.tags?.slice(0, 2).join(" · ") ?? "차량"}`,
+    upgrade: asset.tags?.slice(0, 1).join(" · ") || "연식·옵션별 확인 필요",
+    note: vehicleAssetBrandLabel(asset.brand),
     href: vehicleAssetHref(asset),
     imageSrc: asset.image || null,
     batteryNotes:
       sanitizeCustomerBatterySummary(asset.batteryNotes) ??
       formatCustomerBatterySummaryForAsset(asset),
-    needsReview: needsBatteryReview || db.needsPhotoReview,
+    needsReview,
   };
+  const clean = sanitizeSearchRowCustomerCopy(draft, battery);
+  return { ...draft, ...clean, needsReview };
 }
 
 function rowFromCatalog(catalogId: string, label: string, brandOverride?: string): VehicleSearchRow | null {
@@ -141,7 +186,7 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
   if (alias.assetId) {
     const asset = getVehicleAsset(alias.assetId);
     if (asset) {
-      const row = assetToSearchRow(asset);
+      const row = assetToSearchRow(asset, query);
       const formal = alias.formalDisplayName ?? asset.displayName;
       const model =
         displayName ??
@@ -181,7 +226,7 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
       fuel: h.fuels.map((f) => `${f.fuel} ${f.battery}`).join(" · ") || "연료별",
       origin: h.fuels[0]?.battery ?? "확인",
       recommend: h.fuels[0]?.battery ?? "확인",
-      upgrade: h.needsReview ? "규격 재확인" : "차량 정보 기준",
+      upgrade: h.needsReview ? "연식·옵션별 확인 필요" : "차량 정보 기준",
       note: h.subtitle || `${h.brand} · 연료별 확인`,
       href: h.href,
       fuelHref: h.fuelHref,
@@ -246,7 +291,7 @@ export function vehicleAssetsToSearchRows(
 
   let rows: VehicleSearchRow[];
   if (preferGenerationCards) {
-    rows = assetCandidates.map((asset) => assetToSearchRow(asset));
+    rows = assetCandidates.map((asset) => assetToSearchRow(asset, query));
   } else if (merged.length > 0) {
     rows = merged.map((h) => {
       const titleForRow =
@@ -262,7 +307,7 @@ export function vehicleAssetsToSearchRows(
         fuel: h.fuels.map((f) => `${f.fuel} ${f.battery}`).join(" · ") || "연료별",
         origin: h.fuels[0]?.battery ?? "확인",
         recommend: h.fuels[0]?.battery ?? "확인",
-        upgrade: h.needsReview ? "규격 재확인" : "차량 정보 기준",
+        upgrade: h.needsReview ? "연식·옵션별 확인 필요" : "차량 정보 기준",
         note: h.subtitle || `${h.brand}`,
         href: h.href,
         fuelHref: h.fuelHref,
@@ -274,7 +319,7 @@ export function vehicleAssetsToSearchRows(
       return { ...draft, ...clean };
     });
   } else {
-    rows = assetCandidates.map((asset) => assetToSearchRow(asset));
+    rows = assetCandidates.map((asset) => assetToSearchRow(asset, query));
   }
 
   return prependAliasRow(rows, aliasMatch, query)

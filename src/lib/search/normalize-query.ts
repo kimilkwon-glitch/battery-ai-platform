@@ -18,6 +18,8 @@ const FUEL_SYNONYMS: [RegExp, string][] = [
   [/\blpg\b/gi, "LPG"],
 ];
 
+const VEHICLE_SYNONYMS: [RegExp, string][] = [[/소렌토/g, "쏘렌토"]];
+
 const SPACING_SYNONYMS: [RegExp, string][] = [
   [/디\s*올\s*뉴/gi, "디올뉴"],
   [/C\s*클래스/gi, "C클래스"],
@@ -34,6 +36,9 @@ function stripTestSuffix(q: string): string {
 
 function applySynonyms(q: string): string {
   let out = q;
+  for (const [re, rep] of VEHICLE_SYNONYMS) {
+    out = out.replace(re, rep);
+  }
   for (const [re, rep] of FUEL_SYNONYMS) {
     out = out.replace(re, rep);
   }
