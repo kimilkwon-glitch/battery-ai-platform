@@ -853,7 +853,14 @@ export function searchVehicleBatteryDb(query: string, limit = 12): VehicleSearch
       yearRange: r0.years ?? asset?.yearRange ?? "-",
       fuels: groups.slice(0, 4).map((g) => ({ fuel: g.fuelLabel, battery: g.primaryBattery })),
       needsReview: recs.some(needsPhotoReview),
-      imageSrc: asset?.image ?? null,
+      imageSrc: (() => {
+        const raw = asset?.image ?? null;
+        if (!raw?.trim()) return null;
+        if (raw.includes("/assets/vehicles/cars-normalized/")) {
+          return raw.replace("/assets/vehicles/cars-normalized/", "/assets/cars-normalized/");
+        }
+        return raw;
+      })(),
       href: `/vehicle/${slug}`,
       fuelHref: `/vehicle/${slug}${fuelHint ? `?fuel=${encodeURIComponent(fuelHint)}` : ""}#fuel-batteries`,
       recordCount: recs.length,

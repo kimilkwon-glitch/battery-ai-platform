@@ -44,17 +44,12 @@ export function SearchVehicleResults({ rows, query, totalCount }: Props) {
       ) : null}
 
       <div className="bm-search-vehicles__grid">
-        {rows.map((row, index) => {
-          const showBatteryThumb =
-            row.recommend === "AGM60L" || row.origin === "AGM60L";
-          return (
-            <SearchVehicleResultCard
-              key={`${row.model}-${row.href}-${index}`}
-              row={row}
-              showBatteryThumb={showBatteryThumb}
-            />
-          );
-        })}
+        {rows.map((row, index) => (
+          <SearchVehicleResultCard
+            key={`${row.model}-${row.href}-${index}`}
+            row={row}
+          />
+        ))}
       </div>
     </div>
   );

@@ -71,7 +71,6 @@ export function VehicleSearchAutocomplete({
                     <span className="bm-search-autocomplete__meta-row">
                       <span className="bm-search-autocomplete__brand">{brand}</span>
                     </span>
-                    <span className="bm-search-autocomplete__hint">{item.subtitle}</span>
                   </span>
                   <ChevronRight className="bm-search-autocomplete__chevron" aria-hidden />
                 </button>
@@ -79,8 +78,12 @@ export function VehicleSearchAutocomplete({
             );
           }
 
-          const { asset, batterySummary } = item;
+          const { asset } = item;
           const yearBadge = asset.yearRange?.trim();
+          const imageSrc =
+            asset.image?.includes("/assets/vehicles/cars-normalized/")
+              ? asset.image.replace("/assets/vehicles/cars-normalized/", "/assets/cars-normalized/")
+              : asset.image;
           return (
             <li key={asset.id} className="bm-search-autocomplete__item">
               <button
@@ -100,7 +103,7 @@ export function VehicleSearchAutocomplete({
                     className="bm-vehicle-card-media--autocomplete"
                     placeholderTitle={asset.displayName}
                     slug={asset.catalogId ?? asset.id}
-                    src={asset.image}
+                    src={imageSrc}
                     variant="thumb"
                   />
                 </span>
@@ -117,9 +120,6 @@ export function VehicleSearchAutocomplete({
                       <span className="bm-search-autocomplete__year-badge">{yearBadge}</span>
                     ) : null}
                   </span>
-                  {batterySummary ? (
-                    <span className="bm-search-autocomplete__hint">{batterySummary}</span>
-                  ) : null}
                 </span>
                 <ChevronRight className="bm-search-autocomplete__chevron" aria-hidden />
               </button>

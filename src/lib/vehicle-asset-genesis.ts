@@ -4,7 +4,7 @@
 import type { VehicleAsset } from "@/lib/car-assets";
 
 function genesisImage(file: string): string {
-  return `/assets/vehicles/cars-normalized/genesis/${file}`;
+  return `/assets/cars-normalized/genesis/${file}`;
 }
 
 function g(

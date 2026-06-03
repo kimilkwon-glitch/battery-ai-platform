@@ -27,6 +27,7 @@ import {
   sanitizeCustomerBatterySummary,
   sanitizeSearchRowCustomerCopy,
 } from "@/lib/search/customer-search-display";
+import { resolveSearchCardImageSrc } from "@/lib/search/search-vehicle-card-display";
 import { normalizeQuery } from "@/lib/search/normalize-query";
 import { parseVehicleIntent } from "@/lib/search/parse-vehicle-intent";
 import { resolveVehicleBatterySpecForSearch } from "@/lib/search/resolve-vehicle-battery-spec";
@@ -96,7 +97,7 @@ export function assetToSearchRow(asset: VehicleAsset, query = ""): VehicleSearch
     upgrade: asset.tags?.slice(0, 1).join(" · ") || "연식·옵션별 확인 필요",
     note: vehicleAssetBrandLabel(asset.brand),
     href: vehicleAssetHref(asset),
-    imageSrc: asset.image || null,
+    imageSrc: resolveSearchCardImageSrc(asset.image),
     batteryNotes:
       sanitizeCustomerBatterySummary(asset.batteryNotes) ??
       formatCustomerBatterySummaryForAsset(asset),
@@ -120,7 +121,7 @@ function rowFromCatalog(catalogId: string, label: string, brandOverride?: string
     upgrade: "규격 확인",
     note: `${v.brand} · ${v.fuel}`,
     href: `/vehicle/${catalogId}`,
-    imageSrc: asset?.image ?? null,
+    imageSrc: resolveSearchCardImageSrc(asset?.image ?? null),
   };
 }
 
@@ -191,7 +192,7 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
       const model =
         displayName ??
         displayModelWithBrand(brandForAlias(alias, vehicleAssetBrandLabel(asset.brand)), formal);
-      const imageSrc = asset.image?.trim() ? asset.image : null;
+      const imageSrc = resolveSearchCardImageSrc(asset.image);
       return {
         ...row,
         model: formatSearchVehicleRowTitle(query, alias, model),

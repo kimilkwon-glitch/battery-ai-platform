@@ -9,7 +9,6 @@ import {
   CUSTOMER_BATTERY_SPEC_CODES,
   batterySpecTerminalHint,
   displayNameSearchPenalty,
-  formatCustomerBatterySummaryForAsset,
   isCustomerGuideSymptomOnlyQuery,
 } from "@/lib/search/customer-search-display";
 
@@ -72,7 +71,7 @@ export function searchCustomerSuggestions(query: string, limit = 8): CustomerSea
       else if (asset.aliases.some((a) => norm(a) === qn)) score += 90;
       else score += 50;
       score -= displayNameSearchPenalty(asset.displayName);
-      return { asset, score, batterySummary: formatCustomerBatterySummaryForAsset(asset) };
+      return { asset, score, batterySummary: "" };
     })
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
