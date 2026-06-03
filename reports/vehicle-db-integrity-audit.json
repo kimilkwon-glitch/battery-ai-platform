@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-03T07:43:43.745Z",
+  "generatedAt": "2026-06-03T08:15:32.531Z",
   "summary": {
-    "vehicleBatteryDbRecords": 2125,
+    "vehicleBatteryDbRecords": 3195,
     "enrichmentRecords": 5,
     "totalAssets": 174,
     "genesisAssets": 9,
@@ -9,18 +9,18 @@
     "chevroletAssets": 36,
     "aliasEntries": 339,
     "forbiddenCopyFindings": 0,
-    "unmatchedAssets": 84,
+    "unmatchedAssets": 13,
     "unmatchedA": 0,
-    "unmatchedB": 76,
-    "unmatchedC": 8,
+    "unmatchedB": 12,
+    "unmatchedC": 1,
     "riskyDisplayAliases": 0,
     "searchFailures": 0,
     "directionMismatches": 0,
     "searchContamination": 0,
-    "totalFindings": 87,
+    "totalFindings": 16,
     "p0Count": 0,
-    "searchPassCount": 26,
-    "searchTotal": 26
+    "searchPassCount": 72,
+    "searchTotal": 72
   },
   "searchResults": [
     {
@@ -235,6 +235,374 @@
       "topSpec": "DIN74L",
       "rowCount": 1,
       "batteryHref": "/battery-specs/DIN74L"
+    },
+    {
+      "query": "QM6",
+      "pass": true,
+      "issues": [],
+      "top": "르노/르노삼성 QM6",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "SM6",
+      "pass": true,
+      "issues": [],
+      "top": "르노코리아 SM6",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "XM3",
+      "pass": true,
+      "issues": [],
+      "top": "르노코리아 XM3",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "QM3",
+      "pass": true,
+      "issues": [],
+      "top": "르노/르노삼성 QM3",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "QM5",
+      "pass": true,
+      "issues": [],
+      "top": "르노/르노삼성 QM5",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "SM5",
+      "pass": true,
+      "issues": [],
+      "top": "르노/르노삼성 SM5 노바",
+      "topSpec": null,
+      "rowCount": 3
+    },
+    {
+      "query": "SM3",
+      "pass": true,
+      "issues": [],
+      "top": "르노코리아 SM3",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "SM7",
+      "pass": true,
+      "issues": [],
+      "top": "르노/르노삼성 SM7 노바",
+      "topSpec": null,
+      "rowCount": 3
+    },
+    {
+      "query": "마스터",
+      "pass": true,
+      "issues": [],
+      "top": "르노/르노삼성 르노 마스터",
+      "topSpec": null,
+      "rowCount": 2
+    },
+    {
+      "query": "스파크",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 스파크",
+      "topSpec": null,
+      "rowCount": 2
+    },
+    {
+      "query": "말리부",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 말리부",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "크루즈",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 크루즈",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "트랙스",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 트랙스",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "트레일블레이저",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레 트레일블레이저",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "캡티바",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 캡티바",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "올란도",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 올란도",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "라세티",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 라세티",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "다마스",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 다마스",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "라보",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 라보",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "젠트라",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 젠트라 X",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "젠트라 X",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 젠트라 X",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "토스카",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 토스카",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "알페온",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 알페온",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "임팔라",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 임팔라",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "이쿼녹스",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 이쿼녹스",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "콜로라도",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 콜로라도",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "트래버스",
+      "pass": true,
+      "issues": [],
+      "top": "쉐보레/GM 트래버스",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "티볼리 아머",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 티볼리 아머",
+      "topSpec": null,
+      "rowCount": 6
+    },
+    {
+      "query": "코란도 C",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 코란도 C",
+      "topSpec": null,
+      "rowCount": 5
+    },
+    {
+      "query": "렉스턴 스포츠",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 렉스턴 스포츠 Y400",
+      "topSpec": "90R",
+      "rowCount": 2
+    },
+    {
+      "query": "렉스턴 스포츠 칸",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 렉스턴 스포츠 칸",
+      "topSpec": "90R",
+      "rowCount": 2
+    },
+    {
+      "query": "G4 렉스턴",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 G4 렉스턴",
+      "topSpec": null,
+      "rowCount": 4
+    },
+    {
+      "query": "올 뉴 렉스턴",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 올 뉴 렉스턴",
+      "topSpec": null,
+      "rowCount": 4
+    },
+    {
+      "query": "코란도 스포츠",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 코란도 스포츠",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "코란도 투리스모",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 코란도 투리스모",
+      "topSpec": "90R",
+      "rowCount": 1
+    },
+    {
+      "query": "뉴 체어맨",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 뉴 체어맨",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "액티언",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 액티언",
+      "topSpec": "90R",
+      "rowCount": 1
+    },
+    {
+      "query": "액티언 스포츠",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 액티언 스포츠",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "카이런",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 카이런",
+      "topSpec": "90R",
+      "rowCount": 1
+    },
+    {
+      "query": "무쏘 스포츠",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 무쏘 스포츠",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "토레스",
+      "pass": true,
+      "issues": [],
+      "top": "KG/쌍용 토레스",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "봉고3",
+      "pass": true,
+      "issues": [],
+      "top": "기아 봉고3",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "쏘나타 NF",
+      "pass": true,
+      "issues": [],
+      "top": "현대 쏘나타 NF",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "투싼 JM",
+      "pass": true,
+      "issues": [],
+      "top": "현대 투싼",
+      "topSpec": null,
+      "rowCount": 1
+    },
+    {
+      "query": "케이쓰리",
+      "pass": true,
+      "issues": [],
+      "top": "기아 K3 1세대",
+      "topSpec": "DIN62L",
+      "rowCount": 3
+    },
+    {
+      "query": "EQ900",
+      "pass": true,
+      "issues": [],
+      "top": "제네시스 EQ900",
+      "topSpec": "AGM105L",
+      "rowCount": 1
     }
   ],
   "unmatchedClassifications": [
@@ -245,110 +613,8 @@
       "reason": "DB 매칭 없음 — 상담 확인만"
     },
     {
-      "assetId": "renault-samsung-sm3-2005",
-      "displayName": "SM3",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-new-sm3-2009",
-      "displayName": "뉴 SM3",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-sm3-neo-2014",
-      "displayName": "SM3 네오",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-sm3-ze-2013",
-      "displayName": "SM3 Z.E.",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-sm5-new-impression-2007",
-      "displayName": "SM5 뉴 임프레션",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-new-sm5-2010",
-      "displayName": "뉴 SM5",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-sm5-nova-2015",
-      "displayName": "SM5 노바",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-sm6-2016",
-      "displayName": "SM6",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-the-new-sm6-2020",
-      "displayName": "더 뉴 SM6",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-sm7-new-art-2008",
-      "displayName": "SM7 뉴 아트",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-all-new-sm7-2011",
-      "displayName": "올 뉴 SM7",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-sm7-nova-2014",
-      "displayName": "SM7 노바",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-qm5-2007",
-      "displayName": "QM5",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-qm3-2013",
-      "displayName": "QM3",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-qm6-2016",
-      "displayName": "QM6",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-the-new-qm6-2019",
-      "displayName": "더 뉴 QM6",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
       "assetId": "renault-samsung-qm6-quest-2023",
       "displayName": "QM6 퀘스트",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-xm3-2020",
-      "displayName": "XM3",
       "class": "B",
       "reason": "DB 매칭 없음 — 상담 확인만"
     },
@@ -363,150 +629,6 @@
       "displayName": "르노 마스터",
       "class": "B",
       "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-tivoli-2015",
-      "displayName": "티볼리",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-tivoli-armour-2017",
-      "displayName": "티볼리 아머",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-tivoli-air-2016",
-      "displayName": "티볼리 에어",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-tivoli-air-2021",
-      "displayName": "티볼리 에어",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-very-new-tivoli-2019",
-      "displayName": "베리 뉴 티볼리",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "kg-the-new-tivoli-2023",
-      "displayName": "더 뉴 티볼리",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-korando-c-2011",
-      "displayName": "코란도 C",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-new-korando-c-2013",
-      "displayName": "코란도 C",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-new-style-korando-c-2017",
-      "displayName": "코란도 C",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-viewtiful-korando-2019",
-      "displayName": "뷰티풀 코란도",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-korando-emotion-2022",
-      "displayName": "코란도 이모션",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-korando-sports-2012",
-      "displayName": "코란도 스포츠",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-korando-turismo-2013",
-      "displayName": "코란도 투리스모",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-actyon-2005",
-      "displayName": "액티언",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
-    },
-    {
-      "assetId": "ssangyong-actyon-sports-2006",
-      "displayName": "액티언 스포츠",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
-    },
-    {
-      "assetId": "ssangyong-kyron-2005",
-      "displayName": "카이런",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
-    },
-    {
-      "assetId": "ssangyong-g4-rexton-2017",
-      "displayName": "G4 렉스턴",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-all-new-rexton-2020",
-      "displayName": "올 뉴 렉스턴",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-rexton-sports-2018",
-      "displayName": "렉스턴 스포츠",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-rexton-sports-khan-2019",
-      "displayName": "렉스턴 스포츠 칸",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-new-chairman-2005",
-      "displayName": "뉴 체어맨",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
-    },
-    {
-      "assetId": "ssangyong-chairman-w-2008",
-      "displayName": "체어맨 W",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "ssangyong-rexton-2001",
-      "displayName": "렉스턴",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
-    },
-    {
-      "assetId": "ssangyong-musso-sports-2002",
-      "displayName": "무쏘 스포츠",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
     },
     {
       "assetId": "kg-torres-2022",
@@ -527,154 +649,10 @@
       "reason": "DB 매칭 없음 — 상담 확인만"
     },
     {
-      "assetId": "gmdaewoo-matiz-creative-2009",
-      "displayName": "마티즈 크리에이티브",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-spark-2011",
-      "displayName": "스파크",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-spark-s-2013",
-      "displayName": "스파크 S",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-spark-2015",
-      "displayName": "더 넥스트 스파크",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-spark-2018",
-      "displayName": "더 뉴 스파크",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-spark-2021",
-      "displayName": "스파크",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "gmdaewoo-lacetti-2006",
-      "displayName": "라세티",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "daewoo-lacetti-premiere-2008",
-      "displayName": "라세티 프리미어",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-cruze-2011",
-      "displayName": "크루즈",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-the-new-cruze-2015",
-      "displayName": "더 뉴 크루즈",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-all-new-cruze-2017",
-      "displayName": "올 뉴 크루즈",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-malibu-2011",
-      "displayName": "말리부",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-malibu-2016",
-      "displayName": "올 뉴 말리부",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-malibu-2019",
-      "displayName": "더 뉴 말리부",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "gmdaewoo-winstorm-2006",
-      "displayName": "윈스톰",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-captiva-2011",
-      "displayName": "캡티바",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-captiva-2016",
-      "displayName": "더 넥스트 캡티바",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-trax-2013",
-      "displayName": "트랙스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-trax-2017",
-      "displayName": "더 뉴 트랙스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-trax-crossover-2023",
-      "displayName": "트랙스 크로스오버",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-trailblazer-2020",
-      "displayName": "트레일블레이저",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
       "assetId": "chevrolet-trailblazer-2024",
       "displayName": "트레일블레이저",
       "class": "B",
       "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-orlando-2011",
-      "displayName": "올란도",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-aveo-2011",
-      "displayName": "아베오",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "gmdaewoo-gentra-x-2007",
-      "displayName": "젠트라 X",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
     },
     {
       "assetId": "daewoo-tosca-2006",
@@ -683,44 +661,8 @@
       "reason": "레거시·노출 제외 후보"
     },
     {
-      "assetId": "gmdaewoo-alpheon-2010",
-      "displayName": "알페온",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-impala-2016",
-      "displayName": "임팔라",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-equinox-2018",
-      "displayName": "이쿼녹스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
       "assetId": "chevrolet-equinox-2022",
       "displayName": "이쿼녹스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-traverse-2019",
-      "displayName": "트래버스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-colorado-2019",
-      "displayName": "콜로라도",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-colorado-2021",
-      "displayName": "콜로라도",
       "class": "B",
       "reason": "DB 매칭 없음 — 상담 확인만"
     },
@@ -766,310 +708,6 @@
       "category": "unmatched_asset",
       "file": "vehicleAssets",
       "field": "asset",
-      "value": "SM3",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm3-2005",
-        "catalogId": "renault-samsung-sm3-2005",
-        "brand": "renault",
-        "yearRange": "2005-2008",
-        "dbModels": [
-          "SM3"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "뉴 SM3",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-new-sm3-2009",
-        "catalogId": "renault-samsung-new-sm3-2009",
-        "brand": "renault",
-        "yearRange": "2009-2013",
-        "dbModels": [
-          "SM3"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "SM3 네오",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm3-neo-2014",
-        "catalogId": "renault-samsung-sm3-neo-2014",
-        "brand": "renault",
-        "yearRange": "2014-2019",
-        "dbModels": [
-          "SM3"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "SM3 Z.E.",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm3-ze-2013",
-        "catalogId": "renault-samsung-sm3-ze-2013",
-        "brand": "renault",
-        "yearRange": "2013-2019",
-        "dbModels": [
-          "SM3"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "SM5 뉴 임프레션",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm5-new-impression-2007",
-        "catalogId": "renault-samsung-sm5-new-impression-2007",
-        "brand": "renault",
-        "yearRange": "2007-2009",
-        "dbModels": [
-          "SM5"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "뉴 SM5",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-new-sm5-2010",
-        "catalogId": "renault-samsung-new-sm5-2010",
-        "brand": "renault",
-        "yearRange": "2010-2012",
-        "dbModels": [
-          "SM5"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "SM5 노바",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm5-nova-2015",
-        "catalogId": "renault-samsung-sm5-nova-2015",
-        "brand": "renault",
-        "yearRange": "2015-2019",
-        "dbModels": [
-          "SM5"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "SM6",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm6-2016",
-        "catalogId": "renault-samsung-sm6-2016",
-        "brand": "renault",
-        "yearRange": "2016-2019",
-        "dbModels": [
-          "SM6"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 뉴 SM6",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-the-new-sm6-2020",
-        "catalogId": "renault-samsung-the-new-sm6-2020",
-        "brand": "renault",
-        "yearRange": "2020-현재",
-        "dbModels": [
-          "SM6"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "SM7 뉴 아트",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm7-new-art-2008",
-        "catalogId": "renault-samsung-sm7-new-art-2008",
-        "brand": "renault",
-        "yearRange": "2008-2010",
-        "dbModels": [
-          "SM7"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "올 뉴 SM7",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-all-new-sm7-2011",
-        "catalogId": "renault-samsung-all-new-sm7-2011",
-        "brand": "renault",
-        "yearRange": "2011-2013",
-        "dbModels": [
-          "SM7"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "SM7 노바",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-sm7-nova-2014",
-        "catalogId": "renault-samsung-sm7-nova-2014",
-        "brand": "renault",
-        "yearRange": "2014-2019",
-        "dbModels": [
-          "SM7"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "QM5",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-qm5-2007",
-        "catalogId": "renault-samsung-qm5-2007",
-        "brand": "renault",
-        "yearRange": "2007-2013",
-        "dbModels": [
-          "QM5"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "QM3",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-qm3-2013",
-        "catalogId": "renault-samsung-qm3-2013",
-        "brand": "renault",
-        "yearRange": "2013-2016",
-        "dbModels": [
-          "QM3"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "QM6",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-qm6-2016",
-        "catalogId": "renault-samsung-qm6-2016",
-        "brand": "renault",
-        "yearRange": "2016-2019",
-        "dbModels": [
-          "QM6"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 뉴 QM6",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-the-new-qm6-2019",
-        "catalogId": "renault-samsung-the-new-qm6-2019",
-        "brand": "renault",
-        "yearRange": "2019-2022",
-        "dbModels": [
-          "QM6"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
       "value": "QM6 퀘스트",
       "suggestion": "상담 확인 필요만 노출",
       "priority": "P1",
@@ -1080,25 +718,6 @@
         "yearRange": "2023-현재",
         "dbModels": [
           "QM6"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "XM3",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-xm3-2020",
-        "catalogId": "renault-samsung-xm3-2020",
-        "brand": "renault",
-        "yearRange": "2020-현재",
-        "dbModels": [
-          "XM3"
         ],
         "batteryMatchStatus": "needsReview",
         "classification": "B"
@@ -1141,462 +760,6 @@
         ],
         "batteryMatchStatus": "needsReview",
         "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "티볼리",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-tivoli-2015",
-        "catalogId": "ssangyong-tivoli-2015",
-        "brand": "ssangyong",
-        "yearRange": "2015-2016",
-        "dbModels": [
-          "티볼리"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "티볼리 아머",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-tivoli-armour-2017",
-        "catalogId": "ssangyong-tivoli-armour-2017",
-        "brand": "ssangyong",
-        "yearRange": "2017-2018",
-        "dbModels": [
-          "티볼리"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "티볼리 에어",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-tivoli-air-2016",
-        "catalogId": "ssangyong-tivoli-air-2016",
-        "brand": "ssangyong",
-        "yearRange": "2016-2020",
-        "dbModels": [
-          "티볼리"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "티볼리 에어",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-tivoli-air-2021",
-        "catalogId": "ssangyong-tivoli-air-2021",
-        "brand": "ssangyong",
-        "yearRange": "2021-2022",
-        "dbModels": [
-          "티볼리"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "베리 뉴 티볼리",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-very-new-tivoli-2019",
-        "catalogId": "ssangyong-very-new-tivoli-2019",
-        "brand": "ssangyong",
-        "yearRange": "2019-2022",
-        "dbModels": [
-          "티볼리"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 뉴 티볼리",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "kg-the-new-tivoli-2023",
-        "catalogId": "kg-the-new-tivoli-2023",
-        "brand": "kg",
-        "yearRange": "2023-현재",
-        "dbModels": [
-          "티볼리"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "코란도 C",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-korando-c-2011",
-        "catalogId": "ssangyong-korando-c-2011",
-        "brand": "ssangyong",
-        "yearRange": "2011-2012",
-        "dbModels": [
-          "코란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "코란도 C",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-new-korando-c-2013",
-        "catalogId": "ssangyong-new-korando-c-2013",
-        "brand": "ssangyong",
-        "yearRange": "2013-2016",
-        "dbModels": [
-          "코란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "코란도 C",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-new-style-korando-c-2017",
-        "catalogId": "ssangyong-new-style-korando-c-2017",
-        "brand": "ssangyong",
-        "yearRange": "2017-2018",
-        "dbModels": [
-          "코란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "뷰티풀 코란도",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-viewtiful-korando-2019",
-        "catalogId": "ssangyong-viewtiful-korando-2019",
-        "brand": "ssangyong",
-        "yearRange": "2019-2021",
-        "dbModels": [
-          "코란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "코란도 이모션",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-korando-emotion-2022",
-        "catalogId": "ssangyong-korando-emotion-2022",
-        "brand": "ssangyong",
-        "yearRange": "2022-현재",
-        "dbModels": [
-          "코란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "코란도 스포츠",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-korando-sports-2012",
-        "catalogId": "ssangyong-korando-sports-2012",
-        "brand": "ssangyong",
-        "yearRange": "2012-2018",
-        "dbModels": [
-          "코란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "코란도 투리스모",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-korando-turismo-2013",
-        "catalogId": "ssangyong-korando-turismo-2013",
-        "brand": "ssangyong",
-        "yearRange": "2013-2019",
-        "dbModels": [
-          "코란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "액티언",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-actyon-2005",
-        "catalogId": "ssangyong-actyon-2005",
-        "brand": "ssangyong",
-        "yearRange": "2005-2006",
-        "dbModels": [
-          "액티언"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "액티언 스포츠",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-actyon-sports-2006",
-        "catalogId": "ssangyong-actyon-sports-2006",
-        "brand": "ssangyong",
-        "yearRange": "2006-2018",
-        "dbModels": [
-          "액티언"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "카이런",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-kyron-2005",
-        "catalogId": "ssangyong-kyron-2005",
-        "brand": "ssangyong",
-        "yearRange": "2005-2014",
-        "dbModels": [
-          "카이런"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "G4 렉스턴",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-g4-rexton-2017",
-        "catalogId": "ssangyong-g4-rexton-2017",
-        "brand": "ssangyong",
-        "yearRange": "2017-2019",
-        "dbModels": [
-          "렉스턴"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "올 뉴 렉스턴",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-all-new-rexton-2020",
-        "catalogId": "ssangyong-all-new-rexton-2020",
-        "brand": "ssangyong",
-        "yearRange": "2020-2023",
-        "dbModels": [
-          "렉스턴"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "렉스턴 스포츠",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-rexton-sports-2018",
-        "catalogId": "ssangyong-rexton-sports-2018",
-        "brand": "ssangyong",
-        "yearRange": "2018-2023",
-        "dbModels": [
-          "렉스턴"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "렉스턴 스포츠 칸",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-rexton-sports-khan-2019",
-        "catalogId": "ssangyong-rexton-sports-khan-2019",
-        "brand": "ssangyong",
-        "yearRange": "2019-2023",
-        "dbModels": [
-          "렉스턴"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "뉴 체어맨",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-new-chairman-2005",
-        "catalogId": "ssangyong-new-chairman-2005",
-        "brand": "ssangyong",
-        "yearRange": "2005-2007",
-        "dbModels": [
-          "체어맨"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "체어맨 W",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-chairman-w-2008",
-        "catalogId": "ssangyong-chairman-w-2008",
-        "brand": "ssangyong",
-        "yearRange": "2008-2017",
-        "dbModels": [
-          "체어맨"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "렉스턴",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-rexton-2001",
-        "catalogId": "ssangyong-rexton-2001",
-        "brand": "ssangyong",
-        "yearRange": "2001-2006",
-        "dbModels": [
-          "렉스턴"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "무쏘 스포츠",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "ssangyong-musso-sports-2002",
-        "catalogId": "ssangyong-musso-sports-2002",
-        "brand": "ssangyong",
-        "yearRange": "2002-2004",
-        "dbModels": [
-          "무쏘"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
       }
     },
     {
@@ -1660,408 +823,6 @@
       "category": "unmatched_asset",
       "file": "vehicleAssets",
       "field": "asset",
-      "value": "마티즈 크리에이티브",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "gmdaewoo-matiz-creative-2009",
-        "catalogId": "gmdaewoo-matiz-creative-2009",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2009-2011",
-        "dbModels": [
-          "마티즈",
-          "스파크"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "스파크",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-spark-2011",
-        "catalogId": "chevrolet-spark-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-2013",
-        "dbModels": [
-          "스파크"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "스파크 S",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-spark-s-2013",
-        "catalogId": "chevrolet-spark-s-2013",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2013-2015",
-        "dbModels": [
-          "스파크"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 넥스트 스파크",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-spark-2015",
-        "catalogId": "chevrolet-spark-2015",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2015-2018",
-        "dbModels": [
-          "스파크"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 뉴 스파크",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-spark-2018",
-        "catalogId": "chevrolet-spark-2018",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2018-2020",
-        "dbModels": [
-          "스파크"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "스파크",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-spark-2021",
-        "catalogId": "chevrolet-spark-2021",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2021-2022",
-        "dbModels": [
-          "스파크"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "라세티",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "gmdaewoo-lacetti-2006",
-        "catalogId": "gmdaewoo-lacetti-2006",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2006-2008",
-        "dbModels": [
-          "라세티"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "라세티 프리미어",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "daewoo-lacetti-premiere-2008",
-        "catalogId": "daewoo-lacetti-premiere-2008",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2008-2011",
-        "dbModels": [
-          "라세티",
-          "크루즈"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "크루즈",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-cruze-2011",
-        "catalogId": "chevrolet-cruze-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-2015",
-        "dbModels": [
-          "크루즈"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 뉴 크루즈",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-the-new-cruze-2015",
-        "catalogId": "chevrolet-the-new-cruze-2015",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2015-2016",
-        "dbModels": [
-          "크루즈"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "올 뉴 크루즈",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-all-new-cruze-2017",
-        "catalogId": "chevrolet-all-new-cruze-2017",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2017-2018",
-        "dbModels": [
-          "크루즈"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "말리부",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-malibu-2011",
-        "catalogId": "chevrolet-malibu-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-2016",
-        "dbModels": [
-          "말리부"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "올 뉴 말리부",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-malibu-2016",
-        "catalogId": "chevrolet-malibu-2016",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2016-2018",
-        "dbModels": [
-          "말리부"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 뉴 말리부",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-malibu-2019",
-        "catalogId": "chevrolet-malibu-2019",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2019-2022",
-        "dbModels": [
-          "말리부"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "윈스톰",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "gmdaewoo-winstorm-2006",
-        "catalogId": "gmdaewoo-winstorm-2006",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2006-2011",
-        "dbModels": [
-          "윈스톰",
-          "캡티바"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "캡티바",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-captiva-2011",
-        "catalogId": "chevrolet-captiva-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-2016",
-        "dbModels": [
-          "캡티바"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 넥스트 캡티바",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-captiva-2016",
-        "catalogId": "chevrolet-captiva-2016",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2016-2018",
-        "dbModels": [
-          "캡티바"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "트랙스",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-trax-2013",
-        "catalogId": "chevrolet-trax-2013",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2013-2016",
-        "dbModels": [
-          "트랙스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "더 뉴 트랙스",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-trax-2017",
-        "catalogId": "chevrolet-trax-2017",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2017-2022",
-        "dbModels": [
-          "트랙스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "트랙스 크로스오버",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-trax-crossover-2023",
-        "catalogId": "chevrolet-trax-crossover-2023",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2023-현재",
-        "dbModels": [
-          "트랙스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "트레일블레이저",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-trailblazer-2020",
-        "catalogId": "chevrolet-trailblazer-2020",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2020-2023",
-        "dbModels": [
-          "트레일블레이저"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
       "value": "트레일블레이저",
       "suggestion": "상담 확인 필요만 노출",
       "priority": "P1",
@@ -2075,63 +836,6 @@
         ],
         "batteryMatchStatus": "needsReview",
         "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "올란도",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-orlando-2011",
-        "catalogId": "chevrolet-orlando-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-2018",
-        "dbModels": [
-          "올란도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "아베오",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-aveo-2011",
-        "catalogId": "chevrolet-aveo-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-2015",
-        "dbModels": [
-          "아베오"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "젠트라 X",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "gmdaewoo-gentra-x-2007",
-        "catalogId": "gmdaewoo-gentra-x-2007",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2007-2011",
-        "dbModels": [
-          "젠트라"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
       }
     },
     {
@@ -2157,63 +861,6 @@
       "category": "unmatched_asset",
       "file": "vehicleAssets",
       "field": "asset",
-      "value": "알페온",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "gmdaewoo-alpheon-2010",
-        "catalogId": "gmdaewoo-alpheon-2010",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2010-2015",
-        "dbModels": [
-          "알페온"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "임팔라",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-impala-2016",
-        "catalogId": "chevrolet-impala-2016",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2016-2020",
-        "dbModels": [
-          "임팔라"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "이쿼녹스",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-equinox-2018",
-        "catalogId": "chevrolet-equinox-2018",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2018-2021",
-        "dbModels": [
-          "이쿼녹스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
       "value": "이쿼녹스",
       "suggestion": "상담 확인 필요만 노출",
       "priority": "P1",
@@ -2224,63 +871,6 @@
         "yearRange": "2022-현재",
         "dbModels": [
           "이쿼녹스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "트래버스",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-traverse-2019",
-        "catalogId": "chevrolet-traverse-2019",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2019-현재",
-        "dbModels": [
-          "트래버스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "콜로라도",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-colorado-2019",
-        "catalogId": "chevrolet-colorado-2019",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2019-2020",
-        "dbModels": [
-          "콜로라도"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "콜로라도",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-colorado-2021",
-        "catalogId": "chevrolet-colorado-2021",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2021-현재",
-        "dbModels": [
-          "콜로라도"
         ],
         "batteryMatchStatus": "needsReview",
         "classification": "B"

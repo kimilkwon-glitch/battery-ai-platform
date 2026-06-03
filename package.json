@@ -26,7 +26,9 @@
     "verify:alias-v01": "node tools/verify-alias-v01-production.mjs",
     "verify:alias-v021": "npx tsx scripts/probe-vehicle-alias-v021.mjs",
     "verify:alias-v03": "npx tsx scripts/probe-vehicle-alias-v03.mjs",
-    "audit:vehicle-db": "npx tsx tools/audit-vehicle-db-integrity.ts"
+    "audit:vehicle-db": "npx tsx tools/audit-vehicle-db-integrity.ts",
+    "merge:source-tables": "npx tsx tools/merge-source-tables-into-vehicle-db.ts",
+    "report:unmatched-assets": "npx tsx tools/generate-unmatched-assets-review.ts"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",
@@ -59,6 +61,7 @@
     "pdf-to-img": "^6.1.0",
     "sharp": "^0.34.5",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "xlsx": "^0.18.5"
   }
 }

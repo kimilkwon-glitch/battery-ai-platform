@@ -554,7 +554,14 @@ function chosung(text: string): string {
 
 function matchesQuery(text: string, q: string): boolean {
   const n = norm(text);
+  if (!n || !q) return false;
+  if (n === q) return true;
+  if (n.length <= 3 && q.length >= n.length + 3) {
+    if (q.endsWith(n)) return false;
+    if (q.includes(n) && !q.startsWith(n)) return false;
+  }
   if (n.includes(q)) return true;
+  if (q.includes(n) && n.length >= 4) return true;
   if (/^[ㄱ-ㅎ]+$/.test(q)) return chosung(text).includes(q);
   return false;
 }

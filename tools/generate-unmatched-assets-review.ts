@@ -334,21 +334,36 @@ function topCandidates(asset: VehicleAsset): {
   };
 }
 
+/** C그룹 재검토 — 원본 차종표/DB 후보가 있으면 A로 승격 */
+const C_GROUP_RECONNECT_MODELS =
+  /봉고\s*3|봉고3|젠트라\s*x|젠트라x|토스카|쏘나타\s*nf|nf\s*쏘나타|투싼\s*jm|jm\s*투싼|뉴\s*체어맨|체어맨|렉스턴|무쏘\s*스포츠|액티언\s*스포츠|액티언|카이런/i;
+
 function classifyGroup(
   asset: VehicleAsset,
   slug: string,
   slugRecs: VehicleBatteryRecord[],
   candidateTop: DbCandidate[],
 ): "A" | "B" | "C" {
-  const { yearStart } = parseYearRange(asset.yearRange);
-  const ys = asset.yearStart ?? yearStart;
-  if (asset.recommendExcluded || (ys != null && ys < 2005)) return "C";
   const profile = getVehicleDbProfile(slug);
   const slugUsable = slugRecs.some((r) => hasUsableBatteryData(r, profile));
   const slugConfirmed = slugRecs.some(hasConfirmedBatteryData);
-  if (slugUsable || slugConfirmed) return "A";
+  const hasDbCandidates =
+    candidateTop.length > 0 ||
+    candidateTop.some((c) => Boolean(c.primaryBattery?.trim())) ||
+    slugUsable ||
+    slugConfirmed;
+
+  const labelHay = `${asset.displayName} ${asset.id} ${(asset.dbModels ?? []).join(" ")}`;
+  const forceReconnect = C_GROUP_RECONNECT_MODELS.test(labelHay) && hasDbCandidates;
+
+  const { yearStart } = parseYearRange(asset.yearRange);
+  const ys = asset.yearStart ?? yearStart;
+  const legacyExposureOnly = asset.recommendExcluded || (ys != null && ys < 2005);
+
+  if (hasDbCandidates || forceReconnect) return "A";
+  if (legacyExposureOnly) return "C";
   const candidateConfirmed = candidateTop.some((c) => c.status === "confirmed" && Boolean(c.primaryBattery?.trim()));
-  if (candidateTop.length > 0 || candidateConfirmed) return "A";
+  if (candidateConfirmed) return "A";
   return "B";
 }
 

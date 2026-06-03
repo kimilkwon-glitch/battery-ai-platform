@@ -1,12 +1,12 @@
 # Vehicle DB Integrity Audit
 
-생성: 2026-06-03T07:43:43.748Z
+생성: 2026-06-03T08:15:32.534Z
 
 ## 1. 요약
 
 | 항목 | 값 |
 |------|-----|
-| vehicleBatteryDbRecords | 2125 |
+| vehicleBatteryDbRecords | 3195 |
 | enrichmentRecords | 5 |
 | totalAssets | 174 |
 | genesisAssets | 9 |
@@ -14,18 +14,18 @@
 | chevroletAssets | 36 |
 | aliasEntries | 339 |
 | forbiddenCopyFindings | 0 |
-| unmatchedAssets | 84 |
+| unmatchedAssets | 13 |
 | unmatchedA | 0 |
-| unmatchedB | 76 |
-| unmatchedC | 8 |
+| unmatchedB | 12 |
+| unmatchedC | 1 |
 | riskyDisplayAliases | 0 |
 | searchFailures | 0 |
 | directionMismatches | 0 |
 | searchContamination | 0 |
-| totalFindings | 87 |
+| totalFindings | 16 |
 | p0Count | 0 |
-| searchPassCount | 26 |
-| searchTotal | 26 |
+| searchPassCount | 72 |
+| searchTotal | 72 |
 
 ## 2. 즉시 수정 필요 (P0: 0)
 
@@ -43,53 +43,24 @@
 | 분류 | 건수 | 조치 |
 |------|------|------|
 | A DB연결가능 | 0 | slug/dbModels 보강 |
-| B 미확정 | 76 | 상담 확인만 |
-| C 노출제외 | 8 | recommendExcluded |
+| B 미확정 | 12 | 상담 확인만 |
+| C 노출제외 | 1 | recommendExcluded |
 
 | assetId | displayName | 분류 | 사유 |
 |---------|-------------|------|------|
 | santafe-mx5-hev | 싼타페 하이브리드 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm3-2005 | SM3 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-new-sm3-2009 | 뉴 SM3 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm3-neo-2014 | SM3 네오 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm3-ze-2013 | SM3 Z.E. | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm5-new-impression-2007 | SM5 뉴 임프레션 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-new-sm5-2010 | 뉴 SM5 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm5-nova-2015 | SM5 노바 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm6-2016 | SM6 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-the-new-sm6-2020 | 더 뉴 SM6 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm7-new-art-2008 | SM7 뉴 아트 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-all-new-sm7-2011 | 올 뉴 SM7 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-sm7-nova-2014 | SM7 노바 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-qm5-2007 | QM5 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-qm3-2013 | QM3 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-qm6-2016 | QM6 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-the-new-qm6-2019 | 더 뉴 QM6 | B | DB 매칭 없음 — 상담 확인만 |
 | renault-samsung-qm6-quest-2023 | QM6 퀘스트 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-xm3-2020 | XM3 | B | DB 매칭 없음 — 상담 확인만 |
 | renault-arkana-2024 | 아르카나 | B | DB 매칭 없음 — 상담 확인만 |
 | renault-master-2018 | 르노 마스터 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-tivoli-2015 | 티볼리 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-tivoli-armour-2017 | 티볼리 아머 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-tivoli-air-2016 | 티볼리 에어 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-tivoli-air-2021 | 티볼리 에어 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-very-new-tivoli-2019 | 베리 뉴 티볼리 | B | DB 매칭 없음 — 상담 확인만 |
-| kg-the-new-tivoli-2023 | 더 뉴 티볼리 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-korando-c-2011 | 코란도 C | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-new-korando-c-2013 | 코란도 C | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-new-style-korando-c-2017 | 코란도 C | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-viewtiful-korando-2019 | 뷰티풀 코란도 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-korando-emotion-2022 | 코란도 이모션 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-korando-sports-2012 | 코란도 스포츠 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-korando-turismo-2013 | 코란도 투리스모 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-actyon-2005 | 액티언 | C | 레거시·노출 제외 후보 |
-| ssangyong-actyon-sports-2006 | 액티언 스포츠 | C | 레거시·노출 제외 후보 |
-| ssangyong-kyron-2005 | 카이런 | C | 레거시·노출 제외 후보 |
-| ssangyong-g4-rexton-2017 | G4 렉스턴 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-all-new-rexton-2020 | 올 뉴 렉스턴 | B | DB 매칭 없음 — 상담 확인만 |
-| ssangyong-rexton-sports-2018 | 렉스턴 스포츠 | B | DB 매칭 없음 — 상담 확인만 |
-
-*(44건 추가 — JSON `unmatchedClassifications`)*
+| kg-torres-2022 | 토레스 | B | DB 매칭 없음 — 상담 확인만 |
+| kg-torres-evx-2023 | 토레스 EVX | B | DB 매칭 없음 — 상담 확인만 |
+| kg-actyon-2024 | 액티언 | B | DB 매칭 없음 — 상담 확인만 |
+| chevrolet-trailblazer-2024 | 트레일블레이저 | B | DB 매칭 없음 — 상담 확인만 |
+| daewoo-tosca-2006 | 토스카 | C | 레거시·노출 제외 후보 |
+| chevrolet-equinox-2022 | 이쿼녹스 | B | DB 매칭 없음 — 상담 확인만 |
+| gmdaewoo-labo-2011 | 라보 | B | DB 매칭 없음 — 상담 확인만 |
+| gmdaewoo-damas-2011 | 다마스 | B | DB 매칭 없음 — 상담 확인만 |
+| chevrolet-bolt-ev-2017 | 볼트 EV | B | DB 매칭 없음 — 상담 확인만 |
 
 ## 6. 검색 검수 결과
 
@@ -121,6 +92,52 @@
 | AGM80R | ✅ | AGM80R | AGM80R |  |
 | AGM95R | ✅ | AGM95R | AGM95R |  |
 | DIN74L | ✅ | DIN74L | DIN74L |  |
+| QM6 | ✅ | 르노/르노삼성 QM6 | — |  |
+| SM6 | ✅ | 르노코리아 SM6 | — |  |
+| XM3 | ✅ | 르노코리아 XM3 | — |  |
+| QM3 | ✅ | 르노/르노삼성 QM3 | — |  |
+| QM5 | ✅ | 르노/르노삼성 QM5 | — |  |
+| SM5 | ✅ | 르노/르노삼성 SM5 노바 | — |  |
+| SM3 | ✅ | 르노코리아 SM3 | — |  |
+| SM7 | ✅ | 르노/르노삼성 SM7 노바 | — |  |
+| 마스터 | ✅ | 르노/르노삼성 르노 마스터 | — |  |
+| 스파크 | ✅ | 쉐보레/GM 스파크 | — |  |
+| 말리부 | ✅ | 쉐보레/GM 말리부 | — |  |
+| 크루즈 | ✅ | 쉐보레/GM 크루즈 | — |  |
+| 트랙스 | ✅ | 쉐보레/GM 트랙스 | — |  |
+| 트레일블레이저 | ✅ | 쉐보레 트레일블레이저 | — |  |
+| 캡티바 | ✅ | 쉐보레/GM 캡티바 | — |  |
+| 올란도 | ✅ | 쉐보레/GM 올란도 | — |  |
+| 라세티 | ✅ | 쉐보레/GM 라세티 | — |  |
+| 다마스 | ✅ | 쉐보레/GM 다마스 | — |  |
+| 라보 | ✅ | 쉐보레/GM 라보 | — |  |
+| 젠트라 | ✅ | 쉐보레/GM 젠트라 X | — |  |
+| 젠트라 X | ✅ | 쉐보레/GM 젠트라 X | — |  |
+| 토스카 | ✅ | 쉐보레/GM 토스카 | — |  |
+| 알페온 | ✅ | 쉐보레/GM 알페온 | — |  |
+| 임팔라 | ✅ | 쉐보레/GM 임팔라 | — |  |
+| 이쿼녹스 | ✅ | 쉐보레/GM 이쿼녹스 | — |  |
+| 콜로라도 | ✅ | 쉐보레/GM 콜로라도 | — |  |
+| 트래버스 | ✅ | 쉐보레/GM 트래버스 | — |  |
+| 티볼리 아머 | ✅ | KG/쌍용 티볼리 아머 | — |  |
+| 코란도 C | ✅ | KG/쌍용 코란도 C | — |  |
+| 렉스턴 스포츠 | ✅ | KG/쌍용 렉스턴 스포츠 Y400 | 90R |  |
+| 렉스턴 스포츠 칸 | ✅ | KG/쌍용 렉스턴 스포츠 칸 | 90R |  |
+| G4 렉스턴 | ✅ | KG/쌍용 G4 렉스턴 | — |  |
+| 올 뉴 렉스턴 | ✅ | KG/쌍용 올 뉴 렉스턴 | — |  |
+| 코란도 스포츠 | ✅ | KG/쌍용 코란도 스포츠 | — |  |
+| 코란도 투리스모 | ✅ | KG/쌍용 코란도 투리스모 | 90R |  |
+| 뉴 체어맨 | ✅ | KG/쌍용 뉴 체어맨 | — |  |
+| 액티언 | ✅ | KG/쌍용 액티언 | 90R |  |
+| 액티언 스포츠 | ✅ | KG/쌍용 액티언 스포츠 | — |  |
+| 카이런 | ✅ | KG/쌍용 카이런 | 90R |  |
+| 무쏘 스포츠 | ✅ | KG/쌍용 무쏘 스포츠 | — |  |
+| 토레스 | ✅ | KG/쌍용 토레스 | — |  |
+| 봉고3 | ✅ | 기아 봉고3 | — |  |
+| 쏘나타 NF | ✅ | 현대 쏘나타 NF | — |  |
+| 투싼 JM | ✅ | 현대 투싼 | — |  |
+| 케이쓰리 | ✅ | 기아 K3 1세대 | DIN62L |  |
+| EQ900 | ✅ | 제네시스 EQ900 | AGM105L |  |
 
 ## 7. 방향 오매칭 위험
 
@@ -128,7 +145,7 @@
 ## 8. 완료 후 재검수 체크리스트
 
 - [ ] `npm run audit:vehicle-db` P0 실질 0
-- [ ] vehicleBatteryDbRecords = 2125
+- [ ] vehicleBatteryDbRecords = 3195
 - [ ] 100R·쏘렌토 MQ4 HEV production 검색
 - [ ] 고객 HTML에 needsReview/vehicle-battery-db 미포함
 - [ ] primaryBattery.json 미수정 확인

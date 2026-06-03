@@ -359,6 +359,7 @@ const PROFILE_BRAND_ALIASES: Record<string, string[]> = {
   쉐보레: ["쉐보레", "GM대우", "GM", "대우", "쉐보레/GM"],
   KGM: ["KGM", "KG", "쌍용", "KG모빌리티"],
   쌍용: ["KGM", "KG", "쌍용", "KG모빌리티"],
+  르노: ["르노", "르노삼성", "르노코리아"],
   르노코리아: ["르노코리아", "르노삼성", "르노"],
 };
 
@@ -854,6 +855,7 @@ function explicitVehicleSlugForRecord(r: VehicleBatteryRecord): string | null {
   if (/셀토스|seltos/i.test(hay) && /sp2|더뉴|페이스/i.test(hay)) return "seltos-sp2-fl";
   if (/셀토스|seltos/i.test(hay)) return "seltos-sp2";
   if (/코나|kona/i.test(hay)) return "kona-os";
+  if (/트레일블레이저|trailblazer/i.test(hay)) return "chevrolet-trailblazer-2020";
 
   return null;
 }
@@ -877,7 +879,12 @@ function scoreAssetForRecord(asset: (typeof vehicleAssets)[number], r: VehicleBa
 
   for (const al of asset.aliases) {
     const na = norm(al);
-    if (na.length < 2 || !hay.includes(na)) continue;
+    if (na.length < 2) continue;
+    if (na.length <= 3 && hay.length >= na.length + 3) {
+      if (hay.endsWith(na)) continue;
+      if (hay.includes(na) && !hay.startsWith(na)) continue;
+    }
+    if (!hay.includes(na)) continue;
     score += na.length;
     if (na === norm("쏘렌토") && /mq4/i.test(hay)) score -= 8;
   }

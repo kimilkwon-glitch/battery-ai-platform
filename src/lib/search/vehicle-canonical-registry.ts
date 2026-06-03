@@ -18,6 +18,9 @@ export type VehicleCanonicalEntry = {
 
 function aliasRegex(alias: string): RegExp {
   const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s*");
+  if (alias.replace(/\s/g, "").length <= 3) {
+    return new RegExp(`^${escaped}$`, "i");
+  }
   return new RegExp(escaped, "i");
 }
 
@@ -510,6 +513,19 @@ export const VEHICLE_CANONICAL_REGISTRY: VehicleCanonicalEntry[] = [
     dbQuery: "셀토스 SP2",
     specificity: 80,
     aliases: ["셀토스 SP2", "셀토스"],
+  },
+  {
+    canonicalKey: "chevrolet-trailblazer",
+    displayName: "쉐보레 트레일블레이저",
+    brand: "쉐보레",
+    model: "트레일블레이저",
+    generation: null,
+    fuel: null,
+    assetId: "chevrolet-trailblazer-2020",
+    catalogId: "chevrolet-trailblazer-2020",
+    dbQuery: "트레일블레이저",
+    specificity: 92,
+    aliases: ["트레일블레이저", "트레일 블레이저", "Trailblazer"],
   },
   {
     canonicalKey: "kia-ray",

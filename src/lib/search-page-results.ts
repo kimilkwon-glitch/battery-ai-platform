@@ -561,6 +561,18 @@ function parseChips(query: string, intent: SearchIntent, specs: string[]): strin
   return [...new Set(chips)].slice(0, 6);
 }
 
+function tokenMatchesVehicleQuery(token: string, queryNorm: string): boolean {
+  const nt = norm(token);
+  if (nt.length < 2) return false;
+  if (queryNorm === nt) return true;
+  if (nt.length <= 3 && queryNorm.length >= 5) {
+    if (queryNorm.endsWith(nt) && queryNorm.length > nt.length + 2) return false;
+    if (queryNorm.includes(nt) && !queryNorm.startsWith(nt) && queryNorm.length > nt.length + 2)
+      return false;
+  }
+  return queryNorm.includes(nt);
+}
+
 function scoreVehicleRow(
   row: VehicleSearchRow,
   query: string,
@@ -576,7 +588,11 @@ function scoreVehicleRow(
     if (model.includes(labelN) || labelN.includes(model)) score += 220;
   }
   if (model && q.includes(model)) score += 100;
-  else if (model && model.split(/[^a-z0-9가-힣]+/).some((t) => t.length >= 2 && q.includes(norm(t)))) score += 75;
+  else if (
+    model &&
+    model.split(/[^a-z0-9가-힣]+/).some((t) => tokenMatchesVehicleQuery(t, q))
+  )
+    score += 75;
   const gen = extractGenerationChip(query);
   if (gen && norm(row.model).includes(norm(gen))) score += 30;
   for (const spec of specs) {
