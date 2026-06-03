@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-06-03T08:51:00.599Z",
+  "baseUrl": "https://battery-ai-platform.vercel.app",
+  "summary": {
+    "pass": 7,
+    "fail": 1,
+    "total": 8
+  },
+  "results": [
+    {
+      "id": "main",
+      "name": "메인 접속",
+      "ok": true
+    },
+    {
+      "id": "search-k3",
+      "name": "K3 검색 결과",
+      "ok": true
+    },
+    {
+      "id": "vehicle-detail",
+      "name": "세대/차량 카드 클릭 → 상세",
+      "ok": true
+    },
+    {
+      "id": "battery-agm60l",
+      "name": "AGM60L 상세",
+      "ok": true
+    },
+    {
+      "id": "auth-login",
+      "name": "로그인 페이지",
+      "ok": true
+    },
+    {
+      "id": "auth-signup",
+      "name": "회원가입 페이지",
+      "ok": true
+    },
+    {
+      "id": "auth-mypage",
+      "name": "마이페이지",
+      "ok": true
+    },
+    {
+      "id": "service-center",
+      "name": "매장·출장 안내 + 네이버 플레이스",
+      "ok": false,
+      "error": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('link', { name: /네이버 플레이스/i }).first() to be visible\n"
+    }
+  ],
+  "note": "Cart steps need client storage; use --skip-cart on partial environments."
+}

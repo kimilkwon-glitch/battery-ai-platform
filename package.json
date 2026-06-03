@@ -28,7 +28,9 @@
     "verify:alias-v03": "npx tsx scripts/probe-vehicle-alias-v03.mjs",
     "audit:vehicle-db": "npx tsx tools/audit-vehicle-db-integrity.ts",
     "merge:source-tables": "npx tsx tools/merge-source-tables-into-vehicle-db.ts",
-    "report:unmatched-assets": "npx tsx tools/generate-unmatched-assets-review.ts"
+    "report:unmatched-assets": "npx tsx tools/generate-unmatched-assets-review.ts",
+    "audit:operational": "node tools/generate-operational-audit.mjs",
+    "e2e:customer-flow": "node tools/e2e-customer-flow-check.mjs"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",

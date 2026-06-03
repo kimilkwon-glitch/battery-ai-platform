@@ -41,10 +41,18 @@ export function SiteFooter({ className = "" }: { className?: string }) {
       <OfficialChannelsStrip variant="footer" className="mt-4" />
       <p className="mt-3 text-[10px] text-slate-400">
         © {new Date().getFullYear()} {BRAND_NAME}
-        <span className="mx-1 text-slate-300">·</span>
-        <span className="font-mono" data-build-version={BUILD_STAMP}>
-          v {BUILD_STAMP}
-        </span>
+        {process.env.NODE_ENV !== "production" ? (
+          <>
+            <span className="mx-1 text-slate-300">·</span>
+            <span className="font-mono" data-build-version={BUILD_STAMP}>
+              v {BUILD_STAMP}
+            </span>
+          </>
+        ) : (
+          <span className="sr-only" data-build-version={BUILD_STAMP} aria-hidden>
+            {BUILD_STAMP}
+          </span>
+        )}
       </p>
     </footer>
   );

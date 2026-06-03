@@ -18,6 +18,11 @@
 .data/
 *.pem
 
+# Local prod probes / one-off exports (not customer assets)
+.prod-*
+db-export-for-review/
+tools/*-out.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*

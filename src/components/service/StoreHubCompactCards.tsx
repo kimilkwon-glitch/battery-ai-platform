@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import clsx from "clsx";
-import { BookOpen, Navigation, Phone } from "lucide-react";
+import { BookOpen, MapPin, Navigation, Phone } from "lucide-react";
 import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
 import { storeLinks } from "@/lib/external-links";
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
@@ -21,7 +21,9 @@ export function StoreHubCompactCards({
         const highlighted = highlightId === store.id;
         const selected = activeId === store.id;
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.mapsQuery)}`;
-        const blogHref = storeLinks[store.id].blog;
+        const links = storeLinks[store.id];
+        const blogHref = links.blog;
+        const naverPlaceHref = links.naverPlace;
 
         return (
           <article
@@ -102,6 +104,15 @@ export function StoreHubCompactCards({
                   >
                     <Navigation className="size-5" aria-hidden />
                     길찾기
+                  </a>
+                  <a
+                    className={`${bm.btnSecondary} inline-flex min-h-[52px] w-full items-center justify-center gap-2 px-5 text-base font-black sm:w-auto sm:flex-1`}
+                    href={naverPlaceHref}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <MapPin className="size-5" aria-hidden />
+                    네이버 플레이스
                   </a>
                 </div>
 
