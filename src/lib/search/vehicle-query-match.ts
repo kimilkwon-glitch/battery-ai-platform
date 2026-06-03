@@ -1,8 +1,8 @@
 import { normalizeSearchQuery } from "@/lib/search/normalize-query";
 import type { VehicleBatteryRecord } from "@/lib/vehicleBattery";
 
-function norm(s: string): string {
-  return s.trim().toLowerCase().replace(/\s+/g, "");
+function norm(s: string | null | undefined): string {
+  return (s ?? "").trim().toLowerCase().replace(/\s+/g, "");
 }
 
 /** K3, K5, GV70 등 짧은 차종 검색어 */

@@ -25,7 +25,8 @@
     "search:qa": "node tools/search-quality/run-search-quality.mjs",
     "verify:alias-v01": "node tools/verify-alias-v01-production.mjs",
     "verify:alias-v021": "npx tsx scripts/probe-vehicle-alias-v021.mjs",
-    "verify:alias-v03": "npx tsx scripts/probe-vehicle-alias-v03.mjs"
+    "verify:alias-v03": "npx tsx scripts/probe-vehicle-alias-v03.mjs",
+    "audit:vehicle-db": "npx tsx tools/audit-vehicle-db-integrity.ts"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",

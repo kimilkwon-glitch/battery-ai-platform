@@ -42,7 +42,7 @@ export const CUSTOMER_NON_SEARCH_KEYWORDS = [
 ] as const;
 
 const INTERNAL_NOTE_RE =
-  /vehicle-battery-db|needsReview|미등록|\bslug\b|\bdebug\b|\bDB\b|내부|연료별\s*확인|ISG\s*여부|사진·문의로\s*확인/i;
+  /vehicle-battery-db|needsReview|needs_review|미등록|차량표\s*미등록|등록된\s*규격\s*없음|battery:needsReview|battery:linked|\bslug\b|\bdebug\b|\bDB\b|내부|연료별\s*확인|규격\s*재확인|ISG\s*여부|사진·문의로\s*확인|사진\s*문의|문의·사진\s*확인/i;
 
 const DEFAULT_CUSTOMER_NOTE = "연식·옵션별 확인 필요";
 
@@ -75,8 +75,53 @@ export function sanitizeCustomerBatterySummary(raw?: string | null): string | nu
   if (/상담|확인\s*권장|옵션별|연료·|연식·/i.test(text)) {
     return text.length > 28 ? text.slice(0, 28).trim() + "…" : text;
   }
+  if (/문의|사진|확인\s*필요|미등록/i.test(text)) {
+    return "상담 확인 필요";
+  }
   if (text.length > 40) return DEFAULT_CUSTOMER_NOTE;
-  return text;
+  return null;
+}
+
+/** 검색 결과 행 텍스트 필드 일괄 정리 */
+export function sanitizeSearchRowCustomerCopy(
+  row: {
+    origin?: string;
+    recommend?: string;
+    upgrade?: string;
+    note?: string;
+    batteryNotes?: string;
+  },
+  fallbackSpec?: string | null,
+): {
+  origin: string;
+  recommend: string;
+  upgrade: string;
+  note: string;
+  batteryNotes: string | undefined;
+} {
+  const spec =
+    fallbackSpec ??
+    row.recommend?.match(/\b(AGM\d+[LR]|DIN\d+[LR]|\d+[LR])\b/i)?.[0] ??
+    row.origin?.match(/\b(AGM\d+[LR]|DIN\d+[LR]|\d+[LR])\b/i)?.[0];
+  const specLabel = spec && !/확인|필요|미등록|문의/i.test(spec) ? `대표 규격 ${spec.toUpperCase()}` : null;
+
+  const origin =
+    sanitizeCustomerBatterySummary(row.origin) ??
+    specLabel ??
+    (row.origin && !INTERNAL_NOTE_RE.test(row.origin) ? row.origin : "상담 확인 필요");
+  const recommend =
+    sanitizeCustomerBatterySummary(row.recommend) ?? specLabel ?? origin;
+  const upgrade =
+    sanitizeCustomerBatterySummary(row.upgrade) ??
+    (/규격\s*재확인|연료별|차량\s*정보/i.test(row.upgrade ?? "") ? "연식·옵션별 확인 필요" : row.upgrade) ??
+    "연식·옵션별 확인 필요";
+  const note =
+    sanitizeCustomerBatterySummary(row.note) ??
+    (row.note && /차량표|미등록|문의/i.test(row.note) ? "차량 정보 확인 후 안내 가능" : row.note) ??
+    "차량";
+  const batteryNotes = sanitizeCustomerBatterySummary(row.batteryNotes) ?? specLabel ?? undefined;
+
+  return { origin, recommend, upgrade, note, batteryNotes };
 }
 
 export function formatCustomerBatterySummaryForAsset(asset: VehicleAsset): string {

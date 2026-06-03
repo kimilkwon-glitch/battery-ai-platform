@@ -8,26 +8,24 @@ import {
   VEHICLE_GENERATIONS_CHEVROLET,
   type VehicleGenerationChevrolet,
 } from "@/data/vehicle-generation-chevrolet.config";
-
-const DEFAULT_NOTE =
-  "연식, 연료, ISG 여부에 따라 배터리 규격 확인이 필요합니다.";
+import { formatCustomerBatterySummaryForAsset } from "@/lib/search/customer-search-display";
 
 function generationToAsset(g: VehicleGenerationChevrolet): VehicleAsset {
-  const batteryNotes =
-    g.battery.status === "needsReview"
-      ? (g.battery.note ?? "배터리 규격: vehicle-battery-db 미등록 — 사진·문의로 확인 (needsReview).")
-      : (g.battery.note ?? DEFAULT_NOTE);
-
-  return {
+  const draft: VehicleAsset = {
     id: g.id,
     brand: "chevrolet-gmdaewoo",
     modelGroup: g.modelGroup,
     displayName: g.displayName,
     generationName: g.generationName,
-    aliases: [g.displayName],
+    aliases: [...new Set([g.displayName, ...(g.searchAliases ?? [])])],
     imageFile: g.imageFile,
     image: carNormalizedImageUrl("chevrolet-gmdaewoo", g.imageFile),
-    batteryNotes,
+    batteryNotes:
+      g.battery.status === "linked" && g.battery.defaultBatteryCode
+        ? `대표 규격 ${g.battery.defaultBatteryCode}`
+        : g.battery.status === "needsReview"
+          ? "상담 확인 필요"
+          : "연식·옵션별 상담 확인 권장",
     tags: g.tags,
     yearRange: g.yearRange,
     catalogId: g.id,
@@ -37,6 +35,10 @@ function generationToAsset(g: VehicleGenerationChevrolet): VehicleAsset {
     batteryMatchStatus: g.battery.status === "needsReview" ? "needsReview" : "linked",
     dbModels: g.dbModels,
     yearStart: g.yearStart,
+  };
+  return {
+    ...draft,
+    batteryNotes: formatCustomerBatterySummaryForAsset(draft),
   };
 }
 

@@ -25,6 +25,7 @@ import { applyStariaVehicleSearchRow } from "@/lib/search/staria-query-spec-guar
 import {
   formatCustomerBatterySummaryForAsset,
   sanitizeCustomerBatterySummary,
+  sanitizeSearchRowCustomerCopy,
 } from "@/lib/search/customer-search-display";
 import { vehicles as catalogVehicles } from "@/lib/platform-data";
 
@@ -118,19 +119,21 @@ function aliasFallbackRow(alias: SearchVehicleAliasMatch, query = ""): VehicleSe
   const model = query
     ? formatSearchVehicleDisplayLabel(query, { ...alias, label: formal, formalDisplayName: formal })
     : displayModelWithBrand(brand, formal);
-  return {
+  const draft: VehicleSearchRow = {
     model: query ? formatSearchVehicleRowTitle(query, alias, model) : model,
     year: "연식별 확인",
     fuel: "연료별",
     origin: "사진 확인 권장",
-    recommend: "문의·사진 확인",
-    upgrade: "연식·연료 확인",
-    note: `${brand || "차량"} · 차량표 미등록 · 사진·문의로 확인`,
+    recommend: "상담 확인 필요",
+    upgrade: "연식·옵션별 확인 필요",
+    note: brand || "차량",
     href: `/search?q=${encodeURIComponent(searchQ)}`,
     imageSrc: null,
-    batteryNotes: "차량 이미지가 없어도 정식 차량명 기준으로 안내합니다. 연식·연료는 사진 확인을 권장합니다.",
+    batteryNotes: "상담 확인 필요",
     needsReview: true,
   };
+  const clean = sanitizeSearchRowCustomerCopy(draft);
+  return { ...draft, ...clean };
 }
 
 function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearchRow | null {
@@ -172,7 +175,7 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
         brandForAlias(alias, h.brand),
         alias.formalDisplayName ?? (alias.label || h.title),
       );
-    return {
+    const draft: VehicleSearchRow = {
       model: formatSearchVehicleRowTitle(query, alias, model),
       year: h.yearRange,
       fuel: h.fuels.map((f) => `${f.fuel} ${f.battery}`).join(" · ") || "연료별",
@@ -186,6 +189,8 @@ function rowFromAlias(alias: SearchVehicleAliasMatch, query = ""): VehicleSearch
       imageSrc: h.imageSrc,
       batteryNotes: h.subtitle,
     };
+    const clean = sanitizeSearchRowCustomerCopy(draft, h.fuels[0]?.battery);
+    return { ...draft, ...clean };
   }
   return aliasFallbackRow(alias, query);
 }
@@ -235,8 +240,14 @@ export function vehicleAssetsToSearchRows(
     if (merged.length >= limit) break;
   }
 
+  const assetCandidates = searchVehicleAssets(vehicleQuery, limit);
+  const preferGenerationCards =
+    !specPrimary && assetCandidates.length >= 2 && !/\b(AGM|DIN|CMF)\d|\b\d+[lr]\b/i.test(norm(query));
+
   let rows: VehicleSearchRow[];
-  if (merged.length > 0) {
+  if (preferGenerationCards) {
+    rows = assetCandidates.map((asset) => assetToSearchRow(asset));
+  } else if (merged.length > 0) {
     rows = merged.map((h) => {
       const titleForRow =
         aliasMatch?.formalDisplayName ?? aliasMatch?.label ?? h.title;
@@ -245,24 +256,25 @@ export function vehicleAssetsToSearchRows(
         titleForRow,
       );
       const model = aliasMatch ? formatSearchVehicleRowTitle(query, aliasMatch, base) : base;
-      return {
-      model,
-      year: h.yearRange,
-      fuel: h.fuels.map((f) => `${f.fuel} ${f.battery}`).join(" · ") || "연료별",
-      origin: h.fuels[0]?.battery ?? "확인",
-      recommend: h.fuels[0]?.battery ?? "확인",
-      upgrade: h.needsReview ? "규격 재확인" : "차량 정보 기준",
-      note: h.subtitle || `${h.brand} · 연료별 확인`,
-      href: h.href,
-      fuelHref: h.fuelHref,
-      needsReview: h.needsReview,
-      imageSrc: h.imageSrc,
-      batteryNotes: h.subtitle,
-    };
+      const draft: VehicleSearchRow = {
+        model,
+        year: h.yearRange,
+        fuel: h.fuels.map((f) => `${f.fuel} ${f.battery}`).join(" · ") || "연료별",
+        origin: h.fuels[0]?.battery ?? "확인",
+        recommend: h.fuels[0]?.battery ?? "확인",
+        upgrade: h.needsReview ? "규격 재확인" : "차량 정보 기준",
+        note: h.subtitle || `${h.brand}`,
+        href: h.href,
+        fuelHref: h.fuelHref,
+        needsReview: h.needsReview,
+        imageSrc: h.imageSrc,
+        batteryNotes: h.subtitle,
+      };
+      const clean = sanitizeSearchRowCustomerCopy(draft, h.fuels[0]?.battery);
+      return { ...draft, ...clean };
     });
   } else {
-    const assets = searchVehicleAssets(vehicleQuery, limit);
-    rows = assets.map((asset) => assetToSearchRow(asset));
+    rows = assetCandidates.map((asset) => assetToSearchRow(asset));
   }
 
   return prependAliasRow(rows, aliasMatch, query)
