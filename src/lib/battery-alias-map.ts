@@ -450,9 +450,15 @@ function sortAliasesForBrand(aliases: string[], brandKey: BatteryBrandKey): stri
 }
 
 /** exact → normalized family → alias map → 브랜드별 상품 canonical */
+export type FindBatteryProductOptions = {
+  /** true면 요청 브랜드 imageFolder만 허용 (교차 브랜드 fallback 없음) */
+  strictBrand?: boolean;
+};
+
 export function findBatteryProductByCode(
   code: string,
   brandKey: BatteryBrandKey = "rocket",
+  options?: FindBatteryProductOptions,
 ): string | undefined {
   const exact = getCanonicalBatteryCode(code);
   if (exact && hasImageFolder(exact, brandKey)) return exact;
@@ -464,16 +470,18 @@ export function findBatteryProductByCode(
     if (canonical && hasImageFolder(canonical, brandKey)) return canonical;
   }
 
-  const fallbackBrands: BatteryBrandKey[] =
-    brandKey === "rocket" ? ["solite", "rocket"] : ["rocket", "solite"];
-  for (const bk of fallbackBrands) {
-    for (const alias of aliases) {
-      const canonical = getCanonicalBatteryCode(alias);
-      if (canonical && hasImageFolder(canonical, bk)) return canonical;
+  if (!options?.strictBrand) {
+    const fallbackBrands: BatteryBrandKey[] =
+      brandKey === "rocket" ? ["solite", "rocket"] : ["rocket", "solite"];
+    for (const bk of fallbackBrands) {
+      for (const alias of aliases) {
+        const canonical = getCanonicalBatteryCode(alias);
+        if (canonical && hasImageFolder(canonical, bk)) return canonical;
+      }
     }
   }
 
-  return exact;
+  return options?.strictBrand ? undefined : exact;
 }
 
 /**

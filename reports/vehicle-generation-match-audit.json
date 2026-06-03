@@ -1,0 +1,4182 @@
+{
+  "generatedAt": "2026-06-03T09:33:10.137Z",
+  "slugs": [
+    "avante-hd",
+    "avante-md",
+    "avante-ad",
+    "avante-cn7",
+    "sonata-nf",
+    "sonata-yf",
+    "sonata-lf",
+    "sonata-dn8",
+    "santafe-cm",
+    "santafe-dm",
+    "santafe-tm",
+    "tucson-jm",
+    "tucson-lm",
+    "tucson-tl",
+    "tucson-nx4",
+    "k3-yd",
+    "k3-bd",
+    "k3-bd-fl",
+    "sportage-sl",
+    "sportage-nq5",
+    "sorento-mq4",
+    "carnival-ka4",
+    "ray-tam",
+    "morning-ja",
+    "renault-samsung-qm5-2007",
+    "k8-gl3"
+  ],
+  "vehicles": [
+    {
+      "slug": "avante-hd",
+      "displayName": "아반떼 HD",
+      "yearRange": "2006-2010",
+      "generationTokens": [
+        "HD"
+      ],
+      "dbModels": [
+        "아반떼"
+      ],
+      "matchedCount": 9,
+      "renderableCount": 9,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "60L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "primaryBattery": "60L"
+        }
+      ],
+      "hybridSectionOnPage": true,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "60L",
+          "brand": "rocket",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "60L",
+          "brand": "solite",
+          "catalogCode": "CMF60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "60L",
+          "brand": "rocket",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "60L",
+          "brand": "solite",
+          "catalogCode": "CMF60L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "아반떼HD 디젤(06~10년)",
+          "detail": "아반떼HD 디젤(06~10년)",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "06~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        },
+        {
+          "displayName": "아반떼HD 가솔린 (06~10년)",
+          "detail": "아반떼HD 가솔린 (06~10년)",
+          "fuel": "가솔린",
+          "primaryBattery": "60AL",
+          "years": "06~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        },
+        {
+          "displayName": "아반떼HD 하이브리드(06~10년)",
+          "detail": "아반떼HD 하이브리드(06~10년)",
+          "fuel": "하이브리드",
+          "primaryBattery": "60AL",
+          "years": "06~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        },
+        {
+          "displayName": "아반떼HD(06년~10년)가솔린",
+          "detail": "아반떼HD(06년~10년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "60L",
+          "years": "06년~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        },
+        {
+          "displayName": "아반떼HD(06년~10년)디젤",
+          "detail": "아반떼HD(06년~10년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "06년~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        },
+        {
+          "displayName": "아반떼HD(06년~10년)하이브리드",
+          "detail": "아반떼HD(06년~10년)하이브리드",
+          "fuel": "하이브리드",
+          "primaryBattery": "60L",
+          "years": "06년~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        },
+        {
+          "displayName": "아반떼HD(06년~10년)가솔린",
+          "detail": "아반떼HD(06년~10년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "60L",
+          "years": "06년~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        },
+        {
+          "displayName": "아반떼HD(06년~10년)디젤",
+          "detail": "아반떼HD(06년~10년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "06년~10년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "HD"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "avante-md",
+      "displayName": "아반떼 MD",
+      "yearRange": "2010-2015",
+      "generationTokens": [
+        "MD"
+      ],
+      "dbModels": [
+        "아반떼"
+      ],
+      "matchedCount": 19,
+      "renderableCount": 19,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "DIN62L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "DIN74L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "DIN62L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "DIN74L",
+          "brand": "rocket",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "DIN74L",
+          "brand": "solite",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "아반떼MD LPG(10~15년)",
+          "detail": "아반떼MD LPG(10~15년)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN62L",
+          "years": "10~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        },
+        {
+          "displayName": "아반떼MD 디젤(10~15년) isg기능 탑재",
+          "detail": "아반떼MD 디젤(10~15년) isg기능 탑재",
+          "fuel": "디젤",
+          "primaryBattery": "DIN62L",
+          "years": "10~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        },
+        {
+          "displayName": "아반떼MD 디젤(10~15년) isg기능 없는차량",
+          "detail": "아반떼MD 디젤(10~15년) isg기능 없는차량",
+          "fuel": "디젤",
+          "primaryBattery": "DIN74L",
+          "years": "10~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        },
+        {
+          "displayName": "아반떼MD 가솔린(10~15년)",
+          "detail": "아반떼MD 가솔린(10~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "10~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        },
+        {
+          "displayName": "아반떼 MD 블루세이버 가솔린 (11~12년)",
+          "detail": "아반떼 MD 블루세이버 가솔린 (11~12년)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "11~12년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        },
+        {
+          "displayName": "아반떼 MD 쿠페 가솔린 (13~15년)",
+          "detail": "아반떼 MD 쿠페 가솔린 (13~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN74L",
+          "years": "13~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        },
+        {
+          "displayName": "더뉴 아반떼 MD 가솔린 (13~15년)",
+          "detail": "더뉴 아반떼 MD 가솔린 (13~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "13~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        },
+        {
+          "displayName": "더뉴 아반떼 MD LPG (13~15년)",
+          "detail": "더뉴 아반떼 MD LPG (13~15년)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN62L",
+          "years": "13~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MD"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "avante-ad",
+      "displayName": "아반떼 AD",
+      "yearRange": "2015-2020",
+      "generationTokens": [
+        "AD"
+      ],
+      "dbModels": [
+        "아반떼"
+      ],
+      "matchedCount": 20,
+      "renderableCount": 20,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "DIN62L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM70L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "DIN62L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "아반떼AD 디젤(15~18년)",
+          "detail": "아반떼AD 디젤(15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        },
+        {
+          "displayName": "아반떼AD 가솔린(15~18년)",
+          "detail": "아반떼AD 가솔린(15~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        },
+        {
+          "displayName": "아반떼AD LPG(15~18년)",
+          "detail": "아반떼AD LPG(15~18년)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN62L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        },
+        {
+          "displayName": "더 뉴 아반떼AD 디젤(18~20년)",
+          "detail": "더 뉴 아반떼AD 디젤(18~20년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "18~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        },
+        {
+          "displayName": "더 뉴 아반떼AD LPG(18~20년)",
+          "detail": "더 뉴 아반떼AD LPG(18~20년)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN62L",
+          "years": "18~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        },
+        {
+          "displayName": "더 뉴 아반떼AD 가솔린(18~20년)",
+          "detail": "더 뉴 아반떼AD 가솔린(18~20년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        },
+        {
+          "displayName": "더뉴 아반떼AD(19년~현재)LPG",
+          "detail": "더뉴 아반떼AD(19년~현재)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "DIN62L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        },
+        {
+          "displayName": "더뉴 아반떼AD(19년~현재)가솔린",
+          "detail": "더뉴 아반떼AD(19년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "AD"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "avante-cn7",
+      "displayName": "아반떼 CN7",
+      "yearRange": "2020-2023",
+      "generationTokens": [
+        "CN7"
+      ],
+      "dbModels": [
+        "아반떼"
+      ],
+      "matchedCount": 2,
+      "renderableCount": 2,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM60L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "DIN62L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM60L",
+          "brand": "rocket",
+          "catalogCode": "AGM60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM60L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "(CN7)아반떼 가솔린(20년~현재)",
+          "detail": "(CN7)아반떼 가솔린(20년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM60L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "CN7"
+          ]
+        },
+        {
+          "displayName": "(CN7)아반떼 LPG(20년~현재)",
+          "detail": "(CN7)아반떼 LPG(20년~현재)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN62L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "CN7"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "sonata-nf",
+      "displayName": "쏘나타 NF",
+      "yearRange": "2004-2010",
+      "generationTokens": [
+        "NF"
+      ],
+      "dbModels": [
+        "쏘나타",
+        "소나타"
+      ],
+      "matchedCount": 9,
+      "renderableCount": 9,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "90L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "80L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90L",
+          "brand": "rocket",
+          "catalogCode": "GB90L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90L",
+          "brand": "solite",
+          "catalogCode": "CMF90L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "NF쏘나타 디젤(05~09년)",
+          "detail": "NF쏘나타 디젤(05~09년)",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "05~09년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        },
+        {
+          "displayName": "NF쏘나타 가솔린(05~09년)",
+          "detail": "NF쏘나타 가솔린(05~09년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "05~09년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        },
+        {
+          "displayName": "NF쏘나타 LPG(05~12년)",
+          "detail": "NF쏘나타 LPG(05~12년)",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "05~12년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        },
+        {
+          "displayName": "NF소나타(05년~12년)LPG",
+          "detail": "NF소나타(05년~12년)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "05년~12년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        },
+        {
+          "displayName": "NF소나타(05년~09년)가솔린",
+          "detail": "NF소나타(05년~09년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "05년~09년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        },
+        {
+          "displayName": "NF소나타(05년~09년)디젤",
+          "detail": "NF소나타(05년~09년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "05년~09년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        },
+        {
+          "displayName": "NF소나타(05년~12년)LPG",
+          "detail": "NF소나타(05년~12년)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "05년~12년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        },
+        {
+          "displayName": "NF소나타(05년~09년)가솔린",
+          "detail": "NF소나타(05년~09년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "05년~09년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NF"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "sonata-yf",
+      "displayName": "YF 쏘나타",
+      "yearRange": "2009-2014",
+      "generationTokens": [
+        "YF"
+      ],
+      "dbModels": [
+        "쏘나타",
+        "소나타"
+      ],
+      "matchedCount": 9,
+      "renderableCount": 9,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "primaryBattery": "DIN74R"
+        }
+      ],
+      "hybridSectionOnPage": true,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "DIN74R",
+          "brand": "rocket",
+          "catalogCode": "DIN74R",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "DIN74R",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "YF쏘나타 가솔린(10~14년)",
+          "detail": "YF쏘나타 가솔린(10~14년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "10~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        },
+        {
+          "displayName": "YF쏘나타 하이브리드(10~14년)",
+          "detail": "YF쏘나타 하이브리드(10~14년)",
+          "fuel": "하이브리드",
+          "primaryBattery": "DIN72L",
+          "years": "10~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        },
+        {
+          "displayName": "YF쏘나타 LPG(10~14년)",
+          "detail": "YF쏘나타 LPG(10~14년)",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "10~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        },
+        {
+          "displayName": "YF소나타(10년~14년)LPG",
+          "detail": "YF소나타(10년~14년)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "10년~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        },
+        {
+          "displayName": "YF소나타(10년~14년)가솔린",
+          "detail": "YF소나타(10년~14년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "10년~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        },
+        {
+          "displayName": "YF소나타(10년~14년)하이브리드",
+          "detail": "YF소나타(10년~14년)하이브리드",
+          "fuel": "하이브리드",
+          "primaryBattery": "DIN72L",
+          "years": "10년~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        },
+        {
+          "displayName": "YF소나타(10년~14년)LPG",
+          "detail": "YF소나타(10년~14년)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "10년~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        },
+        {
+          "displayName": "YF소나타(10년~14년)가솔린",
+          "detail": "YF소나타(10년~14년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "10년~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "YF"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "sonata-lf",
+      "displayName": "LF 쏘나타",
+      "yearRange": "2014-2019",
+      "generationTokens": [
+        "LF"
+      ],
+      "dbModels": [
+        "쏘나타",
+        "소나타"
+      ],
+      "matchedCount": 20,
+      "renderableCount": 20,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM80L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "primaryBattery": "DIN74R"
+        }
+      ],
+      "hybridSectionOnPage": true,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "DIN74R",
+          "brand": "rocket",
+          "catalogCode": "DIN74R",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "DIN74R",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "LF쏘나타 터보(15~18년) isg기능 탑재",
+          "detail": "LF쏘나타 터보(15~18년) isg기능 탑재",
+          "fuel": "터보",
+          "primaryBattery": "AGM70L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        },
+        {
+          "displayName": "LF쏘나타 터보(15~18년) isg기능 없는차량",
+          "detail": "LF쏘나타 터보(15~18년) isg기능 없는차량",
+          "fuel": "터보",
+          "primaryBattery": "80L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        },
+        {
+          "displayName": "LF쏘나타 LPG(15~18년)",
+          "detail": "LF쏘나타 LPG(15~18년)",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        },
+        {
+          "displayName": "LF쏘나타 하이브리드(15~18년)",
+          "detail": "LF쏘나타 하이브리드(15~18년)",
+          "fuel": "하이브리드",
+          "primaryBattery": "DIN72L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        },
+        {
+          "displayName": "LF쏘나타 디젤(15~18년)",
+          "detail": "LF쏘나타 디젤(15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        },
+        {
+          "displayName": "LF쏘나타 가솔린(15~18년)",
+          "detail": "LF쏘나타 가솔린(15~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        },
+        {
+          "displayName": "LF소나타(15년~18년)LPG",
+          "detail": "LF소나타(15년~18년)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "80L",
+          "years": "15년~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        },
+        {
+          "displayName": "LF소나타(15년~18년)가솔린",
+          "detail": "LF소나타(15년~18년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "15년~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "LF"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "sonata-dn8",
+      "displayName": "쏘나타 DN8",
+      "yearRange": "2019-2023",
+      "generationTokens": [
+        "DN8"
+      ],
+      "dbModels": [
+        "쏘나타",
+        "소나타"
+      ],
+      "matchedCount": 6,
+      "renderableCount": 6,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM70L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "DIN74L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN74L",
+          "brand": "rocket",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN74L",
+          "brand": "solite",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "(DN8)쏘나타 가솔린(19년~현재)",
+          "detail": "(DN8)쏘나타 가솔린(19년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DN8"
+          ]
+        },
+        {
+          "displayName": "(DN8)쏘나타 LPG(19년~현재)",
+          "detail": "(DN8)쏘나타 LPG(19년~현재)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN74L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DN8"
+          ]
+        },
+        {
+          "displayName": "(DN8)쏘나타 1.6 터보(20년~현재)",
+          "detail": "(DN8)쏘나타 1.6 터보(20년~현재)",
+          "fuel": "터보",
+          "primaryBattery": "AGM70L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DN8"
+          ]
+        },
+        {
+          "displayName": "(DN8)소나타(19년~현재)LPG",
+          "detail": "(DN8)소나타(19년~현재)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "DIN74L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DN8"
+          ]
+        },
+        {
+          "displayName": "(DN8)소나타(19년~현재)가솔린",
+          "detail": "(DN8)소나타(19년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DN8"
+          ]
+        },
+        {
+          "displayName": "(DN8)소나타 1.6 터보 (20년~현재)",
+          "detail": "(DN8)소나타 1.6 터보 (20년~현재)",
+          "fuel": "터보",
+          "primaryBattery": "AGM70L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DN8"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "santafe-cm",
+      "displayName": "싼타페 CM",
+      "yearRange": "2006-2012",
+      "generationTokens": [
+        "CM"
+      ],
+      "dbModels": [
+        "싼타페"
+      ],
+      "matchedCount": 5,
+      "renderableCount": 5,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "90L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90L",
+          "brand": "rocket",
+          "catalogCode": "GB90L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90L",
+          "brand": "solite",
+          "catalogCode": "CMF90L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "싼타페 CM/더스타일 디젤(10~12년)",
+          "detail": "싼타페 CM/더스타일 디젤(10~12년)",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "10~12년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "CM"
+          ]
+        },
+        {
+          "displayName": "싼타페CM 디젤(06~09년)",
+          "detail": "싼타페CM 디젤(06~09년)",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "06~09년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "CM"
+          ]
+        },
+        {
+          "displayName": "싼타페 더 스타일 CM 2.4 가솔린(09~12년)",
+          "detail": "싼타페 더 스타일 CM 2.4 가솔린(09~12년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "09~12년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "CM"
+          ]
+        },
+        {
+          "displayName": "싼타페 CM(06년~09년)디젤",
+          "detail": "싼타페 CM(06년~09년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "06년~09년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "CM"
+          ]
+        },
+        {
+          "displayName": "싼타페 CM, 더스타일(10년~12년)디젤",
+          "detail": "싼타페 CM, 더스타일(10년~12년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "10년~12년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "CM"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "santafe-dm",
+      "displayName": "싼타페 DM",
+      "yearRange": "2012-2018",
+      "generationTokens": [
+        "DM"
+      ],
+      "dbModels": [
+        "싼타페"
+      ],
+      "matchedCount": 15,
+      "renderableCount": 15,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM95L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM95L",
+          "brand": "rocket",
+          "catalogCode": "AGM95L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM95L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "싼타페 DM 디젤(13~15년)",
+          "detail": "싼타페 DM 디젤(13~15년)",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "13~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        },
+        {
+          "displayName": "싼타페 DM/더프라임 디젤(15~18년)",
+          "detail": "싼타페 DM/더프라임 디젤(15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM95L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        },
+        {
+          "displayName": "싼타페DM/더프라임가솔린(15~18년)",
+          "detail": "싼타페DM/더프라임가솔린(15~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "15~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        },
+        {
+          "displayName": "싼타페DM 가솔린(13~14년)",
+          "detail": "싼타페DM 가솔린(13~14년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "13~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        },
+        {
+          "displayName": "싼타페 DM 일반 디젤 (12~13년)",
+          "detail": "싼타페 DM 일반 디젤 (12~13년)",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "12~13년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        },
+        {
+          "displayName": "싼타페 DM 오토스탑 디젤 (12~15년)",
+          "detail": "싼타페 DM 오토스탑 디젤 (12~15년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM95L",
+          "years": "12~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        },
+        {
+          "displayName": "싼타페 DM(13년~14년)가솔린",
+          "detail": "싼타페 DM(13년~14년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "13년~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        },
+        {
+          "displayName": "싼타페 DM(13년~14년)디젤",
+          "detail": "싼타페 DM(13년~14년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "13년~14년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "DM"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "santafe-tm",
+      "displayName": "싼타페 TM",
+      "yearRange": "2018-2023",
+      "generationTokens": [
+        "TM"
+      ],
+      "dbModels": [
+        "싼타페"
+      ],
+      "matchedCount": 12,
+      "renderableCount": 12,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM95L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM95L",
+          "brand": "rocket",
+          "catalogCode": "AGM95L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM95L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "싼타페TM 디젤(18~20년)",
+          "detail": "싼타페TM 디젤(18~20년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM95L",
+          "years": "18~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        },
+        {
+          "displayName": "싼타페TM 가솔린(18~20년)",
+          "detail": "싼타페TM 가솔린(18~20년)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "18~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        },
+        {
+          "displayName": "더뉴 싼타페 TM 디젤 (20년~현재)",
+          "detail": "더뉴 싼타페 TM 디젤 (20년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        },
+        {
+          "displayName": "더뉴 싼타페 TM 가솔린 (20년~현재)",
+          "detail": "더뉴 싼타페 TM 가솔린 (20년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        },
+        {
+          "displayName": "싼타페TM (19년~현재)가솔린",
+          "detail": "싼타페TM (19년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        },
+        {
+          "displayName": "싼타페TM (19년~현재)디젤",
+          "detail": "싼타페TM (19년~현재)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM95L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        },
+        {
+          "displayName": "싼타페TM 디젤(18~20년)",
+          "detail": "싼타페TM 디젤(18~20년)",
+          "fuel": "디젤",
+          "primaryBattery": "95L",
+          "years": "18~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        },
+        {
+          "displayName": "싼타페TM 가솔린(18~20년)",
+          "detail": "싼타페TM 가솔린(18~20년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "18~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "TM"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "tucson-jm",
+      "displayName": "투싼",
+      "yearRange": "2004-2009",
+      "generationTokens": [],
+      "dbModels": [
+        "투싼"
+      ],
+      "matchedCount": 12,
+      "renderableCount": 10,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "90L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90L",
+          "brand": "rocket",
+          "catalogCode": "GB90L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90L",
+          "brand": "solite",
+          "catalogCode": "CMF90L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [
+        {
+          "displayName": "(NX4)투싼 1.6 가솔린(21년~현재)",
+          "detail": "(NX4)투싼 1.6 가솔린(21년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "70L",
+          "years": "NX4",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "NX4"
+          ]
+        },
+        {
+          "displayName": "(NX4)투싼 2.0 디젤(21년~현재)",
+          "detail": "(NX4)투싼 2.0 디젤(21년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "NX4",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "NX4"
+          ]
+        }
+      ],
+      "renderableSamples": [
+        {
+          "displayName": "투싼/투싼 ix 가솔린 (04~15년)",
+          "detail": "투싼/투싼 ix 가솔린 (04~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "04~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": [
+            "IX"
+          ]
+        },
+        {
+          "displayName": "투싼 2.0 가솔린(04~09년)",
+          "detail": "투싼 2.0 가솔린(04~09년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "04~09년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "투싼 2.0 디젤(04~09년)",
+          "detail": "투싼 2.0 디젤(04~09년)",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "04~09년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "투싼 ix 2.0 가솔린(10~15년)",
+          "detail": "투싼 ix 2.0 가솔린(10~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "10~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": [
+            "IX"
+          ]
+        },
+        {
+          "displayName": "투싼 ix 2.0 디젤(10~15년)",
+          "detail": "투싼 ix 2.0 디젤(10~15년)",
+          "fuel": "디젤",
+          "primaryBattery": "90R",
+          "years": "10~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": [
+            "IX"
+          ]
+        },
+        {
+          "displayName": "투싼 2.0(04년~09년)가솔린",
+          "detail": "투싼 2.0(04년~09년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "04년~09년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "투싼 2.0(04년~09년)디젤",
+          "detail": "투싼 2.0(04년~09년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "04년~09년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "투싼 ⅳ2.0(10년~15년)가솔린",
+          "detail": "투싼 ⅳ2.0(10년~15년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "10년~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "tucson-lm",
+      "displayName": "투싼 ix",
+      "yearRange": "2009-2015",
+      "generationTokens": [
+        "LM",
+        "투싼 ix",
+        "ix"
+      ],
+      "dbModels": [
+        "투싼"
+      ],
+      "matchedCount": 3,
+      "renderableCount": 3,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "90R"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90R",
+          "brand": "rocket",
+          "catalogCode": "GB90R",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90R",
+          "brand": "solite",
+          "catalogCode": "CMF90R",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "투싼/투싼 ix 가솔린 (04~15년)",
+          "detail": "투싼/투싼 ix 가솔린 (04~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "04~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "IX"
+          ]
+        },
+        {
+          "displayName": "투싼 ix 2.0 가솔린(10~15년)",
+          "detail": "투싼 ix 2.0 가솔린(10~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "10~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "IX"
+          ]
+        },
+        {
+          "displayName": "투싼 ix 2.0 디젤(10~15년)",
+          "detail": "투싼 ix 2.0 디젤(10~15년)",
+          "fuel": "디젤",
+          "primaryBattery": "90R",
+          "years": "10~15년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "IX"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "tucson-tl",
+      "displayName": "올 뉴 투싼",
+      "yearRange": "2015-2020",
+      "generationTokens": [
+        "TL",
+        "올 뉴 투싼"
+      ],
+      "dbModels": [
+        "투싼"
+      ],
+      "matchedCount": 18,
+      "renderableCount": 18,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM70L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM80L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "올 뉴 투싼 1.6 가솔린(16~20년) isg기능 탑재",
+          "detail": "올 뉴 투싼 1.6 가솔린(16~20년) isg기능 탑재",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "16~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올 뉴 투싼 1.6 가솔린(16~20년) isg기능 없는차량",
+          "detail": "올 뉴 투싼 1.6 가솔린(16~20년) isg기능 없는차량",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN74L",
+          "years": "16~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올 뉴 투싼 1.7 디젤(16년~현재)",
+          "detail": "올 뉴 투싼 1.7 디젤(16년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "16년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올 뉴 투싼 2.0 디젤(16년~현재)",
+          "detail": "올 뉴 투싼 2.0 디젤(16년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "16년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올 뉴 투싼 1.6 디젤(19년~현재)",
+          "detail": "올 뉴 투싼 1.6 디젤(19년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "19년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴 투싼 1.6(16년~18년)가솔린",
+          "detail": "올뉴 투싼 1.6(16년~18년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN74L",
+          "years": "16년~18년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴 투싼 1.6(16년~20년)가솔린",
+          "detail": "올뉴 투싼 1.6(16년~20년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "16년~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴 투싼 1.6(19년~20년)디젤",
+          "detail": "올뉴 투싼 1.6(19년~20년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "19년~20년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "tucson-nx4",
+      "displayName": "투싼 4세대",
+      "yearRange": "2020-2023",
+      "generationTokens": [
+        "NX4",
+        "4세대"
+      ],
+      "dbModels": [
+        "투싼"
+      ],
+      "matchedCount": 4,
+      "renderableCount": 4,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM70L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM80L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "(NX4)투싼 1.6 가솔린(21년~현재)",
+          "detail": "(NX4)투싼 1.6 가솔린(21년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NX4"
+          ]
+        },
+        {
+          "displayName": "(NX4)투싼 2.0 디젤(21년~현재)",
+          "detail": "(NX4)투싼 2.0 디젤(21년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NX4"
+          ]
+        },
+        {
+          "displayName": "(NX4)투싼1.6(21년~현재)가솔린",
+          "detail": "(NX4)투싼1.6(21년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NX4"
+          ]
+        },
+        {
+          "displayName": "(NX4)투싼1.6(21년~현재)디젤",
+          "detail": "(NX4)투싼1.6(21년~현재)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NX4"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "k3-yd",
+      "displayName": "K3 1세대",
+      "yearRange": "2012-2018",
+      "generationTokens": [],
+      "dbModels": [
+        "K3",
+        "케이3"
+      ],
+      "matchedCount": 30,
+      "renderableCount": 24,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "DIN62L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM70L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [
+        {
+          "displayName": "더뉴K3 쿱 (16/03~)",
+          "detail": "더뉴K3 쿱 (16/03~)",
+          "fuel": "",
+          "primaryBattery": "DIN62L",
+          "years": "16/03~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴K3 (18/02~) 가솔린",
+          "detail": "올뉴K3 (18/02~) 가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18/02~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴K3 (18/02~) 디젤",
+          "detail": "올뉴K3 (18/02~) 디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "18/02~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "SLK350 가솔린 (10~16년)",
+          "detail": "SLK350 가솔린 (10~16년)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "10~16년",
+          "class": "broadModelOnlyCandidate",
+          "renderable": false,
+          "reason": "브랜드 불일치",
+          "recordTokens": [
+            "SL"
+          ]
+        },
+        {
+          "displayName": "SLK350(10년~16년)가솔린",
+          "detail": "SLK350(10년~16년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "10년~16년",
+          "class": "broadModelOnlyCandidate",
+          "renderable": false,
+          "reason": "브랜드 불일치",
+          "recordTokens": [
+            "SL"
+          ]
+        },
+        {
+          "displayName": "SLK350 가솔린 (10~16년)",
+          "detail": "SLK350 가솔린 (10~16년)",
+          "fuel": "가솔린",
+          "primaryBattery": "70L",
+          "years": "10~16년",
+          "class": "broadModelOnlyCandidate",
+          "renderable": false,
+          "reason": "브랜드 불일치",
+          "recordTokens": [
+            "SL"
+          ]
+        }
+      ],
+      "renderableSamples": [
+        {
+          "displayName": "K3/더뉴 K3/올뉴 K3 가솔린 (13년~현재)",
+          "detail": "K3/더뉴 K3/올뉴 K3 가솔린 (13년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "13년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K3 디젤(12~15년)",
+          "detail": "K3 디젤(12~15년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "12~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K3 가솔린(12~18년)",
+          "detail": "K3 가솔린(12~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "12~18년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올 뉴 K3 가솔린(18년~현재)",
+          "detail": "올 뉴 K3 가솔린(18년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더 뉴 K3 디젤(15~18년)",
+          "detail": "더 뉴 K3 디젤(15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "15~18년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더뉴 k3 가솔린 (15~18년)",
+          "detail": "더뉴 k3 가솔린 (15~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "15~18년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더뉴 k3 쿱 (16년~현재)",
+          "detail": "더뉴 k3 쿱 (16년~현재)",
+          "fuel": "",
+          "primaryBattery": "DIN62L",
+          "years": "16년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴 k3 디젤 (18년~현재)",
+          "detail": "올뉴 k3 디젤 (18년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "18년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "k3-bd",
+      "displayName": "올 뉴 K3",
+      "yearRange": "2018-2021",
+      "generationTokens": [],
+      "dbModels": [
+        "K3",
+        "케이3"
+      ],
+      "matchedCount": 23,
+      "renderableCount": 17,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "DIN62L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM70L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [
+        {
+          "displayName": "더뉴K3 쿱 (16/03~)",
+          "detail": "더뉴K3 쿱 (16/03~)",
+          "fuel": "",
+          "primaryBattery": "DIN62L",
+          "years": "16/03~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴K3 (18/02~) 가솔린",
+          "detail": "올뉴K3 (18/02~) 가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18/02~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴K3 (18/02~) 디젤",
+          "detail": "올뉴K3 (18/02~) 디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "18/02~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "SLK350 가솔린 (10~16년)",
+          "detail": "SLK350 가솔린 (10~16년)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "10~16년",
+          "class": "broadModelOnlyCandidate",
+          "renderable": false,
+          "reason": "브랜드 불일치",
+          "recordTokens": [
+            "SL"
+          ]
+        },
+        {
+          "displayName": "SLK350(10년~16년)가솔린",
+          "detail": "SLK350(10년~16년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "10년~16년",
+          "class": "broadModelOnlyCandidate",
+          "renderable": false,
+          "reason": "브랜드 불일치",
+          "recordTokens": [
+            "SL"
+          ]
+        },
+        {
+          "displayName": "SLK350 가솔린 (10~16년)",
+          "detail": "SLK350 가솔린 (10~16년)",
+          "fuel": "가솔린",
+          "primaryBattery": "70L",
+          "years": "10~16년",
+          "class": "broadModelOnlyCandidate",
+          "renderable": false,
+          "reason": "브랜드 불일치",
+          "recordTokens": [
+            "SL"
+          ]
+        }
+      ],
+      "renderableSamples": [
+        {
+          "displayName": "K3/더뉴 K3/올뉴 K3 가솔린 (13년~현재)",
+          "detail": "K3/더뉴 K3/올뉴 K3 가솔린 (13년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "13년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K3 가솔린(12~18년)",
+          "detail": "K3 가솔린(12~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "12~18년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올 뉴 K3 가솔린(18년~현재)",
+          "detail": "올 뉴 K3 가솔린(18년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더 뉴 K3 디젤(15~18년)",
+          "detail": "더 뉴 K3 디젤(15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "15~18년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더뉴 k3 가솔린 (15~18년)",
+          "detail": "더뉴 k3 가솔린 (15~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "15~18년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더뉴 k3 쿱 (16년~현재)",
+          "detail": "더뉴 k3 쿱 (16년~현재)",
+          "fuel": "",
+          "primaryBattery": "DIN62L",
+          "years": "16년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴 k3 디젤 (18년~현재)",
+          "detail": "올뉴 k3 디젤 (18년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "18년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "k3(13년~18년) 가솔린",
+          "detail": "k3(13년~18년) 가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "13년~18년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "k3-bd-fl",
+      "displayName": "더 뉴 K3",
+      "yearRange": "2021-2024",
+      "generationTokens": [],
+      "dbModels": [
+        "K3",
+        "케이3"
+      ],
+      "matchedCount": 9,
+      "renderableCount": 6,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "DIN62L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM70L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "rocket",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN62L",
+          "brand": "solite",
+          "catalogCode": "DIN60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [
+        {
+          "displayName": "더뉴K3 쿱 (16/03~)",
+          "detail": "더뉴K3 쿱 (16/03~)",
+          "fuel": "",
+          "primaryBattery": "DIN62L",
+          "years": "16/03~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴K3 (18/02~) 가솔린",
+          "detail": "올뉴K3 (18/02~) 가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18/02~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴K3 (18/02~) 디젤",
+          "detail": "올뉴K3 (18/02~) 디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "18/02~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": []
+        }
+      ],
+      "renderableSamples": [
+        {
+          "displayName": "K3/더뉴 K3/올뉴 K3 가솔린 (13년~현재)",
+          "detail": "K3/더뉴 K3/올뉴 K3 가솔린 (13년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "13년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올 뉴 K3 가솔린(18년~현재)",
+          "detail": "올 뉴 K3 가솔린(18년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더뉴 k3 쿱 (16년~현재)",
+          "detail": "더뉴 k3 쿱 (16년~현재)",
+          "fuel": "",
+          "primaryBattery": "DIN62L",
+          "years": "16년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴 k3 디젤 (18년~현재)",
+          "detail": "올뉴 k3 디젤 (18년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM70L",
+          "years": "18년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴k3(19년~현재)가솔린",
+          "detail": "올뉴k3(19년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "19년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "올뉴k3(19년~현재)가솔린",
+          "detail": "올뉴k3(19년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "19년~현재",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "sportage-sl",
+      "displayName": "스포티지 R",
+      "yearRange": "2004-2010",
+      "generationTokens": [],
+      "dbModels": [
+        "스포티지"
+      ],
+      "matchedCount": 35,
+      "renderableCount": 28,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "90R"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "DIN74L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "rocket",
+          "catalogCode": "GB80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "80L",
+          "brand": "solite",
+          "catalogCode": "CMF80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90R",
+          "brand": "rocket",
+          "catalogCode": "GB90R",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "90R",
+          "brand": "solite",
+          "catalogCode": "CMF90R",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN74L",
+          "brand": "rocket",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN74L",
+          "brand": "solite",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [
+        {
+          "displayName": "스포티지QL 더볼드 (18/07~) 디젤",
+          "detail": "스포티지QL 더볼드 (18/07~) 디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "18/07~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "QL"
+          ]
+        },
+        {
+          "displayName": "스포티지QL 더볼드 (18/07~) 가솔린",
+          "detail": "스포티지QL 더볼드 (18/07~) 가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN62L",
+          "years": "18/07~",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "QL"
+          ]
+        },
+        {
+          "displayName": "스포티지 4세대(QL) 1.7 디젤(15~18년)",
+          "detail": "스포티지 4세대(QL) 1.7 디젤(15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "QL",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "QL"
+          ]
+        },
+        {
+          "displayName": "스포티지 4세대(QL) 2.0 디젤(15~18년)",
+          "detail": "스포티지 4세대(QL) 2.0 디젤(15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "QL",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "QL"
+          ]
+        },
+        {
+          "displayName": "스포티지 4세대(QL) 2.0 LPG(15~18년)",
+          "detail": "스포티지 4세대(QL) 2.0 LPG(15~18년)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN74L",
+          "years": "QL",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "QL"
+          ]
+        },
+        {
+          "displayName": "스포티지 4세대(QL) 2.0 가솔린(15~18년)",
+          "detail": "스포티지 4세대(QL) 2.0 가솔린(15~18년)",
+          "fuel": "가솔린",
+          "primaryBattery": "70L",
+          "years": "QL",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "QL"
+          ]
+        },
+        {
+          "displayName": "스포티지4세개(QL) 2.0 4WD 디젤 (15~18년)",
+          "detail": "스포티지4세개(QL) 2.0 4WD 디젤 (15~18년)",
+          "fuel": "디젤",
+          "primaryBattery": "DIN74L",
+          "years": "QL",
+          "class": "yearOverlapOnlyCandidate",
+          "renderable": false,
+          "reason": "연식 구간 불일치",
+          "recordTokens": [
+            "QL"
+          ]
+        }
+      ],
+      "renderableSamples": [
+        {
+          "displayName": "뉴 스포티지/스포티지R 가솔린 (04~15년)",
+          "detail": "뉴 스포티지/스포티지R 가솔린 (04~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "04~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "뉴 스포티지 디젤(04~10년)",
+          "detail": "뉴 스포티지 디젤(04~10년)",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "04~10년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "스포티지 R 가솔린(10~15년)",
+          "detail": "스포티지 R 가솔린(10~15년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "10~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "뉴 스포티지 가솔린(04~10년)",
+          "detail": "뉴 스포티지 가솔린(04~10년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "04~10년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "스포티지 R 디젤(10~15년)",
+          "detail": "스포티지 R 디젤(10~15년)",
+          "fuel": "디젤",
+          "primaryBattery": "90R",
+          "years": "10~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "스포티지 R 터보 가솔린(10~15년)",
+          "detail": "스포티지 R 터보 가솔린(10~15년)",
+          "fuel": "가솔린/터보",
+          "primaryBattery": "80L",
+          "years": "10~15년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "뉴 스포티지(04년~10년)가솔린",
+          "detail": "뉴 스포티지(04년~10년)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "04년~10년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "뉴 스포티지(04년~10년)디젤",
+          "detail": "뉴 스포티지(04년~10년)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "90L",
+          "years": "04년~10년",
+          "class": "exactYearFuelCandidate",
+          "renderable": true,
+          "reason": "연식·연료·모델 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "sportage-nq5",
+      "displayName": "스포티지 5세대",
+      "yearRange": "2021-2023",
+      "generationTokens": [
+        "NQ5",
+        "5세대",
+        "스포티지 5세대"
+      ],
+      "dbModels": [
+        "스포티지"
+      ],
+      "matchedCount": 3,
+      "renderableCount": 3,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM70L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM80L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "AGM70L"
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "primaryBattery": "AGM60L"
+        }
+      ],
+      "hybridSectionOnPage": true,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "AGM60L",
+          "brand": "rocket",
+          "catalogCode": "AGM60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "AGM60L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "스포티지 NQ5 가솔린 (21년~현재)",
+          "detail": "스포티지 NQ5 가솔린 (21년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NQ5"
+          ]
+        },
+        {
+          "displayName": "스포티지 NQ5 디젤 (21년~현재)",
+          "detail": "스포티지 NQ5 디젤 (21년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NQ5"
+          ]
+        },
+        {
+          "displayName": "스포티지 NQ5 LPG (21년~현재)",
+          "detail": "스포티지 NQ5 LPG (21년~현재)",
+          "fuel": "LPG",
+          "primaryBattery": "AGM70L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "NQ5"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "sorento-mq4",
+      "displayName": "쏘렌토 4세대",
+      "yearRange": "2020-2023",
+      "generationTokens": [
+        "MQ4"
+      ],
+      "dbModels": [
+        "쏘렌토",
+        "소렌토"
+      ],
+      "matchedCount": 6,
+      "renderableCount": 6,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM80L"
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "primaryBattery": "AGM60L"
+        }
+      ],
+      "hybridSectionOnPage": true,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "AGM60L",
+          "brand": "rocket",
+          "catalogCode": "AGM60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "AGM60L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "(MQ4)쏘렌토 4세대 디젤(20년~현재)",
+          "detail": "(MQ4)쏘렌토 4세대 디젤(20년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MQ4"
+          ]
+        },
+        {
+          "displayName": "(MQ4)쏘렌토 4세대 가솔린(20년~현재)",
+          "detail": "(MQ4)쏘렌토 4세대 가솔린(20년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MQ4"
+          ]
+        },
+        {
+          "displayName": "쏘렌토 MQ4 하이브리드 (20년~현재)",
+          "detail": "쏘렌토 MQ4 하이브리드 (20년~현재)",
+          "fuel": "하이브리드",
+          "primaryBattery": "AGM60L",
+          "years": "20년~현재",
+          "class": "userConfirmedCandidate",
+          "renderable": true,
+          "reason": "confirmed",
+          "recordTokens": [
+            "MQ4"
+          ]
+        },
+        {
+          "displayName": "(MQ4)쏘렌토4세대 (21년~현재)디젤",
+          "detail": "(MQ4)쏘렌토4세대 (21년~현재)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MQ4"
+          ]
+        },
+        {
+          "displayName": "(MQ4)쏘렌토4세대 (21년~현재)가솔린",
+          "detail": "(MQ4)쏘렌토4세대 (21년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MQ4"
+          ]
+        },
+        {
+          "displayName": "쏘렌토 MQ4 하이브리드 (20년~현재)",
+          "detail": "쏘렌토 MQ4 하이브리드 (20년~현재)",
+          "fuel": "하이브리드",
+          "primaryBattery": "60L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "MQ4"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "carnival-ka4",
+      "displayName": "카니발 4세대",
+      "yearRange": "2020-2023",
+      "generationTokens": [
+        "KA4",
+        "4세대"
+      ],
+      "dbModels": [
+        "카니발"
+      ],
+      "matchedCount": 4,
+      "renderableCount": 4,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM80L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "AGM80L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "rocket",
+          "catalogCode": "AGM80L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "AGM80L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "(KA4)카니발 4세대 가솔린(20년~현재)",
+          "detail": "(KA4)카니발 4세대 가솔린(20년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "KA4"
+          ]
+        },
+        {
+          "displayName": "(KA4)카니발 4세대 디젤(20년~현재)",
+          "detail": "(KA4)카니발 4세대 디젤(20년~현재)",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "20년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "KA4"
+          ]
+        },
+        {
+          "displayName": "(KA4)카니발4세대(21년~현재)가솔린",
+          "detail": "(KA4)카니발4세대(21년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "KA4"
+          ]
+        },
+        {
+          "displayName": "(KA4)카니발4세대(22년~현재)디젤",
+          "detail": "(KA4)카니발4세대(22년~현재)디젤",
+          "fuel": "디젤",
+          "primaryBattery": "AGM80L",
+          "years": "22년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "KA4"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "ray-tam",
+      "displayName": "레이",
+      "yearRange": "2011-2022",
+      "generationTokens": [
+        "TAM",
+        "레이"
+      ],
+      "dbModels": [
+        "레이"
+      ],
+      "matchedCount": 15,
+      "renderableCount": 15,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "60L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "60AL"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "60L",
+          "brand": "rocket",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "60L",
+          "brand": "solite",
+          "catalogCode": "CMF60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "60AL",
+          "brand": "rocket",
+          "catalogCode": "GB60AL",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "60AL",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "레이 터보 (12~17년)",
+          "detail": "레이 터보 (12~17년)",
+          "fuel": "터보",
+          "primaryBattery": "60L",
+          "years": "12~17년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "레이 터보(11~19년)",
+          "detail": "레이 터보(11~19년)",
+          "fuel": "터보",
+          "primaryBattery": "60AL",
+          "years": "11~19년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "레이 가솔린(11~19년)",
+          "detail": "레이 가솔린(11~19년)",
+          "fuel": "가솔린",
+          "primaryBattery": "60AL",
+          "years": "11~19년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더 뉴 레이 LPG(17년~현재)",
+          "detail": "더 뉴 레이 LPG(17년~현재)",
+          "fuel": "LPG",
+          "primaryBattery": "60AL",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더 뉴 레이 가솔린(17년~현재)",
+          "detail": "더 뉴 레이 가솔린(17년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "60AL",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "레이 바이퓨얼(11~19년)",
+          "detail": "레이 바이퓨얼(11~19년)",
+          "fuel": "LPG/바이퓨얼",
+          "primaryBattery": "60AL",
+          "years": "11~19년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더뉴 레이 (18년~현재)LPG",
+          "detail": "더뉴 레이 (18년~현재)LPG",
+          "fuel": "LPG",
+          "primaryBattery": "60L",
+          "years": "18년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "더뉴 레이 (18년~현재)가솔린",
+          "detail": "더뉴 레이 (18년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "60L",
+          "years": "18년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "morning-ja",
+      "displayName": "모닝 3세대",
+      "yearRange": "2020-2023",
+      "generationTokens": [
+        "JA",
+        "모닝 3세대"
+      ],
+      "dbModels": [
+        "모닝"
+      ],
+      "matchedCount": 6,
+      "renderableCount": 6,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "40AL"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "40AL"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "40AL",
+          "brand": "rocket",
+          "catalogCode": "GB40AL",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "40AL",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "40AL",
+          "brand": "rocket",
+          "catalogCode": "GB40AL",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "40AL",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "올 뉴 모닝 JA 가솔린(17년~현재)",
+          "detail": "올 뉴 모닝 JA 가솔린(17년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "40AL",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "JA"
+          ]
+        },
+        {
+          "displayName": "올 뉴 모닝 JA 터보(17년~현재)",
+          "detail": "올 뉴 모닝 JA 터보(17년~현재)",
+          "fuel": "터보",
+          "primaryBattery": "DIN50L",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "JA"
+          ]
+        },
+        {
+          "displayName": "올 뉴 모닝 JA LPG(17년~현재)",
+          "detail": "올 뉴 모닝 JA LPG(17년~현재)",
+          "fuel": "LPG",
+          "primaryBattery": "40AL",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "JA"
+          ]
+        },
+        {
+          "displayName": "올 뉴 모님(17년~현재)JA LPG",
+          "detail": "올 뉴 모님(17년~현재)JA LPG",
+          "fuel": "LPG",
+          "primaryBattery": "40AL",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "JA"
+          ]
+        },
+        {
+          "displayName": "올 뉴 모님(17년~현재)JA 가솔린",
+          "detail": "올 뉴 모님(17년~현재)JA 가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "40AL",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "JA"
+          ]
+        },
+        {
+          "displayName": "올 뉴 모님(17년~현재)JA 터보",
+          "detail": "올 뉴 모님(17년~현재)JA 터보",
+          "fuel": "터보",
+          "primaryBattery": "DIN45L",
+          "years": "17년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": [
+            "JA"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "renault-samsung-qm5-2007",
+      "displayName": "QM5",
+      "yearRange": "2007-2013",
+      "generationTokens": [
+        "QM5"
+      ],
+      "dbModels": [
+        "QM5"
+      ],
+      "matchedCount": 14,
+      "renderableCount": 14,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "DIN74L"
+        },
+        {
+          "fuelLabel": "디젤",
+          "primaryBattery": "DIN74L"
+        }
+      ],
+      "hybridSectionOnPage": false,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN74L",
+          "brand": "rocket",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "DIN74L",
+          "brand": "solite",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "DIN74L",
+          "brand": "rocket",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "디젤",
+          "spec": "DIN74L",
+          "brand": "solite",
+          "catalogCode": "DIN74L",
+          "hasImage": true
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "QM5",
+          "detail": "QM5",
+          "fuel": "QM5",
+          "primaryBattery": "80L",
+          "years": "07~11년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "뉴 QM5 2.5 가솔린 (12~13년)",
+          "detail": "뉴 QM5 2.5 가솔린 (12~13년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN74L",
+          "years": "12~13년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "뉴 QM5 2.0 가솔린 (12~13년)",
+          "detail": "뉴 QM5 2.0 가솔린 (12~13년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN74L",
+          "years": "12~13년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "QM5 네오 디젤 (14~16년)",
+          "detail": "QM5 네오 디젤 (14~16년)",
+          "fuel": "디젤",
+          "primaryBattery": "70L",
+          "years": "14~16년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "QM5 2.5 가솔린 (07~11년)",
+          "detail": "QM5 2.5 가솔린 (07~11년)",
+          "fuel": "가솔린",
+          "primaryBattery": "80L",
+          "years": "07~11년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "뉴 QM5 디젤 (12~13년)",
+          "detail": "뉴 QM5 디젤 (12~13년)",
+          "fuel": "디젤",
+          "primaryBattery": "DIN74L",
+          "years": "12~13년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "QM5 디젤 (07~11년)",
+          "detail": "QM5 디젤 (07~11년)",
+          "fuel": "디젤",
+          "primaryBattery": "80L",
+          "years": "07~11년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "QM5 네오 2.0 가솔린 (14~16년)",
+          "detail": "QM5 네오 2.0 가솔린 (14~16년)",
+          "fuel": "가솔린",
+          "primaryBattery": "DIN74L",
+          "years": "14~16년",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        }
+      ]
+    },
+    {
+      "slug": "k8-gl3",
+      "displayName": "K8",
+      "yearRange": "2021-2024",
+      "generationTokens": [
+        "GL3",
+        "K8"
+      ],
+      "dbModels": [
+        "K8",
+        "케이8"
+      ],
+      "matchedCount": 9,
+      "renderableCount": 9,
+      "customerFuelGroups": [
+        {
+          "fuelLabel": "가솔린",
+          "primaryBattery": "AGM70L"
+        },
+        {
+          "fuelLabel": "LPG",
+          "primaryBattery": "DIN90L"
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "primaryBattery": "AGM60L"
+        }
+      ],
+      "hybridSectionOnPage": true,
+      "wrongGenerationLeakingToPage": false,
+      "brandProductChecks": [
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "rocket",
+          "catalogCode": "AGM70L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "가솔린",
+          "spec": "AGM70L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN90L",
+          "brand": "rocket",
+          "catalogCode": "DIN90L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "LPG",
+          "spec": "DIN90L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "AGM60L",
+          "brand": "rocket",
+          "catalogCode": "AGM60L",
+          "hasImage": true
+        },
+        {
+          "fuelLabel": "하이브리드",
+          "spec": "AGM60L",
+          "brand": "solite",
+          "catalogCode": null,
+          "hasImage": false
+        }
+      ],
+      "nonRenderableSamples": [],
+      "renderableSamples": [
+        {
+          "displayName": "K8 2.5 가솔린 (22년~현재)",
+          "detail": "K8 2.5 가솔린 (22년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "22년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K8 2.5 가솔린(21년~현재)",
+          "detail": "K8 2.5 가솔린(21년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K8 3.5 가솔린(21년~현재)",
+          "detail": "K8 3.5 가솔린(21년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K8 3.5 LPG(21년~현재)",
+          "detail": "K8 3.5 LPG(21년~현재)",
+          "fuel": "LPG",
+          "primaryBattery": "DIN90L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K8 2.5 (21년~현재)가솔린",
+          "detail": "K8 2.5 (21년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM70L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K8 3.5 (21년~현재)가솔린",
+          "detail": "K8 3.5 (21년~현재)가솔린",
+          "fuel": "가솔린",
+          "primaryBattery": "AGM80L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K8",
+          "detail": "K8",
+          "fuel": "K8",
+          "primaryBattery": "AGM70L",
+          "years": "22년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        },
+        {
+          "displayName": "K8 2.5 가솔린(21년~현재)",
+          "detail": "K8 2.5 가솔린(21년~현재)",
+          "fuel": "가솔린",
+          "primaryBattery": "70L",
+          "years": "21년~현재",
+          "class": "sameGenerationCandidate",
+          "renderable": true,
+          "reason": "세대 토큰 일치",
+          "recordTokens": []
+        }
+      ]
+    }
+  ],
+  "issues": [],
+  "pass": true
+}

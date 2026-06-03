@@ -7,6 +7,7 @@ import {
   CUSTOMER_FUEL_DISPLAY_ORDER,
   sortFuelGroupsByDisplayOrder,
 } from "@/lib/vehicle-fuel-display";
+import { hasStrictBrandProductImage } from "@/lib/battery-alias-map";
 import type { FuelBatteryGroup } from "@/lib/vehicleBattery";
 
 export const VEHICLE_TRIM_CAUTION_COPY =
@@ -63,12 +64,26 @@ export function hasSingleFuelRecommendation(
   return codes.size === 1 && groupHasRenderableBattery(slug, fuelGroups[0]!);
 }
 
+function countBrandCatalogCardsForSpec(specCode: string): number {
+  let n = 0;
+  if (hasStrictBrandProductImage(specCode, "rocket")) n += 1;
+  if (hasStrictBrandProductImage(specCode, "solite")) n += 1;
+  return n;
+}
+
 export function countCustomerProductCards(
   slug: string,
   fuelGroups: FuelBatteryGroup[],
 ): number {
   const cards = prepareCustomerFacingFuelGroups(slug, fuelGroups);
-  return cards.filter((g) => groupHasRenderableBattery(slug, g)).length * 2;
+  return cards.reduce((sum, g) => {
+    if (!groupHasRenderableBattery(slug, g)) return sum;
+    const code =
+      resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel) ||
+      g.primaryBattery?.trim() ||
+      "";
+    return sum + (code ? countBrandCatalogCardsForSpec(code) : 0);
+  }, 0);
 }
 
 /** 동일 연료 라벨 다연식 버킷 → 카드 1장 */

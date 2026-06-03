@@ -7,6 +7,12 @@ import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { prepareCustomerFacingFuelGroups } from "@/lib/vehicle-detail-recommendation";
+import { isCustomerFacingDbRecord } from "@/lib/vehicle-generation-match";
+import {
+  normalizeYearRange,
+  yearIntervalsOverlap,
+  type ParsedYearRange,
+} from "@/lib/vehicle-year-range";
 import { mapCustomerFuelLabel } from "@/lib/vehicle-fuel-display";
 import {
   mergeOperatorFuelGroups,
@@ -393,37 +399,15 @@ function recordMatchesProfile(r: VehicleBatteryRecord, profile: VehicleDbProfile
     if (recYears && !yearIntervalsOverlap(assetYears, recYears)) return false;
   }
 
-  if (profile.generationTokens.length === 0) return true;
-
-  const hay = norm(`${r.displayName} ${r.detail} ${r.years ?? ""}`);
-  const tokenHit = profile.generationTokens.some((t) => {
-    const nt = norm(t);
-    return nt.length >= 2 && hay.includes(nt);
-  });
-  if (tokenHit) return true;
-
-  // DB에 플랫폼코드(MX5/SG2 등) 미기재 — 연식·모델·차명 키워드 일치 시 허용
-  const titleNorm = norm(profile.title);
-  const displayStem = titleNorm
-    .replace(/디올뉴|더뉴|올뉴|thenew|allnew/gi, "")
-    .replace(/하이브리드|hev|phev/gi, "");
-  const recordStem = hay.replace(/디올뉴|더뉴|올뉴/gi, "");
-  const modelStem = norm(profile.dbModels[0] ?? "");
-  const nameOverlap =
-    (displayStem.length >= 2 && recordStem.includes(displayStem)) ||
-    (modelStem.length >= 2 && recordStem.includes(modelStem)) ||
-    hay.includes(norm(profile.title.split(" ").pop() ?? ""));
-  const recYears = recordYearInterval(r);
-  const yearOk =
-    assetYears && recYears ? yearIntervalsOverlap(assetYears, recYears) : false;
-  if (yearOk && nameOverlap) {
-    if (/하이브리드|hev|phev/i.test(profile.title)) {
-      return /하이브리드|hev|phev|hybrid/i.test(`${r.fuel ?? ""} ${r.displayName}`);
-    }
-    return true;
+  if (profile.generationTokens.length > 0) {
+    return isCustomerFacingDbRecord(r, profile);
   }
 
-  return false;
+  if (/하이브리드|hev|phev/i.test(profile.title)) {
+    return /하이브리드|hev|phev|hybrid/i.test(`${r.fuel ?? ""} ${r.displayName} ${r.detail}`);
+  }
+
+  return true;
 }
 
 /** confirmed 외 raw/medium — 연식·브랜드·모델 일치 시 상세·resolver에서 사용 */
@@ -434,7 +418,12 @@ export function isUsableDbCandidate(
   if (!recordHasBatterySpec(record)) return false;
   if (hasConfirmedBatteryData(record)) return true;
   if (!profile || !recordMatchesProfile(record, profile)) return false;
-  if (record.status === "confirmed") return true;
+  if (record.status === "confirmed") {
+    if (profile.generationTokens.length > 0) {
+      return isCustomerFacingDbRecord(record, profile);
+    }
+    return true;
+  }
   if (record.status === "raw" || record.status === "needs_review") {
     return record.confidence === "medium" || record.confidence === "high" || record.confidence === "low";
   }
@@ -485,55 +474,8 @@ export type FuelBatteryGroup = {
   yearSummary: string;
 };
 
-export type ParsedYearRange = {
-  start: number;
-  end: number | null;
-  raw: string;
-};
-
-function expandTwoDigitYear(two: string): number {
-  const n = parseInt(two, 10);
-  return n <= 30 ? 2000 + n : 1900 + n;
-}
-
-/** 연식 문자열 → { start, end } (표시·병합용) */
-export function normalizeYearRange(yearText: string): ParsedYearRange | null {
-  const raw = yearText.trim();
-  if (!raw) return null;
-
-  const full = raw.match(/(19|20)(\d{2})\s*[-~]\s*(?:(19|20)(\d{2})|현재|이후)/);
-  if (full) {
-    const start = parseInt(full[1] + full[2], 10);
-    if (!full[3] && /현재|이후/.test(raw)) return { start, end: null, raw };
-    const end = full[3] ? parseInt(full[3] + full[4], 10) : null;
-    return { start, end, raw };
-  }
-
-  const short = raw.match(/(\d{2})\s*~\s*(\d{2})\s*년/);
-  if (short) {
-    return {
-      start: expandTwoDigitYear(short[1]),
-      end: expandTwoDigitYear(short[2]),
-      raw,
-    };
-  }
-
-  const shortOpen = raw.match(/(\d{2})\s*년?\s*~\s*(?:현재|이후)/);
-  if (shortOpen) {
-    return { start: expandTwoDigitYear(shortOpen[1]), end: null, raw };
-  }
-
-  const shortBare = raw.match(/(\d{2})\s*~\s*(\d{2})(?:년)?(?!\d)/);
-  if (shortBare) {
-    return {
-      start: expandTwoDigitYear(shortBare[1]),
-      end: expandTwoDigitYear(shortBare[2]),
-      raw,
-    };
-  }
-
-  return null;
-}
+export type { ParsedYearRange } from "@/lib/vehicle-year-range";
+export { normalizeYearRange } from "@/lib/vehicle-year-range";
 
 /** 인접·겹치는 구간만 병합 */
 export function mergeYearRanges(ranges: ParsedYearRange[]): ParsedYearRange[] {
@@ -634,16 +576,6 @@ function recordYearInterval(r: VehicleBatteryRecord): { start: number; end: numb
   const parsed = r.years ? normalizeYearRange(r.years) : null;
   if (parsed) return { start: parsed.start, end: parsed.end };
   return null;
-}
-
-function yearIntervalsOverlap(
-  a: { start: number; end: number | null } | null,
-  b: { start: number; end: number | null } | null,
-): boolean {
-  if (!a || !b) return true;
-  const aEnd = a.end ?? 9999;
-  const bEnd = b.end ?? 9999;
-  return a.start <= bEnd + 2 && b.start <= aEnd + 2;
 }
 
 /** 같은 연료 내 비연속 연식 구간은 별도 버킷 */
@@ -1206,9 +1138,16 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
 export function getVehicleBatteryPageData(slug: string) {
   const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
-  const linkable = recs.filter(
-    (r) => hasConfirmedBatteryData(r) || isUsableDbCandidate(r, profile),
-  );
+  const linkable = recs.filter((r) => {
+    if (!profile) return recordHasBatterySpec(r);
+    if (hasConfirmedBatteryData(r) || isUsableDbCandidate(r, profile)) {
+      if (profile.generationTokens.length > 0) {
+        return isCustomerFacingDbRecord(r, profile);
+      }
+      return true;
+    }
+    return false;
+  });
   const fuelGroupsRaw = mergeOperatorFuelGroups(
     slug,
     groupRecordsByFuel(linkable.length ? linkable : recs).map((g) => {

@@ -3,7 +3,12 @@ import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { getBatteryImageFit } from "@/lib/battery-image-presentation";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
-import { getBatteryImageSet } from "@/lib/battery-alias-map";
+import {
+  findBatteryProductByCode,
+  getBatteryImageSet,
+  hasStrictBrandProductImage,
+} from "@/lib/battery-alias-map";
+import { productBatteryCode } from "@/lib/batteryNormalize";
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { hasBrandSpecData } from "@/lib/battery-knowledge";
 import {
@@ -21,32 +26,43 @@ import { bm } from "@/lib/design-tokens";
 const BRAND_OFFERS = [
   { id: "rocket" as const, label: "로케트" },
   { id: "solite" as const, label: "쏠라이트" },
-];
+] as const;
+
+function brandOffersForVehicleSpec(vehicleSpecCode: string) {
+  return BRAND_OFFERS.flatMap((b) => {
+    const productCode = findBatteryProductByCode(vehicleSpecCode, b.id, { strictBrand: true });
+    if (!productCode || !hasStrictBrandProductImage(vehicleSpecCode, b.id)) return [];
+    return [{ ...b, productCode }];
+  });
+}
 
 function BrandProductCard({
   brandId,
   brandLabel,
-  batteryCode,
+  vehicleSpecCode,
+  productCode,
   vehicleSlug,
 }: {
   brandId: "rocket" | "solite";
   brandLabel: string;
-  batteryCode: string;
+  vehicleSpecCode: string;
+  productCode: string;
   vehicleSlug: string;
 }) {
-  const imageSet = getBatteryImageSet(batteryCode, brandId);
+  const imageSet = getBatteryImageSet(productCode, brandId, { strictBrand: true });
   const hasImageSet = Boolean(imageSet?.main?.trim());
-  const display = parseBatterySpecDisplay(batteryCode);
-  const detailHref = `${batteryDetailHref(batteryCode)}?brand=${brandId}`;
+  const displayLabel = productBatteryCode(productCode) || productCode;
+  const display = parseBatterySpecDisplay(displayLabel);
+  const detailHref = `${batteryDetailHref(productCode)}?brand=${brandId}`;
 
   return (
     <article className="vehicle-brand-product">
       <div className="vehicle-brand-product__media">
         <BatteryThumbnail
-          code={batteryCode}
+          code={productCode}
           imageSet={hasImageSet ? imageSet : undefined}
           role="main"
-          fit={getBatteryImageFit(batteryCode, brandId)}
+          fit={getBatteryImageFit(productCode, brandId)}
           tall
           overlayLabel={false}
           surface="transparent"
@@ -55,14 +71,14 @@ function BrandProductCard({
       </div>
       <div className="vehicle-brand-product__body">
         <p className="text-sm font-black text-slate-900">
-          {brandLabel} {batteryCode}
+          {brandLabel} {displayLabel}
         </p>
         <p className="mt-1 text-sm font-semibold text-slate-600">
           {[display.typeLabel, display.capacity, display.terminalLabel].filter(Boolean).join(" · ")}
         </p>
-        {hasBrandSpecData(batteryCode) ? (
+        {hasBrandSpecData(productCode) ? (
           <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-            {getHomeCardCopy(batteryCode) ?? "상세 페이지에서 제원을 확인할 수 있습니다."}
+            {getHomeCardCopy(productCode) ?? "상세 페이지에서 제원을 확인할 수 있습니다."}
           </p>
         ) : null}
         <div className="vehicle-brand-product__actions">
@@ -117,7 +133,10 @@ export function VehicleCustomerBatteryShop({
     <div className="vehicle-customer-battery space-y-4">
       {fuelCards.map((group) => {
         const batteryCode = resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel);
+        const brandOffers = batteryCode ? brandOffersForVehicleSpec(batteryCode) : [];
         const highlighted = highlightFuel === group.fuelLabel;
+
+        if (!batteryCode || brandOffers.length === 0) return null;
 
         return (
           <section
@@ -144,12 +163,13 @@ export function VehicleCustomerBatteryShop({
             </p>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {BRAND_OFFERS.map((b) => (
+              {brandOffers.map((b) => (
                 <BrandProductCard
                   key={`${group.fuelLabel}-${b.id}`}
                   brandId={b.id}
                   brandLabel={b.label}
-                  batteryCode={batteryCode}
+                  vehicleSpecCode={batteryCode}
+                  productCode={b.productCode}
                   vehicleSlug={slug}
                 />
               ))}

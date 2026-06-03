@@ -27,6 +27,7 @@
     "verify:alias-v021": "npx tsx scripts/probe-vehicle-alias-v021.mjs",
     "verify:alias-v03": "npx tsx scripts/probe-vehicle-alias-v03.mjs",
     "audit:vehicle-db": "npx tsx tools/audit-vehicle-db-integrity.ts",
+    "audit:vehicle-generation": "npx tsx tools/audit-vehicle-generation-match.ts",
     "merge:source-tables": "npx tsx tools/merge-source-tables-into-vehicle-db.ts",
     "report:unmatched-assets": "npx tsx tools/generate-unmatched-assets-review.ts",
     "audit:operational": "node tools/generate-operational-audit.mjs",

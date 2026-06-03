@@ -1,0 +1,202 @@
+{
+  "generatedAt": "2026-06-03T09:33:10.135Z",
+  "focusSlug": "avante-md",
+  "avanteMd": {
+    "slug": "avante-md",
+    "displayName": "아반떼 MD",
+    "yearRange": "2010-2015",
+    "generationTokens": [
+      "MD"
+    ],
+    "dbModels": [
+      "아반떼"
+    ],
+    "matchedCount": 19,
+    "renderableCount": 19,
+    "customerFuelGroups": [
+      {
+        "fuelLabel": "가솔린",
+        "primaryBattery": "DIN62L"
+      },
+      {
+        "fuelLabel": "디젤",
+        "primaryBattery": "DIN74L"
+      },
+      {
+        "fuelLabel": "LPG",
+        "primaryBattery": "DIN62L"
+      }
+    ],
+    "hybridSectionOnPage": false,
+    "wrongGenerationLeakingToPage": false,
+    "brandProductChecks": [
+      {
+        "fuelLabel": "가솔린",
+        "spec": "DIN62L",
+        "brand": "rocket",
+        "catalogCode": "DIN60L",
+        "hasImage": true
+      },
+      {
+        "fuelLabel": "가솔린",
+        "spec": "DIN62L",
+        "brand": "solite",
+        "catalogCode": "DIN60L",
+        "hasImage": true
+      },
+      {
+        "fuelLabel": "디젤",
+        "spec": "DIN74L",
+        "brand": "rocket",
+        "catalogCode": "DIN74L",
+        "hasImage": true
+      },
+      {
+        "fuelLabel": "디젤",
+        "spec": "DIN74L",
+        "brand": "solite",
+        "catalogCode": "DIN74L",
+        "hasImage": true
+      },
+      {
+        "fuelLabel": "LPG",
+        "spec": "DIN62L",
+        "brand": "rocket",
+        "catalogCode": "DIN60L",
+        "hasImage": true
+      },
+      {
+        "fuelLabel": "LPG",
+        "spec": "DIN62L",
+        "brand": "solite",
+        "catalogCode": "DIN60L",
+        "hasImage": true
+      }
+    ],
+    "nonRenderableSamples": [],
+    "renderableSamples": [
+      {
+        "displayName": "아반떼MD LPG(10~15년)",
+        "detail": "아반떼MD LPG(10~15년)",
+        "fuel": "LPG",
+        "primaryBattery": "DIN62L",
+        "years": "10~15년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      },
+      {
+        "displayName": "아반떼MD 디젤(10~15년) isg기능 탑재",
+        "detail": "아반떼MD 디젤(10~15년) isg기능 탑재",
+        "fuel": "디젤",
+        "primaryBattery": "DIN62L",
+        "years": "10~15년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      },
+      {
+        "displayName": "아반떼MD 디젤(10~15년) isg기능 없는차량",
+        "detail": "아반떼MD 디젤(10~15년) isg기능 없는차량",
+        "fuel": "디젤",
+        "primaryBattery": "DIN74L",
+        "years": "10~15년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      },
+      {
+        "displayName": "아반떼MD 가솔린(10~15년)",
+        "detail": "아반떼MD 가솔린(10~15년)",
+        "fuel": "가솔린",
+        "primaryBattery": "DIN62L",
+        "years": "10~15년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      },
+      {
+        "displayName": "아반떼 MD 블루세이버 가솔린 (11~12년)",
+        "detail": "아반떼 MD 블루세이버 가솔린 (11~12년)",
+        "fuel": "가솔린",
+        "primaryBattery": "AGM70L",
+        "years": "11~12년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      },
+      {
+        "displayName": "아반떼 MD 쿠페 가솔린 (13~15년)",
+        "detail": "아반떼 MD 쿠페 가솔린 (13~15년)",
+        "fuel": "가솔린",
+        "primaryBattery": "DIN74L",
+        "years": "13~15년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      },
+      {
+        "displayName": "더뉴 아반떼 MD 가솔린 (13~15년)",
+        "detail": "더뉴 아반떼 MD 가솔린 (13~15년)",
+        "fuel": "가솔린",
+        "primaryBattery": "DIN62L",
+        "years": "13~15년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      },
+      {
+        "displayName": "더뉴 아반떼 MD LPG (13~15년)",
+        "detail": "더뉴 아반떼 MD LPG (13~15년)",
+        "fuel": "LPG",
+        "primaryBattery": "DIN62L",
+        "years": "13~15년",
+        "class": "sameGenerationCandidate",
+        "renderable": true,
+        "reason": "세대 토큰 일치",
+        "recordTokens": [
+          "MD"
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "avanteMdHybridOnPage": false,
+    "avanteMdFuelGroups": [
+      {
+        "fuelLabel": "가솔린",
+        "primaryBattery": "DIN62L"
+      },
+      {
+        "fuelLabel": "디젤",
+        "primaryBattery": "DIN74L"
+      },
+      {
+        "fuelLabel": "LPG",
+        "primaryBattery": "DIN62L"
+      }
+    ],
+    "avanteMdNonRenderableWithHybrid": []
+  }
+}
