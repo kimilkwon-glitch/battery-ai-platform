@@ -614,6 +614,15 @@ function filterVehicles(
     .sort((a, b) => b.score - a.score);
 
   if (scored.length === 0) {
+    const q = norm(vehicleQuery || query);
+    const loose = rows.filter((row) => {
+      const model = norm(row.model);
+      if (!model || !q) return false;
+      if (model.includes(q) || q.includes(model)) return true;
+      const tokens = q.split(/[^a-z0-9가-힣]+/).filter((t) => t.length >= 2);
+      return tokens.some((t) => model.includes(norm(t)));
+    });
+    if (loose.length > 0) return loose;
     if (alias) {
       const fallback = rows.find((row) => norm(row.model).includes(norm(alias.label.split(/\s+/)[0] ?? alias.label)));
       return fallback ? [fallback] : rows.slice(0, 1);
@@ -621,6 +630,18 @@ function filterVehicles(
     return [];
   }
   return scored.map((s) => s.row);
+}
+
+function shouldShowVehiclePickerGrid(
+  query: string,
+  rawVehicleRows: VehicleSearchRow[],
+  vehicleRows: VehicleSearchRow[],
+): boolean {
+  const count = Math.max(rawVehicleRows.length, vehicleRows.length);
+  if (count <= 1) return false;
+  const nq = norm(query.replace(/\s*배터리\s*$/i, ""));
+  if (nq === "k3" || /케이쓰리|케이3|케삼/i.test(query)) return true;
+  return count >= 2;
 }
 
 function mapHitToBatteryItem(
@@ -1099,7 +1120,9 @@ export function buildSearchPageResults(
 
     const vehicleHref =
       vehiclesForRender[0]?.href ??
-      (alias ? `/search?q=${encodeURIComponent(`${alias.label} 배터리`)}` : "/vehicles");
+      (alias?.assetId || alias?.catalogId
+        ? `/vehicle/${alias.assetId ?? alias.catalogId}`
+        : "/vehicles");
 
     const summaryCards = buildSearchSummary(
       pipeline,
@@ -1124,8 +1147,17 @@ export function buildSearchPageResults(
       }
     }
 
-    if (recognizedVehicle) {
+    const showVehiclePickerGrid = shouldShowVehiclePickerGrid(query, rawVehicleRows, finalVehicles);
+    if (recognizedVehicle && !showVehiclePickerGrid) {
       vehiclesForRender = [];
+    } else if (recognizedVehicle && showVehiclePickerGrid) {
+      const pickerSource =
+        vehiclesForRender.length > 0
+          ? vehiclesForRender
+          : finalVehicles.length > 0
+            ? finalVehicles
+            : rawVehicleRows;
+      vehiclesForRender = pickerSource.slice(0, maxVehicles);
     }
 
     const batteriesLimited = batteries.slice(0, topFold.maxBatteries);

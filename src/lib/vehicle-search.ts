@@ -166,20 +166,22 @@ function resolveAliasDbHit(alias: SearchVehicleAliasMatch): ReturnType<typeof se
 function aliasFallbackRow(alias: SearchVehicleAliasMatch, query = ""): VehicleSearchRow {
   const brand = brandForAlias(alias);
   const formal = alias.formalDisplayName ?? alias.label;
-  const searchQ = `${formal} 배터리`.trim();
   const model = query
     ? formatSearchVehicleDisplayLabel(query, { ...alias, label: formal, formalDisplayName: formal })
     : displayModelWithBrand(brand, formal);
+  const title = query ? formatSearchVehicleRowTitle(query, alias, model) : model;
+  const slug = alias.assetId ?? alias.catalogId;
   const draft: VehicleSearchRow = {
-    model: query ? formatSearchVehicleRowTitle(query, alias, model) : model,
+    model: title,
     year: "연식별 확인",
     fuel: "연료별",
     origin: "사진 확인 권장",
     recommend: "상담 확인 필요",
     upgrade: "연식·옵션별 확인 필요",
     note: brand || "차량",
-    href: `/search?q=${encodeURIComponent(searchQ)}`,
-    imageSrc: null,
+    href: slug ? `/vehicle/${slug}` : "/vehicles",
+    fuelHref: slug ? `/vehicle/${slug}#fuel-batteries` : undefined,
+    imageSrc: slug ? resolveSearchCardImageSrc(getVehicleAsset(slug)?.image) : null,
     batteryNotes: "상담 확인 필요",
     needsReview: true,
   };

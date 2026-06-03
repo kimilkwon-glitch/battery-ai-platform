@@ -196,16 +196,34 @@ export function SearchBatteryFocusBlock({
       ) : null}
       <SearchConditionChips chips={ux.conditionChips} />
       {vehicle?.vehicleLabel ? (
-        <MediaImageSlot
-          slot={SEARCH_IMAGE_SLOTS.vehicleCard(vehicle.vehicleLabel)}
-          src={
-            (vehicle.dbMatchKey && getVehicleAsset(vehicle.dbMatchKey)?.image) ||
-            getVehicleImageUrlBySlug(vehicle.dbMatchKey ?? "") ||
-            null
-          }
-          className="max-h-[160px]"
-          objectFit="contain"
-        />
+        vehicle.href?.startsWith("/vehicle/") ? (
+          <Link
+            href={vehicle.href.split("#")[0] ?? vehicle.href}
+            className="block rounded-xl ring-1 ring-slate-200/80 transition hover:ring-blue-300/60 hover:shadow-md"
+          >
+            <MediaImageSlot
+              slot={SEARCH_IMAGE_SLOTS.vehicleCard(vehicle.vehicleLabel)}
+              src={
+                (vehicle.dbMatchKey && getVehicleAsset(vehicle.dbMatchKey)?.image) ||
+                getVehicleImageUrlBySlug(vehicle.dbMatchKey ?? "") ||
+                null
+              }
+              className="max-h-[160px]"
+              objectFit="contain"
+            />
+          </Link>
+        ) : (
+          <MediaImageSlot
+            slot={SEARCH_IMAGE_SLOTS.vehicleCard(vehicle.vehicleLabel)}
+            src={
+              (vehicle.dbMatchKey && getVehicleAsset(vehicle.dbMatchKey)?.image) ||
+              getVehicleImageUrlBySlug(vehicle.dbMatchKey ?? "") ||
+              null
+            }
+            className="max-h-[160px]"
+            objectFit="contain"
+          />
+        )
       ) : null}
       {summaryRows.length > 0 ? <SearchResultCoreSummary rows={summaryRows} /> : null}
 

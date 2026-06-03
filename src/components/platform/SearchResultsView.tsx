@@ -246,13 +246,13 @@ export function SearchResultsView({ data }: Props) {
         </div>
       ) : null}
 
-      {/^k3$/i.test((data.query || "").trim()) && visibleVehicles.length > 1 && !data.recognizedVehicle ? (
+      {/^k3$/i.test((data.query || "").trim()) && visibleVehicles.length > 1 ? (
         <div className={`${bm.alertInfo} ${bm.cardPad}`}>
           <p className="text-sm font-bold text-slate-900">K3는 세대·연료별로 규격이 다릅니다. 아래에서 선택하세요.</p>
         </div>
       ) : null}
 
-      {visibleVehicles.length > 0 && !data.recognizedVehicle ? (
+      {visibleVehicles.length > 0 ? (
         <section
           className={`${bm.sectionBlock} ${bm.sectionBlockPad} motion-safe:transition motion-safe:duration-200 motion-safe:hover:shadow-[var(--bm-shadow-md)]`}
           data-search-section="vehicles"
