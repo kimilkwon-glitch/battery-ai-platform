@@ -32,12 +32,10 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
         />
       </div>
 
-      <div className="home-spec-card-body flex min-h-0 flex-1 flex-col p-3 sm:p-3.5">
-        <div className="home-spec-card-head flex flex-wrap items-center gap-2">
-          <p className="home-spec-code-title text-lg text-slate-950 sm:text-xl">{displayName}</p>
-          <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-blue-800 ring-1 ring-blue-100">
-            {typeTag}
-          </span>
+      <div className="home-spec-card-body flex min-h-0 flex-1 flex-col p-2.5 sm:p-3">
+        <div className="home-spec-card-head">
+          <p className="home-spec-code-title">{displayName}</p>
+          <span className="home-spec-card-badge">{typeTag}</span>
         </div>
 
         <BatteryProductCardActions batteryCode={searchCode} brandId={brand} />

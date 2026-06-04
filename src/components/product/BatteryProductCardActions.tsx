@@ -32,7 +32,7 @@ export function BatteryProductCardActions({
 
   return (
     <div
-      className="home-spec-card-actions mt-2 flex flex-col gap-2"
+      className="home-spec-card-actions flex flex-col gap-2"
       data-product-card-actions={links.batteryCode}
     >
       <Link
