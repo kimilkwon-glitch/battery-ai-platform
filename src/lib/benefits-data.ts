@@ -50,8 +50,7 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     id: "first-order-3",
     title: "첫 주문 3% 혜택",
     label: "자동 적용",
-    description: "회원가입 후 첫 주문 시 주문 단계에서 자동 적용",
-    note: "회원가입 후 첫 주문 1회 · 쿠폰 입력 없이 자동 반영",
+    description: "회원가입 후 첫 주문 시 주문 단계에서 자동 적용됩니다.",
     image: BENEFIT_FIRST_ORDER_3_PERCENT_SRC,
     imageAlt: "첫 주문 3% 자동 적용 혜택 안내 이미지",
     fallbackIcon: "percent",
@@ -71,8 +70,7 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     id: "safe-driving-free-check",
     title: "안전한 드라이빙 무료 점검",
     label: "무료 점검",
-    description: "배터리 교체 고객 대상 기본 점검 서비스",
-    note: "엔진룸 클리닝 · 워셔액 보충 · 공기압 점검",
+    description: "배터리 교체 고객 대상 기본 점검 서비스입니다.",
     image: BENEFIT_SAFE_DRIVING_FREE_CHECK_SRC,
     imageAlt: "안전한 드라이빙 무료 점검 혜택 이미지",
     fallbackIcon: "service",
@@ -91,8 +89,7 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     id: "store-visit-discount-5000",
     title: "직영점 방문 5,000원 할인",
     label: "내방 할인",
-    description: "덕천점·학장점 방문 고객 대상 혜택",
-    note: "덕천점·학장점 직영점 방문 고객 · 조건 확인 후 적용",
+    description: "덕천점·학장점 방문 고객 대상 혜택입니다.",
     image: BENEFIT_VISIT_5000_DISCOUNT_SRC,
     imageAlt: "직영점 방문 5,000원 내방 할인 혜택 이미지",
     fallbackIcon: "store",
@@ -110,7 +107,7 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
 
 export const BENEFITS_HUB_BADGE = "BENEFIT";
 export const BENEFITS_HUB_TITLE = "배터리매니저 혜택";
-export const BENEFITS_HUB_SUBTITLE = "첫 주문 혜택부터 기본 서비스까지 한눈에 확인하세요.";
+export const BENEFITS_HUB_SUBTITLE = "혜택을 한눈에 확인하세요.";
 
 export const FIRST_ORDER_3_BENEFIT = BENEFIT_CARDS[0]!;
 export const SAFE_DRIVING_FREE_CHECK_BENEFIT = BENEFIT_CARDS[1]!;

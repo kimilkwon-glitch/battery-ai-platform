@@ -23,7 +23,7 @@ export function BenefitCardVisual({
   const inner = (
     <article
       className={clsx(
-        "home-benefit-card bm-card-unified flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border bg-white shadow-sm",
+        "home-benefit-card home-benefit-card--promo bm-card-unified flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border bg-white shadow-sm",
         active
           ? "home-benefit-card--active border-amber-200/90"
           : "border-slate-200/90 bg-slate-50/50",
@@ -31,7 +31,7 @@ export function BenefitCardVisual({
       )}
     >
       <BenefitCardMedia card={toMediaCard(card)} priority={priority} />
-      <div className="home-benefit-card__body flex min-h-0 flex-1 flex-col gap-1.5 p-4 sm:gap-2 sm:p-5">
+      <div className="home-benefit-card__body home-benefit-card__body--promo flex shrink-0 flex-col gap-1 px-3 pb-3 pt-2.5 sm:px-3.5 sm:pb-3.5 sm:pt-3">
         <span
           className={clsx(
             "home-benefit-card__badge inline-flex w-fit shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wide",
@@ -42,23 +42,13 @@ export function BenefitCardVisual({
         >
           {card.label}
         </span>
-        <h3 className="home-benefit-card__title text-base font-black leading-snug text-slate-900">
+        <h3 className="home-benefit-card__title line-clamp-2 text-[0.9375rem] font-black leading-snug text-slate-900 sm:text-base">
           {card.title}
         </h3>
-        <p className="home-benefit-card__desc text-xs font-semibold leading-relaxed text-slate-600">
-          {card.description}
-        </p>
-        {card.note ? (
-          <p className="home-benefit-card__meta min-h-[2rem] text-[10px] font-medium leading-snug text-slate-400">
-            {card.note}
-          </p>
-        ) : (
-          <span className="home-benefit-card__meta min-h-[2rem]" aria-hidden />
-        )}
         {asLink && active ? (
-          <p className="home-benefit-card__cta mt-auto shrink-0 pt-3 text-[11px] font-black text-amber-800">
+          <span className="home-benefit-card__cta mt-1 text-[11px] font-black text-amber-800">
             혜택 자세히 보기 →
-          </p>
+          </span>
         ) : null}
       </div>
     </article>
