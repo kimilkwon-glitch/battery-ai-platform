@@ -68,8 +68,14 @@ export const HERO_SLIDES: HeroSlide[] = [
 
 export const HERO_CAROUSEL_INTERVAL_MS = 5500;
 
-/** PC 히어로 뷰포트 — 21:9 */
-export const HERO_DESKTOP_ASPECT_RATIO = "21 / 9" as const;
+/**
+ * 업로드 배너 원본 공통 비율 (~1916×821px, 3장 동일 계열)
+ * main-banner-store-visit-onsite-replacement.png  1916×821
+ * main-banner-nationwide-delivery-self-install.png 1919×820
+ * main-banner-hakjang-night-unmanned-system.png   1915×821
+ */
+export const HERO_BANNER_NATIVE_ASPECT_RATIO = "1916 / 821" as const;
 
-/** 모바일·태블릿 — 과도한 크롭 방지 */
-export const HERO_MOBILE_ASPECT_RATIO = "16 / 9" as const;
+/** PC·모바일 공통 — 카드가 원본 비율을 담음 */
+export const HERO_DESKTOP_ASPECT_RATIO = HERO_BANNER_NATIVE_ASPECT_RATIO;
+export const HERO_MOBILE_ASPECT_RATIO = HERO_BANNER_NATIVE_ASPECT_RATIO;
