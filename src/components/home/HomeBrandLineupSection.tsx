@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
 import {
   filterCatalogProducts,
@@ -35,11 +35,20 @@ export function HomeBrandLineupSection({
   shopLinkLabel,
 }: Props) {
   const [typeTab, setTypeTab] = useState<HomeProductTypeTag>("AGM");
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
   const products = useMemo(() => {
     const filtered = filterCatalogProducts(getCurrentLineup(brand), typeTab);
     return sortLineupWithPinned(filtered);
   }, [brand, typeTab]);
+
+  useEffect(() => {
+    scrollerRef.current?.scrollTo({ left: 0, behavior: "auto" });
+  }, [typeTab, brand]);
+
+  const handleTabChange = (tab: HomeProductTypeTag) => {
+    setTypeTab(tab);
+  };
 
   const themeClass = brand === "rocket" ? "home-brand-lineup--rocket" : "home-brand-lineup--solite";
 
@@ -71,7 +80,7 @@ export function HomeBrandLineupSection({
                 "home-brand-lineup__tab",
                 typeTab === tab && "home-brand-lineup__tab--active",
               )}
-              onClick={() => setTypeTab(tab)}
+              onClick={() => handleTabChange(tab)}
             >
               {tab}
             </button>
@@ -88,10 +97,18 @@ export function HomeBrandLineupSection({
               등록된 {typeTab} 상품이 없습니다. 다른 타입을 선택하거나 전체 보기에서 확인해 주세요.
             </p>
           ) : (
-            <div className="home-brand-lineup__grid grid items-stretch gap-2.5 sm:gap-3">
-              {products.map((item) => (
-                <HomeSpecExploreCard key={`${brand}-${typeTab}-${item.id}`} brand={brand} product={item} />
-              ))}
+            <div
+              ref={scrollerRef}
+              className="home-brand-lineup__scroller"
+              aria-label={`${title} ${typeTab} 상품`}
+            >
+              <div className="home-brand-lineup__track">
+                {products.map((item) => (
+                  <div key={`${brand}-${typeTab}-${item.id}`} className="home-brand-lineup__slide">
+                    <HomeSpecExploreCard brand={brand} product={item} />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
