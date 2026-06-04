@@ -3,7 +3,7 @@ import {
   findBatteryProductByCode,
   type BatteryBrandKey,
 } from "@/lib/battery-alias-map";
-import { batteryDetailHref, canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { batterySpecHref, canonicalBatteryCode } from "@/lib/canonical-battery-code";
 
 const PRODUCT_BRAND_SLUGS = ["rocket", "solite", "delco", "varta", "atk", "infinit"] as const;
 export type BatteryProductBrandSlug = (typeof PRODUCT_BRAND_SLUGS)[number];
@@ -59,9 +59,9 @@ export function batteryProductDetailHref(
   return slug ? `/products/${slug}` : null;
 }
 
-/** 배터리 규격 안내 — /batteries/{code} (주문·체크아웃 아님) */
+/** 배터리 규격 상세 — /battery-specs/{code} (구매 UI 없음, 규격 안내 전용) */
 export function batterySpecGuideHref(code: string): string {
-  return batteryDetailHref(code);
+  return batterySpecHref(code);
 }
 
 /** 리뷰 — 상품 상세 리뷰 앵커 우선, 없으면 리뷰 목록 */

@@ -1,5 +1,7 @@
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
+import { HomeSpecCardDisplayMeta } from "@/components/home/HomeSpecCardDisplayMeta";
 import { BatteryProductCardActions } from "@/components/product/BatteryProductCardActions";
+import { getHomeCatalogCardDisplay } from "@/lib/home-catalog-card-display";
 import type { HomeCatalogBrandId, HomeCatalogProduct } from "@/lib/home-main-catalog-data";
 import { HOME_CATALOG_BRAND_KEY } from "@/lib/home-main-catalog-data";
 
@@ -11,6 +13,7 @@ type Props = {
 export function HomeSpecExploreCard({ product, brand }: Props) {
   const { displayName, searchCode, imageKey, typeTag } = product;
   const preferBrand = HOME_CATALOG_BRAND_KEY[brand];
+  const cardDisplay = getHomeCatalogCardDisplay(product);
 
   return (
     <article
@@ -38,7 +41,9 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
           <span className="home-spec-card-badge">{typeTag}</span>
         </div>
 
-        <BatteryProductCardActions batteryCode={searchCode} brandId={brand} tone="catalog" />
+        <HomeSpecCardDisplayMeta display={cardDisplay} />
+
+        <BatteryProductCardActions batteryCode={searchCode} brandId={brand} tone="catalog" compact />
       </div>
     </article>
   );

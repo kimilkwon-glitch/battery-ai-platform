@@ -2424,13 +2424,15 @@
   background: #f8fbff;
 }
 
-/* 브랜드 컬럼 — 컴팩트 상품 카드 */
+/* 브랜드 컬럼 — 컴팩트 상품 카드 (메타·가격 포함) */
 .home-brand-lineup .home-spec-card-image {
+  height: 8.25rem;
+  min-height: 8.25rem;
   padding: 0.5rem 0.5rem 0.375rem;
 }
 
 .home-brand-lineup .home-spec-card-body {
-  padding: 0.5rem 0.5rem 0.625rem;
+  padding: 0.4375rem 0.5rem 0.5625rem;
 }
 
 .home-brand-lineup .home-spec-card .home-spec-code-title {
@@ -2442,32 +2444,43 @@
   padding: 0.125rem 0.4375rem;
 }
 
-.home-brand-lineup .home-spec-card-actions {
-  gap: 0.375rem;
+.home-brand-lineup .home-spec-card-meta {
+  gap: 0.3125rem;
+  margin-top: 0.0625rem;
 }
 
-.home-brand-lineup .home-spec-card-action {
-  min-height: 2rem;
-  padding-block: 0.375rem;
+.home-brand-lineup .home-spec-card-rating {
   font-size: 0.6875rem;
 }
 
+.home-brand-lineup .home-spec-card-vehicles {
+  font-size: 0.625rem;
+}
+
+.home-brand-lineup .home-spec-card-price__amount {
+  font-size: 0.75rem;
+}
+
+.home-brand-lineup .home-spec-card-actions {
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.home-brand-lineup .home-spec-card-action {
+  min-height: 1.875rem;
+  padding-block: 0.3125rem;
+  font-size: 0.6875rem;
+}
+
+.home-brand-lineup .home-spec-card-action--order {
+  min-height: 2.125rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 900;
+}
+
 @media (max-width: 1023px) {
-  .home-brand-lineup .home-spec-card-actions {
-    gap: 0.25rem;
-  }
-
-  .home-brand-lineup .home-spec-card-actions > :not(:last-child) {
-    min-height: 2rem;
-    padding-block: 0.3125rem;
-    font-size: 0.6875rem;
-  }
-
-  .home-brand-lineup .home-spec-card-actions > :last-child {
-    min-height: 2.375rem;
-    padding-block: 0.4375rem;
-    font-size: 0.75rem;
-    font-weight: 900;
+  .home-brand-lineup .home-spec-card-action--order {
+    min-height: 2.25rem !important;
   }
 }
 
@@ -3849,8 +3862,113 @@
   justify-content: center;
   gap: 0.375rem;
   min-height: 0;
-  padding: 0.125rem 0 0.25rem;
+  padding: 0.125rem 0 0.125rem;
   text-align: center;
+}
+
+.home-spec-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-top: 0.125rem;
+}
+
+.home-spec-card-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.home-spec-card-rating__icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+  color: #f59e0b;
+  fill: #fbbf24;
+}
+
+.home-spec-card-rating__score {
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.home-spec-card-rating__reviews {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.home-spec-card-vehicles {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #475569;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.home-spec-card-vehicles__label {
+  font-weight: 800;
+  color: #64748b;
+}
+
+.home-spec-card-vehicles__list {
+  font-weight: 700;
+  color: #334155;
+}
+
+.home-spec-card-prices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+
+.home-spec-card-price {
+  border-radius: 0.625rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 0.375rem 0.4375rem;
+  text-align: center;
+}
+
+.home-spec-card-price--internet {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.home-spec-card-price__label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #64748b;
+}
+
+.home-spec-card-price__amount {
+  display: block;
+  margin-top: 0.125rem;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.home-spec-card-price--internet .home-spec-card-price__amount {
+  color: #1d4ed8;
 }
 
 .home-spec-card-badge {

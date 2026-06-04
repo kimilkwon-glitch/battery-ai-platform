@@ -1,4 +1,5 @@
 import { batterySpecGuideHref } from "@/lib/battery-product-routes";
+import { batterySpecHref } from "@/lib/canonical-battery-code";
 
 export { buildBatteryCheckoutHref, type BatteryCardBrandId } from "@/lib/battery-card-cta-vehicle";
 export {
@@ -12,7 +13,7 @@ export {
 /** 배터리 상품 카드 — 규격 안내 라벨 */
 export const BATTERY_SPEC_DETAIL_VIEW_LABEL = "배터리 규격 보기" as const;
 
-/** @deprecated — batterySpecGuideHref 사용 */
+/** @deprecated — batterySpecGuideHref / batterySpecHref 사용 */
 export function batterySpecDetailViewHref(code: string): string {
-  return batterySpecGuideHref(code);
+  return batterySpecHref(code);
 }
