@@ -211,12 +211,12 @@ export function VehicleSearchBox({
 
   if (showButton) {
     const submitBtnClass = compoundBar
-      ? "h-full min-h-0 shrink-0 rounded-none rounded-br-2xl border-0 border-l border-slate-200/90 bg-blue-600 px-5 text-sm font-black text-white hover:bg-blue-700 sm:rounded-br-2xl sm:px-6"
+      ? "home-hero-search-submit h-full min-h-0 shrink-0 border-0 border-l border-slate-200/90 bg-blue-600 text-sm font-black text-white hover:bg-blue-700"
       : "h-11 shrink-0 rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700 sm:h-16";
 
     return (
       <div
-        className={`relative ${compoundBar ? "border-t border-slate-200/90 sm:border-t-0" : ""} ${className}`}
+        className={`relative ${compoundBar ? "home-hero-search-field-wrap border-t border-slate-200/90 sm:border-t-0" : ""} ${className}`}
         ref={wrapRef}
       >
         <form
@@ -262,7 +262,7 @@ export function VehicleSearchBox({
               borderRadius={compoundBar ? "0" : "10px"}
               className={
                 compoundBar
-                  ? "h-14 min-h-[44px] shrink-0 inline-flex items-center justify-center gap-1.5 rounded-none rounded-br-2xl border-0 border-l border-slate-200/90 px-5 text-sm font-black sm:h-16 sm:rounded-br-2xl sm:px-6"
+                  ? "home-hero-search-submit h-14 min-h-[44px] inline-flex shrink-0 items-center justify-center gap-1.5 border-0 border-l border-slate-200/90 text-sm font-black sm:h-16"
                   : "h-11 min-h-[44px] shrink-0 inline-flex items-center justify-center gap-1.5 px-6 text-sm font-black sm:h-16"
               }
             >

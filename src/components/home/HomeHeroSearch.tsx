@@ -23,11 +23,11 @@ export function HomeHeroSearch({ inputClassName, onAutocompleteOpenChange }: Pro
   return (
     <div className="home-hero-search w-full" data-home-search-type={searchType}>
       <div className="home-hero-search-stack flex w-full flex-col">
-        <div className="home-hero-search-compound home-hero-search-compound--premium flex w-full flex-col sm:flex-row sm:items-stretch">
+        <div className="home-hero-search-compound home-hero-search-compound--premium w-full">
           <HomeSearchTypeDropdown value={searchType} onChange={setSearchType} />
-          <div className="hidden w-px shrink-0 bg-slate-200/90 sm:block" aria-hidden />
+          <div className="home-hero-search-compound__divider hidden shrink-0 sm:block" aria-hidden />
           <VehicleSearchBox
-            className="min-w-0 flex-1"
+            className="home-hero-search-field min-w-0 flex-1"
             inputClassName={compoundInputClass}
             placeholder={placeholder}
             showButton
