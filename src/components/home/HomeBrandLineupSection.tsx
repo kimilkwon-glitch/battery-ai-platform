@@ -63,14 +63,16 @@ export function HomeBrandLineupSection({
       id={sectionId}
     >
       <header className="home-brand-lineup__header">
-        <div className="home-brand-lineup__title-row">
-          <h2 className="home-brand-lineup__title">{title}</h2>
-          <span className="home-brand-lineup__label">{label}</span>
+        <div className="home-brand-lineup__header-inner">
+          <div className="home-brand-lineup__title-row">
+            <h2 className="home-brand-lineup__title">{title}</h2>
+            <span className="home-brand-lineup__label">{label}</span>
+          </div>
+          <p className="home-brand-lineup__desc">
+            <span className="home-brand-lineup__desc-long">{description}</span>
+            <span className="home-brand-lineup__desc-short">{descriptionMobile ?? description}</span>
+          </p>
         </div>
-        <p className="home-brand-lineup__desc">
-          <span className="home-brand-lineup__desc-long">{description}</span>
-          <span className="home-brand-lineup__desc-short">{descriptionMobile ?? description}</span>
-        </p>
       </header>
 
       <div className="home-brand-lineup__body">
