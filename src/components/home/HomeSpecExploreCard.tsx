@@ -36,10 +36,10 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
       </div>
 
       <div className="home-spec-card-body flex min-h-0 flex-1 flex-col p-2.5 sm:p-3">
-        <div className="home-spec-card-head">
-          <p className="home-spec-code-title">{displayName}</p>
+        <header className="home-spec-card-head">
+          <h3 className="home-spec-code-title">{displayName}</h3>
           <span className="home-spec-card-badge">{typeTag}</span>
-        </div>
+        </header>
 
         <HomeSpecCardDisplayMeta display={cardDisplay} />
 
