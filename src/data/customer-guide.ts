@@ -31,10 +31,180 @@ export type CustomerGuidePageData = {
 };
 
 export const CUSTOMER_CENTER_HUB_COPY = {
-  headline: "배터리 주문 후 확인해야 할 내용을 한곳에 정리했습니다.",
-  subline:
-    "주문, 배송, 폐전지 반납, 교환/반품까지 필요한 안내를 확인해 주세요.",
+  headline: "고객센터",
+  subline: "주문, 배송, 교환·반품, 배터리 문의를 한곳에서 확인하세요.",
 } as const;
+
+export type CustomerCenterHeroAction = {
+  label: string;
+  href: string;
+  variant?: "primary" | "secondary";
+};
+
+export type CustomerCenterHeroCard = {
+  id: string;
+  title: string;
+  description: string;
+  actions: CustomerCenterHeroAction[];
+};
+
+/** 상단 핵심 CTA 3개 */
+export const CUSTOMER_CENTER_HERO_CARDS: CustomerCenterHeroCard[] = [
+  {
+    id: "lookup",
+    title: "주문/상담 조회",
+    description: "주문 상태나 상담 요청 내역을 확인할 수 있습니다.",
+    actions: [
+      { label: "상담 요청 확인", href: ORDER_REQUEST_LOOKUP_PAGE, variant: "primary" },
+      { label: "주문 조회 안내", href: CUSTOMER_CENTER_GUEST_ORDER, variant: "secondary" },
+    ],
+  },
+  {
+    id: "delivery-return",
+    title: "배송·반납 안내",
+    description: "택배 배송, 폐배터리 반납, 포장 주의사항을 확인하세요.",
+    actions: [
+      { label: "배송 안내", href: CUSTOMER_CENTER_DELIVERY, variant: "primary" },
+      { label: "폐배터리 반납 안내", href: CUSTOMER_CENTER_USED_BATTERY, variant: "secondary" },
+    ],
+  },
+  {
+    id: "contact",
+    title: "전화 상담 / 매장 안내",
+    description: "장착 가능 여부나 규격이 애매하면 가까운 지점으로 문의하세요.",
+    actions: [
+      { label: "매장·출장 안내", href: "/service-center", variant: "primary" },
+      { label: "배터리 점검 문의", href: "/support?tab=inquiry", variant: "secondary" },
+    ],
+  },
+];
+
+export type CustomerCenterDetailLink = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+};
+
+export type CustomerCenterDetailGroup = {
+  id: string;
+  title: string;
+  items: CustomerCenterDetailLink[];
+};
+
+/** 상세 안내 — 그룹별 compact 카드 */
+export const CUSTOMER_CENTER_DETAIL_GROUPS: CustomerCenterDetailGroup[] = [
+  {
+    id: "order",
+    title: "주문 관련",
+    items: [
+      {
+        id: "order-guide",
+        title: "주문/결제 안내",
+        description: "규격·폐전지 옵션·결제 방법을 주문 전에 확인",
+        href: CUSTOMER_CENTER_ORDER_GUIDE,
+      },
+      {
+        id: "guest-order",
+        title: "비회원 주문조회",
+        description: "주문번호·비밀번호로 결제 주문 조회",
+        href: CUSTOMER_CENTER_GUEST_ORDER,
+      },
+      {
+        id: "message-guide",
+        title: "주문 후 안내 메시지",
+        description: "주문·입금·배송 단계별 안내 문구 예시",
+        href: CUSTOMER_CENTER_MESSAGE_GUIDE,
+      },
+      {
+        id: "bank-transfer",
+        title: "무통장 입금 안내",
+        description: "입금 기한·자동 취소·입금자명 확인",
+        href: `${CUSTOMER_CENTER_ORDER_GUIDE}#bank-transfer`,
+      },
+    ],
+  },
+  {
+    id: "delivery",
+    title: "배송·반납",
+    items: [
+      {
+        id: "delivery",
+        title: "배송 안내",
+        description: "배송기간, 운송장, 미수령 시 확인",
+        href: CUSTOMER_CENTER_DELIVERY,
+      },
+      {
+        id: "used-battery",
+        title: "폐전지 반납 안내",
+        description: "반납/미반납, 회수 절차, 미반납 비용",
+        href: CUSTOMER_CENTER_USED_BATTERY,
+      },
+      {
+        id: "packing",
+        title: "포장 주의사항",
+        description: "배터리·폐전지 발송 시 포장 방법",
+        href: CUSTOMER_CENTER_USED_BATTERY,
+      },
+    ],
+  },
+  {
+    id: "exchange",
+    title: "교환·AS",
+    items: [
+      {
+        id: "return-exchange",
+        title: "교환/반품 안내",
+        description: "맞교환 제한, 개봉·장착 후 처리 기준",
+        href: CUSTOMER_CENTER_RETURN_EXCHANGE,
+      },
+      {
+        id: "warranty",
+        title: "제품 보증/AS 안내",
+        description: "보증 범위·교환·상담 절차",
+        href: "/guides?cat=as",
+      },
+      {
+        id: "re-drain",
+        title: "장착 후 재방전 안내",
+        description: "교체 후 재방전 시 차량·배터리 점검 포인트",
+        href: "/guides?cat=as",
+      },
+    ],
+  },
+  {
+    id: "faq",
+    title: "자주 묻는 질문",
+    items: [
+      {
+        id: "faq",
+        title: "자주 묻는 질문",
+        description: "주문·배송·반품·폐전지·결제 FAQ",
+        href: CUSTOMER_CENTER_FAQ,
+      },
+      {
+        id: "spec",
+        title: "배터리 규격 확인",
+        description: "차종·연식·규격 검색과 사진 확인",
+        href: "/guide/spec",
+      },
+      {
+        id: "agm-diff",
+        title: "AGM / 일반 배터리 차이",
+        description: "AGM·DIN·일반형 선택 시 참고",
+        href: "/guides/knowledge/bk-agm-vs-din",
+      },
+    ],
+  },
+];
+
+export const CUSTOMER_CENTER_QUICK_LINKS: { label: string; href: string }[] = [
+  { label: "주문 안내", href: CUSTOMER_CENTER_ORDER_GUIDE },
+  { label: "배송 안내", href: CUSTOMER_CENTER_DELIVERY },
+  { label: "교환·반품", href: CUSTOMER_CENTER_RETURN_EXCHANGE },
+  { label: "비회원 주문조회", href: CUSTOMER_CENTER_GUEST_ORDER },
+  { label: "FAQ", href: CUSTOMER_CENTER_FAQ },
+];
 
 export type CustomerHubCard = {
   id: string;

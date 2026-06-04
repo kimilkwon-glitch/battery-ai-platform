@@ -9,7 +9,7 @@ export default function SupportPage() {
       zone="support"
       pageLabel="고객센터"
       title="고객센터"
-      description="주문·배송·폐전지 반납·교환/반품 안내와 FAQ, 문의를 한곳에서 확인하세요."
+      description="주문, 배송, 교환·반품, 배터리 문의를 한곳에서 확인하세요."
       searchPlaceholder="차량·규격 검색"
     >
       <div className="space-y-8">
