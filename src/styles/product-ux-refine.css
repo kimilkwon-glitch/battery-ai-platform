@@ -136,30 +136,62 @@
   outline-offset: 2px;
 }
 
-/* 지점 카드 그리드 — scale 시 가로 스크롤 방지 */
+/* 지점 카드 — flex 구도, 가로 스크롤·삐져나감 방지 */
 .bm-store-cards-grid {
   isolation: isolate;
-  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .bm-store-cards-grid > .bm-store-card {
   position: relative;
   z-index: 1;
-  scroll-margin-top: 5.5rem;
+  box-sizing: border-box;
+  min-width: 0;
+  scroll-margin-top: 6rem;
   transition:
-    transform 0.25s ease,
-    opacity 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease,
-    filter 0.25s ease;
-  transform-origin: center center;
-  will-change: transform, opacity;
+    flex 0.28s ease,
+    transform 0.28s ease,
+    opacity 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease,
+    filter 0.28s ease;
+  transform-origin: center top;
+}
+
+@media (min-width: 1024px) {
+  .bm-store-cards-grid > .bm-store-card {
+    flex: 1 1 0;
+  }
+
+  .bm-store-cards-grid--has-selection > .bm-store-card--branch-active {
+    flex: 1.06 1 0;
+  }
+
+  .bm-store-cards-grid--has-selection > .bm-store-card--branch-inactive {
+    flex: 0.94 1 0;
+  }
+}
+
+@media (max-width: 1023px) {
+  .bm-store-cards-grid > .bm-store-card {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .bm-store-cards-grid--has-selection > .bm-store-card--branch-active,
+  .bm-store-cards-grid--has-selection > .bm-store-card--branch-inactive {
+    flex: none;
+    max-width: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bm-store-cards-grid > .bm-store-card {
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    will-change: auto;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   }
 }
 
@@ -201,28 +233,40 @@
   outline-offset: 3px;
 }
 
-/* 지도 연동 — 선택 지점 카드 앞으로 */
+/* 지도 연동 — 선택 지점 카드 (크기는 flex, 강조는 border/shadow) */
 .bm-store-card--branch-active {
-  z-index: 20 !important;
+  z-index: 2 !important;
   opacity: 1 !important;
-  transform: scale(1.02);
   filter: none;
+  transform: translateY(-4px);
+}
+
+@media (min-width: 1024px) {
+  .bm-store-card--branch-active {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .bm-store-card--branch-active {
+    transform: translateY(-2px);
+  }
 }
 
 .bm-store-card--deokcheon.bm-store-card--branch-active {
   border-color: #1d4ed8 !important;
   background: linear-gradient(180deg, #eff6ff 0%, #fff 54%) !important;
   box-shadow:
-    0 0 0 3px rgba(59, 130, 246, 0.28),
-    0 16px 36px -12px rgba(37, 99, 235, 0.35) !important;
+    inset 0 0 0 1px rgba(59, 130, 246, 0.35),
+    0 14px 32px -12px rgba(37, 99, 235, 0.32) !important;
 }
 
 .bm-store-card--hakjang.bm-store-card--branch-active {
   border-color: #047857 !important;
   background: linear-gradient(180deg, #ecfdf5 0%, #fff 54%) !important;
   box-shadow:
-    0 0 0 3px rgba(16, 185, 129, 0.24),
-    0 16px 36px -12px rgba(5, 150, 105, 0.3) !important;
+    inset 0 0 0 1px rgba(16, 185, 129, 0.3),
+    0 14px 32px -12px rgba(5, 150, 105, 0.28) !important;
 }
 
 .bm-store-card--branch-active .bm-store-badge {
@@ -239,12 +283,19 @@
     0 6px 20px -4px rgba(37, 99, 235, 0.65);
 }
 
-/* 지도 연동 — 비선택 지점 카드 살짝 뒤로 (가독성 유지) */
+/* 지도 연동 — 비선택 지점 카드 (살짝 축소·뒤로, 가독성 유지) */
 .bm-store-card--branch-inactive {
   z-index: 1 !important;
-  opacity: 0.88;
-  transform: scale(0.98);
-  filter: saturate(0.92);
+  opacity: 0.92;
+  filter: saturate(0.95);
+  transform: translateY(2px);
+}
+
+@media (max-width: 1023px) {
+  .bm-store-card--branch-inactive {
+    transform: none;
+    opacity: 0.94;
+  }
 }
 
 .bm-store-card--deokcheon.bm-store-card--branch-inactive {
@@ -259,9 +310,15 @@
 
 /* 호버 미리보기 (선택 전·비선택 카드) */
 .bm-store-card--branch-hover:not(.bm-store-card--branch-active) {
-  z-index: 10 !important;
-  opacity: 0.96;
-  transform: scale(1.01);
+  z-index: 2 !important;
+  opacity: 0.97;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1023px) {
+  .bm-store-card--branch-hover:not(.bm-store-card--branch-active) {
+    transform: none;
+  }
 }
 
 .bm-store-card--deokcheon.bm-store-card--branch-hover:not(.bm-store-card--branch-active) {
@@ -276,7 +333,7 @@
   .bm-store-card--branch-active,
   .bm-store-card--branch-inactive,
   .bm-store-card--branch-hover {
-    transform: none;
+    transform: none !important;
   }
 }
 

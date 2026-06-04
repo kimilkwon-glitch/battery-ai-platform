@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { BusanRegionMap } from "@/components/service/BusanRegionMap";
 import { StoreHubCompactCards } from "@/components/service/StoreHubCompactCards";
@@ -22,18 +22,6 @@ export function ServiceCenterClient({
   const [selectedBranch, setSelectedBranch] = useState<BusanStoreId | null>(null);
   const [hoveredBranch, setHoveredBranch] = useState<BusanStoreId | null>(null);
   const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!selectedBranch) return;
-    const mobile = window.matchMedia("(max-width: 1023px)");
-    if (!mobile.matches) return;
-    const el = document.getElementById(`store-${selectedBranch}`);
-    if (!el) return;
-    const timer = window.requestAnimationFrame(() => {
-      el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-    return () => window.cancelAnimationFrame(timer);
-  }, [selectedBranch]);
 
   return (
     <div className="busan-service-hub space-y-6 pb-8">

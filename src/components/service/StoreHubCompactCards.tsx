@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { BookOpen, MapPin, Navigation, Phone } from "lucide-react";
@@ -21,8 +22,41 @@ export function StoreHubCompactCards({
   onSelectBranch?: (id: BusanStoreId) => void;
   onHoverBranch?: (id: BusanStoreId | null) => void;
 }) {
+  const deokcheonCardRef = useRef<HTMLElement>(null);
+  const hakjangCardRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!selectedBranch) return;
+    const target =
+      selectedBranch === "deokcheon"
+        ? deokcheonCardRef.current
+        : hakjangCardRef.current;
+    if (!target) return;
+    let innerId = 0;
+    const outerId = requestAnimationFrame(() => {
+      innerId = requestAnimationFrame(() => {
+        const mobile = window.matchMedia("(max-width: 1023px)").matches;
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: mobile ? "start" : "center",
+          inline: "nearest",
+        });
+      });
+    });
+    return () => {
+      cancelAnimationFrame(outerId);
+      if (innerId) cancelAnimationFrame(innerId);
+    };
+  }, [selectedBranch]);
+
   return (
-    <section className="bm-store-cards-grid grid gap-6 lg:grid-cols-2 lg:items-stretch" id="stores">
+    <section
+      className={clsx(
+        "bm-store-cards-grid flex w-full max-w-full flex-col gap-6 lg:flex-row lg:items-stretch",
+        selectedBranch != null && "bm-store-cards-grid--has-selection",
+      )}
+      id="stores"
+    >
       {BUSAN_STORES.map((store) => {
         const isActive = selectedBranch === store.id;
         const isInactive = selectedBranch != null && selectedBranch !== store.id;
@@ -36,6 +70,7 @@ export function StoreHubCompactCards({
         return (
           <article
             key={store.id}
+            ref={store.id === "deokcheon" ? deokcheonCardRef : hakjangCardRef}
             id={`store-${store.id}`}
             role="button"
             tabIndex={0}
