@@ -61,11 +61,15 @@ export function applyCustomerBatteryPolicyToGroup(
   let next = { ...group };
 
   if (isVehicleFuelSalesExcluded(slug, group.fuelLabel)) {
+    const recordCaution = group.records
+      .map((r) => r.caution?.trim())
+      .find((c) => c && /리튬|판매\s*대상이\s*아님/i.test(c));
     return {
       ...next,
       primaryBattery: "",
       batteryOptions: [],
       alternatives: [],
+      caution: recordCaution ?? LITHIUM_EXCLUDED_FUEL_COPY,
     };
   }
 
