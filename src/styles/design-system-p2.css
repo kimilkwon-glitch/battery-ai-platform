@@ -2016,17 +2016,25 @@
 
 .home-brand-lineup__header {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 1rem 1.125rem 1.125rem;
+  padding: 1.25rem 1.25rem 1.375rem;
   border-bottom: 1px solid transparent;
   text-align: center;
+}
+
+@media (min-width: 640px) {
+  .home-brand-lineup__header {
+    padding: 1.375rem 1.5rem 1.5rem;
+  }
 }
 
 @media (min-width: 1024px) {
   .home-brand-lineup__header {
     box-sizing: border-box;
-    min-height: 8.25rem;
-    padding: 1.125rem 1.25rem 1.25rem;
+    min-height: 9.25rem;
+    padding: 1.5rem 1.5rem 1.625rem;
   }
 }
 
@@ -2034,19 +2042,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 26rem;
+  max-width: 24rem;
+  text-align: center;
 }
 
 @media (min-width: 640px) {
   .home-brand-lineup__header-inner {
-    max-width: 30rem;
+    max-width: 28rem;
   }
 }
 
 @media (min-width: 1024px) {
   .home-brand-lineup__header-inner {
-    max-width: 32rem;
+    max-width: 30rem;
   }
 }
 
@@ -2055,40 +2065,70 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.5625rem;
   width: 100%;
 }
 
 .home-brand-lineup__title {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
+  font-size: 1.1875rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.3;
+}
+
+@media (min-width: 640px) {
+  .home-brand-lineup__title {
+    font-size: 1.3125rem;
+    line-height: 1.28;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-brand-lineup__title {
+    font-size: 1.4375rem;
+    line-height: 1.25;
+  }
 }
 
 .home-brand-lineup__label {
   display: inline-flex;
   align-items: center;
   border-radius: 9999px;
-  padding: 0.2rem 0.5rem;
+  padding: 0.25rem 0.625rem;
   font-family: var(--font-body);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .home-brand-lineup__label {
+    padding: 0.3125rem 0.6875rem;
+    font-size: 0.75rem;
+  }
 }
 
 .home-brand-lineup__desc {
-  margin: 0.5625rem 0 0;
+  margin: 0.75rem 0 0;
   width: 100%;
   max-width: 100%;
   font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  line-height: 1.45;
+  line-height: 1.5;
   text-align: center;
   color: inherit;
+}
+
+@media (min-width: 640px) {
+  .home-brand-lineup__desc {
+    margin-top: 0.8125rem;
+    font-size: 0.9375rem;
+    line-height: 1.48;
+  }
 }
 
 .home-brand-lineup__desc-short {
@@ -2097,8 +2137,8 @@
 
 @media (max-width: 639px) {
   .home-brand-lineup__desc {
-    font-size: 0.75rem;
-    line-height: 1.35;
+    font-size: 0.8125rem;
+    line-height: 1.45;
   }
 
   .home-brand-lineup__desc-long {
