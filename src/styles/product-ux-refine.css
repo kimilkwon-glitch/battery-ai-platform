@@ -127,6 +127,42 @@
   pointer-events: auto;
 }
 
+.busan-map-store-pins {
+  pointer-events: none;
+}
+
+.busan-map-store-pin:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* 지점 카드 그리드 — scale 시 가로 스크롤 방지 */
+.bm-store-cards-grid {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.bm-store-cards-grid > .bm-store-card {
+  position: relative;
+  z-index: 1;
+  scroll-margin-top: 5.5rem;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    filter 0.25s ease;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bm-store-cards-grid > .bm-store-card {
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    will-change: auto;
+  }
+}
+
 /* 지점 카드 — 모바일 우선 가독성(학장·덕천 공통) */
 .bm-store-card.bm-card-unified {
   border-width: 2px;
@@ -137,11 +173,11 @@
     0 6px 20px -8px rgba(15, 23, 42, 0.18);
 }
 
-.bm-store-card--deokcheon.bm-card-unified:not(.bm-store-card--active):not(.bm-store-card--selected) {
+.bm-store-card--deokcheon.bm-card-unified:not(.bm-store-card--branch-active) {
   border-color: #60a5fa;
 }
 
-.bm-store-card--hakjang.bm-card-unified:not(.bm-store-card--active):not(.bm-store-card--selected) {
+.bm-store-card--hakjang.bm-card-unified:not(.bm-store-card--branch-active) {
   border-color: #34d399;
 }
 
@@ -152,11 +188,11 @@
     0 10px 26px -10px rgba(15, 23, 42, 0.22);
 }
 
-.bm-store-card--deokcheon:hover:not(.bm-store-card--active):not(.bm-store-card--selected) {
+.bm-store-card--deokcheon:hover:not(.bm-store-card--branch-active) {
   border-color: #3b82f6;
 }
 
-.bm-store-card--hakjang:hover:not(.bm-store-card--active):not(.bm-store-card--selected) {
+.bm-store-card--hakjang:hover:not(.bm-store-card--branch-active) {
   border-color: #10b981;
 }
 
@@ -165,36 +201,83 @@
   outline-offset: 3px;
 }
 
-.bm-store-card--active,
-.bm-store-card--selected {
-  border-width: 2px !important;
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 1px rgba(15, 23, 42, 0.06),
-    0 14px 32px -12px rgba(15, 23, 42, 0.24) !important;
+/* 지도 연동 — 선택 지점 카드 앞으로 */
+.bm-store-card--branch-active {
+  z-index: 20 !important;
+  opacity: 1 !important;
+  transform: scale(1.02);
+  filter: none;
 }
 
-.bm-store-card--deokcheon.bm-store-card--active,
-.bm-store-card--deokcheon.bm-store-card--selected {
-  border-color: #2563eb !important;
-  background: linear-gradient(180deg, #eff6ff 0%, #fff 52%) !important;
+.bm-store-card--deokcheon.bm-store-card--branch-active {
+  border-color: #1d4ed8 !important;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 54%) !important;
   box-shadow:
-    0 0 0 3px rgba(59, 130, 246, 0.2),
-    0 14px 32px -12px rgba(37, 99, 235, 0.28) !important;
+    0 0 0 3px rgba(59, 130, 246, 0.28),
+    0 16px 36px -12px rgba(37, 99, 235, 0.35) !important;
 }
 
-.bm-store-card--hakjang.bm-store-card--active,
-.bm-store-card--hakjang.bm-store-card--selected {
-  border-color: #059669 !important;
-  background: linear-gradient(180deg, #ecfdf5 0%, #fff 52%) !important;
+.bm-store-card--hakjang.bm-store-card--branch-active {
+  border-color: #047857 !important;
+  background: linear-gradient(180deg, #ecfdf5 0%, #fff 54%) !important;
   box-shadow:
-    0 0 0 3px rgba(16, 185, 129, 0.18),
-    0 14px 32px -12px rgba(5, 150, 105, 0.24) !important;
+    0 0 0 3px rgba(16, 185, 129, 0.24),
+    0 16px 36px -12px rgba(5, 150, 105, 0.3) !important;
 }
 
-.bm-store-card--selected .bm-store-badge,
-.bm-store-card--active .bm-store-badge {
+.bm-store-card--branch-active .bm-store-badge {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
+}
+
+.bm-store-card--branch-active .bm-store-phone-link {
+  color: #1e3a8a;
+}
+
+.bm-store-card--branch-active .bm-store-btn--call {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 6px 20px -4px rgba(37, 99, 235, 0.65);
+}
+
+/* 지도 연동 — 비선택 지점 카드 살짝 뒤로 (가독성 유지) */
+.bm-store-card--branch-inactive {
+  z-index: 1 !important;
+  opacity: 0.88;
+  transform: scale(0.98);
+  filter: saturate(0.92);
+}
+
+.bm-store-card--deokcheon.bm-store-card--branch-inactive {
+  border-color: #93c5fd !important;
+  box-shadow: 0 4px 14px -10px rgba(15, 23, 42, 0.12) !important;
+}
+
+.bm-store-card--hakjang.bm-store-card--branch-inactive {
+  border-color: #6ee7b7 !important;
+  box-shadow: 0 4px 14px -10px rgba(15, 23, 42, 0.12) !important;
+}
+
+/* 호버 미리보기 (선택 전·비선택 카드) */
+.bm-store-card--branch-hover:not(.bm-store-card--branch-active) {
+  z-index: 10 !important;
+  opacity: 0.96;
+  transform: scale(1.01);
+}
+
+.bm-store-card--deokcheon.bm-store-card--branch-hover:not(.bm-store-card--branch-active) {
+  border-color: #3b82f6 !important;
+}
+
+.bm-store-card--hakjang.bm-store-card--branch-hover:not(.bm-store-card--branch-active) {
+  border-color: #10b981 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bm-store-card--branch-active,
+  .bm-store-card--branch-inactive,
+  .bm-store-card--branch-hover {
+    transform: none;
+  }
 }
 
 .bm-store-card-info {
@@ -229,13 +312,11 @@
   color: #0f172a;
 }
 
-.bm-store-card--deokcheon.bm-store-card--selected .bm-store-region-text,
-.bm-store-card--deokcheon.bm-store-card--active .bm-store-region-text {
+.bm-store-card--deokcheon.bm-store-card--branch-active .bm-store-region-text {
   color: #1e3a8a;
 }
 
-.bm-store-card--hakjang.bm-store-card--selected .bm-store-region-text,
-.bm-store-card--hakjang.bm-store-card--active .bm-store-region-text {
+.bm-store-card--hakjang.bm-store-card--branch-active .bm-store-region-text {
   color: #047857;
 }
 

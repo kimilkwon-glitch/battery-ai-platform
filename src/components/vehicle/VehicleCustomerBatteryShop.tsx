@@ -2,12 +2,12 @@ import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { getBatteryImageFit } from "@/lib/battery-image-presentation";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
+import { BATTERY_SPEC_DETAIL_VIEW_LABEL } from "@/lib/battery-card-cta";
 import {
-  BATTERY_SPEC_DETAIL_VIEW_LABEL,
-  batterySpecDetailViewHref,
-  buildBatteryCheckoutHref,
-  type BatteryCardBrandId,
-} from "@/lib/battery-card-cta";
+  batteryProductDetailHref,
+  batteryReviewHref,
+  batterySpecGuideHref,
+} from "@/lib/battery-product-routes";
 import {
   findBatteryProductByCode,
   getBatteryImageSet,
@@ -65,13 +65,11 @@ function BrandProductCard({
   const hasImageSet = Boolean(imageSet?.main?.trim());
   const displayLabel = productBatteryCode(productCode) || productCode;
   const display = parseBatterySpecDisplay(displayLabel);
-  const specHref = batterySpecDetailViewHref(vehicleSpecCode, { brand: brandId as BatteryCardBrandId });
-  const orderHref = buildBatteryCheckoutHref({
-    battery: vehicleSpecCode,
-    vehicle: vehicleSlug,
-    brand: brandId as BatteryCardBrandId,
-    flow: "buy_now",
-  });
+  const specHref = batterySpecGuideHref(vehicleSpecCode);
+  const orderHref =
+    batteryProductDetailHref(brandId, vehicleSpecCode) ??
+    batterySpecGuideHref(vehicleSpecCode);
+  const reviewHref = batteryReviewHref({ batteryCode: vehicleSpecCode, brandId });
 
   return (
     <article className="vehicle-brand-product">
@@ -100,6 +98,13 @@ function BrandProductCard({
           </p>
         ) : null}
         <div className="vehicle-brand-product__actions flex flex-col gap-2">
+          <Link
+            href={reviewHref}
+            className="inline-flex w-full items-center justify-center rounded-full bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            리뷰 보기
+          </Link>
           <Link href={specHref} className={`${bm.btnSecondary} w-full text-sm font-black`}>
             {BATTERY_SPEC_DETAIL_VIEW_LABEL}
           </Link>

@@ -25,6 +25,7 @@ import {
   BUSAN_MAP_SOURCE_ATTRIBUTION,
   BUSAN_MAP_VIEWBOX,
   BUSAN_MAP_WIDTH,
+  pinsForStores,
 } from "@/lib/busan-map-palette";
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
 
@@ -109,7 +110,7 @@ function pathStyle(
   region: BusanGeoRegion,
   gu: GuUnit,
   opts: {
-    activeStore: BusanStoreId | null;
+    selectedBranch: BusanStoreId | null;
     hoveredGu: string | null;
     selectedGu: string | null;
     searchHighlightGu: boolean;
@@ -135,7 +136,7 @@ function pathStyle(
   else if (guActive) {
     fill = palette.fillHover;
     fillOpacity = 0.98;
-  } else if (opts.activeStore && region !== "neutral" && opts.activeStore !== region) {
+  } else if (opts.selectedBranch && region !== "neutral" && opts.selectedBranch !== region) {
     fillOpacity = 0.42;
   }
 
@@ -183,16 +184,128 @@ function MapLegend() {
   );
 }
 
-export function BusanRegionMap({
-  activeStore,
-  searchQuery,
-  onSelect,
-  onHoverStore,
+const STORE_BRANCHES: BusanStoreId[] = ["deokcheon", "hakjang"];
+
+function MapBranchToggle({
+  selectedBranch,
+  onSelectBranch,
 }: {
-  activeStore: BusanStoreId | null;
+  selectedBranch: BusanStoreId | null;
+  onSelectBranch: (id: BusanStoreId) => void;
+}) {
+  return (
+    <div
+      className="busan-map-branch-toggle mt-4 flex flex-wrap justify-center gap-2 sm:justify-start"
+      role="group"
+      aria-label="지점 선택"
+    >
+      {STORE_BRANCHES.map((id) => {
+        const pressed = selectedBranch === id;
+        const isDeokcheon = id === "deokcheon";
+        return (
+          <button
+            key={id}
+            type="button"
+            aria-pressed={pressed}
+            onClick={() => onSelectBranch(id)}
+            className={clsx(
+              "min-h-[44px] rounded-full px-4 py-2 text-sm font-black transition-[box-shadow,background-color,border-color,transform] duration-300",
+              isDeokcheon
+                ? pressed
+                  ? "border-2 border-blue-700 bg-blue-600 text-white shadow-md shadow-blue-200/80"
+                  : "border-2 border-blue-300 bg-blue-50 text-blue-900 hover:border-blue-500 hover:bg-blue-100"
+                : pressed
+                  ? "border-2 border-emerald-700 bg-emerald-600 text-white shadow-md shadow-emerald-200/80"
+                  : "border-2 border-emerald-300 bg-emerald-50 text-emerald-900 hover:border-emerald-500 hover:bg-emerald-100",
+            )}
+          >
+            {isDeokcheon ? "덕천점" : "학장점"}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function MapStorePins({
+  selectedBranch,
+  onSelectBranch,
+  onHoverBranch,
+}: {
+  selectedBranch: BusanStoreId | null;
+  onSelectBranch: (id: BusanStoreId) => void;
+  onHoverBranch?: (id: BusanStoreId | null) => void;
+}) {
+  const pins = pinsForStores({});
+
+  return (
+    <div className="busan-map-store-pins pointer-events-none absolute inset-3 z-10 sm:inset-4">
+      {STORE_BRANCHES.map((id) => {
+        const pin = pins[id];
+        const active = selectedBranch === id;
+        const isDeokcheon = id === "deokcheon";
+        return (
+          <button
+            key={id}
+            type="button"
+            className={clsx(
+              "busan-map-store-pin pointer-events-auto absolute flex -translate-x-1/2 -translate-y-full flex-col items-center gap-0.5 rounded-full border-2 bg-white px-2 py-1.5 shadow-md transition-[transform,box-shadow,border-color] duration-300 motion-safe:hover:scale-105",
+              isDeokcheon
+                ? active
+                  ? "border-blue-600 ring-2 ring-blue-300/80"
+                  : "border-blue-400 hover:border-blue-600"
+                : active
+                  ? "border-emerald-600 ring-2 ring-emerald-300/80"
+                  : "border-emerald-500 hover:border-emerald-600",
+              active && "z-20 scale-110 shadow-lg",
+            )}
+            style={{
+              left: `${(pin.x / BUSAN_MAP_WIDTH) * 100}%`,
+              top: `${(pin.y / BUSAN_MAP_HEIGHT) * 100}%`,
+            }}
+            aria-label={`${pin.label} 선택`}
+            aria-pressed={active}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectBranch(id);
+            }}
+            onMouseEnter={() => onHoverBranch?.(id)}
+            onMouseLeave={() => onHoverBranch?.(null)}
+            onFocus={() => onHoverBranch?.(id)}
+            onBlur={() => onHoverBranch?.(null)}
+          >
+            <span
+              className={clsx(
+                "size-2.5 rounded-full",
+                isDeokcheon ? "bg-blue-500" : "bg-emerald-500",
+              )}
+              aria-hidden
+            />
+            <span
+              className={clsx(
+                "whitespace-nowrap text-[10px] font-black sm:text-xs",
+                isDeokcheon ? "text-blue-800" : "text-emerald-800",
+              )}
+            >
+              {pin.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+export function BusanRegionMap({
+  selectedBranch,
+  searchQuery,
+  onSelectBranch,
+  onHoverBranch,
+}: {
+  selectedBranch: BusanStoreId | null;
   searchQuery?: string | null;
-  onSelect: (id: BusanStoreId) => void;
-  onHoverStore?: (id: BusanStoreId | null) => void;
+  onSelectBranch: (id: BusanStoreId) => void;
+  onHoverBranch?: (id: BusanStoreId | null) => void;
 }) {
   const mapCanvasRef = useRef<HTMLDivElement>(null);
   const tooltipRafRef = useRef<number | null>(null);
@@ -329,16 +442,16 @@ export function BusanRegionMap({
     setHoveredGu(gu.gu);
     showTooltip(gu, clientX, clientY, searchResolved?.matchedDong);
     if (gu.region === "deokcheon" || gu.region === "hakjang") {
-      onHoverStore?.(gu.region);
+      onHoverBranch?.(gu.region);
     } else {
-      onHoverStore?.(null);
+      onHoverBranch?.(null);
     }
   };
 
   const handleGuLeave = () => {
     setHoveredGu(null);
     setTooltip(null);
-    onHoverStore?.(null);
+    onHoverBranch?.(null);
   };
 
   const handleGuClick = (gu: GuUnit) => {
@@ -359,7 +472,7 @@ export function BusanRegionMap({
       matchedDong: selection.matchedDong,
     });
     if (gu.region === "deokcheon" || gu.region === "hakjang") {
-      onSelect(gu.region);
+      onSelectBranch(gu.region);
     }
   };
 
@@ -371,9 +484,10 @@ export function BusanRegionMap({
       <div>
         <h3 className="text-xl font-black text-slate-950 sm:text-2xl">부산 권역 지도</h3>
         <p className="mt-2 text-base font-semibold text-slate-600">
-          구에 마우스를 올리거나 클릭하면 담당 지점이 표시됩니다. 아래 매장 카드가 함께 강조됩니다.
+          구·지점 핀을 누르거나 아래 토글을 선택하면 해당 지점 카드가 앞으로 강조됩니다.
           동네명 검색으로 해당 구를 찾을 수 있습니다.
         </p>
+        <MapBranchToggle selectedBranch={selectedBranch} onSelectBranch={onSelectBranch} />
       </div>
 
       <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-4">
@@ -431,7 +545,7 @@ export function BusanRegionMap({
                   >
                     {gu.dongs.map((dong) => {
                       const style = pathStyle(dong.region, gu, {
-                        activeStore,
+                        selectedBranch,
                         hoveredGu,
                         selectedGu: selectedGu?.gu ?? null,
                         searchHighlightGu: searchHit,
@@ -477,6 +591,11 @@ export function BusanRegionMap({
                 );
               })}
               </svg>
+              <MapStorePins
+                selectedBranch={selectedBranch}
+                onSelectBranch={onSelectBranch}
+                onHoverBranch={onHoverBranch}
+              />
             </div>
           )}
 

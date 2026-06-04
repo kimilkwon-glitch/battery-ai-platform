@@ -6,8 +6,10 @@ import {
   type BatterySpecEntry,
 } from "@/lib/battery-alias-map";
 import { getHomeSearchHref } from "@/lib/home-search-types";
-import { buildBatteryCheckoutHref, batterySpecDetailViewHref } from "@/lib/battery-card-cta";
-import { batterySpecHref } from "@/lib/canonical-battery-code";
+import {
+  batteryProductDetailHref,
+  batterySpecGuideHref,
+} from "@/lib/battery-product-routes";
 import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 export type HomeCatalogBrandId = "rocket" | "solite";
 
@@ -310,25 +312,26 @@ export const HOME_SPEC_CARD_ACTIONS = {
   outbound: HUB_STORE_ANCHORS.regions,
   store: HUB_STORE_ANCHORS.visit,
   delivery: HUB_SHOP_ANCHORS.delivery,
-  detail: (code: string) => batterySpecHref(code),
+  detail: (code: string) => batterySpecGuideHref(code),
 } as const;
 
 /** 카드 보조 CTA — 주문·규격 (레거시 링크 헬퍼) */
-export function homeSpecCardSecondaryCtas(code: string) {
+export function homeSpecCardSecondaryCtas(code: string, brandId: HomeCatalogBrandId = "rocket") {
+  const orderHref = batteryProductDetailHref(brandId, code);
   return [
     {
       key: "order",
       label: "주문하기",
-      href: buildBatteryCheckoutHref({ battery: code, flow: "buy_now" }),
+      href: orderHref ?? batterySpecGuideHref(code),
     },
     {
       key: "detail",
       label: "배터리 규격 보기",
-      href: batterySpecDetailViewHref(code),
+      href: batterySpecGuideHref(code),
     },
   ] as const;
 }
 
 export function homeSpecCardDetailHref(code: string) {
-  return batterySpecHref(code);
+  return batterySpecGuideHref(code);
 }

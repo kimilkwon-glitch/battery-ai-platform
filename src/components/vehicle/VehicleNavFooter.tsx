@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AppIcon } from "@/components/common/AppIcon";
 import { CtaHierarchy } from "@/components/common/CtaHierarchy";
-import { batterySpecDetailViewHref, buildBatteryCheckoutHref } from "@/lib/battery-card-cta";
+import { batteryProductDetailHref, batterySpecGuideHref } from "@/lib/battery-product-routes";
 import { bm } from "@/lib/design-tokens";
 import { compareHref } from "@/lib/platform-data";
 
@@ -12,12 +12,8 @@ export function VehicleNavFooter({
   vehicleId: string;
   batteryCode?: string;
 }) {
-  const specHref = batterySpecDetailViewHref(batteryCode);
-  const orderHref = buildBatteryCheckoutHref({
-    battery: batteryCode,
-    vehicle: vehicleId,
-    flow: "buy_now",
-  });
+  const specHref = batterySpecGuideHref(batteryCode);
+  const orderHref = batteryProductDetailHref("rocket", batteryCode) ?? specHref;
 
   return (
     <section className={`${bm.card} ${bm.cardPad}`} data-ux="vehicle-nav-footer" data-primary-battery={batteryCode}>

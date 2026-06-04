@@ -165,7 +165,7 @@ function ProductCard({ product }: { product: ShopProduct }) {
 
         <p className="mt-2 text-[10px] font-semibold text-slate-500">가격은 주문 상담 시 안내</p>
 
-        <BatteryProductCardActions batteryCode={product.batteryCode} />
+        <BatteryProductCardActions batteryCode={product.batteryCode} brandId={product.brandId} />
       </div>
     </article>
   );

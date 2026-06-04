@@ -3,51 +3,44 @@
 import Link from "next/link";
 import {
   BATTERY_SPEC_DETAIL_VIEW_LABEL,
-  batterySpecDetailViewHref,
-  buildBatteryCheckoutHref,
+  resolveBatteryProductCardLinks,
+  type BatteryProductBrandSlug,
 } from "@/lib/battery-card-cta";
-import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 
 type Props = {
   batteryCode: string;
-  /** 레거시 — shop 패널 등. 미지정 시 체크아웃 buy_now */
+  /** rocket | solite | delco … — 미지정 시 rocket(메인 로케트 라인업) */
+  brandId?: BatteryProductBrandSlug | string | null;
+  /** 레거시 — shop 패널 등 인라인 주문 */
   onOrder?: () => void;
-  /** 주문하기 링크 (onOrder 없을 때). 미지정 시 buildBatteryCheckoutHref */
-  orderHref?: string;
-  vehicleSlug?: string;
-  brand?: "rocket" | "solite";
+  /** 주문하기 링크 override (거의 사용 안 함) */
+  orderHref?: string | null;
 };
 
 export function BatteryProductCardActions({
   batteryCode,
+  brandId,
   onOrder,
   orderHref,
-  vehicleSlug,
-  brand,
 }: Props) {
-  const code = batteryCode.trim();
-  const specHref = batterySpecDetailViewHref(code, brand ? { brand } : undefined);
-  const checkoutHref =
-    orderHref ??
-    buildBatteryCheckoutHref({
-      battery: code,
-      vehicle: vehicleSlug,
-      brand,
-      flow: "buy_now",
-    });
-  const reviewsHref = `${batteryDetailHref(code)}#battery-reviews`;
+  const links = resolveBatteryProductCardLinks({
+    batteryCode,
+    brandId,
+    defaultBrandId: "rocket",
+  });
+  const productHref = orderHref ?? links.productDetailHref;
 
   return (
-    <div className="mt-auto flex flex-col gap-2.5 pt-3" data-product-card-actions={code}>
+    <div className="mt-auto flex flex-col gap-2.5 pt-3" data-product-card-actions={links.batteryCode}>
       <Link
-        href={reviewsHref}
-        className="inline-flex items-center justify-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1.5 text-center text-sm font-bold text-emerald-800 ring-1 ring-emerald-100 transition hover:bg-emerald-100 hover:text-emerald-900"
+        href={links.reviewHref}
+        className="inline-flex items-center justify-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1.5 text-center text-xs font-bold text-emerald-800 ring-1 ring-emerald-100 transition hover:bg-emerald-100 hover:text-emerald-900 sm:text-sm"
       >
         리뷰 보기
       </Link>
       <Link
-        href={specHref}
+        href={links.batterySpecGuideHref}
         className={`${bm.btnSecondary} w-full justify-center py-3 text-sm font-black transition hover:shadow-sm sm:text-base`}
       >
         {BATTERY_SPEC_DETAIL_VIEW_LABEL}
@@ -60,13 +53,20 @@ export function BatteryProductCardActions({
         >
           주문하기
         </button>
-      ) : (
+      ) : productHref ? (
         <Link
-          href={checkoutHref}
+          href={productHref}
           className={`${bm.btnPrimary} w-full justify-center py-4 text-base font-black shadow-sm transition hover:shadow-md`}
         >
           주문하기
         </Link>
+      ) : (
+        <span
+          className="flex w-full cursor-not-allowed items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 py-4 text-sm font-black text-slate-400"
+          aria-disabled
+        >
+          상품 준비중
+        </span>
       )}
     </div>
   );

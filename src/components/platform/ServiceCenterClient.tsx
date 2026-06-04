@@ -18,23 +18,22 @@ export function ServiceCenterClient({
   symptom?: string;
 }) {
   const context = [vehicleLabel, battery, symptom].filter(Boolean);
-  const [activeStore, setActiveStore] = useState<BusanStoreId | null>(null);
-  const [hoveredStore, setHoveredStore] = useState<BusanStoreId | null>(null);
+  /** 지도·토글·카드 공통 — 선택된 지점 (null이면 두 카드 기본 강조) */
+  const [selectedBranch, setSelectedBranch] = useState<BusanStoreId | null>(null);
+  const [hoveredBranch, setHoveredBranch] = useState<BusanStoreId | null>(null);
   const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
-  const highlightStore = activeStore ?? hoveredStore;
 
   useEffect(() => {
-    if (!activeStore) return;
-    const el = document.getElementById(`store-${activeStore}`);
+    if (!selectedBranch) return;
+    const mobile = window.matchMedia("(max-width: 1023px)");
+    if (!mobile.matches) return;
+    const el = document.getElementById(`store-${selectedBranch}`);
     if (!el) return;
     const timer = window.requestAnimationFrame(() => {
       el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      if (el instanceof HTMLElement) {
-        el.focus({ preventScroll: true });
-      }
     });
     return () => window.cancelAnimationFrame(timer);
-  }, [activeStore]);
+  }, [selectedBranch]);
 
   return (
     <div className="busan-service-hub space-y-6 pb-8">
@@ -45,25 +44,26 @@ export function ServiceCenterClient({
       ) : null}
 
       <StoreNeighborhoodSearch
-        activeStore={highlightStore}
-        onMatch={setActiveStore}
+        activeStore={selectedBranch ?? hoveredBranch}
+        onMatch={setSelectedBranch}
         onSearchQuery={setMapSearchQuery}
       />
 
       <BusanRegionMap
-        activeStore={activeStore}
+        selectedBranch={selectedBranch}
         searchQuery={mapSearchQuery}
-        onHoverStore={setHoveredStore}
-        onSelect={setActiveStore}
+        onHoverBranch={setHoveredBranch}
+        onSelectBranch={setSelectedBranch}
       />
       <p className="text-center text-xs font-medium text-slate-500">
         지도가 보이지 않으면 가까운 지점으로 전화 상담해 주세요.
       </p>
 
       <StoreHubCompactCards
-        highlightId={highlightStore}
-        activeId={activeStore}
-        onSelect={setActiveStore}
+        selectedBranch={selectedBranch}
+        hoveredBranch={hoveredBranch}
+        onSelectBranch={setSelectedBranch}
+        onHoverBranch={setHoveredBranch}
       />
 
       <section

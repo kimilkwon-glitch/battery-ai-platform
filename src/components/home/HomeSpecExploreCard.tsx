@@ -44,7 +44,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
           {summary}
         </p>
 
-        <BatteryProductCardActions batteryCode={searchCode} />
+        <BatteryProductCardActions batteryCode={searchCode} brandId={brand} />
       </div>
     </article>
   );
