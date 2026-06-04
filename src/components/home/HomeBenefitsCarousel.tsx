@@ -96,9 +96,9 @@ export function HomeBenefitsCarousel() {
         pausedRef.current = false;
       }}
     >
-      <BenefitsSectionHeader className="mb-5 sm:mb-7" />
+      <BenefitsSectionHeader className="mb-3 sm:mb-4" />
 
-      <div className="home-benefits-carousel-shell relative mx-auto max-w-[1100px] px-10 sm:px-11">
+      <div className="home-benefits-carousel-shell relative mx-auto max-w-[1200px] px-10 sm:px-11">
         <div ref={viewportRef} className="home-benefits-viewport overflow-hidden rounded-2xl">
           <div
             className="home-benefits-track flex items-stretch gap-3"

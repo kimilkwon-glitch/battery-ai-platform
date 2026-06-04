@@ -8,7 +8,7 @@ import {
   type HomeBenefitCard,
 } from "@/lib/home-benefits-data";
 
-const BENEFIT_IMAGE_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 560px";
+const BENEFIT_IMAGE_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px";
 
 const PLACEHOLDER_GRADIENT: Record<HomeBenefitCard["fallbackIcon"], string> = {
   percent: "from-[#1e3a5f] via-[#2563eb] to-[#f59e0b]",
@@ -35,8 +35,10 @@ export function BenefitCardMedia({
   return (
     <div
       className={clsx(
-        "home-benefit-card-media relative w-full shrink-0 overflow-hidden rounded-t-2xl bg-white",
-        isDetail ? "home-benefit-card-media--detail" : "home-benefit-card-media--carousel",
+        "home-benefit-card-media relative w-full overflow-hidden bg-slate-100",
+        isDetail
+          ? "home-benefit-card-media--detail rounded-t-2xl"
+          : "home-benefit-card-media--carousel home-benefit-card-media--banner aspect-[16/9]",
         hasImage && "home-benefit-card-media--photo",
         active && "home-benefit-card-media--active",
       )}
@@ -58,9 +60,10 @@ export function BenefitCardMedia({
 
       <div
         className={clsx(
-          "absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br px-5 py-6 text-center",
+          "absolute inset-0 flex items-center justify-center bg-gradient-to-br",
           gradient,
           hasImage ? "pointer-events-none opacity-0" : "opacity-100",
+          isDetail ? "flex-col gap-3 px-5 py-6 text-center" : "px-4 py-4",
         )}
         aria-hidden={hasImage}
       >
@@ -72,12 +75,16 @@ export function BenefitCardMedia({
         >
           <Icon className="size-6" strokeWidth={2} />
         </span>
-        <p className="max-w-[14rem] text-xs font-black leading-snug text-white drop-shadow-sm">
-          {card.title}
-        </p>
-        <p className="max-w-[16rem] text-[10px] font-semibold leading-relaxed text-white/90">
-          {card.label}
-        </p>
+        {isDetail ? (
+          <>
+            <p className="max-w-[14rem] text-xs font-black leading-snug text-white drop-shadow-sm">
+              {card.title}
+            </p>
+            <p className="max-w-[16rem] text-[10px] font-semibold leading-relaxed text-white/90">
+              {card.label}
+            </p>
+          </>
+        ) : null}
       </div>
     </div>
   );
