@@ -1,9 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 import { Percent, Store, Wrench } from "lucide-react";
 import {
-  BENEFIT_3PERCENT_CARD_SRC,
-  BENEFIT_SERVICE_CARD_SRC,
-  BENEFIT_STORE_DISCOUNT_CARD_SRC,
+  BENEFIT_FIRST_ORDER_3_PERCENT_SRC,
+  BENEFIT_SAFE_DRIVING_FREE_CHECK_SRC,
+  BENEFIT_VISIT_5000_DISCOUNT_SRC,
 } from "@/lib/brand-assets";
 import { HUB_BENEFITS } from "@/lib/customer-hub-routes";
 
@@ -50,10 +50,10 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     id: "first-order-3",
     title: "첫 주문 3% 혜택",
     label: "자동 적용",
-    description: "회원가입 후 첫 주문 시 주문 단계에서 자동 적용됩니다.",
-    note: "회원가입 후 첫 주문 1회",
-    image: BENEFIT_3PERCENT_CARD_SRC,
-    imageAlt: "첫 주문 3% 혜택 카드",
+    description: "회원가입 후 첫 주문 시 주문 단계에서 자동 적용",
+    note: "회원가입 후 첫 주문 1회 · 쿠폰 입력 없이 자동 반영",
+    image: BENEFIT_FIRST_ORDER_3_PERCENT_SRC,
+    imageAlt: "첫 주문 3% 자동 적용 혜택 안내 이미지",
     fallbackIcon: "percent",
     status: "active",
     href: HUB_BENEFIT_FIRST_ORDER_3,
@@ -68,18 +68,18 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     ],
   },
   {
-    id: "replacement-service",
-    title: "교체 고객 기본 서비스",
-    label: "기본 서비스",
-    description: "출장·매장 공통으로 제공되는 기본 서비스입니다.",
+    id: "safe-driving-free-check",
+    title: "안전한 드라이빙 무료 점검",
+    label: "무료 점검",
+    description: "배터리 교체 고객 대상 기본 점검 서비스",
     note: "엔진룸 클리닝 · 워셔액 보충 · 공기압 점검",
-    image: BENEFIT_SERVICE_CARD_SRC,
-    imageAlt: "교체 고객 기본 서비스 혜택 카드",
+    image: BENEFIT_SAFE_DRIVING_FREE_CHECK_SRC,
+    imageAlt: "안전한 드라이빙 무료 점검 혜택 이미지",
     fallbackIcon: "service",
     status: "active",
     href: HUB_BENEFIT_BASIC_SERVICE,
     detailIntro:
-      "배터리 교체 고객에게 출장·매장 방문 시 공통으로 제공하는 기본 서비스입니다. 교체 작업과 함께 차량 상태를 빠르게 점검합니다.",
+      "배터리 교체 고객을 위한 안전한 드라이빙 무료 점검입니다. 출장·매장 교체 시 엔진룸 클리닝, 워셔액 보충, 공기압 등 기본 점검을 함께 안내합니다.",
     detailBullets: [
       "엔진룸 클리닝으로 엔진룸 오염·먼지를 정리합니다.",
       "워셔액 보충으로 전면 유리 세척 준비를 돕습니다.",
@@ -91,10 +91,10 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     id: "store-visit-discount-5000",
     title: "직영점 방문 5,000원 할인",
     label: "내방 할인",
-    description: "덕천점·학장점 방문 고객 대상 혜택입니다.",
-    note: "조건 확인 후 적용 가능",
-    image: BENEFIT_STORE_DISCOUNT_CARD_SRC,
-    imageAlt: "내방 할인 5,000원 혜택 카드",
+    description: "덕천점·학장점 방문 고객 대상 혜택",
+    note: "덕천점·학장점 직영점 방문 고객 · 조건 확인 후 적용",
+    image: BENEFIT_VISIT_5000_DISCOUNT_SRC,
+    imageAlt: "직영점 방문 5,000원 내방 할인 혜택 이미지",
     fallbackIcon: "store",
     status: "active",
     href: HUB_BENEFIT_STORE_DISCOUNT,
@@ -113,7 +113,9 @@ export const BENEFITS_HUB_TITLE = "배터리매니저 혜택";
 export const BENEFITS_HUB_SUBTITLE = "첫 주문 혜택부터 기본 서비스까지 한눈에 확인하세요.";
 
 export const FIRST_ORDER_3_BENEFIT = BENEFIT_CARDS[0]!;
-export const BASIC_SERVICE_BENEFIT = BENEFIT_CARDS[1]!;
+export const SAFE_DRIVING_FREE_CHECK_BENEFIT = BENEFIT_CARDS[1]!;
+/** @deprecated safe-driving-free-check 혜택 */
+export const BASIC_SERVICE_BENEFIT = SAFE_DRIVING_FREE_CHECK_BENEFIT;
 export const STORE_VISIT_DISCOUNT_BENEFIT = BENEFIT_CARDS[2]!;
 
 export function getBenefitById(id: string): BenefitCardConfig | undefined {

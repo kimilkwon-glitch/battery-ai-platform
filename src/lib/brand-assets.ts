@@ -13,7 +13,7 @@ export const BRAND_LOGO_ALT = "부산배터리매니저 로고";
 
 /** 배너·혜택 교체 시 rev만 올려 CDN/브라우저 캐시 무효화 */
 export const MAIN_BANNER_ASSET_REV = "20260530-hero-triple-v1";
-export const BENEFITS_ASSET_REV = "20260530-benefit-triple-v1";
+export const BENEFITS_ASSET_REV = "20260604-benefit-images-v1";
 
 const banner = (name: string) => `/assets/banners/${name}?v=${MAIN_BANNER_ASSET_REV}`;
 const benefit = (name: string) => `/assets/benefits/${name}?v=${BENEFITS_ASSET_REV}`;
@@ -30,10 +30,13 @@ export const MAIN_HERO_VISIT_DELIVERY_MOBILE_SRC = banner("main-hero-visit-deliv
 export const MAIN_BANNER_DESKTOP_SRC = banner("main-hero-desktop.png");
 export const MAIN_BANNER_MOBILE_SRC = banner("main-hero-mobile.png");
 
-/** 혜택 카드 1000×600 (5:3) — public/assets/benefits/ */
-export const BENEFIT_3PERCENT_CARD_SRC = benefit("benefit-3percent-card.png");
-export const BENEFIT_SERVICE_CARD_SRC = benefit("benefit-service-card.png");
-export const BENEFIT_STORE_DISCOUNT_CARD_SRC = benefit("benefit-store-discount-5000-card.png");
+/** 혜택 카드 상단 이미지 — public/assets/benefits/ */
+export const BENEFIT_FIRST_ORDER_3_PERCENT_SRC = benefit("benefit-first-order-3-percent.png");
+export const BENEFIT_SAFE_DRIVING_FREE_CHECK_SRC = benefit("benefit-safe-driving-free-check.png");
+export const BENEFIT_VISIT_5000_DISCOUNT_SRC = benefit("benefit-visit-5000-discount.png");
 
-/** @deprecated benefit-3percent-card.png 사용 */
-export const BENEFIT_3PERCENT_SRC = BENEFIT_3PERCENT_CARD_SRC;
+/** @deprecated 새 파일명 사용 */
+export const BENEFIT_3PERCENT_CARD_SRC = BENEFIT_FIRST_ORDER_3_PERCENT_SRC;
+export const BENEFIT_SERVICE_CARD_SRC = BENEFIT_SAFE_DRIVING_FREE_CHECK_SRC;
+export const BENEFIT_STORE_DISCOUNT_CARD_SRC = BENEFIT_VISIT_5000_DISCOUNT_SRC;
+export const BENEFIT_3PERCENT_SRC = BENEFIT_FIRST_ORDER_3_PERCENT_SRC;

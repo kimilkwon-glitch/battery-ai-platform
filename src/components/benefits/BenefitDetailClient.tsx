@@ -19,7 +19,7 @@ export function BenefitDetailClient({ benefit }: { benefit: BenefitCardConfig })
           { href: HUB_SHOP_ANCHORS.orderCheck, label: "택배주문 안내" },
           { href: HUB_BENEFITS, label: "혜택 목록", tertiary: true },
         ]
-      : benefit.id === "replacement-service"
+      : benefit.id === "safe-driving-free-check"
         ? [
             { href: HUB_STORE_ANCHORS.visit, label: "매장·출장 안내" },
             { href: HUB_BENEFITS, label: "혜택 목록", tertiary: true },
