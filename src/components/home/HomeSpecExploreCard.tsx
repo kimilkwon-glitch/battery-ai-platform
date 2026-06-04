@@ -19,7 +19,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
       data-home-spec-search-code={searchCode}
       data-home-spec-brand={brand}
     >
-      <div className="home-spec-card-image border-b border-slate-100 bg-gradient-to-b from-slate-50 to-white p-2.5 sm:p-3">
+      <div className="home-spec-card-image p-2.5 sm:p-3">
         <BatteryCardImage
           key={`${brand}-${imageKey}`}
           code={imageKey}
