@@ -154,7 +154,7 @@ export function HomeBenefitsCarousel() {
                 onClick={() => goTo(i)}
                 className={clsx(
                   "h-2 rounded-full transition-all duration-300",
-                  i === index ? "w-5 bg-amber-600" : "w-2 bg-slate-300 hover:bg-slate-400",
+                  i === index ? "w-5 bg-red-600" : "w-2 bg-red-200 hover:bg-red-300",
                 )}
                 aria-label={`혜택 ${i + 1}`}
               />

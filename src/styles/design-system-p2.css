@@ -1838,14 +1838,84 @@
   transition: none;
 }
 
+/* 혜택 섹션 상단 — 레드 프로모션 톤 */
+.home-benefits-carousel.home-benefits-carousel--main.bm-zone--benefit {
+  background: linear-gradient(180deg, #fff5f7 0%, #fff9fa 48%, #ffffff 100%);
+  border-radius: 1.25rem;
+  padding: 1rem 0.5rem 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .home-benefits-carousel.home-benefits-carousel--main.bm-zone--benefit {
+    padding: 1.25rem 0.75rem 0.75rem;
+  }
+}
+
+[data-page="benefits-hub"] > section[aria-label="혜택 카드"] {
+  background: linear-gradient(180deg, #fff5f7 0%, #fff9fa 55%, #ffffff 100%);
+  border-radius: 1.25rem;
+  padding: 1rem 0.75rem 1.25rem;
+}
+
 .home-benefits-section-header__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.2rem 0.85rem;
   font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 52%, #b91c1c 100%);
+  box-shadow:
+    0 1px 2px rgba(185, 28, 28, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+@media (min-width: 640px) {
+  .home-benefits-section-header__badge {
+    font-size: 0.8125rem;
+  }
 }
 
 .home-benefits-section-title {
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 800;
   letter-spacing: -0.025em;
+  line-height: 1.25;
+  color: #c81e3a;
+}
+
+@media (min-width: 640px) {
+  .home-benefits-section-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-benefits-section-title {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+}
+
+.home-benefits-section-header__rule {
+  margin: 0.625rem auto 0;
+  height: 2px;
+  width: 4rem;
+  max-width: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(248, 113, 113, 0.35) 18%,
+    #ef4444 50%,
+    rgba(248, 113, 113, 0.35) 82%,
+    transparent 100%
+  );
 }
 
 .home-benefits-section-header__desc {
@@ -2293,6 +2363,10 @@
 
 .home-benefits-viewport {
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, transparent 100%);
+}
+
+.home-benefits-carousel--main .home-benefits-viewport {
+  background: transparent;
 }
 
 .home-benefits-track {

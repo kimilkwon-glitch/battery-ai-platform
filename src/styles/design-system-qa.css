@@ -6,8 +6,8 @@
 :root {
   --color-primary: var(--bm-primary);
   --color-primary-soft: var(--bm-info-soft);
-  --color-accent-benefit: #ea580c;
-  --color-accent-benefit-soft: #fff7ed;
+  --color-accent-benefit: #dc2626;
+  --color-accent-benefit-soft: #fff1f2;
   --color-accent-review: #0d9488;
   --color-accent-review-soft: #f0fdfa;
   --color-accent-guide: #4f46e5;
@@ -182,7 +182,7 @@
 }
 
 .bm-zone--benefit .home-benefits-section-title {
-  color: #9a3412;
+  color: #c81e3a;
   text-transform: none;
   letter-spacing: -0.025em;
   font-weight: 700;
