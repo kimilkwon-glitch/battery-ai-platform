@@ -44,7 +44,7 @@ export function BenefitCardVisual({
     <Link
       href={card.href}
       className="home-benefit-card-link block w-full rounded-2xl outline-none ring-amber-200 focus-visible:ring-2"
-      aria-label={`${label} — 혜택 자세히 보기`}
+      aria-label={label}
     >
       {inner}
     </Link>
