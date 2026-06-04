@@ -15,7 +15,7 @@ import { batterySpecHref } from "@/lib/canonical-battery-code";
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 
 /** 배너 로고 캐시 무효화 */
-export const BRAND_HUB_LOGO_REV = "20260603-ui-logo-clean-v1";
+export const BRAND_HUB_LOGO_REV = "20260604-rocket-logo-contrast-v1";
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
 export type BrandHubLogoAssets = {

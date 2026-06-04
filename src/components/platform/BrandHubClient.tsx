@@ -28,6 +28,7 @@ import {
   type BrandHubInsightCard,
   type CustomerBrandHubId,
 } from "@/lib/brand-hub-customer";
+import { getBrandHubLogoPresentation } from "@/lib/brand-hub-logo-presentation";
 import { BRAND_HUB_REFERENCE_BRANDS } from "@/lib/brand-hub-reference-brands";
 import type { BatteryBrandSpec } from "@/data/battery/types";
 import { getBattery } from "@/lib/platform-data";
@@ -321,6 +322,7 @@ function BrandHubBannerLogo({
   fallbackTitle: string;
 }) {
   const assets = BRAND_HUB_LOGOS[brandId];
+  const presentation = getBrandHubLogoPresentation(brandId);
   const [imgError, setImgError] = useState(false);
   const logoSrc = brandHubBannerLogoSrc(brandId);
 
@@ -343,7 +345,7 @@ function BrandHubBannerLogo({
       alt={assets.alt}
       width={assets.width}
       height={assets.height}
-      className="brand-hub-logo-image"
+      className={clsx("brand-hub-logo-image", presentation.imageClassName)}
       sizes="(max-width: 639px) 100vw, (max-width: 1023px) 22rem, 36rem"
       priority
       onError={() => setImgError(true)}
@@ -351,9 +353,15 @@ function BrandHubBannerLogo({
   );
 
   return (
-    <div className="brand-hub-logo-badge shrink-0" data-brand-logo-plaque={brandId}>
+    <div
+      className="brand-hub-logo-badge shrink-0"
+      data-brand-logo-plaque={brandId}
+      data-logo-panel={presentation.panelVariant}
+    >
       <div className={theme.logoGlass}>
-        <div className="brand-hub-logo-image-surface">{logo}</div>
+        <div className={clsx("brand-hub-logo-image-surface", presentation.surfaceClassName)}>
+          {logo}
+        </div>
       </div>
     </div>
   );
