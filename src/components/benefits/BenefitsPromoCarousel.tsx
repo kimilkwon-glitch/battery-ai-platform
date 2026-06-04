@@ -24,9 +24,9 @@ function useVisibleFraction() {
     const lg = window.matchMedia("(min-width: 1024px)");
     const sm = window.matchMedia("(min-width: 640px)");
     const update = () => {
-      if (lg.matches) setFraction(2.35);
-      else if (sm.matches) setFraction(2.05);
-      else setFraction(1.15);
+      if (lg.matches) setFraction(2.2);
+      else if (sm.matches) setFraction(1.1);
+      else setFraction(1.1);
     };
     update();
     lg.addEventListener("change", update);
@@ -164,7 +164,7 @@ export function BenefitsPromoCarousel({
     >
       {showHeader ? <BenefitsSectionHeader className="mb-3 sm:mb-4" /> : null}
 
-      <div className="home-benefits-carousel-shell relative mx-auto w-full max-w-[1400px]">
+      <div className="home-benefits-carousel-shell relative mx-auto w-full max-w-full">
         <div
           ref={viewportRef}
           className={clsx(

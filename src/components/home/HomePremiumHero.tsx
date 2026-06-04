@@ -5,7 +5,7 @@ import { HomeMainHero } from "@/components/home/HomeMainHero";
 export function HomePremiumHero() {
   return (
     <section className="home-hero-top" data-home-section="hero-top">
-      <div className="home-main-hero-region mx-auto w-full max-w-[1320px] px-4 pb-2 pt-4 sm:px-6 sm:pb-3 sm:pt-5 lg:pb-4 lg:pt-6">
+      <div className="home-main-hero-region mx-auto w-full max-w-[1240px] px-4 pb-2 pt-4 sm:px-6 sm:pb-3 sm:pt-5 lg:pb-4 lg:pt-6">
         <div className="home-hero-stack">
           <div className="home-hero-stack__banner">
             <HomeMainBanner />

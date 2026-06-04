@@ -1665,9 +1665,189 @@
 /* Home — 카드형 히어 (컨테이너 내부, 100vw breakout 없음) */
 .home-main-hero-region {
   width: 100%;
-  max-width: 82.5rem; /* 1320px — 배너·검색 공통 상위 래퍼 */
+  max-width: 77.5rem; /* 1240px — 배너·검색 공통 상위 래퍼 */
   margin-inline: auto;
   box-sizing: border-box;
+}
+
+/* 메인 콘텐츠 — 자사몰 밀도 (배너·검색과 동일 폭) */
+.home-main-content {
+  width: 100%;
+  max-width: 77.5rem;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+/* 빠른 아이콘 메뉴 8개 */
+.home-quick-icons {
+  margin-top: 0.25rem;
+}
+
+.home-quick-icons__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .home-quick-icons__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+.home-quick-icon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 6.75rem;
+  padding: 0.75rem 0.5rem 0.875rem;
+  border: 1.5px solid #d8e4f5;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  text-align: center;
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+@media (min-width: 640px) {
+  .home-quick-icon-card {
+    min-height: 7.25rem;
+    padding: 0.875rem 0.625rem 1rem;
+  }
+}
+
+.home-quick-icon-card:hover {
+  border-color: #2f6fed;
+  box-shadow: 0 10px 24px rgba(47, 111, 237, 0.14);
+  transform: translateY(-2px);
+}
+
+.home-quick-icon-card__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  background: #eef5ff;
+  color: #1d4ed8;
+}
+
+.home-quick-icon-card--sky .home-quick-icon-card__icon-wrap {
+  background: #ecfeff;
+  color: #0369a1;
+}
+
+.home-quick-icon-card--indigo .home-quick-icon-card__icon-wrap {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.home-quick-icon-card--slate .home-quick-icon-card__icon-wrap {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.home-quick-icon-card__icon {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.home-quick-icon-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.home-quick-icon-card__title {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1e2a3a;
+}
+
+@media (min-width: 640px) {
+  .home-quick-icon-card__title {
+    font-size: 0.875rem;
+  }
+}
+
+.home-quick-icon-card__desc {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #64748b;
+}
+
+@media (min-width: 640px) {
+  .home-quick-icon-card__desc {
+    font-size: 0.6875rem;
+  }
+}
+
+/* 라인업 하단 허브 링크 */
+.home-main-discover__grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .home-main-discover__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.home-main-discover__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.125rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 1rem;
+  background: #ffffff;
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.home-main-discover__card:hover {
+  border-color: #8fb3e8;
+  box-shadow: 0 8px 20px rgba(47, 111, 237, 0.1);
+  transform: translateY(-1px);
+}
+
+.home-main-discover__title {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.home-main-discover__desc {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.home-catalog-section--brand {
+  margin-top: 0 !important;
 }
 
 .home-hero-stack {
@@ -2917,7 +3097,8 @@
 /* 혜택 프로모 슬라이더 — 이벤트 카드 프레임·외부 네비 */
 .home-benefits-carousel--promo .home-benefits-carousel-shell {
   --home-benefit-gap: 16px;
-  padding-inline: 2.75rem;
+  max-width: 100%;
+  padding-inline: 2.25rem;
 }
 
 @media (min-width: 640px) {
@@ -3021,14 +3202,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-top: -1.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: -1.125rem;
   border-radius: 9999px;
-  border: 2px solid #fecdd3;
-  background: #ffffff;
-  color: #9f1239;
-  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.12);
+  border: 1.5px solid #fecdd3;
+  background: rgb(255 255 255 / 0.92);
+  color: #be123c;
+  box-shadow: 0 2px 10px rgba(225, 29, 72, 0.08);
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
@@ -3119,7 +3300,23 @@
 
 @media (min-width: 1024px) {
   .home-benefit-card-media--banner.home-benefit-card-media--carousel {
-    min-height: 15rem;
+    min-height: 17.5rem;
+  }
+}
+
+.home-benefits-carousel--main .home-benefit-card-media--banner.home-benefit-card-media--carousel {
+  min-height: 12.5rem;
+}
+
+@media (min-width: 640px) {
+  .home-benefits-carousel--main .home-benefit-card-media--banner.home-benefit-card-media--carousel {
+    min-height: 14.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-benefits-carousel--main .home-benefit-card-media--banner.home-benefit-card-media--carousel {
+    min-height: 18rem;
   }
 }
 
