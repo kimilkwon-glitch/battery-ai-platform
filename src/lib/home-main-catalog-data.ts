@@ -38,25 +38,26 @@ export const HOME_LINEUP_PINNED_CODES = [
 ] as const;
 
 /** 메인 검색 예시 chips — 차종·배터리 규격만 (증상·가이드 키워드 제외) */
+/** 검색창 직접 제출과 동일 — type 파라미터 없음 */
 export const HOME_MAIN_SEARCH_EXAMPLES = [
-  { label: "K3", href: getHomeSearchHref("K3", "vehicle") },
-  { label: "쏘렌토 MQ4", href: getHomeSearchHref("쏘렌토 MQ4", "vehicle") },
-  { label: "스타리아", href: getHomeSearchHref("스타리아", "vehicle") },
-  { label: "싼타페 TM", href: getHomeSearchHref("싼타페 TM", "vehicle") },
-  { label: "그랜저 IG", href: getHomeSearchHref("그랜저 IG", "vehicle") },
-  { label: "아반떼 CN7", href: getHomeSearchHref("아반떼 CN7", "vehicle") },
-  { label: "GV80", href: getHomeSearchHref("GV80", "vehicle") },
-  { label: "GV70", href: getHomeSearchHref("GV70", "vehicle") },
-  { label: "포터2", href: getHomeSearchHref("포터2", "vehicle") },
-  { label: "코란도 C", href: getHomeSearchHref("코란도 C", "vehicle") },
-  { label: "AGM60L", href: getHomeSearchHref("AGM60L", "battery") },
-  { label: "AGM70L", href: getHomeSearchHref("AGM70L", "battery") },
-  { label: "AGM80L", href: getHomeSearchHref("AGM80L", "battery") },
-  { label: "AGM80R", href: getHomeSearchHref("AGM80R", "battery") },
-  { label: "AGM95R", href: getHomeSearchHref("AGM95R", "battery") },
-  { label: "DIN74L", href: getHomeSearchHref("DIN74L", "battery") },
-  { label: "90R", href: getHomeSearchHref("90R", "battery") },
-  { label: "100R", href: getHomeSearchHref("100R", "battery") },
+  { label: "K3", href: getHomeSearchHref("K3") },
+  { label: "쏘렌토 MQ4", href: getHomeSearchHref("쏘렌토 MQ4") },
+  { label: "스타리아", href: getHomeSearchHref("스타리아") },
+  { label: "싼타페 TM", href: getHomeSearchHref("싼타페 TM") },
+  { label: "그랜저 IG", href: getHomeSearchHref("그랜저 IG") },
+  { label: "아반떼 CN7", href: getHomeSearchHref("아반떼 CN7") },
+  { label: "GV80", href: getHomeSearchHref("GV80") },
+  { label: "GV70", href: getHomeSearchHref("GV70") },
+  { label: "포터2", href: getHomeSearchHref("포터2") },
+  { label: "코란도 C", href: getHomeSearchHref("코란도 C") },
+  { label: "AGM60L", href: getHomeSearchHref("AGM60L") },
+  { label: "AGM70L", href: getHomeSearchHref("AGM70L") },
+  { label: "AGM80L", href: getHomeSearchHref("AGM80L") },
+  { label: "AGM80R", href: getHomeSearchHref("AGM80R") },
+  { label: "AGM95R", href: getHomeSearchHref("AGM95R") },
+  { label: "DIN74L", href: getHomeSearchHref("DIN74L") },
+  { label: "90R", href: getHomeSearchHref("90R") },
+  { label: "100R", href: getHomeSearchHref("100R") },
 ] as const;
 
 export const HOME_CATALOG_TYPE_FILTERS: HomeProductTypeFilter[] = [

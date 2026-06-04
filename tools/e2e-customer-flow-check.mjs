@@ -53,6 +53,44 @@ async function main() {
     if (!res?.ok()) throw new Error(`HTTP ${res?.status()}`);
   });
 
+  await step("search-example-santafe", "검색 예시 싼타페 TM → 차량 결과 우선", async () => {
+    await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    const chip = page.locator(".home-search-example-chip", { hasText: "싼타페 TM" });
+    await chip.waitFor({ state: "visible", timeout: 15000 });
+    const href = await chip.getAttribute("href");
+    if (!href?.includes("/search?") || href.includes("type=")) {
+      throw new Error(`search example href invalid: ${href}`);
+    }
+    await chip.click();
+    await page.waitForURL(/\/search\?/, { timeout: 15000 });
+    if (page.url().includes("type=")) throw new Error(`landed with type param: ${page.url()}`);
+    const vehicles = page.locator('[data-search-section="vehicles"]').first();
+    await vehicles.waitFor({ state: "visible", timeout: 15000 });
+    const topRelated = page.getByRole("heading", { name: /검색과 연결된 질문/i });
+    if ((await topRelated.count()) > 0) {
+      const relY = await topRelated.first().boundingBox().then((b) => b?.y ?? 99999);
+      const vehY = await vehicles.boundingBox().then((b) => b?.y ?? 0);
+      if (relY < vehY) throw new Error("related questions rendered above vehicle results");
+    }
+    await page.getByText(/싼타페/i).first().waitFor({ timeout: 10000 });
+  });
+
+  await step("search-example-100r", "검색 예시 100R → 규격 결과 우선", async () => {
+    await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    const chip = page.locator(".home-search-example-chip", { hasText: /^100R$/ });
+    await chip.click();
+    await page.waitForURL(/\/search\?q=100R/i, { timeout: 15000 });
+    if (page.url().includes("type=")) throw new Error(`landed with type param: ${page.url()}`);
+    const battery = page.locator('[data-search-primary="battery"]').first();
+    await battery.waitFor({ state: "visible", timeout: 15000 });
+    const topRelated = page.getByRole("heading", { name: /검색과 연결된 질문/i });
+    if ((await topRelated.count()) > 0) {
+      const relY = await topRelated.first().boundingBox().then((b) => b?.y ?? 99999);
+      const batY = await battery.boundingBox().then((b) => b?.y ?? 0);
+      if (relY < batY) throw new Error("related questions rendered above battery results");
+    }
+  });
+
   await step("search-k3", "K3 검색 결과", async () => {
     await page.goto(`${BASE}/search?q=K3`, { waitUntil: "domcontentloaded" });
     const link = page.locator('a[href*="/vehicle/"]').first();

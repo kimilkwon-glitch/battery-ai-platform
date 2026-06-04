@@ -179,6 +179,8 @@ export type SearchPageResults = {
   showSymptomSidebar: boolean;
   symptomDiagnosisFirst: boolean;
   compareBatteryCodes: string[] | null;
+  /** 차종·규격 검색 — 질문/가이드보다 차량·규격 결과 우선 */
+  catalogPrimaryIntent: boolean;
   ux: SearchUxPresentation;
 };
 
@@ -407,6 +409,7 @@ function emptyResults(partial?: Partial<SearchPageResults>): SearchPageResults {
     showSymptomSidebar: false,
     symptomDiagnosisFirst: false,
     compareBatteryCodes: null,
+    catalogPrimaryIntent: false,
     ux: emptySearchUx(),
     ...partial,
   };
@@ -1165,7 +1168,7 @@ export function buildSearchPageResults(
 
     const showVehiclePickerGrid = shouldShowVehiclePickerGrid(query, rawVehicleRows, finalVehicles);
     if (recognizedVehicle && !showVehiclePickerGrid) {
-      vehiclesForRender = [];
+      vehiclesForRender = finalVehicles.slice(0, Math.max(1, maxVehicles));
     } else if (recognizedVehicle && showVehiclePickerGrid) {
       const pickerSource =
         vehiclesForRender.length > 0
@@ -1343,6 +1346,14 @@ export function buildSearchPageResults(
 
     const customerVehicles = vehiclesForRender.map(toCustomerVehicleSearchRow);
     const customerRecognizedVehicle = toCustomerRecognizedVehicle(recognizedVehicle);
+    const catalogPrimaryIntent =
+      !symptomDiagnosisFirst &&
+      !isCustomerGuideSymptomOnlyQuery(query) &&
+      (customerVehicles.length > 0 ||
+        queryHasBatterySpec ||
+        batteriesLimited.length > 0 ||
+        Boolean(customerRecognizedVehicle) ||
+        Boolean(recognizedSpec));
 
     return {
       query,
@@ -1380,6 +1391,7 @@ export function buildSearchPageResults(
       showSymptomSidebar,
       symptomDiagnosisFirst,
       compareBatteryCodes,
+      catalogPrimaryIntent,
       isSparse,
       insufficientMessage,
       missingSpecMessage,

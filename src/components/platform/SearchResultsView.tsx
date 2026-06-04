@@ -91,8 +91,12 @@ export function SearchResultsView({ data }: Props) {
     data.compareBatteryCodes?.[0] ??
     data.recognizedSpec?.primaryBatteryCode ??
     null;
+  const catalogFirst = data.catalogPrimaryIntent;
   const hasHero =
     data.symptomDiagnosisFirst || batteryFocus || data.ux.mode === "purpose";
+  const heroBeforeResults = hasHero && !catalogFirst;
+  const showRelatedQnaTop = Boolean(data.query) && !catalogFirst;
+  const showRelatedQnaBottom = Boolean(data.query) && catalogFirst;
 
   const visibleVehicles = vehiclesOpen ? data.vehicles : data.vehicles.slice(0, limit);
   const showSecondary = batteryFocus ? secondaryOpen : !data.deferSecondary || secondaryOpen;
@@ -137,17 +141,32 @@ export function SearchResultsView({ data }: Props) {
     );
   }
 
+  const searchTitle = (
+    <div
+      className={`${bm.intentSummary} motion-safe:animate-[page-enter_0.35s_ease-out_forwards]`}
+      id="search-summary"
+    >
+      <p className={bm.intentBadge}>{data.ux.intentBadge}</p>
+      <h1 className={`${bm.titleLg} mt-2`}>&ldquo;{data.displayQuery || data.query}&rdquo; 검색 결과</h1>
+      {data.searchRecognitionNote ? (
+        <p className="mt-2 text-sm font-medium text-slate-600">{data.searchRecognitionNote}</p>
+      ) : null}
+    </div>
+  );
+
   return (
     <div className={`space-y-3 ${hasHero ? "pb-24 md:pb-0" : ""}`} data-search-results-root>
-      {hasHero ? (
+      {heroBeforeResults ? (
         <SearchResultHero data={data} fallbackCtas={[...ctas]} />
       ) : null}
 
-      {(data.symptomDiagnosisFirst || data.query) && (data.displayQuery || data.query) ? (
+      {showRelatedQnaTop ? (
         <SearchRelatedQna query={data.displayQuery || data.query} rawQuery={data.query} />
       ) : null}
 
-      {!hasHero ? (
+      {catalogFirst && !hasHero ? searchTitle : null}
+
+      {!hasHero && !catalogFirst ? (
         <div className={`${bm.intentSummary} motion-safe:animate-[page-enter_0.35s_ease-out_forwards]`} id="search-summary">
           <p className={bm.intentBadge}>{data.ux.intentBadge}</p>
           <h1 className={`${bm.titleLg} mt-2`}>&ldquo;{data.displayQuery || data.query}&rdquo; 검색 결과</h1>
@@ -256,6 +275,7 @@ export function SearchResultsView({ data }: Props) {
         <section
           className={`${bm.sectionBlock} ${bm.sectionBlockPad} motion-safe:transition motion-safe:duration-200 motion-safe:hover:shadow-[var(--bm-shadow-md)]`}
           data-search-section="vehicles"
+          data-search-primary="vehicle"
         >
           <SearchVehicleResults
             query={data.displayQuery || data.query}
@@ -272,6 +292,7 @@ export function SearchResultsView({ data }: Props) {
       ) : null}
 
       {visibleBatteriesFiltered.length > 0 ? (
+        <div data-search-primary="battery">
         <Section desc="검색어에 포함된 배터리 규격" title="관련 배터리 규격">
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {visibleBatteriesFiltered.map((item) => {
@@ -307,6 +328,11 @@ export function SearchResultsView({ data }: Props) {
             onToggle={() => setBatteriesOpen((v) => !v)}
           />
         </Section>
+        </div>
+      ) : null}
+
+      {catalogFirst && hasHero ? (
+        <SearchResultHero data={data} fallbackCtas={[...ctas]} />
       ) : null}
 
       {data.popularBatteries.length > 0 ? (
@@ -404,7 +430,20 @@ export function SearchResultsView({ data }: Props) {
         </button>
       ) : null}
 
-      <PlatformHubLinks title="검색 후 확인하기" limit={6} />
+      {showRelatedQnaBottom ? (
+        <SearchRelatedQna
+          query={data.displayQuery || data.query}
+          rawQuery={data.query}
+          maxItems={2}
+          title="함께 보면 좋은 질문"
+          description="차량·규격 확인 후 참고할 수 있는 Q&A입니다."
+        />
+      ) : null}
+
+      <PlatformHubLinks
+        title={catalogFirst ? "함께 보면 좋은 안내" : "검색 후 확인하기"}
+        limit={catalogFirst ? 4 : 6}
+      />
 
       {hasHero ? <SearchMobileStickyCta actions={data.ux.mobileSticky} /> : null}
     </div>

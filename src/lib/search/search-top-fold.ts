@@ -84,8 +84,8 @@ export function computeTopFoldLimits(
     return {
       maxVehicles: multiGeneration ? 8 : 1,
       maxBatteries: specCount > 0 ? 1 : 0,
-      maxQuestions: 2,
-      maxGuides: 1,
+      maxQuestions: 0,
+      maxGuides: 0,
       showPopular: false,
       showHero: false,
       deferSecondary,
