@@ -77,7 +77,6 @@ export function BenefitCardMedia({
         </p>
         <p className="max-w-[16rem] text-[10px] font-semibold leading-relaxed text-white/90">
           {card.label}
-          {card.note ? ` · ${card.note}` : ""}
         </p>
       </div>
     </div>
