@@ -1912,7 +1912,15 @@
   margin-top: 0 !important;
 }
 
-/* 메인 — 로케트·쏠라이트 병렬 라인업 */
+/* 메인 — 브랜드 라인업 넓은 폭 (2컬럼 병렬 + 내부 2열 그리드) */
+.home-main-brand-region {
+  width: 100%;
+  max-width: 87.5rem; /* 1400px */
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding-top: 0.5rem;
+}
+
 .home-brand-lineup-pair {
   width: 100%;
 }
@@ -1927,8 +1935,8 @@
   .home-brand-lineup-pair__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
-    align-items: stretch;
+    gap: 1.125rem;
+    align-items: start;
   }
 }
 
@@ -1978,25 +1986,74 @@
   min-height: 0;
 }
 
-.home-catalog-products--preview {
-  flex: 1;
-  min-height: 0;
+.home-catalog-products--grouped {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-@media (min-width: 1024px) {
-  .home-brand-lineup-pair__grid .home-catalog-products--preview {
-    min-height: 22rem;
-  }
+.home-catalog-type-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.home-catalog-grid--column-preview {
+.home-catalog-type-group__head {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.home-catalog-type-group__chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1.5px solid #d8e4f5;
+  background: #ffffff;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #1e2a3a;
+}
+
+.home-catalog-grid--brand-duo {
   grid-template-columns: 1fr;
 }
 
-@media (min-width: 640px) and (max-width: 1023px) {
-  .home-catalog-grid--column-preview {
+@media (min-width: 480px) {
+  .home-catalog-grid--brand-duo {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* 브랜드 컬럼 — 컴팩트 상품 카드 (2열 유지) */
+.home-catalog-section--brand-column .home-spec-card-image {
+  padding: 0.5rem 0.5rem 0.375rem;
+}
+
+.home-catalog-section--brand-column .home-spec-card-body {
+  padding: 0.5rem 0.5rem 0.625rem;
+}
+
+.home-catalog-section--brand-column .home-spec-card .home-spec-code-title {
+  font-size: 0.8125rem;
+}
+
+.home-catalog-section--brand-column .home-spec-card-badge {
+  font-size: 0.5625rem;
+  padding: 0.125rem 0.4375rem;
+}
+
+.home-catalog-section--brand-column .home-spec-card-actions {
+  gap: 0.375rem;
+}
+
+.home-catalog-section--brand-column .home-spec-card-action {
+  min-height: 2rem;
+  padding-block: 0.375rem;
+  font-size: 0.6875rem;
 }
 
 .home-catalog-section__footer {

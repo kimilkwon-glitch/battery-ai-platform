@@ -4,14 +4,21 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
 import {
-  filterCatalogProducts,
   getCurrentLineup,
   sortLineupWithPinned,
   type HomeCatalogBrandId,
+  type HomeCatalogProduct,
+  type HomeProductTypeTag,
 } from "@/lib/home-main-catalog-data";
 
-/** 메인 병렬 섹션 — 브랜드당 미리보기 카드 수 */
-const LINEUP_PREVIEW_COUNT = 4;
+/** 그룹당 메인 미리보기 카드 수 */
+const PER_GROUP_PREVIEW = 4;
+
+const TYPE_GROUPS: { typeTag: HomeProductTypeTag; label: string }[] = [
+  { typeTag: "AGM", label: "AGM 타입" },
+  { typeTag: "DIN", label: "DIN 타입" },
+  { typeTag: "일반형", label: "일반형" },
+];
 
 type Props = {
   brand: HomeCatalogBrandId;
@@ -21,10 +28,17 @@ type Props = {
   sectionId: string;
   shopHref: string;
   shopLinkLabel: string;
-  /** column: 메인 2컬럼 병렬 / stack: 단독 세로 (상세·기타) */
   layout?: "column" | "stack";
-  maxProducts?: number;
 };
+
+function buildTypeGroups(products: HomeCatalogProduct[], brandLabel: string) {
+  const sorted = sortLineupWithPinned(products);
+  return TYPE_GROUPS.map((group) => ({
+    ...group,
+    heading: `${brandLabel} ${group.typeTag === "일반형" ? "일반형" : group.typeTag}`,
+    products: sorted.filter((p) => p.typeTag === group.typeTag).slice(0, PER_GROUP_PREVIEW),
+  })).filter((g) => g.products.length > 0);
+}
 
 export function HomeBrandLineupSection({
   brand,
@@ -35,12 +49,13 @@ export function HomeBrandLineupSection({
   shopHref,
   shopLinkLabel,
   layout = "column",
-  maxProducts = LINEUP_PREVIEW_COUNT,
 }: Props) {
-  const products = useMemo(() => {
-    const filtered = filterCatalogProducts(getCurrentLineup(brand), "전체");
-    return sortLineupWithPinned(filtered).slice(0, maxProducts);
-  }, [brand, maxProducts]);
+  const brandLabel = brand === "rocket" ? "로케트" : "쏠라이트";
+
+  const typeGroups = useMemo(
+    () => buildTypeGroups(getCurrentLineup(brand), brandLabel),
+    [brand, brandLabel],
+  );
 
   const isColumn = layout === "column";
 
@@ -74,24 +89,34 @@ export function HomeBrandLineupSection({
       <div className="home-catalog-panel home-catalog-panel--open home-catalog-panel--compact">
         <div className="home-catalog-panel__inner">
           <div className="home-catalog-panel__content">
-            <div className="home-catalog-products home-catalog-products--preview">
-              <div
-                className={
-                  isColumn
-                    ? "home-catalog-grid home-catalog-grid--column-preview grid items-stretch gap-3"
-                    : "home-catalog-grid grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
-                }
-              >
-                {products.map((item) => (
-                  <HomeSpecExploreCard key={`${brand}-${item.id}`} brand={brand} product={item} />
-                ))}
-              </div>
-
-              {products.length === 0 ? (
-                <p className="home-catalog-empty mt-4 rounded-xl px-4 py-6 text-center text-sm font-medium">
+            <div className="home-catalog-products home-catalog-products--grouped">
+              {typeGroups.length === 0 ? (
+                <p className="home-catalog-empty rounded-xl px-4 py-6 text-center text-sm font-medium">
                   대표 규격을 준비 중입니다. 전체 보기에서 브랜드 상품을 확인해 주세요.
                 </p>
-              ) : null}
+              ) : (
+                typeGroups.map((group) => (
+                  <div
+                    key={`${brand}-${group.typeTag}`}
+                    className="home-catalog-type-group"
+                    data-home-type-group={group.typeTag}
+                  >
+                    <div className="home-catalog-type-group__head">
+                      <span className="home-catalog-type-group__chip">{group.label}</span>
+                      <span className="home-catalog-type-group__meta sr-only">{group.heading}</span>
+                    </div>
+                    <div className="home-catalog-grid home-catalog-grid--brand-duo grid items-stretch gap-2.5 sm:gap-3">
+                      {group.products.map((item) => (
+                        <HomeSpecExploreCard
+                          key={`${brand}-${group.typeTag}-${item.id}`}
+                          brand={brand}
+                          product={item}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
 
             <div className="home-catalog-section__footer">
