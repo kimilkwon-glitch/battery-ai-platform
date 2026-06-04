@@ -1,8 +1,11 @@
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 import {
   HOME_REPLACEMENT_REVIEWS_HREF,
   HOME_REPLACEMENT_STORIES_DESC,
+  HOME_REPLACEMENT_STORIES_EYEBROW,
+  HOME_REPLACEMENT_STORIES_LABEL,
+  HOME_REPLACEMENT_STORIES_PILLS,
   HOME_REPLACEMENT_STORIES_TITLE,
   HOME_REPLACEMENT_STORIES_VISIBLE_COUNT,
   HOME_REPLACEMENT_STORY_CARDS,
@@ -104,11 +107,25 @@ export function HomeReplacementStoriesSection() {
     >
       <div className="home-replacement-stories__layout">
         <div className="home-replacement-stories__intro">
-          <h2 id="home-replacement-stories-title" className="home-replacement-stories__title">
-            {HOME_REPLACEMENT_STORIES_TITLE}
-          </h2>
-          <p className="home-replacement-stories__desc">{HOME_REPLACEMENT_STORIES_DESC}</p>
-          <StoryActions className="home-replacement-stories__actions home-replacement-stories__actions--desktop" />
+          <div className="home-replacement-stories__intro-card">
+            <div className="home-replacement-stories__intro-inner">
+              <p className="home-replacement-stories__eyebrow">
+                <Quote className="home-replacement-stories__eyebrow-icon" strokeWidth={2.25} aria-hidden />
+                <span>{HOME_REPLACEMENT_STORIES_EYEBROW}</span>
+              </p>
+              <p className="home-replacement-stories__label">{HOME_REPLACEMENT_STORIES_LABEL}</p>
+              <h2 id="home-replacement-stories-title" className="home-replacement-stories__title">
+                {HOME_REPLACEMENT_STORIES_TITLE}
+              </h2>
+              <p className="home-replacement-stories__desc">{HOME_REPLACEMENT_STORIES_DESC}</p>
+              <ul className="home-replacement-stories__pills" aria-label="후기 유형">
+                {HOME_REPLACEMENT_STORIES_PILLS.map((pill) => (
+                  <li key={pill}>{pill}</li>
+                ))}
+              </ul>
+              <StoryActions className="home-replacement-stories__actions home-replacement-stories__actions--desktop" />
+            </div>
+          </div>
         </div>
 
         <div className="home-replacement-stories__cards-wrap">
