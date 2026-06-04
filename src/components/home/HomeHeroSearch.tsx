@@ -16,7 +16,7 @@ export function HomeHeroSearch({ inputClassName, onAutocompleteOpenChange }: Pro
 
   const compoundInputClass =
     inputClassName ??
-    "home-main-search-input h-14 w-full rounded-none border-0 bg-white px-4 text-lg font-semibold text-slate-900 shadow-none outline-none ring-0 transition placeholder:text-[15px] placeholder:font-medium placeholder:text-slate-500 hover:bg-white focus:border-0 focus:shadow-none focus:ring-0 sm:h-16 sm:px-5 sm:text-xl sm:placeholder:text-base";
+    "home-main-search-input h-full min-h-0 w-full rounded-none border-0 bg-white shadow-none outline-none ring-0 transition placeholder:text-slate-500 hover:bg-white focus:border-0 focus:shadow-none focus:ring-0";
 
   const [autocompleteHost, setAutocompleteHost] = useState<HTMLDivElement | null>(null);
 

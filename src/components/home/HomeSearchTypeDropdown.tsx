@@ -102,7 +102,7 @@ export function HomeSearchTypeDropdown({ value, onChange }: Props) {
         type="button"
         id="home-search-type"
         className={clsx(
-          "flex h-14 w-full items-center gap-1.5 rounded-t-2xl border-0 bg-slate-50/90 px-3 text-left transition sm:h-16 sm:rounded-l-2xl sm:rounded-tr-none",
+          "home-search-type-trigger flex h-full min-h-0 w-full items-center gap-1.5 rounded-t-2xl border-0 bg-slate-50/90 text-left transition sm:rounded-l-2xl sm:rounded-tr-none",
           "hover:bg-slate-100/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-400/70",
           open && "bg-white ring-2 ring-inset ring-blue-400/50",
         )}

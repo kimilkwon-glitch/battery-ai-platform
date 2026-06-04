@@ -211,7 +211,7 @@ export function VehicleSearchBox({
 
   if (showButton) {
     const submitBtnClass = compoundBar
-      ? "h-14 min-h-[44px] shrink-0 rounded-none rounded-br-2xl border-0 border-l border-slate-200/90 bg-blue-600 px-5 text-sm font-black text-white hover:bg-blue-700 sm:h-16 sm:rounded-br-2xl sm:px-6"
+      ? "h-full min-h-0 shrink-0 rounded-none rounded-br-2xl border-0 border-l border-slate-200/90 bg-blue-600 px-5 text-sm font-black text-white hover:bg-blue-700 sm:rounded-br-2xl sm:px-6"
       : "h-11 shrink-0 rounded-lg bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700 sm:h-16";
 
     return (
