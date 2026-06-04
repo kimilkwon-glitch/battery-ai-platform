@@ -10,7 +10,13 @@ import {
   clearBuyNowCheckoutItems,
   getBuyNowCheckoutItems,
   resolveCheckoutFlowMode,
+  setBuyNowCheckoutItems,
 } from "@/lib/cart/checkout-flow";
+import {
+  createCartItemFromBattery,
+  createCartItemFromVehicleBattery,
+} from "@/lib/cart/cart-item-factory";
+import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import {
   OrderRequestCustomerFields,
   type CustomerFormValues,
@@ -87,12 +93,41 @@ export function CheckoutOrderPage() {
   useEffect(() => {
     if (!hydrated) return;
     if (isBuyNow) {
-      setBuyNowItems(getBuyNowCheckoutItems());
+      const fromSession = getBuyNowCheckoutItems();
+      if (fromSession?.length) {
+        setBuyNowItems(fromSession);
+        return;
+      }
+      const batteryRaw = searchParams.get("battery")?.trim();
+      const batteryCode = batteryRaw ? canonicalBatteryCode(batteryRaw) || batteryRaw : "";
+      if (batteryCode) {
+        const vehicleSlug = searchParams.get("vehicle")?.trim() || "";
+        const brand = searchParams.get("brand")?.trim();
+        const brandName =
+          brand === "rocket" ? "로케트" : brand === "solite" ? "쏠라이트" : undefined;
+        const seeded =
+          vehicleSlug.length > 0
+            ? createCartItemFromVehicleBattery({
+                batteryCode,
+                vehicleSlug,
+                vehicleTitle: searchParams.get("vehicleTitle")?.trim() || vehicleSlug,
+                fuelLabel: searchParams.get("fuel")?.trim() || undefined,
+              })
+            : createCartItemFromBattery({
+                batteryCode,
+                brandName,
+                source: "vehicle_detail",
+              });
+        setBuyNowCheckoutItems([seeded]);
+        setBuyNowItems([seeded]);
+        return;
+      }
+      setBuyNowItems(null);
     } else {
       clearBuyNowCheckoutItems();
       setBuyNowItems(null);
     }
-  }, [hydrated, isBuyNow]);
+  }, [hydrated, isBuyNow, searchParams]);
 
   const items = useMemo(() => {
     if (isBuyNow) return buyNowItems ?? [];

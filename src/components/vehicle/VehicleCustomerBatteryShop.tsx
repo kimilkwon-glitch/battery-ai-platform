@@ -2,7 +2,12 @@ import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { getBatteryImageFit } from "@/lib/battery-image-presentation";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
-import { batteryDetailHref } from "@/lib/canonical-battery-code";
+import {
+  BATTERY_SPEC_DETAIL_VIEW_LABEL,
+  batterySpecDetailViewHref,
+  buildBatteryCheckoutHref,
+  type BatteryCardBrandId,
+} from "@/lib/battery-card-cta";
 import {
   findBatteryProductByCode,
   getBatteryImageSet,
@@ -60,7 +65,13 @@ function BrandProductCard({
   const hasImageSet = Boolean(imageSet?.main?.trim());
   const displayLabel = productBatteryCode(productCode) || productCode;
   const display = parseBatterySpecDisplay(displayLabel);
-  const detailHref = `${batteryDetailHref(productCode)}?brand=${brandId}`;
+  const specHref = batterySpecDetailViewHref(vehicleSpecCode, { brand: brandId as BatteryCardBrandId });
+  const orderHref = buildBatteryCheckoutHref({
+    battery: vehicleSpecCode,
+    vehicle: vehicleSlug,
+    brand: brandId as BatteryCardBrandId,
+    flow: "buy_now",
+  });
 
   return (
     <article className="vehicle-brand-product">
@@ -88,14 +99,16 @@ function BrandProductCard({
             {getHomeCardCopy(productCode) ?? "상세 페이지에서 제원을 확인할 수 있습니다."}
           </p>
         ) : null}
-        <div className="vehicle-brand-product__actions">
-          <Link href={detailHref} className={`${bm.btnSecondary} w-full text-sm font-black`}>
-            상품 상세 보기
+        <div className="vehicle-brand-product__actions flex flex-col gap-2">
+          <Link href={specHref} className={`${bm.btnSecondary} w-full text-sm font-black`}>
+            {BATTERY_SPEC_DETAIL_VIEW_LABEL}
           </Link>
           <Link
-            href={`${detailHref}#battery-order`}
-            className={`${bm.btnPrimary} w-full text-sm font-black`}
+            href={orderHref}
+            className={`${bm.btnPrimary} w-full text-sm font-black shadow-sm`}
             data-vehicle-slug={vehicleSlug}
+            data-battery-spec={vehicleSpecCode}
+            data-brand={brandId}
           >
             주문하기
           </Link>

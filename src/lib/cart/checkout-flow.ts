@@ -38,6 +38,8 @@ export function clearBuyNowCheckoutItems(): void {
 export function resolveCheckoutFlowMode(
   searchParams: URLSearchParams | null | undefined,
 ): CheckoutFlowMode {
-  if (searchParams?.get("flow") === "buy_now") return "buy_now";
+  const flow = searchParams?.get("flow");
+  if (flow === "buy_now") return "buy_now";
+  if (searchParams?.get("battery")?.trim()) return "buy_now";
   return "cart";
 }

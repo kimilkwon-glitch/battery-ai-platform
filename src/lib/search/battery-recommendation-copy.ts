@@ -1,5 +1,5 @@
 import type { VehicleBatterySpecTier } from "@/lib/search/resolve-vehicle-battery-spec";
-import { batteryDetailHref, batterySpecHref } from "@/lib/canonical-battery-code";
+import { buildBatteryCheckoutHref, batterySpecDetailViewHref } from "@/lib/battery-card-cta";
 import { HUB_PHOTO } from "@/lib/customer-hub-routes";
 
 /** 검색·카드 — 확정 규격 외 보조 1줄 (과도한 방어 문구 금지) */
@@ -17,8 +17,8 @@ export const NO_VEHICLE_MATCH_MESSAGE =
 export type SearchCtaLink = { label: string; href: string };
 
 export const PRIMARY_BATTERY_CTAS = (code: string): SearchCtaLink[] => [
-  { label: "주문하기", href: batteryDetailHref(code) },
-  { label: "규격 보기", href: batterySpecHref(code) },
+  { label: "주문하기", href: buildBatteryCheckoutHref({ battery: code, flow: "buy_now" }) },
+  { label: "배터리 규격 보기", href: batterySpecDetailViewHref(code) },
   { label: "사진으로 규격 확인", href: HUB_PHOTO },
   { label: "리뷰 보기", href: `/reviews?battery=${encodeURIComponent(code)}` },
 ];

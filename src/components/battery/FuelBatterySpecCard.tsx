@@ -9,7 +9,11 @@ import { SearchResultSpecChips } from "@/components/platform/SearchResultCoreSum
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { bm } from "@/lib/design-tokens";
 
-import { batterySpecHref } from "@/lib/canonical-battery-code";
+import {
+  BATTERY_SPEC_DETAIL_VIEW_LABEL,
+  batterySpecDetailViewHref,
+  buildBatteryCheckoutHref,
+} from "@/lib/battery-card-cta";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { hasBrandSpecData } from "@/lib/battery-knowledge";
@@ -143,12 +147,24 @@ export function FuelBatterySpecCard({
         ) : null}
 
         <div className="mt-auto flex flex-col gap-2 pt-3">
+          {vehicleSlug ? (
+            <Link
+              className={`${bm.btnPrimary} inline-flex w-full items-center justify-center gap-1.5 text-xs font-black`}
+              href={buildBatteryCheckoutHref({
+                battery: batteryCode,
+                vehicle: vehicleSlug,
+                flow: "buy_now",
+              })}
+            >
+              주문하기
+            </Link>
+          ) : null}
           <Link
-            className={`${bm.btnPrimary} inline-flex w-full items-center justify-center gap-1.5 text-xs`}
-            href={batterySpecHref(batteryCode)}
+            className={`${bm.btnSecondary} inline-flex w-full items-center justify-center gap-1.5 text-xs font-black`}
+            href={batterySpecDetailViewHref(batteryCode)}
           >
-            <AppIcon iconKey="batterySpec" size="sm" className="!text-white" />
-            해당 규격 보기
+            <AppIcon iconKey="batterySpec" size="sm" />
+            {BATTERY_SPEC_DETAIL_VIEW_LABEL}
           </Link>
           <Link
             className="text-center text-[10px] font-bold text-slate-500 hover:text-blue-700 hover:underline"

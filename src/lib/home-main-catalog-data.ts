@@ -6,7 +6,8 @@ import {
   type BatterySpecEntry,
 } from "@/lib/battery-alias-map";
 import { getHomeSearchHref } from "@/lib/home-search-types";
-import { batteryDetailHref, batterySpecHref } from "@/lib/canonical-battery-code";
+import { buildBatteryCheckoutHref, batterySpecDetailViewHref } from "@/lib/battery-card-cta";
+import { batterySpecHref } from "@/lib/canonical-battery-code";
 import { HUB_PHOTO, HUB_SHOP_ANCHORS, HUB_STORE_ANCHORS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 export type HomeCatalogBrandId = "rocket" | "solite";
 
@@ -318,12 +319,12 @@ export function homeSpecCardSecondaryCtas(code: string) {
     {
       key: "order",
       label: "주문하기",
-      href: batteryDetailHref(code),
+      href: buildBatteryCheckoutHref({ battery: code, flow: "buy_now" }),
     },
     {
       key: "detail",
-      label: "규격 보기",
-      href: batterySpecHref(code),
+      label: "배터리 규격 보기",
+      href: batterySpecDetailViewHref(code),
     },
   ] as const;
 }

@@ -1,21 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { batteryDetailHref, batterySpecHref } from "@/lib/canonical-battery-code";
+import {
+  BATTERY_SPEC_DETAIL_VIEW_LABEL,
+  batterySpecDetailViewHref,
+  buildBatteryCheckoutHref,
+} from "@/lib/battery-card-cta";
+import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 
 type Props = {
   batteryCode: string;
-  /** 레거시 — shop 패널 등. 미지정 시 구매 상세(/batteries)로 이동 */
+  /** 레거시 — shop 패널 등. 미지정 시 체크아웃 buy_now */
   onOrder?: () => void;
-  /** 주문하기 링크 (onOrder 없을 때) */
+  /** 주문하기 링크 (onOrder 없을 때). 미지정 시 buildBatteryCheckoutHref */
   orderHref?: string;
+  vehicleSlug?: string;
+  brand?: "rocket" | "solite";
 };
 
-export function BatteryProductCardActions({ batteryCode, onOrder, orderHref }: Props) {
+export function BatteryProductCardActions({
+  batteryCode,
+  onOrder,
+  orderHref,
+  vehicleSlug,
+  brand,
+}: Props) {
   const code = batteryCode.trim();
-  const specHref = batterySpecHref(code);
-  const purchaseHref = orderHref ?? batteryDetailHref(code);
+  const specHref = batterySpecDetailViewHref(code, brand ? { brand } : undefined);
+  const checkoutHref =
+    orderHref ??
+    buildBatteryCheckoutHref({
+      battery: code,
+      vehicle: vehicleSlug,
+      brand,
+      flow: "buy_now",
+    });
   const reviewsHref = `${batteryDetailHref(code)}#battery-reviews`;
 
   return (
@@ -30,7 +50,7 @@ export function BatteryProductCardActions({ batteryCode, onOrder, orderHref }: P
         href={specHref}
         className={`${bm.btnSecondary} w-full justify-center py-3 text-sm font-black transition hover:shadow-sm sm:text-base`}
       >
-        규격 보기
+        {BATTERY_SPEC_DETAIL_VIEW_LABEL}
       </Link>
       {onOrder ? (
         <button
@@ -42,7 +62,7 @@ export function BatteryProductCardActions({ batteryCode, onOrder, orderHref }: P
         </button>
       ) : (
         <Link
-          href={purchaseHref}
+          href={checkoutHref}
           className={`${bm.btnPrimary} w-full justify-center py-4 text-base font-black shadow-sm transition hover:shadow-md`}
         >
           주문하기

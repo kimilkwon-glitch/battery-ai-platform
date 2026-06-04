@@ -127,14 +127,37 @@
   pointer-events: auto;
 }
 
-.bm-store-card {
-  border: 2px solid transparent;
-  box-shadow: 0 4px 14px -8px rgba(15, 23, 42, 0.12);
+/* 지점 카드 — 모바일 우선 가독성(학장·덕천 공통) */
+.bm-store-card.bm-card-unified {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #94a3b8;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.05),
+    0 6px 20px -8px rgba(15, 23, 42, 0.18);
+}
+
+.bm-store-card--deokcheon.bm-card-unified:not(.bm-store-card--active):not(.bm-store-card--selected) {
+  border-color: #60a5fa;
+}
+
+.bm-store-card--hakjang.bm-card-unified:not(.bm-store-card--active):not(.bm-store-card--selected) {
+  border-color: #34d399;
 }
 
 .bm-store-card:hover {
-  border-color: rgba(148, 163, 184, 0.55);
-  box-shadow: 0 8px 22px -10px rgba(15, 23, 42, 0.16);
+  border-color: #64748b;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.06),
+    0 10px 26px -10px rgba(15, 23, 42, 0.22);
+}
+
+.bm-store-card--deokcheon:hover:not(.bm-store-card--active):not(.bm-store-card--selected) {
+  border-color: #3b82f6;
+}
+
+.bm-store-card--hakjang:hover:not(.bm-store-card--active):not(.bm-store-card--selected) {
+  border-color: #10b981;
 }
 
 .bm-store-card:focus-visible {
@@ -147,31 +170,208 @@
   border-width: 2px !important;
   transform: translateY(-1px);
   box-shadow:
-    0 0 0 1px rgba(15, 23, 42, 0.04),
-    0 12px 28px -12px rgba(15, 23, 42, 0.2) !important;
+    0 0 0 1px rgba(15, 23, 42, 0.06),
+    0 14px 32px -12px rgba(15, 23, 42, 0.24) !important;
 }
 
 .bm-store-card--deokcheon.bm-store-card--active,
 .bm-store-card--deokcheon.bm-store-card--selected {
-  border-color: #3b82f6 !important;
-  background: linear-gradient(180deg, #f8fafc 0%, #fff 48%) !important;
+  border-color: #2563eb !important;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 52%) !important;
   box-shadow:
-    0 0 0 3px rgba(59, 130, 246, 0.14),
-    0 12px 28px -12px rgba(37, 99, 235, 0.22) !important;
+    0 0 0 3px rgba(59, 130, 246, 0.2),
+    0 14px 32px -12px rgba(37, 99, 235, 0.28) !important;
 }
 
 .bm-store-card--hakjang.bm-store-card--active,
 .bm-store-card--hakjang.bm-store-card--selected {
-  border-color: #10b981 !important;
-  background: linear-gradient(180deg, #f0fdf4 0%, #fff 48%) !important;
+  border-color: #059669 !important;
+  background: linear-gradient(180deg, #ecfdf5 0%, #fff 52%) !important;
   box-shadow:
-    0 0 0 3px rgba(16, 185, 129, 0.12),
-    0 12px 28px -12px rgba(5, 150, 105, 0.18) !important;
+    0 0 0 3px rgba(16, 185, 129, 0.18),
+    0 14px 32px -12px rgba(5, 150, 105, 0.24) !important;
 }
 
 .bm-store-card--selected .bm-store-badge,
 .bm-store-card--active .bm-store-badge {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
+}
+
+.bm-store-card-info {
+  border-top: 2px solid #e2e8f0;
+  background: linear-gradient(180deg, #f1f5f9 0%, #fff 14%);
+}
+
+.bm-store-card--deokcheon .bm-store-card-info {
+  border-top-color: #bfdbfe;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 16%);
+}
+
+.bm-store-card--hakjang .bm-store-card-info {
+  border-top-color: #a7f3d0;
+  background: linear-gradient(180deg, #ecfdf5 0%, #fff 16%);
+}
+
+.bm-store-field-label {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.bm-store-region-text {
+  margin-top: 0.5rem;
+  min-height: 3.25rem;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.bm-store-card--deokcheon.bm-store-card--selected .bm-store-region-text,
+.bm-store-card--deokcheon.bm-store-card--active .bm-store-region-text {
+  color: #1e3a8a;
+}
+
+.bm-store-card--hakjang.bm-store-card--selected .bm-store-region-text,
+.bm-store-card--hakjang.bm-store-card--active .bm-store-region-text {
+  color: #047857;
+}
+
+.bm-store-phone-link {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #1e3a8a;
+  text-decoration-thickness: 2px;
+}
+
+.bm-store-phone-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.bm-store-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 2rem;
+  margin-top: auto;
+}
+
+.bm-store-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.bm-store-btn {
+  display: inline-flex;
+  min-height: 52px;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0 1.25rem;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.2;
+  transition:
+    box-shadow 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+@media (min-width: 640px) {
+  .bm-store-region-text {
+    font-size: 1.35rem;
+  }
+
+  .bm-store-phone-link {
+    font-size: 1.65rem;
+  }
+
+  .bm-store-btn {
+    flex: 0 1 auto;
+    min-width: 140px;
+  }
+
+  .bm-store-btn--wide-sm {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+  }
+}
+
+.bm-store-btn--call {
+  border: 2px solid #1d4ed8;
+  background: var(--bm-primary, #2563eb);
+  color: #fff;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 4px 14px -4px rgba(37, 99, 235, 0.55);
+}
+
+.bm-store-btn--call:hover {
+  border-color: #1e40af;
+  background: var(--bm-primary-hover, #1d4ed8);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 6px 18px -6px rgba(37, 99, 235, 0.6);
+}
+
+.bm-store-btn--secondary {
+  border: 2px solid #64748b;
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.bm-store-btn--secondary:hover {
+  border-color: #334155;
+  background: #f8fafc;
+  box-shadow: 0 3px 10px -4px rgba(15, 23, 42, 0.14);
+}
+
+.bm-store-btn--blog {
+  width: 100%;
+  border-width: 2px;
+  border-style: solid;
+  padding: 1rem 1.25rem;
+}
+
+.bm-store-btn--blog-deokcheon {
+  border-color: #3b82f6;
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+.bm-store-btn--blog-deokcheon:hover {
+  border-color: #2563eb;
+  background: #bfdbfe;
+  box-shadow: 0 4px 14px -6px rgba(37, 99, 235, 0.35);
+}
+
+.bm-store-btn--blog-hakjang {
+  border-color: #10b981;
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.bm-store-btn--blog-hakjang:hover {
+  border-color: #059669;
+  background: #a7f3d0;
+  box-shadow: 0 4px 14px -6px rgba(5, 150, 105, 0.32);
+}
+
+.bm-store-action-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  stroke-width: 2.75;
 }
 
 .busan-region-map {
