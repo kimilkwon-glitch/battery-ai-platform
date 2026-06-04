@@ -84,6 +84,9 @@ export function HomeMainBanner() {
     return () => window.clearInterval(t);
   }, [slides.length]);
 
+  const activePromoLabel =
+    activeSlide.type === "image" ? activeSlide.promoLabel : undefined;
+
   return (
     <section
       className="home-hero-carousel w-full"
@@ -96,69 +99,83 @@ export function HomeMainBanner() {
         pausedRef.current = false;
       }}
     >
-      <div className="home-hero-carousel__frame relative w-full overflow-hidden rounded-2xl border border-slate-200/80 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
-        <div
-          className="home-hero-carousel__viewport home-hero-carousel__viewport--unified relative w-full"
-          data-hero-slide-id={activeSlide.type === "image" ? activeSlide.id : undefined}
-        >
-          {slides.map((s, i) => {
-            const isActive = i === index;
-            return (
-              <div
-                key={s.id}
-                hidden={!isActive}
-                className="home-hero-carousel__slide-layer absolute inset-0 h-full w-full"
-              >
-                {s.type === "image" ? (
-                  <HeroImageSlide slide={s} priority={i === 0} isActive={isActive} />
-                ) : (
-                  <HeroPlaceholderSlide slide={s} />
-                )}
-              </div>
-            );
-          })}
-        </div>
+      <div className="home-hero-carousel__shell">
+        <div className="home-hero-carousel__glow" aria-hidden />
 
         {slides.length > 1 ? (
           <>
             <button
               type="button"
               onClick={() => goTo(index - 1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--prev absolute left-2 top-1/2 z-[15] flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/60 text-white shadow-lg sm:left-3 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--prev"
               aria-label="이전 배너"
             >
-              <ChevronLeft className="size-4" />
+              <ChevronLeft className="size-5" aria-hidden />
             </button>
             <button
               type="button"
               onClick={() => goTo(index + 1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--next absolute right-2 top-1/2 z-[15] flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-slate-900/60 text-white shadow-lg sm:right-3 sm:size-11"
+              className="home-hero-carousel__nav home-hero-carousel__nav--next"
               aria-label="다음 배너"
             >
-              <ChevronRight className="size-4" />
+              <ChevronRight className="size-5" aria-hidden />
             </button>
-            <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 sm:bottom-5">
-              <div className="flex gap-1.5 rounded-full bg-slate-900/40 px-2 py-1">
+          </>
+        ) : null}
+
+        <div className="home-hero-carousel__frame">
+          {activePromoLabel ? (
+            <span className="home-hero-carousel__promo-label">{activePromoLabel}</span>
+          ) : null}
+
+          <div className="home-hero-carousel__inner">
+            <div
+              className="home-hero-carousel__viewport home-hero-carousel__viewport--unified relative w-full"
+              data-hero-slide-id={activeSlide.type === "image" ? activeSlide.id : undefined}
+            >
+              {slides.map((s, i) => {
+                const isActive = i === index;
+                return (
+                  <div
+                    key={s.id}
+                    hidden={!isActive}
+                    className="home-hero-carousel__slide-layer absolute inset-0 h-full w-full"
+                  >
+                    {s.type === "image" ? (
+                      <HeroImageSlide slide={s} priority={i === 0} isActive={isActive} />
+                    ) : (
+                      <HeroPlaceholderSlide slide={s} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {slides.length > 1 ? (
+            <div className="home-hero-carousel__indicators">
+              <div className="home-hero-carousel__dots" role="tablist" aria-label="배너 슬라이드">
                 {slides.map((s, slideIndex) => (
                   <button
                     key={s.id}
                     type="button"
+                    role="tab"
                     onClick={() => goTo(slideIndex)}
                     className={clsx(
-                      "h-2 rounded-full",
-                      slideIndex === index ? "w-5 bg-white" : "w-2 bg-white/45",
+                      "home-hero-carousel__dot",
+                      slideIndex === index && "home-hero-carousel__dot--active",
                     )}
                     aria-label={`배너 ${slideIndex + 1}`}
-                    aria-current={slideIndex === index}
+                    aria-selected={slideIndex === index}
                   />
                 ))}
               </div>
-              <span className="rounded-full bg-slate-900/40 px-2 py-0.5 text-[10px] font-bold text-white/90">
+              <span className="home-hero-carousel__counter" aria-live="polite">
                 {index + 1}/{slides.length}
               </span>
             </div>
-          </>
-        ) : null}
+          ) : null}
+        </div>
       </div>
     </section>
   );

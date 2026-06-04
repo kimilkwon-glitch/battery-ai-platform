@@ -164,7 +164,7 @@ export function BenefitsPromoCarousel({
     >
       {showHeader ? <BenefitsSectionHeader className="mb-3 sm:mb-4" /> : null}
 
-      <div className="home-benefits-carousel-shell relative mx-auto w-full max-w-[1400px] px-11 sm:px-12">
+      <div className="home-benefits-carousel-shell relative mx-auto w-full max-w-[1400px]">
         <div
           ref={viewportRef}
           className={clsx(
@@ -207,39 +207,44 @@ export function BenefitsPromoCarousel({
               type="button"
               onClick={() => go(-1)}
               disabled={index === 0}
-              className="home-benefits-nav home-benefits-nav--prev absolute left-0 top-[calc(50%-1.35rem)] z-10 flex size-10 items-center justify-center rounded-full border border-slate-200/90 bg-white text-slate-700 shadow-md transition hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-35"
+              className="home-benefits-nav home-benefits-nav--prev"
               aria-label="이전 혜택"
             >
-              <ChevronLeft className="size-5" />
+              <ChevronLeft className="size-5" aria-hidden />
             </button>
             <button
               type="button"
               onClick={() => go(1)}
               disabled={index >= maxIndex}
-              className="home-benefits-nav home-benefits-nav--next absolute right-0 top-[calc(50%-1.35rem)] z-10 flex size-10 items-center justify-center rounded-full border border-slate-200/90 bg-white text-slate-700 shadow-md transition hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-35"
+              className="home-benefits-nav home-benefits-nav--next"
               aria-label="다음 혜택"
             >
-              <ChevronRight className="size-5" />
+              <ChevronRight className="size-5" aria-hidden />
             </button>
           </>
         ) : null}
 
         {canScroll ? (
-          <div className="mt-3 flex justify-center gap-1.5" role="tablist" aria-label="혜택 슬라이드 위치">
-            {cards.map((card, i) => (
-              <button
-                key={card.id}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                onClick={() => goTo(i)}
-                className={clsx(
-                  "h-2 rounded-full transition-all duration-300",
-                  i === index ? "w-5 bg-red-600" : "w-2 bg-red-200 hover:bg-red-300",
-                )}
-                aria-label={`혜택 ${i + 1}`}
-              />
-            ))}
+          <div className="home-benefits-carousel__indicators mt-3">
+            <div className="home-benefits-carousel__dots" role="tablist" aria-label="혜택 슬라이드 위치">
+              {cards.map((card, i) => (
+                <button
+                  key={card.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === index}
+                  onClick={() => goTo(i)}
+                  className={clsx(
+                    "home-benefits-carousel__dot",
+                    i === index && "home-benefits-carousel__dot--active",
+                  )}
+                  aria-label={`혜택 ${i + 1}`}
+                />
+              ))}
+            </div>
+            <span className="home-benefits-carousel__counter" aria-live="polite">
+              {index + 1}/{cards.length}
+            </span>
           </div>
         ) : null}
       </div>

@@ -25,10 +25,8 @@ export function BenefitCardVisual({
   const inner = (
     <article
       className={clsx(
-        "home-benefit-card home-benefit-card--banner home-benefit-card--image-only bm-card-unified block w-full overflow-hidden rounded-2xl border shadow-sm",
-        active
-          ? "home-benefit-card--active border-amber-200/90"
-          : "border-slate-200/90 bg-slate-50/50 opacity-90",
+        "home-benefit-card home-benefit-card--banner home-benefit-card--image-only bm-card-unified block w-full overflow-hidden",
+        active ? "home-benefit-card--active" : "home-benefit-card--inactive",
         !active && "cursor-default",
       )}
     >

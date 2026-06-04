@@ -15,6 +15,8 @@ export type HeroSlide =
       imageAlt: string;
       image: string;
       href: string;
+      /** 카드 좌상단 UI 프로모 라벨 (이미지 문구와 별도) */
+      promoLabel: string;
     }
   | {
       id: string;
@@ -38,6 +40,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     imageAlt: "매장 방문 및 출장 교체 메인 배너",
     image: MAIN_BANNER_STORE_VISIT_ONSITE_SRC,
     href: HUB_STORE_ANCHORS.visit,
+    promoLabel: "STORE & VISIT",
   },
   {
     id: "nationwide-delivery",
@@ -48,6 +51,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     imageAlt: "전국 택배 주문 메인 배너",
     image: MAIN_BANNER_NATIONWIDE_DELIVERY_SRC,
     href: HUB_SHOP_ANCHORS.delivery,
+    promoLabel: "DELIVERY",
   },
   {
     id: "hakjang-night-unmanned",
@@ -58,6 +62,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     imageAlt: "학장점 야간 무인 시스템 메인 배너",
     image: MAIN_BANNER_HAKJANG_NIGHT_SRC,
     href: `${HUB_STORE_DETAIL}#store-hakjang`,
+    promoLabel: "24H SERVICE",
   },
 ];
 

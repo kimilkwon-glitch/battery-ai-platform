@@ -1749,7 +1749,7 @@
   }
 }
 
-/* hero — 카드형 배너, 네비는 absolute overlay */
+/* hero — 프리미엄 프로모 카드 프레임·글로우·외부 네비 */
 .home-hero-carousel {
   display: block;
   width: 100%;
@@ -1757,30 +1757,101 @@
   margin-inline: auto;
 }
 
+.home-hero-carousel__shell {
+  position: relative;
+  padding-inline: 2.75rem;
+}
+
+@media (min-width: 640px) {
+  .home-hero-carousel__shell {
+    padding-inline: 3.25rem;
+  }
+}
+
+.home-hero-carousel__glow {
+  position: absolute;
+  inset: -0.65rem 1.5rem -0.35rem;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 1.75rem;
+  background:
+    radial-gradient(ellipse 72% 58% at 18% 42%, rgba(37, 99, 235, 0.16), transparent 68%),
+    radial-gradient(ellipse 58% 52% at 82% 58%, rgba(245, 158, 11, 0.12), transparent 70%);
+  filter: blur(14px);
+  opacity: 0.95;
+}
+
 .home-hero-carousel__frame {
   position: relative;
+  z-index: 1;
   isolation: isolate;
   width: 100%;
+  padding: 0.5rem;
+  border-radius: 1.25rem;
+  border: 3px solid #8fb3e8;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+  transition:
+    transform 240ms ease,
+    box-shadow 240ms ease;
 }
 
-/* 하단 그radient 최소화 — 노란 안내바·문구 가림 방지 */
-.home-hero-carousel__frame::after {
-  content: "";
+@media (min-width: 640px) {
+  .home-hero-carousel__frame {
+    padding: 0.625rem;
+    border-radius: 1.5rem;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-hero-carousel__shell:hover .home-hero-carousel__frame {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 52px rgba(15, 23, 42, 0.2);
+  }
+}
+
+.home-hero-carousel__promo-label {
   position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 8;
-  height: 6%;
-  pointer-events: none;
-  background: linear-gradient(
-    to top,
-    rgba(15, 23, 42, 0.06) 0%,
-    transparent 100%
-  );
+  top: 0.875rem;
+  left: 0.875rem;
+  z-index: 14;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.3rem 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1a3d6b 0%, #11284b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 2px 8px rgba(17, 40, 75, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-.home-hero-carousel__frame:hover {
-  box-shadow: 0 20px 56px rgba(15, 23, 42, 0.14);
+.home-hero-carousel__promo-label::before {
+  content: "";
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background: #fbbf24;
+  box-shadow: 0 0 6px rgba(251, 191, 36, 0.65);
+}
+
+.home-hero-carousel__inner {
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #0f172a;
+}
+
+@media (min-width: 640px) {
+  .home-hero-carousel__inner {
+    border-radius: 1.125rem;
+  }
 }
 
 .home-hero-carousel__viewport {
@@ -1878,19 +1949,105 @@
   background: #0f172a;
 }
 
-/* 좌우 화살표 — 이미지 위 overlay, 레이아웃 폭을 줄이지 않음 */
+/* 좌우 화살표 — 카드 바깥, 흰 원형 + 네이비 아이콘 */
 .home-hero-carousel__nav {
-  z-index: 15;
-  transition: none;
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: -1.25rem;
+  border-radius: 9999px;
+  border: 2px solid #e2ebf5;
+  background: #ffffff;
+  color: #11284b;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.14);
   pointer-events: auto;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
-.home-hero-carousel__frame .absolute.bottom-4 {
+@media (min-width: 640px) {
+  .home-hero-carousel__nav {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-top: -1.375rem;
+  }
+}
+
+.home-hero-carousel__nav--prev {
+  left: 0;
+}
+
+.home-hero-carousel__nav--next {
+  right: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-hero-carousel__nav:hover {
+    border-color: #8fb3e8;
+    background: #f4f8ff;
+    box-shadow: 0 6px 22px rgba(28, 76, 160, 0.18);
+    transform: scale(1.04);
+  }
+}
+
+.home-hero-carousel__indicators {
+  position: absolute;
+  bottom: 0.875rem;
+  left: 50%;
   z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+  padding: 0.35rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(6px);
 }
 
-.home-hero-carousel__nav:hover {
-  background-color: rgba(15, 23, 42, 0.55);
+.home-hero-carousel__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.home-hero-carousel__dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 9999px;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition:
+    width 220ms ease,
+    background-color 220ms ease;
+}
+
+.home-hero-carousel__dot--active {
+  width: 1.375rem;
+  background: linear-gradient(90deg, #fbbf24 0%, #ffffff 100%);
+}
+
+.home-hero-carousel__dot:hover {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.home-hero-carousel__counter {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
 }
 
 .portal-brand-lockup__title {
@@ -2634,9 +2791,16 @@
   }
 }
 
-/* 혜택 프로모 슬라이더 — 큰 카드·가로 스크롤 */
+/* 혜택 프로모 슬라이더 — 이벤트 카드 프레임·외부 네비 */
 .home-benefits-carousel--promo .home-benefits-carousel-shell {
   --home-benefit-gap: 16px;
+  padding-inline: 2.75rem;
+}
+
+@media (min-width: 640px) {
+  .home-benefits-carousel--promo .home-benefits-carousel-shell {
+    padding-inline: 3rem;
+  }
 }
 
 .home-benefits-viewport--promo {
@@ -2660,8 +2824,20 @@
 }
 
 .home-benefit-slide {
+  position: relative;
   display: flex;
   align-items: stretch;
+}
+
+.home-benefits-carousel--promo .home-benefit-slide::before {
+  content: "";
+  position: absolute;
+  inset: -0.35rem;
+  z-index: 0;
+  border-radius: 1.25rem;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(244, 63, 94, 0.1), transparent 72%);
+  filter: blur(10px);
 }
 
 .home-benefit-slide > a,
@@ -2685,19 +2861,121 @@
 }
 
 .home-benefits-carousel--promo .home-benefit-card {
+  position: relative;
+  z-index: 1;
   min-height: 0;
   border-radius: 1rem;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+  border: 2px solid #fda4af;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(225, 29, 72, 0.14);
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
 }
 
 .home-benefits-carousel--promo .home-benefit-card--active {
-  border-color: rgb(254 202 202 / 0.85);
-  box-shadow: 0 6px 24px rgba(220, 38, 38, 0.1);
+  border-color: #f43f5e;
 }
 
-.home-benefits-carousel--promo .home-benefit-card--active:hover {
-  border-color: rgb(252 165 165 / 0.95);
-  box-shadow: 0 8px 28px rgba(220, 38, 38, 0.12);
+.home-benefits-carousel--promo .home-benefit-card--inactive {
+  border-color: #fecdd3;
+  opacity: 0.88;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-benefits-carousel--promo .home-benefit-card--active:hover {
+    transform: translateY(-2px);
+    border-color: #e11d48;
+    box-shadow: 0 18px 40px rgba(225, 29, 72, 0.18);
+  }
+}
+
+.home-benefits-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: -1.25rem;
+  border-radius: 9999px;
+  border: 2px solid #fecdd3;
+  background: #ffffff;
+  color: #9f1239;
+  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.12);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.home-benefits-nav--prev {
+  left: 0;
+}
+
+.home-benefits-nav--next {
+  right: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-benefits-nav:hover:not(:disabled) {
+    border-color: #fda4af;
+    background: #fff5f7;
+    box-shadow: 0 6px 20px rgba(225, 29, 72, 0.16);
+    transform: scale(1.04);
+  }
+}
+
+.home-benefits-nav:disabled {
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.home-benefits-carousel__indicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+}
+
+.home-benefits-carousel__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.home-benefits-carousel__dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 9999px;
+  border: none;
+  padding: 0;
+  background: #fecdd3;
+  cursor: pointer;
+  transition:
+    width 220ms ease,
+    background-color 220ms ease;
+}
+
+.home-benefits-carousel__dot--active {
+  width: 1.375rem;
+  background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%);
+}
+
+.home-benefits-carousel__dot:hover {
+  background: #fda4af;
+}
+
+.home-benefits-carousel__counter {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #9f1239;
 }
 
 /* 혜택 카드 — 이미지 단독 프로모 배너 (16:9, 슬라이더용 크기 확보) */
@@ -2766,6 +3044,10 @@
 }
 
 .bm-zone--benefit .home-benefits-carousel--promo .home-benefit-card.bm-card-unified:hover {
+  transform: translateY(-2px);
+}
+
+.bm-zone--benefit .home-benefits-carousel--promo .home-benefit-card--inactive.bm-card-unified:hover {
   transform: none !important;
 }
 
@@ -2816,13 +3098,35 @@
 }
 
 @media (max-width: 639px) {
-  .home-benefits-carousel-shell {
-    padding-left: 2.25rem;
-    padding-right: 2.25rem;
+  .home-benefits-carousel--promo .home-benefits-carousel-shell {
+    padding-inline: 2.5rem;
   }
 
   .home-benefits-nav {
-    top: 38% !important;
-    size: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-top: -1.125rem;
+  }
+
+  .home-hero-carousel__shell {
+    padding-inline: 2.5rem;
+  }
+
+  .home-hero-carousel__nav {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-top: -1.125rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-carousel__frame,
+  .home-hero-carousel__nav,
+  .home-benefits-carousel--promo .home-benefit-card {
+    transition: none;
+  }
+
+  .home-hero-carousel__shell:hover .home-hero-carousel__frame {
+    transform: none;
   }
 }
