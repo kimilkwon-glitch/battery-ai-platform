@@ -19,7 +19,7 @@ export function HomeSpecCardDisplayMeta({ display }: Props) {
       </p>
 
       <p className="home-spec-card-vehicles">
-        <span className="home-spec-card-vehicles__label">대표 적용</span>
+        <span className="home-spec-card-vehicles__label">대표 적용:</span>{" "}
         <span className="home-spec-card-vehicles__list">{display.representativeVehicles}</span>
       </p>
 
