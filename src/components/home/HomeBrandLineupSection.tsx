@@ -19,6 +19,7 @@ type Props = {
   brand: HomeCatalogBrandId;
   title: string;
   description: string;
+  descriptionMobile?: string;
   label: string;
   sectionId: string;
   shopHref: string;
@@ -29,6 +30,7 @@ export function HomeBrandLineupSection({
   brand,
   title,
   description,
+  descriptionMobile,
   label,
   sectionId,
   shopHref,
@@ -65,7 +67,10 @@ export function HomeBrandLineupSection({
           <h2 className="home-brand-lineup__title">{title}</h2>
           <span className="home-brand-lineup__label">{label}</span>
         </div>
-        <p className="home-brand-lineup__desc">{description}</p>
+        <p className="home-brand-lineup__desc">
+          <span className="home-brand-lineup__desc-long">{description}</span>
+          <span className="home-brand-lineup__desc-short">{descriptionMobile ?? description}</span>
+        </p>
       </header>
 
       <div className="home-brand-lineup__body">

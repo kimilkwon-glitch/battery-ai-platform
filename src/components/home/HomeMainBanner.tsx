@@ -39,14 +39,19 @@ function HeroImageSlide({
     >
       <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden">
         {!imgError ? (
-          <img
-            src={slide.image}
-            alt={slide.imageAlt}
-            className="home-hero-slide__img absolute inset-0 h-full w-full"
-            decoding="async"
-            fetchPriority={priority ? "high" : "auto"}
-            onError={() => setImgError(true)}
-          />
+          <picture className="absolute inset-0 block h-full w-full">
+            {slide.imageMobile ? (
+              <source media="(max-width: 639px)" srcSet={slide.imageMobile} />
+            ) : null}
+            <img
+              src={slide.image}
+              alt={slide.imageAlt}
+              className="home-hero-slide__img h-full w-full"
+              decoding="async"
+              fetchPriority={priority ? "high" : "auto"}
+              onError={() => setImgError(true)}
+            />
+          </picture>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-xs font-semibold text-slate-300">
             배너 이미지를 불러올 수 없습니다

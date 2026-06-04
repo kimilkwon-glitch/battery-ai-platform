@@ -26,7 +26,7 @@ function useVisibleFraction() {
     const update = () => {
       if (lg.matches) setFraction(2.2);
       else if (sm.matches) setFraction(1.1);
-      else setFraction(1.1);
+      else setFraction(1.05);
     };
     update();
     lg.addEventListener("change", update);

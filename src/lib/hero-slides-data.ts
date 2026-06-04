@@ -14,6 +14,8 @@ export type HeroSlide =
       description: string;
       imageAlt: string;
       image: string;
+      /** 모바일 전용 배너(없으면 image 사용) */
+      imageMobile?: string;
       href: string;
       /** 카드 좌상단 UI 프로모 라벨 (이미지 문구와 별도) */
       promoLabel: string;

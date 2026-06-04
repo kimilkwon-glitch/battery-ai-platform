@@ -19,7 +19,7 @@ export function HomeSearchMain() {
         <HomeQuickIconMenu />
       </div>
 
-      <div className="home-main-brand-region mx-auto w-full max-w-[1400px] space-y-10 px-4 pb-16 sm:space-y-12 sm:px-6 sm:pb-20 lg:space-y-14 lg:pb-24">
+      <div className="home-main-brand-region mx-auto w-full max-w-[1400px] space-y-8 px-4 pb-14 sm:space-y-12 sm:px-6 sm:pb-20 lg:space-y-14 lg:pb-24">
         <HomeBrandLineupPair />
         <HomeReplacementStoriesSection />
       </div>
