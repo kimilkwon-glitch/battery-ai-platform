@@ -219,11 +219,14 @@ const HYUNDAI_ASSETS: VehicleAsset[] = [
     yearRange: "2023-현재",
     tags: ["SUV"],
     aliases: ["싼타페", "디 올 뉴 싼타페", "MX5", "현대 싼타페"],
+    defaultBatteryCode: "AGM70L",
+    batteryNotes: "AGM70L 고정 적용",
   }),
   asset("santafe-mx5-hev", "hyundai", "santafe", "싼타페 하이브리드", "santafe_mx5_hev.png", {
     yearRange: "2023-현재",
     tags: ["SUV", "하이브리드"],
     aliases: ["싼타페", "싼타페 하이브리드", "싼타페 HEV", "현대 싼타페"],
+    defaultBatteryCode: "AGM60L",
   }),
   asset("palisade-lx2", "hyundai", "palisade", "팰리세이드", "palisade_lx2.png", {
     yearRange: "2019-2022",
@@ -260,6 +263,8 @@ const HYUNDAI_ASSETS: VehicleAsset[] = [
     yearRange: "2023-현재",
     tags: ["SUV"],
     aliases: ["코나", "디 올 뉴 코나", "신형 코나", "2세대 코나", "현대 코나"],
+    defaultBatteryCode: "AGM60L",
+    batteryNotes: "가솔린·EV AGM60L — HEV는 리튬배터리 적용(판매 제외)",
   }),
   asset("ioniq5-ne", "hyundai", "ioniq5", "아이오닉5", "ioniq5_ne.png", {
     yearRange: "2021-현재",
@@ -292,7 +297,8 @@ const HYUNDAI_ASSETS: VehicleAsset[] = [
     yearRange: "2019-현재",
     tags: ["상용차", "EV"],
     aliases: ["포터", "포터2 EV", "포터 전기차", "포터2 전기차", "PORTER II EV", "현대 포터 전기차"],
-    batteryNotes: "전기차 보조 12V 배터리 기준으로 별도 확인이 필요합니다.",
+    defaultBatteryCode: "80L",
+    batteryNotes: "대표 규격 80L",
   }),
 ];
 
@@ -445,7 +451,8 @@ const KIA_ASSETS: VehicleAsset[] = [
     yearRange: "2022-현재",
     tags: ["SUV", "하이브리드", "EV"],
     aliases: ["니로", "디 올 뉴 니로", "신형 니로", "니로 하이브리드", "니로 EV", "기아 니로"],
-    batteryNotes: "HEV/PHEV/EV 구분에 따라 보조배터리 확인 방식이 달라질 수 있습니다.",
+    batteryNotes:
+      "해당 차량은 리튬배터리 적용 차량으로 일반 납산/AGM 배터리 판매 대상이 아닙니다.",
   }),
   asset("bongo3-truck", "kia", "bongo", "봉고3", "bongo3_truck.png", {
     yearRange: "2004-현재",
@@ -457,7 +464,8 @@ const KIA_ASSETS: VehicleAsset[] = [
     yearRange: "2020-현재",
     tags: ["상용차", "EV"],
     aliases: ["봉고", "봉고3 EV", "봉고 전기차", "봉고3 전기차", "BONGO 3 EV", "기아 봉고 전기차"],
-    batteryNotes: "전기차 보조 12V 배터리 기준으로 별도 확인이 필요합니다.",
+    defaultBatteryCode: "80L",
+    batteryNotes: "대표 규격 80L",
   }),
 ];
 

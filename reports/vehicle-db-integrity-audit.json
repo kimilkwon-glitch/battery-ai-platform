@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-03T08:15:32.531Z",
+  "generatedAt": "2026-06-04T02:25:13.382Z",
   "summary": {
     "vehicleBatteryDbRecords": 3195,
     "enrichmentRecords": 5,
@@ -8,17 +8,17 @@
     "v04Assets": 57,
     "chevroletAssets": 36,
     "aliasEntries": 339,
-    "forbiddenCopyFindings": 0,
-    "unmatchedAssets": 13,
+    "forbiddenCopyFindings": 1,
+    "unmatchedAssets": 0,
     "unmatchedA": 0,
-    "unmatchedB": 12,
-    "unmatchedC": 1,
+    "unmatchedB": 0,
+    "unmatchedC": 0,
     "riskyDisplayAliases": 0,
     "searchFailures": 0,
     "directionMismatches": 0,
     "searchContamination": 0,
-    "totalFindings": 16,
-    "p0Count": 0,
+    "totalFindings": 5,
+    "p0Count": 1,
     "searchPassCount": 72,
     "searchTotal": 72
   },
@@ -164,7 +164,7 @@
       "pass": true,
       "issues": [],
       "top": "기아 쏘렌토 4세대 MQ4",
-      "topSpec": "AGM95L",
+      "topSpec": "AGM60L",
       "rowCount": 1
     },
     {
@@ -305,7 +305,7 @@
       "pass": true,
       "issues": [],
       "top": "르노/르노삼성 르노 마스터",
-      "topSpec": null,
+      "topSpec": "AGM95L",
       "rowCount": 2
     },
     {
@@ -345,7 +345,7 @@
       "pass": true,
       "issues": [],
       "top": "쉐보레 트레일블레이저",
-      "topSpec": null,
+      "topSpec": "AGM70L",
       "rowCount": 1
     },
     {
@@ -377,7 +377,7 @@
       "pass": true,
       "issues": [],
       "top": "쉐보레/GM 다마스",
-      "topSpec": null,
+      "topSpec": "DIN50L",
       "rowCount": 1
     },
     {
@@ -385,7 +385,7 @@
       "pass": true,
       "issues": [],
       "top": "쉐보레/GM 라보",
-      "topSpec": null,
+      "topSpec": "DIN50L",
       "rowCount": 1
     },
     {
@@ -409,7 +409,7 @@
       "pass": true,
       "issues": [],
       "top": "쉐보레/GM 토스카",
-      "topSpec": null,
+      "topSpec": "AGM80R",
       "rowCount": 1
     },
     {
@@ -561,7 +561,7 @@
       "pass": true,
       "issues": [],
       "top": "KG/쌍용 토레스",
-      "topSpec": null,
+      "topSpec": "AGM70L",
       "rowCount": 1
     },
     {
@@ -569,7 +569,7 @@
       "pass": true,
       "issues": [],
       "top": "기아 봉고3",
-      "topSpec": null,
+      "topSpec": "100L",
       "rowCount": 1
     },
     {
@@ -605,333 +605,23 @@
       "rowCount": 1
     }
   ],
-  "unmatchedClassifications": [
-    {
-      "assetId": "santafe-mx5-hev",
-      "displayName": "싼타페 하이브리드",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-samsung-qm6-quest-2023",
-      "displayName": "QM6 퀘스트",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-arkana-2024",
-      "displayName": "아르카나",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "renault-master-2018",
-      "displayName": "르노 마스터",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "kg-torres-2022",
-      "displayName": "토레스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "kg-torres-evx-2023",
-      "displayName": "토레스 EVX",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "kg-actyon-2024",
-      "displayName": "액티언",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-trailblazer-2024",
-      "displayName": "트레일블레이저",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "daewoo-tosca-2006",
-      "displayName": "토스카",
-      "class": "C",
-      "reason": "레거시·노출 제외 후보"
-    },
-    {
-      "assetId": "chevrolet-equinox-2022",
-      "displayName": "이쿼녹스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "gmdaewoo-labo-2011",
-      "displayName": "라보",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "gmdaewoo-damas-2011",
-      "displayName": "다마스",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    },
-    {
-      "assetId": "chevrolet-bolt-ev-2017",
-      "displayName": "볼트 EV",
-      "class": "B",
-      "reason": "DB 매칭 없음 — 상담 확인만"
-    }
-  ],
+  "unmatchedClassifications": [],
   "findings": [
     {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "싼타페 하이브리드",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "santafe-mx5-hev",
-        "catalogId": "santafe-mx5-hev",
-        "brand": "hyundai",
-        "yearRange": "2023-현재",
-        "dbModels": [
-          "싼타페"
-        ],
-        "classification": "B"
-      }
+      "category": "forbidden_customer_copy",
+      "file": "vehicle-generation-chevrolet.config.ts",
+      "field": "chevrolet-the-new-cruze-2015.customerNote",
+      "value": "가솔린 DIN60L·디젤 DIN74L·ISG AGM80L — 연료별 확인",
+      "suggestion": "사진 확인 권장",
+      "priority": "P0"
     },
     {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "QM6 퀘스트",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-samsung-qm6-quest-2023",
-        "catalogId": "renault-samsung-qm6-quest-2023",
-        "brand": "renault",
-        "yearRange": "2023-현재",
-        "dbModels": [
-          "QM6"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "아르카나",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-arkana-2024",
-        "catalogId": "renault-arkana-2024",
-        "brand": "renault",
-        "yearRange": "2024-현재",
-        "dbModels": [
-          "아르카나",
-          "ARKANA"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "르노 마스터",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "renault-master-2018",
-        "catalogId": "renault-master-2018",
-        "brand": "renault",
-        "yearRange": "2018-현재",
-        "dbModels": [
-          "마스터"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "토레스",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "kg-torres-2022",
-        "catalogId": "kg-torres-2022",
-        "brand": "kg",
-        "yearRange": "2022-현재",
-        "dbModels": [
-          "토레스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "토레스 EVX",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "kg-torres-evx-2023",
-        "catalogId": "kg-torres-evx-2023",
-        "brand": "kg",
-        "yearRange": "2023-현재",
-        "dbModels": [
-          "토레스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "액티언",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "kg-actyon-2024",
-        "catalogId": "kg-actyon-2024",
-        "brand": "kg",
-        "yearRange": "2024-현재",
-        "dbModels": [
-          "액티언"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "트레일블레이저",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-trailblazer-2024",
-        "catalogId": "chevrolet-trailblazer-2024",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2024-현재",
-        "dbModels": [
-          "트레일블레이저"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "토스카",
-      "suggestion": "검색 후순위/제외",
-      "priority": "P1",
-      "meta": {
-        "assetId": "daewoo-tosca-2006",
-        "catalogId": "daewoo-tosca-2006",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2006-2011",
-        "dbModels": [
-          "토스카"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "C"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "이쿼녹스",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-equinox-2022",
-        "catalogId": "chevrolet-equinox-2022",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2022-현재",
-        "dbModels": [
-          "이쿼녹스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "라보",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "gmdaewoo-labo-2011",
-        "catalogId": "gmdaewoo-labo-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-현재",
-        "dbModels": [
-          "라보"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "다마스",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "gmdaewoo-damas-2011",
-        "catalogId": "gmdaewoo-damas-2011",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2011-현재",
-        "dbModels": [
-          "다마스"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
-    },
-    {
-      "category": "unmatched_asset",
-      "file": "vehicleAssets",
-      "field": "asset",
-      "value": "볼트 EV",
-      "suggestion": "상담 확인 필요만 노출",
-      "priority": "P1",
-      "meta": {
-        "assetId": "chevrolet-bolt-ev-2017",
-        "catalogId": "chevrolet-bolt-ev-2017",
-        "brand": "chevrolet-gmdaewoo",
-        "yearRange": "2017-현재",
-        "dbModels": [
-          "볼트"
-        ],
-        "batteryMatchStatus": "needsReview",
-        "classification": "B"
-      }
+      "category": "sanitize_null",
+      "file": "vehicle-generation-chevrolet.config.ts",
+      "field": "chevrolet-the-new-cruze-2015.customerNote",
+      "value": "가솔린 DIN60L·디젤 DIN74L·ISG AGM80L — 연료별 확인",
+      "suggestion": "사진 확인 권장",
+      "priority": "P1"
     },
     {
       "category": "sanitize_null",

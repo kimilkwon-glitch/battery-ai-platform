@@ -2,6 +2,13 @@
  * 차량-배터리 DB — vehicle-battery-db.json 단일 소스
  */
 import dbJson from "@/data/vehicle-battery-db.json";
+import userConfirmedJson from "@/data/vehicle-battery-user-confirmed.json";
+import {
+  applyCustomerBatteryPolicies,
+  isRecordLithiumSalesExcluded,
+  isVehicleFullyLithiumSalesExcluded,
+  SEARCH_LITHIUM_EXCLUDED_LABEL,
+} from "@/lib/vehicle-battery-customer-policy";
 import { isDeprioritizedBatterySpec } from "@/lib/battery-detail/deprioritized-specs";
 import { findBatteryProductByCode, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import { getVehicleAsset, vehicleAssets } from "@/lib/car-assets";
@@ -57,6 +64,7 @@ export type VehicleBatteryRecord = {
   caution: string;
   aliases: string[];
   correctedBy?: string;
+  customerPolicy?: "lithium_sales_excluded";
 };
 
 type DbRoot = {
@@ -66,7 +74,8 @@ type DbRoot = {
 };
 
 const db = dbJson as DbRoot;
-const records = db.records;
+const userConfirmedRoot = userConfirmedJson as { records: VehicleBatteryRecord[] };
+const records = [...db.records, ...userConfirmedRoot.records];
 
 const SEARCH_SYNONYMS: [RegExp, string][] = [
   [/하브/g, "하이브리드"],
@@ -339,6 +348,7 @@ function profileAssetYearInterval(profile: VehicleDbProfile): { start: number; e
 }
 
 function recordHasBatterySpec(r: VehicleBatteryRecord): boolean {
+  if (isRecordLithiumSalesExcluded(r)) return true;
   const primary = normalizeBatteryCode(r.primaryBattery);
   if (primary && !isDeprioritizedBatterySpec(primary)) return true;
   return r.batteryOptions.some((b) => {
@@ -689,6 +699,7 @@ export function pickRepresentativeBatteryCodes(codes: string[]): string {
 }
 
 export function hasConfirmedBatteryData(record: VehicleBatteryRecord): boolean {
+  if (record.status === "confirmed" && isRecordLithiumSalesExcluded(record)) return true;
   return record.status === "confirmed" && Boolean(record.primaryBattery?.trim() || record.batteryOptions.length);
 }
 
@@ -704,7 +715,7 @@ export function groupRecordsByFuel(recs: VehicleBatteryRecord[]): FuelBatteryGro
   for (const r of recs) {
     const fuel = fuelLabel(r.fuel);
     const battery = normalizeBatteryCode(r.primaryBattery);
-    if (!battery) continue;
+    if (!battery && !isRecordLithiumSalesExcluded(r)) continue;
     if (!byFuel.has(fuel)) byFuel.set(fuel, []);
     byFuel.get(fuel)!.push(r);
   }
@@ -1077,6 +1088,16 @@ export type VehicleCardBatteryInfo = {
 export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo {
   const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
+  if (isVehicleFullyLithiumSalesExcluded(slug) && recs.some(hasConfirmedBatteryData)) {
+    return {
+      displayCode: SEARCH_LITHIUM_EXCLUDED_LABEL,
+      batteryOptions: [],
+      hasConfirmedDb: true,
+      hasUsableDb: true,
+      dbLinkTier: "confirmed",
+      needsPhotoReview: false,
+    };
+  }
   if (!recs.length) {
     return {
       displayCode: "",
@@ -1155,7 +1176,10 @@ export function getVehicleBatteryPageData(slug: string) {
       return unified ? { ...g, primaryBattery: unified } : g;
     }),
   );
-  const fuelGroups = prepareCustomerFacingFuelGroups(slug, fuelGroupsRaw);
+  const fuelGroups = applyCustomerBatteryPolicies(
+    slug,
+    prepareCustomerFacingFuelGroups(slug, fuelGroupsRaw),
+  );
   const yearChips = getYearChipsForSlug(slug, recs);
   const relatedVehicles = getRelatedVehicleSlugs(slug);
   const hasConfirmedDb = recs.some(hasConfirmedBatteryData);

@@ -1,6 +1,6 @@
 # Vehicle DB Integrity Audit
 
-생성: 2026-06-03T08:15:32.534Z
+생성: 2026-06-04T02:25:13.387Z
 
 ## 1. 요약
 
@@ -13,27 +13,29 @@
 | v04Assets | 57 |
 | chevroletAssets | 36 |
 | aliasEntries | 339 |
-| forbiddenCopyFindings | 0 |
-| unmatchedAssets | 13 |
+| forbiddenCopyFindings | 1 |
+| unmatchedAssets | 0 |
 | unmatchedA | 0 |
-| unmatchedB | 12 |
-| unmatchedC | 1 |
+| unmatchedB | 0 |
+| unmatchedC | 0 |
 | riskyDisplayAliases | 0 |
 | searchFailures | 0 |
 | directionMismatches | 0 |
 | searchContamination | 0 |
-| totalFindings | 16 |
-| p0Count | 0 |
+| totalFindings | 5 |
+| p0Count | 1 |
 | searchPassCount | 72 |
 | searchTotal | 72 |
 
-## 2. 즉시 수정 필요 (P0: 0)
+## 2. 즉시 수정 필요 (P0: 1)
 
 | 파일 | 문제 | 현재값 | 수정 제안 |
 |------|------|--------|----------|
+| vehicle-generation-chevrolet.config.ts | forbidden_customer_copy | 가솔린 DIN60L·디젤 DIN74L·ISG AGM80L — 연료별 확인 | 사진 확인 권장 |
 
 ## 3. 고객 노출 금지 문구
 
+- **vehicle-generation-chevrolet.config.ts** `chevrolet-the-new-cruze-2015.customerNote`: "가솔린 DIN60L·디젤 DIN74L·ISG AGM80L — 연료별 확인" → 사진 확인 권장
 
 ## 4. 이상한 표시명/별칭
 
@@ -43,24 +45,11 @@
 | 분류 | 건수 | 조치 |
 |------|------|------|
 | A DB연결가능 | 0 | slug/dbModels 보강 |
-| B 미확정 | 12 | 상담 확인만 |
-| C 노출제외 | 1 | recommendExcluded |
+| B 미확정 | 0 | 상담 확인만 |
+| C 노출제외 | 0 | recommendExcluded |
 
 | assetId | displayName | 분류 | 사유 |
 |---------|-------------|------|------|
-| santafe-mx5-hev | 싼타페 하이브리드 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-samsung-qm6-quest-2023 | QM6 퀘스트 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-arkana-2024 | 아르카나 | B | DB 매칭 없음 — 상담 확인만 |
-| renault-master-2018 | 르노 마스터 | B | DB 매칭 없음 — 상담 확인만 |
-| kg-torres-2022 | 토레스 | B | DB 매칭 없음 — 상담 확인만 |
-| kg-torres-evx-2023 | 토레스 EVX | B | DB 매칭 없음 — 상담 확인만 |
-| kg-actyon-2024 | 액티언 | B | DB 매칭 없음 — 상담 확인만 |
-| chevrolet-trailblazer-2024 | 트레일블레이저 | B | DB 매칭 없음 — 상담 확인만 |
-| daewoo-tosca-2006 | 토스카 | C | 레거시·노출 제외 후보 |
-| chevrolet-equinox-2022 | 이쿼녹스 | B | DB 매칭 없음 — 상담 확인만 |
-| gmdaewoo-labo-2011 | 라보 | B | DB 매칭 없음 — 상담 확인만 |
-| gmdaewoo-damas-2011 | 다마스 | B | DB 매칭 없음 — 상담 확인만 |
-| chevrolet-bolt-ev-2017 | 볼트 EV | B | DB 매칭 없음 — 상담 확인만 |
 
 ## 6. 검색 검수 결과
 
@@ -83,7 +72,7 @@
 | 티볼리 | ✅ | KG/쌍용 티볼리 | — |  |
 | 포터2 | ✅ | 현대 포터2 | — |  |
 | 포터2 2020년식 | ✅ | 현대 포터2 2020년형 이후 | 100R |  |
-| 쏘렌토 MQ4 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM95L |  |
+| 쏘렌토 MQ4 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM60L |  |
 | 쏘렌토 MQ4 하이브리드 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM60L |  |
 | 소렌토 MQ4 하브 | ✅ | 기아 쏘렌토 4세대 MQ4 | AGM60L |  |
 | 21년식 싼타페 | ✅ | 현대 싼타페 TM | AGM80L |  |
@@ -100,20 +89,20 @@
 | SM5 | ✅ | 르노/르노삼성 SM5 노바 | — |  |
 | SM3 | ✅ | 르노코리아 SM3 | — |  |
 | SM7 | ✅ | 르노/르노삼성 SM7 노바 | — |  |
-| 마스터 | ✅ | 르노/르노삼성 르노 마스터 | — |  |
+| 마스터 | ✅ | 르노/르노삼성 르노 마스터 | AGM95L |  |
 | 스파크 | ✅ | 쉐보레/GM 스파크 | — |  |
 | 말리부 | ✅ | 쉐보레/GM 말리부 | — |  |
 | 크루즈 | ✅ | 쉐보레/GM 크루즈 | — |  |
 | 트랙스 | ✅ | 쉐보레/GM 트랙스 | — |  |
-| 트레일블레이저 | ✅ | 쉐보레 트레일블레이저 | — |  |
+| 트레일블레이저 | ✅ | 쉐보레 트레일블레이저 | AGM70L |  |
 | 캡티바 | ✅ | 쉐보레/GM 캡티바 | — |  |
 | 올란도 | ✅ | 쉐보레/GM 올란도 | — |  |
 | 라세티 | ✅ | 쉐보레/GM 라세티 | — |  |
-| 다마스 | ✅ | 쉐보레/GM 다마스 | — |  |
-| 라보 | ✅ | 쉐보레/GM 라보 | — |  |
+| 다마스 | ✅ | 쉐보레/GM 다마스 | DIN50L |  |
+| 라보 | ✅ | 쉐보레/GM 라보 | DIN50L |  |
 | 젠트라 | ✅ | 쉐보레/GM 젠트라 X | — |  |
 | 젠트라 X | ✅ | 쉐보레/GM 젠트라 X | — |  |
-| 토스카 | ✅ | 쉐보레/GM 토스카 | — |  |
+| 토스카 | ✅ | 쉐보레/GM 토스카 | AGM80R |  |
 | 알페온 | ✅ | 쉐보레/GM 알페온 | — |  |
 | 임팔라 | ✅ | 쉐보레/GM 임팔라 | — |  |
 | 이쿼녹스 | ✅ | 쉐보레/GM 이쿼녹스 | — |  |
@@ -132,8 +121,8 @@
 | 액티언 스포츠 | ✅ | KG/쌍용 액티언 스포츠 | — |  |
 | 카이런 | ✅ | KG/쌍용 카이런 | 90R |  |
 | 무쏘 스포츠 | ✅ | KG/쌍용 무쏘 스포츠 | — |  |
-| 토레스 | ✅ | KG/쌍용 토레스 | — |  |
-| 봉고3 | ✅ | 기아 봉고3 | — |  |
+| 토레스 | ✅ | KG/쌍용 토레스 | AGM70L |  |
+| 봉고3 | ✅ | 기아 봉고3 | 100L |  |
 | 쏘나타 NF | ✅ | 현대 쏘나타 NF | — |  |
 | 투싼 JM | ✅ | 현대 투싼 | — |  |
 | 케이쓰리 | ✅ | 기아 K3 1세대 | DIN62L |  |

@@ -50,6 +50,15 @@ const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
   "k8-gl3": { 하이브리드: "AGM60L" },
   "sorento-mq4": { 하이브리드: "AGM60L" },
   "sorento-mq4-fl": { 하이브리드: "AGM60L" },
+  "kona-sx2": {
+    가솔린: "AGM60L",
+    전기: "AGM60L",
+  },
+  "chevrolet-the-new-cruze-2015": {
+    가솔린: "DIN60L",
+    디젤: "DIN74L",
+    "ISG/스마트충전": "AGM80L",
+  },
 };
 
 function syntheticFuelGroup(fuelLabel: string, primary: string): FuelBatteryGroup {

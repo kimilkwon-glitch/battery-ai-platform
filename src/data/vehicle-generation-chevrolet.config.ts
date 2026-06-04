@@ -38,6 +38,12 @@ const needsReview = (internalNote: string): ChevroletBatteryLink => ({
   internalNote,
 });
 
+const linked = (defaultBatteryCode: string, customerNote?: string): ChevroletBatteryLink => ({
+  status: "linked",
+  defaultBatteryCode,
+  customerNote,
+});
+
 export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
   C({
     id: "gmdaewoo-matiz-creative-2009",
@@ -169,7 +175,10 @@ export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
     yearStart: 2015,
     yearEnd: 2016,
     tags: ["세단"],
-    battery: needsReview("vehicle-battery-db 미등록 — 더 뉴 크루즈 규격 확인 필요"),
+    battery: linked(
+      "DIN60L",
+      "가솔린 DIN60L·디젤 DIN74L·ISG AGM80L — 연료별 확인",
+    ),
     dbModels: ["크루즈"],
     searchAliases: ["더 뉴 크루즈", "더뉴크루즈", "어메이징 뉴 크루즈", "어메이징뉴크루즈"],
   }),
@@ -327,7 +336,7 @@ export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
     yearRange: "2024-현재",
     yearStart: 2024,
     tags: ["SUV"],
-    battery: needsReview("vehicle-battery-db 미등록 — 트레일블레이저(24~) 규격 확인 필요"),
+    battery: linked("AGM70L"),
     dbModels: ["트레일블레이저"],
     searchAliases: ["트레일블레이저 2024", "트레일블레이저 RS"],
   }),
@@ -381,7 +390,7 @@ export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
     yearEnd: 2011,
     tags: ["세단"],
     recommendExcluded: true,
-    battery: needsReview("vehicle-battery-db 미등록 — 토스카 레거시 규격 확인 필요"),
+    battery: linked("80R", "80R 고정 적용"),
     dbModels: ["토스카"],
     searchAliases: ["토스카", "대우 토스카", "tosca"],
   }),
@@ -433,7 +442,7 @@ export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
     yearRange: "2022-현재",
     yearStart: 2022,
     tags: ["SUV"],
-    battery: needsReview("vehicle-battery-db 미등록 — 이쿼녹스(22~) 규격 확인 필요"),
+    battery: linked("AGM70L"),
     dbModels: ["이쿼녹스"],
     searchAliases: ["이쿼녹스 2022", "더 뉴 이쿼녹스"],
   }),
@@ -483,7 +492,7 @@ export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
     yearRange: "2011-현재",
     yearStart: 2011,
     tags: ["상용차", "LPG"],
-    battery: needsReview("vehicle-battery-db 미등록 — 라보 LPG 규격 확인 필요"),
+    battery: linked("50L"),
     dbModels: ["라보"],
     searchAliases: ["라보", "대우 라보", "labo"],
   }),
@@ -495,7 +504,7 @@ export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
     yearRange: "2011-현재",
     yearStart: 2011,
     tags: ["상용차", "LPG"],
-    battery: needsReview("vehicle-battery-db 미등록 — 다마스 LPG 규격 확인 필요"),
+    battery: linked("50L"),
     dbModels: ["다마스"],
     searchAliases: ["다마스", "대우 다마스", "damas"],
   }),
@@ -507,7 +516,7 @@ export const VEHICLE_GENERATIONS_CHEVROLET: VehicleGenerationChevrolet[] = [
     yearRange: "2017-현재",
     yearStart: 2017,
     tags: ["EV"],
-    battery: needsReview("vehicle-battery-db 미등록 — 볼트 EV 보조 12V 배터리 별도 확인"),
+    battery: linked("AGM50L"),
     dbModels: ["볼트"],
     searchAliases: ["볼트 EV", "볼트 전기", "bolt ev", "볼트 12V"],
   }),

@@ -20,6 +20,13 @@ import {
   VEHICLE_TRIM_CAUTION_COPY,
 } from "@/lib/vehicle-detail-recommendation";
 import type { FuelBatteryGroup } from "@/lib/vehicleBattery";
+import {
+  getVehicleFixedBatteryNotice,
+  getVehicleSalesExcludedNotice,
+  isVehicleFuelSalesExcluded,
+  LITHIUM_EXCLUDED_FUEL_COPY,
+  shouldRenderFuelGroupInShop,
+} from "@/lib/vehicle-battery-customer-policy";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 
@@ -113,8 +120,24 @@ export function VehicleCustomerBatteryShop({
   highlightFuel,
   yearRange,
 }: Props) {
-  const fuelCards = buildFuelHeroCardGroups(slug, fuelGroups, highlightFuel);
+  const salesExcludedNotice = getVehicleSalesExcludedNotice(slug);
+  const fixedNotice = getVehicleFixedBatteryNotice(slug);
+  const fuelCards = buildFuelHeroCardGroups(slug, fuelGroups, highlightFuel).filter((g) =>
+    shouldRenderFuelGroupInShop(slug, g.fuelLabel),
+  );
+  const excludedFuelGroups = fuelGroups.filter((g) =>
+    isVehicleFuelSalesExcluded(slug, g.fuelLabel),
+  );
   const showTrimCaution = shouldShowVehicleTrimCautionNotice(slug, fuelGroups);
+
+  if (salesExcludedNotice) {
+    return (
+      <section className={`${bm.card} ${bm.cardPad} vehicle-customer-battery`}>
+        <p className="text-sm font-black text-slate-900">배터리 판매 안내</p>
+        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-700">{salesExcludedNotice}</p>
+      </section>
+    );
+  }
 
   if (fuelCards.length === 0) {
     return (
@@ -131,6 +154,22 @@ export function VehicleCustomerBatteryShop({
 
   return (
     <div className="vehicle-customer-battery space-y-4">
+      {fixedNotice ? (
+        <p className="rounded-lg bg-amber-50/90 px-3 py-2 text-sm font-medium text-amber-950">
+          {fixedNotice}
+        </p>
+      ) : null}
+      {excludedFuelGroups.map((group) => (
+        <section
+          key={`excluded-${group.fuelLabel}`}
+          className={`${bm.card} ${bm.cardPad} border border-slate-200`}
+        >
+          <p className="text-sm font-black text-slate-800">{group.fuelLabel}</p>
+          <p className="mt-2 text-sm font-medium leading-relaxed text-slate-700">
+            {group.caution?.trim() || LITHIUM_EXCLUDED_FUEL_COPY}
+          </p>
+        </section>
+      ))}
       {fuelCards.map((group) => {
         const batteryCode = resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel);
         const brandOffers = batteryCode ? brandOffersForVehicleSpec(batteryCode) : [];
