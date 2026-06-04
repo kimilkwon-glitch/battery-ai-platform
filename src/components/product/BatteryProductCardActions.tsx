@@ -12,10 +12,10 @@ const ACTION_BASE =
   "inline-flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-sm font-black transition sm:py-3";
 
 const ACTION_SUB_COMPACT =
-  "home-spec-card-action home-spec-card-action--sub inline-flex w-full min-h-[1.875rem] cursor-pointer items-center justify-center rounded-md border px-2 py-1.5 text-[0.6875rem] font-bold leading-tight transition sm:min-h-[2rem] sm:text-xs";
+  "home-spec-card-action home-spec-card-action--sub inline-flex min-h-[1.75rem] min-w-0 flex-1 cursor-pointer items-center justify-center rounded-md border px-1.5 py-1 text-[0.625rem] font-bold leading-tight transition sm:min-h-[1.875rem] sm:px-2 sm:py-1.5 sm:text-[0.6875rem]";
 
 const ACTION_ORDER_COMPACT =
-  "home-spec-card-action home-spec-card-action--order inline-flex w-full min-h-[2.25rem] cursor-pointer items-center justify-center rounded-lg px-2.5 py-2 text-[0.8125rem] font-black transition sm:min-h-[2.375rem] sm:text-sm";
+  "home-spec-card-action home-spec-card-action--order inline-flex w-full min-h-[2.125rem] cursor-pointer items-center justify-center rounded-lg px-2.5 py-1.5 text-[0.8125rem] font-black transition sm:min-h-[2.25rem] sm:py-2 sm:text-sm";
 
 type Props = {
   batteryCode: string;
@@ -52,17 +52,41 @@ export function BatteryProductCardActions({
     ? `${ACTION_ORDER_COMPACT} bg-[var(--bm-primary)] text-white shadow-sm ring-1 ring-blue-600/30 hover:bg-blue-700`
     : `${ACTION_BASE} bg-[var(--bm-primary)] text-white shadow-sm ring-1 ring-blue-600/30 hover:bg-blue-700`;
 
-  return (
-    <div
-      className={clsx("home-spec-card-actions flex flex-col", compact ? "gap-1" : "gap-2")}
-      data-product-card-actions={links.batteryCode}
-    >
+  const actionLayout = compact ? (
+    <>
+      <div className="home-spec-card-actions__sub-row">
+        <Link href={links.reviewHref} className={reviewBtn}>
+          리뷰 보기
+        </Link>
+        <Link href={links.batterySpecGuideHref} className={specBtn}>
+          <span className="home-spec-card-action__label-full">{BATTERY_SPEC_DETAIL_VIEW_LABEL}</span>
+          <span className="home-spec-card-action__label-short" aria-hidden>
+            규격 보기
+          </span>
+        </Link>
+      </div>
+    </>
+  ) : (
+    <>
       <Link href={links.reviewHref} className={reviewBtn}>
         리뷰 보기
       </Link>
       <Link href={links.batterySpecGuideHref} className={specBtn}>
         {BATTERY_SPEC_DETAIL_VIEW_LABEL}
       </Link>
+    </>
+  );
+
+  return (
+    <div
+      className={clsx(
+        "home-spec-card-actions flex flex-col",
+        compact && "home-spec-card-actions--compact",
+        compact ? "gap-1.5" : "gap-2",
+      )}
+      data-product-card-actions={links.batteryCode}
+    >
+      {actionLayout}
       {onOrder ? (
         <button type="button" onClick={onOrder} className={orderBtn}>
           주문하기
