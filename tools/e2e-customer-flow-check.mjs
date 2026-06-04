@@ -53,6 +53,35 @@ async function main() {
     if (!res?.ok()) throw new Error(`HTTP ${res?.status()}`);
   });
 
+  await step("search-autocomplete-keyboard", "쏘나타 자동완성 ArrowDown 이동", async () => {
+    await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    const input = page.locator('input[name="q"]').first();
+    await input.waitFor({ state: "visible", timeout: 15000 });
+    await input.click();
+    await input.fill("쏘나타");
+    const list = page.locator(".bm-search-autocomplete__list");
+    await list.waitFor({ state: "visible", timeout: 10000 });
+    const activeRow = () => page.locator(".bm-search-autocomplete__row.is-active").first();
+    const label0 = (await activeRow().innerText()).replace(/\s+/g, " ").trim();
+    await input.press("ArrowDown");
+    await page.waitForTimeout(80);
+    const label1 = (await activeRow().innerText()).replace(/\s+/g, " ").trim();
+    if (label0 === label1) throw new Error(`ArrowDown did not change highlight: ${label0}`);
+    await input.press("ArrowDown");
+    await input.press("ArrowDown");
+    await input.press("ArrowDown");
+    await page.waitForTimeout(80);
+    const label4 = (await activeRow().innerText()).replace(/\s+/g, " ").trim();
+    if (label4 === label0) throw new Error("highlight stuck after multiple ArrowDown");
+    const box = await activeRow().boundingBox();
+    const listBox = await list.boundingBox();
+    if (box && listBox) {
+      if (box.y + box.height > listBox.y + listBox.height + 2) {
+        throw new Error("active option scrolled outside list viewport");
+      }
+    }
+  });
+
   await step("search-example-santafe", "검색 예시 싼타페 TM → 차량 결과 우선", async () => {
     await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
     const chip = page.locator(".home-search-example-chip", { hasText: "싼타페 TM" });

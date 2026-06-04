@@ -54,19 +54,26 @@ export function VehicleSearchBox({
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const queryTrimmed = query.trim();
 
   useEffect(() => {
     setQuery(defaultQuery);
   }, [defaultQuery]);
 
   const suggestions = useMemo(() => {
-    if (query.trim().length < 1) return [];
+    if (queryTrimmed.length < 1) return [];
     return searchCustomerSuggestions(query, 8);
-  }, [query]);
+  }, [query, queryTrimmed]);
 
+  /** 검색어가 바뀔 때만 하이라이트 초기화 — ArrowDown/Up 중 reset 금지 */
   useEffect(() => {
     setActiveIndex(0);
-  }, [suggestions.length, query]);
+  }, [queryTrimmed]);
+
+  useEffect(() => {
+    if (suggestions.length === 0) return;
+    setActiveIndex((i) => Math.min(Math.max(0, i), suggestions.length - 1));
+  }, [suggestions.length]);
 
   const panelOpen = open && suggestions.length > 0;
 
@@ -106,20 +113,42 @@ export function VehicleSearchBox({
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!open || suggestions.length === 0) return;
-    if (e.key === "ArrowDown") {
+    const count = suggestions.length;
+
+    if (e.key === "ArrowDown" && count > 0) {
       e.preventDefault();
-      setActiveIndex((i) => (i + 1) % suggestions.length);
-    } else if (e.key === "ArrowUp") {
+      setOpen(true);
+      setActiveIndex((i) => Math.min(i + 1, count - 1));
+      return;
+    }
+
+    if (e.key === "ArrowUp" && count > 0) {
       e.preventDefault();
-      setActiveIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
-    } else if (e.key === "Enter" && suggestions[activeIndex]) {
+      setOpen(true);
+      setActiveIndex((i) => Math.max(i - 1, 0));
+      return;
+    }
+
+    if (e.key === "Enter") {
+      if (open && count > 0 && activeIndex >= 0 && activeIndex < count) {
+        e.preventDefault();
+        pick(suggestions[activeIndex]);
+      }
+      return;
+    }
+
+    if (e.key === "Escape") {
       e.preventDefault();
-      pick(suggestions[activeIndex]);
-    } else if (e.key === "Escape") {
       setOpen(false);
+      setActiveIndex(0);
     }
   }
+
+  const listboxId = "bm-search-autocomplete-listbox";
+  const activeOptionId =
+    panelOpen && activeIndex >= 0 && activeIndex < suggestions.length
+      ? `bm-search-option-${activeIndex}`
+      : undefined;
 
   const defaultInputClass =
     "h-9 w-full rounded-lg bg-slate-50 px-3 text-xs font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300";
@@ -136,6 +165,7 @@ export function VehicleSearchBox({
     <VehicleSearchAutocomplete
       activeIndex={activeIndex}
       layout={autocompleteLayoutResolved}
+      listboxId={listboxId}
       onHoverIndex={setActiveIndex}
       onPick={pick}
       suggestions={suggestions}
@@ -200,6 +230,11 @@ export function VehicleSearchBox({
           <div className="relative min-w-0 flex-1">
             <input
               autoComplete="off"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={panelOpen}
+              aria-controls={panelOpen ? listboxId : undefined}
+              aria-activedescendant={activeOptionId}
               className={cn(
                 inputClassName ||
                   "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300",
@@ -250,6 +285,11 @@ export function VehicleSearchBox({
       <form action="/search" className="relative" onSubmit={() => onSearchSubmit()}>
         <input
           autoComplete="off"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={panelOpen}
+          aria-controls={panelOpen ? listboxId : undefined}
+          aria-activedescendant={activeOptionId}
           className={cn(inputClassName || defaultInputClass, hasQuery && "pr-10")}
           name="q"
           onChange={(e) => {
