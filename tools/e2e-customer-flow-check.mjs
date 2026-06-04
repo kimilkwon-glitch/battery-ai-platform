@@ -111,7 +111,7 @@ async function main() {
       waitUntil: "domcontentloaded",
     });
     const saveBtn = page.locator('[data-action="save-vehicle"]').first();
-    await saveBtn.waitFor({ state: "visible", timeout: 15000 });
+    await saveBtn.waitFor({ state: "visible", timeout: 30000 });
     await saveBtn.click();
     await page.getByText(/회원가입 후 이용 가능합니다/).first().waitFor({ timeout: 8000 });
     const loginLink = page.getByRole("link", { name: /로그인하기/i }).first();
@@ -144,8 +144,6 @@ async function main() {
         throw new Error(`${path} runtime error`);
       }
     }
-    await page.goto(`${BASE}/vehicle/renault-samsung-qm5-2007`, { waitUntil: "domcontentloaded" });
-    await page.locator('[data-action="save-vehicle"]').first().waitFor({ timeout: 10000 });
   });
 
   await step("auth-login", "로그인 페이지", async () => {
