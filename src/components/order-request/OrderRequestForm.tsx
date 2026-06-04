@@ -14,6 +14,7 @@ import {
   OrderRequestUsedBatteryFields,
 } from "@/components/order-request/OrderRequestFulfillmentFields";
 import { OrderRequestVehicleFields } from "@/components/order-request/OrderRequestVehicleFields";
+import { OrderRequestVehicleGuidance } from "@/components/order-request/OrderRequestVehicleGuidance";
 import {
   ORDER_REQUEST_CONFIRMATION_ITEMS,
   ORDER_REQUEST_EMPTY_COPY,
@@ -241,6 +242,8 @@ export function OrderRequestForm() {
       <OrderRequestCartSummary items={items} />
 
       <OrderRequestCustomerFields values={customer} onChange={(p) => setCustomer((c) => ({ ...c, ...p }))} />
+
+      <OrderRequestVehicleGuidance />
 
       <OrderRequestVehicleFields
         cartItems={items}

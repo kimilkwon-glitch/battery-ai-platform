@@ -25,6 +25,12 @@ export const ORDER_REQUEST_VEHICLE_COPY = {
   hint: "차량 정보가 정확할수록 배터리 규격과 단자 방향 확인이 빨라집니다. 정확하지 않다면 사진 확인을 먼저 진행해 주세요.",
 } as const;
 
+/** 주문·상담 요청 — 차량정보·현장 공구 안내 (차분한 톤) */
+export const ORDER_REQUEST_VEHICLE_GUIDANCE_COPY = {
+  line1: "차량명·연식·연료 정보를 남겨주시면 규격 확인이 더 정확해집니다.",
+  line2: "차량정보가 미기재된 경우, 현장 교체 공구나 안내가 제한될 수 있습니다.",
+} as const;
+
 export const ORDER_REQUEST_USED_BATTERY_COPY = {
   sectionTitle: "폐전지 반납 여부",
   hint: "가격 조건은 상담 시 함께 안내드립니다.",

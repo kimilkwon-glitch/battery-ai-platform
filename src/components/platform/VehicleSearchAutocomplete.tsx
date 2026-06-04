@@ -8,6 +8,7 @@ import {
   customerSuggestionTitle,
   type CustomerSearchSuggestion,
 } from "@/lib/search/customer-search-autocomplete";
+import { scrollAutocompleteOptionIntoList } from "@/lib/search/scroll-autocomplete-option";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -34,10 +35,21 @@ export function VehicleSearchAutocomplete({
 
   useEffect(() => {
     if (activeIndex < 0 || activeIndex >= suggestions.length) return;
-    const row = listRef.current?.querySelector<HTMLElement>(
-      `[data-option-index="${activeIndex}"]`,
-    );
-    row?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    const list = listRef.current;
+    if (!list) return;
+
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        const row = list.querySelector<HTMLElement>(`[data-option-index="${activeIndex}"]`);
+        if (row) scrollAutocompleteOptionIntoList(list, row);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+    };
   }, [activeIndex, suggestions.length]);
 
   if (suggestions.length === 0) return null;

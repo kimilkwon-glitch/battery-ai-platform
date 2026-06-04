@@ -21,6 +21,7 @@ import {
 } from "@/components/order-request/OrderRequestFulfillmentFields";
 import { OrderRequestCartSummary } from "@/components/order-request/OrderRequestCartSummary";
 import { OrderRequestVehicleFields } from "@/components/order-request/OrderRequestVehicleFields";
+import { OrderRequestVehicleGuidance } from "@/components/order-request/OrderRequestVehicleGuidance";
 import { CHECKOUT_PAGE_COPY } from "@/data/checkout-checklist";
 import { ORDER_REQUEST_MEMO_PLACEHOLDER } from "@/data/order-request-copy";
 import {
@@ -290,6 +291,8 @@ export function CheckoutOrderPage() {
         values={customer}
         onChange={(p) => setCustomer((c) => ({ ...c, ...p }))}
       />
+
+      <OrderRequestVehicleGuidance />
 
       <OrderRequestVehicleFields
         cartItems={items}
