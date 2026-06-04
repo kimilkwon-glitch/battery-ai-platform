@@ -47,13 +47,11 @@ export function HomeCatalogSection() {
       <div className="home-catalog-header rounded-2xl px-4 py-5 sm:px-5 sm:py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-center sm:text-left">
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-              <h2 className={`${bm.sectionTitle} text-slate-900`}>배터리 라인업</h2>
-              <span className="home-catalog-label rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600 ring-1 ring-[#d4dfee]">
-                Lineup
-              </span>
+            <div className="home-catalog-header__title-row flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+              <h2 className="home-catalog-title">배터리 라인업</h2>
+              <span className="home-catalog-label">Lineup</span>
             </div>
-            <p className="mt-1.5 text-sm font-medium leading-relaxed text-slate-600">
+            <p className="home-catalog-desc mt-1.5 text-sm leading-relaxed">
               AGM·DIN·상용 R타입 등 대표 규격을 바로 확인할 수 있습니다.
             </p>
             <Link className={`${bm.btnTertiary} mt-3 inline-flex text-xs`} href="/shop">
@@ -116,30 +114,32 @@ export function HomeCatalogSection() {
               ))}
             </div>
 
-            <div
-              className="home-catalog-grid mt-5 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
-              data-home-lineup-brand={brand}
-            >
-              {visibleProducts.map((item) => (
-                <HomeSpecExploreCard key={`${brand}-${item.id}`} brand={brand} product={item} />
-              ))}
-            </div>
-
-            {products.length > LINEUP_INITIAL_VISIBLE && !showAllLineup ? (
-              <button
-                type="button"
-                className="home-catalog-more-btn mx-auto mt-4 block rounded-full px-5 py-2 text-sm font-black text-slate-700"
-                onClick={() => setShowAllLineup(true)}
+            <div className="home-catalog-products mt-5">
+              <div
+                className="home-catalog-grid grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                data-home-lineup-brand={brand}
               >
-                대표 규격 더 보기 ({products.length - LINEUP_INITIAL_VISIBLE}개)
-              </button>
-            ) : null}
+                {visibleProducts.map((item) => (
+                  <HomeSpecExploreCard key={`${brand}-${item.id}`} brand={brand} product={item} />
+                ))}
+              </div>
 
-            {products.length === 0 ? (
-              <p className="mt-6 rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-medium text-slate-500">
-                선택한 타입에 해당하는 대표 규격이 없습니다. 필터를 바꿔 보세요.
-              </p>
-            ) : null}
+              {products.length > LINEUP_INITIAL_VISIBLE && !showAllLineup ? (
+                <button
+                  type="button"
+                  className="home-catalog-more-btn mx-auto mt-4 block rounded-full px-5 py-2 text-sm font-black text-slate-700"
+                  onClick={() => setShowAllLineup(true)}
+                >
+                  대표 규격 더 보기 ({products.length - LINEUP_INITIAL_VISIBLE}개)
+                </button>
+              ) : null}
+
+              {products.length === 0 ? (
+                <p className="home-catalog-empty mt-6 rounded-xl px-4 py-8 text-center text-sm font-medium">
+                  선택한 타입에 해당하는 대표 규격이 없습니다. 필터를 바꿔 보세요.
+                </p>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

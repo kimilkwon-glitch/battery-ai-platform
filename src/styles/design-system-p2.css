@@ -2055,36 +2055,92 @@
   }
 }
 
-/* 메인 — 배터리 라인업 섹션 (블루그레이 배경·테두리 통일) */
+/* 메인 — 배터리 라인업 (헤더 박스 강조 · 상품 카드 차분 분리) */
 .home-catalog-section {
   background: #f4f8fd;
   box-sizing: border-box;
 }
 
+/* 섹션 헤더 박스 — 안내/소개 영역 (상품 카드보다 강조) */
 .home-catalog-header {
-  border: 2px solid #c9d7ea;
-  background: #f8fbff;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #8fb3e8;
+  background: linear-gradient(135deg, #f4f8ff 0%, #eaf3ff 100%);
+  box-shadow:
+    0 8px 24px rgba(28, 76, 160, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.home-catalog-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #7fa7e2 0%, #4a7fd4 50%, #7fa7e2 100%);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.home-catalog-title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: #0f2847;
+}
+
+@media (min-width: 640px) {
+  .home-catalog-title {
+    font-size: 1.5rem;
+  }
+}
+
+.home-catalog-label {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(180deg, #1a3d6b 0%, #11284b 100%);
+  border: 1px solid #0d1f38;
+  box-shadow: 0 2px 6px rgba(17, 40, 75, 0.22);
+}
+
+.home-catalog-desc {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: #475569;
 }
 
 .home-catalog-brand-tab {
   min-width: 7rem;
   border-radius: 9999px;
-  border: 2px solid #c9d7ea;
+  border: 2px solid #b8cae3;
   background: #ffffff;
   padding: 0.625rem 1.25rem;
   font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 700;
   color: #334155;
+  box-shadow: 0 1px 3px rgba(17, 40, 75, 0.05);
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
-    color 160ms ease;
+    color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .home-catalog-brand-tab:hover {
-  border-color: #b8c9e0;
+  border-color: #9eb8d8;
   background: #f7fafe;
   color: #1e293b;
 }
@@ -2136,37 +2192,40 @@
 }
 
 .home-catalog-more-btn {
-  border: 2px solid #c9d7ea;
+  border: 2px solid #bfd0e6;
   background: #ffffff;
-  box-shadow: 0 1px 4px rgba(17, 40, 75, 0.06);
+  box-shadow: 0 1px 3px rgba(17, 40, 75, 0.05);
   transition:
     border-color 160ms ease,
     background-color 160ms ease;
 }
 
 .home-catalog-more-btn:hover {
-  border-color: #b8c9e0;
+  border-color: #b8cae3;
   background: #f8fbff;
 }
 
-.home-catalog-section .home-spec-card.bm-card-unified {
-  border: 2px solid #c9d7ea;
+/* 상품 목록 — 차분한 제품 카드 (헤더 박스보다 약한 강도) */
+.home-catalog-products .home-spec-card.bm-card-unified {
+  border: 2px solid #bfd0e6;
   background: #ffffff;
-  box-shadow: 0 2px 10px rgba(17, 40, 75, 0.06);
+  box-shadow: 0 1px 4px rgba(17, 40, 75, 0.04);
 }
 
-.home-catalog-section .home-spec-card.bm-card-unified:hover {
-  border-color: #b8c9e0;
-  box-shadow: 0 4px 16px rgba(17, 40, 75, 0.1);
+.home-catalog-products .home-spec-card.bm-card-unified:hover {
+  border-color: #b8cae3;
+  box-shadow: 0 2px 8px rgba(17, 40, 75, 0.07);
 }
 
-.home-catalog-section .home-spec-card-image {
+.home-catalog-products .home-spec-card-image {
   border-bottom: 1px solid #e2ebf5;
   background: #eef4fb;
 }
 
-.home-catalog-label {
-  font-family: var(--font-body);
+.home-catalog-empty {
+  background: #ffffff;
+  border: 1px solid #d4dfee;
+  color: #64748b;
 }
 
 .home-catalog-toggle {
@@ -2177,13 +2236,13 @@
   min-height: 2.75rem;
   padding: 0.625rem 1.25rem;
   border-radius: 9999px;
-  border: 1px solid rgb(191 219 254);
-  background: linear-gradient(180deg, rgb(255 255 255) 0%, rgb(239 246 255) 100%);
+  border: 2px solid #7fa7e2;
+  background: linear-gradient(180deg, #ffffff 0%, #e8f2ff 100%);
   font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 800;
-  color: rgb(29 78 216);
-  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+  color: #1c4ca0;
+  box-shadow: 0 3px 12px rgba(28, 76, 160, 0.12);
   transition:
     background-color 220ms ease,
     border-color 220ms ease,
@@ -2193,9 +2252,10 @@
 }
 
 .home-catalog-toggle:hover {
-  border-color: rgb(147 197 253);
-  background: rgb(239 246 255);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.14);
+  border-color: #6b97d8;
+  background: linear-gradient(180deg, #ffffff 0%, #dceaff 100%);
+  box-shadow: 0 4px 16px rgba(28, 76, 160, 0.16);
+  color: #153d85;
   transform: translateY(-1px);
 }
 
