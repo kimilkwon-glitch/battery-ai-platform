@@ -4,12 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import clsx from "clsx";
-import {
-  HERO_BANNER_CANVAS,
-  HERO_CAROUSEL_INTERVAL_MS,
-  HERO_SLIDES,
-  type HeroSlide,
-} from "@/lib/hero-slides-data";
+import { HERO_CAROUSEL_INTERVAL_MS, HERO_SLIDES, type HeroSlide } from "@/lib/hero-slides-data";
 
 function HeroPlaceholderSlide({ slide }: { slide: Extract<HeroSlide, { type: "placeholder" }> }) {
   return (
@@ -44,17 +39,14 @@ function HeroImageSlide({
     >
       <div className="home-hero-slide home-hero-slide--image relative h-full w-full overflow-hidden">
         {!imgError ? (
-          <picture className="home-hero-slide__picture absolute inset-0 block h-full w-full">
-            <source media="(min-width: 640px)" srcSet={slide.imageDesktop} />
-            <img
-              src={slide.imageMobile}
-              alt={slide.imageAlt}
-              className="home-hero-slide__img h-full w-full"
-              decoding="async"
-              fetchPriority={priority ? "high" : "auto"}
-              onError={() => setImgError(true)}
-            />
-          </picture>
+          <img
+            src={slide.image}
+            alt={slide.imageAlt}
+            className="home-hero-slide__img absolute inset-0 h-full w-full"
+            decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
+            onError={() => setImgError(true)}
+          />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-xs font-semibold text-slate-300">
             배너 이미지를 불러올 수 없습니다
@@ -62,7 +54,8 @@ function HeroImageSlide({
         )}
         <div className="sr-only">
           <p>{slide.title}</p>
-          <p>{slide.subtitle}</p>
+          <p>{slide.heading}</p>
+          <p>{slide.description}</p>
         </div>
       </div>
     </Link>
@@ -106,12 +99,7 @@ export function HomeMainBanner() {
       <div className="home-hero-carousel__frame relative w-full overflow-hidden rounded-2xl border border-slate-200/80 shadow-[0_20px_56px_rgba(15,23,42,0.14)] sm:rounded-3xl">
         <div
           className="home-hero-carousel__viewport home-hero-carousel__viewport--unified relative w-full"
-          data-hero-canvas={
-            activeSlide.type === "image"
-              ? `${HERO_BANNER_CANVAS.mobile.width}x${HERO_BANNER_CANVAS.mobile.height}`
-              : undefined
-          }
-          data-hero-slide-id={activeSlide.id}
+          data-hero-slide-id={activeSlide.type === "image" ? activeSlide.id : undefined}
         >
           {slides.map((s, i) => {
             const isActive = i === index;
