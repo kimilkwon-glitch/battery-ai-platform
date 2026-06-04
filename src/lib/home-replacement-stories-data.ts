@@ -1,5 +1,6 @@
 import { HUB_REVIEWS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
 import { storeLinks } from "@/lib/external-links";
+
 export type HomeReplacementStoryCard = {
   id: string;
   authorLabel: string;
@@ -16,13 +17,13 @@ export type HomeReplacementStoryCard = {
   href: string;
 };
 
-/** 메인에 처음 노출할 후기 카드 수 (더보기로 전체 연결) */
-export const HOME_REPLACEMENT_STORIES_VISIBLE_COUNT = 2;
+/** 메인에 노출할 후기 카드 수 (4가지 작업 유형) */
+export const HOME_REPLACEMENT_STORIES_VISIBLE_COUNT = 4;
 
 export const HOME_REPLACEMENT_STORIES_TITLE = "배터리매니저에서 교체한 고객 이야기";
 
 export const HOME_REPLACEMENT_STORIES_DESC =
-  "덕천점·학장점에서 진행된 배터리 교체 경험을 확인해보세요. 방전·시동지연·장기주차 차량까지, 실제 작업 사례로 확인할 수 있습니다.";
+  "방문 교체부터 출장·택배 주문·야간 무인까지, 실제 이용 경험을 확인해보세요.";
 
 export const HOME_REPLACEMENT_REVIEWS_HREF = HUB_REVIEWS;
 
@@ -32,7 +33,7 @@ export const HOME_REPLACEMENT_WORK_CASES_HREF = storeLinks.deokcheon.blog;
 /** 예시 후기 — 과장 수치 없음, 실제 리뷰 연동 시 이 목록을 데이터 소스로 교체 */
 export const HOME_REPLACEMENT_STORY_CARDS: HomeReplacementStoryCard[] = [
   {
-    id: "story-1",
+    id: "story-visit",
     authorLabel: "김** 고객님",
     vehicleLabel: "현대 그랜저 IG",
     rating: 5,
@@ -47,7 +48,7 @@ export const HOME_REPLACEMENT_STORY_CARDS: HomeReplacementStoryCard[] = [
     href: `${HUB_REVIEWS}?battery=AGM80L`,
   },
   {
-    id: "story-2",
+    id: "story-onsite",
     authorLabel: "이** 고객님",
     vehicleLabel: "쏘렌토 MQ4",
     rating: 5,
@@ -62,7 +63,22 @@ export const HOME_REPLACEMENT_STORY_CARDS: HomeReplacementStoryCard[] = [
     href: `${HUB_REVIEWS}?battery=AGM70L`,
   },
   {
-    id: "story-3",
+    id: "story-delivery",
+    authorLabel: "정** 고객님",
+    vehicleLabel: "현대 아반떼 CN7",
+    rating: 5,
+    quote: "택배로 받아서 직접 교체했는데 포장도 안전했고 안내도 이해하기 쉬웠습니다.",
+    badges: ["안전하게 포장되어 왔어요", "셀프 교체 안내가 쉬웠어요"],
+    workInfo: {
+      placeLine: "전국 택배 주문",
+      vehicleLine: "현대 아반떼 CN7",
+      batteryLine: "AGM60L",
+      servicesLine: "안전 포장 · 셀프 교체 안내",
+    },
+    href: `${HUB_REVIEWS}?battery=AGM60L`,
+  },
+  {
+    id: "story-night",
     authorLabel: "박** 고객님",
     vehicleLabel: "기아 모닝 JA",
     rating: 5,
