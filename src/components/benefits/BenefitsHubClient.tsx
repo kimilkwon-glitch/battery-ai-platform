@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BenefitsPromoCarousel } from "@/components/benefits/BenefitsPromoCarousel";
 import { BenefitCardVisual } from "@/components/benefits/BenefitCardVisual";
 import { BenefitsNotices } from "@/components/benefits/BenefitsNotices";
 import { FirstOrder3AutoApplyPanel } from "@/components/benefits/FirstOrder3AutoApplyPanel";
@@ -14,13 +15,7 @@ export function BenefitsHubClient() {
   const coming = BENEFIT_CARDS.filter((c) => c.status === "coming_soon");
   return (
     <div className="bm-zone bm-zone--benefit space-y-8" data-page="benefits-hub">
-      <section aria-label="혜택 카드">
-        <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {active.map((card) => (
-            <BenefitCardVisual key={card.id} card={card} asLink />
-          ))}
-        </div>
-      </section>
+      <BenefitsPromoCarousel cards={active} showHeader={false} variant="hub" autoPlay={false} />
 
       <section className="border-t border-slate-100 pt-6" aria-label="첫 주문 혜택 안내">
         <FirstOrder3AutoApplyPanel compact />

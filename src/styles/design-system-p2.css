@@ -1839,22 +1839,20 @@
 }
 
 /* 혜택 섹션 상단 — 레드 프로모션 톤 */
-.home-benefits-carousel.home-benefits-carousel--main.bm-zone--benefit {
+.home-benefits-carousel.home-benefits-carousel--promo.bm-zone--benefit {
   background: linear-gradient(180deg, #fff5f7 0%, #fff9fa 48%, #ffffff 100%);
   border-radius: 1.25rem;
   padding: 1rem 0.5rem 0.625rem;
 }
 
 @media (min-width: 640px) {
-  .home-benefits-carousel.home-benefits-carousel--main.bm-zone--benefit {
+  .home-benefits-carousel.home-benefits-carousel--promo.bm-zone--benefit {
     padding: 1.25rem 0.75rem 0.75rem;
   }
 }
 
-[data-page="benefits-hub"] > section[aria-label="혜택 카드"] {
-  background: linear-gradient(180deg, #fff5f7 0%, #fff9fa 55%, #ffffff 100%);
-  border-radius: 1.25rem;
-  padding: 1rem 0.75rem 1.25rem;
+.home-benefits-carousel--hub.bm-zone--benefit {
+  margin-bottom: 0.5rem;
 }
 
 .home-benefits-section-header__badge {
@@ -2394,17 +2392,24 @@
   }
 }
 
-/* 메인 혜택 캐러셀 — 프로모 카드 (배너 높이와 분리) */
-.home-benefits-carousel-shell {
-  --home-benefit-gap: 12px;
+/* 혜택 프로모 슬라이더 — 큰 카드·가로 스크롤 */
+.home-benefits-carousel--promo .home-benefits-carousel-shell {
+  --home-benefit-gap: 16px;
 }
 
-.home-benefits-viewport {
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, transparent 100%);
-}
-
-.home-benefits-carousel--main .home-benefits-viewport {
+.home-benefits-viewport--promo {
   background: transparent;
+  cursor: grab;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-benefits-viewport--promo.is-dragging {
+  cursor: grabbing;
+}
+
+.home-benefits-viewport--promo.is-dragging .home-benefits-track {
+  transition: none !important;
 }
 
 .home-benefits-track {
@@ -2429,37 +2434,50 @@
   min-height: 0;
 }
 
-/* 메인 혜택 캐러셀 — 카드·이미지 높이 통일 */
-.home-benefits-carousel--main .home-benefit-slide > a {
+/* 혜택 슬라이더 — 카드·이미지 높이 통일 */
+.home-benefits-carousel--promo .home-benefit-slide > a {
   display: flex;
+  width: 100%;
   height: 100%;
   min-height: 100%;
 }
 
-.home-benefits-carousel--main .home-benefit-card {
+.home-benefits-carousel--promo .home-benefit-card {
   min-height: 0;
   border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
 }
 
-.home-benefits-carousel--main .home-benefit-card--active {
-  border-color: rgb(254 215 170 / 0.9);
-  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.08);
+.home-benefits-carousel--promo .home-benefit-card--active {
+  border-color: rgb(254 202 202 / 0.85);
+  box-shadow: 0 6px 24px rgba(220, 38, 38, 0.1);
 }
 
-.home-benefits-carousel--main .home-benefit-card--active:hover {
-  border-color: rgb(253 186 116 / 0.95);
-  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.1);
+.home-benefits-carousel--promo .home-benefit-card--active:hover {
+  border-color: rgb(252 165 165 / 0.95);
+  box-shadow: 0 8px 28px rgba(220, 38, 38, 0.12);
 }
 
-/* 혜택 카드 — 이미지 단독 프로모 배너 (16:9) */
+/* 혜택 카드 — 이미지 단독 프로모 배너 (16:9, 슬라이더용 크기 확보) */
 .home-benefit-card-media--banner.home-benefit-card-media--carousel {
   aspect-ratio: 16 / 9;
   width: 100%;
   height: auto;
-  min-height: 0;
+  min-height: 11.5rem;
   max-height: none;
   background: #f1f5f9;
+}
+
+@media (min-width: 640px) {
+  .home-benefit-card-media--banner.home-benefit-card-media--carousel {
+    min-height: 13.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-benefit-card-media--banner.home-benefit-card-media--carousel {
+    min-height: 15rem;
+  }
 }
 
 .home-benefit-card--image-only,
@@ -2505,7 +2523,7 @@
   box-shadow: 0 4px 20px rgba(234, 88, 12, 0.08);
 }
 
-.bm-zone--benefit .home-benefits-carousel--main .home-benefit-card.bm-card-unified:hover {
+.bm-zone--benefit .home-benefits-carousel--promo .home-benefit-card.bm-card-unified:hover {
   transform: none !important;
 }
 
@@ -2524,16 +2542,12 @@
   object-position: center center;
 }
 
-.home-benefits-carousel--main .home-benefit-card-media--photo .home-benefit-card-media__img {
+.home-benefits-carousel--promo .home-benefit-card-media--photo .home-benefit-card-media__img {
   object-fit: cover;
   object-position: center center;
 }
 
-.bm-zone--benefit .grid.items-stretch .home-benefit-card--banner {
-  min-height: 0;
-}
-
-.home-benefits-carousel--main .home-benefit-card--banner {
+.home-benefits-carousel--promo .home-benefit-card--banner {
   min-height: 0;
 }
 

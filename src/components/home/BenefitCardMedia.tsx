@@ -8,7 +8,8 @@ import {
   type HomeBenefitCard,
 } from "@/lib/home-benefits-data";
 
-const BENEFIT_IMAGE_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px";
+const BENEFIT_IMAGE_SIZES =
+  "(max-width: 639px) 92vw, (max-width: 1023px) 46vw, (max-width: 1399px) 42vw, 640px";
 
 const PLACEHOLDER_GRADIENT: Record<HomeBenefitCard["fallbackIcon"], string> = {
   percent: "from-[#1e3a5f] via-[#2563eb] to-[#f59e0b]",
