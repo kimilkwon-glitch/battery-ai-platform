@@ -2212,21 +2212,21 @@
   }
 }
 
-/* 메인 — 배터리 라인업 (헤더 박스 강조 · 상품 카드 차분 분리) */
+/* 메인 — 배터리 라인업 (뉴트럴 서브 UI · 선택 탭/칩만 네이비) */
 .home-catalog-section {
-  background: #f4f8fd;
+  background: #f8fafc;
   box-sizing: border-box;
 }
 
-/* 섹션 헤더 박스 — 안내/소개 영역 (상품 카드보다 강조) */
+/* 섹션 헤더 박스 — 뉴트럴 안내 영역 */
 .home-catalog-header {
   position: relative;
   overflow: hidden;
-  border: 2px solid #8fb3e8;
-  background: linear-gradient(135deg, #f4f8ff 0%, #eaf3ff 100%);
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
   box-shadow:
-    0 8px 24px rgba(28, 76, 160, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    0 8px 24px rgba(15, 23, 42, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.95) inset;
 }
 
 .home-catalog-header::before {
@@ -2235,8 +2235,8 @@
   inset: 0 auto auto 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #7fa7e2 0%, #4a7fd4 50%, #7fa7e2 100%);
-  opacity: 0.85;
+  background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e1 50%, #e2e8f0 100%);
+  opacity: 0.9;
   pointer-events: none;
 }
 
@@ -2247,7 +2247,7 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.2;
-  color: #0f2847;
+  color: #1e293b;
 }
 
 @media (min-width: 640px) {
@@ -2266,10 +2266,10 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #ffffff;
-  background: linear-gradient(180deg, #1a3d6b 0%, #11284b 100%);
-  border: 1px solid #0d1f38;
-  box-shadow: 0 2px 6px rgba(17, 40, 75, 0.22);
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
 }
 
 .home-catalog-desc {
@@ -2281,14 +2281,14 @@
 .home-catalog-brand-tab {
   min-width: 7rem;
   border-radius: 9999px;
-  border: 2px solid #b8cae3;
+  border: 2px solid #e2e8f0;
   background: #ffffff;
   padding: 0.625rem 1.25rem;
   font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 700;
-  color: #334155;
-  box-shadow: 0 1px 3px rgba(17, 40, 75, 0.05);
+  color: #475569;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
@@ -2297,9 +2297,9 @@
 }
 
 .home-catalog-brand-tab:hover {
-  border-color: #9eb8d8;
-  background: #f7fafe;
-  color: #1e293b;
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
 }
 
 .home-catalog-brand-tab--active {
@@ -2317,13 +2317,13 @@
 
 .home-catalog-filter-chip {
   border-radius: 9999px;
-  border: 1.5px solid #d4dfee;
-  background: #f7fafe;
+  border: 1.5px solid #e5e7eb;
+  background: #f6f7f9;
   padding: 0.375rem 0.75rem;
   font-family: var(--font-body);
   font-size: 0.6875rem;
   font-weight: 700;
-  color: #475569;
+  color: #64748b;
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
@@ -2331,9 +2331,9 @@
 }
 
 .home-catalog-filter-chip:hover {
-  border-color: #c9d7ea;
-  background: #eef4fb;
-  color: #334155;
+  border-color: #d1d5db;
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .home-catalog-filter-chip--active {
@@ -2349,39 +2349,50 @@
 }
 
 .home-catalog-more-btn {
-  border: 2px solid #bfd0e6;
+  border: 2px solid #e2e8f0;
   background: #ffffff;
-  box-shadow: 0 1px 3px rgba(17, 40, 75, 0.05);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
   transition:
     border-color 160ms ease,
     background-color 160ms ease;
 }
 
 .home-catalog-more-btn:hover {
-  border-color: #b8cae3;
-  background: #f8fbff;
+  border-color: #cbd5e1;
+  background: #f8fafc;
 }
 
-/* 상품 목록 — 차분한 제품 카드 (헤더 박스보다 약한 강도) */
+.home-catalog-header .home-catalog-shop-link {
+  color: #475569;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.home-catalog-header .home-catalog-shop-link:hover {
+  color: #1e293b;
+  text-decoration: underline;
+}
+
+/* 상품 목록 — 뉴트럴 제품 카드 */
 .home-catalog-products .home-spec-card.bm-card-unified {
-  border: 2px solid #bfd0e6;
+  border: 2px solid #e2e8f0;
   background: #ffffff;
-  box-shadow: 0 1px 4px rgba(17, 40, 75, 0.04);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
 }
 
 .home-catalog-products .home-spec-card.bm-card-unified:hover {
-  border-color: #b8cae3;
-  box-shadow: 0 2px 8px rgba(17, 40, 75, 0.07);
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
 .home-catalog-products .home-spec-card-image {
-  border-bottom: 1px solid #e2ebf5;
-  background: #eef4fb;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f6f7f9;
 }
 
 .home-catalog-empty {
   background: #ffffff;
-  border: 1px solid #d4dfee;
+  border: 1px solid #e2e8f0;
   color: #64748b;
 }
 
@@ -2393,13 +2404,13 @@
   min-height: 2.75rem;
   padding: 0.625rem 1.25rem;
   border-radius: 9999px;
-  border: 2px solid #7fa7e2;
-  background: linear-gradient(180deg, #ffffff 0%, #e8f2ff 100%);
+  border: 2px solid #e2e8f0;
+  background: #ffffff;
   font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 800;
-  color: #1c4ca0;
-  box-shadow: 0 3px 12px rgba(28, 76, 160, 0.12);
+  color: #475569;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
   transition:
     background-color 220ms ease,
     border-color 220ms ease,
@@ -2409,10 +2420,10 @@
 }
 
 .home-catalog-toggle:hover {
-  border-color: #6b97d8;
-  background: linear-gradient(180deg, #ffffff 0%, #dceaff 100%);
-  box-shadow: 0 4px 16px rgba(28, 76, 160, 0.16);
-  color: #153d85;
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
+  color: #334155;
   transform: translateY(-1px);
 }
 
@@ -2528,9 +2539,28 @@
   font-size: 0.625rem;
   font-weight: 700;
   line-height: 1.2;
-  color: #1e40af;
-  background: #eff6ff;
-  box-shadow: inset 0 0 0 1px rgb(219 234 254);
+  color: #475569;
+  background: #f1f5f9;
+  box-shadow: inset 0 0 0 1px #e2e8f0;
+}
+
+.home-catalog-products .home-spec-card-badge {
+  color: #64748b;
+  background: #f6f7f9;
+  box-shadow: inset 0 0 0 1px #e5e7eb;
+}
+
+/* 메인 라인업 — 규격 보기 서브 버튼 (블루 제거) */
+.home-catalog-products .home-spec-card-action--spec {
+  background: #f8fafc;
+  color: #334155;
+  box-shadow: inset 0 0 0 1px #e2e8f0;
+}
+
+.home-catalog-products .home-spec-card-action--spec:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+  box-shadow: inset 0 0 0 1px #cbd5e1;
 }
 
 @media (min-width: 640px) {

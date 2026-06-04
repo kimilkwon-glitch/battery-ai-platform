@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import Link from "next/link";
 import {
   BATTERY_SPEC_DETAIL_VIEW_LABEL,
@@ -15,6 +16,8 @@ type Props = {
   brandId?: BatteryProductBrandSlug | string | null;
   onOrder?: () => void;
   orderHref?: string | null;
+  /** 메인 라인업 카드 — 서브 버튼 뉴트럴 톤 */
+  tone?: "catalog" | "default";
 };
 
 export function BatteryProductCardActions({
@@ -22,6 +25,7 @@ export function BatteryProductCardActions({
   brandId,
   onOrder,
   orderHref,
+  tone = "default",
 }: Props) {
   const links = resolveBatteryProductCardLinks({
     batteryCode,
@@ -43,7 +47,12 @@ export function BatteryProductCardActions({
       </Link>
       <Link
         href={links.batterySpecGuideHref}
-        className={`${ACTION_BASE} bg-blue-50 text-blue-950 ring-1 ring-blue-200/90 hover:bg-blue-100`}
+        className={clsx(
+          ACTION_BASE,
+          tone === "catalog"
+            ? "home-spec-card-action home-spec-card-action--spec"
+            : "bg-blue-50 text-blue-950 ring-1 ring-blue-200/90 hover:bg-blue-100",
+        )}
       >
         {BATTERY_SPEC_DETAIL_VIEW_LABEL}
       </Link>

@@ -3,7 +3,6 @@
 import clsx from "clsx";
 import { useMemo, useState } from "react";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
-import { bm } from "@/lib/design-tokens";
 import Link from "next/link";
 import {
   HOME_CATALOG_TYPE_FILTERS,
@@ -54,7 +53,7 @@ export function HomeCatalogSection() {
             <p className="home-catalog-desc mt-1.5 text-sm leading-relaxed">
               AGM·DIN·상용 R타입 등 대표 규격을 바로 확인할 수 있습니다.
             </p>
-            <Link className={`${bm.btnTertiary} mt-3 inline-flex text-xs`} href="/shop">
+            <Link className="home-catalog-shop-link mt-3 inline-flex text-xs" href="/shop">
               전체 규격 보기 →
             </Link>
           </div>

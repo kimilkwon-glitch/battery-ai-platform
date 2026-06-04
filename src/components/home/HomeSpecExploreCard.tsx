@@ -38,7 +38,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
           <span className="home-spec-card-badge">{typeTag}</span>
         </div>
 
-        <BatteryProductCardActions batteryCode={searchCode} brandId={brand} />
+        <BatteryProductCardActions batteryCode={searchCode} brandId={brand} tone="catalog" />
       </div>
     </article>
   );
