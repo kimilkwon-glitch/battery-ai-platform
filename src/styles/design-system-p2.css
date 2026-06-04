@@ -1678,24 +1678,34 @@
   box-sizing: border-box;
 }
 
-/* 빠른 아이콘 메뉴 8개 */
+/* 빠른 아이콘 — 타이어픽형 퀵 카테고리 메뉴 */
 .home-quick-icons {
-  margin-top: 0.25rem;
+  margin-top: 0.125rem;
+}
+
+.home-quick-icons__label {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #64748b;
 }
 
 .home-quick-icons__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.625rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem 0.4375rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 1024px) {
   .home-quick-icons__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0.5rem;
   }
 }
 
@@ -1703,99 +1713,151 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   height: 100%;
-  min-height: 6.75rem;
-  padding: 0.75rem 0.5rem 0.875rem;
-  border: 1.5px solid #d8e4f5;
-  border-radius: 1rem;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  min-height: 0;
+  padding: 0.5625rem 0.3125rem 0.5rem;
+  border: 1.5px solid #d9e6f5;
+  border-radius: 1.125rem;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
   text-align: center;
   text-decoration: none;
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
-    transform 180ms ease,
-    background-color 180ms ease;
+    transform 180ms ease;
 }
 
 @media (min-width: 640px) {
   .home-quick-icon-card {
-    min-height: 7.25rem;
-    padding: 0.875rem 0.625rem 1rem;
+    padding: 0.625rem 0.375rem 0.5625rem;
+    border-radius: 1.25rem;
   }
 }
 
 .home-quick-icon-card:hover {
   border-color: #2f6fed;
-  box-shadow: 0 10px 24px rgba(47, 111, 237, 0.14);
+  box-shadow: 0 10px 24px rgba(47, 111, 237, 0.12);
   transform: translateY(-2px);
 }
 
 .home-quick-icon-card__icon-wrap {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 9999px;
-  background: #eef5ff;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  background: #eaf2ff;
   color: #1d4ed8;
 }
 
-.home-quick-icon-card--sky .home-quick-icon-card__icon-wrap {
-  background: #ecfeff;
-  color: #0369a1;
+@media (min-width: 640px) {
+  .home-quick-icon-card__icon-wrap {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 1.125rem;
+  }
 }
 
-.home-quick-icon-card--indigo .home-quick-icon-card__icon-wrap {
+.home-quick-icon-card[data-quick-accent="blue"] .home-quick-icon-card__icon-wrap {
+  background: #eaf2ff;
+  color: #1d4ed8;
+}
+
+.home-quick-icon-card[data-quick-accent="mint"] .home-quick-icon-card__icon-wrap {
+  background: #eafbf5;
+  color: #0f766e;
+}
+
+.home-quick-icon-card[data-quick-accent="purple"] .home-quick-icon-card__icon-wrap {
+  background: #f2edff;
+  color: #6d28d9;
+}
+
+.home-quick-icon-card[data-quick-accent="indigo"] .home-quick-icon-card__icon-wrap {
   background: #eef2ff;
   color: #4338ca;
 }
 
-.home-quick-icon-card--slate .home-quick-icon-card__icon-wrap {
+.home-quick-icon-card[data-quick-accent="teal"] .home-quick-icon-card__icon-wrap {
+  background: #e9fbfb;
+  color: #0e7490;
+}
+
+.home-quick-icon-card[data-quick-accent="slate"] .home-quick-icon-card__icon-wrap {
   background: #f1f5f9;
-  color: #334155;
+  color: #475569;
+}
+
+.home-quick-icon-card[data-quick-accent="slateblue"] .home-quick-icon-card__icon-wrap {
+  background: #e8eef8;
+  color: #334e7a;
+}
+
+.home-quick-icon-card[data-quick-accent="navy"] .home-quick-icon-card__icon-wrap {
+  background: #e8ecff;
+  color: #1e3a8a;
 }
 
 .home-quick-icon-card__icon {
-  width: 1.375rem;
-  height: 1.375rem;
+  width: 1.625rem;
+  height: 1.625rem;
+}
+
+@media (min-width: 640px) {
+  .home-quick-icon-card__icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
 }
 
 .home-quick-icon-card__text {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.125rem;
+  width: 100%;
   min-width: 0;
 }
 
 .home-quick-icon-card__title {
   font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-size: 0.6875rem;
   font-weight: 800;
-  line-height: 1.25;
+  line-height: 1.2;
   color: #1e2a3a;
+  letter-spacing: -0.02em;
 }
 
 @media (min-width: 640px) {
   .home-quick-icon-card__title {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-quick-icon-card__title {
+    font-size: 0.6875rem;
   }
 }
 
 .home-quick-icon-card__desc {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   font-family: var(--font-body);
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.3;
   color: #64748b;
 }
 
 @media (min-width: 640px) {
   .home-quick-icon-card__desc {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
   }
 }
 
