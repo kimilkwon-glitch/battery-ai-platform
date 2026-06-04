@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { setCustomerSession } from "@/lib/customer-auth-session";
+import { HUB_MYPAGE } from "@/lib/customer-hub-routes";
 import { AddressFields, type AddressValues } from "@/components/auth/AddressFields";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { bm } from "@/lib/design-tokens";
@@ -11,7 +14,8 @@ const FUEL_OPTIONS = ["가솔린", "디젤", "LPG", "하이브리드", "HEV/PHEV
 const YEAR_OPTIONS = Array.from({ length: 25 }, (_, i) => String(new Date().getFullYear() - i));
 const CUSTOM_VEHICLE_VALUE = "__custom__";
 
-export function SignupForm() {
+export function SignupForm({ redirect }: { redirect?: string | null }) {
+  const router = useRouter();
   const [done, setDone] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -58,14 +62,26 @@ export function SignupForm() {
         }),
       );
     }
+    setCustomerSession({
+      displayName: name.trim(),
+      phone: phone.trim(),
+      email: email.trim(),
+    });
+    if (redirect?.trim()) {
+      router.push(redirect.trim());
+      return;
+    }
     setDone(true);
   };
 
   if (done) {
     return (
-      <p className="rounded-xl bg-emerald-50 px-4 py-6 text-center text-sm font-bold text-emerald-800 ring-1 ring-emerald-100">
-        회원가입 요청이 접수되었습니다. 확인 후 안내드리겠습니다.
-      </p>
+      <div className="rounded-xl bg-emerald-50 px-4 py-6 text-center ring-1 ring-emerald-100">
+        <p className="text-sm font-bold text-emerald-800">회원가입이 완료되었습니다.</p>
+        <Link href={HUB_MYPAGE} className={`${bm.btnPrimary} mt-4 inline-flex text-sm font-black`}>
+          마이페이지로 이동
+        </Link>
+      </div>
     );
   }
 

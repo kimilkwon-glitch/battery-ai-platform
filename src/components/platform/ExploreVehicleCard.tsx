@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
+import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
 import {
   CardInfoActions,
@@ -14,7 +14,6 @@ import {
 import { BatteryMiniSpecLink } from "@/components/battery/BatteryMiniSpecLink";
 import { bm } from "@/lib/design-tokens";
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
-import { addCustomerVehicle } from "@/lib/customer-vehicles-storage";
 import { getVehicleBodyType } from "@/lib/platform-data";
 import { getVehicleCardCompactCopy } from "@/lib/vehicle-card-hints";
 import { getVehicleConditionSpecLines } from "@/lib/vehicle-condition-spec-lines";
@@ -30,7 +29,6 @@ export function ExploreVehicleCard({
   href: string;
   registerMode?: boolean;
 }) {
-  const [registered, setRegistered] = useState(false);
   const copy = getVehicleCardCompactCopy(vehicleId, title);
   const imageSrc =
     vehicleId === "rexton-sports-search" ? null : carImageForPlatformVehicleId(vehicleId);
@@ -38,18 +36,6 @@ export function ExploreVehicleCard({
   const isCommercial = bodyType === "truck" || bodyType === "van" || /porter|bongo/i.test(vehicleId);
   const conditions = getVehicleConditionSpecLines(vehicleId);
   const isSearchPick = vehicleId === "rexton-sports-search";
-
-  const handleRegister = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isSearchPick) return;
-    addCustomerVehicle({
-      slug: vehicleId,
-      displayName: title,
-      href,
-    });
-    setRegistered(true);
-  };
 
   const inner = (
     <>
@@ -78,13 +64,14 @@ export function ExploreVehicleCard({
       </CardInfoStack>
       <CardInfoActions className="vehicle-browse-card__cta-row">
         {registerMode && !isSearchPick ? (
-          <button
-            type="button"
-            onClick={handleRegister}
+          <SaveVehicleRegisterButton
+            slug={vehicleId}
+            displayName={title}
+            yearRange={copy.specLine}
             className={`${bm.btnPrimary} min-h-[2.75rem] flex-1 text-sm font-black`}
-          >
-            {registered ? "등록 완료" : "내 차량으로 등록"}
-          </button>
+            label="내 차량으로 등록"
+            source="vehicleBrowse"
+          />
         ) : null}
         <Link
           href={href}

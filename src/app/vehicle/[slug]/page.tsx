@@ -4,6 +4,7 @@ import { Breadcrumb, PortalHeader } from "@/components/portal";
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 import { VehicleActivityTracker } from "@/components/vehicle/VehicleActivityTracker";
 import { VehicleCustomerBatteryShop } from "@/components/vehicle/VehicleCustomerBatteryShop";
+import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
 import { bm } from "@/lib/design-tokens";
 import { getVehicleAsset } from "@/lib/car-assets";
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
@@ -24,7 +25,7 @@ export default async function VehicleDetailPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ fuel?: string; year?: string }>;
+  searchParams: Promise<{ fuel?: string; year?: string; action?: string }>;
 }) {
   const { slug } = await params;
   const sp = await searchParams;
@@ -40,6 +41,14 @@ export default async function VehicleDetailPage({
       batteryPage.fuelGroups,
       batteryPage.summary?.representativeBattery,
     ) || vehicle.recommendedBattery;
+  const batteryOptions = [
+    ...new Set(
+      batteryPage.fuelGroups.flatMap((g) =>
+        [g.primaryBattery, ...g.batteryOptions].filter(Boolean),
+      ),
+    ),
+  ];
+  const autoSaveOnMount = sp.action === "saveVehicle";
 
   return (
     <main className={`${bm.pageBg} vehicle-detail-customer`} data-page="vehicle-detail">
@@ -114,12 +123,15 @@ export default async function VehicleDetailPage({
         />
 
         <div className="flex flex-wrap gap-2">
-          <Link
-            href={`/vehicles?register=1`}
-            className={`${bm.btnSecondary} text-sm font-black`}
-          >
-            내 차량으로 등록
-          </Link>
+          <SaveVehicleRegisterButton
+            slug={slug}
+            displayName={displayTitle}
+            yearRange={batteryPage.profile?.yearRange ?? vehicle.year}
+            fuelHint={highlightFuel}
+            recommendedBattery={repBattery}
+            batteryOptions={batteryOptions}
+            autoSaveOnMount={autoSaveOnMount}
+          />
         </div>
       </section>
     </main>

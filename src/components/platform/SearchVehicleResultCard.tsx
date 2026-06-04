@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
+import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
 import { bm } from "@/lib/design-tokens";
-import { addCustomerVehicle } from "@/lib/customer-vehicles-storage";
 import { searchVehicleCardLabels } from "@/lib/search/search-vehicle-card-display";
 import {
   resolveSearchVehicleCardDetailHref,
@@ -23,7 +22,6 @@ type Props = {
 /** 검색 결과·세대 선택 — 카드 클릭·규격·등록 CTA */
 export function SearchVehicleResultCard({ row }: Props) {
   const router = useRouter();
-  const [registered, setRegistered] = useState(false);
   const { title, brand, yearRange, imageSrc } = searchVehicleCardLabels(row);
   const detailHref = resolveSearchVehicleCardDetailHref(row);
   const specHref = resolveSearchVehicleCardSpecHref(row);
@@ -32,23 +30,6 @@ export function SearchVehicleResultCard({ row }: Props) {
   function goDetail() {
     if (!detailHref) return;
     router.push(detailHref);
-  }
-
-  function handleRegister(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!detailHref || !slug) {
-      router.push("/vehicles?register=1");
-      return;
-    }
-    addCustomerVehicle({
-      slug,
-      displayName: row.model.trim() || title,
-      href: detailHref,
-      year: yearRange || row.year,
-      fuel: row.fuel,
-    });
-    setRegistered(true);
   }
 
   const primaryBody = (
@@ -120,13 +101,28 @@ export function SearchVehicleResultCard({ row }: Props) {
             규격 보기
           </Link>
         ) : null}
-        <button
-          type="button"
-          className={`${bm.btnPrimary} bm-search-vehicle-card__action-btn`}
-          onClick={handleRegister}
-        >
-          {registered ? "등록 완료" : "내 차량으로 등록"}
-        </button>
+        {slug ? (
+          <div onClick={(e) => e.stopPropagation()}>
+            <SaveVehicleRegisterButton
+              slug={slug}
+              displayName={row.model.trim() || title}
+              yearRange={yearRange || row.year}
+              fuelHint={row.fuel}
+              recommendedBattery={row.recommend}
+              className={`${bm.btnPrimary} bm-search-vehicle-card__action-btn`}
+              label="내 차량으로 등록"
+              source="vehicleSearch"
+            />
+          </div>
+        ) : (
+          <Link
+            href="/vehicles?register=1"
+            className={`${bm.btnPrimary} bm-search-vehicle-card__action-btn`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            내 차량으로 등록
+          </Link>
+        )}
         <Link
           href="/vehicles?register=1"
           className={`${bm.btnGhost} bm-search-vehicle-card__action-btn`}

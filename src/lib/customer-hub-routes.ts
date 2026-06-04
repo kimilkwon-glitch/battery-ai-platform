@@ -20,6 +20,7 @@ export const HUB_REVIEWS = "/reviews";
 export const HUB_SUPPORT = "/support";
 export const HUB_LOGIN = "/login";
 export const HUB_SIGNUP = "/signup";
+export const HUB_MYPAGE = "/mypage";
 
 export const HUB_STORE_ANCHORS = {
   stores: `${HUB_STORE_DETAIL}#stores`,

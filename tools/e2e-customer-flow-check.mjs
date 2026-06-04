@@ -106,6 +106,48 @@ async function main() {
     });
   }
 
+  await step("qm5-save-vehicle-guest", "QM5 내 차량으로 정보등록 (비회원 모달)", async () => {
+    await page.goto(`${BASE}/vehicle/renault-samsung-qm5-2007`, {
+      waitUntil: "domcontentloaded",
+    });
+    const saveBtn = page.locator('[data-action="save-vehicle"]').first();
+    await saveBtn.waitFor({ state: "visible", timeout: 15000 });
+    await saveBtn.click();
+    await page.getByText(/회원가입 후 이용 가능합니다/).first().waitFor({ timeout: 8000 });
+    const loginLink = page.getByRole("link", { name: /로그인하기/i }).first();
+    const signupLink = page.getByRole("link", { name: /회원가입하기/i }).first();
+    const loginHref = await loginLink.getAttribute("href");
+    const signupHref = await signupLink.getAttribute("href");
+    if (!loginHref?.includes("/login") || !loginHref.includes("redirect")) {
+      throw new Error(`login href invalid: ${loginHref}`);
+    }
+    if (!signupHref?.includes("/signup") || !signupHref.includes("redirect")) {
+      throw new Error(`signup href invalid: ${signupHref}`);
+    }
+    if (!loginHref.includes("saveVehicle") && !loginHref.includes("action=")) {
+      throw new Error(`login href missing saveVehicle action: ${loginHref}`);
+    }
+    await page.locator('[data-testid="save-vehicle-modal-close"]').click();
+    await page.getByText(/회원가입 후 이용 가능합니다/).first().waitFor({ state: "hidden", timeout: 5000 });
+  });
+
+  await step("vehicle-detail-spot-check", "K3·GV80·100R 상세 접속", async () => {
+    for (const path of [
+      "/vehicle/kia-k3-2018",
+      "/vehicle/genesis-gv80",
+      "/batteries/100R",
+    ]) {
+      const res = await page.goto(`${BASE}${path}`, { waitUntil: "domcontentloaded" });
+      if (!res?.ok()) throw new Error(`${path} HTTP ${res?.status()}`);
+      const html = await page.content();
+      if (/Runtime Error|Application error|Attempted to call/i.test(html)) {
+        throw new Error(`${path} runtime error`);
+      }
+    }
+    await page.goto(`${BASE}/vehicle/renault-samsung-qm5-2007`, { waitUntil: "domcontentloaded" });
+    await page.locator('[data-action="save-vehicle"]').first().waitFor({ timeout: 10000 });
+  });
+
   await step("auth-login", "로그인 페이지", async () => {
     await page.goto(`${BASE}/login`, { waitUntil: "domcontentloaded" });
     await page.getByText(/로그인/).first().waitFor({ timeout: 10000 });

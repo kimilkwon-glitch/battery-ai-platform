@@ -5,7 +5,12 @@ export type CustomerVehicleRecord = {
   href: string;
   registeredAt: string;
   year?: string;
+  yearRange?: string;
   fuel?: string;
+  fuelHint?: string;
+  recommendedBattery?: string;
+  batteryOptions?: string[];
+  source?: string;
 };
 
 const STORAGE_KEY = "bm-my-vehicles-v1";
@@ -39,8 +44,13 @@ export function addCustomerVehicle(
     slug: input.slug,
     displayName: input.displayName,
     href: input.href,
-    year: input.year,
+    year: input.year ?? input.yearRange,
+    yearRange: input.yearRange ?? input.year,
     fuel: input.fuel,
+    fuelHint: input.fuelHint ?? input.fuel,
+    recommendedBattery: input.recommendedBattery,
+    batteryOptions: input.batteryOptions?.length ? input.batteryOptions : undefined,
+    source: input.source,
     registeredAt: new Date().toISOString(),
   };
   const existing = readAll().filter((v) => v.slug !== row.slug);

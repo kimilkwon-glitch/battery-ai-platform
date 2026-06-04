@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppIcon } from "@/components/common/AppIcon";
 import { bm } from "@/lib/design-tokens";
+import { getCustomerSession, isCustomerLoggedIn } from "@/lib/customer-auth-session";
 import { getCustomerVehicles } from "@/lib/customer-vehicles-storage";
 import {
   HUB_BENEFITS,
@@ -52,8 +53,12 @@ const QUICK_LINKS = [
 
 export function MyPageClient() {
   const [vehicles, setVehicles] = useState<ReturnType<typeof getCustomerVehicles>>([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [sessionName, setSessionName] = useState<string | null>(null);
 
   useEffect(() => {
+    setLoggedIn(isCustomerLoggedIn());
+    setSessionName(getCustomerSession()?.displayName ?? null);
     setVehicles(getCustomerVehicles());
   }, []);
 
@@ -64,22 +69,33 @@ export function MyPageClient() {
         <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
           주문 내역, 차량 정보, 쿠폰 혜택을 한곳에서 확인하세요.
         </p>
-        <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/80">
-          <p className="text-sm font-bold text-slate-800">
-            로그인하면 주문 내역, 내 차량 정보, 혜택을 확인할 수 있습니다.
-          </p>
-          <p className="mt-1 text-sm font-medium text-slate-600">
-            아직 가입 전이라면 회원가입 후 첫 주문 혜택을 확인해 보세요.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link href={HUB_LOGIN} className={`${bm.btnPrimary} text-sm font-black`}>
-              로그인
-            </Link>
-            <Link href={HUB_SIGNUP} className={`${bm.btnSecondary} text-sm font-black`}>
-              회원가입
-            </Link>
+        {loggedIn ? (
+          <div className="mt-4 rounded-xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-100">
+            <p className="text-sm font-bold text-emerald-900">
+              {sessionName ? `${sessionName}님, ` : ""}로그인되어 있습니다.
+            </p>
+            <p className="mt-1 text-sm font-medium text-emerald-800/90">
+              등록한 차량과 주문·혜택 정보를 아래에서 확인하세요.
+            </p>
           </div>
-        </div>
+        ) : (
+          <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/80">
+            <p className="text-sm font-bold text-slate-800">
+              로그인하면 주문 내역, 내 차량 정보, 혜택을 확인할 수 있습니다.
+            </p>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              아직 가입 전이라면 회원가입 후 첫 주문 혜택을 확인해 보세요.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link href={HUB_LOGIN} className={`${bm.btnPrimary} text-sm font-black`}>
+                로그인
+              </Link>
+              <Link href={HUB_SIGNUP} className={`${bm.btnSecondary} text-sm font-black`}>
+                회원가입
+              </Link>
+            </div>
+          </div>
+        )}
       </section>
 
       {vehicles.length > 0 ? (
@@ -90,10 +106,18 @@ export function MyPageClient() {
               <li key={v.id}>
                 <Link
                   href={v.href}
-                  className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 px-4 py-3 text-sm font-bold text-slate-800 hover:border-blue-200 hover:bg-blue-50/40"
+                  className="flex flex-col gap-1 rounded-xl border border-slate-100 bg-slate-50/60 px-4 py-3 text-sm font-bold text-slate-800 hover:border-blue-200 hover:bg-blue-50/40 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  {v.displayName}
-                  <span className="text-blue-700">규격 보기 →</span>
+                  <span>
+                    {v.displayName}
+                    {v.yearRange || v.year ? (
+                      <span className="ml-2 font-medium text-slate-500">{v.yearRange ?? v.year}</span>
+                    ) : null}
+                  </span>
+                  <span className="text-xs font-bold text-slate-600 sm:text-sm">
+                    {v.recommendedBattery ? `${v.recommendedBattery} · ` : ""}
+                    <span className="text-blue-700">규격 보기 →</span>
+                  </span>
                 </Link>
               </li>
             ))}
