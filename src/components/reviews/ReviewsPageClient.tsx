@@ -97,7 +97,7 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
       </div>
 
       <div className="reviews-grid-wrap rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-5">
-        <ul className="reviews-grid grid list-none grid-cols-1 items-start gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-7">
+        <ul className="reviews-grid grid list-none grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-7">
           {filtered.map((item) => (
             <li key={item.id} className="min-w-0">
               <ReviewCard item={item} />

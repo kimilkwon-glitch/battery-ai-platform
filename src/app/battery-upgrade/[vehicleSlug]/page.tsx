@@ -53,7 +53,16 @@ export default async function BatteryUpgradeVehiclePage({
           </article>
         </div>
 
-        {record.checkPoints.length > 0 ? (
+        {record.guidanceNote ? (
+          <section className={`${bm.card} ${bm.cardPad} border-slate-200 bg-slate-50/60`}>
+            <h2 className="text-base font-black text-slate-900">안내 기준</h2>
+            <p className="mt-3 text-sm font-medium leading-relaxed text-slate-700">
+              {record.guidanceNote}
+            </p>
+          </section>
+        ) : null}
+
+        {!record.guidanceNote && record.checkPoints.length > 0 ? (
           <section className={`${bm.card} ${bm.cardPad}`}>
             <h2 className="text-base font-black text-slate-900">확인 포인트</h2>
             <ul className="mt-3 space-y-2 text-sm font-medium text-slate-700">
@@ -69,10 +78,10 @@ export default async function BatteryUpgradeVehiclePage({
           </section>
         ) : null}
 
-        {record.cautions.length > 0 ? (
-          <section className={`${bm.card} ${bm.cardPad} border-amber-100`}>
-            <h2 className="text-base font-black text-amber-950">주의사항</h2>
-            <ul className="mt-3 space-y-2 text-sm font-medium text-amber-950/90">
+        {!record.guidanceNote && record.cautions.length > 0 ? (
+          <section className={`${bm.card} ${bm.cardPad}`}>
+            <h2 className="text-base font-black text-slate-900">안내</h2>
+            <ul className="mt-3 space-y-2 text-sm font-medium text-slate-700">
               {record.cautions.map((c) => (
                 <li key={c}>{c}</li>
               ))}

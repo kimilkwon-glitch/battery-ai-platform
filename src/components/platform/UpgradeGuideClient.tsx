@@ -39,18 +39,7 @@ const UPGRADE_EXAMPLES = [
 export function UpgradeGuideClient() {
   return (
     <div className="upgrade-guide space-y-8 pb-10" data-page="upgrade-guide">
-      <section className={`${bm.heroPanel} p-6 sm:p-8`}>
-        <p className={bm.intentBadge}>용량 업그레이드</p>
-        <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-          배터리 용량 업그레이드
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
-          장기주차, 블랙박스 사용, 전장품 사용이 많다면 용량 업그레이드를 검토할 수 있습니다. 차량명으로
-          먼저 조회한 뒤, 공간·단자가 맞는 경우에만 안전하게 장착하세요.
-        </p>
-      </section>
-
-      <UpgradeBatteryLookup />
+      <UpgradeBatteryLookup showIntro />
 
       <section className="grid gap-4 md:grid-cols-3">
         <article className={`${bm.card} ${bm.cardPad}`}>

@@ -12,8 +12,7 @@ export default async function ReviewsPage({
     <PageShell
       zone="review"
       pageLabel="리뷰"
-      title="배터리 교체 후기"
-      description="실제 작업 후기를 기준으로 정리한 배터리 교체 사례입니다. 지점별 후기도 함께 확인할 수 있습니다."
+      showPageHeader={false}
       searchPlaceholder="차량·규격 검색"
     >
       <ReviewsPageClient initialBattery={battery} />

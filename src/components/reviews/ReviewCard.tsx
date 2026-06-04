@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { MessageCircle, Star } from "lucide-react";
 import clsx from "clsx";
@@ -35,7 +36,10 @@ function ReviewBadge({ id }: { id: ReviewBadgeId }) {
 }
 
 function ReviewOperatorReply({ item }: { item: ReviewItem }) {
+  const [expanded, setExpanded] = useState(false);
   if (!item.operatorReply) return null;
+
+  const replyLong = item.operatorReply.length > 160;
 
   return (
     <div className="review-operator-reply mt-4 min-w-0 max-w-full rounded-xl border border-teal-100 bg-teal-50/50 p-4">
@@ -52,9 +56,23 @@ function ReviewOperatorReply({ item }: { item: ReviewItem }) {
           {item.operatorSummary}
         </p>
       ) : null}
-      <p className="review-operator-reply__body mt-2 text-sm font-medium leading-relaxed text-slate-700">
+      <p
+        className={clsx(
+          "review-operator-reply__body mt-2 text-sm font-medium leading-relaxed text-slate-700",
+          !expanded && replyLong && "line-clamp-4",
+        )}
+      >
         {item.operatorReply}
       </p>
+      {replyLong ? (
+        <button
+          type="button"
+          className="mt-2 text-xs font-black text-teal-800 hover:underline"
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded ? "답변 접기" : "답변 더보기"}
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -96,7 +114,7 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
       <p
         className={clsx(
           "review-card__content mt-2.5 text-sm font-medium leading-relaxed text-slate-700 sm:text-[15px]",
-          compact ? "line-clamp-4" : undefined,
+          compact ? "line-clamp-3" : "line-clamp-3 sm:line-clamp-none",
         )}
       >
         {item.content}
@@ -133,7 +151,7 @@ export function ReviewCard({ item }: { item: ReviewItem }) {
     return (
       <article
         className={clsx(
-          "review-card review-card--text flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5",
+          "review-card review-card--text flex h-full min-h-[280px] min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5",
         )}
       >
         <ReviewCardBody item={item} compact />
@@ -144,7 +162,7 @@ export function ReviewCard({ item }: { item: ReviewItem }) {
   return (
     <article
       className={clsx(
-        "review-card review-card--photo flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
+        "review-card review-card--photo flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
       )}
     >
       <ReviewCardMedia item={item} className="review-card-media w-full shrink-0" />

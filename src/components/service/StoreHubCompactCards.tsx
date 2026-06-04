@@ -11,9 +11,11 @@ import { bm } from "@/lib/design-tokens";
 export function StoreHubCompactCards({
   highlightId,
   activeId,
+  onSelect,
 }: {
   highlightId: BusanStoreId | null;
   activeId?: BusanStoreId | null;
+  onSelect?: (id: BusanStoreId) => void;
 }) {
   return (
     <section className="grid gap-6 lg:grid-cols-2 lg:items-stretch" id="stores">
@@ -29,9 +31,18 @@ export function StoreHubCompactCards({
           <article
             key={store.id}
             id={`store-${store.id}`}
-            tabIndex={selected ? 0 : -1}
+            role="button"
+            tabIndex={0}
+            aria-pressed={selected}
+            onClick={() => onSelect?.(store.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelect?.(store.id);
+              }
+            }}
             className={clsx(
-              `${bm.card} bm-card-unified bm-store-card flex h-full flex-col overflow-hidden transition outline-none`,
+              `${bm.card} bm-card-unified bm-store-card flex h-full cursor-pointer flex-col overflow-hidden outline-none transition-[box-shadow,border-color,transform]`,
               store.id === "deokcheon" ? "bm-store-card--deokcheon" : "bm-store-card--hakjang",
               highlighted && "bm-store-card--active",
               selected && "bm-store-card--selected",
@@ -80,6 +91,7 @@ export function StoreHubCompactCards({
                 <p className="mt-2 min-h-[2rem]">
                   <a
                     href={store.phoneTel}
+                    onClick={(e) => e.stopPropagation()}
                     className="text-2xl font-black tracking-tight text-blue-700 hover:underline sm:text-[1.65rem]"
                   >
                     {store.phone}
@@ -92,6 +104,7 @@ export function StoreHubCompactCards({
                   <a
                     className={`${bm.btnPrimary} inline-flex min-h-[52px] flex-1 items-center justify-center gap-2 px-5 text-base font-black sm:min-w-[140px] sm:flex-none`}
                     href={store.phoneTel}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <Phone className="size-5" aria-hidden />
                     전화하기
@@ -101,6 +114,7 @@ export function StoreHubCompactCards({
                     href={mapsUrl}
                     rel="noopener noreferrer"
                     target="_blank"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <Navigation className="size-5" aria-hidden />
                     길찾기
@@ -110,6 +124,7 @@ export function StoreHubCompactCards({
                     href={naverPlaceHref}
                     rel="noopener noreferrer"
                     target="_blank"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <MapPin className="size-5" aria-hidden />
                     네이버 플레이스
@@ -120,6 +135,7 @@ export function StoreHubCompactCards({
                   href={blogHref}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
                   className={clsx(
                     "flex w-full items-center justify-center gap-2.5 rounded-xl border-2 px-5 py-4 text-base font-black transition-[box-shadow,background-color,border-color]",
                     store.id === "deokcheon"

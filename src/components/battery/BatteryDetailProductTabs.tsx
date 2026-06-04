@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BatteryDetailBodyImages } from "@/components/battery/BatteryDetailBodyImages";
-import { openProductInquiry } from "@/lib/chat-inquiry-events";
+import { BatteryProductInquiryPanel } from "@/components/battery/BatteryProductInquiryPanel";
 import { getBattery } from "@/lib/platform-data";
 
 const TABS = [
@@ -144,24 +144,13 @@ export function BatteryDetailProductTabs({ code }: Props) {
               exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
               transition={{ duration: 0.22, ease: panelEase }}
             >
-              <h3 className="text-base font-black text-slate-900">이 규격({code}) 관련 문의</h3>
-              <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-                장착 가능 여부, 재고, 배송 문의를 접수할 수 있습니다. 차량별 장착 가능 여부는 차량
-                정보 확인 후 안내드립니다.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  className="battery-product-inquiry-cta"
-                  onClick={() => openProductInquiry({ batteryCode: code })}
-                >
-                  제품 문의 접수
-                </button>
+              <BatteryProductInquiryPanel batteryCode={code} />
+              <div className="mt-6 border-t border-slate-100 pt-4">
                 <Link
                   href="/community"
-                  className="inline-flex min-h-[2.75rem] items-center rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:text-blue-700"
+                  className="text-sm font-bold text-slate-600 transition hover:text-blue-700"
                 >
-                  Q&amp;A 보기
+                  Q&amp;A 게시판 보기 →
                 </Link>
               </div>
             </motion.div>

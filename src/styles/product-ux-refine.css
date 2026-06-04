@@ -127,36 +127,51 @@
   pointer-events: auto;
 }
 
-.bm-store-card--active {
-  border-width: 3px !important;
-  border-color: #2563eb !important;
-  background: linear-gradient(180deg, #eff6ff 0%, #fff 45%) !important;
-  box-shadow:
-    0 0 0 4px rgba(37, 99, 235, 0.12),
-    0 16px 40px -12px rgba(15, 23, 42, 0.22) !important;
-  transform: translateY(-2px);
+.bm-store-card {
+  border: 2px solid transparent;
+  box-shadow: 0 4px 14px -8px rgba(15, 23, 42, 0.12);
 }
 
-.bm-store-card--deokcheon.bm-store-card--active {
-  border-color: #2563eb !important;
-  background: linear-gradient(180deg, #eff6ff 0%, #fff 50%) !important;
+.bm-store-card:hover {
+  border-color: rgba(148, 163, 184, 0.55);
+  box-shadow: 0 8px 22px -10px rgba(15, 23, 42, 0.16);
 }
 
-.bm-store-card--hakjang.bm-store-card--active {
-  border-color: #059669 !important;
-  background: linear-gradient(180deg, #ecfdf5 0%, #fff 50%) !important;
-  box-shadow:
-    0 0 0 4px rgba(16, 185, 129, 0.12),
-    0 16px 40px -12px rgba(15, 23, 42, 0.2) !important;
+.bm-store-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
 }
 
-.bm-store-card--active .bm-store-badge {
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
-}
-
+.bm-store-card--active,
 .bm-store-card--selected {
-  outline: 3px solid rgba(37, 99, 235, 0.35);
-  outline-offset: 2px;
+  border-width: 2px !important;
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.04),
+    0 12px 28px -12px rgba(15, 23, 42, 0.2) !important;
+}
+
+.bm-store-card--deokcheon.bm-store-card--active,
+.bm-store-card--deokcheon.bm-store-card--selected {
+  border-color: #3b82f6 !important;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 48%) !important;
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.14),
+    0 12px 28px -12px rgba(37, 99, 235, 0.22) !important;
+}
+
+.bm-store-card--hakjang.bm-store-card--active,
+.bm-store-card--hakjang.bm-store-card--selected {
+  border-color: #10b981 !important;
+  background: linear-gradient(180deg, #f0fdf4 0%, #fff 48%) !important;
+  box-shadow:
+    0 0 0 3px rgba(16, 185, 129, 0.12),
+    0 12px 28px -12px rgba(5, 150, 105, 0.18) !important;
+}
+
+.bm-store-card--selected .bm-store-badge,
+.bm-store-card--active .bm-store-badge {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
 }
 
 .busan-region-map {

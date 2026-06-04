@@ -60,7 +60,11 @@ export function ServiceCenterClient({
         지도가 보이지 않으면 가까운 지점으로 전화 상담해 주세요.
       </p>
 
-      <StoreHubCompactCards highlightId={highlightStore} activeId={activeStore} />
+      <StoreHubCompactCards
+        highlightId={highlightStore}
+        activeId={activeStore}
+        onSelect={setActiveStore}
+      />
 
       <section
         className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm sm:p-7"

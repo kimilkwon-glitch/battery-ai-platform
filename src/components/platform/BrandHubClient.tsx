@@ -28,8 +28,10 @@ import {
   type BrandHubInsightCard,
   type CustomerBrandHubId,
 } from "@/lib/brand-hub-customer";
+import { BRAND_HUB_REFERENCE_BRANDS } from "@/lib/brand-hub-reference-brands";
 import type { BatteryBrandSpec } from "@/data/battery/types";
 import { getBattery } from "@/lib/platform-data";
+import { bm } from "@/lib/design-tokens";
 
 const PANEL_TRANSITION = { duration: 0.78, ease: [0.65, 0, 0.35, 1] as const };
 
@@ -262,6 +264,49 @@ export function BrandHubClient() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <section
+        className={`${bm.card} ${bm.cardPad} space-y-5`}
+        aria-labelledby="brand-hub-reference-title"
+      >
+        <header>
+          <p className={bm.intentBadge}>참고 브랜드</p>
+          <h2 id="brand-hub-reference-title" className={`${bm.sectionTitle} mt-2`}>
+            함께 비교하는 브랜드
+          </h2>
+          <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+            상담 시 로케트·쏠라이트 외에도 아래 브랜드를 규격 비교용으로 안내할 수 있습니다.
+          </p>
+        </header>
+        <div className="grid gap-4 md:grid-cols-2">
+          {BRAND_HUB_REFERENCE_BRANDS.map((ref) => (
+            <article
+              key={ref.id}
+              className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 ring-1 ring-slate-100"
+            >
+              <h3 className="text-lg font-black text-slate-950">{ref.title}</h3>
+              <p className="mt-2 text-sm font-bold text-slate-800">{ref.headline}</p>
+              <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+                {ref.description}
+              </p>
+              <ul className="mt-3 space-y-1.5 text-sm font-medium text-slate-700">
+                {ref.advantageBullets.map((b) => (
+                  <li key={b} className="flex gap-2">
+                    <span className="text-blue-600" aria-hidden>
+                      ·
+                    </span>
+                    {b}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-600 ring-1 ring-slate-100">
+                <span className="font-black text-slate-800">현장 코멘트 · </span>
+                {ref.fieldComment}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
     </motion.div>
   );
 }

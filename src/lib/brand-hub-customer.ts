@@ -15,7 +15,7 @@ import { batterySpecHref } from "@/lib/canonical-battery-code";
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 
 /** 배너 로고 캐시 무효화 */
-export const BRAND_HUB_LOGO_REV = "20260530-banner-logo-plaque-v2";
+export const BRAND_HUB_LOGO_REV = "20260603-ui-logo-clean-v1";
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
 export type BrandHubLogoAssets = {
@@ -33,18 +33,18 @@ export type BrandHubLogoAssets = {
 
 export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
   rocket: {
-    src: "/assets/brand/rocket-logo.png",
+    src: "/assets/brand/rocket-logo-light.png",
     logoLight: "/assets/brand/rocket-logo-light.png",
-    logoDark: "/assets/brand/rocket-logo-dark.png",
+    logoDark: "/assets/brand/rocket-logo-light.png",
     width: 574,
     height: 280,
     alt: "로케트 배터리 로고",
     fallbackText: "로케트 배터리",
   },
   solite: {
-    src: "/assets/brand/solite-logo.png",
+    src: "/assets/brand/solite-logo-light.png",
     logoLight: "/assets/brand/solite-logo-light.png",
-    logoDark: "/assets/brand/solite-logo-dark.png",
+    logoDark: "/assets/brand/solite-logo-light.png",
     width: 472,
     height: 196,
     alt: "쏠라이트 배터리 로고",
@@ -189,16 +189,16 @@ export type BrandHubBannerCopy = {
 export const BRAND_HUB_BANNER: Record<CustomerBrandHubId, BrandHubBannerCopy> = {
   rocket: {
     title: "로케트 배터리",
-    headline: "국산차 교체 현장에서 가장 익숙한 대표 브랜드",
+    headline: "국산 차량 교체 시장에서 가장 익숙한 대표 브랜드",
     description:
-      "일반형, DIN, AGM까지 폭넓게 갖춘 라인업으로 승용차와 SUV 교체 상담에서 자주 안내되는 브랜드입니다.",
+      "로케트는 일반형, DIN, AGM 계열까지 폭넓게 구성되어 있어 국산차 교체 상담에서 가장 자주 비교되는 브랜드입니다. 순정 장착 규격과 동일한 방향으로 안내하기 쉬워, 처음 배터리를 교체하는 고객도 이해하기 편한 편입니다.",
     heroCode: "AGM80L",
   },
   solite: {
     title: "쏠라이트 배터리",
     headline: "CMF 표기 중심의 깔끔한 국산 배터리 라인업",
     description:
-      "현대·기아 계열 순정 교체 흐름에서 익숙한 브랜드이며, 일반형과 DIN 규격을 직관적으로 확인하기 좋습니다.",
+      "쏠라이트는 현대·기아 순정 교체 흐름에서 익숙한 브랜드로, CMF 표기를 중심으로 일반형과 DIN 계열을 확인하기 좋습니다. 가격대와 규격 선택지를 함께 비교하기 쉬워 상담용 대체 브랜드로 활용하기 좋습니다.",
     heroCode: "CMF80L",
   },
 };
@@ -217,44 +217,44 @@ export const BRAND_HUB_INSIGHTS: Record<
   rocket: {
     advantage: {
       title: "브랜드가 말하는 장점",
-      lead: "검증된 시동 성능과 폭넓은 규격 구성",
-      body: "일반형부터 AGM까지 폭넓게 갖춘 라인업으로 차종별 대응 폭이 넓습니다.",
+      lead: "일반형·DIN·AGM까지 폭넓은 라인업",
+      body: "국산차 교체 상담에서 익숙한 브랜드로, 규격 비교와 설명 흐름이 잡히기 쉽습니다.",
       bullets: [
-        "일반형부터 AGM까지 대응",
-        "승용·SUV 교체 상담에 자주 사용",
-        "익숙한 대표 브랜드",
+        "일반형·DIN·AGM까지 폭넓은 라인업",
+        "국산차 교체 상담에서 익숙한 브랜드",
+        "규격 비교와 설명이 쉬움",
       ],
     },
     field: {
       title: "현장 코멘트",
-      lead: "문의가 많은 만큼 설명이 빠른 편입니다.",
-      body: "고객이 브랜드를 익숙하게 알고 있는 경우가 많아 일반 교체 문의에서 안내하기 편합니다.",
+      lead: "차종별 순정 규격과 비교해 설명하기 편합니다.",
+      body: "고객 인지도가 높아 상담 전환이 빠른 편이며, 기존 장착 제품과 나란히 비교해 안내하기 좋습니다.",
       bullets: [
-        "시동성 중심 문의에 적합",
-        "기존 장착 제품과 비교 설명이 쉬움",
-        "국산차 교체 상담에서 익숙함",
+        "차종별 순정 규격 비교가 쉬움",
+        "고객 인지도가 높아 상담이 수월함",
+        "교체 상담에서 설명 전환이 빠른 편",
       ],
     },
   },
   solite: {
     advantage: {
       title: "브랜드가 말하는 장점",
-      lead: "CMF 중심의 직관적인 제품 체계",
-      body: "일반형과 DIN 계열을 깔끔하게 구분해 볼 수 있어 규격 확인이 비교적 쉽습니다.",
+      lead: "CMF 표기 중심의 제품 체계",
+      body: "현대·기아 교체 상담에서 규격명을 함께 비교하기 좋고, 가격대 선택지 설명이 수월합니다.",
       bullets: [
         "CMF 표기 중심",
         "일반형·DIN 라인 구분 용이",
-        "현대·기아 순정 교체 흐름에 익숙함",
+        "현대·기아 교체 상담에서 설명이 편함",
       ],
     },
     field: {
       title: "현장 코멘트",
-      lead: "기존 장착 제품과 비교해 안내하기 편한 편입니다.",
-      body: "특히 현대·기아 계열 차량에서는 기존 라벨과 비교해 설명하기 쉬운 경우가 많습니다.",
+      lead: "기존 장착 제품과 비교해 안내하기 편합니다.",
+      body: "가격대와 규격 선택지를 함께 설명하기 쉬워, 상담용 대체 브랜드로 활용하기 좋습니다.",
       bullets: [
-        "순정 대체 문의에서 설명이 편함",
-        "규격명 확인 흐름이 깔끔함",
-        "가격대 선택지 안내가 쉬움",
+        "기존 장착 제품과 비교 안내가 쉬움",
+        "가격대 선택지 설명이 수월함",
+        "규격 확인 흐름이 깔끔함",
       ],
     },
   },

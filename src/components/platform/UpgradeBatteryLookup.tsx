@@ -55,7 +55,16 @@ function UpgradeResultCard({ record }: { record: BatteryUpgradeRecord }) {
         </div>
       </div>
 
-      {record.checkPoints.length > 0 ? (
+      {record.guidanceNote ? (
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/90 p-4 ring-1 ring-slate-100">
+          <p className="text-xs font-black uppercase tracking-wide text-slate-600">안내 기준</p>
+          <p className="mt-2 text-sm font-medium leading-relaxed text-slate-700">
+            {record.guidanceNote}
+          </p>
+        </div>
+      ) : null}
+
+      {!record.guidanceNote && record.checkPoints.length > 0 ? (
         <div className="mt-4">
           <p className="text-xs font-black text-slate-500">확인 포인트</p>
           <ul className="mt-2 list-inside list-disc space-y-1 text-sm font-medium text-slate-700">
@@ -66,10 +75,10 @@ function UpgradeResultCard({ record }: { record: BatteryUpgradeRecord }) {
         </div>
       ) : null}
 
-      {record.cautions.length > 0 ? (
-        <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/40 p-4">
-          <p className="text-xs font-black text-amber-900">주의사항</p>
-          <ul className="mt-2 space-y-1 text-sm font-medium text-amber-950/90">
+      {!record.guidanceNote && record.cautions.length > 0 ? (
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/90 p-4">
+          <p className="text-xs font-black text-slate-600">안내</p>
+          <ul className="mt-2 space-y-1 text-sm font-medium text-slate-700">
             {record.cautions.map((c) => (
               <li key={c} className="flex gap-2">
                 <span aria-hidden>·</span>
@@ -101,9 +110,11 @@ function UpgradeResultCard({ record }: { record: BatteryUpgradeRecord }) {
 type Props = {
   initialQuery?: string;
   compact?: boolean;
+  /** compare 페이지 — 라벨·제목·설명 포함 */
+  showIntro?: boolean;
 };
 
-export function UpgradeBatteryLookup({ initialQuery = "", compact }: Props) {
+export function UpgradeBatteryLookup({ initialQuery = "", compact, showIntro }: Props) {
   const [query, setQuery] = useState(initialQuery);
   const hasInitial = Boolean(initialQuery.trim());
   const [searched, setSearched] = useState(hasInitial);
@@ -125,13 +136,31 @@ export function UpgradeBatteryLookup({ initialQuery = "", compact }: Props) {
       aria-labelledby="upgrade-lookup-title"
     >
       <div>
-        <h2 id="upgrade-lookup-title" className="text-lg font-black text-slate-950 sm:text-xl">
-          용량 업그레이드 조회
-        </h2>
-        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-          차량명으로 기본 배터리와 업그레이드 가능 배터리를 확인하세요. 데이터가 없는 차량은
-          수집 중 안내가 표시됩니다.
-        </p>
+        {showIntro ? (
+          <>
+            <p className={bm.intentBadge}>용량 업그레이드</p>
+            <h1
+              id="upgrade-lookup-title"
+              className={`${bm.sectionTitle} mt-2 text-2xl sm:text-3xl`}
+            >
+              배터리 용량 업그레이드
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
+              장기주차·블랙박스·전장품 사용이 많다면 용량 업그레이드를 검토할 수 있습니다. 차량명으로
+              조회한 뒤, 공간·단자가 맞는 경우에만 안내합니다.
+            </p>
+          </>
+        ) : (
+          <>
+            <h2 id="upgrade-lookup-title" className="text-lg font-black text-slate-950 sm:text-xl">
+              용량 업그레이드 조회
+            </h2>
+            <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+              차량명으로 기본 배터리와 업그레이드 가능 배터리를 확인하세요. 데이터가 없는 차량은
+              수집 중 안내가 표시됩니다.
+            </p>
+          </>
+        )}
       </div>
 
       <form onSubmit={onSearch} className="flex flex-col gap-2 sm:flex-row">

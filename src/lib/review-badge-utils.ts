@@ -5,21 +5,21 @@ export type ReviewMainFilterId = "all" | "outbound" | "visit" | "self";
 
 export const REVIEW_MAIN_FILTER_OPTIONS: { id: ReviewMainFilterId; label: string }[] = [
   { id: "all", label: "전체" },
-  { id: "outbound", label: "출장방문" },
-  { id: "visit", label: "매장방문" },
-  { id: "self", label: "셀프교체" },
+  { id: "outbound", label: "출장 교체" },
+  { id: "visit", label: "매장 방문" },
+  { id: "self", label: "직접 교체" },
 ];
 
 /** 2차 칩 — 고객 후기 성격 (메인 필터보다 작게) */
 export const REVIEW_MOOD_FILTER_OPTIONS: { id: ReviewBadgeId; label: string }[] = [
-  { id: "affordable", label: "싸요" },
-  { id: "good_value", label: "가성비가 좋아요" },
-  { id: "kind", label: "친절해요" },
-  { id: "easy_explain", label: "설명이 쉬워요" },
-  { id: "fast_fix", label: "빠르게 해결됐어요" },
-  { id: "revisit", label: "재방문 의사 있어요" },
-  { id: "spec_easy", label: "규격 확인이 편해요" },
-  { id: "accurate_consult", label: "상담이 정확해요" },
+  { id: "affordable", label: "가격이 합리적이에요" },
+  { id: "good_value", label: "가격 대비 만족" },
+  { id: "kind", label: "친절한 안내" },
+  { id: "easy_explain", label: "설명이 쉬웠어요" },
+  { id: "fast_fix", label: "빠른 작업" },
+  { id: "revisit", label: "비용 안내가 명확했어요" },
+  { id: "spec_easy", label: "규격 확인이 편했어요" },
+  { id: "accurate_consult", label: "상담이 정확했어요" },
 ];
 
 /** @deprecated REVIEW_MOOD_FILTER_OPTIONS 사용 */

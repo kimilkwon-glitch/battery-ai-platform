@@ -8,6 +8,8 @@ export type BatteryUpgradeRecord = {
   upgradeBatteries: string[];
   checkPoints: string[];
   cautions: string[];
+  /** 가솔린/디젤 등 적용 기준 — 확인포인트 대체 */
+  guidanceNote?: string;
   status: BatteryUpgradeLookupStatus;
 };
 
@@ -18,8 +20,10 @@ export const BATTERY_UPGRADE_LOOKUP: BatteryUpgradeRecord[] = [
     searchAliases: ["그랜저 IG", "그랜저", "IG 그랜저"],
     stockBattery: "AGM70L",
     upgradeBatteries: ["AGM80L"],
-    checkPoints: ["배터리 트레이 공간", "단자 방향 L/R", "고정쇠 체결"],
-    cautions: ["트레이 높이 간섭 확인", "충전 전압 상태 점검"],
+    checkPoints: [],
+    cautions: [],
+    guidanceNote:
+      "가솔린 AGM70L 차량은 AGM80L까지 업그레이드 가능성이 있습니다. 디젤 차량은 AGM80L 기본 장착 사례가 있어 별도 업그레이드가 아닌 기본 규격 확인으로 안내합니다.",
     status: "ready",
   },
   {

@@ -9,6 +9,7 @@ import { HUB_LOGIN } from "@/lib/customer-hub-routes";
 
 const FUEL_OPTIONS = ["가솔린", "디젤", "LPG", "하이브리드", "HEV/PHEV", "전기"] as const;
 const YEAR_OPTIONS = Array.from({ length: 25 }, (_, i) => String(new Date().getFullYear() - i));
+const CUSTOM_VEHICLE_VALUE = "__custom__";
 
 export function SignupForm() {
   const [done, setDone] = useState(false);
@@ -19,6 +20,7 @@ export function SignupForm() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [address, setAddress] = useState<AddressValues>({ zip: "", address: "", addressDetail: "" });
   const [vehicleName, setVehicleName] = useState("");
+  const [customVehicleName, setCustomVehicleName] = useState("");
   const [vehicleYear, setVehicleYear] = useState("");
   const [vehicleFuel, setVehicleFuel] = useState("");
   const [plate, setPlate] = useState("");
@@ -38,6 +40,23 @@ export function SignupForm() {
     if (password !== passwordConfirm) {
       setError("비밀번호 확인이 일치하지 않습니다.");
       return;
+    }
+    const vehiclePayload =
+      vehicleName === CUSTOM_VEHICLE_VALUE
+        ? { customVehicleName: customVehicleName.trim() }
+        : vehicleName
+          ? { selectedVehicleName: vehicleName }
+          : {};
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(
+        "bm-signup-vehicle-draft",
+        JSON.stringify({
+          ...vehiclePayload,
+          vehicleYear: vehicleYear || undefined,
+          vehicleFuel: vehicleFuel || undefined,
+          plate: plate.trim() || undefined,
+        }),
+      );
     }
     setDone(true);
   };
@@ -125,14 +144,36 @@ export function SignupForm() {
         </p>
         <label className="bm-inquiry-field block">
           차량명
-          <select value={vehicleName} onChange={(e) => setVehicleName(e.target.value)}>
+          <select
+            value={vehicleName}
+            onChange={(e) => {
+              setVehicleName(e.target.value);
+              if (e.target.value !== CUSTOM_VEHICLE_VALUE) setCustomVehicleName("");
+            }}
+          >
             {INQUIRY_VEHICLE_OPTIONS.map((opt) => (
               <option key={opt.value || "empty"} value={opt.value}>
                 {opt.label}
               </option>
             ))}
+            <option value={CUSTOM_VEHICLE_VALUE}>직접 입력</option>
           </select>
         </label>
+        {vehicleName === CUSTOM_VEHICLE_VALUE ? (
+          <label className="block text-sm font-bold text-slate-700">
+            차량명 직접 입력
+            <input
+              type="text"
+              className={`${bm.input} bm-input-field mt-1 w-full`}
+              placeholder="차량명을 직접 입력해 주세요"
+              value={customVehicleName}
+              onChange={(e) => setCustomVehicleName(e.target.value)}
+            />
+            <span className="mt-1 block text-xs font-medium text-slate-500">
+              예: 2017년식 말리부, 캠핑카, 수입차 등
+            </span>
+          </label>
+        ) : null}
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-sm font-bold text-slate-700">
             연식
