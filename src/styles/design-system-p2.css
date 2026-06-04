@@ -1678,19 +1678,13 @@
   box-sizing: border-box;
 }
 
-/* 빠른 아이콘 — 타이어픽형 퀵 카테고리 메뉴 */
+/* 빠른 아이콘 — 타이어픽형 퀵 카테고리 메뉴 (혜택 바로 아래) */
 .home-quick-icons {
-  margin-top: 0.125rem;
+  margin: 0;
 }
 
-.home-quick-icons__label {
-  margin: 0 0 0.5rem;
-  font-family: var(--font-body);
-  font-size: 0.6875rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #64748b;
+.home-main-content .home-quick-icons {
+  margin-top: 0;
 }
 
 .home-quick-icons__grid {
@@ -1918,7 +1912,13 @@
   max-width: 87.5rem; /* 1400px */
   margin-inline: auto;
   box-sizing: border-box;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
+}
+
+@media (min-width: 640px) {
+  .home-main-brand-region {
+    padding-top: 1.25rem;
+  }
 }
 
 .home-brand-lineup-pair {
@@ -2223,7 +2223,11 @@
 
 .home-main-content .home-benefits-carousel--main {
   margin-bottom: 0 !important;
-  padding-bottom: 0.25rem;
+  padding-bottom: 0;
+}
+
+.home-main-content .home-benefits-carousel--main + .home-quick-icons {
+  margin-top: 0;
 }
 
 @media (min-width: 640px) {
