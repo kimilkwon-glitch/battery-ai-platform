@@ -1850,6 +1850,110 @@
   margin-top: 0 !important;
 }
 
+/* 메인 — 로케트·쏠라이트 병렬 라인업 */
+.home-brand-lineup-pair {
+  width: 100%;
+}
+
+.home-brand-lineup-pair__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .home-brand-lineup-pair__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+}
+
+.home-catalog-section--brand-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  margin-top: 0 !important;
+  padding: 0.75rem 0.5rem 1rem;
+  border-radius: 1rem;
+}
+
+@media (min-width: 640px) {
+  .home-catalog-section--brand-column {
+    padding: 0.875rem 0.625rem 1rem;
+  }
+}
+
+.home-catalog-section--brand-column .home-catalog-header {
+  flex-shrink: 0;
+}
+
+.home-catalog-section--brand-column .home-catalog-title {
+  font-size: 1.125rem;
+}
+
+@media (min-width: 640px) {
+  .home-catalog-section--brand-column .home-catalog-title {
+    font-size: 1.25rem;
+  }
+}
+
+.home-catalog-section--brand-column .home-catalog-panel--compact {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding-top: 0.75rem;
+}
+
+.home-catalog-section--brand-column .home-catalog-panel__inner,
+.home-catalog-section--brand-column .home-catalog-panel__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home-catalog-products--preview {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .home-brand-lineup-pair__grid .home-catalog-products--preview {
+    min-height: 22rem;
+  }
+}
+
+.home-catalog-grid--column-preview {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .home-catalog-grid--column-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.home-catalog-section__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.875rem;
+  padding-top: 0.25rem;
+}
+
+.home-catalog-more-btn--cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 16rem;
+  text-decoration: none;
+  font-weight: 800;
+}
+
 .home-hero-stack {
   display: flex;
   flex-direction: column;
