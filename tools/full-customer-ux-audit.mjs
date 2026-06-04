@@ -71,7 +71,9 @@ function addButton(row) {
 
 /** Visible footer text only — sr-only / aria-hidden / display:none do not count. */
 async function isCustomerVisibleBuildStamp(page) {
-  return page.locator("footer").evaluate((footer) => {
+  const footer = page.locator("footer").first();
+  if ((await footer.count()) === 0) return null;
+  return footer.evaluate((footer) => {
     const isVisibleEl = (el) => {
       if (!(el instanceof HTMLElement)) return false;
       const s = getComputedStyle(el);
