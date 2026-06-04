@@ -12,7 +12,7 @@ export const BRAND_LOGO_VISUAL_HEIGHT = 627;
 export const BRAND_LOGO_ALT = "부산배터리매니저 로고";
 
 /** 배너·혜택 교체 시 rev만 올려 CDN/브라우저 캐시 무효화 */
-export const MAIN_BANNER_ASSET_REV = "20260604-hero-banners-v1";
+export const MAIN_BANNER_ASSET_REV = "20260604-hero-banners-21x9-v2";
 export const BENEFITS_ASSET_REV = "20260604-benefit-images-v1";
 
 const banner = (name: string) => `/assets/banners/${name}?v=${MAIN_BANNER_ASSET_REV}`;

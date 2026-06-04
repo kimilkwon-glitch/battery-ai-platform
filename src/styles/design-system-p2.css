@@ -1735,18 +1735,18 @@
   width: 100%;
 }
 
-/* 검색 overlap 제거 — 하단 흰 그radient 최소화(배너 문구 가림 방지) */
+/* 하단 그radient 최소화 — 노란 안내바·문구 가림 방지 */
 .home-hero-carousel__frame::after {
   content: "";
   position: absolute;
   inset-inline: 0;
   bottom: 0;
   z-index: 8;
-  height: 18%;
+  height: 6%;
   pointer-events: none;
   background: linear-gradient(
     to top,
-    rgba(15, 23, 42, 0.12) 0%,
+    rgba(15, 23, 42, 0.06) 0%,
     transparent 100%
   );
 }
@@ -1762,29 +1762,28 @@
   overflow: hidden;
 }
 
-/* 통일 비율·높이 — 슬라이드별 차이 없음, cover + center */
+/*
+ * 히어로 뷰포트 — PC 21:9 고정(확대·scale 없음), 이미지 cover + bottom 정렬로 하단 안내바 보존
+ * 21:9 원본이면 center와 동일하게 꽉 참
+ */
 .home-hero-carousel__viewport--unified {
+  box-sizing: border-box;
   width: 100%;
-  aspect-ratio: 16 / 9;
   height: auto;
-  min-height: 11rem;
-  max-height: 15.5rem;
+  aspect-ratio: 3 / 2;
+  max-height: none;
   background: #0f172a;
 }
 
 @media (min-width: 640px) {
   .home-hero-carousel__viewport--unified {
     aspect-ratio: 16 / 9;
-    min-height: 12.5rem;
-    max-height: 18rem;
   }
 }
 
 @media (min-width: 1024px) {
   .home-hero-carousel__viewport--unified {
     aspect-ratio: 21 / 9;
-    min-height: 0;
-    max-height: none;
   }
 }
 
@@ -1809,29 +1808,28 @@
 
 .home-hero-slide__link {
   display: block;
+  width: 100%;
+  height: 100%;
   line-height: 0;
 }
 
-.home-hero-slide__picture {
-  margin: 0;
-  line-height: 0;
+.home-hero-slide--image {
+  width: 100%;
+  height: 100%;
 }
 
 .home-hero-slide__img {
   display: block;
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: cover !important;
-  object-position: center center;
+  object-position: center bottom;
   transition: none !important;
   filter: none !important;
   transform: none !important;
-}
-
-@media (max-width: 639px) {
-  .home-hero-slide__img {
-    object-position: center 42%;
-  }
+  scale: none;
 }
 
 .home-hero-slide--image {
