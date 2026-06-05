@@ -36,6 +36,19 @@ export const OPERATOR_SLUG_PRIMARY_BATTERY: Record<string, string> = {
   "staria-us4": "AGM80R",
   "porter2-new": "100R",
   "hyundai-porter2-from2020": "100R",
+  "renault-master-2018": "AGM95L",
+  "renault-arkana-2024": "AGM60L",
+  "renault-samsung-qm6-quest-2023": "DIN74L",
+  "kg-actyon-2024": "AGM70L",
+  "kg-torres-evx-2023": "60R",
+  "gmdaewoo-labo-2011": "50L",
+  "gmdaewoo-damas-2011": "50L",
+  "chevrolet-bolt-ev-2017": "AGM50L",
+  "porter2-ev": "80L",
+  "bongo3-ev": "80L",
+  "chevrolet-trailblazer-2024": "AGM70L",
+  "chevrolet-equinox-2022": "AGM70L",
+  "daewoo-tosca-2006": "80R",
 };
 
 /** P0 합의 — DB·enrichment·legacy raw 불일치 시 운영 단일 기준 (검색·히어로·CTA·상세표 동일) */
@@ -58,6 +71,23 @@ const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
     가솔린: "DIN60L",
     디젤: "DIN74L",
     "ISG/스마트충전": "AGM80L",
+  },
+  "santafe-mx5": {
+    가솔린: "AGM70L",
+    하이브리드: "AGM60L",
+  },
+  "santafe-mx5-hev": {
+    하이브리드: "AGM60L",
+  },
+  "porter2-ev": {
+    전기: "80L",
+  },
+  "bongo3-ev": {
+    전기: "80L",
+  },
+  "kg-torres-2022": {
+    가솔린: "AGM70L",
+    전기: "60R",
   },
 };
 

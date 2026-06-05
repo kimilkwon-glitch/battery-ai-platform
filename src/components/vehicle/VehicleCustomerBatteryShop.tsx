@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
+import { RecommendedBatteryCard } from "@/components/platform/RecommendedBatteryCard";
 import { getBatteryImageFit } from "@/lib/battery-image-presentation";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { BATTERY_SPEC_DETAIL_VIEW_LABEL } from "@/lib/battery-card-cta";
@@ -16,10 +17,12 @@ import {
 import { productBatteryCode } from "@/lib/batteryNormalize";
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { hasBrandSpecData } from "@/lib/battery-knowledge";
+import { PRIMARY_BATTERY_CTAS } from "@/lib/search/battery-recommendation-copy";
 import {
   buildFuelHeroCardGroups,
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
+import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import {
   shouldShowVehicleTrimCautionNotice,
   VEHICLE_TRIM_CAUTION_COPY,
@@ -35,10 +38,12 @@ import {
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 
-const BRAND_OFFERS = [
-  { id: "rocket" as const, label: "로케트" },
-  { id: "solite" as const, label: "쏠라이트" },
-] as const;
+const BRAND_OFFERS: { id: BatteryBrandKey; label: string }[] = [
+  { id: "rocket", label: "로케트" },
+  { id: "solite", label: "쏠라이트" },
+  { id: "delco", label: "델코" },
+  { id: "varta", label: "아트라스BX" },
+];
 
 function brandOffersForVehicleSpec(vehicleSpecCode: string) {
   return BRAND_OFFERS.flatMap((b) => {
@@ -55,7 +60,7 @@ function BrandProductCard({
   productCode,
   vehicleSlug,
 }: {
-  brandId: "rocket" | "solite";
+  brandId: BatteryBrandKey;
   brandLabel: string;
   vehicleSpecCode: string;
   productCode: string;
@@ -101,7 +106,6 @@ function BrandProductCard({
           <Link
             href={reviewHref}
             className="inline-flex w-full items-center justify-center rounded-full bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-100"
-            onClick={(e) => e.stopPropagation()}
           >
             리뷰 보기
           </Link>
@@ -193,7 +197,7 @@ export function VehicleCustomerBatteryShop({
         const brandOffers = batteryCode ? brandOffersForVehicleSpec(batteryCode) : [];
         const highlighted = highlightFuel === group.fuelLabel;
 
-        if (!batteryCode || brandOffers.length === 0) return null;
+        if (!batteryCode) return null;
 
         return (
           <section
@@ -210,27 +214,43 @@ export function VehicleCustomerBatteryShop({
                   {yearRange ? ` · ${yearRange}` : ""}
                 </p>
               </div>
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-700">
-                적용 연료
+              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-800 ring-1 ring-blue-100">
+                대표 규격
               </span>
             </div>
 
-            <p className="mt-3 text-sm font-medium leading-relaxed text-slate-600">
-              같은 규격({batteryCode})에 로케트·쏠라이트 중 선택해 주문할 수 있습니다.
-            </p>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {brandOffers.map((b) => (
-                <BrandProductCard
-                  key={`${group.fuelLabel}-${b.id}`}
-                  brandId={b.id}
-                  brandLabel={b.label}
-                  vehicleSpecCode={batteryCode}
-                  productCode={b.productCode}
-                  vehicleSlug={slug}
+            {brandOffers.length > 0 ? (
+              <>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-slate-600">
+                  같은 규격({batteryCode}) — 브랜드별 상품 중 선택해 주문할 수 있습니다.
+                </p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+                  {brandOffers.map((b) => (
+                    <BrandProductCard
+                      key={`${group.fuelLabel}-${b.id}`}
+                      brandId={b.id}
+                      brandLabel={b.label}
+                      vehicleSpecCode={batteryCode}
+                      productCode={b.productCode}
+                      vehicleSlug={slug}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="mt-4">
+                <p className="mb-3 text-sm font-medium text-slate-600">
+                  브랜드별 전용 이미지가 없어도 아래 규격 기준으로 주문·상담이 가능합니다.
+                </p>
+                <RecommendedBatteryCard
+                  code={batteryCode}
+                  fieldLabel="추천 규격"
+                  vehicleLabel={vehicleTitle}
+                  ctas={PRIMARY_BATTERY_CTAS(batteryCode)}
+                  primary
                 />
-              ))}
-            </div>
+              </div>
+            )}
 
             {showTrimCaution ? (
               <p className="mt-4 rounded-lg bg-amber-50/80 px-3 py-2 text-sm font-medium text-amber-950">

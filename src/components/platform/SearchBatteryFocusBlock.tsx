@@ -39,6 +39,8 @@ type Props = {
   terminalTypeLabel?: string | null;
   compareBatteryCodes?: string[] | null;
   ux: SearchUxPresentation;
+  /** 차량 상세 — 검색 쿼리 헤더·중복 차량 이미지 숨김 */
+  embedMode?: boolean;
 };
 
 export function SearchBatteryFocusBlock({
@@ -49,6 +51,7 @@ export function SearchBatteryFocusBlock({
   terminalTypeLabel,
   compareBatteryCodes,
   ux,
+  embedMode = false,
 }: Props) {
   const multiCodes =
     vehicle?.candidateBatteryCodes?.length
@@ -110,7 +113,17 @@ export function SearchBatteryFocusBlock({
     }
   }
 
-  const header = (
+  const header = embedMode ? (
+    ux.heroLines.length > 0 ? (
+      <div className="space-y-1">
+        {ux.heroLines.map((line) => (
+          <p key={line} className="text-sm font-medium leading-relaxed text-slate-600">
+            {line}
+          </p>
+        ))}
+      </div>
+    ) : null
+  ) : (
     <header>
       <SearchUxIntentBadge label={intentLabel} />
       <h1 className={`${bm.titleLg} mt-1`} id="search-focus">
@@ -195,7 +208,7 @@ export function SearchBatteryFocusBlock({
         <p className="text-xs font-semibold text-amber-900">{ux.yearBranchHint}</p>
       ) : null}
       <SearchConditionChips chips={ux.conditionChips} />
-      {vehicle?.vehicleLabel ? (
+      {!embedMode && vehicle?.vehicleLabel ? (
         vehicle.href?.startsWith("/vehicle/") ? (
           <Link
             href={vehicle.href.split("#")[0] ?? vehicle.href}

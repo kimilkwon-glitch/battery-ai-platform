@@ -1,10 +1,12 @@
-import Link from "next/link";
+import { notFound } from "next/navigation";
 import { AppIcon } from "@/components/common/AppIcon";
 import { Breadcrumb, PortalHeader } from "@/components/portal";
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 import { VehicleActivityTracker } from "@/components/vehicle/VehicleActivityTracker";
 import { VehicleCustomerBatteryShop } from "@/components/vehicle/VehicleCustomerBatteryShop";
+import { VehicleDetailBatteryRecommendation } from "@/components/vehicle/VehicleDetailBatteryRecommendation";
 import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
+import { BUILD_STAMP } from "@/lib/build-stamp";
 import { bm } from "@/lib/design-tokens";
 import { getVehicleAsset } from "@/lib/car-assets";
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
@@ -20,6 +22,11 @@ export function generateStaticParams() {
   return getVehicleSlugs().map((slug) => ({ slug }));
 }
 
+function isResolvableVehicleSlug(slug: string): boolean {
+  if (!slug?.trim()) return false;
+  return Boolean(getVehicleAsset(slug)) || getVehicleSlugs().includes(slug);
+}
+
 export default async function VehicleDetailPage({
   params,
   searchParams,
@@ -27,20 +34,36 @@ export default async function VehicleDetailPage({
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ fuel?: string; year?: string; action?: string }>;
 }) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug).trim();
   const sp = await searchParams;
-  const vehicle = getVehicleDetail(slug);
-  const asset = getVehicleAsset(slug);
-  const heroImage = asset?.image || carImageForPlatformVehicleId(slug);
-  const batteryPage = getVehicleBatteryPageData(slug);
-  const displayTitle = batteryPage.profile?.title ?? vehicle.model;
+
+  if (!isResolvableVehicleSlug(slug)) {
+    notFound();
+  }
+
+  let vehicle;
+  let asset;
+  let batteryPage;
+  try {
+    vehicle = getVehicleDetail(slug);
+    asset = getVehicleAsset(slug);
+    batteryPage = getVehicleBatteryPageData(slug);
+  } catch (err) {
+    console.error("[vehicle-detail] data load failed:", slug, err);
+    notFound();
+  }
+
+  const heroImage = asset?.image || carImageForPlatformVehicleId(slug) || null;
+  const displayTitle = batteryPage.profile?.title ?? asset?.displayName ?? vehicle.model;
   const highlightFuel = sp.fuel?.trim() || null;
+  const yearChipId = sp.year?.trim() || null;
   const repBattery =
     customerFacingRepresentativeBattery(
       slug,
       batteryPage.fuelGroups,
       batteryPage.summary?.representativeBattery,
-    ) || vehicle.recommendedBattery;
+    ) || vehicle.recommendedBattery || asset?.defaultBatteryCode || "";
   const batteryOptions = [
     ...new Set(
       batteryPage.fuelGroups.flatMap((g) =>
@@ -49,9 +72,17 @@ export default async function VehicleDetailPage({
     ),
   ];
   const autoSaveOnMount = sp.action === "saveVehicle";
+  const manufacturer =
+    batteryPage.profile?.brand ?? vehicle.manufacturer ?? (asset ? "확인" : "");
+  const yearRange = batteryPage.profile?.yearRange ?? vehicle.year ?? asset?.yearRange ?? "";
 
   return (
-    <main className={`${bm.pageBg} vehicle-detail-customer`} data-page="vehicle-detail">
+    <main
+      className={`${bm.pageBg} vehicle-detail-customer`}
+      data-page="vehicle-detail"
+      data-build-stamp={BUILD_STAMP}
+      data-vehicle-slug={slug}
+    >
       <VehicleActivityTracker vehicleId={slug} />
       <PortalHeader />
 
@@ -59,7 +90,7 @@ export default async function VehicleDetailPage({
         <Breadcrumb
           items={[
             { label: "홈", href: "/" },
-            { label: "차량검색", href: "/vehicles" },
+            { label: "차종검색", href: "/vehicles" },
             { label: displayTitle },
           ]}
         />
@@ -95,44 +126,57 @@ export default async function VehicleDetailPage({
               ) : null}
               <dl className="vehicle-detail-customer__meta mt-4 flex flex-wrap gap-x-5 gap-y-2">
                 {[
-                  ["제조사", vehicle.manufacturer],
-                  ["연식", batteryPage.profile?.yearRange ?? vehicle.year],
-                  ["대표 규격", repBattery],
-                ].map(([label, value]) => (
-                  <div className="flex gap-2" key={label}>
-                    <dt className="font-bold text-slate-500">{label}</dt>
-                    <dd className="font-black text-slate-900">{value}</dd>
-                  </div>
-                ))}
+                  ["제조사", manufacturer],
+                  ["연식", yearRange || null],
+                  ["대표 규격", repBattery || null],
+                ]
+                  .filter(([, value]) => Boolean(value))
+                  .map(([label, value]) => (
+                    <div className="flex gap-2" key={label}>
+                      <dt className="font-bold text-slate-500">{label}</dt>
+                      <dd className="font-black text-slate-900">{value}</dd>
+                    </div>
+                  ))}
               </dl>
+              {repBattery ? (
+                <p className="mt-3 inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-sm font-black text-blue-900 ring-1 ring-blue-100">
+                  대표 규격 {repBattery}
+                </p>
+              ) : null}
               {highlightFuel ? (
                 <p className="mt-3 rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900">
                   선택 연료: {highlightFuel}
                 </p>
               ) : null}
+              <div className="mt-4">
+                <SaveVehicleRegisterButton
+                  slug={slug}
+                  displayName={displayTitle}
+                  yearRange={yearRange}
+                  fuelHint={highlightFuel}
+                  recommendedBattery={repBattery}
+                  batteryOptions={batteryOptions}
+                  autoSaveOnMount={autoSaveOnMount}
+                />
+              </div>
             </div>
           </div>
         </div>
+
+        <VehicleDetailBatteryRecommendation
+          slug={slug}
+          fuel={highlightFuel}
+          yearChipId={yearChipId}
+          vehicleTitle={displayTitle}
+        />
 
         <VehicleCustomerBatteryShop
           slug={slug}
           vehicleTitle={displayTitle}
           fuelGroups={batteryPage.fuelGroups}
           highlightFuel={highlightFuel}
-          yearRange={batteryPage.profile?.yearRange ?? vehicle.year}
+          yearRange={yearRange}
         />
-
-        <div className="flex flex-wrap gap-2">
-          <SaveVehicleRegisterButton
-            slug={slug}
-            displayName={displayTitle}
-            yearRange={batteryPage.profile?.yearRange ?? vehicle.year}
-            fuelHint={highlightFuel}
-            recommendedBattery={repBattery}
-            batteryOptions={batteryOptions}
-            autoSaveOnMount={autoSaveOnMount}
-          />
-        </div>
       </section>
     </main>
   );
