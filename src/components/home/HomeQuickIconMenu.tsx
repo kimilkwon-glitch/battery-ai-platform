@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { HOME_QUICK_ICON_ITEMS } from "@/lib/home-quick-icons-data";
 
@@ -10,26 +11,31 @@ export function HomeQuickIconMenu() {
       aria-label="주요 안내 바로가기"
     >
       <ul className="home-quick-icons__grid">
-        {HOME_QUICK_ICON_ITEMS.map((item) => {
-          const Icon = item.Icon;
-          return (
-            <li key={item.id} className="home-quick-icons__item">
-              <Link
-                href={item.href}
-                className="home-quick-icon-card"
-                data-quick-accent={item.accent}
-              >
-                <span className="home-quick-icon-card__icon-wrap" aria-hidden>
-                  <Icon className="home-quick-icon-card__icon" strokeWidth={2.25} />
-                </span>
-                <span className="home-quick-icon-card__text">
-                  <span className="home-quick-icon-card__title">{item.label}</span>
-                  <span className="home-quick-icon-card__desc">{item.description}</span>
-                </span>
-              </Link>
-            </li>
-          );
-        })}
+        {HOME_QUICK_ICON_ITEMS.map((item) => (
+          <li key={item.id} className="home-quick-icons__item">
+            <Link
+              href={item.href}
+              className="home-quick-icon-card"
+              data-quick-accent={item.accent}
+              data-quick-icon-variant={item.iconVariant ?? "default"}
+            >
+              <span className="home-quick-icon-card__icon-wrap home-quick-icon-card__icon-wrap--image" aria-hidden>
+                <Image
+                  src={item.imageSrc}
+                  alt=""
+                  width={72}
+                  height={72}
+                  className="home-quick-icon-card__image"
+                  sizes="(max-width: 639px) 56px, 64px"
+                />
+              </span>
+              <span className="home-quick-icon-card__text">
+                <span className="home-quick-icon-card__title">{item.label}</span>
+                <span className="home-quick-icon-card__desc">{item.description}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
       </ul>
     </nav>
   );
