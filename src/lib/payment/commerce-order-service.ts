@@ -443,17 +443,25 @@ export async function recordCommercePaymentFail(
   const order = await storeCommerceOrderGet(body.orderId);
   if (!order) return { ok: false, message: "주문 정보를 찾을 수 없습니다." };
 
-  const reason = body.errorMessage?.trim() || "결제가 완료되지 않았습니다.";
+  const code = body.errorCode?.trim() ?? "";
+  const isCancel =
+    code === "PAY_PROCESS_CANCELED" || code === "USER_CANCEL" || /취소|cancel/i.test(code);
+  const reason =
+    body.errorMessage?.trim() ||
+    (isCancel ? "결제가 취소되었습니다." : "결제가 완료되지 않았습니다.");
+  const paymentStatus = isCancel ? "canceled" : "failed";
+  const orderStatus = isCancel ? "payment_failed" : "payment_failed";
+
   await storeCommerceOrderUpdate(order.orderId, {
-    paymentStatus: "failed",
-    orderStatus: "payment_failed",
-    paymentFailCode: body.errorCode?.trim(),
+    paymentStatus,
+    orderStatus,
+    paymentFailCode: code || undefined,
     paymentFailReason: reason,
     statusHistory: [
       ...order.statusHistory,
       {
-        status: "payment_failed",
-        paymentStatus: "failed",
+        status: orderStatus,
+        paymentStatus,
         note: reason,
         at: new Date().toISOString(),
       },

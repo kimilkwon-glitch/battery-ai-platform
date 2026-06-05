@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { AdminDataTableClient } from "@/components/admin/AdminDataTableClient";
+import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import {
   COMMERCE_LIFECYCLE_LABELS,
@@ -18,9 +20,10 @@ const FULFILLMENT_LABELS: Record<string, string> = {
 
 type Props = {
   orders: AdminCommerceOrderListItem[];
+  selectedOrderId?: string;
 };
 
-export function AdminCommerceOrdersTable({ orders }: Props) {
+export function AdminCommerceOrdersTable({ orders, selectedOrderId }: Props) {
   return (
     <AdminDataTableClient
       rows={orders}
@@ -81,13 +84,27 @@ export function AdminCommerceOrdersTable({ orders }: Props) {
         },
         {
           key: "finalAmount",
-          label: "결제 예정금액",
+          label: "결제금액",
           render: (o) =>
             o.finalAmount != null ? (
               <span className="font-black tabular-nums">{formatPriceWon(o.finalAmount)}</span>
             ) : (
               "—"
             ),
+        },
+        {
+          key: "detail",
+          label: "상세",
+          render: (o) => (
+            <Link
+              href={`${ADMIN_ROUTES.commerceOrders}?orderId=${encodeURIComponent(o.orderId)}`}
+              className={`text-[10px] font-bold hover:underline ${
+                selectedOrderId === o.orderId ? "text-blue-900" : "text-blue-600"
+              }`}
+            >
+              보기
+            </Link>
+          ),
         },
       ]}
     />

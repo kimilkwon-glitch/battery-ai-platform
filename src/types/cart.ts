@@ -18,8 +18,11 @@ export type UsedBatteryReturnOption = "return" | "no_return" | "undecided";
 
 export type FulfillmentMethod =
   | "delivery"
-  | "store_pickup"
   | "visit_install"
+  | "store_install"
+  | "store_pickup_self"
+  /** @deprecated — store_pickup_self 로 통합 */
+  | "store_pickup"
   | "undecided";
 
 export type InstallMethod =

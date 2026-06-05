@@ -152,9 +152,11 @@ export const FULFILLMENT_METHOD_LABELS: Record<
   FulfillmentMethod,
   string
 > = {
-  delivery: "택배 배송",
-  store_pickup: "매장 방문 수령",
-  visit_install: "출장 교체",
+  delivery: "택배 발송",
+  visit_install: "출장교체",
+  store_install: "내방교체",
+  store_pickup_self: "내방수령 / 셀프교체",
+  store_pickup: "내방수령 / 셀프교체",
   undecided: "수령 방식 미선택",
 };
 

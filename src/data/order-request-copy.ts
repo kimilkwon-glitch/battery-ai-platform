@@ -41,14 +41,15 @@ export const ORDER_REQUEST_USED_BATTERY_COPY = {
 };
 
 export const ORDER_REQUEST_FULFILLMENT_COPY = {
-  sectionTitle: "수령 방식",
-  sectionHint: "선택하지 않으면 상담 시 함께 정리합니다.",
-  visitHint: "출장 가능 여부는 상담 후 안내됩니다.",
-  visitAvailabilityNote: "출장 가능 여부는 상담 후 안내됩니다.",
+  sectionTitle: "수령/장착 방식",
+  sectionHint: "선택한 방식에 따라 결제 예정금액이 달라집니다.",
+  visitHint: "출장 주소 또는 지역을 입력해 주세요.",
+  visitAvailabilityNote: "출장 일정은 상담 후 확정됩니다.",
   methods: [
-    { value: "delivery" as const, label: "택배수령" },
-    { value: "store_pickup" as const, label: "매장방문" },
-    { value: "visit_install" as const, label: "출장상담" },
+    { value: "delivery" as const, label: "택배 발송" },
+    { value: "visit_install" as const, label: "출장교체" },
+    { value: "store_install" as const, label: "내방교체" },
+    { value: "store_pickup_self" as const, label: "내방수령 / 셀프교체" },
   ],
   stores: [
     { value: "deokcheon" as const, label: "덕천점" },
