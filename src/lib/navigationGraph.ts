@@ -434,7 +434,7 @@ export function getRelatedShops(context: NavContext, limit = 3): RelatedLink[] {
   const list = products.length ? products : shopProducts.filter((p) => p.type === getBattery(code).type);
   return list.slice(0, limit).map((p) => ({
     label: p.batteryCode,
-    meta: `${p.price.toLocaleString()}원`,
+    meta: p.price != null ? `${p.price.toLocaleString()}원` : "상담 문의",
     href: shopForBattery(p.batteryCode),
   }));
 }

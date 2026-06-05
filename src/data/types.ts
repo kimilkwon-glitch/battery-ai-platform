@@ -37,8 +37,12 @@ export type BatteryProductRecord = {
   sizeGroup?: string;
   dimensions?: string;
   imagePath?: string;
-  /** null = 문의 필요 */
-  price: number | null;
+  /** 택배발송가·인터넷가 — null = 문의 필요 */
+  internetPrice?: number | null;
+  /** 출장교체가·출장가 */
+  onsitePrice?: number | null;
+  /** @deprecated internetPrice 사용 */
+  price?: number | null;
   stockStatus: "in_stock" | "low_stock" | "out_of_stock" | "inquiry" | "unknown";
   compatibleVehicles?: string[];
   aliases?: string[];

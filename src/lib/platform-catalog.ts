@@ -5,6 +5,7 @@
 import type { VehicleBodyType } from "@/components/VehicleThumbnail";
 import { bodyTypeFromAsset, getVehicleAsset } from "./car-assets";
 import { EMPTY_BATTERY_IMAGE_SET, getBatteryImageSet, brandIdToBatteryBrandKey } from "./battery-alias-map";
+import { getBatteryInternetPriceWon } from "./battery-prices";
 import type { Battery, Question, Symptom, Vehicle } from "./platform-types";
 import { platformQnaQuestions } from "./qna/catalog-questions";
 
@@ -22,7 +23,7 @@ export type ShopProduct = {
   id: string;
   batteryCode: string;
   name: string;
-  price: number;
+  price: number | null;
   capacity: string;
   cca: string;
   type: string;
@@ -335,11 +336,11 @@ export const contents: ContentItem[] = [
   { id: "c5", title: "셀토스 AGM70L 업그레이드 Q&A", summary: "용량업 조건 정리", batteryCode: "AGM70L", vehicleId: "seltos", href: "/community?q=셀토스", tag: "Q&A" },
 ];
 
-export const shopProducts: ShopProduct[] = catalogBatteries.map((b, i) => ({
+export const shopProducts: ShopProduct[] = catalogBatteries.map((b) => ({
   id: `shop-${b.code.replace(/\s+/g, "-").toLowerCase()}`,
   batteryCode: b.code,
   name: `${b.code} 배터리`,
-  price: 89000 + i * 12000,
+  price: getBatteryInternetPriceWon(b.brandId, b.code),
   capacity: b.capacity,
   cca: b.cca,
   type: b.type,

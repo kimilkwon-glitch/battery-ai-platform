@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { useCart } from "@/components/platform/CartContext";
+import { formatBatteryPriceWon } from "@/lib/battery-prices";
 import { getBattery, getShopProduct, shopProducts, serviceHref } from "@/lib/platform-data";
 
 export function CartPageClient() {
@@ -15,7 +16,7 @@ export function CartPageClient() {
     return { item, product, battery, imageSet };
   });
 
-  const total = lines.reduce((s, l) => s + l.product.price * l.item.qty, 0);
+  const total = lines.reduce((s, l) => s + (l.product.price ?? 0) * l.item.qty, 0);
 
   return (
     <div className="space-y-3">
@@ -34,7 +35,9 @@ export function CartPageClient() {
               <div>
                 <p className="text-sm font-black">{product.name}</p>
                 <p className="text-xs font-bold text-slate-500">{product.capacity} · {product.cca}</p>
-                <p className="mt-1 text-xs font-black text-blue-600">{product.price.toLocaleString()}원</p>
+                <p className="mt-1 text-xs font-black text-blue-600">
+                  {formatBatteryPriceWon(product.price)}
+                </p>
                 <div className="mt-2 flex items-center gap-2">
                   <button type="button" onClick={() => setQty(item.productId, item.qty - 1)} className="size-7 rounded bg-slate-100 text-xs font-black">
                     −

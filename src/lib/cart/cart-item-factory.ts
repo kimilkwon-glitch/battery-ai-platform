@@ -2,6 +2,8 @@ import { getBatteryImageSet } from "@/lib/battery-alias-map";
 import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
 import { terminalFromCode } from "@/lib/batteryNormalize";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { brandIdToBatteryBrandKey } from "@/lib/battery-alias-map";
+import { getBatteryInternetPriceWon } from "@/lib/battery-prices";
 import { getBattery, shopProducts } from "@/lib/platform-data";
 import type {
   BatteryCartItem,
@@ -45,13 +47,23 @@ function findShopPrice(batteryCode: string): { productId: string; basePrice?: nu
       p.batteryCode.toUpperCase() === code.toUpperCase(),
   );
   if (product) {
+    const brandKey = brandIdToBatteryBrandKey(product.brandId) ?? "rocket";
+    const internetPrice =
+      product.price ?? getBatteryInternetPriceWon(brandKey, code);
     return {
       productId: product.id,
-      basePrice: product.price,
+      basePrice: internetPrice ?? undefined,
       brandName: product.brandId === "rocket" ? "로케트" : product.brandId,
     };
   }
-  return { productId: `spec-${code.replace(/\s+/g, "-").toLowerCase()}` };
+  const bat = getBattery(code);
+  const brandKey = brandIdToBatteryBrandKey(bat.brandId) ?? "rocket";
+  const internetPrice = getBatteryInternetPriceWon(brandKey, code);
+  return {
+    productId: `spec-${code.replace(/\s+/g, "-").toLowerCase()}`,
+    basePrice: internetPrice ?? undefined,
+    brandName: bat.brandId === "rocket" ? "로케트" : bat.brandId,
+  };
 }
 
 export type CreateCartItemInput = {

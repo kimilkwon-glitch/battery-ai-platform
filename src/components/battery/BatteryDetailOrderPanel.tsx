@@ -16,6 +16,7 @@ import {
   BATTERY_RETURN_OPTIONS,
   type BatteryReturnOption,
 } from "@/lib/shop-order-types";
+import { BatteryDetailPriceBlock } from "@/components/battery/BatteryDetailPriceBlock";
 import { bm } from "@/lib/design-tokens";
 
 export function BatteryDetailOrderPanel({ code }: { code: string }) {
@@ -65,10 +66,7 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
             <p className="mt-2 text-sm font-medium text-slate-500">사이즈 {sizeMm}</p>
           ) : null}
 
-          <p className="mt-5 text-xl font-black text-slate-900">
-            상담 후 안내
-            <span className="ml-2 text-sm font-semibold text-slate-400">가격·배송</span>
-          </p>
+          <BatteryDetailPriceBlock code={code} brandId={bat.brandId} />
 
           <div className="mt-4 min-w-0">
             <p className="text-sm font-black text-slate-700">폐배터리 반납</p>
