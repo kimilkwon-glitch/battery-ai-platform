@@ -43,7 +43,7 @@ export function BenefitCardMedia({
       data-benefit-id={!isDetail ? card.id : undefined}
     >
       {card.image && !imageFailed ? (
-        <picture className="absolute inset-0 block h-full w-full">
+        <picture className="home-benefit-card-media__picture absolute inset-0 block h-full w-full max-w-none">
           {mobileSrc && mobileSrc !== card.image ? (
             <source media="(max-width: 767px)" srcSet={mobileSrc} />
           ) : null}

@@ -24,9 +24,9 @@ function useVisibleFraction() {
     const lg = window.matchMedia("(min-width: 1024px)");
     const sm = window.matchMedia("(min-width: 640px)");
     const update = () => {
-      if (lg.matches) setFraction(2.2);
-      else if (sm.matches) setFraction(1.1);
-      else setFraction(1.05);
+      if (lg.matches) setFraction(2.15);
+      else if (sm.matches) setFraction(1.08);
+      else setFraction(1);
     };
     update();
     lg.addEventListener("change", update);
