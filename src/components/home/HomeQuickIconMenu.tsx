@@ -57,9 +57,13 @@ export function HomeQuickIconMenu() {
                   </span>
                 </span>
                 <span className="home-quick-icon-card__text">
-                  <QuickIconTitle label={item.label} mobileLines={item.titleMobileLines} />
+                  <span className="home-quick-icon-card__title-wrap">
+                    <QuickIconTitle label={item.label} mobileLines={item.titleMobileLines} />
+                  </span>
                   <span className="home-quick-icon-card__title-accent" aria-hidden />
-                  <span className="home-quick-icon-card__desc">{item.description}</span>
+                  <span className="home-quick-icon-card__desc-wrap">
+                    <span className="home-quick-icon-card__desc">{item.description}</span>
+                  </span>
                 </span>
               </Link>
             </li>
