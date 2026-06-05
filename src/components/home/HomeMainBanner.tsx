@@ -41,7 +41,7 @@ function HeroImageSlide({
         {!imgError ? (
           <picture className="absolute inset-0 block h-full w-full">
             {slide.imageMobile ? (
-              <source media="(max-width: 639px)" srcSet={slide.imageMobile} />
+              <source media="(max-width: 767px)" srcSet={slide.imageMobile} />
             ) : null}
             <img
               src={slide.image}

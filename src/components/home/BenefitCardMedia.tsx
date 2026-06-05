@@ -1,15 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import clsx from "clsx";
 import {
   HOME_BENEFIT_FALLBACK_ICONS,
   type HomeBenefitCard,
 } from "@/lib/home-benefits-data";
-
-const BENEFIT_IMAGE_SIZES =
-  "(max-width: 639px) 92vw, (max-width: 1023px) 46vw, (max-width: 1399px) 42vw, 640px";
 
 const PLACEHOLDER_GRADIENT: Record<HomeBenefitCard["fallbackIcon"], string> = {
   percent: "from-[#1e3a5f] via-[#2563eb] to-[#f59e0b]",
@@ -32,6 +28,7 @@ export function BenefitCardMedia({
   const hasImage = Boolean(card.image) && !imageFailed;
   const isDetail = variant === "detail";
   const gradient = PLACEHOLDER_GRADIENT[card.fallbackIcon];
+  const mobileSrc = card.imageMobile ?? card.image;
 
   return (
     <div
@@ -46,17 +43,19 @@ export function BenefitCardMedia({
       data-benefit-id={!isDetail ? card.id : undefined}
     >
       {card.image && !imageFailed ? (
-        <Image
-          src={card.image}
-          alt={card.imageAlt ?? card.title}
-          fill
-          sizes={isDetail ? "(max-width: 639px) 100vw, 672px" : BENEFIT_IMAGE_SIZES}
-          quality={100}
-          priority={priority}
-          unoptimized
-          className="home-benefit-card-media__img"
-          onError={() => setImageFailed(true)}
-        />
+        <picture className="absolute inset-0 block h-full w-full">
+          {mobileSrc && mobileSrc !== card.image ? (
+            <source media="(max-width: 767px)" srcSet={mobileSrc} />
+          ) : null}
+          <img
+            src={card.image}
+            alt={card.imageAlt ?? card.title}
+            className="home-benefit-card-media__img h-full w-full object-cover object-center"
+            decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
+            onError={() => setImageFailed(true)}
+          />
+        </picture>
       ) : null}
 
       <div

@@ -3614,9 +3614,9 @@
   background: #0f172a;
 }
 
-@media (max-width: 639px) {
+@media (max-width: 767px) {
   .home-hero-carousel__viewport--unified {
-    /* 모바일 카드 — 세로 확보(16:10), 원본 와이드 이미지는 cover로 채움 */
+    /* 모바일 카드 — 세로 확보(16:10), 모바일 전용 이미지는 cover로 채움 */
     --hero-banner-aspect: 16 / 10;
     aspect-ratio: var(--hero-banner-aspect);
     width: 100%;
