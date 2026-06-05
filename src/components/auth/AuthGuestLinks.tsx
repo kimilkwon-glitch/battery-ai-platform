@@ -4,7 +4,6 @@ import {
   CUSTOMER_SIGNUP_PAGE,
   GUEST_ORDER_CHECK_PAGE,
   GUEST_ORDER_PAGE,
-  HUB_PHOTO,
 } from "@/lib/customer-auth-routes";
 
 type Props = {
@@ -16,7 +15,7 @@ export function AuthGuestLinks({ showSignup = true, showLogin = false }: Props) 
   return (
     <div className="bm-auth-guest-links">
       <p className="bm-auth-guest-links__lead">
-        회원가입 없이도 주문 요청과 사진 확인이 가능합니다.
+        회원가입 없이도 주문 요청과 주문 조회가 가능합니다.
       </p>
       <div className="bm-auth-guest-links__grid">
         <Link href={GUEST_ORDER_PAGE} className="bm-auth-guest-link">
@@ -24,9 +23,6 @@ export function AuthGuestLinks({ showSignup = true, showLogin = false }: Props) 
         </Link>
         <Link href={GUEST_ORDER_CHECK_PAGE} className="bm-auth-guest-link">
           비회원 주문조회
-        </Link>
-        <Link href={HUB_PHOTO} className="bm-auth-guest-link">
-          사진으로 배터리 확인하기
         </Link>
         {showSignup ? (
           <Link href={CUSTOMER_SIGNUP_PAGE} className="bm-auth-guest-link bm-auth-guest-link--accent">

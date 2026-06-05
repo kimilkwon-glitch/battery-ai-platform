@@ -6,7 +6,7 @@ import {
   CUSTOMER_CENTER_USED_BATTERY,
   ORDER_REQUEST_LOOKUP_PAGE,
 } from "@/lib/customer-center-routes";
-import { GUEST_ORDER_CHECK_PAGE, GUEST_ORDER_PAGE, HUB_PHOTO } from "@/lib/customer-auth-routes";
+import { GUEST_ORDER_CHECK_PAGE, GUEST_ORDER_PAGE } from "@/lib/customer-auth-routes";
 import { HUB_GUIDE, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import type { FaqCategory } from "@/lib/support-faq-data";
 
@@ -54,31 +54,15 @@ export const SUPPORT_HUB_PRIMARY_CTAS = [
     href: ORDER_REQUEST_LOOKUP_PAGE,
     variant: "secondary" as const,
   },
-  {
-    id: "photo",
-    label: "사진으로 배터리 확인하기",
-    href: HUB_PHOTO,
-    variant: "secondary" as const,
-  },
-];
+] as const;
 
-export const SUPPORT_HUB_INFO_LINES = [
-  "배터리·주문·배송 관련 문의",
-  "덕천점 / 학장점 상담 가능",
-  "비회원 주문조회 가능",
-  "사진 확인 요청 가능",
-];
+export const SUPPORT_HUB_BOTTOM_LINKS = [
+  { label: "주문/배송 안내", href: CUSTOMER_CENTER_ORDER_GUIDE, desc: "주문·출고·교체 절차" },
+  { label: "교환/보증 안내", href: CUSTOMER_CENTER_RETURN_EXCHANGE, desc: "교환·반품·보증" },
+  { label: "배터리 가이드", href: HUB_GUIDE, desc: "규격·증상·교체 팁" },
+] as const;
 
-export const SUPPORT_HUB_HELP_LINKS = [
-  { label: "공지사항", href: "#support-notices" },
-  { label: "주문/배송 안내", href: CUSTOMER_CENTER_ORDER_GUIDE },
-  { label: "배송 안내", href: CUSTOMER_CENTER_DELIVERY },
-  { label: "교환/보증 안내", href: CUSTOMER_CENTER_RETURN_EXCHANGE },
-  { label: "폐전지 반납 안내", href: CUSTOMER_CENTER_USED_BATTERY },
-  { label: "배터리 가이드", href: HUB_GUIDE },
-  { label: "사진 확인 안내", href: HUB_PHOTO },
-  { label: "비회원 주문조회", href: GUEST_ORDER_CHECK_PAGE },
-];
+export const SUPPORT_HUB_FAQ_INITIAL_LIMIT = { mobile: 4, desktop: 5 } as const;
 
 export const SUPPORT_HUB_SECONDARY_CTAS = [
   { label: "배송 안내 보기", href: CUSTOMER_CENTER_DELIVERY },
