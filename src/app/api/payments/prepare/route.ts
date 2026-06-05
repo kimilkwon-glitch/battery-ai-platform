@@ -1,0 +1,42 @@
+import { NextResponse } from "next/server";
+import { prepareCommercePayment } from "@/lib/payment/commerce-order-service";
+import { getSiteOrigin } from "@/lib/payment/payment-config";
+import type { PaymentPrepareRequestBody } from "@/types/commerce-payment";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+/**
+ * POST — 결제 준비 (PG 연동 전: 준비 데이터만 반환)
+ */
+export async function POST(request: Request) {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { ok: false, message: "요청 형식이 올바르지 않습니다." },
+      { status: 400 },
+    );
+  }
+
+  const b = body as Partial<PaymentPrepareRequestBody>;
+  if (!b.orderId?.trim()) {
+    return NextResponse.json(
+      { ok: false, message: "주문 정보가 없습니다." },
+      { status: 400 },
+    );
+  }
+
+  const origin = getSiteOrigin();
+  const result = await prepareCommercePayment(
+    { orderId: b.orderId.trim(), clientAmount: b.clientAmount },
+    origin,
+  );
+
+  if (!result.ok) {
+    return NextResponse.json({ ok: false, message: result.message }, { status: result.status });
+  }
+
+  return NextResponse.json(result.data);
+}

@@ -22,11 +22,13 @@ export function PaymentPreparingButton({
   onClick,
   loading,
   className = "",
+  label = "결제 전 확인하기",
 }: {
   disabled?: boolean;
   onClick?: () => void;
   loading?: boolean;
   className?: string;
+  label?: string;
 }) {
   return (
     <button
@@ -36,7 +38,7 @@ export function PaymentPreparingButton({
       className={`${bm.btnNavy} w-full justify-center text-sm font-black disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       data-checkout-payment-prep
     >
-      {loading ? "확인 중…" : "결제 예정금액 확인"}
+      {loading ? "확인 중…" : label}
     </button>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
 import { CheckoutPriceSummaryPanel } from "@/components/checkout/CheckoutPriceSummaryPanel";
@@ -35,7 +35,8 @@ import { OrderRequestVehicleFields } from "@/components/order-request/OrderReque
 import { OrderRequestVehicleGuidance } from "@/components/order-request/OrderRequestVehicleGuidance";
 import { CHECKOUT_PAGE_COPY } from "@/data/checkout-checklist";
 import { ORDER_REQUEST_MEMO_PLACEHOLDER } from "@/data/order-request-copy";
-import { saveCheckoutDraft } from "@/lib/pricing/checkout-draft-storage";
+import { saveCheckoutSession } from "@/lib/payment/checkout-session-storage";
+import { CHECKOUT_REVIEW_PAGE } from "@/lib/payment/payment-routes";
 import { buildPriceSnapshots, sumPriceSnapshots } from "@/lib/pricing/commerce-order-snapshot";
 import { applyPricingToCartItem } from "@/lib/pricing/order-price";
 import {
@@ -51,7 +52,7 @@ import {
 } from "@/lib/order-request/order-request-form-helpers";
 import type { OrderRequestFulfillment, OrderRequestVehicle } from "@/types/order-request";
 import type { BatteryCartItem, FulfillmentMethod } from "@/types/cart";
-import type { CommerceOrderDraft } from "@/types/commerce-order";
+import type { CheckoutSessionPayload } from "@/types/commerce-payment";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 
@@ -120,6 +121,7 @@ function syncItemsWithFulfillment(
 }
 
 export function CheckoutOrderPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const flow = resolveCheckoutFlowMode(searchParams);
   const isBuyNow = flow === "buy_now";
@@ -191,7 +193,7 @@ export function CheckoutOrderPage() {
   const [memo, setMemo] = useState("");
   const [checklistComplete, setChecklistComplete] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [priceConfirmed, setPriceConfirmed] = useState(false);
+  const [navigating, setNavigating] = useState(false);
 
   useEffect(() => {
     if (!hydrated || items.length === 0) return;
@@ -226,7 +228,6 @@ export function CheckoutOrderPage() {
     if (next.method !== "undecided") {
       applyFulfillmentToItems(next);
     }
-    setPriceConfirmed(false);
   };
 
   const canConfirm =
@@ -237,7 +238,7 @@ export function CheckoutOrderPage() {
     fulfillmentAddressValid(fulfillment) &&
     checklistComplete;
 
-  const handlePriceConfirm = () => {
+  const handleGoToReview = () => {
     setValidationError(null);
     if (!canConfirm) {
       setValidationError(
@@ -248,37 +249,38 @@ export function CheckoutOrderPage() {
 
     const priceLines = buildPriceSnapshots(items, fulfillment.method);
     const estimatedTotal = sumPriceSnapshots(priceLines);
-    const primary = items[0];
 
-    const draft: CommerceOrderDraft = {
-      id: `draft-${Date.now()}`,
-      customerType: "member",
-      customerName: customer.name.trim(),
-      customerPhone: customer.phone.trim(),
-      customerEmail: customer.email.trim() || undefined,
-      vehicleName: vehicle.name,
-      vehicleYear: vehicle.year,
-      vehicleFuel: vehicle.fuelType,
-      plateSuffix: vehicle.plateSuffix,
-      batterySpec: primary?.batterySpec ?? "",
-      brandName: primary?.brandName,
-      usedBatteryReturn: usedBattery ?? "unknown",
-      fulfillmentMethod: fulfillment.method as FulfillmentMethod,
-      storeId: fulfillment.storeId,
-      deliveryAddress: fulfillment.method === "delivery" ? fulfillment.region : undefined,
-      visitRegion: fulfillment.method === "visit_install" ? fulfillment.region : undefined,
+    const session: CheckoutSessionPayload = {
+      version: 1,
+      flow: isBuyNow ? "buy_now" : "cart",
       items,
+      customer: {
+        name: customer.name.trim(),
+        phone: customer.phone.trim(),
+        email: customer.email.trim() || undefined,
+        customerType: "member",
+        orderMemo: customer.orderMemo.trim() || undefined,
+      },
+      vehicle,
+      fulfillment: {
+        method: fulfillment.method,
+        storeId:
+          fulfillment.storeId === "deokcheon" || fulfillment.storeId === "hakjang"
+            ? fulfillment.storeId
+            : undefined,
+        region: fulfillment.region,
+        preferredTime: fulfillment.preferredTime,
+      },
+      usedBatteryReturn: usedBattery ?? "unknown",
+      memo: [memo, customer.orderMemo].filter(Boolean).join("\n") || undefined,
       priceLines,
       estimatedTotal,
-      lifecycleStatus: "checkout_draft",
-      paymentStatus: "preparing",
-      customerMemo: [memo, customer.orderMemo].filter(Boolean).join("\n") || undefined,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      savedAt: new Date().toISOString(),
     };
 
-    saveCheckoutDraft(draft);
-    setPriceConfirmed(true);
+    saveCheckoutSession(session);
+    setNavigating(true);
+    router.push(CHECKOUT_REVIEW_PAGE);
   };
 
   if (!hydrated) {
@@ -404,17 +406,6 @@ export function CheckoutOrderPage() {
             </p>
           ) : null}
 
-          {priceConfirmed ? (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-2">
-              <p className="text-sm font-black text-emerald-950">
-                결제 예정금액 확인이 완료되었습니다.
-              </p>
-              <p className="text-xs font-medium text-emerald-900">
-                결제 시스템이 준비되면 이 주문서 기준으로 결제를 진행할 수 있습니다.
-              </p>
-            </div>
-          ) : null}
-
           <div className="hidden flex-col gap-2 lg:flex sm:flex-row sm:items-center">
             {isBuyNow && items[0]?.batterySpec ? (
               <Link
@@ -428,7 +419,12 @@ export function CheckoutOrderPage() {
                 {CHECKOUT_PAGE_COPY.backToCart}
               </Link>
             )}
-            <PaymentPreparingButton disabled={!canConfirm} onClick={handlePriceConfirm} />
+            <PaymentPreparingButton
+              disabled={!canConfirm}
+              loading={navigating}
+              label="주문 정보 확인하기"
+              onClick={handleGoToReview}
+            />
           </div>
         </form>
 
@@ -445,7 +441,9 @@ export function CheckoutOrderPage() {
           </Link>
           <PaymentPreparingButton
             disabled={!canConfirm}
-            onClick={handlePriceConfirm}
+            loading={navigating}
+            label="주문 정보 확인하기"
+            onClick={handleGoToReview}
             className="flex-[2]"
           />
         </div>

@@ -3,6 +3,7 @@
 export const ADMIN_ROUTES = {
   hub: "/admin",
   orders: "/admin/orders",
+  commerceOrders: "/admin/commerce-orders",
   guestOrders: "/admin/guest-orders",
   photoRequests: "/admin/photo-requests",
   vehicles: "/admin/vehicles",
@@ -30,6 +31,7 @@ export type AdminNavItem = {
 export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: ADMIN_ROUTES.hub, label: "대시보드", group: "운영" },
   { href: ADMIN_ROUTES.orders, label: "주문 관리", group: "주문" },
+  { href: ADMIN_ROUTES.commerceOrders, label: "자사몰 결제 주문", group: "주문" },
   { href: ADMIN_ROUTES.guestOrders, label: "비회원 주문", group: "주문" },
   { href: ADMIN_ROUTES.photoRequests, label: "사진 확인 요청", group: "주문" },
   { href: ADMIN_ROUTES.orderRequests, label: "상담 주문 (기존)", group: "주문" },
