@@ -1483,6 +1483,21 @@
   margin-inline: auto;
 }
 
+.home-main-search-aura::before {
+  content: "";
+  position: absolute;
+  inset: -0.5rem -0.25rem -0.75rem;
+  z-index: 0;
+  border-radius: 1.75rem;
+  background: radial-gradient(
+    120% 80% at 50% 0%,
+    rgba(59, 130, 246, 0.14) 0%,
+    rgba(59, 130, 246, 0.04) 42%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
 .home-main-search-aura .home-main-search-shell {
   position: relative;
   z-index: 1;
@@ -1502,11 +1517,16 @@
   width: 100%;
   min-width: 0;
   overflow: hidden;
-  border: 2px solid #2563eb;
-  border-radius: 1.25rem;
-  background: #fff;
-  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.08);
-  transition: none;
+  border: 2px solid #3b82f6;
+  border-radius: 1.5rem;
+  background: #ffffff;
+  box-shadow:
+    0 10px 32px rgba(37, 99, 235, 0.12),
+    0 2px 8px rgba(15, 23, 42, 0.06);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
 }
 
 @media (min-width: 640px) {
@@ -1533,7 +1553,7 @@
 
 @media (min-width: 640px) {
   .home-hero-search-compound--premium .home-search-type-dropdown {
-    width: 8.125rem;
+    width: 9.25rem;
   }
 }
 
@@ -1566,74 +1586,101 @@
 }
 
 .home-hero-search-compound--premium .home-hero-search-submit {
-  flex: 0 0 5.5rem;
-  width: 5.5rem;
-  min-width: 5.5rem;
-  max-width: 5.5rem;
-  padding-inline: 0.75rem;
-  border-radius: 0 0 1.125rem 0;
+  flex: 0 0 5.75rem;
+  width: 5.75rem;
+  min-width: 5.75rem;
+  max-width: 5.75rem;
+  padding-inline: 0.875rem;
+  border-radius: 0 0 1.375rem 0;
   box-shadow: none;
   outline: none;
 }
 
 @media (min-width: 640px) {
   .home-hero-search-compound--premium .home-hero-search-submit {
-    flex: 0 0 6rem;
-    width: 6rem;
-    min-width: 6rem;
-    max-width: 6rem;
-    padding-inline: 1rem;
-    border-radius: 0 1.125rem 1.125rem 0;
+    flex: 0 0 6.75rem;
+    width: 6.75rem;
+    min-width: 6.75rem;
+    max-width: 6.75rem;
+    padding-inline: 1.125rem;
+    border-radius: 0 1.375rem 1.375rem 0;
   }
 }
 
 /* 메인 검색 — 히어로 compound 높이·타이포 확대 */
 .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
-  min-height: 3.75rem;
-  padding-inline: 0.875rem;
+  min-height: 4rem;
+  gap: 0.625rem;
+  padding-inline: 1rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger > span:first-of-type {
+  width: 2rem;
+  height: 2rem;
+}
+
+.home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger .truncate {
   font-size: 0.9375rem;
+  font-weight: 800;
 }
 
 .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
-  min-height: 3.75rem;
-  padding-inline: 1rem;
-  font-size: 1.125rem;
+  min-height: 4rem;
+  padding-inline: 1.125rem;
+  font-size: 1.1875rem;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input::placeholder {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 500;
+  color: #94a3b8;
 }
 
 .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
-  min-height: 3.75rem;
-  min-width: 5.5rem;
-  padding-inline: 1.5rem;
+  min-height: 4rem;
+  min-width: 5.75rem;
+  padding-inline: 1.25rem;
   font-size: 1.0625rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 52%, #1d4ed8 100%);
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    background 200ms ease,
+    box-shadow 200ms ease,
+    filter 200ms ease;
 }
 
 @media (min-width: 640px) {
   .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
-    min-height: 4.25rem;
+    min-height: 4.5rem;
+    padding-inline: 1.125rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger .truncate {
     font-size: 1rem;
   }
 
   .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
-    min-height: 4.25rem;
-    padding-inline: 1.25rem;
-    font-size: 1.25rem;
+    min-height: 4.5rem;
+    padding-inline: 1.375rem;
+    font-size: 1.3125rem;
   }
 
   .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input::placeholder {
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
   }
 
   .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
-    min-height: 4.25rem;
-    min-width: 6.25rem;
-    padding-inline: 2rem;
+    min-height: 4.5rem;
+    min-width: 6.75rem;
+    padding-inline: 1.75rem;
     font-size: 1.125rem;
   }
 }
@@ -1642,20 +1689,42 @@
   .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger,
   .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input,
   .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
-    min-height: 4.5rem;
+    min-height: 4.75rem;
   }
 
   .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
-    font-size: 1.3125rem;
+    font-size: 1.375rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input::placeholder {
+    font-size: 1.1875rem;
   }
 }
 
-.home-hero-search-compound--premium:hover,
-.home-hero-search-compound--premium:focus-within {
-  border-width: 2px;
+.home-hero-search-compound--premium:hover {
   border-color: #2563eb;
-  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.1);
+  box-shadow:
+    0 14px 40px rgba(37, 99, 235, 0.16),
+    0 4px 12px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.home-hero-search-compound--premium:focus-within {
+  border-color: #1d4ed8;
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.22),
+    0 16px 44px rgba(37, 99, 235, 0.18),
+    0 4px 14px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
   outline: none;
+}
+
+.home-main-search-shell .home-hero-search-compound--premium button[type="submit"]:hover {
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 48%, #2563eb 100%);
+  filter: brightness(1.02);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 6px 20px rgba(37, 99, 235, 0.32);
 }
 
 .home-hero-search-compound--premium .home-main-search-input:focus,
@@ -1675,6 +1744,7 @@
     animation: none !important;
   }
 
+  .home-hero-search-compound--premium:hover,
   .home-hero-search-compound--premium:focus-within {
     transform: none;
   }
@@ -3110,18 +3180,18 @@
   max-width: 100%;
   margin-inline: auto;
   margin-bottom: 0;
-  gap: 1.125rem;
+  gap: 1.375rem;
 }
 
 @media (min-width: 640px) {
   .home-hero-stack {
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .home-hero-stack {
-    gap: 1.25rem;
+    gap: 1.625rem;
   }
 }
 
@@ -3151,19 +3221,19 @@
 
 .home-main-hero {
   margin-top: 0;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.75rem;
   padding-bottom: 0;
 }
 
 @media (min-width: 640px) {
   .home-main-hero {
-    margin-bottom: 3rem;
+    margin-bottom: 3.25rem;
   }
 }
 
 @media (min-width: 1024px) {
   .home-main-hero {
-    margin-bottom: 3.5rem;
+    margin-bottom: 4rem;
   }
 }
 
@@ -3262,7 +3332,13 @@
 
 .home-main-content .home-benefits-carousel {
   margin-top: 0 !important;
-  padding-top: 0;
+  padding-top: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .home-main-content .home-benefits-carousel {
+    padding-top: 0.375rem;
+  }
 }
 
 .home-main-content .home-benefits-carousel--main {
@@ -3755,15 +3831,6 @@
 
 .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
   border-radius: 0;
-  box-shadow: none;
-}
-
-.home-main-search-shell button[type="submit"]:hover {
-  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.28);
-}
-
-.home-main-search-shell .home-hero-search-compound--premium button[type="submit"]:hover {
-  box-shadow: none;
 }
 
 @media (min-width: 768px) {
@@ -3781,7 +3848,16 @@
 
 @media (max-width: 639px) {
   .home-hero-search-compound--premium .home-main-search-input {
-    border-radius: 0 0 0 1.125rem;
+    border-radius: 0 0 0 1.375rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
+    min-height: 3.75rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input,
+  .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
+    min-height: 3.75rem;
   }
 }
 
