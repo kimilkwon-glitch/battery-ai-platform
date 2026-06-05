@@ -2498,6 +2498,60 @@
   background: #ffffff;
 }
 
+/* 로케트 상품 카드 — 주문·인터넷가 레드 톤 (쏠라이트 블루 유지) */
+.home-brand-lineup--rocket .home-spec-card-action--order {
+  background: linear-gradient(180deg, #e84d3d 0%, #d92d20 50%, #c62828 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 10px rgba(217, 45, 32, 0.22) !important;
+  --tw-ring-color: rgba(217, 45, 32, 0.28) !important;
+}
+
+.home-brand-lineup--rocket .home-spec-card-action--order:hover {
+  background: linear-gradient(180deg, #d92d20 0%, #b42318 52%, #991b1b 100%) !important;
+  box-shadow: 0 4px 14px rgba(217, 45, 32, 0.3) !important;
+}
+
+.home-brand-lineup--rocket .home-spec-card-price--onsite {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+.home-brand-lineup--rocket .home-spec-card-price--onsite .home-spec-card-price__label {
+  color: #64748b;
+}
+
+.home-brand-lineup--rocket .home-spec-card-price--onsite .home-spec-card-price__amount {
+  color: #1e293b;
+}
+
+.home-brand-lineup--rocket .home-spec-card-price--internet {
+  border-color: #fecaca;
+  background: linear-gradient(180deg, #fff9f8 0%, #fef2f2 100%);
+}
+
+.home-brand-lineup--rocket .home-spec-card-price--internet .home-spec-card-price__label {
+  color: #b42318;
+  font-weight: 800;
+}
+
+.home-brand-lineup--rocket .home-spec-card-price--internet .home-spec-card-price__amount {
+  color: #d92d20;
+}
+
+.home-brand-lineup--rocket .home-spec-card-action--spec {
+  border-color: #e8b4b4 !important;
+  color: #7f1d1d !important;
+  background: #ffffff !important;
+}
+
+.home-brand-lineup--rocket .home-spec-card-action--spec:hover {
+  border-color: #d92d20 !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+  box-shadow: 0 2px 8px rgba(217, 45, 32, 0.1) !important;
+}
+
 /* 쏠라이트 — 은은한 쿨 틴트 배경 + 포인트 컬러만 */
 .home-brand-lineup--solite {
   border-color: rgba(15, 23, 42, 0.06);
