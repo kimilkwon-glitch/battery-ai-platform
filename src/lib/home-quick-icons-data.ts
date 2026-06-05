@@ -2,20 +2,22 @@ import { GUIDE_HUB_ITEMS } from "@/lib/guide-hub-routes";
 import { HUB_QA, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
 
 export type HomeQuickIconAccent =
-  | "blue"
   | "mint"
-  | "purple"
-  | "indigo"
   | "teal"
-  | "slate"
-  | "slateblue"
-  | "navy";
+  | "coral"
+  | "lilac"
+  | "sky"
+  | "skyblue"
+  | "bluegray"
+  | "indigo";
 
 export type HomeQuickIconVariant = "default" | "vehicle";
 
 export type HomeQuickIconItem = {
   id: string;
   label: string;
+  /** 모바일에서 2줄 제목 (한 글자씩 떨어짐 방지) */
+  titleMobileLines?: [string, string];
   description: string;
   href: string;
   imageSrc: string;
@@ -42,7 +44,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     description: "배터리 수명 관리",
     href: guideById.maintenance.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-maintenance-tip.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "blue",
+    accent: "mint",
     chipBg: "#EAF8F3",
   },
   {
@@ -51,7 +53,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     description: "시동지연·방전 확인",
     href: guideById.symptoms.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-symptom-diagnosis.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "mint",
+    accent: "teal",
     chipBg: "#E8F7F7",
   },
   {
@@ -60,7 +62,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     description: "교체 필요 신호 확인",
     href: guideById.fault.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-battery-fault.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "purple",
+    accent: "coral",
     chipBg: "#FFF2E8",
   },
   {
@@ -69,7 +71,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     description: "보증·교환 안내",
     href: guideById.as.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-as-warranty.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "indigo",
+    accent: "lilac",
     chipBg: "#F1ECFF",
   },
   {
@@ -78,37 +80,38 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     description: "자주 묻는 질문",
     href: HUB_QA,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-qna.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "teal",
+    accent: "sky",
     chipBg: "#EAF4FF",
   },
   {
     id: "deokcheon",
     label: "덕천점",
-    description: "부산 북구 만덕대로 24",
+    description: "부산 북구 의성로 122",
     href: HUB_STORE_ANCHORS.deokcheon,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-deokcheon-ray.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "slate",
-    chipBg: "#EAF6FF",
+    accent: "skyblue",
+    chipBg: "#E0F2FE",
     iconVariant: "vehicle",
   },
   {
     id: "hakjang",
     label: "학장점",
-    description: "부산 사상구 대동로 68",
+    description: "부산 사상구 학감대로 171",
     href: HUB_STORE_ANCHORS.hakjang,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-hakjang-starex.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "slateblue",
-    chipBg: "#EDF4FF",
+    accent: "bluegray",
+    chipBg: "#E8EEF4",
     iconVariant: "vehicle",
   },
   {
     id: "hakjang-night",
     label: "학장점 야간 무인",
+    titleMobileLines: ["학장점", "야간 무인"],
     description: "퇴근 후 픽업·반납 가능",
     // TODO: 전용 야간 무인 안내 페이지 추가 시 href 교체
     href: HUB_STORE_ANCHORS.hakjang,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-night-unmanned.png?v=${QUICK_ICON_ASSET_V}`,
-    accent: "navy",
+    accent: "indigo",
     chipBg: "#EEF0FF",
   },
 ];
