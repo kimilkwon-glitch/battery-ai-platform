@@ -1,6 +1,5 @@
 import { vehicleAliasDbV01 } from "@/data/vehicle-alias-db";
 import { vehicleAssets } from "@/lib/car-assets";
-import { getRecordsForSlug } from "@/lib/vehicleBattery";
 import type { AdminAliasRow } from "@/types/admin";
 
 export function buildAdminAliasRows(): AdminAliasRow[] {
@@ -18,8 +17,9 @@ export function buildAdminAliasRows(): AdminAliasRow[] {
   for (const entry of vehicleAliasDbV01) {
     const slug = entry.slugHint;
     const asset = assetBySlug.get(slug);
-    const records = getRecordsForSlug(slug);
-    const hasBattery = records.some((r) => r.primaryBattery || r.batteryOptions.length);
+    const hasBattery = Boolean(
+      asset?.defaultBatteryCode || asset?.batteryMatchStatus === "linked",
+    );
 
     for (const alias of entry.aliases) {
       rows.push({

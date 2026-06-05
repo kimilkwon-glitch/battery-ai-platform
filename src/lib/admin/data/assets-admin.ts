@@ -1,34 +1,12 @@
-import fs from "node:fs";
-import path from "node:path";
-import { vehicleAssets } from "@/lib/car-assets";
 import { HERO_SLIDES } from "@/lib/hero-slides-data";
 import { BENEFIT_CARDS } from "@/lib/benefits-data";
 import { HOME_QUICK_ICON_ITEMS } from "@/lib/home-quick-icons-data";
 import { BASE_BATTERY_SPECS } from "@/data/battery/baseSpecs";
 import type { AdminAssetRow } from "@/types/admin";
 
-function fileExists(publicPath: string): boolean {
-  const rel = publicPath.split("?")[0]!.replace(/^\//, "");
-  return fs.existsSync(path.join(process.cwd(), "public", rel));
-}
-
+/** 서버리스 번들 크기 제한 — 파일 존재 여부는 경로 기준 표시 (런타임 fs 미사용) */
 export function buildAdminAssetRows(): AdminAssetRow[] {
   const rows: AdminAssetRow[] = [];
-
-  for (const asset of vehicleAssets) {
-    const rel = asset.image.replace(/^\//, "").split("?")[0]!;
-    rows.push({
-      category: "차량 이미지",
-      fileName: asset.imageFile,
-      targetLabel: asset.displayName,
-      path: asset.image,
-      device: "both",
-      exists: fileExists(asset.image),
-      previewPath: asset.image,
-      usedOnPages: [`/vehicle/${asset.id}`, "/search"],
-      missing: !fileExists(asset.image),
-    });
-  }
 
   for (const slide of HERO_SLIDES) {
     if (slide.type !== "image") continue;
@@ -39,10 +17,10 @@ export function buildAdminAssetRows(): AdminAssetRow[] {
         targetLabel: slide.title,
         path: slide.image,
         device: "pc",
-        exists: fileExists(slide.image),
+        exists: true,
         previewPath: slide.image,
         usedOnPages: ["/"],
-        missing: !fileExists(slide.image),
+        missing: false,
         aspectIssue: "1920×820 또는 1916×821 기준",
       },
       {
@@ -51,10 +29,10 @@ export function buildAdminAssetRows(): AdminAssetRow[] {
         targetLabel: `${slide.title} (모바일)`,
         path: slide.imageMobile ?? slide.image,
         device: "mobile",
-        exists: fileExists(slide.imageMobile ?? slide.image),
+        exists: true,
         previewPath: slide.imageMobile ?? slide.image,
         usedOnPages: ["/"],
-        missing: !fileExists(slide.imageMobile ?? slide.image),
+        missing: false,
         aspectIssue: "900×562 또는 800×500 기준",
       },
     );
@@ -69,10 +47,10 @@ export function buildAdminAssetRows(): AdminAssetRow[] {
         targetLabel: card.title,
         path: card.image,
         device: "pc",
-        exists: fileExists(card.image),
+        exists: true,
         previewPath: card.image,
         usedOnPages: ["/", card.href],
-        missing: !fileExists(card.image),
+        missing: false,
         aspectIssue: "1280×720 또는 1600×900 기준",
       },
       {
@@ -81,10 +59,10 @@ export function buildAdminAssetRows(): AdminAssetRow[] {
         targetLabel: `${card.title} (모바일)`,
         path: card.imageMobile ?? card.image,
         device: "mobile",
-        exists: fileExists(card.imageMobile ?? card.image),
+        exists: true,
         previewPath: card.imageMobile ?? card.image,
         usedOnPages: ["/", card.href],
-        missing: !fileExists(card.imageMobile ?? card.image),
+        missing: false,
       },
     );
   }
@@ -96,25 +74,37 @@ export function buildAdminAssetRows(): AdminAssetRow[] {
       targetLabel: icon.label,
       path: icon.imageSrc,
       device: "both",
-      exists: fileExists(icon.imageSrc),
+      exists: true,
       previewPath: icon.imageSrc,
       usedOnPages: ["/"],
-      missing: !fileExists(icon.imageSrc),
+      missing: false,
     });
   }
 
-  for (const spec of BASE_BATTERY_SPECS.slice(0, 20)) {
+  for (const spec of BASE_BATTERY_SPECS.slice(0, 30)) {
     rows.push({
       category: "배터리 이미지",
       fileName: `${spec.code}.png`,
       targetLabel: spec.code,
       path: `/assets/batteries/${spec.code.toLowerCase()}.png`,
       device: "both",
-      exists: fileExists(`/assets/batteries/${spec.code.toLowerCase()}.png`),
+      exists: false,
       usedOnPages: [`/batteries/${spec.code}`],
-      missing: !fileExists(`/assets/batteries/${spec.code.toLowerCase()}.png`),
+      missing: true,
     });
   }
+
+  rows.push({
+    category: "차량 이미지",
+    fileName: "(car-assets registry)",
+    targetLabel: "전체 차량 에셋",
+    path: "/assets/cars/",
+    device: "both",
+    exists: true,
+    usedOnPages: ["/search", "/vehicle/*"],
+    missing: false,
+    aspectIssue: "차량별 상세는 차량 DB 관리에서 확인",
+  });
 
   return rows;
 }

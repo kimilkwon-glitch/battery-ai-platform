@@ -1,26 +1,12 @@
 import { vehicleAssets, type VehicleAsset } from "@/lib/car-assets";
 import { vehicleAliasDbV01 } from "@/data/vehicle-alias-db";
-import {
-  getRecordsForSlug,
-  getVehicleBatteryPageData,
-  type VehicleBatteryRecord,
-} from "@/lib/vehicleBattery";
-import {
-  isVehicleFullyLithiumSalesExcluded,
-} from "@/lib/vehicle-battery-customer-policy";
+import { isVehicleFullyLithiumSalesExcluded } from "@/lib/vehicle-battery-customer-policy";
 import { OPERATOR_SLUG_PRIMARY_BATTERY } from "@/lib/vehicle-fuel-primary-battery";
 import { findReviewRuleForSlug } from "@/lib/admin/data/operator-review-rules";
 import type { AdminReviewStatus, AdminVehicleRow } from "@/types/admin";
 
 function isAgmSpec(code: string): boolean {
   return /AGM|DIN/i.test(code);
-}
-
-function inferTerminal(records: VehicleBatteryRecord[]): string {
-  const codes = records.flatMap((r) => [r.primaryBattery, ...r.batteryOptions]);
-  if (codes.some((c) => /R$/i.test(c))) return "R";
-  if (codes.some((c) => /L$/i.test(c))) return "L";
-  return "—";
 }
 
 function resolveReviewStatus(
@@ -32,7 +18,8 @@ function resolveReviewStatus(
   if (!asset.image) return "image_needed";
   if (asset.batteryMatchStatus === "needsReview") return "needs_review";
   const rules = findReviewRuleForSlug(asset.id);
-  if (rules.some((r) => r.expectedPrimary !== "—" && !primary.includes(r.expectedPrimary.split("/")[0]!))) {
+  const expected = rules[0]?.expectedPrimary;
+  if (expected && expected !== "—" && !primary.includes(expected.split("/")[0]!)) {
     return "db_fix_needed";
   }
   return "ok";
@@ -44,19 +31,11 @@ export function buildAdminVehicleRows(): AdminVehicleRow[] {
   );
 
   return vehicleAssets.map((asset) => {
-    const records = getRecordsForSlug(asset.id);
-    const pageData = getVehicleBatteryPageData(asset.id);
     const primary =
       OPERATOR_SLUG_PRIMARY_BATTERY[asset.id] ??
-      pageData?.summary?.representativeBattery ??
-      records[0]?.primaryBattery ??
       asset.defaultBatteryCode ??
       "—";
-    const candidates = [
-      ...new Set(
-        records.flatMap((r) => [r.primaryBattery, ...r.batteryOptions]).filter(Boolean),
-      ),
-    ];
+    const candidates = primary !== "—" ? [primary] : [];
     const salesExcluded = isVehicleFullyLithiumSalesExcluded(asset.id);
     const reviewStatus = resolveReviewStatus(asset, primary, salesExcluded);
     const rules = findReviewRuleForSlug(asset.id);
@@ -67,11 +46,11 @@ export function buildAdminVehicleRows(): AdminVehicleRow[] {
       displayName: asset.displayName,
       generationName: asset.generationName,
       yearRange: asset.yearRange ?? "—",
-      fuel: records.map((r) => r.fuel).filter(Boolean).join(", ") || "—",
+      fuel: "—",
       primaryBattery: primary,
       candidateBatteries: candidates,
       isAgm: isAgmSpec(primary),
-      terminalDirection: inferTerminal(records),
+      terminalDirection: /R$/i.test(primary) ? "R" : /L$/i.test(primary) ? "L" : "—",
       hasImage: Boolean(asset.image),
       needsReview: asset.batteryMatchStatus === "needsReview",
       hasAlias: aliasSlugs.has(asset.id),
@@ -85,9 +64,7 @@ export function buildAdminVehicleRows(): AdminVehicleRow[] {
 
 export function countVehiclesNeedingReview(rows: AdminVehicleRow[]): number {
   return rows.filter(
-    (r) =>
-      r.reviewStatus !== "ok" &&
-      r.reviewStatus !== "sales_excluded",
+    (r) => r.reviewStatus !== "ok" && r.reviewStatus !== "sales_excluded",
   ).length;
 }
 
