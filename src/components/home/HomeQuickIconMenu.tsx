@@ -10,7 +10,7 @@ function QuickIconTitle({ label, mobileLines }: { label: string; mobileLines?: [
   return (
     <span className="home-quick-icon-card__title">
       <span className="home-quick-icon-card__title-full">{label}</span>
-      <span className="home-quick-icon-card__title-stacked" aria-hidden>
+      <span className="home-quick-icon-card__title-stacked">
         {mobileLines.map((line) => (
           <span key={line} className="home-quick-icon-card__title-line">
             {line}
@@ -39,6 +39,7 @@ export function HomeQuickIconMenu() {
                 className="home-quick-icon-card"
                 data-quick-accent={item.accent}
                 data-quick-icon-variant={item.iconVariant ?? "default"}
+                aria-label={`${item.label}, ${item.description}`}
               >
                 <span className="home-quick-icon-card__icon-wrap" aria-hidden>
                   <span
