@@ -28,5 +28,11 @@ export const ORDER_REQUEST_LOOKUP_PAGE = "/order-request/lookup";
 /** 비회원 주문조회 안내 앵커 (주문 안내 페이지) */
 export const CUSTOMER_CENTER_GUEST_ORDER = `${CUSTOMER_CENTER_ORDER_GUIDE}#guest-order`;
 
+export {
+  GUEST_ORDER_PAGE,
+  GUEST_ORDER_COMPLETE_PAGE,
+  GUEST_ORDER_CHECK_PAGE,
+} from "@/lib/guest-order/guest-order-routes";
+
 /** @deprecated — HUB_SUPPORT 와 동일. 신규 코드는 CUSTOMER_CENTER_* 사용 */
 export { HUB_SUPPORT } from "@/lib/customer-hub-routes";

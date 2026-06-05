@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AdminPageNav } from "@/components/admin/AdminPageNav";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { OrderRequestDetailPanel } from "@/components/admin/order-requests/OrderRequestDetailPanel";
 import { OrderRequestList } from "@/components/admin/order-requests/OrderRequestList";
 import {
@@ -139,22 +139,18 @@ export function AdminOrderRequestsClient({ allowLocalFallback }: Props) {
   const stats = statsFromRecords(records);
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <AdminShell
+      title="상담 주문 요청 (상세)"
+      description="주문 요청 API · 상세 패널·상태 변경 — 결제 완료가 아닌 상담 접수 기준"
+    >
       <div className="mx-auto max-w-6xl space-y-4">
-        <p className="text-xs font-bold text-slate-600">
-          주문 요청 API · httpOnly 세션 인증 · 개발용 JSON 저장소(.data). 운영 전 영구 DB
-          및 정식 로그인 도입 예정.
-        </p>
         {usingLocalFallback ? (
           <p className="text-xs font-bold text-amber-800" role="status">
             API 실패 — 개발용 localStorage fallback 사용 중
           </p>
         ) : null}
 
-        <AdminPageNav />
-
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-black text-slate-950">상담 주문 요청</h1>
           <button
             type="button"
             onClick={() => void loadList()}
@@ -280,6 +276,6 @@ export function AdminOrderRequestsClient({ allowLocalFallback }: Props) {
           </>
         )}
       </div>
-    </main>
+    </AdminShell>
   );
 }

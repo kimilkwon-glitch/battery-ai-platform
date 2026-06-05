@@ -41,6 +41,7 @@ import {
   CART_PAGE,
   ORDER_REQUEST_COMPLETE_PAGE,
 } from "@/lib/customer-center-routes";
+import { GUEST_ORDER_PAGE } from "@/lib/guest-order/guest-order-routes";
 import { HUB_SHOP } from "@/lib/customer-hub-routes";
 import { getSearchHref } from "@/lib/battery-search";
 import type { OrderRequestConfirmations } from "@/types/order-request";
@@ -210,6 +211,7 @@ export function CheckoutOrderPage() {
       customerPhone: customer.phone.trim(),
       customerEmail: customer.email.trim() || undefined,
       customerOrderMemo: customer.orderMemo.trim() || undefined,
+      customerType: "member" as const,
       vehicle: Object.keys(vehicle).length ? vehicle : undefined,
       usedBatteryReturnOption: usedBatteryOption,
       fulfillment,
@@ -307,6 +309,17 @@ export function CheckoutOrderPage() {
       <section className={`${bm.card} ${bm.cardPad}`}>
         <h1 className="text-lg font-black text-slate-950">{CHECKOUT_PAGE_COPY.title}</h1>
         <p className="mt-2 text-sm font-medium text-slate-600">{CHECKOUT_PAGE_COPY.description}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white">
+            회원 주문 (장바구니)
+          </span>
+          <Link
+            href={GUEST_ORDER_PAGE}
+            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+          >
+            비회원 주문으로 전환
+          </Link>
+        </div>
         {isBuyNow ? (
           <p className="mt-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-900 ring-1 ring-blue-100">
             즉시구매 주문 — 선택하신 상품으로 바로 주문합니다.

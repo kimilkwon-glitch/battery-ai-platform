@@ -128,12 +128,27 @@ export type OrderRequestRecord = OrderRequest &
     reviewFlagKeys?: OrderRequestReviewFlag[];
   };
 
+/** 회원/비회원 주문 구분 */
+export type OrderRequestCustomerType = "member" | "guest";
+
+/** 비회원 주문 선택 입력 */
+export type GuestOrderExtras = {
+  plateSuffix?: string;
+  preferredTime?: string;
+  /** TODO: 파일 스토리지 연동 후 실제 URL 저장 */
+  photoAttachmentCount?: number;
+  hasExistingBatteryPhoto?: boolean;
+  hasBatteryBayPhoto?: boolean;
+};
+
 /** POST /api/order-requests */
 export type CreateOrderRequestInput = {
   customerName?: string;
   customerPhone: string;
   customerEmail?: string;
   customerOrderMemo?: string;
+  customerType?: OrderRequestCustomerType;
+  guestExtras?: GuestOrderExtras;
   vehicle?: OrderRequestVehicle;
   usedBatteryReturnOption: OrderRequestUsedBatteryOption;
   fulfillment: OrderRequestFulfillment;
@@ -177,7 +192,9 @@ export type PersistedOrderRequest = {
   internalMemo?: string;
   reviewFlags: OrderRequestReviewFlag[];
   confirmationsJson?: OrderRequestConfirmations;
-  source: "web_form" | "admin_manual";
+  source: "web_form" | "admin_manual" | "guest_form";
+  customerType?: OrderRequestCustomerType;
+  guestExtrasJson?: GuestOrderExtras;
   createdAt: string;
   updatedAt: string;
   contactedAt?: string;
@@ -191,13 +208,39 @@ export type AdminOrderRequestListItem = {
   status: OrderRequestWorkflowStatus;
   customerName: string;
   customerPhoneMasked: string;
+  customerType?: OrderRequestCustomerType;
   vehicleSummary: string;
   batterySpecSummary: string;
   usedBatteryReturnOption: OrderRequestUsedBatteryOption;
   fulfillmentMethod: OrderRequestFulfillmentMethod;
+  storeId?: OrderRequestStoreId;
   reviewFlags: OrderRequestReviewFlag[];
   hasInternalMemo: boolean;
   createdAt: string;
+};
+
+/** 사진 확인 요청 운영 상태 */
+export type PhotoCheckRequestStatus =
+  | "received"
+  | "reviewing"
+  | "more_photos"
+  | "guided"
+  | "converted"
+  | "on_hold";
+
+/** 사진 확인 요청 (주문 요청 photo_check_needed 플래그 기반 + 추후 전용 API) */
+export type PhotoCheckRequestItem = {
+  id: string;
+  requestNumber?: string;
+  requestedAt: string;
+  customerName: string;
+  customerPhoneMasked: string;
+  vehicleName: string;
+  vehicleYear?: string;
+  photoCount: number;
+  status: PhotoCheckRequestStatus;
+  hasInternalMemo: boolean;
+  reviewFlags: OrderRequestReviewFlag[];
 };
 
 /** POST /api/order-requests/lookup — 고객 공개 DTO (13차) */
