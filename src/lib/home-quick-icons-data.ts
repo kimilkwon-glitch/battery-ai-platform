@@ -20,6 +20,8 @@ export type HomeQuickIconItem = {
   href: string;
   imageSrc: string;
   accent: HomeQuickIconAccent;
+  /** 아이콘 뒤 파스텔 배경칩 — PNG 자체가 아닌 wrapper 전용 */
+  chipBg: string;
   iconVariant?: HomeQuickIconVariant;
 };
 
@@ -39,6 +41,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.maintenance.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-maintenance-tip.png`,
     accent: "blue",
+    chipBg: "#EAF8F3",
   },
   {
     id: "symptoms",
@@ -47,6 +50,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.symptoms.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-symptom-diagnosis.png`,
     accent: "mint",
+    chipBg: "#E8F7F7",
   },
   {
     id: "fault",
@@ -55,6 +59,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.fault.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-battery-fault.png`,
     accent: "purple",
+    chipBg: "#FFF2E8",
   },
   {
     id: "as",
@@ -63,6 +68,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.as.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-as-warranty.png`,
     accent: "indigo",
+    chipBg: "#F1ECFF",
   },
   {
     id: "qa",
@@ -71,6 +77,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: HUB_QA,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-qna.png`,
     accent: "teal",
+    chipBg: "#EAF4FF",
   },
   {
     id: "deokcheon",
@@ -79,6 +86,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: HUB_STORE_ANCHORS.deokcheon,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-deokcheon-ray.png`,
     accent: "slate",
+    chipBg: "#EAF6FF",
     iconVariant: "vehicle",
   },
   {
@@ -88,6 +96,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: HUB_STORE_ANCHORS.hakjang,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-hakjang-starex.png`,
     accent: "slateblue",
+    chipBg: "#EDF4FF",
     iconVariant: "vehicle",
   },
   {
@@ -98,5 +107,6 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: HUB_STORE_ANCHORS.hakjang,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-night-unmanned.png`,
     accent: "navy",
+    chipBg: "#EEF0FF",
   },
 ];
