@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { apiFetchOrderSummary } from "@/lib/payment/commerce-order-client";
-import { CHECKOUT_PAGE, paymentFailUrl } from "@/lib/payment/payment-routes";
+import { TossPaymentWidget } from "@/components/payment/TossPaymentWidget";
+import {
+  apiFetchOrderSummary,
+  apiPrepareCommercePayment,
+} from "@/lib/payment/commerce-order-client";
+import { CHECKOUT_PAGE } from "@/lib/payment/payment-routes";
 import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { OrderSummaryResponse } from "@/lib/payment/commerce-order-client";
+import type { PaymentPrepareResponse } from "@/types/commerce-payment";
 import { bm } from "@/lib/design-tokens";
 
 function PaymentReadyContent() {
@@ -15,8 +20,10 @@ function PaymentReadyContent() {
   const orderId = searchParams.get("orderId")?.trim() ?? "";
   const paymentRequestId = searchParams.get("paymentRequestId")?.trim() ?? "";
   const [order, setOrder] = useState<OrderSummaryResponse["order"] | null>(null);
+  const [prepare, setPrepare] = useState<PaymentPrepareResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!orderId || !paymentRequestId) {
@@ -25,15 +32,28 @@ function PaymentReadyContent() {
       return;
     }
 
-    void apiFetchOrderSummary(orderId, paymentRequestId).then((res) => {
-      if (!res.ok) {
-        setError(res.message);
+    void (async () => {
+      const summary = await apiFetchOrderSummary(orderId, paymentRequestId);
+      if (!summary.ok) {
+        setError(summary.message);
         setLoading(false);
         return;
       }
-      setOrder(res.order);
+      setOrder(summary.order);
+
+      const prep = await apiPrepareCommercePayment({
+        orderId,
+        paymentRequestId,
+        clientAmount: summary.order.finalAmount,
+      });
+      if (!prep.ok) {
+        setError(prep.message);
+        setLoading(false);
+        return;
+      }
+      setPrepare(prep.data);
       setLoading(false);
-    });
+    })();
   }, [orderId, paymentRequestId]);
 
   if (loading) {
@@ -44,7 +64,7 @@ function PaymentReadyContent() {
     );
   }
 
-  if (error || !order) {
+  if (error || !order || !prepare) {
     return (
       <div className={`${bm.card} ${bm.cardPad} space-y-4 text-center`}>
         <h2 className="text-base font-black text-slate-900">결제 정보를 확인할 수 없습니다</h2>
@@ -60,26 +80,18 @@ function PaymentReadyContent() {
 
   const fulfillmentLabel =
     FULFILLMENT_METHOD_LABELS[order.fulfillmentType] ?? order.fulfillmentType;
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "";
-  const successUrl = `${origin}/payment/success?orderId=${encodeURIComponent(order.orderId)}&paymentRequestId=${encodeURIComponent(paymentRequestId)}`;
-  const failUrl = `${origin}${paymentFailUrl(order.orderId)}`;
-  const returnUrl = `${origin}/payment/ready?orderId=${encodeURIComponent(order.orderId)}&paymentRequestId=${encodeURIComponent(paymentRequestId)}`;
 
   return (
     <div className="payment-ready space-y-5" data-page="payment-ready">
       <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
-        <h1 className="text-lg font-black text-slate-950">결제 준비</h1>
-        <p className="text-sm font-medium leading-relaxed text-slate-700">
-          자사몰 결제 시스템을 준비 중입니다.
-        </p>
+        <h1 className="text-lg font-black text-slate-950">결제</h1>
         <p className="text-sm font-medium leading-relaxed text-slate-600">
-          현재는 결제 예정금액 확인 단계이며, 실제 결제는 아직 실행되지 않습니다.
+          주문 내용을 확인한 뒤 결제 수단을 선택해 주세요.
         </p>
       </section>
 
       <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
-        <h2 className="text-sm font-black text-slate-900">주문 요약</h2>
+        <h2 className="text-sm font-black text-slate-900">주문 정보</h2>
         <dl className="grid gap-2 text-xs sm:grid-cols-2">
           <div>
             <dt className="font-bold text-slate-500">주문번호</dt>
@@ -88,6 +100,14 @@ function PaymentReadyContent() {
           <div>
             <dt className="font-bold text-slate-500">고객명</dt>
             <dd className="font-black text-slate-900">{order.customerName}</dd>
+          </div>
+          <div>
+            <dt className="font-bold text-slate-500">연락처</dt>
+            <dd className="font-black text-slate-900">{order.customerPhone}</dd>
+          </div>
+          <div>
+            <dt className="font-bold text-slate-500">차량명</dt>
+            <dd className="font-black text-slate-900">{order.vehicleName ?? "—"}</dd>
           </div>
           <div className="sm:col-span-2">
             <dt className="font-bold text-slate-500">주문 상품</dt>
@@ -101,35 +121,23 @@ function PaymentReadyContent() {
             <dd className="font-black text-slate-900">{fulfillmentLabel}</dd>
           </div>
           <div>
-            <dt className="font-bold text-slate-500">결제 예정금액</dt>
+            <dt className="font-bold text-slate-500">결제 금액</dt>
             <dd className="text-base font-black tabular-nums text-blue-700">
-              {order.finalAmount != null ? formatPriceWon(order.finalAmount) : "—"}
+              {formatPriceWon(prepare.amount)}
             </dd>
           </div>
         </dl>
       </section>
 
-      <section
-        className="rounded-xl border border-dashed border-slate-200 bg-slate-50/80 p-6 text-center"
-        data-pg-widget-mount
-        data-order-id={order.orderId}
-        data-payment-request-id={paymentRequestId}
-        data-amount={order.finalAmount ?? ""}
-        data-order-name={`${order.productName} (${order.batteryCode})`}
-        data-customer-name={order.customerName}
-        data-customer-phone={order.customerPhone}
-        data-fulfillment-type={order.fulfillmentType}
-        data-return-url={returnUrl}
-        data-success-url={successUrl}
-        data-fail-url={failUrl}
-        aria-hidden="false"
-      >
-        <p className="text-sm font-bold text-slate-700">
-          결제 수단 선택 영역
+      {payError ? (
+        <p className="text-xs font-bold text-red-600" role="alert">
+          {payError}
         </p>
-        <p className="mt-2 text-xs font-medium text-slate-500">
-          실제 결제 기능은 곧 제공될 예정입니다.
-        </p>
+      ) : null}
+
+      <section className={`${bm.card} ${bm.cardPad}`}>
+        <h2 className="mb-3 text-sm font-black text-slate-900">결제 수단</h2>
+        <TossPaymentWidget prepare={prepare} onPayError={setPayError} />
       </section>
 
       <div className="flex flex-col gap-2 sm:flex-row">

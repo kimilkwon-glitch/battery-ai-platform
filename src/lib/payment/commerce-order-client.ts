@@ -1,10 +1,13 @@
 import {
   API_ORDERS_CREATE,
+  API_PAYMENTS_CONFIRM,
   API_PAYMENTS_FAIL,
   API_PAYMENTS_PREPARE,
 } from "@/lib/payment/payment-routes";
 import type {
   CreateOrderRequestBody,
+  PaymentConfirmRequestBody,
+  PaymentConfirmResponse,
   PaymentFailRequestBody,
   PaymentPrepareRequestBody,
   PaymentPrepareResponse,
@@ -50,6 +53,27 @@ export async function apiPrepareCommercePayment(
     };
   }
   return { ok: true, data: data as PaymentPrepareResponse };
+}
+
+export async function apiConfirmCommercePayment(
+  body: PaymentConfirmRequestBody,
+): Promise<
+  { ok: true; data: PaymentConfirmResponse } | { ok: false; message: string; code?: string }
+> {
+  const res = await fetch(API_PAYMENTS_CONFIRM, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok || !data?.ok) {
+    return {
+      ok: false,
+      message: data?.message ?? "결제 확인에 실패했습니다. 고객센터로 문의해 주세요.",
+      code: data?.code,
+    };
+  }
+  return { ok: true, data: data as PaymentConfirmResponse };
 }
 
 export async function apiRecordPaymentFail(

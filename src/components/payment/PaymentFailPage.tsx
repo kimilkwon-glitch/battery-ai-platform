@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { apiRecordPaymentFail } from "@/lib/payment/commerce-order-client";
 import { CHECKOUT_PAGE, paymentReadyUrl } from "@/lib/payment/payment-routes";
 import { loadCheckoutOrderMeta } from "@/lib/payment/checkout-session-storage";
 import { bm } from "@/lib/design-tokens";
 
 const FAIL_REASONS: Record<string, string> = {
+  PAY_PROCESS_CANCELED: "결제가 취소되었습니다.",
   USER_CANCEL: "결제가 취소되었습니다.",
   TIMEOUT: "결제 시간이 초과되었습니다.",
   NETWORK: "통신 오류가 발생했습니다.",
@@ -17,7 +19,9 @@ function PaymentFailContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId")?.trim() ?? "";
   const code = searchParams.get("code")?.trim() ?? "";
+  const message = searchParams.get("message")?.trim() ?? "";
   const [retryHref, setRetryHref] = useState<string>(CHECKOUT_PAGE);
+  const recorded = useRef(false);
 
   useEffect(() => {
     const meta = loadCheckoutOrderMeta();
@@ -26,8 +30,19 @@ function PaymentFailContent() {
     }
   }, [orderId]);
 
+  useEffect(() => {
+    if (recorded.current || !orderId) return;
+    recorded.current = true;
+    void apiRecordPaymentFail({
+      orderId,
+      errorCode: code || undefined,
+      errorMessage: message || FAIL_REASONS[code] || undefined,
+    });
+  }, [orderId, code, message]);
+
   const reason =
     (code && FAIL_REASONS[code]) ||
+    (message && message.length < 120 ? message : null) ||
     "결제 진행 중 문제가 발생했습니다. 주문 정보를 다시 확인한 뒤 시도해 주세요.";
 
   return (

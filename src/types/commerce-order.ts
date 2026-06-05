@@ -24,7 +24,9 @@ export type CommercePaymentStatus =
   | "preparing"
   | "pending"
   | "completed"
-  | "failed";
+  | "failed"
+  | "canceled"
+  | "refunded";
 
 export type CommerceOrderPriceSnapshot = {
   internetPrice: number | null;
@@ -83,9 +85,11 @@ export const COMMERCE_LIFECYCLE_LABELS: Record<CommerceOrderLifecycleStatus, str
 };
 
 export const COMMERCE_PAYMENT_STATUS_LABELS: Record<CommercePaymentStatus, string> = {
-  not_started: "미시작",
+  not_started: "결제전",
   preparing: "결제 준비",
   pending: "결제대기",
   completed: "결제완료",
   failed: "결제실패",
+  canceled: "결제취소",
+  refunded: "환불완료",
 };

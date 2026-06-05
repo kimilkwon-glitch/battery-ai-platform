@@ -1,10 +1,17 @@
 import { randomBytes } from "node:crypto";
 import { computeServerOrderAmount } from "@/lib/payment/compute-order-amount";
-import { isCommerceOrderCreateEnabled } from "@/lib/payment/payment-config";
+import { isCommerceOrderCreateEnabled, isTossPaymentEnabled } from "@/lib/payment/payment-config";
 import {
   paymentFailUrl,
   paymentSuccessUrl,
 } from "@/lib/payment/payment-routes";
+import {
+  confirmTossPayment,
+  getTossClientKeyPublic,
+  isTossPaymentsConfigured,
+  isTossTestMode,
+} from "@/lib/payment/toss-payments.server";
+import { validateOrderForPayment } from "@/lib/payment/validate-order-for-payment";
 import {
   storeCommerceOrderCountByPrefix,
   storeCommerceOrderCreate,
@@ -14,10 +21,20 @@ import {
 import type {
   CommerceOrderRecord,
   CreateOrderRequestBody,
+  PaymentConfirmRequestBody,
+  PaymentConfirmResponse,
   PaymentFailRequestBody,
   PaymentPrepareRequestBody,
   PaymentPrepareResponse,
 } from "@/types/commerce-payment";
+
+function normalizeMobilePhone(phone: string): string {
+  let digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("82") && digits.length > 10) {
+    digits = `0${digits.slice(2)}`;
+  }
+  return digits;
+}
 
 const STORE_LABELS: Record<string, string> = {
   deokcheon: "덕천점",
@@ -145,19 +162,35 @@ export async function prepareCommercePayment(
   | { ok: true; data: PaymentPrepareResponse }
   | { ok: false; status: number; message: string }
 > {
+  if (!isTossPaymentEnabled() || !isTossPaymentsConfigured()) {
+    return {
+      ok: false,
+      status: 503,
+      message: "결제 서비스를 준비 중입니다. 잠시 후 다시 시도해 주세요.",
+    };
+  }
+
   const order = await storeCommerceOrderGet(body.orderId);
   if (!order) {
     return { ok: false, status: 404, message: "주문 정보를 찾을 수 없습니다." };
   }
 
-  if (order.finalAmount == null) {
-    return { ok: false, status: 400, message: "결제 금액을 확인할 수 없습니다." };
+  if (order.paymentStatus === "completed") {
+    return {
+      ok: false,
+      status: 400,
+      message: "이미 결제가 완료된 주문입니다.",
+    };
   }
 
-  if (
-    body.clientAmount != null &&
-    Math.abs(body.clientAmount - order.finalAmount) >= 1
-  ) {
+  const validation = validateOrderForPayment(order);
+  if (!validation.ok) {
+    return { ok: false, status: 400, message: validation.message };
+  }
+
+  const serverAmount = validation.finalAmount;
+
+  if (body.clientAmount != null && Math.abs(body.clientAmount - serverAmount) >= 1) {
     return {
       ok: false,
       status: 400,
@@ -165,43 +198,241 @@ export async function prepareCommercePayment(
     };
   }
 
-  const paymentRequestId = generatePaymentRequestId();
-  const updated = await storeCommerceOrderUpdate(order.orderId, {
+  const clientKey = getTossClientKeyPublic();
+  if (!clientKey) {
+    return {
+      ok: false,
+      status: 503,
+      message: "결제 서비스를 준비 중입니다. 잠시 후 다시 시도해 주세요.",
+    };
+  }
+
+  const paymentRequestId =
+    body.paymentRequestId?.trim() && order.paymentRequestId === body.paymentRequestId.trim()
+      ? order.paymentRequestId
+      : generatePaymentRequestId();
+
+  const now = new Date().toISOString();
+  const patch: Partial<CommerceOrderRecord> = {
     paymentRequestId,
-    paymentStatus: "preparing",
+    paymentProvider: "toss",
+    paymentStatus: "pending",
     orderStatus: "payment_pending",
+    finalAmount: serverAmount,
+    priceLines: validation.priceLines,
+    internetPrice: validation.internetPrice,
+    onsitePrice: validation.onsitePrice,
+    deliveryFee: validation.deliveryFee,
+    storeInstallDiscount: validation.storeInstallDiscount,
     statusHistory: [
       ...order.statusHistory,
       {
         status: "payment_pending",
-        paymentStatus: "preparing",
-        note: "결제 준비",
-        at: new Date().toISOString(),
+        paymentStatus: "pending",
+        note: "토스 결제 준비",
+        at: now,
       },
     ],
-  });
+  };
 
-  const o = updated ?? order;
-  const successUrl = `${origin}${paymentSuccessUrl(o.orderId, paymentRequestId)}`;
+  const updated = await storeCommerceOrderUpdate(order.orderId, patch);
+  const o = updated ?? { ...order, ...patch };
+
+  const successUrl = `${origin}${paymentSuccessUrl(paymentRequestId)}`;
   const failUrl = `${origin}${paymentFailUrl(o.orderId)}`;
   const returnUrl = `${origin}/payment/ready?orderId=${encodeURIComponent(o.orderId)}&paymentRequestId=${encodeURIComponent(paymentRequestId)}`;
+  const mobile = normalizeMobilePhone(o.customerPhone);
 
   return {
     ok: true,
     data: {
       ok: true,
+      provider: "toss",
       paymentRequestId,
       orderId: o.orderId,
       orderNumber: o.orderNumber,
-      amount: o.finalAmount!,
+      amount: serverAmount,
       orderName: `${o.productName} (${o.batteryCode})`,
       customerName: o.customerName,
       customerPhone: o.customerPhone,
+      customerEmail: o.customerEmail,
+      customerMobilePhone: mobile,
       fulfillmentType: o.fulfillmentType,
       successUrl,
       failUrl,
       returnUrl,
+      clientKey,
+      testMode: isTossTestMode(),
       message: "결제 준비가 완료되었습니다.",
+    },
+  };
+}
+
+export async function confirmCommercePayment(
+  body: PaymentConfirmRequestBody,
+): Promise<
+  | { ok: true; data: PaymentConfirmResponse }
+  | { ok: false; status: number; message: string; code?: string }
+> {
+  const paymentKey = body.paymentKey?.trim();
+  const orderId = body.orderId?.trim();
+  const amount = body.amount;
+
+  if (!paymentKey || !orderId || amount == null || Number.isNaN(Number(amount))) {
+    return {
+      ok: false,
+      status: 400,
+      message: "결제 확인에 필요한 정보가 없습니다.",
+    };
+  }
+
+  const order = await storeCommerceOrderGet(orderId);
+  if (!order) {
+    return { ok: false, status: 404, message: "주문 정보를 찾을 수 없습니다." };
+  }
+
+  if (
+    body.paymentRequestId?.trim() &&
+    order.paymentRequestId &&
+    order.paymentRequestId !== body.paymentRequestId.trim()
+  ) {
+    return {
+      ok: false,
+      status: 403,
+      message: "결제 요청 정보가 일치하지 않습니다.",
+    };
+  }
+
+  if (order.paymentStatus === "completed" && order.paymentKey === paymentKey) {
+    return {
+      ok: true,
+      data: {
+        ok: true,
+        orderId: order.orderId,
+        orderNumber: order.orderNumber,
+        amount: order.paidAmount ?? order.finalAmount ?? Number(amount),
+        paymentStatus: "completed",
+        orderStatus: order.orderStatus,
+        productName: order.productName,
+        brand: order.brand,
+        customerName: order.customerName,
+        vehicleName: order.vehicleName,
+        fulfillmentType: order.fulfillmentType,
+        alreadyConfirmed: true,
+      },
+    };
+  }
+
+  if (order.paymentStatus === "completed") {
+    return {
+      ok: false,
+      status: 409,
+      message: "이미 결제가 완료된 주문입니다.",
+      code: "ALREADY_PAID",
+    };
+  }
+
+  const validation = validateOrderForPayment(order);
+  if (!validation.ok) {
+    return { ok: false, status: 400, message: validation.message };
+  }
+
+  const serverAmount = validation.finalAmount;
+  if (Math.abs(serverAmount - Number(amount)) >= 1) {
+    await storeCommerceOrderUpdate(order.orderId, {
+      paymentStatus: "failed",
+      orderStatus: "payment_failed",
+      paymentFailCode: "AMOUNT_MISMATCH",
+      paymentFailReason: "결제 금액이 일치하지 않습니다.",
+      statusHistory: [
+        ...order.statusHistory,
+        {
+          status: "payment_failed",
+          paymentStatus: "failed",
+          note: "결제 금액 불일치",
+          at: new Date().toISOString(),
+        },
+      ],
+    });
+    return {
+      ok: false,
+      status: 400,
+      message: "결제 금액이 일치하지 않습니다.",
+      code: "AMOUNT_MISMATCH",
+    };
+  }
+
+  const tossResult = await confirmTossPayment({
+    paymentKey,
+    orderId,
+    amount: serverAmount,
+  });
+
+  if (!tossResult.ok) {
+    const failNote = tossResult.message;
+    await storeCommerceOrderUpdate(order.orderId, {
+      paymentStatus: "failed",
+      orderStatus: "payment_failed",
+      paymentFailCode: tossResult.code,
+      paymentFailReason: failNote,
+      statusHistory: [
+        ...order.statusHistory,
+        {
+          status: "payment_failed",
+          paymentStatus: "failed",
+          note: failNote,
+          at: new Date().toISOString(),
+        },
+      ],
+    });
+    return {
+      ok: false,
+      status: tossResult.httpStatus >= 400 ? tossResult.httpStatus : 402,
+      message: "결제 승인에 실패했습니다. 다시 시도해 주세요.",
+      code: tossResult.code,
+    };
+  }
+
+  const approvedAt = tossResult.approvedAt;
+  const now = new Date().toISOString();
+  await storeCommerceOrderUpdate(order.orderId, {
+    paymentStatus: "completed",
+    orderStatus: "payment_completed",
+    paymentProvider: "toss",
+    paymentKey: tossResult.paymentKey,
+    pgTransactionId: tossResult.paymentKey,
+    paidAmount: tossResult.totalAmount,
+    paymentMethod: tossResult.method,
+    approvedAt,
+    receiptUrl: tossResult.receiptUrl,
+    tossPaymentStatus: tossResult.status,
+    paymentFailReason: undefined,
+    paymentFailCode: undefined,
+    statusHistory: [
+      ...order.statusHistory,
+      {
+        status: "payment_completed",
+        paymentStatus: "completed",
+        note: `토스 결제 승인 (${tossResult.method})`,
+        at: now,
+      },
+    ],
+  });
+
+  return {
+    ok: true,
+    data: {
+      ok: true,
+      orderId: order.orderId,
+      orderNumber: order.orderNumber,
+      amount: tossResult.totalAmount,
+      paymentStatus: "completed",
+      orderStatus: "payment_completed",
+      productName: order.productName,
+      brand: order.brand,
+      customerName: order.customerName,
+      vehicleName: order.vehicleName,
+      fulfillmentType: order.fulfillmentType,
     },
   };
 }
@@ -216,6 +447,7 @@ export async function recordCommercePaymentFail(
   await storeCommerceOrderUpdate(order.orderId, {
     paymentStatus: "failed",
     orderStatus: "payment_failed",
+    paymentFailCode: body.errorCode?.trim(),
     paymentFailReason: reason,
     statusHistory: [
       ...order.statusHistory,

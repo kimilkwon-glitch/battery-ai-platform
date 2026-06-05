@@ -79,10 +79,16 @@ export type CommerceOrderRecord = {
   itemsJson: BatteryCartItem[];
   priceLines: CommerceOrderPriceSnapshot[];
   paymentRequestId?: string;
+  paymentProvider?: "toss";
+  paymentKey?: string;
   paidAmount?: number | null;
   paymentMethod?: string;
   pgTransactionId?: string;
   paymentFailReason?: string;
+  paymentFailCode?: string;
+  approvedAt?: string;
+  receiptUrl?: string;
+  tossPaymentStatus?: string;
   statusHistory: CommerceOrderStatusEvent[];
   createdAt: string;
   updatedAt: string;
@@ -98,10 +104,12 @@ export type CommerceOrderStatusEvent = {
 export type PaymentPrepareRequestBody = {
   orderId: string;
   clientAmount?: number | null;
+  paymentRequestId?: string;
 };
 
 export type PaymentPrepareResponse = {
   ok: true;
+  provider: "toss";
   paymentRequestId: string;
   orderId: string;
   orderNumber: string;
@@ -109,10 +117,14 @@ export type PaymentPrepareResponse = {
   orderName: string;
   customerName: string;
   customerPhone: string;
+  customerEmail?: string;
+  customerMobilePhone: string;
   fulfillmentType: FulfillmentMethod;
   successUrl: string;
   failUrl: string;
   returnUrl: string;
+  clientKey: string;
+  testMode: boolean;
   message: string;
 };
 
@@ -122,6 +134,21 @@ export type PaymentConfirmRequestBody = {
   paymentKey?: string;
   transactionId?: string;
   amount?: number;
+};
+
+export type PaymentConfirmResponse = {
+  ok: true;
+  orderId: string;
+  orderNumber: string;
+  amount: number;
+  paymentStatus: CommercePaymentRecordStatus;
+  orderStatus: CommerceOrderStatus;
+  productName?: string;
+  brand?: string;
+  customerName?: string;
+  vehicleName?: string;
+  fulfillmentType?: FulfillmentMethod;
+  alreadyConfirmed?: boolean;
 };
 
 export type PaymentFailRequestBody = {
@@ -153,13 +180,19 @@ export type CheckoutSessionPayload = {
 
 export type AdminCommercePaymentMeta = {
   orderNumber?: string;
+  paymentProvider?: "toss";
   paymentStatus: CommercePaymentRecordStatus;
   orderStatus: CommerceOrderStatus;
   estimatedAmount: number | null;
   paidAmount: number | null;
   paymentMethod?: string;
+  paymentKey?: string;
   pgTransactionId?: string;
   paymentRequestId?: string;
   paymentFailReason?: string;
+  paymentFailCode?: string;
+  approvedAt?: string;
+  receiptUrl?: string;
+  testMode?: boolean;
   statusHistory: CommerceOrderStatusEvent[];
 };

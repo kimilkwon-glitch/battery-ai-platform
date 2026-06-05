@@ -16,12 +16,11 @@ export function paymentReadyUrl(orderId: string, paymentRequestId: string): stri
   return `${PAYMENT_READY_PAGE}?${sp.toString()}`;
 }
 
-export function paymentSuccessUrl(orderId?: string, paymentRequestId?: string): string {
-  const sp = new URLSearchParams();
-  if (orderId) sp.set("orderId", orderId);
-  if (paymentRequestId) sp.set("paymentRequestId", paymentRequestId);
-  const q = sp.toString();
-  return q ? `${PAYMENT_SUCCESS_PAGE}?${q}` : PAYMENT_SUCCESS_PAGE;
+/** 토스 successUrl — paymentKey/orderId/amount는 토스가 추가함 */
+export function paymentSuccessUrl(paymentRequestId?: string): string {
+  if (!paymentRequestId) return PAYMENT_SUCCESS_PAGE;
+  const sp = new URLSearchParams({ paymentRequestId });
+  return `${PAYMENT_SUCCESS_PAGE}?${sp.toString()}`;
 }
 
 export function paymentFailUrl(orderId?: string, code?: string): string {

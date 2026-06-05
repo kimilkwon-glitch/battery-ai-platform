@@ -32,10 +32,12 @@
     "report:unmatched-assets": "npx tsx tools/generate-unmatched-assets-review.ts",
     "audit:operational": "node tools/generate-operational-audit.mjs",
     "e2e:customer-flow": "node tools/e2e-customer-flow-check.mjs",
-    "audit:button-actions": "node tools/audit-button-actions.mjs"
+    "audit:button-actions": "node tools/audit-button-actions.mjs",
+    "audit:full-ux": "node tools/full-customer-ux-audit.mjs"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.44.0",
+    "@tosspayments/tosspayments-sdk": "^2.7.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "d3-geo": "^3.1.1",

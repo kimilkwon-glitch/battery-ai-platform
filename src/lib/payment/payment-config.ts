@@ -1,13 +1,26 @@
 /**
- * 결제·PG 환경변수 후보 (이번 작업에서는 값 불필요)
- * 추후 PG 확정 시 Vercel / .env.local 에만 설정
+ * 결제·PG 환경변수 — 토스페이먼츠 확정 (Vercel / .env.local 에만 설정)
  */
 export type PaymentProviderId = "toss" | "kcp" | "inicis" | "none";
 
 export function getPaymentProvider(): PaymentProviderId {
   const raw = process.env.PAYMENT_PROVIDER?.trim().toLowerCase();
-  if (raw === "toss" || raw === "kcp" || raw === "inicis") return raw;
+  if (raw === "toss") return "toss";
+  if (raw === "kcp" || raw === "inicis") return raw;
+  if (process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY?.trim() && process.env.TOSS_SECRET_KEY?.trim()) {
+    return "toss";
+  }
   return "none";
+}
+
+export function isTossPaymentEnabled(): boolean {
+  return getPaymentProvider() === "toss";
+}
+
+export function isTossTestModeFlag(): boolean {
+  const secret = process.env.TOSS_SECRET_KEY?.trim();
+  const client = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY?.trim();
+  return Boolean(secret?.startsWith("test_") || client?.startsWith("test_"));
 }
 
 export function isCommerceOrderCreateEnabled(): boolean {
@@ -27,8 +40,9 @@ export function getSiteOrigin(): string {
 
 export const PAYMENT_ENV_KEYS = [
   "PAYMENT_PROVIDER",
-  "TOSS_CLIENT_KEY",
+  "NEXT_PUBLIC_TOSS_CLIENT_KEY",
   "TOSS_SECRET_KEY",
+  "TOSS_API_BASE_URL",
   "KCP_SITE_CODE",
   "KCP_SITE_KEY",
   "INICIS_MID",
