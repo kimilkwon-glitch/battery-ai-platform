@@ -5475,18 +5475,10 @@
 }
 
 @media (max-width: 639px) {
-  .home-benefits-carousel--promo .home-benefits-carousel-shell {
-    padding-inline: 2.5rem;
-  }
-
   .home-benefits-nav {
     width: 2.25rem;
     height: 2.25rem;
     margin-top: -1.125rem;
-  }
-
-  .home-hero-carousel__shell {
-    padding-inline: 2.5rem;
   }
 
   .home-hero-carousel__nav {
