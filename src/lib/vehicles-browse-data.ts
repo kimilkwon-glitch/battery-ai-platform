@@ -1,5 +1,5 @@
 import type { Vehicle } from "@/lib/platform-types";
-import { vehicleAssets, type VehicleAsset } from "@/lib/car-assets";
+import { vehicleAssets, type CarBrandKey, type VehicleAsset } from "@/lib/car-assets";
 import { vehicles } from "@/lib/platform-data";
 import { vehicleLinkForId } from "@/lib/home-page-data";
 import { getSearchHref } from "@/lib/battery-search";
@@ -191,4 +191,58 @@ export function getAllBrowseItems(): VehiclesBrowseItem[] {
 
 export function filterBrowseItems(items: VehiclesBrowseItem[], filter: VehiclesBrandFilter): VehiclesBrowseItem[] {
   return items.filter((item) => matchesBrandFilter(item, filter));
+}
+
+/** 차종검색 허브 — 제조사별 1행 섹션 (DB·에셋 기준) */
+export type VehicleManufacturerSection = {
+  id: string;
+  label: string;
+  items: VehiclesBrowseItem[];
+};
+
+const MANUFACTURER_SECTION_DEFS: { id: string; label: string; brands: CarBrandKey[] }[] = [
+  { id: "hyundai", label: "현대", brands: ["hyundai"] },
+  { id: "kia", label: "기아", brands: ["kia"] },
+  { id: "genesis", label: "제네시스", brands: ["genesis"] },
+  { id: "chevrolet", label: "쉐보레/GM대우", brands: ["chevrolet-gmdaewoo"] },
+  { id: "renault", label: "르노/르노삼성", brands: ["renault"] },
+  { id: "kg", label: "쌍용/KGM", brands: ["ssangyong", "kg"] },
+];
+
+function sortByDisplayName(a: VehiclesBrowseItem, b: VehiclesBrowseItem): number {
+  return a.title.localeCompare(b.title, "ko");
+}
+
+function dedupeBrowseItems(items: VehiclesBrowseItem[]): VehiclesBrowseItem[] {
+  const seen = new Set<string>();
+  const out: VehiclesBrowseItem[] = [];
+  for (const item of items) {
+    const dedupeKey = item.vehicleId || item.key;
+    if (seen.has(dedupeKey)) continue;
+    seen.add(dedupeKey);
+    out.push(item);
+  }
+  return out;
+}
+
+export function getVehiclesByManufacturerSections(): VehicleManufacturerSection[] {
+  const byBrand = new Map<CarBrandKey, VehiclesBrowseItem[]>();
+
+  for (const asset of vehicleAssets) {
+    if (asset.recommendExcluded) continue;
+    const item = assetToItem(asset);
+    const list = byBrand.get(asset.brand) ?? [];
+    if (!list.some((x) => x.vehicleId === item.vehicleId)) {
+      list.push(item);
+      byBrand.set(asset.brand, list);
+    }
+  }
+
+  return MANUFACTURER_SECTION_DEFS.map((section) => ({
+    id: section.id,
+    label: section.label,
+    items: dedupeBrowseItems(section.brands.flatMap((brand) => byBrand.get(brand) ?? [])).sort(
+      sortByDisplayName,
+    ),
+  })).filter((section) => section.items.length > 0);
 }

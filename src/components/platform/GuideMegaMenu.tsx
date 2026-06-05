@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
-import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
 import { GUIDE_HUB_ITEMS, isGuideHubPath } from "@/lib/guide-hub-routes";
 import { HUB_GUIDE } from "@/lib/customer-hub-routes";
@@ -77,36 +76,17 @@ export function GuideDesktopMegaMenu() {
       onMouseEnter={openMenu}
       onMouseLeave={() => scheduleClose(close)}
     >
-      <div className="inline-flex items-center gap-0">
-        <Link
-          href={HUB_GUIDE}
-          className={clsx(
-            "portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full rounded-r-none pr-1",
-            active && "portal-nav-link--active portal-nav-link--guide-active",
-          )}
-          onClick={close}
-        >
-          <span className="portal-nav-link__text">배터리 가이드</span>
-        </Link>
-        <button
-          type="button"
-          className={clsx(
-            "portal-nav-link inline-flex shrink-0 items-center rounded-full rounded-l-none pl-0.5 pr-2",
-            active && "portal-nav-link--active portal-nav-link--guide-active",
-          )}
-          aria-expanded={open}
-          aria-haspopup="true"
-          aria-label="배터리 가이드 하위 메뉴"
-          onClick={() => (open ? close() : openMenu())}
-        >
-          <ChevronDown
-            className={clsx("size-3 opacity-60 transition", open && "rotate-180")}
-            aria-hidden
-          />
-        </button>
-      </div>
+      <Link
+        href={HUB_GUIDE}
+        className={clsx(
+          "portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full",
+          active && "portal-nav-link--active portal-nav-link--guide-active",
+        )}
+        onClick={close}
+      >
+        <span className="portal-nav-link__text">배터리 가이드</span>
+      </Link>
 
-      {/* trigger↔panel 사이 hover 브리지(pt-2) + 패널을 wrapper 안에 유지 */}
       <div
         className={clsx(
           "guide-mega-dropdown absolute left-1/2 top-full z-[70] w-[min(520px,calc(100vw-2rem))] -translate-x-1/2",
@@ -168,73 +148,20 @@ export function GuideDesktopMegaMenu() {
   );
 }
 
+/** 모바일 — 화살표 없이 가이드 허브로 이동 (하위 메뉴는 /guides에서 확인) */
 export function GuideMobileAccordion() {
   const pathname = usePathname();
-  const [expanded, setExpanded] = useState(isGuideHubPath(pathname));
   const active = isGuideHubPath(pathname);
-  const wrapRef = useRef<HTMLDivElement>(null);
-
-  const close = useCallback(() => setExpanded(false), []);
-
-  useCloseOnOutsideAndEscape(expanded, close, wrapRef);
 
   return (
-    <div ref={wrapRef} className="guide-mobile-accordion relative shrink-0">
-      <div className="inline-flex items-center gap-0.5">
-        <Link
-          href={HUB_GUIDE}
-          className={clsx(
-            "portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full",
-            active && "portal-nav-link--active portal-nav-link--guide-active",
-          )}
-        >
-          <span className="portal-nav-link__text">배터리 가이드</span>
-        </Link>
-        <button
-          type="button"
-          onClick={() => setExpanded((v) => !v)}
-          className={clsx(
-            "portal-nav-link inline-flex shrink-0 items-center rounded-full px-1.5",
-            active && "portal-nav-link--active portal-nav-link--guide-active",
-          )}
-          aria-expanded={expanded}
-          aria-haspopup="true"
-          aria-label="배터리 가이드 하위 메뉴"
-        >
-          <ChevronDown
-            className={clsx("size-3 opacity-60 transition", expanded && "rotate-180")}
-            aria-hidden
-          />
-        </button>
-      </div>
-      <div
-        className={clsx(
-          "absolute left-0 right-0 top-full z-[70] border-t border-slate-100 bg-white px-3 py-3 shadow-md transition duration-[var(--motion-fast)] ease-out",
-          expanded ? "pointer-events-auto visible opacity-100" : "pointer-events-none invisible opacity-0",
-        )}
-        aria-hidden={!expanded}
-      >
-        <Link
-          href={HUB_GUIDE}
-          className="mb-2 block rounded-lg bg-indigo-50 px-3 py-2.5 text-center text-xs font-black text-indigo-900"
-          onClick={close}
-        >
-          배터리 가이드 전체 보기
-        </Link>
-        <ul className="space-y-1">
-          {GUIDE_HUB_ITEMS.map((item) => (
-            <li key={item.id}>
-              <Link
-                href={item.href}
-                className="block rounded-lg px-3 py-2.5 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900"
-                onClick={close}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    <Link
+      href={HUB_GUIDE}
+      className={clsx(
+        "portal-nav-link inline-flex shrink-0 items-center whitespace-nowrap rounded-full",
+        active && "portal-nav-link--active portal-nav-link--guide-active",
+      )}
+    >
+      <span className="portal-nav-link__text">배터리 가이드</span>
+    </Link>
   );
 }

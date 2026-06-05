@@ -19,7 +19,7 @@ const links = [
   ["매장·출장 안내", HUB_STORE_DETAIL],
   ["배터리 가이드", HUB_GUIDE],
   ["리뷰", HUB_REVIEWS],
-  ["배터리 업그레이드", "/compare"],
+  ["차종검색", "/vehicles"],
   ["사진확인", HUB_PHOTO],
 ] as const;
 

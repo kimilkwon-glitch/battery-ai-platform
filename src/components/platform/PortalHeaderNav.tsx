@@ -9,12 +9,13 @@ import {
   HUB_REVIEWS,
   HUB_STORE_DETAIL,
   HUB_SUPPORT,
+  HUB_VEHICLES,
 } from "@/lib/customer-hub-routes";
 import { GuideDesktopMegaMenu, GuideMobileAccordion } from "@/components/platform/GuideMegaMenu";
 
 /** 상단 카테고리 — 홈은 좌측 로고, 텍스트 홈 메뉴 없음 */
 export const portalNavPrimary = [
-  ["배터리 업그레이드", "/compare"],
+  ["차종검색", HUB_VEHICLES],
   ["브랜드 안내", HUB_BRANDS],
   ["매장·출장 안내", HUB_STORE_DETAIL],
   ["혜택", HUB_BENEFITS],
@@ -25,6 +26,9 @@ export const portalNavPrimary = [
 export const portalNav = portalNavPrimary as unknown as [string, string][];
 
 function isNavActive(pathname: string, label: string, href: string): boolean {
+  if (label === "차종검색") {
+    return pathname === HUB_VEHICLES || pathname.startsWith(`${HUB_VEHICLES}/`);
+  }
   if (label === "브랜드 안내") return pathname === "/brands" || pathname.startsWith("/brands/");
   if (label === "매장·출장 안내") {
     return pathname === "/service-center" || pathname.startsWith("/service-center/");
