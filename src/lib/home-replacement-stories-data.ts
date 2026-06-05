@@ -22,12 +22,12 @@ export const HOME_REPLACEMENT_STORIES_VISIBLE_COUNT = 4;
 
 export const HOME_REPLACEMENT_STORIES_EYEBROW = "REAL REVIEW";
 
-export const HOME_REPLACEMENT_STORIES_LABEL = "배터리매니저 고객 후기";
+export const HOME_REPLACEMENT_STORIES_LABEL = "실제 고객 후기";
 
-export const HOME_REPLACEMENT_STORIES_TITLE = "배터리매니저에서 교체한 고객 이야기";
+export const HOME_REPLACEMENT_STORIES_TITLE = "고객님들이 남겨주신 교체 후기";
 
 export const HOME_REPLACEMENT_STORIES_DESC =
-  "방전, 시동 지연, 택배 주문, 야간 무인 픽업까지 실제 이용 후기를 확인해보세요.";
+  "방문 교체부터 출장·택배·야간 무인까지 실제 이용 후기를 확인해보세요.";
 
 /** 소개 카드 — 후기 유형 키워드 pill */
 export const HOME_REPLACEMENT_STORIES_PILLS = [
