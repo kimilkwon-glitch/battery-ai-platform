@@ -10,7 +10,7 @@ export default async function AdminOrdersPage() {
   return (
     <AdminShellLayout
       title="주문 관리"
-      description="상담 주문 요청 접수 목록 — 결제 완료가 아닌 주문 요청/상담 접수 기준입니다."
+      description="주문·결제 예정금액·수령 방식 통합 목록 — PG 연동 후 결제 상태가 함께 표시됩니다."
     >
       <AdminOrdersTable orders={orders} />
     </AdminShellLayout>

@@ -1,5 +1,10 @@
 import { vehicleAliasDbV01 } from "@/data/vehicle-alias-db";
 import { vehicleAssets } from "@/lib/car-assets";
+import {
+  hasBatteryMatch,
+  resolveCatalogBatteryCandidates,
+  resolveCatalogPrimaryBattery,
+} from "@/lib/vehicle-battery-match";
 import type { AdminAliasRow } from "@/types/admin";
 
 export function buildAdminAliasRows(): AdminAliasRow[] {
@@ -17,9 +22,9 @@ export function buildAdminAliasRows(): AdminAliasRow[] {
   for (const entry of vehicleAliasDbV01) {
     const slug = entry.slugHint;
     const asset = assetBySlug.get(slug);
-    const hasBattery = Boolean(
-      asset?.defaultBatteryCode || asset?.batteryMatchStatus === "linked",
-    );
+    const primary = resolveCatalogPrimaryBattery(slug, asset);
+    const candidates = resolveCatalogBatteryCandidates(slug, asset);
+    const hasBattery = hasBatteryMatch(primary, candidates);
 
     for (const alias of entry.aliases) {
       rows.push({

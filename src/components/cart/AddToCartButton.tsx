@@ -13,7 +13,7 @@ import type { BatteryReturnOption } from "@/lib/shop-order-types";
 import { bm } from "@/lib/design-tokens";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
 import { CartAddedModal } from "@/components/cart/CartAddedModal";
-import type { BatteryCartItem } from "@/types/cart";
+import type { BatteryCartItem, FulfillmentMethod } from "@/types/cart";
 
 type Props = {
   className?: string;
@@ -21,6 +21,7 @@ type Props = {
   variant?: "primary" | "secondary" | "tertiary" | "navy";
   showViewCartLink?: boolean;
   returnOption?: BatteryReturnOption;
+  fulfillmentMethod?: FulfillmentMethod;
 } & (
   | {
       mode: "battery";
@@ -48,6 +49,7 @@ export function AddToCartButton({
   variant = "secondary",
   showViewCartLink = false,
   returnOption,
+  fulfillmentMethod,
   ...props
 }: Props) {
   const { addItem } = useBatteryCart();
@@ -63,7 +65,10 @@ export function AddToCartButton({
             fuelLabel: props.fuelLabel,
             usedBatteryReturnOption: props.usedBatteryReturnOption,
           })
-        : createCartItemFromBattery(props.input);
+        : createCartItemFromBattery({
+            ...props.input,
+            fulfillmentMethod: props.input.fulfillmentMethod ?? fulfillmentMethod,
+          });
     addItem(item);
     setModalItem(resolveAddedLine(item));
   }, [addItem, props]);

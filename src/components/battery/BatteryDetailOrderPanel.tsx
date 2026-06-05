@@ -6,6 +6,7 @@ import { BatteryGallery } from "@/components/BatteryGallery";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { BuyNowButton } from "@/components/cart/BuyNowButton";
+import { ProductFulfillmentPricePanel } from "@/components/pricing/ProductFulfillmentPricePanel";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
@@ -17,15 +18,18 @@ import {
   type BatteryReturnOption,
 } from "@/lib/shop-order-types";
 import { BatteryDetailPriceBlock } from "@/components/battery/BatteryDetailPriceBlock";
+import type { FulfillmentMethod } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
 
 export function BatteryDetailOrderPanel({ code }: { code: string }) {
   const [returnOption, setReturnOption] = useState<BatteryReturnOption>("return");
+  const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("delivery");
   const spec = parseBatterySpecDisplay(code);
   const summary = getNormalizedBatterySummary(code);
   const imageSet = batteryImageSetForCode(code);
   const bat = getBattery(code);
   const brand = getBrand(bat.brandId);
+  const brandName = bat.brandId === "rocket" ? "로케트" : bat.brandId === "solite" ? "쏠라이트" : brand.displayName;
   const specLine = [
     brand.displayName,
     spec.typeLabel,
@@ -90,20 +94,32 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
             </div>
           </div>
 
+          <ProductFulfillmentPricePanel
+            batteryCode={code}
+            brandName={brandName}
+            returnOption={returnOption}
+            onFulfillmentChange={setFulfillmentMethod}
+          />
+
           <div className="battery-order-panel__cta-row mt-5">
             <BuyNowButton
               batteryCode={code}
+              brandName={brandName}
               returnOption={returnOption}
+              fulfillmentMethod={fulfillmentMethod}
               className="min-h-[3.25rem] w-full py-4 text-base sm:text-lg"
             />
             <AddToCartButton
               mode="battery"
               variant="navy"
               returnOption={returnOption}
+              fulfillmentMethod={fulfillmentMethod}
               className="w-full min-h-[3.25rem]"
               input={{
                 batteryCode: code,
+                brandName,
                 usedBatteryReturnOption: returnOption,
+                fulfillmentMethod,
                 fitmentStatus: "needs_customer_confirm",
                 source: "battery_detail",
               }}

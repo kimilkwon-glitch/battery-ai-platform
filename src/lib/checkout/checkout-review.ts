@@ -1,4 +1,5 @@
 import { itemNeedsReview } from "@/lib/cart/cart-storage";
+import { calculateCartItemPrice } from "@/lib/pricing/order-price";
 import type { BatteryCartItem } from "@/types/cart";
 
 export function checkoutItemNeedsReview(item: BatteryCartItem): boolean {
@@ -20,9 +21,16 @@ export function formatCheckoutTerminal(
   return "단자 방향 확인 필요";
 }
 
-export function formatCheckoutPrice(item: BatteryCartItem): string {
+export function formatCheckoutPrice(
+  item: BatteryCartItem,
+  fulfillmentOverride?: BatteryCartItem["fulfillment"]["method"],
+): string {
+  const result = calculateCartItemPrice(item, fulfillmentOverride ?? item.fulfillment.method);
+  if (result.lineTotal != null) {
+    return `${result.lineTotal.toLocaleString()}원`;
+  }
   const unit = item.finalPrice ?? item.basePrice;
-  if (unit == null || Number.isNaN(unit)) return "상담 후 안내";
+  if (unit == null || Number.isNaN(unit)) return "수령 방식 선택 후 표시";
   return `${(unit * item.quantity).toLocaleString()}원`;
 }
 

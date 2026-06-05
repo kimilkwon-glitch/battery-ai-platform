@@ -19,7 +19,12 @@ import { resolveVehicleBatterySpecForSearch } from "@/lib/search/resolve-vehicle
 import { buildSearchUxPresentation } from "@/lib/search/search-ux-presentation";
 import { resolveSearchIntentLabel } from "@/lib/search/search-intent";
 import { VEHICLE_CANONICAL_REGISTRY } from "@/lib/search/vehicle-canonical-registry";
-import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
+import {
+  BATTERY_MATCH_PENDING_MESSAGE,
+  hasCatalogBatteryMatch,
+  isValidBatterySpecCode,
+  resolveCustomerCatalogPrimaryBattery,
+} from "@/lib/vehicle-battery-match";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
 import {
   getVehicleFixedBatteryNotice,
@@ -82,15 +87,15 @@ function distinctFuelCodes(slug: string, fuel: string | null): string[] {
     shouldRenderFuelGroupInShop(slug, g.fuelLabel),
   );
   if (fuel?.trim()) {
-    const code = resolveVehicleFuelPrimaryBattery(slug, fuel.trim());
-    return code ? [canonicalBatteryCode(code)].filter(Boolean) : [];
+    const code = resolveCustomerCatalogPrimaryBattery(slug, fuel.trim());
+    return isValidBatterySpecCode(code) ? [canonicalBatteryCode(code)] : [];
   }
   const codes = [
     ...new Set(
       groups
-        .map((g) => resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel))
+        .map((g) => resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel))
         .map((c) => canonicalBatteryCode(c))
-        .filter(Boolean),
+        .filter(isValidBatterySpecCode),
     ),
   ];
   return codes;
@@ -105,6 +110,32 @@ function synthesizeRecognizedVehicleFromSlug(
   const vehicleLabel = vehicleLabelForSlug(slug, fuel);
   const href = buildVehicleDetailHref(slug, fuel, yearChipId ?? null);
   const entry = canonicalEntryForSlug(slug);
+
+  if (!hasCatalogBatteryMatch(slug)) {
+    return {
+      title: `${vehicleLabel} 배터리 확인`,
+      vehicleLabel,
+      fuelLabel: fuel ?? entry?.fuel ?? "확인 필요",
+      specTier: "none",
+      specFieldLabel: null,
+      specDisplay: null,
+      specLabel: null,
+      specCheckNote: null,
+      candidateLabel: null,
+      candidateDisplay: null,
+      confirmNote: null,
+      bodyMessage: BATTERY_MATCH_PENDING_MESSAGE,
+      confidenceLabel: null,
+      primaryBatteryCode: null,
+      secondaryNote: "사진 확인/문의 필요",
+      basisLabel: null,
+      fallbackMessage: BATTERY_MATCH_PENDING_MESSAGE,
+      guidance: BATTERY_MATCH_PENDING_MESSAGE,
+      href,
+      ctas: buildNoSpecPrimaryCtas(vehicleLabel, vehicleLabel),
+      secondaryLinks: buildNoSpecSecondaryLinks(),
+    };
+  }
 
   if (salesExcluded) {
     return {
@@ -148,15 +179,16 @@ function synthesizeRecognizedVehicleFromSlug(
   const isMulti = !fuel && fuelCodes.length > 1;
   const unifiedPrimary =
     fuel && fuel !== "확인 필요"
-      ? resolveVehicleFuelPrimaryBattery(slug, fuel, { yearChipId: yearChipId ?? null })
+      ? resolveCustomerCatalogPrimaryBattery(slug, fuel)
       : fuelCodes.length === 1
         ? fuelCodes[0]!
         : "";
 
-  const primaryBatteryCode = isMulti
+  const rawPrimary = isMulti
     ? null
     : unifiedPrimary ||
       (batterySpec.primaryCodes[0] ? canonicalBatteryCode(batterySpec.primaryCodes[0]) : null);
+  const primaryBatteryCode = isValidBatterySpecCode(rawPrimary) ? rawPrimary : null;
 
   const specDisplay = isMulti
     ? fuelCodes.map((c) => customerFacingBatteryCode(c)).join(" / ")

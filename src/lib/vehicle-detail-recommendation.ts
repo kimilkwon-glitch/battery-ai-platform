@@ -2,6 +2,11 @@
  * 차량 상세 — 고객-facing 배터리 추천 노출 우선순위
  * (구조화 추천 > 단일 추천 > fallback, 중복·경고 억제)
  */
+import {
+  hasCatalogBatteryMatch,
+  isValidBatterySpecCode,
+  resolveCustomerCatalogPrimaryBattery,
+} from "@/lib/vehicle-battery-match";
 import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import {
   CUSTOMER_FUEL_DISPLAY_ORDER,
@@ -28,11 +33,12 @@ export function isStructuredFuelLabel(fuelLabel: string): boolean {
 }
 
 function groupHasRenderableBattery(slug: string, group: FuelBatteryGroup): boolean {
+  if (!hasCatalogBatteryMatch(slug)) return false;
   const code =
-    resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel) ||
-    group.primaryBattery?.trim() ||
+    resolveCustomerCatalogPrimaryBattery(slug, group.fuelLabel) ||
+    [group.primaryBattery, ...group.batteryOptions].find(isValidBatterySpecCode) ||
     "";
-  return Boolean(code);
+  return isValidBatterySpecCode(code);
 }
 
 /** 연료·조건별 구조화 추천(확인 필요/공통 제외) */
@@ -55,11 +61,11 @@ export function hasSingleFuelRecommendation(
     fuelGroups
       .map(
         (g) =>
-          resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel) ||
+          resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel) ||
           g.primaryBattery?.trim() ||
           "",
       )
-      .filter(Boolean),
+      .filter(isValidBatterySpecCode),
   );
   return codes.size === 1 && groupHasRenderableBattery(slug, fuelGroups[0]!);
 }
@@ -155,19 +161,22 @@ export function shouldRenderFallbackRecommendation(
 export function customerFacingRepresentativeBattery(
   slug: string,
   fuelGroups: FuelBatteryGroup[],
-  summaryRep?: string | null,
+  _summaryRep?: string | null,
 ): string {
+  if (!hasCatalogBatteryMatch(slug)) return "";
   const facing = prepareCustomerFacingFuelGroups(slug, fuelGroups);
-  const gas = resolveVehicleFuelPrimaryBattery(slug, "가솔린");
-  const diesel = resolveVehicleFuelPrimaryBattery(slug, "디젤");
+  const gas = resolveCustomerCatalogPrimaryBattery(slug, "가솔린");
+  const diesel = resolveCustomerCatalogPrimaryBattery(slug, "디젤");
   if (gas && diesel && gas === diesel) return gas;
   if (gas) return gas;
   if (diesel) return diesel;
   for (const g of facing) {
-    const code = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel) || g.primaryBattery;
-    if (code) return code;
+    const code =
+      resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel) ||
+      [g.primaryBattery, ...g.batteryOptions].find(isValidBatterySpecCode);
+    if (isValidBatterySpecCode(code)) return code!;
   }
-  return summaryRep?.trim() || "";
+  return resolveCustomerCatalogPrimaryBattery(slug) || "";
 }
 
 /**
@@ -199,9 +208,9 @@ export function isVehicleReviewOnlyState(
   if (hasStructuredFuelRecommendations(slug, facing)) return false;
   if (hasSingleFuelRecommendation(slug, facing)) return false;
   if (countCustomerProductCards(slug, facing) > 0) return false;
-  if (options?.primaryBattery?.trim()) return false;
-  if (options?.batteryOptions?.some((c) => c.trim())) return false;
-  if (options?.usableDbCandidate) return false;
-  if (options?.defaultBatteryCode?.trim() && !facing.length) return false;
+  if (isValidBatterySpecCode(options?.primaryBattery)) return false;
+  if (options?.batteryOptions?.some(isValidBatterySpecCode)) return false;
+  if (hasCatalogBatteryMatch(slug)) return false;
+  if (isValidBatterySpecCode(options?.defaultBatteryCode) && !facing.length) return false;
   return true;
 }

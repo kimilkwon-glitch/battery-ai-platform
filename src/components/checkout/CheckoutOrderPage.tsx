@@ -1,10 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BatteryAutoDiscountHint } from "@/components/benefits/BatteryAutoDiscountHint";
+import { CheckoutPriceSummaryPanel } from "@/components/checkout/CheckoutPriceSummaryPanel";
 import { CheckoutSafetyChecklist } from "@/components/checkout/CheckoutSafetyChecklist";
+import {
+  PaymentPreparingButton,
+  PaymentPreparingNotice,
+} from "@/components/checkout/PaymentPreparingNotice";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
 import {
   clearBuyNowCheckoutItems,
@@ -30,28 +35,23 @@ import { OrderRequestVehicleFields } from "@/components/order-request/OrderReque
 import { OrderRequestVehicleGuidance } from "@/components/order-request/OrderRequestVehicleGuidance";
 import { CHECKOUT_PAGE_COPY } from "@/data/checkout-checklist";
 import { ORDER_REQUEST_MEMO_PLACEHOLDER } from "@/data/order-request-copy";
-import {
-  buildOrderRequestId,
-  buildStaffSummary,
-} from "@/lib/order-request/order-request-summary";
-import { submitOrderRequest } from "@/lib/order-request/order-request-client-api";
-import { saveLastApiOrderRequest } from "@/lib/order-request/order-request-last-api";
-import { saveLastOrderRequest } from "@/lib/order-request/order-request-storage";
+import { saveCheckoutDraft } from "@/lib/pricing/checkout-draft-storage";
+import { buildPriceSnapshots, sumPriceSnapshots } from "@/lib/pricing/commerce-order-snapshot";
+import { applyPricingToCartItem } from "@/lib/pricing/order-price";
 import {
   CART_PAGE,
-  ORDER_REQUEST_COMPLETE_PAGE,
 } from "@/lib/customer-center-routes";
 import { GUEST_ORDER_PAGE } from "@/lib/guest-order/guest-order-routes";
 import { HUB_SHOP } from "@/lib/customer-hub-routes";
 import { getSearchHref } from "@/lib/battery-search";
-import type { OrderRequestConfirmations } from "@/types/order-request";
 import {
   initialUsedBatteryFromCart,
   isUsedBatterySelected,
   type UsedBatteryFormSelection,
 } from "@/lib/order-request/order-request-form-helpers";
 import type { OrderRequestFulfillment, OrderRequestVehicle } from "@/types/order-request";
-import type { BatteryCartItem } from "@/types/cart";
+import type { BatteryCartItem, FulfillmentMethod } from "@/types/cart";
+import type { CommerceOrderDraft } from "@/types/commerce-order";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 
@@ -69,27 +69,63 @@ function initialVehicleFromCart(items: BatteryCartItem[]): OrderRequestVehicle {
   return {
     name,
     year: v?.year,
-    fuelType: v?.fuelType,
+    fuelType: v?.fuelType ?? v?.generationName,
     currentBatterySpec: line.batterySpec ?? items[0]?.batterySpec,
   };
 }
 
-function confirmationsFromChecklist(): OrderRequestConfirmations {
-  return {
-    fitmentNeedsFinalCheck: true,
-    usedBatteryPriceMayDiffer: true,
-    bankTransferDeadlineAware: true,
-    orderWillBeGuidedSeparately: true,
-  };
+function initialFulfillmentFromCart(items: BatteryCartItem[]): OrderRequestFulfillment {
+  const first = items.find((i) => i.fulfillment.method !== "undecided");
+  if (first?.fulfillment.method && first.fulfillment.method !== "undecided") {
+    return {
+      method: first.fulfillment.method,
+      storeId: first.fulfillment.storeId ?? "undecided",
+      region: first.fulfillment.requestedRegion,
+    };
+  }
+  return { method: "delivery", storeId: "undecided" };
+}
+
+function fulfillmentAddressValid(fulfillment: OrderRequestFulfillment): boolean {
+  if (fulfillment.method === "undecided") return false;
+  if (fulfillment.method === "delivery" || fulfillment.method === "visit_install") {
+    return Boolean(fulfillment.region?.trim());
+  }
+  if (fulfillment.method === "store_install" || fulfillment.method === "store_pickup_self") {
+    return fulfillment.storeId === "deokcheon" || fulfillment.storeId === "hakjang";
+  }
+  return true;
+}
+
+function syncItemsWithFulfillment(
+  items: BatteryCartItem[],
+  fulfillment: OrderRequestFulfillment,
+): BatteryCartItem[] {
+  if (fulfillment.method === "undecided") return items;
+  const method = fulfillment.method as FulfillmentMethod;
+  return items.map((item) => {
+    const priced = applyPricingToCartItem(item, method);
+    return {
+      ...priced,
+      fulfillment: {
+        method,
+        storeId:
+          fulfillment.storeId && fulfillment.storeId !== "undecided"
+            ? fulfillment.storeId
+            : item.fulfillment.storeId,
+        requestedRegion: fulfillment.region ?? item.fulfillment.requestedRegion,
+      },
+    };
+  });
 }
 
 export function CheckoutOrderPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const flow = resolveCheckoutFlowMode(searchParams);
   const isBuyNow = flow === "buy_now";
-  const { items: cartItems, hydrated } = useBatteryCart();
+  const { items: cartItems, hydrated, updateItem } = useBatteryCart();
   const [buyNowItems, setBuyNowItems] = useState<BatteryCartItem[] | null>(null);
+  const [checkoutItems, setCheckoutItems] = useState<BatteryCartItem[]>([]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -97,6 +133,7 @@ export function CheckoutOrderPage() {
       const fromSession = getBuyNowCheckoutItems();
       if (fromSession?.length) {
         setBuyNowItems(fromSession);
+        setCheckoutItems(fromSession);
         return;
       }
       const batteryRaw = searchParams.get("battery")?.trim();
@@ -117,23 +154,28 @@ export function CheckoutOrderPage() {
             : createCartItemFromBattery({
                 batteryCode,
                 brandName,
+                fulfillmentMethod: "delivery",
                 source: "vehicle_detail",
               });
         setBuyNowCheckoutItems([seeded]);
         setBuyNowItems([seeded]);
+        setCheckoutItems([seeded]);
         return;
       }
       setBuyNowItems(null);
+      setCheckoutItems([]);
     } else {
       clearBuyNowCheckoutItems();
       setBuyNowItems(null);
+      setCheckoutItems(cartItems);
     }
-  }, [hydrated, isBuyNow, searchParams]);
+  }, [hydrated, isBuyNow, searchParams, cartItems]);
 
   const items = useMemo(() => {
-    if (isBuyNow) return buyNowItems ?? [];
-    return cartItems;
-  }, [isBuyNow, buyNowItems, cartItems]);
+    if (isBuyNow) return checkoutItems.length ? checkoutItems : buyNowItems ?? [];
+    return checkoutItems.length ? checkoutItems : cartItems;
+  }, [isBuyNow, buyNowItems, checkoutItems, cartItems]);
+
   const [customer, setCustomer] = useState<CustomerFormValues>({
     name: "",
     phone: "",
@@ -143,105 +185,100 @@ export function CheckoutOrderPage() {
   const [vehicle, setVehicle] = useState<OrderRequestVehicle>({});
   const [usedBattery, setUsedBattery] = useState<UsedBatteryFormSelection>(null);
   const [fulfillment, setFulfillment] = useState<OrderRequestFulfillment>({
-    method: "undecided",
+    method: "delivery",
     storeId: "undecided",
   });
   const [memo, setMemo] = useState("");
   const [checklistComplete, setChecklistComplete] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [website, setWebsite] = useState("");
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [priceConfirmed, setPriceConfirmed] = useState(false);
 
   useEffect(() => {
     if (!hydrated || items.length === 0) return;
     setVehicle((prev) => (prev.name ? prev : initialVehicleFromCart(items)));
     setUsedBattery((prev) => (prev != null ? prev : initialUsedBatteryFromCart(items)));
+    setFulfillment((prev) =>
+      prev.method !== "undecided" && prev.method !== "delivery"
+        ? prev
+        : initialFulfillmentFromCart(items),
+    );
   }, [hydrated, items]);
 
-  const canSubmit =
+  const applyFulfillmentToItems = useCallback(
+    (next: OrderRequestFulfillment) => {
+      const synced = syncItemsWithFulfillment(items, next);
+      setCheckoutItems(synced);
+      if (!isBuyNow) {
+        synced.forEach((item) => {
+          updateItem(item.id, {
+            fulfillment: item.fulfillment,
+            finalPrice: item.finalPrice,
+          });
+        });
+      }
+    },
+    [items, isBuyNow, updateItem],
+  );
+
+  const onFulfillmentChange = (patch: Partial<OrderRequestFulfillment>) => {
+    const next = { ...fulfillment, ...patch };
+    setFulfillment(next);
+    if (next.method !== "undecided") {
+      applyFulfillmentToItems(next);
+    }
+    setPriceConfirmed(false);
+  };
+
+  const canConfirm =
     customer.name.trim().length > 0 &&
     phoneValid(customer.phone) &&
     isUsedBatterySelected(usedBattery) &&
-    checklistComplete &&
-    !submitting;
+    fulfillment.method !== "undecided" &&
+    fulfillmentAddressValid(fulfillment) &&
+    checklistComplete;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitError(null);
-    if (!canSubmit) {
-      setSubmitError("이름, 연락처, 폐전지 반납 여부, 체크리스트를 확인해 주세요.");
+  const handlePriceConfirm = () => {
+    setValidationError(null);
+    if (!canConfirm) {
+      setValidationError(
+        "이름, 연락처, 폐전지 반납, 수령/장착 방식, 주소·지점, 체크리스트를 확인해 주세요.",
+      );
       return;
     }
-    const usedBatteryOption = usedBattery;
-    setSubmitting(true);
-    const now = new Date().toISOString();
-    const confirmations = confirmationsFromChecklist();
-    const staffSummary = buildStaffSummary({
-      items,
-      customerName: customer.name.trim(),
-      customerPhone: customer.phone.trim(),
-      vehicle,
-      usedBatteryReturnOption: usedBatteryOption,
-      fulfillment,
-      memo: [memo, customer.orderMemo].filter(Boolean).join("\n"),
-    });
 
-    const request = {
-      id: buildOrderRequestId(),
-      items,
-      customer: {
-        name: customer.name.trim(),
-        phone: customer.phone.trim(),
-        email: customer.email.trim() || undefined,
-        orderMemo: customer.orderMemo.trim() || undefined,
-      },
-      vehicle: Object.keys(vehicle).length ? vehicle : undefined,
-      usedBatteryReturnOption: usedBatteryOption,
-      fulfillment,
-      memo: memo.trim() || undefined,
-      confirmations,
-      staffSummary,
-      status: "prepared" as const,
-      createdAt: now,
-      updatedAt: now,
-    };
+    const priceLines = buildPriceSnapshots(items, fulfillment.method);
+    const estimatedTotal = sumPriceSnapshots(priceLines);
+    const primary = items[0];
 
-    const apiPayload = {
+    const draft: CommerceOrderDraft = {
+      id: `draft-${Date.now()}`,
+      customerType: "member",
       customerName: customer.name.trim(),
       customerPhone: customer.phone.trim(),
       customerEmail: customer.email.trim() || undefined,
-      customerOrderMemo: customer.orderMemo.trim() || undefined,
-      customerType: "member" as const,
-      vehicle: Object.keys(vehicle).length ? vehicle : undefined,
-      usedBatteryReturnOption: usedBatteryOption,
-      fulfillment,
+      vehicleName: vehicle.name,
+      vehicleYear: vehicle.year,
+      vehicleFuel: vehicle.fuelType,
+      plateSuffix: vehicle.plateSuffix,
+      batterySpec: primary?.batterySpec ?? "",
+      brandName: primary?.brandName,
+      usedBatteryReturn: usedBattery ?? "unknown",
+      fulfillmentMethod: fulfillment.method as FulfillmentMethod,
+      storeId: fulfillment.storeId,
+      deliveryAddress: fulfillment.method === "delivery" ? fulfillment.region : undefined,
+      visitRegion: fulfillment.method === "visit_install" ? fulfillment.region : undefined,
       items,
-      memo: memo.trim() || undefined,
-      confirmations,
-      website,
+      priceLines,
+      estimatedTotal,
+      lifecycleStatus: "checkout_draft",
+      paymentStatus: "preparing",
+      customerMemo: [memo, customer.orderMemo].filter(Boolean).join("\n") || undefined,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    try {
-      const result = await submitOrderRequest(apiPayload);
-      if (result.ok && result.request) {
-        saveLastApiOrderRequest(result.request);
-        saveLastOrderRequest(request);
-        const sp = new URLSearchParams({
-          requestNumber: result.request.requestNumber,
-          id: result.request.id,
-        });
-        clearBuyNowCheckoutItems();
-        router.push(`${ORDER_REQUEST_COMPLETE_PAGE}?${sp.toString()}`);
-        return;
-      }
-      setSubmitError(
-        result.errors?.join(" ") ?? "접수에 실패했습니다. 잠시 후 다시 시도해 주세요.",
-      );
-    } catch {
-      setSubmitError("네트워크 오류로 접수하지 못했습니다.");
-    } finally {
-      setSubmitting(false);
-    }
+    saveCheckoutDraft(draft);
+    setPriceConfirmed(true);
   };
 
   if (!hydrated) {
@@ -265,15 +302,12 @@ export function CheckoutOrderPage() {
         data-checkout-state="empty"
       >
         <h2 className="text-base font-black text-slate-900">
-          {isBuyNow ? "즉시구매 상품 정보가 없습니다" : "장바구니가 비어 있습니다"}
+          {isBuyNow ? "주문 상품 정보가 없습니다" : "장바구니가 비어 있습니다"}
         </h2>
         <p className="text-sm font-medium text-slate-600">
           {isBuyNow
-            ? "상품 상세에서 구매하기를 다시 눌러 주세요."
+            ? "상품 상세에서 바로 주문하기를 다시 눌러 주세요."
             : "담은 배터리가 없습니다. 상품을 선택한 뒤 다시 주문해 주세요."}
-        </p>
-        <p className="text-xs font-medium text-slate-500">
-          차량명 또는 배터리 규격으로 먼저 검색해 주세요.
         </p>
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
           <Link href={HUB_SHOP} className={`${bm.btnNavy} w-full justify-center text-sm sm:w-auto`}>
@@ -294,114 +328,128 @@ export function CheckoutOrderPage() {
   }
 
   return (
-    <form className="checkout-order space-y-5 pb-8" onSubmit={handleSubmit} data-page="checkout">
-      <input
-        type="text"
-        name="website"
-        value={website}
-        onChange={(e) => setWebsite(e.target.value)}
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden
-        className="pointer-events-none absolute h-0 w-0 opacity-0"
-      />
+    <div className="checkout-order pb-28 lg:pb-8" data-page="checkout">
+      <div className="checkout-order__grid grid gap-5 lg:grid-cols-[1fr_320px] lg:items-start">
+        <form className="checkout-order__main space-y-5" onSubmit={(e) => e.preventDefault()}>
+          <section className={`${bm.card} ${bm.cardPad}`}>
+            <h1 className="text-lg font-black text-slate-950">{CHECKOUT_PAGE_COPY.title}</h1>
+            <p className="mt-2 text-sm font-medium text-slate-600">{CHECKOUT_PAGE_COPY.description}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white">
+                회원 주문
+              </span>
+              <Link
+                href={GUEST_ORDER_PAGE}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+              >
+                비회원 주문으로 전환
+              </Link>
+            </div>
+            {isBuyNow ? (
+              <p className="mt-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-900 ring-1 ring-blue-100">
+                바로 주문 — 선택하신 상품으로 주문서를 작성합니다.
+              </p>
+            ) : (
+              <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 ring-1 ring-slate-100">
+                장바구니 주문 — 담긴 상품 기준으로 주문합니다.
+              </p>
+            )}
+          </section>
 
-      <section className={`${bm.card} ${bm.cardPad}`}>
-        <h1 className="text-lg font-black text-slate-950">{CHECKOUT_PAGE_COPY.title}</h1>
-        <p className="mt-2 text-sm font-medium text-slate-600">{CHECKOUT_PAGE_COPY.description}</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white">
-            회원 주문 (장바구니)
-          </span>
-          <Link
-            href={GUEST_ORDER_PAGE}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
-          >
-            비회원 주문으로 전환
-          </Link>
+          <PaymentPreparingNotice />
+
+          <OrderRequestCartSummary items={items} fulfillmentMethod={fulfillment.method} />
+
+          <BatteryAutoDiscountHint variant="checkout" />
+
+          <OrderRequestCustomerFields
+            values={customer}
+            onChange={(p) => setCustomer((c) => ({ ...c, ...p }))}
+          />
+
+          <OrderRequestVehicleGuidance />
+
+          <OrderRequestVehicleFields
+            cartItems={items}
+            values={vehicle}
+            onChange={(p) => setVehicle((v) => ({ ...v, ...p }))}
+            compact
+          />
+
+          <OrderRequestFulfillmentFields values={fulfillment} onChange={onFulfillmentChange} />
+
+          <OrderRequestUsedBatteryFields value={usedBattery} onChange={setUsedBattery} />
+
+          <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
+            <h2 className="text-sm font-black text-slate-900">{CHECKOUT_PAGE_COPY.consultationTitle}</h2>
+            <p className="text-xs font-medium text-slate-600">{CHECKOUT_PAGE_COPY.consultationBody}</p>
+          </section>
+
+          <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
+            <h2 className="text-sm font-black text-slate-900">요청사항 (선택)</h2>
+            <textarea
+              rows={3}
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium"
+              value={memo}
+              onChange={(e) => setMemo(e.target.value)}
+              placeholder={ORDER_REQUEST_MEMO_PLACEHOLDER}
+            />
+          </section>
+
+          <CheckoutSafetyChecklist onAllRequiredCheckedChange={setChecklistComplete} />
+
+          {validationError ? (
+            <p className="text-xs font-bold text-red-600" role="alert">
+              {validationError}
+            </p>
+          ) : null}
+
+          {priceConfirmed ? (
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-2">
+              <p className="text-sm font-black text-emerald-950">
+                결제 예정금액 확인이 완료되었습니다.
+              </p>
+              <p className="text-xs font-medium text-emerald-900">
+                결제 시스템이 준비되면 이 주문서 기준으로 결제를 진행할 수 있습니다.
+              </p>
+            </div>
+          ) : null}
+
+          <div className="hidden flex-col gap-2 lg:flex sm:flex-row sm:items-center">
+            {isBuyNow && items[0]?.batterySpec ? (
+              <Link
+                href={batteryDetailHref(items[0].batterySpec)}
+                className={`${bm.btnTertiary} justify-center text-sm`}
+              >
+                ← 상품 상세
+              </Link>
+            ) : (
+              <Link href={CART_PAGE} className={`${bm.btnTertiary} justify-center text-sm`}>
+                {CHECKOUT_PAGE_COPY.backToCart}
+              </Link>
+            )}
+            <PaymentPreparingButton disabled={!canConfirm} onClick={handlePriceConfirm} />
+          </div>
+        </form>
+
+        <div className="checkout-order__aside hidden lg:block">
+          <CheckoutPriceSummaryPanel items={items} fulfillment={fulfillment} sticky />
         </div>
-        {isBuyNow ? (
-          <p className="mt-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-900 ring-1 ring-blue-100">
-            즉시구매 주문 — 선택하신 상품으로 바로 주문합니다.
-          </p>
-        ) : (
-          <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 ring-1 ring-slate-100">
-            장바구니 주문 — 담긴 상품 기준으로 주문합니다.
-          </p>
-        )}
-      </section>
-
-      <OrderRequestCartSummary items={items} />
-
-      <BatteryAutoDiscountHint variant="checkout" />
-
-      <OrderRequestCustomerFields
-        values={customer}
-        onChange={(p) => setCustomer((c) => ({ ...c, ...p }))}
-      />
-
-      <OrderRequestVehicleGuidance />
-
-      <OrderRequestVehicleFields
-        cartItems={items}
-        values={vehicle}
-        onChange={(p) => setVehicle((v) => ({ ...v, ...p }))}
-        compact
-      />
-
-      <OrderRequestFulfillmentFields
-        values={fulfillment}
-        onChange={(p) => setFulfillment((f) => ({ ...f, ...p }))}
-        compact
-      />
-
-      <OrderRequestUsedBatteryFields value={usedBattery} onChange={setUsedBattery} />
-
-      <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-        <h2 className="text-sm font-black text-slate-900">{CHECKOUT_PAGE_COPY.consultationTitle}</h2>
-        <p className="text-xs font-medium text-slate-600">{CHECKOUT_PAGE_COPY.consultationBody}</p>
-      </section>
-
-      <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-        <h2 className="text-sm font-black text-slate-900">요청사항 (선택)</h2>
-        <textarea
-          rows={3}
-          className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium"
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-          placeholder={ORDER_REQUEST_MEMO_PLACEHOLDER}
-        />
-      </section>
-
-      <CheckoutSafetyChecklist onAllRequiredCheckedChange={setChecklistComplete} />
-
-      {submitError ? (
-        <p className="text-xs font-bold text-red-600" role="alert">
-          {submitError}
-        </p>
-      ) : null}
-
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        {isBuyNow && items[0]?.batterySpec ? (
-          <Link
-            href={batteryDetailHref(items[0].batterySpec)}
-            className={`${bm.btnTertiary} justify-center text-sm`}
-          >
-            ← 상품 상세
-          </Link>
-        ) : (
-          <Link href={CART_PAGE} className={`${bm.btnTertiary} justify-center text-sm`}>
-            {CHECKOUT_PAGE_COPY.backToCart}
-          </Link>
-        )}
-        <button
-          type="submit"
-          disabled={!canSubmit}
-          className={`${bm.btnNavy} flex-1 justify-center text-sm disabled:cursor-not-allowed disabled:opacity-50`}
-        >
-          {submitting ? "접수 중…" : CHECKOUT_PAGE_COPY.submitLabel}
-        </button>
       </div>
-    </form>
+
+      <div className="checkout-order__mobile-total fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur lg:hidden">
+        <CheckoutPriceSummaryPanel items={items} fulfillment={fulfillment} />
+        <div className="mt-2 flex gap-2">
+          <Link href={CART_PAGE} className={`${bm.btnTertiary} flex-1 justify-center text-xs`}>
+            장바구니
+          </Link>
+          <PaymentPreparingButton
+            disabled={!canConfirm}
+            onClick={handlePriceConfirm}
+            className="flex-[2]"
+          />
+        </div>
+      </div>
+    </div>
   );
 }

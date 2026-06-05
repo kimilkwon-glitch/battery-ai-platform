@@ -4,6 +4,11 @@
  */
 import enrichmentJson from "@/data/vehicle-battery-enrichment.json";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { resolveCustomerCatalogPrimaryBattery } from "@/lib/vehicle-battery-match";
+import {
+  OPERATOR_FUEL_PRIMARY,
+  OPERATOR_SLUG_PRIMARY_BATTERY,
+} from "@/lib/vehicle-operator-battery-tables";
 import { mapCustomerFuelLabel, sortFuelGroupsByDisplayOrder } from "@/lib/vehicle-fuel-display";
 import { prepareCustomerFacingFuelGroups } from "@/lib/vehicle-detail-recommendation";
 import {
@@ -24,72 +29,7 @@ type EnrichmentRow = {
 
 const enrichments = (enrichmentJson as { records?: EnrichmentRow[] }).records ?? [];
 
-/** 차량 slug 단일 대표 규격 — 연료 미지정·카드·검색 히어로 */
-export const OPERATOR_SLUG_PRIMARY_BATTERY: Record<string, string> = {
-  gv70: "AGM80R",
-  gv80: "AGM95R",
-  "g80-rg3": "AGM95R",
-  g90: "AGM95R",
-  "genesis-gv70": "AGM80R",
-  "genesis-gv80": "AGM95R",
-  "genesis-gv60": "AGM60L",
-  "staria-us4": "AGM80R",
-  "porter2-new": "100R",
-  "hyundai-porter2-from2020": "100R",
-  "renault-master-2018": "AGM95L",
-  "renault-arkana-2024": "AGM60L",
-  "renault-samsung-qm6-quest-2023": "DIN74L",
-  "kg-actyon-2024": "AGM70L",
-  "kg-torres-evx-2023": "60R",
-  "gmdaewoo-labo-2011": "50L",
-  "gmdaewoo-damas-2011": "50L",
-  "chevrolet-bolt-ev-2017": "AGM50L",
-  "porter2-ev": "80L",
-  "bongo3-ev": "80L",
-  "chevrolet-trailblazer-2024": "AGM70L",
-  "chevrolet-equinox-2022": "AGM70L",
-  "daewoo-tosca-2006": "80R",
-};
-
-/** P0 합의 — DB·enrichment·legacy raw 불일치 시 운영 단일 기준 (검색·히어로·CTA·상세표 동일) */
-const OPERATOR_FUEL_PRIMARY: Record<string, Record<string, string>> = {
-  "grandeur-ig": {
-    가솔린: "AGM70L",
-    디젤: "AGM80L",
-    LPG: "DIN80L",
-    하이브리드: "DIN74R",
-  },
-  "sportage-nq5": { 하이브리드: "AGM60L" },
-  "k8-gl3": { 하이브리드: "AGM60L" },
-  "sorento-mq4": { 하이브리드: "AGM60L" },
-  "sorento-mq4-fl": { 하이브리드: "AGM60L" },
-  "kona-sx2": {
-    가솔린: "AGM60L",
-    전기: "AGM60L",
-  },
-  "chevrolet-the-new-cruze-2015": {
-    가솔린: "DIN60L",
-    디젤: "DIN74L",
-    "ISG/스마트충전": "AGM80L",
-  },
-  "santafe-mx5": {
-    가솔린: "AGM70L",
-    하이브리드: "AGM60L",
-  },
-  "santafe-mx5-hev": {
-    하이브리드: "AGM60L",
-  },
-  "porter2-ev": {
-    전기: "80L",
-  },
-  "bongo3-ev": {
-    전기: "80L",
-  },
-  "kg-torres-2022": {
-    가솔린: "AGM70L",
-    전기: "60R",
-  },
-};
+export { OPERATOR_SLUG_PRIMARY_BATTERY } from "@/lib/vehicle-operator-battery-tables";
 
 function syntheticFuelGroup(fuelLabel: string, primary: string): FuelBatteryGroup {
   return {
@@ -141,14 +81,13 @@ export function buildFuelHeroCardGroups(
   const merged = mergeOperatorFuelGroups(slug, fuelGroups);
 
   let cards = merged.filter((g) => {
-    const code = resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel);
+    const code = resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel);
     return Boolean(code);
   });
 
   if (highlightFuel) {
-    const opCode = OPERATOR_FUEL_PRIMARY[slug]?.[highlightFuel];
-    const resolved = resolveVehicleFuelPrimaryBattery(slug, highlightFuel);
-    const code = canonicalBatteryCode(opCode || resolved);
+    const resolved = resolveCustomerCatalogPrimaryBattery(slug, highlightFuel);
+    const code = canonicalBatteryCode(resolved);
     if (code && !cards.some((c) => c.fuelLabel === highlightFuel)) {
       cards = [syntheticFuelGroup(highlightFuel, code), ...cards];
     }

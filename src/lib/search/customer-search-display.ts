@@ -1,4 +1,11 @@
 import type { VehicleAsset } from "@/lib/car-assets";
+import {
+  customerBatteryPendingMessage,
+  hasBatteryMatch,
+  isValidBatterySpecCode,
+  resolveCatalogBatteryCandidates,
+  resolveCatalogPrimaryBattery,
+} from "@/lib/vehicle-battery-match";
 
 /** 메인·상단 검색 자동완성 — 배터리 규격만 */
 export const CUSTOMER_BATTERY_SPEC_CODES = [
@@ -125,15 +132,15 @@ export function sanitizeSearchRowCustomerCopy(
 }
 
 export function formatCustomerBatterySummaryForAsset(asset: VehicleAsset): string {
-  if (asset.defaultBatteryCode) {
-    return `대표 규격 ${asset.defaultBatteryCode}`;
+  const primary = resolveCatalogPrimaryBattery(asset.id, asset);
+  const candidates = resolveCatalogBatteryCandidates(asset.id, asset);
+  if (hasBatteryMatch(primary, candidates)) {
+    const code = isValidBatterySpecCode(primary) ? primary : candidates[0]!;
+    return `대표 규격 ${code}`;
   }
   const fromNotes = sanitizeCustomerBatterySummary(asset.batteryNotes);
   if (fromNotes) return fromNotes;
-  if (asset.batteryMatchStatus === "needsReview") {
-    return "상담 확인 필요";
-  }
-  return "차량 정보 확인 후 안내 가능";
+  return customerBatteryPendingMessage();
 }
 
 export function displayNameSearchPenalty(displayName: string): number {

@@ -17,6 +17,8 @@ const USED_BATTERY_LABELS: Record<OrderRequestUsedBatteryOption, string> = {
 const FULFILLMENT_LABELS: Record<OrderRequestFulfillment["method"], string> = {
   delivery: "택배수령",
   store_pickup: "매장방문",
+  store_install: "내방교체",
+  store_pickup_self: "내방수령/셀프교체",
   visit_install: "출장상담",
   undecided: "상담 시 정리",
 };

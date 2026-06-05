@@ -18,10 +18,7 @@ import { productBatteryCode } from "@/lib/batteryNormalize";
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { hasBrandSpecData } from "@/lib/battery-knowledge";
 import { PRIMARY_BATTERY_CTAS } from "@/lib/search/battery-recommendation-copy";
-import {
-  buildFuelHeroCardGroups,
-  resolveVehicleFuelPrimaryBattery,
-} from "@/lib/vehicle-fuel-primary-battery";
+import { buildFuelHeroCardGroups } from "@/lib/vehicle-fuel-primary-battery";
 import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import {
   shouldShowVehicleTrimCautionNotice,
@@ -37,6 +34,11 @@ import {
 } from "@/lib/vehicle-battery-customer-policy";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
+import {
+  BATTERY_MATCH_PENDING_MESSAGE,
+  hasCatalogBatteryMatch,
+  resolveCustomerCatalogPrimaryBattery,
+} from "@/lib/vehicle-battery-match";
 
 const BRAND_OFFERS: { id: BatteryBrandKey; label: string }[] = [
   { id: "rocket", label: "로케트" },
@@ -161,12 +163,11 @@ export function VehicleCustomerBatteryShop({
     );
   }
 
-  if (fuelCards.length === 0) {
+  if (fuelCards.length === 0 || !hasCatalogBatteryMatch(slug)) {
     return (
       <section className={`${bm.card} ${bm.cardPad} vehicle-customer-battery`}>
-        <p className="text-sm font-medium text-slate-600">
-          이 차량의 대표 규격을 준비 중입니다. 상담을 통해 확인해 주세요.
-        </p>
+        <p className="text-sm font-medium text-slate-600">{BATTERY_MATCH_PENDING_MESSAGE}</p>
+        <p className="mt-1 text-sm text-slate-500">사진 확인/문의가 필요할 수 있습니다.</p>
         <Link href={HUB_STORE_DETAIL} className={`${bm.btnPrimary} mt-4 inline-flex text-sm font-black`}>
           상담하기
         </Link>
@@ -193,7 +194,7 @@ export function VehicleCustomerBatteryShop({
         </section>
       ))}
       {fuelCards.map((group) => {
-        const batteryCode = resolveVehicleFuelPrimaryBattery(slug, group.fuelLabel);
+        const batteryCode = resolveCustomerCatalogPrimaryBattery(slug, group.fuelLabel);
         const brandOffers = batteryCode ? brandOffersForVehicleSpec(batteryCode) : [];
         const highlighted = highlightFuel === group.fuelLabel;
 

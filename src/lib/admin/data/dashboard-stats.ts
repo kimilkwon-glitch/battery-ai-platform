@@ -3,6 +3,7 @@ import {
   buildAdminVehicleRows,
   countMissingVehicleImages,
   countVehiclesNeedingReview,
+  vehicleAdminStatusLine,
   vehicleReviewReasonLabel,
 } from "@/lib/admin/data/vehicles-admin";
 import { buildAdminBatteryRows, countBatteriesNeedingReview, countMissingBatteryImages } from "@/lib/admin/data/batteries-admin";
@@ -55,22 +56,23 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStats> {
   }));
 
   const recentVehicles = vehicleRows
-    .filter((v) => v.reviewStatus !== "ok" && v.reviewStatus !== "sales_excluded")
+    .filter(
+      (v) =>
+        (v.vehicleStatus !== "ok" && v.vehicleStatus !== "sales_excluded") ||
+        (v.vehicleStatus === "ok" && !v.hasBatteryMatch),
+    )
     .slice(0, 10)
     .map((v) => ({
       id: v.slug,
       label: v.displayName,
-      sublabel: v.primaryBattery,
+      sublabel: vehicleAdminStatusLine(v),
       href:
-        v.reviewStatus === "needs_review" ||
-        v.reviewStatus === "terminal_check" ||
-        v.reviewStatus === "agm_check" ||
-        v.reviewStatus === "db_fix_needed"
+        !v.hasBatteryMatch || v.vehicleStatus === "db_fix_needed"
           ? "/admin/matching"
-          : v.reviewStatus === "image_needed"
+          : v.vehicleStatus === "image_needed"
             ? "/admin/assets"
             : "/admin/vehicles",
-      reviewStatus: v.reviewStatus,
+      reviewStatus: v.vehicleStatus,
       reviewReason: vehicleReviewReasonLabel(v),
     }));
 

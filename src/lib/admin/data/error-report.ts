@@ -15,7 +15,7 @@ export function buildErrorReport(): AdminErrorReportItem[] {
 
   const noImageVehicles = vehicles.filter((v) => !v.hasImage);
   const noImageBatteries = batteries.filter((b) => !b.hasHeroImage);
-  const noMatchVehicles = vehicles.filter((v) => v.primaryBattery === "—");
+  const noMatchVehicles = vehicles.filter((v) => !v.hasBatteryMatch && !v.salesExcluded);
   const noAliasMajor = vehicles.filter((v) => !v.hasAlias).slice(0, 30);
   const salesExcludedWithOrder = matching.filter(
     (m) => m.salesExcluded && m.hasDetailPage,

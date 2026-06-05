@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { AdminReviewBadge } from "@/components/admin/AdminReviewBadge";
+import { AdminBatteryMatchBadge } from "@/components/admin/AdminBatteryMatchBadge";
 import { AdminDataTableClient } from "@/components/admin/AdminDataTableClient";
 import type { AdminVehicleRow } from "@/types/admin";
 
@@ -23,19 +24,28 @@ export function AdminVehiclesTable({ rows }: Props) {
           type: "select",
           options: [
             { value: "true", label: "있음" },
-            { value: "false", label: "누락" },
+            { value: "false", label: "없음" },
           ],
           match: (row, v) => String((row as AdminVehicleRow).hasImage) === v,
         },
         {
-          key: "reviewStatus",
-          label: "검수",
+          key: "vehicleStatus",
+          label: "차량 검수",
           type: "select",
           options: [
             { value: "ok", label: "정상" },
-            { value: "needs_review", label: "확인 필요" },
             { value: "sales_excluded", label: "판매 제외" },
             { value: "image_needed", label: "이미지 필요" },
+            { value: "db_fix_needed", label: "규격 검수" },
+          ],
+        },
+        {
+          key: "batteryMatchStatus",
+          label: "배터리 매칭",
+          type: "select",
+          options: [
+            { value: "matched", label: "완료" },
+            { value: "unmatched", label: "미완료" },
           ],
         },
       ]}
@@ -51,7 +61,7 @@ export function AdminVehiclesTable({ rows }: Props) {
           label: "후보",
           render: (r) => (
             <span className="max-w-[120px] truncate text-[10px]" title={r.candidateBatteries.join(", ")}>
-              {r.candidateBatteries.slice(0, 3).join(", ")}
+              {r.candidateBatteries.length > 0 ? r.candidateBatteries.slice(0, 3).join(", ") : "—"}
             </span>
           ),
         },
@@ -62,18 +72,23 @@ export function AdminVehiclesTable({ rows }: Props) {
         },
         { key: "terminalDirection", label: "단자", render: (r) => r.terminalDirection },
         {
-          key: "hasImage",
+          key: "imageStatus",
           label: "이미지",
           render: (r) => (
-            <Badge variant={r.hasImage ? "success" : "danger"}>
-              {r.hasImage ? "있음" : "없음"}
+            <Badge variant={r.imageStatus === "present" ? "success" : "danger"}>
+              {r.imageStatus === "present" ? "있음" : "없음"}
             </Badge>
           ),
         },
         {
-          key: "reviewStatus",
-          label: "검수",
-          render: (r) => <AdminReviewBadge status={r.reviewStatus} />,
+          key: "vehicleStatus",
+          label: "차량 검수",
+          render: (r) => <AdminReviewBadge status={r.vehicleStatus} />,
+        },
+        {
+          key: "batteryMatchStatus",
+          label: "배터리 매칭",
+          render: (r) => <AdminBatteryMatchBadge status={r.batteryMatchStatus} />,
         },
         {
           key: "detail",

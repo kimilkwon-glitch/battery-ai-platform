@@ -9,6 +9,9 @@ export type AdminReviewStatus =
   | "image_needed"
   | "db_fix_needed";
 
+export type BatteryMatchStatus = "matched" | "unmatched";
+export type VehicleImageStatus = "present" | "missing";
+
 export type AdminVehicleRow = {
   slug: string;
   brand: string;
@@ -21,12 +24,18 @@ export type AdminVehicleRow = {
   isAgm: boolean;
   terminalDirection: string;
   hasImage: boolean;
+  /** @deprecated 차량 DB 검수 — vehicleStatus·reviewStatus 사용 */
   needsReview: boolean;
   hasAlias: boolean;
   detailHref: string;
   reviewMemo?: string;
   salesExcluded: boolean;
+  /** 차량 DB·이미지·상세 검수 */
   reviewStatus: AdminReviewStatus;
+  vehicleStatus: AdminReviewStatus;
+  imageStatus: VehicleImageStatus;
+  hasBatteryMatch: boolean;
+  batteryMatchStatus: BatteryMatchStatus;
 };
 
 export type AdminBatteryRow = {
@@ -63,6 +72,10 @@ export type AdminMatchingRow = {
   missingImage: boolean;
   hasDetailPage: boolean;
   reviewStatus: AdminReviewStatus;
+  vehicleStatus: AdminReviewStatus;
+  imageStatus: VehicleImageStatus;
+  hasBatteryMatch: boolean;
+  batteryMatchStatus: BatteryMatchStatus;
   reviewMemo?: string;
 };
 

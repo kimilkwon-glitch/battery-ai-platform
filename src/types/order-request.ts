@@ -5,8 +5,11 @@ export type OrderRequestUsedBatteryOption = "return" | "no_return" | "unknown";
 
 export type OrderRequestFulfillmentMethod =
   | "delivery"
-  | "store_pickup"
   | "visit_install"
+  | "store_install"
+  | "store_pickup_self"
+  /** @deprecated — store_pickup_self 로 통합 */
+  | "store_pickup"
   | "undecided";
 
 export type OrderRequestStoreId = "deokcheon" | "hakjang" | "undecided";
@@ -33,6 +36,7 @@ export type OrderRequestVehicle = {
   year?: string;
   fuelType?: string;
   currentBatterySpec?: string;
+  plateSuffix?: string;
   photoCheckNeeded?: boolean;
 };
 
@@ -211,11 +215,16 @@ export type AdminOrderRequestListItem = {
   customerType?: OrderRequestCustomerType;
   vehicleSummary: string;
   batterySpecSummary: string;
+  brandSummary?: string;
   usedBatteryReturnOption: OrderRequestUsedBatteryOption;
   fulfillmentMethod: OrderRequestFulfillmentMethod;
   storeId?: OrderRequestStoreId;
   reviewFlags: OrderRequestReviewFlag[];
   hasInternalMemo: boolean;
+  /** PG 연동 후 결제 금액 스냅샷 */
+  estimatedTotalWon?: number | null;
+  paymentStatus?: import("@/types/commerce-order").CommercePaymentStatus;
+  lifecycleStatus?: import("@/types/commerce-order").CommerceOrderLifecycleStatus;
   createdAt: string;
 };
 

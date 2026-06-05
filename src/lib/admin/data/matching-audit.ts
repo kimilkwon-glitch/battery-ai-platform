@@ -1,28 +1,33 @@
 import { vehicleAssets } from "@/lib/car-assets";
 import { isVehicleFullyLithiumSalesExcluded } from "@/lib/vehicle-battery-customer-policy";
-import { OPERATOR_SLUG_PRIMARY_BATTERY } from "@/lib/vehicle-fuel-primary-battery";
+import {
+  hasBatteryMatch,
+  resolveBatteryMatchStatus,
+  resolveCatalogBatteryCandidates,
+  resolveCatalogPrimaryBattery,
+  type VehicleImageStatus,
+} from "@/lib/vehicle-battery-match";
 import type { AdminMatchingRow, AdminReviewStatus } from "@/types/admin";
 
-function resolveStatus(
+function resolveVehicleStatus(
   salesExcluded: boolean,
   missingImage: boolean,
-  connected: string,
 ): AdminReviewStatus {
   if (salesExcluded) return "sales_excluded";
   if (missingImage) return "image_needed";
-  if (!connected || connected === "—") return "db_fix_needed";
   return "ok";
 }
 
 export function buildMatchingAuditRows(): AdminMatchingRow[] {
   return vehicleAssets.map((asset) => {
-    const connected =
-      OPERATOR_SLUG_PRIMARY_BATTERY[asset.id] ??
-      asset.defaultBatteryCode ??
-      "—";
-    const candidates = connected !== "—" ? [connected] : [];
+    const connected = resolveCatalogPrimaryBattery(asset.id, asset);
+    const candidates = resolveCatalogBatteryCandidates(asset.id, asset);
     const salesExcluded = isVehicleFullyLithiumSalesExcluded(asset.id);
     const missingImage = !asset.image;
+    const imageStatus: VehicleImageStatus = missingImage ? "missing" : "present";
+    const vehicleStatus = resolveVehicleStatus(salesExcluded, missingImage);
+    const hasBatteryMatchFlag = hasBatteryMatch(connected, candidates);
+    const batteryMatchStatus = resolveBatteryMatchStatus(connected, candidates);
 
     return {
       slug: asset.id,
@@ -36,11 +41,15 @@ export function buildMatchingAuditRows(): AdminMatchingRow[] {
       salesExcluded,
       missingImage,
       hasDetailPage: true,
-      reviewStatus: resolveStatus(salesExcluded, missingImage, connected),
+      reviewStatus: vehicleStatus,
+      vehicleStatus,
+      imageStatus,
+      hasBatteryMatch: hasBatteryMatchFlag,
+      batteryMatchStatus,
     };
   });
 }
 
 export function countMatchingReview(rows: AdminMatchingRow[]): number {
-  return rows.filter((r) => r.reviewStatus !== "ok").length;
+  return rows.filter((r) => !r.hasBatteryMatch && !r.salesExcluded).length;
 }

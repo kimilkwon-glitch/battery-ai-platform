@@ -32,6 +32,13 @@ import { normalizeQuery } from "@/lib/search/normalize-query";
 import { parseVehicleIntent } from "@/lib/search/parse-vehicle-intent";
 import { resolveVehicleBatterySpecForSearch } from "@/lib/search/resolve-vehicle-battery-spec";
 import { customerFacingBatteryCode } from "@/lib/canonical-battery-code";
+import {
+  customerBatteryPendingMessage,
+  hasBatteryMatch,
+  isValidBatterySpecCode,
+  resolveCatalogBatteryCandidates,
+  resolveCatalogPrimaryBattery,
+} from "@/lib/vehicle-battery-match";
 import { vehicles as catalogVehicles } from "@/lib/platform-data";
 
 function assetMatchesIntent(asset: VehicleAsset, intent: ReturnType<typeof parseVehicleIntent>): boolean {
@@ -45,13 +52,28 @@ function assetMatchesIntent(asset: VehicleAsset, intent: ReturnType<typeof parse
 }
 
 function resolveAssetRowBattery(asset: VehicleAsset, query: string): { battery: string; needsReview: boolean } {
+  const slug = asset.catalogId ?? asset.id;
+  const catalogPrimary = resolveCatalogPrimaryBattery(slug, asset);
+  const catalogCandidates = resolveCatalogBatteryCandidates(slug, asset);
+  const catalogMatch = hasBatteryMatch(catalogPrimary, catalogCandidates);
+
+  if (!catalogMatch) {
+    return { battery: customerBatteryPendingMessage(), needsReview: true };
+  }
+
+  const displayPrimary = isValidBatterySpecCode(catalogPrimary)
+    ? customerFacingBatteryCode(catalogPrimary)
+    : catalogCandidates[0]
+      ? customerFacingBatteryCode(catalogCandidates[0]!)
+      : "";
+
   const { normalizedQuery } = normalizeQuery(query);
   const intent = parseVehicleIntent(normalizedQuery);
   if (assetMatchesIntent(asset, intent)) {
     const spec = resolveVehicleBatterySpecForSearch({
       exactSpec: null,
       canonicalKey: intent.canonicalKey,
-      assetId: asset.catalogId ?? asset.id,
+      assetId: slug,
       fuel: intent.fuel,
       displayName: intent.displayName ?? asset.displayName,
       normalizedQuery,
@@ -64,25 +86,16 @@ function resolveAssetRowBattery(asset: VehicleAsset, query: string): { battery: 
       : spec.displayValue
         ? customerFacingBatteryCode(spec.displayValue)
         : "";
-    if (code) {
-      return { battery: code, needsReview: spec.tier === "none" };
+    if (isValidBatterySpecCode(code)) {
+      return { battery: code, needsReview: false };
     }
   }
 
-  const db = getVehicleCardBatteryInfo(asset.catalogId ?? asset.id);
-  const needsBatteryReview = asset.batteryMatchStatus === "needsReview";
-  const battery = needsBatteryReview
-    ? "상담 확인 필요"
-    : db.hasConfirmedDb && db.displayCode
-      ? db.displayCode
-      : db.hasUsableDb
-        ? "연식·옵션별 확인 필요"
-        : asset.defaultBatteryCode ||
-          (db.needsPhotoReview ? "사진 확인 권장" : "상담 확인 필요");
-  return {
-    battery,
-    needsReview: needsBatteryReview || db.needsPhotoReview || (db.hasUsableDb && !db.hasConfirmedDb),
-  };
+  if (displayPrimary) {
+    return { battery: displayPrimary, needsReview: false };
+  }
+
+  return { battery: customerBatteryPendingMessage(), needsReview: true };
 }
 
 export function assetToSearchRow(asset: VehicleAsset, query = ""): VehicleSearchRow {

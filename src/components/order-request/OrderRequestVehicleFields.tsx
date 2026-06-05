@@ -67,6 +67,17 @@ export function OrderRequestVehicleFields({
             placeholder="가솔린 / 디젤 / HEV"
           />
         </label>
+        <label className="block">
+          <span className="text-xs font-black text-slate-800">차량번호 뒷자리 (선택)</span>
+          <input
+            type="text"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium"
+            value={values.plateSuffix ?? ""}
+            onChange={(e) => onChange({ plateSuffix: e.target.value })}
+            placeholder="예: 1234"
+            maxLength={4}
+          />
+        </label>
         <label className="block sm:col-span-2">
           <span className="text-xs font-black text-slate-800">현재 장착 배터리 규격</span>
           <input

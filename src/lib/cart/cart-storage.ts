@@ -1,3 +1,4 @@
+import { sumCartItemsPrice } from "@/lib/pricing/order-price";
 import type { BatteryCartItem, BatteryCartSummary } from "@/types/cart";
 import { CART_STORAGE_KEY } from "@/types/cart";
 
@@ -72,7 +73,12 @@ function parseStoredItems(raw: string): BatteryCartItem[] {
 export function cartItemMergeKey(
   item: Pick<
     BatteryCartItem,
-    "productId" | "batterySpec" | "vehicle" | "usedBatteryReturn" | "fitmentStatus"
+    | "productId"
+    | "batterySpec"
+    | "vehicle"
+    | "usedBatteryReturn"
+    | "fulfillment"
+    | "fitmentStatus"
   >,
 ): string {
   const vehicleKey =
@@ -86,6 +92,7 @@ export function cartItemMergeKey(
     item.batterySpec,
     vehicleKey,
     item.usedBatteryReturn.option,
+    item.fulfillment.method,
     item.fitmentStatus,
   ].join("::");
 }
@@ -177,11 +184,14 @@ export function itemNeedsReview(item: BatteryCartItem): boolean {
 }
 
 export function getCartSummary(items: BatteryCartItem[]): BatteryCartSummary {
-  const subtotal = items.reduce((sum, i) => {
-    const unit = i.finalPrice ?? i.basePrice;
-    if (unit == null || Number.isNaN(unit)) return sum;
-    return sum + unit * i.quantity;
-  }, 0);
+  const pricedTotal = sumCartItemsPrice(items);
+  const subtotal =
+    pricedTotal ??
+    items.reduce((sum, i) => {
+      const unit = i.finalPrice ?? i.basePrice;
+      if (unit == null || Number.isNaN(unit)) return sum;
+      return sum + unit * i.quantity;
+    }, 0);
 
   const usedBatteryReturnAdjustment = items.reduce(
     (sum, i) => sum + (i.usedBatteryReturn.priceImpact ?? 0) * i.quantity,
@@ -192,7 +202,7 @@ export function getCartSummary(items: BatteryCartItem[]): BatteryCartSummary {
     itemCount: items.reduce((s, i) => s + i.quantity, 0),
     subtotal,
     usedBatteryReturnAdjustment,
-    estimatedTotal: subtotal,
+    estimatedTotal: pricedTotal ?? subtotal,
     hasNeedsReviewItem: items.some(itemNeedsReview),
     hasNoReturnItem: items.some((i) => i.usedBatteryReturn.option === "no_return"),
     hasUndecidedUsedBattery: items.some((i) => i.usedBatteryReturn.option === "undecided"),

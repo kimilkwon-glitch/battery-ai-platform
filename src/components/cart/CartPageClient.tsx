@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { CartItemCard } from "@/components/cart/CartItemCard";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
+import { OrderPriceTotalBar } from "@/components/pricing/OrderPriceBreakdown";
 import { CART_NEEDS_REVIEW_COPY } from "@/data/cart-flow-guide";
 import { clearBuyNowCheckoutItems } from "@/lib/cart/checkout-flow";
+import { formatPriceWon } from "@/lib/pricing/order-price";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
 
@@ -39,16 +41,16 @@ export function CartPageClient() {
   }
 
   const priceLabel =
-    summary.subtotal > 0
-      ? `${summary.estimatedTotal.toLocaleString()}원`
-      : "상담 후 안내";
+    summary.estimatedTotal > 0
+      ? formatPriceWon(summary.estimatedTotal)
+      : "수령 방식 선택 후 표시";
 
   return (
-    <div className="cart-page space-y-5" data-page="cart">
+    <div className="cart-page space-y-5 pb-28 lg:pb-8" data-page="cart">
       <section className={`${bm.card} ${bm.cardPad} border-blue-100/80 bg-gradient-to-br from-white to-blue-50/20`}>
         <h1 className="text-lg font-black text-slate-950 sm:text-xl">장바구니</h1>
         <p className="mt-1 text-sm font-medium text-slate-600">
-          담긴 상품과 수량·금액을 확인한 뒤 주문을 진행해 주세요.
+          수령/장착 방식과 반납 여부를 확인한 뒤 주문서로 이동해 주세요.
         </p>
       </section>
 
@@ -60,13 +62,18 @@ export function CartPageClient() {
             <dd className="text-base font-black text-slate-900">{summary.itemCount}개</dd>
           </div>
           <div className="rounded-lg bg-slate-50 px-3 py-2">
-            <dt className="text-slate-500">예상 상품 금액</dt>
+            <dt className="text-slate-500">결제 예정금액</dt>
             <dd className="text-base font-black text-blue-700">{priceLabel}</dd>
           </div>
         </dl>
+        {summary.hasUndecidedFulfillment ? (
+          <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-950 ring-1 ring-amber-200">
+            수령/장착 방식이 선택되지 않은 상품이 있습니다. 각 상품에서 방식을 선택해 주세요.
+          </p>
+        ) : null}
         {summary.hasNeedsReviewItem ? (
           <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-950 ring-1 ring-amber-200">
-            확인이 필요한 항목이 있습니다. 아래 안내를 확인한 뒤 주문해 주세요.
+            확인이 필요한 항목이 있습니다. 주문서에서 다시 확인할 수 있습니다.
           </p>
         ) : null}
       </section>
@@ -79,11 +86,12 @@ export function CartPageClient() {
 
       {summary.hasNeedsReviewItem ? (
         <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-950 ring-1 ring-amber-200">
-          {CART_NEEDS_REVIEW_COPY.body} 주문 화면에서 다시 확인할 수 있습니다.
+          {CART_NEEDS_REVIEW_COPY.body}
         </p>
       ) : null}
 
-      <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
+      <section className={`${bm.card} ${bm.cardPad} hidden space-y-3 lg:block`}>
+        <OrderPriceTotalBar items={items} />
         <div className="flex flex-wrap gap-2">
           <Link href="/shop" className={`${bm.btnTertiary} text-xs`}>
             계속 쇼핑하기
@@ -93,13 +101,26 @@ export function CartPageClient() {
             className={`${bm.btnNavy} min-h-[3rem] flex-1 justify-center text-sm font-black sm:flex-none sm:px-8`}
             onClick={() => clearBuyNowCheckoutItems()}
           >
-            주문하기
+            주문서로 이동
           </Link>
         </div>
-        <p className="text-[11px] font-medium text-slate-500">
-          주문하기를 누르면 주문 정보 입력·상담 접수 화면으로 이동합니다.
-        </p>
       </section>
+
+      <div className="cart-page__sticky-total fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur lg:hidden">
+        <OrderPriceTotalBar items={items} />
+        <div className="mt-2 flex gap-2">
+          <Link href="/shop" className={`${bm.btnTertiary} flex-1 justify-center text-xs`}>
+            쇼핑
+          </Link>
+          <Link
+            href={`${CHECKOUT_PAGE}?flow=cart`}
+            className={`${bm.btnNavy} min-h-[2.75rem] flex-[2] justify-center text-sm font-black`}
+            onClick={() => clearBuyNowCheckoutItems()}
+          >
+            주문서로 이동
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

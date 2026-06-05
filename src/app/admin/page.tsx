@@ -70,11 +70,11 @@ export default async function AdminDashboardPage() {
             sublabel="사진 첨부 확인 필요"
           />
           <AdminStatCard
-            label="차량 매칭 확인"
+            label="배터리 매칭 미완료"
             value={stats.vehicleMatchReview}
             href={ADMIN_ROUTES.matching}
             tone="warning"
-            sublabel="확인 필요한 차량 DB"
+            sublabel="대표 규격 미연결 차량"
           />
           <AdminStatCard
             label="배터리 DB 확인"
@@ -174,7 +174,7 @@ export default async function AdminDashboardPage() {
 
           <div className="admin-panel">
             <div className="admin-panel__header">
-              <h2 className="admin-panel__title">확인 필요 차량 DB</h2>
+              <h2 className="admin-panel__title">차량·배터리 확인 필요</h2>
               <Link href={ADMIN_ROUTES.vehicles} className="admin-panel__link">
                 전체 보기
               </Link>

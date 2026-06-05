@@ -5,9 +5,11 @@ import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { brandIdToBatteryBrandKey } from "@/lib/battery-alias-map";
 import { getBatteryInternetPriceWon } from "@/lib/battery-prices";
 import { getBattery, shopProducts } from "@/lib/platform-data";
+import { applyPricingToCartItem } from "@/lib/pricing/order-price";
 import type {
   BatteryCartItem,
   FitmentStatus,
+  FulfillmentMethod,
   TerminalDirection,
   UsedBatteryReturnOption,
 } from "@/types/cart";
@@ -75,6 +77,7 @@ export type CreateCartItemInput = {
   vehicle?: BatteryCartItem["vehicle"];
   fitmentStatus?: FitmentStatus;
   usedBatteryReturnOption?: BatteryReturnOption | UsedBatteryReturnOption;
+  fulfillmentMethod?: FulfillmentMethod;
   source?: BatteryCartItem["source"];
   quantity?: number;
 };
@@ -106,7 +109,8 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
   const priceImpact =
     usedOption === "return" ? -10000 : usedOption === "no_return" ? 10000 : undefined;
 
-  return {
+  const method: FulfillmentMethod = input.fulfillmentMethod ?? "undecided";
+  const draft: BatteryCartItem = {
     id: newCartItemId(),
     productId: shop.productId,
     productName: input.productName ?? `${code} 배터리`,
@@ -128,7 +132,7 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
       priceImpact,
       guideRequired: usedOption !== "no_return",
     },
-    fulfillment: { method: "undecided" },
+    fulfillment: { method },
     install: { method: "undecided" },
     preOrderCheckRequired: fitmentStatus !== "confirmed" || terminalDirection === "unknown",
     photoCheckRequired: fitmentStatus === "needs_photo_check",
@@ -137,6 +141,8 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
     createdAt: now,
     updatedAt: now,
   };
+
+  return method !== "undecided" ? applyPricingToCartItem(draft, method) : draft;
 }
 
 export function createCartItemFromVehicleBattery(params: {
