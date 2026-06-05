@@ -71,3 +71,18 @@ export function countVehiclesNeedingReview(rows: AdminVehicleRow[]): number {
 export function countMissingVehicleImages(rows: AdminVehicleRow[]): number {
   return rows.filter((r) => !r.hasImage).length;
 }
+
+const REVIEW_REASON_LABELS: Record<AdminReviewStatus, string> = {
+  ok: "정상",
+  needs_review: "배터리 매칭 확인",
+  terminal_check: "단자 확인",
+  agm_check: "AGM 확인",
+  sales_excluded: "판매 제외 확인",
+  image_needed: "이미지/세대 확인",
+  db_fix_needed: "규격 검수 필요",
+};
+
+export function vehicleReviewReasonLabel(row: AdminVehicleRow): string {
+  if (row.reviewMemo?.trim()) return row.reviewMemo.trim();
+  return REVIEW_REASON_LABELS[row.reviewStatus] ?? "확인 필요";
+}

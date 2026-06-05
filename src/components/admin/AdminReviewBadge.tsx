@@ -3,12 +3,12 @@ import type { AdminReviewStatus } from "@/types/admin";
 
 const LABELS: Record<AdminReviewStatus, string> = {
   ok: "정상",
-  needs_review: "확인 필요",
+  needs_review: "매칭 확인",
   terminal_check: "단자 확인",
   agm_check: "AGM 확인",
-  sales_excluded: "판매 제외",
+  sales_excluded: "판매 제외 확인",
   image_needed: "이미지 필요",
-  db_fix_needed: "DB 수정",
+  db_fix_needed: "규격 검수 필요",
 };
 
 const VARIANTS: Record<

@@ -129,9 +129,12 @@ export type AdminOrderRequestSummary = {
   id: string;
   requestNumber: string;
   customerName: string;
+  customerPhoneMasked: string;
   customerType: string;
   vehicleSummary: string;
+  batterySpecSummary: string;
   status: string;
+  storeLabel?: string;
   createdAt: string;
 };
 
@@ -140,5 +143,7 @@ export type AdminRecentDbItem = {
   label: string;
   sublabel?: string;
   href?: string;
+  reviewStatus?: AdminReviewStatus;
+  reviewReason?: string;
   updatedAt?: string;
 };

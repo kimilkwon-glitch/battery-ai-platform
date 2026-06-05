@@ -1,4 +1,4 @@
-import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { AdminBatteriesTable } from "@/components/admin/AdminBatteriesTable";
 import { buildAdminBatteryRows } from "@/lib/admin/data/batteries-admin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +7,7 @@ export default function AdminProductsPage() {
   const rows = buildAdminBatteryRows();
 
   return (
-    <AdminShell
+    <AdminShellLayout
       title="상품/규격 관리"
       description="판매 규격·브랜드별 제품 코드 검수 — 별도 상품 DB 없이 배터리 규격 DB를 기준으로 표시합니다."
     >
@@ -22,6 +22,6 @@ export default function AdminProductsPage() {
         </CardContent>
       </Card>
       <AdminBatteriesTable rows={rows} />
-    </AdminShell>
+    </AdminShellLayout>
   );
 }

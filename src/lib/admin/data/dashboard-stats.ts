@@ -1,5 +1,10 @@
 import { listOrderRequests } from "@/lib/order-request/order-request-service";
-import { buildAdminVehicleRows, countMissingVehicleImages, countVehiclesNeedingReview } from "@/lib/admin/data/vehicles-admin";
+import {
+  buildAdminVehicleRows,
+  countMissingVehicleImages,
+  countVehiclesNeedingReview,
+  vehicleReviewReasonLabel,
+} from "@/lib/admin/data/vehicles-admin";
 import { buildAdminBatteryRows, countBatteriesNeedingReview, countMissingBatteryImages } from "@/lib/admin/data/batteries-admin";
 import { buildMatchingAuditRows, countMatchingReview } from "@/lib/admin/data/matching-audit";
 import { buildCtaLinkAuditRows, countCtaLinkErrors } from "@/lib/admin/data/cta-links-audit";
@@ -30,24 +35,43 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStats> {
     (o) => o.status === "pending_review" || o.status === "waiting_customer",
   );
 
+  const STORE_LABELS: Record<string, string> = {
+    deokcheon: "덕천점",
+    hakjang: "학장점",
+    undecided: "미정",
+  };
+
   const recentOrders = orders.slice(0, 10).map((o) => ({
     id: o.id,
     requestNumber: o.requestNumber,
     customerName: o.customerName,
+    customerPhoneMasked: o.customerPhoneMasked,
     customerType: o.customerType ?? "member",
     vehicleSummary: o.vehicleSummary,
+    batterySpecSummary: o.batterySpecSummary,
     status: o.status,
+    storeLabel: o.storeId ? STORE_LABELS[o.storeId] ?? o.storeId : "—",
     createdAt: o.createdAt,
   }));
 
   const recentVehicles = vehicleRows
-    .filter((v) => v.needsReview || !v.hasImage)
+    .filter((v) => v.reviewStatus !== "ok" && v.reviewStatus !== "sales_excluded")
     .slice(0, 10)
     .map((v) => ({
       id: v.slug,
       label: v.displayName,
       sublabel: v.primaryBattery,
-      href: v.detailHref,
+      href:
+        v.reviewStatus === "needs_review" ||
+        v.reviewStatus === "terminal_check" ||
+        v.reviewStatus === "agm_check" ||
+        v.reviewStatus === "db_fix_needed"
+          ? "/admin/matching"
+          : v.reviewStatus === "image_needed"
+            ? "/admin/assets"
+            : "/admin/vehicles",
+      reviewStatus: v.reviewStatus,
+      reviewReason: vehicleReviewReasonLabel(v),
     }));
 
   const recentBatteries = batteryRows

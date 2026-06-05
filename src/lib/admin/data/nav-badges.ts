@@ -1,0 +1,30 @@
+import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
+import { buildAdminVehicleRows, countMissingVehicleImages, countVehiclesNeedingReview } from "@/lib/admin/data/vehicles-admin";
+import { buildCtaLinkAuditRows, countCtaLinkErrors } from "@/lib/admin/data/cta-links-audit";
+import { buildMatchingAuditRows, countMatchingReview } from "@/lib/admin/data/matching-audit";
+import { buildPhotoCheckRequestItems } from "@/lib/admin/data/photo-requests-admin";
+import { listOrderRequests } from "@/lib/order-request/order-request-service";
+
+export type AdminNavBadges = Partial<Record<string, number>>;
+
+export async function loadAdminNavBadges(): Promise<AdminNavBadges> {
+  const orders = await listOrderRequests({ limit: 200 });
+  const vehicleRows = buildAdminVehicleRows();
+  const matchingRows = buildMatchingAuditRows();
+  const ctaRows = buildCtaLinkAuditRows();
+  const photoItems = buildPhotoCheckRequestItems(orders);
+
+  const pendingOrders = orders.filter(
+    (o) => o.status === "pending_review" || o.status === "waiting_customer",
+  ).length;
+
+  return {
+    [ADMIN_ROUTES.orders]: pendingOrders,
+    [ADMIN_ROUTES.guestOrders]: orders.filter((o) => o.customerType === "guest").length,
+    [ADMIN_ROUTES.photoRequests]: photoItems.length,
+    [ADMIN_ROUTES.vehicles]: countVehiclesNeedingReview(vehicleRows),
+    [ADMIN_ROUTES.matching]: countMatchingReview(matchingRows),
+    [ADMIN_ROUTES.assets]: countMissingVehicleImages(vehicleRows),
+    [ADMIN_ROUTES.ctaLinks]: countCtaLinkErrors(ctaRows),
+  };
+}

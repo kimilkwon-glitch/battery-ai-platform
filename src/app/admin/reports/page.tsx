@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildErrorReport } from "@/lib/admin/data/error-report";
@@ -14,7 +14,7 @@ export default function AdminReportsPage() {
   const items = buildErrorReport();
 
   return (
-    <AdminShell
+    <AdminShellLayout
       title="오류/검수 리포트"
       description="운영자가 한 번에 확인해야 할 누락·충돌·CTA 오류를 모아 표시합니다."
     >
@@ -44,6 +44,6 @@ export default function AdminReportsPage() {
           </Card>
         ))}
       </div>
-    </AdminShell>
+    </AdminShellLayout>
   );
 }

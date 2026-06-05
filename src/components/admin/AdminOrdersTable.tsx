@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { AdminDataTableClient } from "@/components/admin/AdminDataTableClient";
+import { OrderRequestWorkflowBadge } from "@/components/admin/order-requests/OrderRequestWorkflowBadge";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
-import type { AdminOrderRequestListItem } from "@/types/order-request";
+import type { AdminOrderRequestListItem, OrderRequestWorkflowStatus } from "@/types/order-request";
 
 const FULFILLMENT_LABELS: Record<string, string> = {
   delivery: "택배",
@@ -49,11 +50,11 @@ export function AdminOrdersTable({ orders, guestOnly }: Props) {
           label: "상태",
           type: "select",
           options: [
-            { value: "pending_review", label: "접수/확인중" },
+            { value: "pending_review", label: "접수" },
+            { value: "waiting_customer", label: "확인중" },
             { value: "contacted", label: "연락완료" },
-            { value: "waiting_customer", label: "고객대기" },
-            { value: "quoted", label: "견적안내" },
-            { value: "closed", label: "완료" },
+            { value: "quoted", label: "예약완료" },
+            { value: "closed", label: "작업완료" },
             { value: "canceled", label: "취소" },
           ],
         },
@@ -115,7 +116,9 @@ export function AdminOrdersTable({ orders, guestOnly }: Props) {
         {
           key: "status",
           label: "상태",
-          render: (o) => <Badge variant="outline">{o.status}</Badge>,
+          render: (o) => (
+            <OrderRequestWorkflowBadge status={o.status as OrderRequestWorkflowStatus} />
+          ),
         },
         {
           key: "detail",

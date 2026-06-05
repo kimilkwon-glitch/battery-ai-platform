@@ -1,4 +1,4 @@
-import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { AdminCtaLinksTable } from "@/components/admin/AdminCtaLinksTable";
 import { buildCtaLinkAuditRows } from "@/lib/admin/data/cta-links-audit";
 import { storeLinks } from "@/lib/external-links";
@@ -8,7 +8,7 @@ export default function AdminCtaLinksPage() {
   const rows = buildCtaLinkAuditRows();
 
   return (
-    <AdminShell title="CTA/링크 점검" description="메인·상세·지점·외부 채널 연결을 점검합니다.">
+    <AdminShellLayout title="CTA/링크 점검" description="메인·상세·지점·외부 채널 연결을 점검합니다.">
       <Card className="mb-4">
         <CardHeader>
           <CardTitle>지점 정보 기준</CardTitle>
@@ -25,6 +25,6 @@ export default function AdminCtaLinksPage() {
         </CardContent>
       </Card>
       <AdminCtaLinksTable rows={rows} />
-    </AdminShell>
+    </AdminShellLayout>
   );
 }

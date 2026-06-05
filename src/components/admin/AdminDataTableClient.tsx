@@ -69,7 +69,7 @@ export function AdminDataTableClient<T>({
         />
       ) : null}
       <div className="rounded-lg border border-slate-200 bg-white">
-        <Table>
+        <Table className="admin-table">
           <TableHeader>
             <TableRow>
               {columns.map((c) => (
@@ -82,7 +82,7 @@ export function AdminDataTableClient<T>({
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length} className="py-8 text-center text-slate-500">
+                <TableCell colSpan={columns.length} className="admin-table__empty">
                   {emptyMessage}
                 </TableCell>
               </TableRow>

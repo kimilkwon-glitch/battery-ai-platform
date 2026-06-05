@@ -1,10 +1,10 @@
-import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AdminSettingsPage() {
   return (
-    <AdminShell title="설정" description="운영 콘솔 환경 및 배포 정보">
+    <AdminShellLayout title="설정" description="운영 콘솔 환경 및 배포 정보">
       <div className="max-w-xl space-y-4">
         <Card>
           <CardHeader>
@@ -39,6 +39,6 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
       </div>
-    </AdminShell>
+    </AdminShellLayout>
   );
 }

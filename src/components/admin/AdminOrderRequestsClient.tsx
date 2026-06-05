@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
+import type { AdminNavBadges } from "@/lib/admin/data/nav-badges";
 import { OrderRequestDetailPanel } from "@/components/admin/order-requests/OrderRequestDetailPanel";
 import { OrderRequestList } from "@/components/admin/order-requests/OrderRequestList";
 import {
@@ -31,9 +32,10 @@ import { bm } from "@/lib/design-tokens";
 type Props = {
   /** 개발용: ?fallback=local 일 때만 localStorage 사용 */
   allowLocalFallback?: boolean;
+  navBadges?: AdminNavBadges;
 };
 
-export function AdminOrderRequestsClient({ allowLocalFallback }: Props) {
+export function AdminOrderRequestsClient({ allowLocalFallback, navBadges }: Props) {
   const [records, setRecords] = useState<OrderRequestRecord[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [filter, setFilter] = useState<AdminOrderRequestFilterKey>("all");
@@ -142,6 +144,7 @@ export function AdminOrderRequestsClient({ allowLocalFallback }: Props) {
     <AdminShell
       title="상담 주문 요청 (상세)"
       description="주문 요청 API · 상세 패널·상태 변경 — 결제 완료가 아닌 상담 접수 기준"
+      navBadges={navBadges}
     >
       <div className="mx-auto max-w-6xl space-y-4">
         {usingLocalFallback ? (

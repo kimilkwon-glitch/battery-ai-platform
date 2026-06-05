@@ -8,28 +8,28 @@ export const WORKFLOW_STATUS_LABELS: Record<
   { label: string; className: string }
 > = {
   pending_review: {
-    label: "확인 필요",
-    className: "bg-amber-50 text-amber-950 ring-amber-200",
-  },
-  contacted: {
-    label: "연락 완료",
+    label: "접수",
     className: "bg-blue-50 text-blue-900 ring-blue-200",
   },
-  waiting_customer: {
-    label: "고객 응답 대기",
+  contacted: {
+    label: "연락완료",
     className: "bg-violet-50 text-violet-900 ring-violet-200",
   },
+  waiting_customer: {
+    label: "확인중",
+    className: "bg-amber-50 text-amber-950 ring-amber-200",
+  },
   quoted: {
-    label: "견적 안내",
-    className: "bg-indigo-50 text-indigo-900 ring-indigo-200",
+    label: "예약완료",
+    className: "bg-emerald-50 text-emerald-900 ring-emerald-200",
   },
   closed: {
-    label: "종료",
-    className: "bg-emerald-50 text-emerald-900 ring-emerald-200",
+    label: "작업완료",
+    className: "bg-slate-100 text-slate-700 ring-slate-200",
   },
   canceled: {
     label: "취소",
-    className: "bg-slate-200 text-slate-600 ring-slate-300",
+    className: "bg-red-50 text-red-800 ring-red-200",
   },
 };
 

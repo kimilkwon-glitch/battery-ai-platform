@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -10,24 +9,30 @@ type Props = {
   sublabel?: string;
 };
 
-const toneClass: Record<NonNullable<Props["tone"]>, string> = {
-  default: "text-slate-900",
-  warning: "text-amber-700",
-  danger: "text-red-700",
-  info: "text-blue-700",
+const valueToneClass: Record<NonNullable<Props["tone"]>, string> = {
+  default: "admin-stat-card__value--default",
+  warning: "admin-stat-card__value--warning",
+  danger: "admin-stat-card__value--danger",
+  info: "admin-stat-card__value--info",
 };
 
 export function AdminStatCard({ label, value, href, tone = "default", sublabel }: Props) {
+  const num = typeof value === "number" ? value : Number(value);
+  const isZero = !Number.isNaN(num) && num === 0;
+
   const inner = (
-    <Card className={cn(href && "transition-shadow hover:shadow-md")}>
-      <CardHeader className="pb-1">
-        <CardTitle className="text-xs font-semibold text-slate-500">{label}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className={cn("text-2xl font-black", toneClass[tone])}>{value}</p>
-        {sublabel ? <p className="mt-1 text-[10px] text-slate-500">{sublabel}</p> : null}
-      </CardContent>
-    </Card>
+    <div className="admin-stat-card h-full">
+      <p className="admin-stat-card__label">{label}</p>
+      <p
+        className={cn(
+          "admin-stat-card__value",
+          isZero ? "admin-stat-card__value--zero" : valueToneClass[tone],
+        )}
+      >
+        {value}
+      </p>
+      {sublabel ? <p className="admin-stat-card__sublabel">{sublabel}</p> : null}
+    </div>
   );
 
   if (href) {
