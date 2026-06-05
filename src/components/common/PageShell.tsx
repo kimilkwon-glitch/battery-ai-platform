@@ -16,6 +16,7 @@ export function PageShell({
   wide = false,
   showFooter = false,
   showPageHeader = true,
+  plainBg = false,
   zone = "default",
 }: {
   children: React.ReactNode;
@@ -32,9 +33,11 @@ export function PageShell({
   showPageHeader?: boolean;
   /** 기능별 포인트 컬러 (헤더 좌측 라인) */
   zone?: DesignZone;
+  /** true면 메시 그리드 없이 단색 배경 */
+  plainBg?: boolean;
 }) {
   return (
-    <main className={bm.pageBg}>
+    <main className={plainBg ? bm.pageBgPlain : bm.pageBg}>
       <PortalHeader
         title={pageLabel ?? title}
         showSearch={showSearch}
