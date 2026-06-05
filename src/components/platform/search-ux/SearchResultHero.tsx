@@ -5,8 +5,20 @@ import { SearchPhotoVerifyBar } from "@/components/platform/search-ux/SearchPhot
 import { SearchRecommendationNotes } from "@/components/platform/search-ux/SearchRecommendationNotes";
 import { SearchUxHeroCtas } from "@/components/platform/search-ux/SearchUxHeroCtas";
 import { SearchUxIntentBadge } from "@/components/platform/search-ux/SearchUxIntentBadge";
+import { VehicleSearchCatalogSection } from "@/components/vehicle/VehicleSearchCatalogSection";
 import { bm } from "@/lib/design-tokens";
 import type { SearchPageResults } from "@/lib/search-page-results";
+
+function vehicleSlugFromHref(href: string | undefined | null): string | null {
+  if (!href) return null;
+  const match = href.match(/\/vehicle\/([^/?#]+)/);
+  if (!match?.[1]) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
 
 type Props = {
   data: SearchPageResults;
@@ -106,6 +118,25 @@ export function SearchResultHero({ data, fallbackCtas }: Props) {
   }
 
   if (batteryFocus) {
+    const vehicleSlug = vehicleSlugFromHref(data.recognizedVehicle?.href);
+    const useVehicleCatalog =
+      ux.mode === "vehicle" &&
+      Boolean(vehicleSlug) &&
+      !data.compareBatteryCodes?.length &&
+      !(data.recognizedVehicle?.candidateBatteryCodes && data.recognizedVehicle.candidateBatteryCodes.length >= 2);
+
+    if (useVehicleCatalog && vehicleSlug) {
+      return (
+        <VehicleSearchCatalogSection
+          slug={vehicleSlug}
+          displayQuery={displayQuery}
+          intentLabel={ux.intentBadge}
+          highlightFuel={data.recognizedVehicle?.fuelLabel}
+          extraChips={ux.conditionChips}
+        />
+      );
+    }
+
     return (
       <div
         className="motion-safe:animate-[page-enter_0.35s_ease-out_forwards]"

@@ -3,9 +3,11 @@ import { AppIcon } from "@/components/common/AppIcon";
 import { Breadcrumb, PortalHeader } from "@/components/portal";
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 import { VehicleActivityTracker } from "@/components/vehicle/VehicleActivityTracker";
+import { SearchConditionChips } from "@/components/platform/search-ux/SearchConditionChips";
 import { VehicleCustomerBatteryShop } from "@/components/vehicle/VehicleCustomerBatteryShop";
-import { VehicleDetailBatteryRecommendation } from "@/components/vehicle/VehicleDetailBatteryRecommendation";
+import { VehicleSearchCatalogFooter } from "@/components/vehicle/VehicleSearchCatalogFooter";
 import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
+import { buildVehicleFuelChips } from "@/lib/vehicle-fuel-chips";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 import { bm } from "@/lib/design-tokens";
 import { getVehicleAsset } from "@/lib/car-assets";
@@ -75,6 +77,7 @@ export default async function VehicleDetailPage({
   const manufacturer =
     batteryPage.profile?.brand ?? vehicle.manufacturer ?? (asset ? "확인" : "");
   const yearRange = batteryPage.profile?.yearRange ?? vehicle.year ?? asset?.yearRange ?? "";
+  const fuelChips = buildVehicleFuelChips(slug, batteryPage.fuelGroups, highlightFuel, yearChipId);
 
   return (
     <main
@@ -138,15 +141,21 @@ export default async function VehicleDetailPage({
                     </div>
                   ))}
               </dl>
-              {repBattery ? (
-                <p className="mt-3 inline-flex rounded-full bg-blue-50 px-3 py-1.5 text-sm font-black text-blue-900 ring-1 ring-blue-100">
-                  대표 규격 {repBattery}
-                </p>
-              ) : null}
-              {highlightFuel ? (
-                <p className="mt-3 rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900">
-                  선택 연료: {highlightFuel}
-                </p>
+              {highlightFuel || repBattery ? (
+                <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  {highlightFuel ? (
+                    <div className="flex gap-1.5">
+                      <dt className="font-bold text-slate-500">선택 연료</dt>
+                      <dd className="font-black text-blue-800">{highlightFuel}</dd>
+                    </div>
+                  ) : null}
+                  {repBattery ? (
+                    <div className="flex gap-1.5">
+                      <dt className="font-bold text-slate-500">추천 규격</dt>
+                      <dd className="font-black text-blue-800">{repBattery}</dd>
+                    </div>
+                  ) : null}
+                </dl>
               ) : null}
               <div className="mt-4">
                 <SaveVehicleRegisterButton
@@ -163,20 +172,18 @@ export default async function VehicleDetailPage({
           </div>
         </div>
 
-        <VehicleDetailBatteryRecommendation
-          slug={slug}
-          fuel={highlightFuel}
-          yearChipId={yearChipId}
-          vehicleTitle={displayTitle}
-        />
+        {fuelChips.length > 0 ? <SearchConditionChips chips={fuelChips} /> : null}
 
-        <VehicleCustomerBatteryShop
-          slug={slug}
-          vehicleTitle={displayTitle}
-          fuelGroups={batteryPage.fuelGroups}
-          highlightFuel={highlightFuel}
-          yearRange={yearRange}
-        />
+        <div className="space-y-4" id="fuel-batteries">
+          <VehicleCustomerBatteryShop
+            slug={slug}
+            vehicleTitle={displayTitle}
+            fuelGroups={batteryPage.fuelGroups}
+            highlightFuel={highlightFuel}
+            yearRange={yearRange}
+          />
+          <VehicleSearchCatalogFooter />
+        </div>
       </section>
     </main>
   );

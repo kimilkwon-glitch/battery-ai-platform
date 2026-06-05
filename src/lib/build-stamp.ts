@@ -4,4 +4,4 @@ import stampConfig from "../../build-stamp.json";
 export const BUILD_STAMP = stampConfig.stamp;
 
 /** 빌드 캐시 무효화용 — stamp 변경 시 layout/ footer에 반영되도록 */
-export const BUILD_STAMP_REV = "BM-MOBILE-REVIEW-CAROUSEL-20260530-V1" as const;
+export const BUILD_STAMP_REV = "BM-SEARCH-RESULT-CATALOG-SLIM-20260530-V1" as const;

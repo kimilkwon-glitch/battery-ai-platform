@@ -221,9 +221,6 @@ export function VehicleCustomerBatteryShop({
 
             {brandOffers.length > 0 ? (
               <>
-                <p className="mt-3 text-sm font-medium leading-relaxed text-slate-600">
-                  같은 규격({batteryCode}) — 브랜드별 상품 중 선택해 주문할 수 있습니다.
-                </p>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
                   {brandOffers.map((b) => (
                     <BrandProductCard
@@ -261,14 +258,6 @@ export function VehicleCustomerBatteryShop({
         );
       })}
 
-      <section className={`${bm.card} ${bm.cardPad} flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between`}>
-        <p className="text-sm font-medium text-slate-600">
-          규격이 맞는지 확실하지 않으면 차량 사진과 함께 상담해 주세요.
-        </p>
-        <Link href={HUB_STORE_DETAIL} className={`${bm.btnSecondary} shrink-0 text-sm font-black`}>
-          상담하기
-        </Link>
-      </section>
     </div>
   );
 }
