@@ -3616,10 +3616,12 @@
 
 @media (max-width: 639px) {
   .home-hero-carousel__viewport--unified {
-    --hero-banner-aspect: 1916 / 821;
+    /* 모바일 카드 — 세로 확보(16:10), 원본 와이드 이미지는 cover로 채움 */
+    --hero-banner-aspect: 16 / 10;
     aspect-ratio: var(--hero-banner-aspect);
-    max-height: min(54dvh, calc((100vw - 2rem) * 821 / 1916));
-    min-height: min(12.5rem, calc((100vw - 2rem) * 821 / 1916));
+    width: 100%;
+    max-height: min(56dvh, calc((100vw - 2rem) * 10 / 16));
+    min-height: min(14rem, calc((100vw - 2rem) * 10 / 16));
   }
 
   .home-hero-slide__img {
