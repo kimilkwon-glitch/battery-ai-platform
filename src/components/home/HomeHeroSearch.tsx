@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HomeSearchTypeDropdown } from "@/components/home/HomeSearchTypeDropdown";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
-import { HOME_SEARCH_PLACEHOLDERS, type HomeSearchType } from "@/lib/home-search-types";
+import {
+  HOME_SEARCH_PLACEHOLDERS,
+  HOME_SEARCH_PLACEHOLDERS_MOBILE,
+  type HomeSearchType,
+} from "@/lib/home-search-types";
 
 type Props = {
   inputClassName?: string;
@@ -12,7 +16,19 @@ type Props = {
 
 export function HomeHeroSearch({ inputClassName, onAutocompleteOpenChange }: Props) {
   const [searchType, setSearchType] = useState<HomeSearchType>("all");
-  const placeholder = HOME_SEARCH_PLACEHOLDERS[searchType];
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  const placeholder = isMobile
+    ? HOME_SEARCH_PLACEHOLDERS_MOBILE[searchType]
+    : HOME_SEARCH_PLACEHOLDERS[searchType];
 
   const compoundInputClass =
     inputClassName ??

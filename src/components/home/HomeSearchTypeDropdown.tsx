@@ -202,13 +202,14 @@ export function HomeSearchTypeDropdown({ value, onChange }: Props) {
   ) : null;
 
   return (
-    <div ref={wrapRef} className="home-search-type-dropdown relative z-[2] shrink-0 sm:w-[8.125rem]">
+    <div ref={wrapRef} className="home-search-type-dropdown relative z-[2] shrink-0">
       <button
         ref={triggerRef}
         type="button"
         id="home-search-type"
         className={clsx(
-          "home-search-type-trigger flex h-full min-h-0 w-full items-center gap-1.5 rounded-t-2xl border-0 bg-slate-50/90 text-left transition sm:rounded-l-2xl sm:rounded-tr-none",
+          "home-search-type-trigger flex h-full min-h-0 w-full items-center gap-1 border-0 bg-slate-50/90 text-left transition",
+          "rounded-l-[1.375rem] rounded-r-none",
           "hover:bg-slate-100/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-400/70",
           open && "bg-white ring-2 ring-inset ring-blue-400/50",
         )}
@@ -219,7 +220,7 @@ export function HomeSearchTypeDropdown({ value, onChange }: Props) {
         onClick={() => setOpen((v) => !v)}
         onKeyDown={onTriggerKeyDown}
       >
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-white text-blue-700 ring-1 ring-slate-200/80">
+        <span className="home-search-type-trigger__icon hidden size-7 shrink-0 items-center justify-center rounded-lg bg-white text-blue-700 ring-1 ring-slate-200/80 sm:flex">
           <SelectedIcon className="size-3.5" aria-hidden />
         </span>
         <span className="min-w-0 flex-1 truncate text-sm font-bold text-slate-800">{selected.label}</span>

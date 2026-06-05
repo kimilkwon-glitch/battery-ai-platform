@@ -1512,13 +1512,13 @@
 
 .home-hero-search-compound--premium {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: stretch;
   width: 100%;
   min-width: 0;
   overflow: hidden;
   border: 2px solid #3b82f6;
-  border-radius: 1.5rem;
+  border-radius: 1.375rem;
   background: #ffffff;
   box-shadow:
     0 10px 32px rgba(37, 99, 235, 0.12),
@@ -1531,7 +1531,7 @@
 
 @media (min-width: 640px) {
   .home-hero-search-compound--premium {
-    flex-direction: row;
+    border-radius: 1.5rem;
   }
 }
 
@@ -1547,13 +1547,16 @@
 
 .home-hero-search-compound--premium .home-search-type-dropdown {
   flex: 0 0 auto;
-  width: 100%;
+  width: 5.375rem;
+  max-width: 5.375rem;
   overflow: visible;
+  border-right: 1px solid rgb(226 232 240 / 0.9);
 }
 
 @media (min-width: 640px) {
   .home-hero-search-compound--premium .home-search-type-dropdown {
     width: 9.25rem;
+    max-width: 9.25rem;
   }
 }
 
@@ -1586,12 +1589,12 @@
 }
 
 .home-hero-search-compound--premium .home-hero-search-submit {
-  flex: 0 0 5.75rem;
-  width: 5.75rem;
-  min-width: 5.75rem;
-  max-width: 5.75rem;
-  padding-inline: 0.875rem;
-  border-radius: 0 0 1.375rem 0;
+  flex: 0 0 4.75rem;
+  width: 4.75rem;
+  min-width: 4.75rem;
+  max-width: 4.75rem;
+  padding-inline: 0.5rem;
+  border-radius: 0 1.25rem 1.25rem 0;
   box-shadow: none;
   outline: none;
 }
@@ -2720,12 +2723,12 @@
 /* 메인 — 실제 교체 후기·작업 사례 (타이어픽형 신뢰 카드) */
 .home-replacement-stories {
   width: 100%;
-  padding: 1rem 0.25rem 0;
+  padding: 1rem 0.25rem 5.5rem;
 }
 
 @media (min-width: 640px) {
   .home-replacement-stories {
-    padding: 1.5rem 0.625rem 0;
+    padding: 1.5rem 0.625rem 2rem;
   }
 }
 
@@ -2939,7 +2942,8 @@
 .home-replacement-stories__actions--mobile {
   justify-content: stretch;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  padding-bottom: 0.25rem;
 }
 
 .home-replacement-stories__actions--mobile .home-replacement-stories__btn {
@@ -3019,10 +3023,10 @@
 
 .home-replacement-stories__scroller {
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   margin-inline: -0.25rem;
   padding-inline: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-bottom: 0.5rem;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
@@ -3250,6 +3254,51 @@
   text-decoration: underline;
 }
 
+@media (max-width: 639px) {
+  .home-replacement-stories__layout {
+    padding-bottom: 1.375rem;
+  }
+
+  .home-trust-story-card__inner {
+    padding: 1rem 0.875rem 0.875rem;
+    gap: 0.625rem;
+  }
+
+  .home-trust-story-card__customer {
+    font-size: 0.75rem;
+  }
+
+  .home-trust-story-card__quote {
+    font-size: 0.875rem;
+    line-height: 1.42;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    display: block;
+  }
+
+  .home-trust-story-card__work {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .home-trust-story-card__work-line {
+    font-size: 0.6875rem;
+  }
+
+  .home-trust-story-card__work-line--place {
+    font-size: 0.75rem;
+  }
+
+  .home-trust-story-card__badges li {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .home-replacement-stories__btn {
+    min-height: 2.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
 .home-hero-stack {
   display: flex;
   flex-direction: column;
@@ -3257,7 +3306,7 @@
   max-width: 100%;
   margin-inline: auto;
   margin-bottom: 0;
-  gap: 1.375rem;
+  gap: 0.875rem;
 }
 
 @media (min-width: 640px) {
@@ -3298,7 +3347,7 @@
 
 .home-main-hero {
   margin-top: 0;
-  margin-bottom: 2.75rem;
+  margin-bottom: 1.75rem;
   padding-bottom: 0;
 }
 
@@ -3567,18 +3616,51 @@
 
 @media (max-width: 639px) {
   .home-hero-carousel__viewport--unified {
-    --hero-banner-aspect: 16 / 9;
+    --hero-banner-aspect: 1916 / 821;
     aspect-ratio: var(--hero-banner-aspect);
-    max-height: min(46dvh, calc(100vw * 9 / 16));
+    max-height: min(54dvh, calc((100vw - 2rem) * 821 / 1916));
+    min-height: min(12.5rem, calc((100vw - 2rem) * 821 / 1916));
   }
 
   .home-hero-slide__img {
     object-fit: cover;
-    object-position: center 42%;
+    object-position: center center;
   }
 
   .home-hero-carousel__shell {
-    padding-inline: 2.25rem;
+    padding-inline: 0;
+  }
+
+  .home-hero-carousel__nav {
+    width: 2rem;
+    height: 2rem;
+    margin-top: -1rem;
+    border-width: 1.5px;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.16);
+  }
+
+  .home-hero-carousel__nav .size-5 {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .home-hero-carousel__nav--prev {
+    left: 0.5rem;
+  }
+
+  .home-hero-carousel__nav--next {
+    right: 0.5rem;
+  }
+
+  .home-hero-carousel__frame {
+    padding: 0.375rem;
+  }
+
+  .home-hero-carousel__promo-label {
+    top: 0.625rem;
+    left: 0.625rem;
+    font-size: 0.5625rem;
+    padding: 0.2rem 0.5rem;
   }
 }
 
@@ -3923,18 +4005,50 @@
   }
 }
 
+/* 모바일 — 검색창 한 줄 compact (카테고리 | input | 검색) */
 @media (max-width: 639px) {
-  .home-hero-search-compound--premium .home-main-search-input {
-    border-radius: 0 0 0 1.375rem;
+  .home-hero-search-compound--premium {
+    min-height: 3.5rem;
+    max-height: 3.5rem;
   }
 
   .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
-    min-height: 3.75rem;
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    gap: 0.25rem;
+    padding-inline: 0.625rem;
   }
 
-  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input,
+  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger .truncate {
+    font-size: 0.8125rem;
+    font-weight: 800;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    padding-inline: 0.75rem;
+    font-size: 0.9375rem;
+    border-radius: 0;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input::placeholder {
+    font-size: 0.875rem;
+  }
+
   .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
-    min-height: 3.75rem;
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    min-width: 4.75rem;
+    padding-inline: 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0 1.25rem 1.25rem 0;
+  }
+
+  .home-hero-search-compound--premium .home-hero-search-field-wrap {
+    border-top: none;
+    min-width: 0;
+    flex: 1 1 auto;
   }
 }
 

@@ -216,7 +216,7 @@ export function VehicleSearchBox({
 
     return (
       <div
-        className={`relative ${compoundBar ? "home-hero-search-field-wrap border-t border-slate-200/90 sm:border-t-0" : ""} ${className}`}
+        className={`relative ${compoundBar ? "home-hero-search-field-wrap" : ""} ${className}`}
         ref={wrapRef}
       >
         <form
