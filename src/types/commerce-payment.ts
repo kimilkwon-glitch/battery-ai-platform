@@ -75,6 +75,7 @@ export type CommerceOrderRecord = {
   finalAmount: number | null;
   address?: string;
   store?: string;
+  selectedStore?: OrderRequestStoreId;
   requestMemo?: string;
   itemsJson: BatteryCartItem[];
   priceLines: CommerceOrderPriceSnapshot[];

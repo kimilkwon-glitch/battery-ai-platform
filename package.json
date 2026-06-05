@@ -33,9 +33,11 @@
     "audit:operational": "node tools/generate-operational-audit.mjs",
     "e2e:customer-flow": "node tools/e2e-customer-flow-check.mjs",
     "audit:button-actions": "node tools/audit-button-actions.mjs",
-    "audit:full-ux": "node tools/full-customer-ux-audit.mjs"
+    "audit:full-ux": "node tools/full-customer-ux-audit.mjs",
+    "db:migrate:commerce": "npx tsx scripts/migrate-commerce-db.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@tabler/icons-react": "^3.44.0",
     "@tosspayments/tosspayments-sdk": "^2.7.0",
     "class-variance-authority": "^0.7.1",

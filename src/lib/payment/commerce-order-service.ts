@@ -1,6 +1,10 @@
 import { randomBytes } from "node:crypto";
 import { computeServerOrderAmount } from "@/lib/payment/compute-order-amount";
-import { isCommerceOrderCreateEnabled, isTossPaymentEnabled } from "@/lib/payment/payment-config";
+import {
+  isCommerceOrderCreateEnabled,
+  isCommerceOrderStoreEnabled,
+  isTossPaymentEnabled,
+} from "@/lib/payment/payment-config";
 import {
   paymentFailUrl,
   paymentSuccessUrl,
@@ -84,6 +88,14 @@ export async function createCommerceOrder(
     };
   }
 
+  if (!isCommerceOrderStoreEnabled()) {
+    return {
+      ok: false,
+      status: 503,
+      message: "주문 저장소를 준비 중입니다. 잠시 후 다시 시도해 주세요.",
+    };
+  }
+
   const amounts = computeServerOrderAmount(body.cartItems, body.fulfillmentType);
   if (amounts.finalAmount == null) {
     return {
@@ -136,6 +148,7 @@ export async function createCommerceOrder(
     finalAmount: amounts.finalAmount,
     address: resolveAddress(body),
     store: resolveStore(body),
+    selectedStore: body.selectedStore ?? body.addressInfo?.storeId,
     requestMemo: body.requestMemo?.trim() || body.customerInfo.orderMemo?.trim(),
     itemsJson: body.cartItems,
     priceLines: amounts.priceLines,
@@ -151,8 +164,16 @@ export async function createCommerceOrder(
     updatedAt: now,
   };
 
-  const saved = await storeCommerceOrderCreate(record);
-  return { ok: true, order: saved };
+  try {
+    const saved = await storeCommerceOrderCreate(record);
+    return { ok: true, order: saved };
+  } catch {
+    return {
+      ok: false,
+      status: 503,
+      message: "주문 정보를 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    };
+  }
 }
 
 export async function prepareCommercePayment(
@@ -167,6 +188,14 @@ export async function prepareCommercePayment(
       ok: false,
       status: 503,
       message: "결제 서비스를 준비 중입니다. 잠시 후 다시 시도해 주세요.",
+    };
+  }
+
+  if (!isCommerceOrderStoreEnabled()) {
+    return {
+      ok: false,
+      status: 503,
+      message: "주문 저장소를 준비 중입니다. 잠시 후 다시 시도해 주세요.",
     };
   }
 

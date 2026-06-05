@@ -28,6 +28,11 @@ export function isCommerceOrderCreateEnabled(): boolean {
   return true;
 }
 
+/** Postgres(DATABASE_URL) 영구 저장소 — production 결제 필수 */
+export function isCommerceOrderStoreEnabled(): boolean {
+  return Boolean(process.env.DATABASE_URL?.trim());
+}
+
 export function getSiteOrigin(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
     return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
@@ -39,6 +44,7 @@ export function getSiteOrigin(): string {
 }
 
 export const PAYMENT_ENV_KEYS = [
+  "DATABASE_URL",
   "PAYMENT_PROVIDER",
   "NEXT_PUBLIC_TOSS_CLIENT_KEY",
   "TOSS_SECRET_KEY",
