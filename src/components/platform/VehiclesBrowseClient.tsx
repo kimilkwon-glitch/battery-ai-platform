@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ExploreVehicleCard } from "@/components/platform/ExploreVehicleCard";
+import { ManufacturerVehicleRail } from "@/components/platform/ManufacturerVehicleRail";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import {
   filterBrowseItems,
@@ -13,7 +14,6 @@ import {
   type VehiclesBrandFilter,
 } from "@/lib/vehicles-browse-data";
 import { bm } from "@/lib/design-tokens";
-import { useState } from "react";
 
 export function VehiclesBrowseClient() {
   const searchParams = useSearchParams();
@@ -29,46 +29,33 @@ export function VehiclesBrowseClient() {
   }
 
   return (
-    <div className="vehicle-search-hub space-y-6">
+    <div className="vehicle-search-hub">
       <section className="vehicle-search-hub__hero">
-        <p className="vehicle-search-hub__eyebrow">차종검색</p>
-        <h2 className="vehicle-search-hub__title">내 차량을 빠르게 찾아보세요</h2>
-        <p className="vehicle-search-hub__lead">
-          차량명·연식·모델명으로 검색하거나, 제조사별 목록에서 바로 선택할 수 있습니다.
-        </p>
-        <div className="vehicle-search-hub__search">
-          <VehicleSearchBox
-            placeholder="예: 그랜저 IG, 싼타페 TM, K5, 스타리아"
-            showButton
-            buttonLabel="검색"
-            shimmerSubmit
-            className="vehicle-search-hub__search-box"
-            inputClassName="vehicle-search-hub__search-input"
-          />
+        <div className="vehicle-search-hub__hero-inner">
+          <h1 className="vehicle-search-hub__title">차종검색</h1>
+          <p className="vehicle-search-hub__lead">
+            차량명이나 연식, 모델명으로 내 차에 맞는 배터리를 확인해보세요.
+          </p>
+          <div className="vehicle-search-hub__search">
+            <VehicleSearchBox
+              placeholder="예: 그랜저 IG, 싼타페 TM, K5 2세대, 스타리아"
+              showButton
+              buttonLabel="검색"
+              shimmerSubmit
+              className="vehicle-search-hub__search-box"
+              inputClassName="vehicle-search-hub__search-input"
+            />
+          </div>
         </div>
       </section>
 
-      <div className="vehicle-search-hub__sections space-y-8">
+      <div className="vehicle-search-hub__sections">
         {manufacturerSections.map((section) => (
-          <section key={section.id} className="vehicle-search-hub__manufacturer" aria-label={section.label}>
-            <h3 className="vehicle-search-hub__manufacturer-name">{section.label}</h3>
-            <div className="vehicle-search-hub__divider" aria-hidden />
-            <div className="vehicle-search-hub__row">
-              {section.items.map((item) => (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  className="vehicle-search-hub__pill"
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </div>
-          </section>
+          <ManufacturerVehicleRail key={section.id} label={section.label} items={section.items} />
         ))}
       </div>
 
-      <p className="text-center text-sm font-semibold text-slate-500">
+      <p className="vehicle-search-hub__footer-note">
         원하는 차종이 없으면{" "}
         <Link className="font-black text-blue-600 hover:underline" href="/search">
           통합검색
