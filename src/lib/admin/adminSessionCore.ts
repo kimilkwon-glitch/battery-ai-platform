@@ -1,6 +1,6 @@
 /**
  * 관리자 세션 — Edge(middleware) / Node(API) 공통 (Web Crypto)
- * 원본 ADMIN_ACCESS_KEY는 서버 env만 사용. 클라이언트 번들에 포함하지 않음.
+ * 세션 서명은 ADMIN_SESSION_SECRET(서버 env). 클라이언트 번들에 포함하지 않음.
  */
 
 export const ADMIN_SESSION_COOKIE = "bm_admin_session" as const;

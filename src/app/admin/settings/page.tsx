@@ -25,8 +25,11 @@ export default function AdminSettingsPage() {
             <CardTitle>인증</CardTitle>
           </CardHeader>
           <CardContent className="text-xs text-slate-600">
-            <p>세션 쿠키(bm_admin_session) + ADMIN_ACCESS_KEY 기반 단일 운영자 인증</p>
-            <p className="mt-2 text-amber-700">TODO: 다중 운영자 계정·RBAC·감사 로그</p>
+            <p>
+              httpOnly 세션 쿠키(bm_admin_session) · ADMIN_USERNAME + ADMIN_PASSWORD_HASH ·
+              ADMIN_SESSION_SECRET
+            </p>
+            <p className="mt-2 text-slate-500">다중 운영자·RBAC·감사 로그는 추후 확장 예정</p>
           </CardContent>
         </Card>
         <Card>
@@ -35,7 +38,7 @@ export default function AdminSettingsPage() {
           </CardHeader>
           <CardContent className="text-xs text-slate-600">
             <p>주문 요청: .data/order-requests.json (개발용)</p>
-            <p className="mt-2 text-amber-700">TODO: Supabase/Postgres 영구 DB 연동</p>
+            <p className="mt-2 text-slate-500">영구 DB(Supabase/Postgres) 연동은 추후 적용 예정</p>
           </CardContent>
         </Card>
       </div>

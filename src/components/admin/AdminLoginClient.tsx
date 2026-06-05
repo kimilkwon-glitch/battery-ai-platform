@@ -4,11 +4,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { bm } from "@/lib/design-tokens";
 
+const LOGIN_ERROR = "아이디 또는 비밀번호를 확인해 주세요.";
+
 export function AdminLoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/admin";
-  const [accessKey, setAccessKey] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -22,7 +25,10 @@ export function AdminLoginClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ accessKey: accessKey.trim() }),
+        body: JSON.stringify({
+          username: username.trim(),
+          password: password.trim(),
+        }),
       });
       if (!res.ok) {
         setError(true);
@@ -38,29 +44,46 @@ export function AdminLoginClient() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <main
+      className="min-h-screen bg-slate-50 p-4 sm:p-8"
+      data-admin-console
+      data-page="admin-login"
+    >
       <div className="mx-auto max-w-md">
         <div className={`${bm.card} ${bm.cardPad} space-y-4`}>
           <p className={bm.label}>Battery Manager</p>
-          <h1 className="text-lg font-black text-slate-950">관리자 접근이 필요합니다</h1>
+          <h1 className="text-lg font-black text-slate-950">관리자 로그인</h1>
           <p className="text-sm font-medium text-slate-600">
-            이 페이지는 내부 운영 확인용입니다. 발급받은 접근 키를 입력해 주세요.
+            운영 콘솔은 인증된 관리자만 접근할 수 있습니다.
           </p>
           <form className="space-y-3" onSubmit={(e) => void handleSubmit(e)}>
             <label className="block text-xs font-black text-slate-800">
-              접근 키
+              관리자 아이디
+              <input
+                type="text"
+                name="username"
+                autoComplete="username"
+                required
+                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </label>
+            <label className="block text-xs font-black text-slate-800">
+              비밀번호
               <input
                 type="password"
+                name="password"
                 autoComplete="current-password"
                 required
                 className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium"
-                value={accessKey}
-                onChange={(e) => setAccessKey(e.target.value)}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </label>
             {error ? (
               <p className="text-xs font-bold text-red-700" role="alert">
-                접근 정보를 확인할 수 없습니다.
+                {LOGIN_ERROR}
               </p>
             ) : null}
             <button
@@ -68,13 +91,9 @@ export function AdminLoginClient() {
               disabled={submitting}
               className={`${bm.btnNavy} w-full justify-center py-3 text-sm disabled:opacity-50`}
             >
-              {submitting ? "확인 중…" : "접근하기"}
+              {submitting ? "확인 중…" : "로그인"}
             </button>
           </form>
-          <p className="text-[10px] font-medium text-slate-500">
-            운영 환경에서는 ADMIN_ACCESS_KEY 환경변수로 키를 설정합니다. 키는 브라우저에
-            저장되지 않으며 httpOnly 세션 쿠키만 사용합니다.
-          </p>
         </div>
       </div>
     </main>

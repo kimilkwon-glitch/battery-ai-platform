@@ -28,6 +28,14 @@ export function normalizePhoneDigits(phone: string): string {
 }
 
 /** 고객명 일부 마스킹 */
+/** 출장 지역·주소 일부 마스킹 */
+export function maskRequestedRegion(region: string | undefined): string | undefined {
+  const trimmed = region?.trim();
+  if (!trimmed) return undefined;
+  if (trimmed.length <= 6) return `${trimmed.slice(0, 2)}***`;
+  return `${trimmed.slice(0, 8)}…`;
+}
+
 export function maskCustomerName(name: string): string {
   const trimmed = name.trim();
   if (!trimmed) return "고객";
@@ -65,7 +73,7 @@ export function toCustomerOrderRequestLookup(
       record.storeId && record.storeId !== "undecided"
         ? STORE_LABELS[record.storeId]
         : undefined,
-    requestedRegion: record.requestedRegion,
+    requestedRegion: maskRequestedRegion(record.requestedRegion),
     preferredTime: record.preferredTime,
     customerMemo: record.memo?.trim() || undefined,
   };

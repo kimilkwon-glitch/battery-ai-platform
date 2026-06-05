@@ -1,35 +1,38 @@
 import "server-only";
 
-import { timingSafeEqual } from "node:crypto";
+import {
+  getAdminSessionSecret,
+  isAdminAuthConfigured,
+  verifyAdminApiKeyInput,
+  verifyAdminUsernameInput,
+} from "@/lib/admin/adminCredentials";
+import { verifyAdminPasswordInput } from "@/lib/admin/adminPassword.server";
 
-const DEV_FALLBACK = "battery-manager-admin";
+export { getAdminSessionSecret, isAdminAuthConfigured };
 
-/**
- * 서버 전용 관리자 비밀키 (ADMIN_ACCESS_KEY)
- * NEXT_PUBLIC_* 사용 금지 — 클라이언트 번들에 노출되지 않음.
- */
+/** @deprecated — 세션 secret은 getAdminSessionSecret 사용 */
 export function getAdminAccessSecret(): string {
-  const fromEnv = process.env.ADMIN_ACCESS_KEY?.trim();
-  if (fromEnv) return fromEnv;
-  if (process.env.NODE_ENV === "production") {
-    return "";
-  }
-  return DEV_FALLBACK;
+  return getAdminSessionSecret();
 }
 
 export function isAdminAccessConfigured(): boolean {
-  return getAdminAccessSecret().length > 0;
+  return isAdminAuthConfigured();
 }
 
-export function verifyAccessKeyInput(key: string | undefined | null): boolean {
-  const secret = getAdminAccessSecret();
-  if (!secret || !key?.trim()) return false;
-  const a = Buffer.from(key.trim());
-  const b = Buffer.from(secret);
-  if (a.length !== b.length) return false;
-  try {
-    return timingSafeEqual(a, b);
-  } catch {
-    return false;
-  }
+/** 관리자 로그인 — 아이디·비밀번호 동시 검증 (구체적 실패 사유 노출 금지) */
+export function verifyAdminLogin(
+  username: string | undefined | null,
+  password: string | undefined | null,
+): boolean {
+  if (!isAdminAuthConfigured()) return false;
+  if (!verifyAdminUsernameInput(username)) return false;
+  return verifyAdminPasswordInput(password);
 }
+
+/** @deprecated — accessKey 단일 필드 1차 호환 */
+export function verifyAccessKeyInput(key: string | undefined | null): boolean {
+  if (!isAdminAuthConfigured()) return false;
+  return verifyAdminPasswordInput(key);
+}
+
+export { verifyAdminApiKeyInput };
