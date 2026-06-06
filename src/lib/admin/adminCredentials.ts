@@ -10,9 +10,6 @@ const DEV_SESSION_FALLBACK = "battery-manager-dev-session-secret";
 export function getAdminSessionSecret(): string {
   const fromEnv = process.env.ADMIN_SESSION_SECRET?.trim();
   if (fromEnv) return fromEnv;
-  /** @deprecated 1차 호환 — ADMIN_ACCESS_KEY 단일 키 배포 */
-  const legacy = process.env.ADMIN_ACCESS_KEY?.trim();
-  if (legacy) return legacy;
   if (process.env.NODE_ENV === "production") return "";
   return DEV_SESSION_FALLBACK;
 }
@@ -20,8 +17,6 @@ export function getAdminSessionSecret(): string {
 export function getAdminUsername(): string {
   const fromEnv = process.env.ADMIN_USERNAME?.trim();
   if (fromEnv) return fromEnv;
-  /** @deprecated ADMIN_ACCESS_KEY만 있는 배포 — 아이디 admin 고정 */
-  if (process.env.ADMIN_ACCESS_KEY?.trim()) return "admin";
   if (process.env.NODE_ENV !== "production") return DEV_USERNAME;
   return "";
 }
@@ -32,9 +27,6 @@ export function getAdminPasswordStored(): string {
   if (hash) return hash;
   const plain = process.env.ADMIN_PASSWORD?.trim();
   if (plain) return plain;
-  /** @deprecated 1차 호환 — ADMIN_ACCESS_KEY를 비밀번호로 쓰던 경우 */
-  const legacy = process.env.ADMIN_ACCESS_KEY?.trim();
-  if (legacy) return legacy;
   return "";
 }
 
