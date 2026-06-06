@@ -422,7 +422,7 @@ export function CheckoutOrderPage() {
             <PaymentPreparingButton
               disabled={!canConfirm}
               loading={navigating}
-              label="주문 정보 확인하기"
+              label="결제 예정금액 확인"
               onClick={handleGoToReview}
             />
           </div>
@@ -442,7 +442,7 @@ export function CheckoutOrderPage() {
           <PaymentPreparingButton
             disabled={!canConfirm}
             loading={navigating}
-            label="주문 정보 확인하기"
+            label="결제 예정금액 확인"
             onClick={handleGoToReview}
             className="flex-[2]"
           />

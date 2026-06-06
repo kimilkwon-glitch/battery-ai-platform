@@ -9,7 +9,10 @@ import {
   COMMERCE_LIFECYCLE_LABELS,
   COMMERCE_PAYMENT_STATUS_LABELS,
 } from "@/types/commerce-order";
-import type { AdminCommerceOrderListItem } from "@/lib/payment/commerce-order-admin-mapper";
+import {
+  returnBatteryLabel,
+  type AdminCommerceOrderListItem,
+} from "@/lib/payment/commerce-order-admin-mapper";
 
 const FULFILLMENT_LABELS: Record<string, string> = {
   delivery: "택배 발송",
@@ -57,12 +60,28 @@ export function AdminCommerceOrdersTable({ orders, selectedOrderId }: Props) {
         },
         { key: "customerName", label: "고객명", render: (o) => o.customerName },
         { key: "customerPhone", label: "연락처", render: (o) => o.customerPhone },
-        { key: "productName", label: "상품", render: (o) => o.productName },
+        {
+          key: "customerType",
+          label: "회원구분",
+          render: (o) => (o.customerType === "guest" ? "비회원" : "회원"),
+        },
+        {
+          key: "vehicleName",
+          label: "차량명",
+          render: (o) => o.vehicleName ?? "—",
+        },
         { key: "batteryCode", label: "규격", render: (o) => o.batteryCode },
+        { key: "brand", label: "브랜드", render: (o) => o.brand ?? "—" },
+        { key: "productName", label: "상품", render: (o) => o.productName },
         {
           key: "fulfillmentType",
           label: "수령/장착",
           render: (o) => FULFILLMENT_LABELS[o.fulfillmentType] ?? o.fulfillmentType,
+        },
+        {
+          key: "returnBatteryOption",
+          label: "반납 여부",
+          render: (o) => returnBatteryLabel(o.returnBatteryOption),
         },
         {
           key: "paymentStatus",

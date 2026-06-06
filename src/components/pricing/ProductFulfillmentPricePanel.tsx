@@ -25,6 +25,7 @@ type Props = {
   batteryCode: string;
   brandName?: string;
   returnOption: BatteryReturnOption;
+  fulfillmentMethod?: FulfillmentMethod;
   onFulfillmentChange?: (method: FulfillmentMethod) => void;
 };
 
@@ -32,9 +33,11 @@ export function ProductFulfillmentPricePanel({
   batteryCode,
   brandName,
   returnOption,
+  fulfillmentMethod: controlledMethod,
   onFulfillmentChange,
 }: Props) {
-  const [method, setMethod] = useState<FulfillmentMethod>("delivery");
+  const [internalMethod, setInternalMethod] = useState<FulfillmentMethod>("delivery");
+  const method = controlledMethod ?? internalMethod;
 
   const previewItem = useMemo(
     () =>
@@ -49,7 +52,7 @@ export function ProductFulfillmentPricePanel({
   );
 
   const selectMethod = (next: FulfillmentMethod) => {
-    setMethod(next);
+    if (controlledMethod == null) setInternalMethod(next);
     onFulfillmentChange?.(next);
   };
 

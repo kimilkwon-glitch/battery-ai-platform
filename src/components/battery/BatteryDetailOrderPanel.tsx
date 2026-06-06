@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { BatteryGallery } from "@/components/BatteryGallery";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
@@ -21,15 +20,28 @@ import { BatteryDetailPriceBlock } from "@/components/battery/BatteryDetailPrice
 import type { FulfillmentMethod } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
 
-export function BatteryDetailOrderPanel({ code }: { code: string }) {
-  const [returnOption, setReturnOption] = useState<BatteryReturnOption>("return");
-  const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("delivery");
+type Props = {
+  code: string;
+  returnOption: BatteryReturnOption;
+  onReturnOptionChange: (value: BatteryReturnOption) => void;
+  fulfillmentMethod: FulfillmentMethod;
+  onFulfillmentChange: (value: FulfillmentMethod) => void;
+};
+
+export function BatteryDetailOrderPanel({
+  code,
+  returnOption,
+  onReturnOptionChange,
+  fulfillmentMethod,
+  onFulfillmentChange,
+}: Props) {
   const spec = parseBatterySpecDisplay(code);
   const summary = getNormalizedBatterySummary(code);
   const imageSet = batteryImageSetForCode(code);
   const bat = getBattery(code);
   const brand = getBrand(bat.brandId);
-  const brandName = bat.brandId === "rocket" ? "로케트" : bat.brandId === "solite" ? "쏠라이트" : brand.displayName;
+  const brandName =
+    bat.brandId === "rocket" ? "로케트" : bat.brandId === "solite" ? "쏠라이트" : brand.displayName;
   const specLine = [
     brand.displayName,
     spec.typeLabel,
@@ -82,7 +94,7 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
                     key={opt.id}
                     type="button"
                     aria-pressed={selected}
-                    onClick={() => setReturnOption(opt.id)}
+                    onClick={() => onReturnOptionChange(opt.id)}
                     className={`battery-order-panel__return-btn${
                       selected ? " battery-order-panel__return-btn--active" : ""
                     }`}
@@ -98,7 +110,8 @@ export function BatteryDetailOrderPanel({ code }: { code: string }) {
             batteryCode={code}
             brandName={brandName}
             returnOption={returnOption}
-            onFulfillmentChange={setFulfillmentMethod}
+            fulfillmentMethod={fulfillmentMethod}
+            onFulfillmentChange={onFulfillmentChange}
           />
 
           <div className="battery-order-panel__cta-row mt-5">

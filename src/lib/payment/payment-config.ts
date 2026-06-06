@@ -25,6 +25,7 @@ export function isTossTestModeFlag(): boolean {
 
 export function isCommerceOrderCreateEnabled(): boolean {
   if (process.env.COMMERCE_ORDERS_DISABLED === "true") return false;
+  if (process.env.NEXT_PUBLIC_COMMERCE_PAYMENT_LIVE !== "true") return false;
   return true;
 }
 
@@ -54,5 +55,6 @@ export const PAYMENT_ENV_KEYS = [
   "INICIS_MID",
   "INICIS_SIGN_KEY",
   "COMMERCE_ORDERS_DISABLED",
+  "NEXT_PUBLIC_COMMERCE_PAYMENT_LIVE",
   "NEXT_PUBLIC_SITE_URL",
 ] as const;

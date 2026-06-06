@@ -29,13 +29,27 @@ export type AdminCommerceOrderListItem = {
   createdAt: string;
   customerName: string;
   customerPhone: string;
+  customerType: CommerceOrderRecord["customerType"];
+  vehicleName?: string;
   productName: string;
+  brand?: string;
   batteryCode: string;
   fulfillmentType: CommerceOrderRecord["fulfillmentType"];
+  returnBatteryOption: CommerceOrderRecord["returnBatteryOption"];
   orderStatus: CommerceOrderRecord["orderStatus"];
   paymentStatus: CommerceOrderRecord["paymentStatus"];
   finalAmount: number | null;
 };
+
+const RETURN_LABELS: Record<string, string> = {
+  return: "반납",
+  no_return: "미반납",
+  unknown: "미정",
+};
+
+export function returnBatteryLabel(option: string): string {
+  return RETURN_LABELS[option] ?? option;
+}
 
 export function commerceOrderToListItem(record: CommerceOrderRecord): AdminCommerceOrderListItem {
   return {
@@ -44,9 +58,13 @@ export function commerceOrderToListItem(record: CommerceOrderRecord): AdminComme
     createdAt: record.createdAt,
     customerName: record.customerName,
     customerPhone: record.customerPhone,
+    customerType: record.customerType,
+    vehicleName: record.vehicleName,
     productName: record.productName,
+    brand: record.brand,
     batteryCode: record.batteryCode,
     fulfillmentType: record.fulfillmentType,
+    returnBatteryOption: record.returnBatteryOption,
     orderStatus: record.orderStatus,
     paymentStatus: record.paymentStatus,
     finalAmount: record.finalAmount,

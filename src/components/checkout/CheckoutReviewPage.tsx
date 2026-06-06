@@ -4,8 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { OrderPriceBreakdown, OrderPriceTotalBar } from "@/components/pricing/OrderPriceBreakdown";
-import { PaymentPreparingNotice } from "@/components/checkout/PaymentPreparingNotice";
+import {
+  PaymentPreparingButton,
+  PaymentPreparingNotice,
+} from "@/components/checkout/PaymentPreparingNotice";
 import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
+import { isCommercePaymentLive } from "@/lib/payment/commerce-checkout-mode";
 import {
   apiCreateCommerceOrder,
   apiPrepareCommercePayment,
@@ -14,8 +18,8 @@ import {
   loadCheckoutSession,
   saveCheckoutOrderMeta,
 } from "@/lib/payment/checkout-session-storage";
-import { CHECKOUT_PAGE } from "@/lib/payment/payment-routes";
-import { paymentReadyUrl } from "@/lib/payment/payment-routes";
+import { CHECKOUT_PAGE, paymentReadyUrl } from "@/lib/payment/payment-routes";
+import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { CheckoutSessionPayload, CreateOrderRequestBody } from "@/types/commerce-payment";
 import { bm } from "@/lib/design-tokens";
 
@@ -72,10 +76,12 @@ function fulfillmentLocation(session: CheckoutSessionPayload): string {
 
 export function CheckoutReviewPage() {
   const router = useRouter();
+  const paymentLive = isCommercePaymentLive();
   const [session, setSession] = useState<CheckoutSessionPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [amountConfirmed, setAmountConfirmed] = useState(false);
 
   useEffect(() => {
     const loaded = loadCheckoutSession();
@@ -101,8 +107,14 @@ export function CheckoutReviewPage() {
     return CHECKOUT_PAGE;
   }, [session?.flow]);
 
-  const handlePreparePayment = async () => {
+  const handleConfirm = async () => {
     if (!session) return;
+
+    if (!paymentLive) {
+      setAmountConfirmed(true);
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
@@ -156,6 +168,36 @@ export function CheckoutReviewPage() {
     );
   }
 
+  if (amountConfirmed) {
+    return (
+      <div className="checkout-review-confirmed space-y-5 pb-8" data-page="checkout-review-confirmed">
+        <PaymentPreparingNotice />
+        <section className={`${bm.card} ${bm.cardPad} space-y-4 text-center`}>
+          <h1 className="text-lg font-black text-slate-950">결제 예정금액 확인 완료</h1>
+          <p className="text-sm font-medium text-slate-600">
+            주문 정보와 결제 예정금액을 확인하셨습니다. 결제는 아직 진행되지 않았습니다.
+          </p>
+          <p className="text-2xl font-black tabular-nums text-blue-700">
+            {session.estimatedTotal != null
+              ? formatPriceWon(session.estimatedTotal)
+              : "금액 확인 필요"}
+          </p>
+          <p className="text-xs font-medium text-slate-500">
+            {primary?.productName} · {fulfillmentLabel} · {usedLabel}
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <Link href={checkoutBackHref} className={`${bm.btnTertiary} justify-center text-sm`}>
+              주문서 수정하기
+            </Link>
+            <Link href="/cart" className={`${bm.btnNavy} justify-center text-sm`}>
+              장바구니로 이동
+            </Link>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="checkout-review pb-28 lg:pb-8" data-page="checkout-review">
       <div className="grid gap-5 lg:grid-cols-[1fr_320px] lg:items-start">
@@ -163,7 +205,9 @@ export function CheckoutReviewPage() {
           <section className={`${bm.card} ${bm.cardPad}`}>
             <h1 className="text-lg font-black text-slate-950">결제 전 최종 확인</h1>
             <p className="mt-2 text-sm font-medium text-slate-600">
-              아래 내용을 확인하신 뒤 결제 준비 단계로 이동합니다.
+              {paymentLive
+                ? "아래 내용을 확인하신 뒤 결제 준비 단계로 이동합니다."
+                : "아래 내용과 결제 예정금액을 최종 확인합니다."}
             </p>
           </section>
 
@@ -253,15 +297,13 @@ export function CheckoutReviewPage() {
             <Link href={checkoutBackHref} className={`${bm.btnTertiary} justify-center text-sm`}>
               이전으로 돌아가기
             </Link>
-            <button
-              type="button"
+            <PaymentPreparingButton
               disabled={submitting}
-              onClick={() => void handlePreparePayment()}
-              className={`${bm.btnNavy} flex-1 justify-center text-sm font-black disabled:opacity-50`}
-              data-checkout-review-submit
-            >
-              {submitting ? "준비 중…" : "결제 준비하기"}
-            </button>
+              loading={submitting}
+              label={paymentLive ? "결제 준비하기" : "결제 예정금액 확인"}
+              onClick={() => void handleConfirm()}
+              className="flex-1"
+            />
           </div>
         </div>
 
@@ -286,14 +328,13 @@ export function CheckoutReviewPage() {
           <Link href={checkoutBackHref} className={`${bm.btnTertiary} flex-1 justify-center text-xs`}>
             이전
           </Link>
-          <button
-            type="button"
+          <PaymentPreparingButton
             disabled={submitting}
-            onClick={() => void handlePreparePayment()}
-            className={`${bm.btnNavy} flex-[2] justify-center text-xs font-black disabled:opacity-50`}
-          >
-            {submitting ? "준비 중…" : "결제 준비하기"}
-          </button>
+            loading={submitting}
+            label={paymentLive ? "결제 준비" : "금액 확인"}
+            onClick={() => void handleConfirm()}
+            className="flex-[2] text-xs"
+          />
         </div>
       </div>
     </div>

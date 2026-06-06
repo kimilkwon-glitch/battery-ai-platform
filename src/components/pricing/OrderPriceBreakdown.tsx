@@ -43,7 +43,7 @@ function breakdownRows(
       break;
     case "store_pickup_self":
       rows.push({ label: "상품 인터넷가", value: formatPriceWon(result.basePrice) });
-      rows.push({ label: "택배비", value: "0원" });
+      rows.push({ label: "택배비", value: "없음" });
       break;
   }
 

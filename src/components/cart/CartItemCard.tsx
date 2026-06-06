@@ -43,6 +43,13 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
       ? "미선택"
       : FULFILLMENT_METHOD_LABELS[item.fulfillment.method];
 
+  const returnLabel =
+    item.usedBatteryReturn.option === "return"
+      ? "반납"
+      : item.usedBatteryReturn.option === "no_return"
+        ? "미반납"
+        : "미정";
+
   const setVehicleInfo = (text: string) => {
     const trimmed = text.trim();
     if (!trimmed) {
@@ -125,6 +132,8 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
             <dd className="text-right tabular-nums">{formatPriceWon(prices.onsitePrice)}</dd>
             <dt>수령/장착</dt>
             <dd className="text-right">{fulfillmentLabel}</dd>
+            <dt>반납 여부</dt>
+            <dd className="text-right">{returnLabel}</dd>
           </dl>
 
           <label className="block">

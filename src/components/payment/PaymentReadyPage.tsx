@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { PaymentPreparingNotice } from "@/components/checkout/PaymentPreparingNotice";
 import { TossPaymentWidget } from "@/components/payment/TossPaymentWidget";
+import { isCommercePaymentLive } from "@/lib/payment/commerce-checkout-mode";
 import {
   apiFetchOrderSummary,
   apiPrepareCommercePayment,
@@ -16,6 +18,7 @@ import type { PaymentPrepareResponse } from "@/types/commerce-payment";
 import { bm } from "@/lib/design-tokens";
 
 function PaymentReadyContent() {
+  const paymentLive = isCommercePaymentLive();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId")?.trim() ?? "";
   const paymentRequestId = searchParams.get("paymentRequestId")?.trim() ?? "";
@@ -26,6 +29,10 @@ function PaymentReadyContent() {
   const [payError, setPayError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!paymentLive) {
+      setLoading(false);
+      return;
+    }
     if (!orderId || !paymentRequestId) {
       setLoading(false);
       setError("주문 정보를 확인할 수 없습니다.");
@@ -54,7 +61,21 @@ function PaymentReadyContent() {
       setPrepare(prep.data);
       setLoading(false);
     })();
-  }, [orderId, paymentRequestId]);
+  }, [orderId, paymentRequestId, paymentLive]);
+
+  if (!paymentLive) {
+    return (
+      <div className={`${bm.card} ${bm.cardPad} space-y-4`}>
+        <PaymentPreparingNotice />
+        <p className="text-sm font-medium text-slate-600">
+          결제 기능이 준비되는 대로 이 화면에서 안전하게 결제하실 수 있습니다.
+        </p>
+        <Link href={CHECKOUT_PAGE} className={`${bm.btnNavy} inline-flex justify-center text-sm`}>
+          주문서로 돌아가기
+        </Link>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
