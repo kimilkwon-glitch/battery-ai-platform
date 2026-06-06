@@ -10,6 +10,10 @@ import { buildAdminBatteryRows, countBatteriesNeedingReview, countMissingBattery
 import { buildMatchingAuditRows, countMatchingReview } from "@/lib/admin/data/matching-audit";
 import { buildCtaLinkAuditRows, countCtaLinkErrors } from "@/lib/admin/data/cta-links-audit";
 import { buildPhotoCheckRequestItems } from "@/lib/admin/data/photo-requests-admin";
+import {
+  buildAdminProductRows,
+  countProductsByReview,
+} from "@/lib/admin/products/products-admin-service";
 import type { AdminDashboardStats } from "@/types/admin";
 
 function isToday(iso: string): boolean {
@@ -29,6 +33,7 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStats> {
   const matchingRows = buildMatchingAuditRows();
   const ctaRows = buildCtaLinkAuditRows();
   const photoItems = buildPhotoCheckRequestItems(orders);
+  const productCounts = countProductsByReview(buildAdminProductRows());
 
   const todayOrders = orders.filter((o) => isToday(o.createdAt));
   const guestOrders = orders.filter((o) => o.customerType === "guest");
@@ -97,6 +102,9 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStats> {
     missingVehicleImages: countMissingVehicleImages(vehicleRows),
     missingBatteryImages: countMissingBatteryImages(batteryRows),
     ctaLinkErrors: countCtaLinkErrors(ctaRows),
+    productPriceMissing: productCounts.price_missing,
+    productImageMissing: productCounts.image_missing,
+    productDetailMissing: productCounts.detail_missing,
     recentOrders,
     recentVehicles,
     recentBatteries,

@@ -65,6 +65,10 @@ export type AdminMatchingRow = {
   yearRange: string;
   fuel: string;
   connectedBattery: string;
+  /** 고객-facing 대표 규격 (operator 테이블) */
+  customerFacingBattery?: string;
+  /** 고객-facing source — operator_slug_primary | operator_fuel_map | none */
+  batterySource?: string;
   candidateBatteries: string[];
   terminalConflict: boolean;
   agmConflict: boolean;
@@ -133,6 +137,9 @@ export type AdminDashboardStats = {
   missingVehicleImages: number;
   missingBatteryImages: number;
   ctaLinkErrors: number;
+  productPriceMissing: number;
+  productImageMissing: number;
+  productDetailMissing: number;
   recentOrders: AdminOrderRequestSummary[];
   recentVehicles: AdminRecentDbItem[];
   recentBatteries: AdminRecentDbItem[];

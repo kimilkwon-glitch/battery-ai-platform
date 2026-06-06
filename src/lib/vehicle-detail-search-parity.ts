@@ -27,6 +27,12 @@ import {
 } from "@/lib/vehicle-battery-match";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
 import {
+  EV_LOW_VOLTAGE_DISPLAY_SUBTITLE,
+  EV_LOW_VOLTAGE_DISPLAY_TITLE,
+  isEvLowVoltageVehicle,
+  shouldShowEvLowVoltageCard,
+} from "@/lib/ev-low-voltage-battery-policy";
+import {
   getVehicleFixedBatteryNotice,
   getVehicleSalesExcludedNotice,
   isVehicleFuelSalesExcluded,
@@ -111,6 +117,32 @@ function synthesizeRecognizedVehicleFromSlug(
   const href = buildVehicleDetailHref(slug, fuel, yearChipId ?? null);
   const entry = canonicalEntryForSlug(slug);
 
+  if (isEvLowVoltageVehicle(slug) || (fuel && shouldShowEvLowVoltageCard(slug, fuel))) {
+    return {
+      title: `${vehicleLabel} 배터리`,
+      vehicleLabel,
+      fuelLabel: fuel ?? entry?.fuel ?? "전기",
+      specTier: "exact",
+      specFieldLabel: "EV 저전압",
+      specDisplay: EV_LOW_VOLTAGE_DISPLAY_TITLE,
+      specLabel: EV_LOW_VOLTAGE_DISPLAY_TITLE,
+      specCheckNote: null,
+      candidateLabel: null,
+      candidateDisplay: null,
+      confirmNote: null,
+      bodyMessage: EV_LOW_VOLTAGE_DISPLAY_SUBTITLE,
+      confidenceLabel: "EV 보조 12V",
+      primaryBatteryCode: null,
+      secondaryNote: EV_LOW_VOLTAGE_DISPLAY_SUBTITLE,
+      basisLabel: "EV 저전압 배터리",
+      fallbackMessage: null,
+      guidance: EV_LOW_VOLTAGE_DISPLAY_SUBTITLE,
+      href,
+      ctas: [],
+      secondaryLinks: buildNoSpecSecondaryLinks(),
+    };
+  }
+
   if (!hasCatalogBatteryMatch(slug)) {
     return {
       title: `${vehicleLabel} 배터리 확인`,
@@ -127,7 +159,7 @@ function synthesizeRecognizedVehicleFromSlug(
       bodyMessage: BATTERY_MATCH_PENDING_MESSAGE,
       confidenceLabel: null,
       primaryBatteryCode: null,
-      secondaryNote: "사진 확인/문의 필요",
+      secondaryNote: null,
       basisLabel: null,
       fallbackMessage: BATTERY_MATCH_PENDING_MESSAGE,
       guidance: BATTERY_MATCH_PENDING_MESSAGE,

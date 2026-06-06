@@ -3,11 +3,18 @@
  * (구조화 추천 > 단일 추천 > fallback, 중복·경고 억제)
  */
 import {
+  EV_LOW_VOLTAGE_BATTERY_STATUS,
+  EV_LOW_VOLTAGE_DISPLAY_TITLE,
+  isEvLowVoltageBatteryStatus,
+  isEvLowVoltageVehicle,
+  shouldShowEvLowVoltageCard,
+} from "@/lib/ev-low-voltage-battery-policy";
+import {
   hasCatalogBatteryMatch,
+  isIceBatteryProductSpecCode,
   isValidBatterySpecCode,
   resolveCustomerCatalogPrimaryBattery,
 } from "@/lib/vehicle-battery-match";
-import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 import {
   CUSTOMER_FUEL_DISPLAY_ORDER,
   sortFuelGroupsByDisplayOrder,
@@ -34,11 +41,9 @@ export function isStructuredFuelLabel(fuelLabel: string): boolean {
 
 function groupHasRenderableBattery(slug: string, group: FuelBatteryGroup): boolean {
   if (!hasCatalogBatteryMatch(slug)) return false;
-  const code =
-    resolveCustomerCatalogPrimaryBattery(slug, group.fuelLabel) ||
-    [group.primaryBattery, ...group.batteryOptions].find(isValidBatterySpecCode) ||
-    "";
-  return isValidBatterySpecCode(code);
+  if (shouldShowEvLowVoltageCard(slug, group.fuelLabel)) return true;
+  const code = resolveCustomerCatalogPrimaryBattery(slug, group.fuelLabel) || "";
+  return isIceBatteryProductSpecCode(code);
 }
 
 /** 연료·조건별 구조화 추천(확인 필요/공통 제외) */
@@ -59,12 +64,7 @@ export function hasSingleFuelRecommendation(
   if (fuelGroups.length === 0) return false;
   const codes = new Set(
     fuelGroups
-      .map(
-        (g) =>
-          resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel) ||
-          g.primaryBattery?.trim() ||
-          "",
-      )
+      .map((g) => resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel) || "")
       .filter(isValidBatterySpecCode),
   );
   return codes.size === 1 && groupHasRenderableBattery(slug, fuelGroups[0]!);
@@ -84,10 +84,7 @@ export function countCustomerProductCards(
   const cards = prepareCustomerFacingFuelGroups(slug, fuelGroups);
   return cards.reduce((sum, g) => {
     if (!groupHasRenderableBattery(slug, g)) return sum;
-    const code =
-      resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel) ||
-      g.primaryBattery?.trim() ||
-      "";
+    const code = resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel) || "";
     return sum + (code ? countBrandCatalogCardsForSpec(code) : 0);
   }, 0);
 }
@@ -101,7 +98,11 @@ export function dedupeFuelGroupsByLabel(
 
   for (const g of fuelGroups) {
     const unified =
-      resolveVehicleFuelPrimaryBattery(slug, g.fuelLabel) || g.primaryBattery?.trim() || "";
+      resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel) ||
+      (shouldShowEvLowVoltageCard(slug, g.fuelLabel) ||
+      isEvLowVoltageBatteryStatus(g.primaryBattery)
+        ? EV_LOW_VOLTAGE_BATTERY_STATUS
+        : "");
     if (!unified) continue;
 
     const existing = byLabel.get(g.fuelLabel);
@@ -164,6 +165,9 @@ export function customerFacingRepresentativeBattery(
   _summaryRep?: string | null,
 ): string {
   if (!hasCatalogBatteryMatch(slug)) return "";
+  if (isEvLowVoltageVehicle(slug)) {
+    return EV_LOW_VOLTAGE_DISPLAY_TITLE;
+  }
   const facing = prepareCustomerFacingFuelGroups(slug, fuelGroups);
   const gas = resolveCustomerCatalogPrimaryBattery(slug, "가솔린");
   const diesel = resolveCustomerCatalogPrimaryBattery(slug, "디젤");
@@ -171,9 +175,7 @@ export function customerFacingRepresentativeBattery(
   if (gas) return gas;
   if (diesel) return diesel;
   for (const g of facing) {
-    const code =
-      resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel) ||
-      [g.primaryBattery, ...g.batteryOptions].find(isValidBatterySpecCode);
+    const code = resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel);
     if (isValidBatterySpecCode(code)) return code!;
   }
   return resolveCustomerCatalogPrimaryBattery(slug) || "";

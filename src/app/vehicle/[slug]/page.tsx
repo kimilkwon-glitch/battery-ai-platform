@@ -60,12 +60,7 @@ export default async function VehicleDetailPage({
   const displayTitle = batteryPage.profile?.title ?? asset?.displayName ?? vehicle.model;
   const highlightFuel = sp.fuel?.trim() || null;
   const yearChipId = sp.year?.trim() || null;
-  const repBattery =
-    customerFacingRepresentativeBattery(
-      slug,
-      batteryPage.fuelGroups,
-      batteryPage.summary?.representativeBattery,
-    ) || vehicle.recommendedBattery || asset?.defaultBatteryCode || "";
+  const repBattery = customerFacingRepresentativeBattery(slug, batteryPage.fuelGroups);
   const batteryOptions = [
     ...new Set(
       batteryPage.fuelGroups.flatMap((g) =>

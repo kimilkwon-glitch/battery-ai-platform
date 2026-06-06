@@ -15,7 +15,7 @@ export const BATTERY_ALIAS_MAP: Record<string, string[]> = {
   AGM60L: ["AGM60L", "AGM60", "AGM LN2", "LN2 AGM"],
   AGM70L: ["AGM70L", "AGM70", "AGM LN3", "LN3 AGM"],
   AGM80L: ["AGM80L", "AGM80", "AGM LN4", "LN4 AGM"],
-  AGM80R: ["AGM80R", "AGM80 R", "AGM LN4 R", "GB80R", "CMF80R", "80R"],
+  AGM80R: ["AGM80R", "AGM80 R", "AGM LN4 R", "GB80R", "CMF80R"],
   AGM95L: ["AGM95L", "AGM95", "AGM LN5", "LN5 AGM"],
   AGM95R: ["AGM95R", "AGM95 R", "AGM LN5 R"],
   AGM105L: ["AGM105L", "AGM105", "AGM LN6", "LN6 AGM"],
@@ -23,7 +23,8 @@ export const BATTERY_ALIAS_MAP: Record<string, string[]> = {
 
   GB450LS: ["GB450LS", "로케트 GB450LS", "GB450", "EV450LS"],
 
-  DIN50L: ["DIN50L", "55066", "DIN50", "50L"],
+  "50L": ["50L", "GB50L"],
+  DIN50L: ["DIN50L", "55066", "DIN50"],
   DIN62L: ["DIN62L", "56219", "DIN60HL", "DIN60Ah", "DIN60L"],
   DIN74L: ["DIN74L", "57412", "57820", "DIN74"],
   DIN74R: ["DIN74R", "57219", "GB57219", "57412R", "57820R"],
@@ -158,16 +159,21 @@ export type BatteryDisplayResolved = {
   productCandidates: string[];
 };
 
+/** 일반 JIS — AGM/DIN과 별도 규격 (80R≠AGM80R, 50L≠DIN50L) */
+export const BARE_JIS_BATTERY_SPEC_RE = /^\d+(AL|[LR])$/i;
+
+export function isBareJisBatterySpec(code: string | null | undefined): boolean {
+  if (!code?.trim()) return false;
+  return BARE_JIS_BATTERY_SPEC_RE.test(code.trim().replace(/\s+/g, ""));
+}
+
 function displayCodeForCustomer(raw: string): string {
-  let displayCode = productBatteryCode(raw) || raw.trim().replace(/\s+/g, "").toUpperCase();
+  const trimmed = raw.trim().replace(/\s+/g, "");
+  const upper = trimmed.toUpperCase();
+  if (isBareJisBatterySpec(trimmed)) return upper;
+
+  let displayCode = productBatteryCode(raw) || upper;
   if (/^(AGM|DIN|CMF|GB|DF|EFB|MF|EV)/i.test(displayCode)) return displayCode;
-  if (/^AGM/i.test(displayCode)) return displayCode;
-  const family = normalizeBatteryCode(raw);
-  const agmKey = `AGM${family}`;
-  if (family && BATTERY_ALIAS_MAP[agmKey]) {
-    const agm = productBatteryCode(agmKey);
-    if (agm && /^AGM/i.test(agm)) return agm;
-  }
   return displayCode;
 }
 

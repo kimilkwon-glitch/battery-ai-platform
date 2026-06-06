@@ -22,6 +22,12 @@ import {
 } from "@/lib/vehicle-year-range";
 import { mapCustomerFuelLabel } from "@/lib/vehicle-fuel-display";
 import {
+  EV_LOW_VOLTAGE_DISPLAY_TITLE,
+  isEvLowVoltageVehicle,
+} from "@/lib/ev-low-voltage-battery-policy";
+import { resolveCustomerCatalogPrimaryBattery } from "@/lib/vehicle-battery-match";
+import { OPERATOR_FUEL_PRIMARY } from "@/lib/vehicle-operator-battery-tables";
+import {
   mergeOperatorFuelGroups,
   OPERATOR_SLUG_PRIMARY_BATTERY,
   resolveVehicleFuelPrimaryBattery,
@@ -1084,53 +1090,53 @@ export type VehicleCardBatteryInfo = {
   needsPhotoReview: boolean;
 };
 
-/** 차량 카드·검색 — DB confirmed 배터리 우선, 이미지 미매칭과 무관 */
+/** 차량 카드·검색 — operator 확정 테이블만 (legacy DB fallback 차단) */
 export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo {
   const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
-  if (isVehicleFullyLithiumSalesExcluded(slug) && recs.some(hasConfirmedBatteryData)) {
-    return {
-      displayCode: SEARCH_LITHIUM_EXCLUDED_LABEL,
-      batteryOptions: [],
-      hasConfirmedDb: true,
-      hasUsableDb: true,
-      dbLinkTier: "confirmed",
-      needsPhotoReview: false,
-    };
-  }
-  if (!recs.length) {
-    return {
-      displayCode: "",
-      batteryOptions: [],
-      hasConfirmedDb: false,
-      hasUsableDb: false,
-      dbLinkTier: "none",
-      needsPhotoReview: false,
-    };
-  }
-
   const confirmed = recs.filter(hasConfirmedBatteryData);
   const usable = recs.filter((r) => isUsableDbCandidate(r, profile));
   const hasConfirmedDb = confirmed.length > 0;
   const hasUsableDb = usable.length > 0;
-  const source = hasConfirmedDb ? confirmed : hasUsableDb ? usable : recs;
-  const groups = groupRecordsByFuel(source);
-  const primaryRaw = groups[0]?.primaryBattery ?? source[0]?.primaryBattery ?? "";
-  const slugPrimary = OPERATOR_SLUG_PRIMARY_BATTERY[slug];
-  const multiFuelDistinct =
-    groups.length > 1 &&
-    new Set(groups.map((g) => normalizeBatteryCode(g.primaryBattery)).filter(Boolean)).size > 1;
-  const displayCode =
-    slugPrimary && hasConfirmedDb
-      ? customerFacingBatteryCode(slugPrimary)
-      : hasConfirmedDb && primaryRaw && !multiFuelDistinct
-        ? customerFacingBatteryCode(primaryRaw)
-        : "";
-  let batteryOptions = [
-    ...new Set(
-      groups.flatMap((g) => g.batteryOptions.map((c) => customerFacingBatteryCode(c))),
-    ),
-  ].filter(Boolean);
+
+  if (isVehicleFullyLithiumSalesExcluded(slug)) {
+    return {
+      displayCode: SEARCH_LITHIUM_EXCLUDED_LABEL,
+      batteryOptions: [],
+      hasConfirmedDb,
+      hasUsableDb,
+      dbLinkTier: hasConfirmedDb ? "confirmed" : hasUsableDb ? "usable" : "none",
+      needsPhotoReview: false,
+    };
+  }
+
+  if (isEvLowVoltageVehicle(slug)) {
+    return {
+      displayCode: EV_LOW_VOLTAGE_DISPLAY_TITLE,
+      batteryOptions: [],
+      hasConfirmedDb,
+      hasUsableDb,
+      dbLinkTier: hasConfirmedDb ? "confirmed" : hasUsableDb ? "usable" : "none",
+      needsPhotoReview: false,
+    };
+  }
+
+  const operatorPrimary = resolveCustomerCatalogPrimaryBattery(slug);
+  const displayCode = operatorPrimary ? customerFacingBatteryCode(operatorPrimary) : "";
+  const fuelMap = OPERATOR_FUEL_PRIMARY[slug];
+  let batteryOptions = operatorPrimary ? [displayCode] : [];
+  if (fuelMap) {
+    batteryOptions = [
+      ...new Set(
+        Object.keys(fuelMap)
+          .map((fuel) => resolveCustomerCatalogPrimaryBattery(slug, fuel))
+          .filter(Boolean),
+      ),
+    ];
+    if (displayCode && !batteryOptions.includes(displayCode)) {
+      batteryOptions = [displayCode, ...batteryOptions];
+    }
+  }
   if (slug === "staria-us4") {
     batteryOptions = batteryOptions.filter((c) => !/^(AGM80L|CMF80L|80L)$/i.test(c));
     if (displayCode && !batteryOptions.includes(displayCode)) {
@@ -1151,8 +1157,7 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
     hasConfirmedDb,
     hasUsableDb,
     dbLinkTier,
-    needsPhotoReview:
-      !hasConfirmedDb && !hasUsableDb && recs.some(needsPhotoReview),
+    needsPhotoReview: false,
   };
 }
 

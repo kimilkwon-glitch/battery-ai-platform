@@ -8,7 +8,7 @@ export default function AdminMatchingPage() {
   return (
     <AdminShellLayout
       title="차량-배터리 매칭 검수"
-      description="단자 방향·AGM/일반·판매 제외·이미지 누락 등 위험 패턴을 점검합니다."
+      description="차량 검수(vehicleStatus)·이미지·배터리 매칭(batteryMatchStatus) 분리 기준. 미매칭 목록: npm run audit:battery-match → reports/battery-match-unmatched.csv"
     >
       <AdminMatchingTable rows={rows} />
     </AdminShellLayout>

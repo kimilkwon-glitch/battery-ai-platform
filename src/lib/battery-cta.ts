@@ -1,11 +1,11 @@
 import type { SearchCtaLink } from "@/lib/search/battery-recommendation-copy";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
-import {
-  batteryCodeForFuelParam,
-  resolveVehicleFuelPrimaryBattery,
-} from "@/lib/vehicle-fuel-primary-battery";
+import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
 
-export { batteryCodeForFuelParam } from "@/lib/vehicle-fuel-primary-battery";
+/** @deprecated operator 테이블만 사용 — 연료 추측 fallback 제거 */
+export function batteryCodeForFuelParam(_fuel: string | null | undefined): string | null {
+  return null;
+}
 
 export const CTA_PRIMARY_LABELS = new Set([
   "이 규격 자세히 보기",
@@ -65,10 +65,8 @@ export function resolvePrimaryBatteryForFuelQuery(
     const unified = resolveVehicleFuelPrimaryBattery(slug, fuelRaw, { yearChipId, fallback });
     if (unified) return unified;
   }
-  const fromParam = batteryCodeForFuelParam(fuelRaw);
-  if (fromParam) return canonicalBatteryCode(fromParam);
   if (fallback) return canonicalBatteryCode(fallback);
-  return "AGM80L";
+  return "";
 }
 
 export function buildVehicleDetailHref(

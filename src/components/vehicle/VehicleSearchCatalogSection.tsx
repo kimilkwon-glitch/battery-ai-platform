@@ -4,7 +4,7 @@ import { VehicleSearchCatalogFooter } from "@/components/vehicle/VehicleSearchCa
 import { VehicleSearchCompactHeader } from "@/components/vehicle/VehicleSearchCompactHeader";
 import { customerFacingRepresentativeBattery } from "@/lib/vehicle-detail-recommendation";
 import { buildVehicleFuelChips } from "@/lib/vehicle-fuel-chips";
-import { resolveVehicleFuelPrimaryBattery } from "@/lib/vehicle-fuel-primary-battery";
+import { resolveCustomerCatalogPrimaryBattery } from "@/lib/vehicle-battery-match";
 import type { SearchUxChip } from "@/lib/search/search-ux-presentation";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
 
@@ -32,14 +32,9 @@ export function VehicleSearchCatalogSection({
   const yearRange = batteryPage.profile?.yearRange ?? "";
   const activeFuel = highlightFuel?.trim() || null;
   const recommendedSpec =
-    (activeFuel
-      ? resolveVehicleFuelPrimaryBattery(slug, activeFuel, { yearChipId })
-      : null) ||
-    customerFacingRepresentativeBattery(
-      slug,
-      batteryPage.fuelGroups,
-      batteryPage.summary?.representativeBattery,
-    ) ||
+    customerFacingRepresentativeBattery(slug, batteryPage.fuelGroups) ||
+    (activeFuel ? resolveCustomerCatalogPrimaryBattery(slug, activeFuel) : null) ||
+    resolveCustomerCatalogPrimaryBattery(slug) ||
     null;
 
   const fuelChips = buildVehicleFuelChips(slug, batteryPage.fuelGroups, activeFuel, yearChipId);

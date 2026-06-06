@@ -96,6 +96,27 @@ export default async function AdminDashboardPage() {
             tone={stats.ctaLinkErrors > 0 ? "danger" : "default"}
             sublabel="연결 오류 의심 항목"
           />
+          <AdminStatCard
+            label="제품 가격 누락"
+            value={stats.productPriceMissing}
+            href={ADMIN_ROUTES.products}
+            tone="danger"
+            sublabel="인터넷가·출장가 미입력"
+          />
+          <AdminStatCard
+            label="제품 이미지 누락"
+            value={stats.productImageMissing}
+            href={ADMIN_ROUTES.products}
+            tone="warning"
+            sublabel="대표 이미지 없음"
+          />
+          <AdminStatCard
+            label="상세페이지 없음"
+            value={stats.productDetailMissing}
+            href={ADMIN_ROUTES.products}
+            tone="warning"
+            sublabel="고객 상세 미연결"
+          />
         </section>
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">

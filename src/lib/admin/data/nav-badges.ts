@@ -4,6 +4,10 @@ import { buildCtaLinkAuditRows, countCtaLinkErrors } from "@/lib/admin/data/cta-
 import { buildMatchingAuditRows, countMatchingReview } from "@/lib/admin/data/matching-audit";
 import { buildPhotoCheckRequestItems } from "@/lib/admin/data/photo-requests-admin";
 import { listOrderRequests } from "@/lib/order-request/order-request-service";
+import {
+  buildAdminProductRows,
+  countProductsByReview,
+} from "@/lib/admin/products/products-admin-service";
 
 export type AdminNavBadges = Partial<Record<string, number>>;
 
@@ -13,6 +17,7 @@ export async function loadAdminNavBadges(): Promise<AdminNavBadges> {
   const matchingRows = buildMatchingAuditRows();
   const ctaRows = buildCtaLinkAuditRows();
   const photoItems = buildPhotoCheckRequestItems(orders);
+  const productCounts = countProductsByReview(buildAdminProductRows());
 
   const pendingOrders = orders.filter(
     (o) => o.status === "pending_review" || o.status === "waiting_customer",
@@ -26,5 +31,6 @@ export async function loadAdminNavBadges(): Promise<AdminNavBadges> {
     [ADMIN_ROUTES.matching]: countMatchingReview(matchingRows),
     [ADMIN_ROUTES.assets]: countMissingVehicleImages(vehicleRows),
     [ADMIN_ROUTES.ctaLinks]: countCtaLinkErrors(ctaRows),
+    [ADMIN_ROUTES.products]: productCounts.needs_review,
   };
 }

@@ -1,0 +1,175 @@
+slug,displayName,isEvLowVoltageVehicle,matchStatus,customerDisplay,catalogMatch,fuelCardCount,allowsOrderFlow,allowsBatteryHref,salesExcluded
+grandeur-tg,그랜저 TG,false,80L,80L,true,2,true,true,false
+grandeur-hg,그랜저 HG,false,80L,80L,true,4,true,true,false
+grandeur-ig,그랜저 IG,false,AGM80L,AGM80L,true,4,true,true,false
+grandeur-ig-fl,더 뉴 그랜저 IG,false,AGM80L,AGM80L,true,4,true,true,false
+grandeur-gn7,디 올 뉴 그랜저,false,AGM80L,AGM80L,true,1,true,true,false
+sonata-nf,쏘나타 NF,false,80L,80L,true,3,true,true,false
+sonata-yf,YF 쏘나타,false,80L,80L,true,3,true,true,false
+sonata-lf,LF 쏘나타,false,80L,80L,true,5,true,true,false
+sonata-dn8,쏘나타 DN8,false,AGM80L,AGM80L,true,2,true,true,false
+sonata-edge,쏘나타 디 엣지,false,AGM80L,AGM80L,true,2,true,true,false
+avante-hd,아반떼 HD,false,60AL,60AL,true,4,true,true,false
+avante-md,아반떼 MD,false,DIN62L,DIN62L,true,4,true,true,false
+avante-ad,아반떼 AD,false,DIN62L,DIN62L,true,4,true,true,false
+avante-cn7,아반떼 CN7,false,AGM60L,AGM60L,true,2,true,true,false
+avante-cn7-fl,더 뉴 아반떼,false,AGM60L,AGM60L,true,3,true,true,false
+tucson-jm,투싼,false,90R,80L,true,2,true,true,false
+tucson-lm,투싼 ix,false,90R,80L,true,2,true,true,false
+tucson-tl,올 뉴 투싼,false,AGM80L,AGM70L,true,4,true,true,false
+tucson-nx4,투싼 4세대,false,AGM70L,AGM70L,true,2,true,true,false
+tucson-nx4-fl,더 뉴 투싼,false,AGM70L,AGM70L,true,2,true,true,false
+santafe-cm,싼타페 CM,false,90L,80L,true,2,true,true,false
+santafe-dm,싼타페 DM,false,AGM95L,AGM95L,true,3,true,true,false
+santafe-tm,싼타페 TM,false,AGM95L,AGM95L,true,2,true,true,false
+santafe-mx5,디 올 뉴 싼타페,false,AGM70L,AGM70L,true,2,true,true,false
+santafe-mx5-hev,싼타페 하이브리드,false,AGM60L,AGM60L,true,2,true,true,false
+palisade-lx2,팰리세이드,false,AGM95L,AGM95L,true,2,true,true,false
+palisade-lx2-fl,더 뉴 팰리세이드,false,AGM95L,AGM95L,true,2,true,true,false
+palisade-lx3,디 올 뉴 팰리세이드,false,AGM95L,AGM95L,true,2,true,true,false
+staria-us4,스타리아,false,AGM80R,AGM80R,true,2,true,true,false
+kona-os,코나,false,AGM60L,AGM60L,true,4,true,true,false
+kona-sx2,디 올 뉴 코나,false,AGM60L,AGM60L,true,3,true,true,false
+ioniq5-ne,아이오닉5,true,ev_low_voltage_battery,EV 저전압 배터리,true,1,false,false,false
+ioniq6-ce,아이오닉6,true,ev_low_voltage_battery,EV 저전압 배터리,true,1,false,false,false
+porter2-old,포터2,false,90R,90R,true,1,true,true,false
+porter2-new,포터2 2020년형 이후,false,100R,100R,true,2,true,true,false
+porter2-ev,포터2 EV,false,80L,80L,true,1,true,true,false
+k5-tf,K5 1세대,false,80L,80L,true,4,true,true,false
+k5-jf,K5 2세대,false,AGM80L,AGM80L,true,6,true,true,false
+k5-dl3,K5 3세대,false,DIN74L,DIN74L,true,2,true,true,false
+k5-dl3-fl,더 뉴 K5,false,DIN74L,DIN74L,true,3,true,true,false
+k8-gl3,K8,false,AGM70L,AGM70L,true,5,true,true,false
+k8-gl3-fl,더 뉴 K8,false,AGM70L,AGM70L,true,5,true,true,false
+seltos-sp2,셀토스,false,AGM60L,AGM60L,true,2,true,true,false
+seltos-sp2-fl,더 뉴 셀토스,false,AGM60L,AGM60L,true,2,true,true,false
+sportage-sl,스포티지 R,false,90R,80L,true,3,true,true,false
+sportage-ql,스포티지 4세대,false,AGM80L,AGM70L,true,3,true,true,false
+sportage-nq5,스포티지 5세대,false,AGM70L,AGM70L,true,4,true,true,false
+sportage-nq5-fl,더 뉴 스포티지,false,AGM70L,AGM70L,true,4,true,true,false
+sorento-xm,쏘렌토 R,false,90L,90L,true,4,true,true,false
+sorento-um,올 뉴 쏘렌토,false,AGM95L,AGM95L,true,4,true,true,false
+sorento-um-fl,더 뉴 쏘렌토,false,AGM95L,AGM95L,true,3,true,true,false
+sorento-mq4,쏘렌토 4세대,false,AGM95L,AGM95L,true,3,true,true,false
+sorento-mq4-fl,더 뉴 쏘렌토,false,AGM95L,AGM95L,true,3,true,true,false
+carnival-vq,그랜드 카니발,false,100L,100L,true,2,true,true,false
+carnival-yp,올 뉴 카니발,false,90L,90L,true,2,true,true,false
+carnival-yp-fl,더 뉴 카니발,false,90L,90L,true,2,true,true,false
+carnival-ka4,카니발 4세대,false,AGM95L,AGM95L,true,2,true,true,false
+carnival-ka4-fl,더 뉴 카니발,false,AGM95L,AGM95L,true,2,true,true,false
+k3-yd,K3 1세대,false,DIN62L,DIN62L,true,3,true,true,false
+k3-bd,올 뉴 K3,false,DIN62L,DIN62L,true,2,true,true,false
+k3-bd-fl,더 뉴 K3,false,DIN62L,DIN62L,true,2,true,true,false
+morning-sa,뉴 모닝,false,40AL,40AL,true,2,true,true,false
+morning-ta,올 뉴 모닝,false,40AL,40AL,true,2,true,true,false
+morning-ja,모닝 3세대,false,40AL,40AL,true,4,true,true,false
+morning-ja-fl,더 뉴 모닝,false,40AL,40AL,true,4,true,true,false
+ray-tam,레이,false,60AL,60AL,true,2,true,true,false
+ray-tam-2fl,더 뉴 기아 레이,false,60AL,60AL,true,2,true,true,false
+niro-de,니로,false,DIN50L,DIN50L,true,2,true,true,false
+niro-de-fl,더 뉴 니로,false,DIN50L,DIN50L,true,1,true,true,false
+niro-sg2,디 올 뉴 니로,false,—,리튬 배터리 장착 · 판매 제외,false,0,false,false,true
+bongo3-truck,봉고3,false,100L,100L,true,2,true,true,false
+bongo3-ev,봉고3 EV,false,80L,80L,true,1,true,true,false
+genesis-gv60,GV60,false,AGM60L,AGM60L,true,1,true,true,false
+genesis-gv70,GV70,false,AGM80R,AGM80R,true,2,true,true,false
+genesis-gv80,GV80,false,AGM95R,AGM95R,true,2,true,true,false
+genesis-g70,G70,false,AGM80L,AGM80L,true,2,true,true,false
+genesis-g80-rg3,G80,false,AGM95R,AGM95R,true,2,true,true,false
+genesis-g80-dh,G80,false,AGM105L,AGM105L,true,2,true,true,false
+genesis-eq900,EQ900,false,AGM105L,AGM105L,true,1,true,true,false
+genesis-g90,G90,false,AGM105L,AGM105L,true,3,true,true,false
+genesis-dh,제네시스 DH,false,AGM105L,AGM105L,true,1,true,true,false
+renault-samsung-sm3-2005,SM3,false,80L,80L,true,1,true,true,false
+renault-samsung-new-sm3-2009,뉴 SM3,false,DIN74L,DIN74L,true,2,true,true,false
+renault-samsung-sm3-neo-2014,SM3 네오,false,DIN74L,DIN74L,true,2,true,true,false
+renault-samsung-sm3-ze-2013,SM3 Z.E.,true,ev_low_voltage_battery,EV 저전압 배터리,true,2,false,false,false
+renault-samsung-sm5-new-impression-2007,SM5 뉴 임프레션,false,80L,80L,true,2,true,true,false
+renault-samsung-new-sm5-2010,뉴 SM5,false,DIN90L,DIN90L,true,3,true,true,false
+renault-samsung-sm5-nova-2015,SM5 노바,false,DIN90L,DIN90L,true,3,true,true,false
+renault-samsung-sm6-2016,SM6,false,DIN74L,DIN74L,true,3,true,true,false
+renault-samsung-the-new-sm6-2020,더 뉴 SM6,false,DIN74L,DIN74L,true,1,true,true,false
+renault-samsung-sm7-new-art-2008,SM7 뉴 아트,false,80L,80L,true,3,true,true,false
+renault-samsung-all-new-sm7-2011,올 뉴 SM7,false,DIN90L,DIN90L,true,4,true,true,false
+renault-samsung-sm7-nova-2014,SM7 노바,false,DIN90L,DIN90L,true,4,true,true,false
+renault-samsung-qm5-2007,QM5,false,80L,80L,true,2,true,true,false
+renault-samsung-qm3-2013,QM3,false,AGM70L,AGM70L,true,1,true,true,false
+renault-samsung-qm6-2016,QM6,false,DIN74L,DIN74L,true,5,true,true,false
+renault-samsung-the-new-qm6-2019,더 뉴 QM6,false,DIN74L,DIN74L,true,3,true,true,false
+renault-samsung-qm6-quest-2023,QM6 퀘스트,false,DIN74L,DIN74L,true,1,true,true,false
+renault-samsung-xm3-2020,XM3,false,AGM60L,AGM60L,true,1,true,true,false
+renault-arkana-2024,아르카나,false,AGM60L,AGM60L,true,1,true,true,false
+renault-master-2018,르노 마스터,false,AGM95L,AGM95L,true,1,true,true,false
+ssangyong-tivoli-2015,티볼리,false,80L,80L,true,2,true,true,false
+ssangyong-tivoli-armour-2017,티볼리 아머,false,80L,80L,true,2,true,true,false
+ssangyong-tivoli-air-2016,티볼리 에어,false,80L,80L,true,2,true,true,false
+ssangyong-tivoli-air-2021,티볼리 에어,false,AGM70L,AGM70L,true,2,true,true,false
+ssangyong-very-new-tivoli-2019,베리 뉴 티볼리,false,AGM70L,AGM70L,true,2,true,true,false
+kg-the-new-tivoli-2023,더 뉴 티볼리,false,AGM70L,AGM70L,true,2,true,true,false
+ssangyong-korando-c-2011,코란도 C,false,90R,90R,true,1,true,true,false
+ssangyong-new-korando-c-2013,코란도 C,false,90R,90R,true,1,true,true,false
+ssangyong-new-style-korando-c-2017,코란도 C,false,90R,90R,true,2,true,true,false
+ssangyong-viewtiful-korando-2019,뷰티풀 코란도,false,90R,AGM70L,true,2,true,true,false
+ssangyong-korando-emotion-2022,코란도 이모션,true,ev_low_voltage_battery,EV 저전압 배터리,true,1,false,false,false
+ssangyong-korando-sports-2012,코란도 스포츠,false,90R,90R,true,2,true,true,false
+ssangyong-korando-turismo-2013,코란도 투리스모,false,90R,90R,true,2,true,true,false
+ssangyong-actyon-2005,액티언,false,90R,90R,true,1,true,true,false
+ssangyong-actyon-sports-2006,액티언 스포츠,false,90R,90R,true,1,true,true,false
+ssangyong-kyron-2005,카이런,false,90R,90R,true,1,true,true,false
+ssangyong-g4-rexton-2017,G4 렉스턴,false,90R,90R,true,1,true,true,false
+ssangyong-all-new-rexton-2020,올 뉴 렉스턴,false,90R,90R,true,1,true,true,false
+ssangyong-rexton-sports-2018,렉스턴 스포츠,false,90R,90R,true,1,true,true,false
+ssangyong-rexton-sports-khan-2019,렉스턴 스포츠 칸,false,90R,90R,true,1,true,true,false
+ssangyong-new-chairman-2005,뉴 체어맨,false,DIN100L,DIN100L,true,1,true,true,false
+ssangyong-chairman-w-2008,체어맨 W,false,DIN100L,DIN100L,true,1,true,true,false
+ssangyong-rexton-2001,렉스턴,false,90R,90R,true,2,true,true,false
+ssangyong-musso-sports-2002,무쏘 스포츠,false,90R,90R,true,1,true,true,false
+kg-torres-2022,토레스,false,AGM70L,AGM70L,true,2,true,true,false
+kg-torres-evx-2023,토레스 EVX,false,60R,60R,true,1,true,true,false
+kg-actyon-2024,액티언,false,AGM70L,AGM70L,true,1,true,true,false
+hyundai-grand-starex-2007,그랜드 스타렉스,false,90R,90R,true,2,true,true,false
+kia-mohave-2008,모하비,false,100L,100L,true,2,true,true,false
+kia-the-new-mohave-2016,더 뉴 모하비,false,100L,100L,true,1,true,true,false
+kia-mohave-the-master-2019,모하비 더 마스터,false,100L,100L,true,1,true,true,false
+kia-k9-2012,K9,false,DIN100L,DIN100L,true,1,true,true,false
+kia-the-k9-2018,더 K9,false,AGM105L,AGM105L,true,1,true,true,false
+kia-soul-2008,쏘울,false,60AL,60AL,true,2,true,true,false
+kia-soul-booster-2019,쏘울 부스터,false,AGM60L,AGM60L,true,1,true,true,false
+kia-carens-2006,카렌스,false,60AL,60AL,true,3,true,true,false
+kia-all-new-carens-2013,올 뉴 카렌스,false,80L,80L,true,3,true,true,false
+gmdaewoo-matiz-creative-2009,마티즈 크리에이티브,false,DIN44L,DIN44L,true,3,true,true,false
+chevrolet-spark-2011,스파크,false,DIN44L,DIN44L,true,3,true,true,false
+chevrolet-spark-s-2013,스파크 S,false,DIN44L,DIN44L,true,3,true,true,false
+chevrolet-spark-2015,더 넥스트 스파크,false,DIN50L,DIN50L,true,3,true,true,false
+chevrolet-spark-2018,더 뉴 스파크,false,DIN50L,DIN50L,true,1,true,true,false
+chevrolet-spark-2021,스파크,false,DIN50L,DIN50L,true,1,true,true,false
+gmdaewoo-lacetti-2006,라세티,false,60R,60R,true,2,true,true,false
+daewoo-lacetti-premiere-2008,라세티 프리미어,false,DIN74L,DIN74L,true,2,true,true,false
+chevrolet-cruze-2011,크루즈,false,DIN74L,DIN74L,true,2,true,true,false
+chevrolet-the-new-cruze-2015,더 뉴 크루즈,false,DIN60L,DIN60L,true,3,true,true,false
+chevrolet-all-new-cruze-2017,올 뉴 크루즈,false,AGM80L,80L,true,3,true,true,false
+chevrolet-malibu-2011,말리부,false,DIN74L,DIN74L,true,4,true,true,false
+chevrolet-malibu-2016,올 뉴 말리부,false,DIN74L,DIN74L,true,4,true,true,false
+chevrolet-malibu-2019,더 뉴 말리부,false,AGM70L,AGM70L,true,5,true,true,false
+gmdaewoo-winstorm-2006,윈스톰,false,DIN100L,DIN100L,true,1,true,true,false
+chevrolet-captiva-2011,캡티바,false,DIN100L,DIN100L,true,1,true,true,false
+chevrolet-captiva-2016,더 넥스트 캡티바,false,DIN100L,DIN100L,true,1,true,true,false
+chevrolet-trax-2013,트랙스,false,DIN62L,DIN62L,true,2,true,true,false
+chevrolet-trax-2017,더 뉴 트랙스,false,DIN62L,DIN62L,true,2,true,true,false
+chevrolet-trax-crossover-2023,트랙스 크로스오버,false,DIN62L,DIN62L,true,1,true,true,false
+chevrolet-trailblazer-2020,트레일블레이저,false,AGM70L,AGM70L,true,1,true,true,false
+chevrolet-trailblazer-2024,트레일블레이저,false,AGM70L,AGM70L,true,1,true,true,false
+chevrolet-orlando-2011,올란도,false,DIN90L,DIN90L,true,2,true,true,false
+chevrolet-aveo-2011,아베오,false,DIN62L,DIN62L,true,1,true,true,false
+gmdaewoo-gentra-x-2007,젠트라 X,false,60R,60R,true,1,true,true,false
+daewoo-tosca-2006,토스카,false,80R,80R,true,1,true,true,false
+gmdaewoo-alpheon-2010,알페온,false,DIN74L,DIN74L,true,2,true,true,false
+chevrolet-impala-2016,임팔라,false,AGM80L,AGM80L,true,1,true,true,false
+chevrolet-equinox-2018,이쿼녹스,false,AGM70L,AGM70L,true,2,true,true,false
+chevrolet-equinox-2022,이쿼녹스,false,AGM70L,AGM70L,true,1,true,true,false
+chevrolet-traverse-2019,트래버스,false,AGM95L,AGM95L,true,1,true,true,false
+chevrolet-colorado-2019,콜로라도,false,AGM70L,AGM70L,true,1,true,true,false
+chevrolet-colorado-2021,콜로라도,false,AGM70L,AGM70L,true,1,true,true,false
+gmdaewoo-labo-2011,라보,false,50L,50L,true,1,true,true,false
+gmdaewoo-damas-2011,다마스,false,50L,50L,true,1,true,true,false
+chevrolet-bolt-ev-2017,볼트 EV,false,AGM50L,AGM50L,true,1,true,true,false

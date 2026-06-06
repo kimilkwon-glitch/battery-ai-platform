@@ -1,7 +1,9 @@
 import type { VehicleAsset } from "@/lib/car-assets";
+import { isEvLowVoltageVehicle, EV_LOW_VOLTAGE_DISPLAY_TITLE } from "@/lib/ev-low-voltage-battery-policy";
 import {
   customerBatteryPendingMessage,
   hasBatteryMatch,
+  isIceBatteryProductSpecCode,
   isValidBatterySpecCode,
   resolveCatalogBatteryCandidates,
   resolveCatalogPrimaryBattery,
@@ -132,11 +134,14 @@ export function sanitizeSearchRowCustomerCopy(
 }
 
 export function formatCustomerBatterySummaryForAsset(asset: VehicleAsset): string {
+  if (isEvLowVoltageVehicle(asset.id)) {
+    return EV_LOW_VOLTAGE_DISPLAY_TITLE;
+  }
   const primary = resolveCatalogPrimaryBattery(asset.id, asset);
   const candidates = resolveCatalogBatteryCandidates(asset.id, asset);
   if (hasBatteryMatch(primary, candidates)) {
-    const code = isValidBatterySpecCode(primary) ? primary : candidates[0]!;
-    return `대표 규격 ${code}`;
+    const ice = [primary, ...candidates].find(isIceBatteryProductSpecCode);
+    if (ice) return `대표 규격 ${ice}`;
   }
   const fromNotes = sanitizeCustomerBatterySummary(asset.batteryNotes);
   if (fromNotes) return fromNotes;

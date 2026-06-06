@@ -1,10 +1,12 @@
 import { vehicleAssets } from "@/lib/car-assets";
 import { isVehicleFullyLithiumSalesExcluded } from "@/lib/vehicle-battery-customer-policy";
 import {
+  customerFacingBatterySource,
   hasBatteryMatch,
   resolveBatteryMatchStatus,
   resolveCatalogBatteryCandidates,
   resolveCatalogPrimaryBattery,
+  resolveCustomerCatalogPrimaryBattery,
   type VehicleImageStatus,
 } from "@/lib/vehicle-battery-match";
 import type { AdminMatchingRow, AdminReviewStatus } from "@/types/admin";
@@ -35,6 +37,8 @@ export function buildMatchingAuditRows(): AdminMatchingRow[] {
       yearRange: asset.yearRange ?? "—",
       fuel: "—",
       connectedBattery: connected,
+      customerFacingBattery: resolveCustomerCatalogPrimaryBattery(asset.id) || "—",
+      batterySource: customerFacingBatterySource(asset.id),
       candidateBatteries: candidates,
       terminalConflict: false,
       agmConflict: false,

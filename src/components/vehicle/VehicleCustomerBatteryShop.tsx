@@ -26,6 +26,13 @@ import {
 } from "@/lib/vehicle-detail-recommendation";
 import type { FuelBatteryGroup } from "@/lib/vehicleBattery";
 import {
+  EV_LOW_VOLTAGE_DISPLAY_SUBTITLE,
+  EV_LOW_VOLTAGE_DISPLAY_TITLE,
+  isEvLowVoltageBatteryStatus,
+  resolveCustomerBatteryPresentation,
+  shouldShowEvLowVoltageCard,
+} from "@/lib/ev-low-voltage-battery-policy";
+import {
   getVehicleFixedBatteryNotice,
   getVehicleSalesExcludedNotice,
   isVehicleFuelSalesExcluded,
@@ -129,6 +136,50 @@ function BrandProductCard({
   );
 }
 
+function EvLowVoltageBatteryCard({
+  fuelLabel,
+  vehicleTitle,
+  yearRange,
+  highlighted,
+}: {
+  fuelLabel: string;
+  vehicleTitle: string;
+  yearRange?: string;
+  highlighted: boolean;
+}) {
+  return (
+    <section
+      className={`${bm.card} ${bm.cardPad} border-2 border-emerald-200 bg-gradient-to-br from-emerald-50/90 to-teal-50/50 ${
+        highlighted ? "ring-2 ring-emerald-500" : ""
+      }`}
+      id={highlighted ? "fuel-card-focus" : undefined}
+    >
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <p className="text-sm font-black text-emerald-800">{fuelLabel}</p>
+          <p className="vehicle-customer-battery__spec-title mt-1 text-emerald-950">
+            {EV_LOW_VOLTAGE_DISPLAY_TITLE}
+          </p>
+          <p className="mt-1 text-sm font-semibold text-emerald-900/80">
+            {EV_LOW_VOLTAGE_DISPLAY_SUBTITLE}
+          </p>
+          <p className="mt-1 text-sm font-medium text-slate-600">
+            {vehicleTitle}
+            {yearRange ? ` · ${yearRange}` : ""}
+          </p>
+        </div>
+        <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-black text-emerald-900 ring-1 ring-emerald-200">
+          EV 보조 12V
+        </span>
+      </div>
+      <p className="mt-4 text-sm font-medium leading-relaxed text-slate-700">
+        전기차 보조 전원용 12V 배터리입니다. 일반 승용차용 납산·AGM 규격(AGM60L, DIN 계열 등)과
+        다릅니다.
+      </p>
+    </section>
+  );
+}
+
 type Props = {
   slug: string;
   vehicleTitle: string;
@@ -167,7 +218,6 @@ export function VehicleCustomerBatteryShop({
     return (
       <section className={`${bm.card} ${bm.cardPad} vehicle-customer-battery`}>
         <p className="text-sm font-medium text-slate-600">{BATTERY_MATCH_PENDING_MESSAGE}</p>
-        <p className="mt-1 text-sm text-slate-500">사진 확인/문의가 필요할 수 있습니다.</p>
         <Link href={HUB_STORE_DETAIL} className={`${bm.btnPrimary} mt-4 inline-flex text-sm font-black`}>
           상담하기
         </Link>
@@ -194,11 +244,28 @@ export function VehicleCustomerBatteryShop({
         </section>
       ))}
       {fuelCards.map((group) => {
+        const highlighted = highlightFuel === group.fuelLabel;
+        const isEvCard =
+          shouldShowEvLowVoltageCard(slug, group.fuelLabel) ||
+          isEvLowVoltageBatteryStatus(group.primaryBattery);
+
+        if (isEvCard) {
+          return (
+            <EvLowVoltageBatteryCard
+              key={group.fuelLabel}
+              fuelLabel={group.fuelLabel}
+              vehicleTitle={vehicleTitle}
+              yearRange={yearRange}
+              highlighted={highlighted}
+            />
+          );
+        }
+
         const batteryCode = resolveCustomerCatalogPrimaryBattery(slug, group.fuelLabel);
         const brandOffers = batteryCode ? brandOffersForVehicleSpec(batteryCode) : [];
-        const highlighted = highlightFuel === group.fuelLabel;
+        const presentation = resolveCustomerBatteryPresentation(slug, group.fuelLabel);
 
-        if (!batteryCode) return null;
+        if (!batteryCode || presentation.kind !== "ice_product") return null;
 
         return (
           <section

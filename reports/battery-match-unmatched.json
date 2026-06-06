@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-06-06T03:38:45.434Z",
+  "count": 1,
+  "rows": [
+    {
+      "slug": "niro-sg2",
+      "brand": "kia",
+      "displayName": "디 올 뉴 니로",
+      "yearRange": "2022-현재",
+      "primaryBattery": "—",
+      "batteryMatchStatus": "unmatched",
+      "salesExcluded": true,
+      "holdInternal": false,
+      "reviewReason": "전 트림 리튬 — 판매 제외"
+    }
+  ]
+}

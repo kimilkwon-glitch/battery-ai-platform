@@ -30,6 +30,8 @@
     "audit:vehicle-generation": "npx tsx tools/audit-vehicle-generation-match.ts",
     "merge:source-tables": "npx tsx tools/merge-source-tables-into-vehicle-db.ts",
     "report:unmatched-assets": "npx tsx tools/generate-unmatched-assets-review.ts",
+    "audit:battery-match": "npx tsx tools/audit-battery-match-status.ts && npx tsx tools/audit-battery-match-v2-final.ts && npx tsx tools/audit-ev-low-voltage-policy.ts",
+    "audit:vehicle-battery-sources": "npx tsx tools/audit-full-vehicle-battery-sources.ts",
     "audit:operational": "node tools/generate-operational-audit.mjs",
     "e2e:customer-flow": "node tools/e2e-customer-flow-check.mjs",
     "audit:button-actions": "node tools/audit-button-actions.mjs",

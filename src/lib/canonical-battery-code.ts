@@ -3,8 +3,10 @@
  * CMF80L 등 prefix 포함 전체 코드 유지. 80L 등은 family/별칭 매칭에만 사용.
  */
 import { getCanonicalBatteryCode } from "@/lib/battery-alias-map";
+import { isEvLowVoltageBatteryStatus } from "@/lib/ev-low-voltage-battery-policy";
+import { normalizeBatterySpecCode } from "@/lib/battery-spec-normalization";
 import {
-  BATTERY_ALIAS_MAP,
+  isBareJisBatterySpec,
   normalizeBatteryCode,
   productBatteryCode,
 } from "@/lib/batteryNormalize";
@@ -15,9 +17,14 @@ const PREFIXED_PRODUCT_INPUT =
 
 /** URL·카드 입력이 CMF80L 등 전체 상품코드일 때 family(80L)로 붕괴하지 않음 */
 export function canonicalBatteryCode(raw: string | null | undefined): string {
-  if (!raw?.trim()) return "";
-  const trimmed = raw.trim().replace(/\s+/g, "");
+  const normalized = normalizeBatterySpecCode(raw);
+  if (!normalized || isEvLowVoltageBatteryStatus(normalized)) return "";
+  const trimmed = normalized.replace(/\s+/g, "");
   const upper = trimmed.toUpperCase();
+
+  if (isBareJisBatterySpec(trimmed)) {
+    return upper;
+  }
 
   if (PREFIXED_PRODUCT_INPUT.test(upper)) {
     const viaProduct = productBatteryCode(upper);
@@ -56,30 +63,21 @@ export function batterySpecHref(raw: string | null | undefined): string {
 export const batteryPurchaseHref = batteryDetailHref;
 
 /**
- * 고객 화면 표시용 — AGM80R 등 prefix 유지, 80R 단독 표기는 AGM 계열이면 AGM 접두어 복원
- * (100R·90R 등 CMF/GB 상용 규격은 family 표기 유지)
+ * 고객 화면 표시용 — AGM/DIN/일반 JIS 규격 자동 변환 없음 (80R≠AGM80R, 50L≠DIN50L)
  */
 export function customerFacingBatteryCode(raw: string | null | undefined): string {
-  if (!raw?.trim()) return "";
-  const trimmed = raw.trim();
+  const normalized = normalizeBatterySpecCode(raw);
+  if (!normalized || isEvLowVoltageBatteryStatus(normalized)) return "";
+  const trimmed = normalized;
   const upper = trimmed.replace(/\s+/g, "").toUpperCase();
+
+  if (isBareJisBatterySpec(trimmed)) return upper;
 
   const viaCanon = canonicalBatteryCode(trimmed);
   if (/^(AGM|DIN|CMF|GB|DF|EFB|MF|EV)/i.test(viaCanon)) return viaCanon;
 
   const viaProduct = productBatteryCode(trimmed);
   if (/^(AGM|DIN|CMF|GB|DF|EFB|MF|EV)/i.test(viaProduct)) return viaProduct;
-
-  if (/^AGM/i.test(upper)) {
-    return viaCanon || viaProduct || upper;
-  }
-
-  const family = normalizeBatteryCode(trimmed);
-  const agmKey = `AGM${family}`;
-  if (family && BATTERY_ALIAS_MAP[agmKey] && /^\d+[LR]$/i.test(family)) {
-    const agm = productBatteryCode(agmKey);
-    if (agm && /^AGM/i.test(agm)) return agm;
-  }
 
   return viaCanon || viaProduct || upper;
 }

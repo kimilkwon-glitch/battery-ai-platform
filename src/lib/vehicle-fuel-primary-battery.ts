@@ -1,9 +1,14 @@
 /**
- * 차량 slug + 연료 → 대표 primary battery (단일 기준)
- * 검색 카드 / 차량 상세 히어로 / 하단 CTA / 상세표 / data-primary-battery
+ * 차량 slug + 연료 → 대표 primary battery (고객-facing 단일 기준)
+ * 검색 카드 / 차량 상세 히어로 / 하단 CTA — operator 테이블만 사용
  */
-import enrichmentJson from "@/data/vehicle-battery-enrichment.json";
-import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
+import { customerFacingBatteryCode } from "@/lib/canonical-battery-code";
+import {
+  EV_LOW_VOLTAGE_BATTERY_STATUS,
+  isEvLowVoltageBatteryStatus,
+  shouldShowEvLowVoltageCard,
+} from "@/lib/ev-low-voltage-battery-policy";
+import { normalizeBatterySpecCode } from "@/lib/battery-spec-normalization";
 import { resolveCustomerCatalogPrimaryBattery } from "@/lib/vehicle-battery-match";
 import {
   OPERATOR_FUEL_PRIMARY,
@@ -11,23 +16,7 @@ import {
 } from "@/lib/vehicle-operator-battery-tables";
 import { mapCustomerFuelLabel, sortFuelGroupsByDisplayOrder } from "@/lib/vehicle-fuel-display";
 import { prepareCustomerFacingFuelGroups } from "@/lib/vehicle-detail-recommendation";
-import {
-  getRecordFuelLabel,
-  getRecordsForSlug,
-  getYearChipsForSlug,
-  pickPrimaryBatteryFromRecords,
-  type FuelBatteryGroup,
-  type VehicleBatteryRecord,
-} from "@/lib/vehicleBattery";
-
-type EnrichmentRow = {
-  vehicleId?: string;
-  fuelType?: string;
-  primaryBattery?: string;
-  status?: string;
-};
-
-const enrichments = (enrichmentJson as { records?: EnrichmentRow[] }).records ?? [];
+import type { FuelBatteryGroup } from "@/lib/vehicleBattery";
 
 export { OPERATOR_SLUG_PRIMARY_BATTERY } from "@/lib/vehicle-operator-battery-tables";
 
@@ -55,16 +44,23 @@ export function mergeOperatorFuelGroups(
 
   const byLabel = new Map<string, FuelBatteryGroup>();
   for (const g of fuelGroups) {
-    const op = operator[g.fuelLabel];
-    byLabel.set(
-      g.fuelLabel,
-      op ? { ...g, primaryBattery: canonicalBatteryCode(op) } : g,
-    );
+    const op = normalizeBatterySpecCode(operator[g.fuelLabel]);
+    const primary = op
+      ? isEvLowVoltageBatteryStatus(op)
+        ? EV_LOW_VOLTAGE_BATTERY_STATUS
+        : customerFacingBatteryCode(op)
+      : "";
+    byLabel.set(g.fuelLabel, primary ? { ...g, primaryBattery: primary } : g);
   }
 
   for (const [fuelLabel, code] of Object.entries(operator)) {
     if (byLabel.has(fuelLabel)) continue;
-    const primary = canonicalBatteryCode(code);
+    const norm = normalizeBatterySpecCode(code);
+    const primary = norm
+      ? isEvLowVoltageBatteryStatus(norm)
+        ? EV_LOW_VOLTAGE_BATTERY_STATUS
+        : customerFacingBatteryCode(norm)
+      : "";
     if (primary) byLabel.set(fuelLabel, syntheticFuelGroup(fuelLabel, primary));
   }
 
@@ -81,13 +77,22 @@ export function buildFuelHeroCardGroups(
   const merged = mergeOperatorFuelGroups(slug, fuelGroups);
 
   let cards = merged.filter((g) => {
+    if (shouldShowEvLowVoltageCard(slug, g.fuelLabel)) return true;
     const code = resolveCustomerCatalogPrimaryBattery(slug, g.fuelLabel);
     return Boolean(code);
   });
 
+  if (cards.length === 0) {
+    const slugLevel = resolveCustomerCatalogPrimaryBattery(slug);
+    if (slugLevel) {
+      cards = [syntheticFuelGroup("공통", slugLevel)];
+    } else if (shouldShowEvLowVoltageCard(slug)) {
+      cards = [syntheticFuelGroup("전기", EV_LOW_VOLTAGE_BATTERY_STATUS)];
+    }
+  }
+
   if (highlightFuel) {
-    const resolved = resolveCustomerCatalogPrimaryBattery(slug, highlightFuel);
-    const code = canonicalBatteryCode(resolved);
+    const code = resolveCustomerCatalogPrimaryBattery(slug, highlightFuel);
     if (code && !cards.some((c) => c.fuelLabel === highlightFuel)) {
       cards = [syntheticFuelGroup(highlightFuel, code), ...cards];
     }
@@ -101,113 +106,19 @@ export function buildFuelHeroCardGroups(
   return prepareCustomerFacingFuelGroups(slug, sortFuelGroupsByDisplayOrder(cards));
 }
 
-function decodeFuelQueryParam(raw: string | null | undefined): string | null {
-  if (!raw) return null;
-  try {
-    return decodeURIComponent(raw.trim());
-  } catch {
-    return raw.trim();
-  }
-}
-
-/** URL fuel 쿼리 → 폴백 규격 (DB·enrichment 없을 때만) */
-export function batteryCodeForFuelParam(fuel: string | null | undefined): string | null {
-  const t = decodeFuelQueryParam(fuel);
-  if (!t) return null;
-  if (/하이브|hev/i.test(t)) return "AGM60L";
-  if (/디젤/i.test(t)) return "AGM80L";
-  if (/lpg/i.test(t)) return "AGM80L";
-  return null;
-}
-
 /** URL fuel 쿼리 → 표준 연료 라벨 */
 export function normalizeVehicleFuelParam(raw: string | null | undefined): string | null {
   if (!raw) return null;
   return mapCustomerFuelLabel(raw.trim());
 }
 
-function enrichmentForSlug(slug: string): EnrichmentRow | undefined {
-  return enrichments.find((e) => e.vehicleId === slug);
-}
-
-function enrichmentMatchesFuel(row: EnrichmentRow, fuel: string | null): boolean {
-  if (!fuel) return true;
-  const ft = row.fuelType ?? "";
-  if (!ft) return true;
-  if (ft.includes(fuel)) return true;
-  if (fuel === "가솔린" && /가솔|휘발/i.test(ft)) return true;
-  if (fuel === "디젤" && /디젤|경유/i.test(ft)) return true;
-  if (fuel === "하이브리드" && /하이브|hev/i.test(ft)) return true;
-  if (fuel === "LPG" && /lpg|엘피지/i.test(ft)) return true;
-  if (fuel === "전기" && /전기|ev/i.test(ft)) return true;
-  return false;
-}
-
-function filterRecordsByYearChip(
-  slug: string,
-  recs: VehicleBatteryRecord[],
-  yearChipId: string | null | undefined,
-): VehicleBatteryRecord[] {
-  if (!yearChipId) return recs;
-  const chips = getYearChipsForSlug(slug, recs);
-  const chip = chips.find((c) => c.id === yearChipId);
-  if (!chip) return recs;
-  return recs.filter((r) => {
-    if (chip.maxEndYear != null) {
-      return (r.endYear !== null && r.endYear <= chip.maxEndYear) || (r.years?.includes("19") ?? false);
-    }
-    if (chip.minStartYear != null) {
-      return (r.startYear !== null && r.startYear >= chip.minStartYear) || (r.years?.includes("20") ?? false);
-    }
-    return true;
-  });
-}
-
-function filterRecordsForFuel(
-  recs: VehicleBatteryRecord[],
-  fuel: string | null,
-): VehicleBatteryRecord[] {
-  if (!fuel) return recs;
-  return recs.filter((r) => getRecordFuelLabel(r) === fuel);
-}
-
 /**
- * 차량+연료 대표 규격 (canonical)
- * @param slug platform vehicle id (e.g. grandeur-ig)
- * @param fuelRaw URL fuel param or 표준 연료 라벨
+ * 차량+연료 대표 규격 — operator 테이블만 (legacy DB/enrichment 미사용)
  */
 export function resolveVehicleFuelPrimaryBattery(
   slug: string,
   fuelRaw: string | null | undefined,
-  options?: { yearChipId?: string | null; fallback?: string | null },
+  _options?: { yearChipId?: string | null; fallback?: string | null },
 ): string {
-  const slugPrimary = OPERATOR_SLUG_PRIMARY_BATTERY[slug];
-  if (slugPrimary) return canonicalBatteryCode(slugPrimary);
-
-  const fuel = normalizeVehicleFuelParam(fuelRaw);
-  const operator = fuel ? OPERATOR_FUEL_PRIMARY[slug]?.[fuel] : undefined;
-  if (operator) return canonicalBatteryCode(operator);
-
-  let recs = getRecordsForSlug(slug);
-  recs = filterRecordsByYearChip(slug, recs, options?.yearChipId);
-  const fuelRecs = filterRecordsForFuel(recs, fuel);
-
-  let picked = pickPrimaryBatteryFromRecords(fuelRecs.length ? fuelRecs : fuel ? [] : recs);
-  if (!picked && fuel) {
-    picked = pickPrimaryBatteryFromRecords(recs);
-  }
-
-  if (picked) return canonicalBatteryCode(picked);
-
-  const enrich = enrichmentForSlug(slug);
-  if (enrich?.primaryBattery && enrichmentMatchesFuel(enrich, fuel)) {
-    return canonicalBatteryCode(enrich.primaryBattery);
-  }
-
-  const fromParam = batteryCodeForFuelParam(fuelRaw);
-  if (fromParam) return canonicalBatteryCode(fromParam);
-
-  if (options?.fallback) return canonicalBatteryCode(options.fallback);
-
-  return "";
+  return resolveCustomerCatalogPrimaryBattery(slug, fuelRaw);
 }
