@@ -16,7 +16,10 @@ import {
 } from "@/lib/vehicle-operator-battery-tables";
 import { mapCustomerFuelLabel, sortFuelGroupsByDisplayOrder } from "@/lib/vehicle-fuel-display";
 import { prepareCustomerFacingFuelGroups } from "@/lib/vehicle-detail-recommendation";
+import { FUEL_SALES_EXCLUDED } from "@/lib/vehicle-battery-customer-policy";
 import type { FuelBatteryGroup } from "@/lib/vehicleBattery";
+
+const SALES_EXCLUDED_OPERATOR_TOKEN_RE = /^(판매\s*제외|판매제외|sales_excluded)$/i;
 
 export { OPERATOR_SLUG_PRIMARY_BATTERY } from "@/lib/vehicle-operator-battery-tables";
 
@@ -55,6 +58,10 @@ export function mergeOperatorFuelGroups(
 
   for (const [fuelLabel, code] of Object.entries(operator)) {
     if (byLabel.has(fuelLabel)) continue;
+    if (SALES_EXCLUDED_OPERATOR_TOKEN_RE.test(code.trim())) {
+      byLabel.set(fuelLabel, syntheticFuelGroup(fuelLabel, ""));
+      continue;
+    }
     const norm = normalizeBatterySpecCode(code);
     const primary = norm
       ? isEvLowVoltageBatteryStatus(norm)
@@ -62,6 +69,12 @@ export function mergeOperatorFuelGroups(
         : customerFacingBatteryCode(norm)
       : "";
     if (primary) byLabel.set(fuelLabel, syntheticFuelGroup(fuelLabel, primary));
+  }
+
+  for (const fuelLabel of FUEL_SALES_EXCLUDED[slug] ?? []) {
+    if (!byLabel.has(fuelLabel)) {
+      byLabel.set(fuelLabel, syntheticFuelGroup(fuelLabel, ""));
+    }
   }
 
   return [...byLabel.values()];
