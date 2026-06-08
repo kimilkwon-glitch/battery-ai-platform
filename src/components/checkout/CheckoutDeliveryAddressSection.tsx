@@ -30,10 +30,14 @@ export function CheckoutDeliveryAddressSection({
   showSaveAsDefault,
 }: Props) {
   return (
-    <section className="checkout-card space-y-4" id="checkout-delivery-address">
+    <section
+      className="checkout-card space-y-4"
+      id="checkout-delivery-address"
+      data-checkout-info-section="delivery"
+    >
       <div>
         <h2 className="checkout-card__title">배송지 정보</h2>
-        <p className="checkout-card__hint">택배 수령 주소를 입력해 주세요.</p>
+        <p className="checkout-card__hint">배터리를 받을 주소와 연락처를 입력해 주세요.</p>
       </div>
 
       <div className="flex flex-wrap gap-2">

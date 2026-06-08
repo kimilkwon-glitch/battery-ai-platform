@@ -1,10 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { CartItemFulfillmentControls } from "@/components/cart/CartItemFulfillmentControls";
 import { OrderPriceBreakdown } from "@/components/pricing/OrderPriceBreakdown";
-import { FITMENT_STATUS_LABELS, FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
+import {
+  FITMENT_STATUS_LABELS,
+  FULFILLMENT_METHOD_LABELS,
+  USED_BATTERY_RETURN_CARD_MESSAGES,
+} from "@/data/cart-flow-guide";
 import { applyPricingToCartItem, formatPriceWon, resolveCartItemPrices } from "@/lib/pricing/order-price";
+import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import type { BatteryCartItem, FulfillmentMethod, UsedBatteryReturnOption } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
@@ -42,13 +48,8 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
     item.fulfillment.method === "undecided"
       ? "미선택"
       : FULFILLMENT_METHOD_LABELS[item.fulfillment.method];
-
-  const returnLabel =
-    item.usedBatteryReturn.option === "return"
-      ? "반납"
-      : item.usedBatteryReturn.option === "no_return"
-        ? "미반납"
-        : "미정";
+  const detailHref = batteryDetailHref(item.batterySpec);
+  const returnMessage = USED_BATTERY_RETURN_CARD_MESSAGES[item.usedBatteryReturn.option];
 
   const setVehicleInfo = (text: string) => {
     const trimmed = text.trim();
@@ -90,9 +91,9 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
   };
 
   return (
-    <article className={`${bm.card} ${bm.cardPad} space-y-3`} data-cart-item={item.id}>
-      <div className="grid gap-3 sm:grid-cols-[120px_1fr]">
-        <div className="mx-auto w-full max-w-[120px] sm:mx-0">
+    <article className={`cart-item-card ${bm.card} ${bm.cardPad}`} data-cart-item={item.id}>
+      <div className="cart-item-card__top grid gap-3 sm:grid-cols-[100px_1fr]">
+        <div className="cart-item-card__media mx-auto w-full max-w-[100px] sm:mx-0">
           {item.imageSrc ? (
             <img
               src={item.imageSrc}
@@ -109,69 +110,65 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
           )}
         </div>
 
-        <div className="min-w-0 space-y-2">
+        <div className="cart-item-card__info min-w-0 space-y-2">
           <div className="flex flex-wrap items-start justify-between gap-2">
-            <div>
+            <div className="min-w-0">
               <h3 className="text-sm font-black text-slate-950">{item.productName}</h3>
               <p className="text-xs font-bold text-slate-600">
                 {item.brandName ? `${item.brandName} · ` : ""}
                 {item.batterySpec} · 단자 {terminalLabel(item.terminalDirection)}
               </p>
-              {item.vehicle?.year || item.vehicle?.fuelType ? (
-                <p className="text-[10px] font-medium text-slate-500">
-                  {[item.vehicle.year, item.vehicle.fuelType].filter(Boolean).join(" · ")}
-                </p>
-              ) : null}
             </div>
+            <span
+              className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black ring-1 ${fitmentTone(item.fitmentStatus)}`}
+            >
+              {fit.badge}
+            </span>
           </div>
 
-          <dl className="grid grid-cols-2 gap-x-3 gap-y-1 rounded-lg bg-slate-50 px-2.5 py-2 text-[10px] font-bold text-slate-600">
+          <dl className="cart-item-card__prices grid grid-cols-2 gap-x-3 gap-y-1 rounded-lg bg-slate-50 px-2.5 py-2 text-[11px] font-bold text-slate-600">
             <dt>제품 구매가</dt>
-            <dd className="text-right tabular-nums">{formatPriceWon(prices.internetPrice)}</dd>
+            <dd className="text-right tabular-nums text-slate-900">{formatPriceWon(prices.internetPrice)}</dd>
             <dt>출장 교체가</dt>
-            <dd className="text-right tabular-nums">{formatPriceWon(prices.onsitePrice)}</dd>
+            <dd className="text-right tabular-nums text-slate-900">{formatPriceWon(prices.onsitePrice)}</dd>
             <dt>수령/장착</dt>
             <dd className="text-right">{fulfillmentLabel}</dd>
-            <dt>반납 여부</dt>
-            <dd className="text-right">{returnLabel}</dd>
           </dl>
 
-          <label className="block">
-            <span className="text-[11px] font-black text-slate-700">차량명·연식·연료</span>
-            <textarea
-              rows={2}
-              value={vehicleText}
-              onChange={(e) => setVehicleInfo(e.target.value)}
-              placeholder="차량명·연식·연료를 적어주세요"
-              className="mt-1 w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-medium leading-relaxed text-slate-800 placeholder:font-medium placeholder:text-slate-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100"
-            />
-          </label>
-
-          <CartItemFulfillmentControls
-            item={item}
-            onFulfillmentChange={onFulfillmentChange}
-            onReturnChange={onReturnChange}
-          />
+          <p className="text-[10px] font-medium leading-relaxed text-slate-500">{returnMessage}</p>
 
           <OrderPriceBreakdown item={item} compact includeBatteryReturnFee />
 
-          <span
-            className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-black ring-1 ${fitmentTone(item.fitmentStatus)}`}
-          >
-            {fit.badge}
-          </span>
-
-          {item.warnings.length > 0 ? (
-            <ul className="list-disc space-y-0.5 pl-4 text-[11px] font-bold text-amber-900">
-              {item.warnings.map((w) => (
-                <li key={w}>{w}</li>
-              ))}
-            </ul>
+          {detailHref ? (
+            <Link href={detailHref} className="text-[11px] font-bold text-blue-700 hover:underline">
+              상품 상세 보기
+            </Link>
           ) : null}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
+      <label className="cart-item-card__vehicle block">
+        <span className="text-[11px] font-black text-slate-700">차량명·연식·연료</span>
+        <textarea
+          rows={2}
+          value={vehicleText}
+          onChange={(e) => setVehicleInfo(e.target.value)}
+          placeholder="차량명·연식·연료 (선택)"
+          className="checkout-input mt-1 w-full resize-y rounded-lg border px-3 py-2 text-xs font-medium leading-relaxed text-slate-800 placeholder:text-slate-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100"
+        />
+      </label>
+
+      <CartItemFulfillmentControls
+        item={item}
+        onFulfillmentChange={onFulfillmentChange}
+        onReturnChange={onReturnChange}
+      />
+
+      {item.warnings.length > 0 ? (
+        <p className="line-clamp-2 text-[11px] font-bold text-amber-900">{item.warnings[0]}</p>
+      ) : null}
+
+      <div className="cart-item-card__footer flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
         <div className="flex items-center gap-2">
           <button
             type="button"

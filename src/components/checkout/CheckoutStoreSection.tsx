@@ -16,11 +16,19 @@ type Props = {
 };
 
 export function CheckoutStoreSection({ values, onChange }: Props) {
+  const isPickup = values.method === "store_pickup_self";
+
   return (
-    <section className="checkout-card space-y-4" id="checkout-store">
+    <section
+      className="checkout-card space-y-4"
+      id="checkout-store"
+      data-checkout-info-section={isPickup ? "store_pickup_self" : "store_install"}
+    >
       <div>
         <h2 className="checkout-card__title">방문 지점</h2>
-        <p className="checkout-card__hint">매장을 선택해 주세요.</p>
+        <p className="checkout-card__hint">
+          {isPickup ? "제품을 수령할 매장을 선택해 주세요." : "교체를 받을 매장을 선택해 주세요."}
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -41,7 +49,18 @@ export function CheckoutStoreSection({ values, onChange }: Props) {
       </div>
 
       <label className="block">
-        <span className="checkout-label">매장 전달사항</span>
+        <span className="checkout-label">희망 방문 시간 (선택)</span>
+        <input
+          type="text"
+          className={inputClass}
+          value={values.preferredTime ?? ""}
+          onChange={(e) => onChange({ preferredTime: e.target.value })}
+          placeholder="예: 평일 오후 2시 이후"
+        />
+      </label>
+
+      <label className="block">
+        <span className="checkout-label">{isPickup ? "요청사항" : "방문 요청사항"}</span>
         <textarea
           rows={3}
           className={inputClass}

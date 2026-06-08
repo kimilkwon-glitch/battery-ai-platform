@@ -1,7 +1,7 @@
 import type { CustomerBrandHubId } from "@/lib/brand-hub-customer";
 
-/** 브랜드 배너 로고 명패 — 배경·필터 분기 */
-export type BrandHubLogoPanelVariant = "default" | "darkHighContrast";
+/** 브랜드 배너 로고 — 원본 색상 유지, 밝은 safe box로 대비 */
+export type BrandHubLogoPanelVariant = "default";
 
 export type BrandHubLogoPresentation = {
   panelVariant: BrandHubLogoPanelVariant;
@@ -11,14 +11,14 @@ export type BrandHubLogoPresentation = {
 
 const PRESENTATION: Record<CustomerBrandHubId, BrandHubLogoPresentation> = {
   rocket: {
-    panelVariant: "darkHighContrast",
-    imageClassName: "brand-hub-logo-image--high-contrast",
-    surfaceClassName: "brand-hub-logo-image-surface--dark-panel",
+    panelVariant: "default",
+    imageClassName: "",
+    surfaceClassName: "brand-hub-logo-image-surface--safe",
   },
   solite: {
     panelVariant: "default",
     imageClassName: "",
-    surfaceClassName: "",
+    surfaceClassName: "brand-hub-logo-image-surface--safe",
   },
 };
 

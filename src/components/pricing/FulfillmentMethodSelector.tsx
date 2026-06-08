@@ -53,14 +53,15 @@ export function FulfillmentMethodSelector({
     <section
       className={methodsOnly ? "checkout-card space-y-3" : `${bm.card} ${bm.cardPad} space-y-3`}
       id={`${idPrefix}-section`}
+      data-checkout-section="fulfillment"
     >
       <h2 className={methodsOnly ? "checkout-card__title" : "text-sm font-black text-slate-900"}>
         수령/장착 방식
       </h2>
       <p className={methodsOnly ? "checkout-card__hint" : "text-xs font-medium text-slate-600"}>
-        선택한 방식에 따라 결제금액이 달라집니다.
+        선택한 방식에 따라 결제금액이 달라집니다. 가격 요약에서 바로 확인할 수 있습니다.
       </p>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="checkout-fulfillment-grid grid gap-3 sm:grid-cols-2">
         {METHODS.map((m) => {
           const label = FULFILLMENT_PRICE_LABELS[m.priceType];
           const desc = FULFILLMENT_PRICE_DESCRIPTIONS[m.priceType];
@@ -70,15 +71,17 @@ export function FulfillmentMethodSelector({
               key={m.value}
               type="button"
               onClick={() => selectMethod(m.value)}
-              className={`rounded-xl px-4 py-4 text-left transition-colors ${
+              aria-pressed={active}
+              data-checkout-fulfillment={m.value}
+              className={`checkout-fulfillment-card min-h-[4.5rem] rounded-xl px-4 py-3.5 text-left transition-colors sm:min-h-[5rem] sm:py-4 ${
                 active
                   ? "checkout-fulfillment-card--active bg-[#0F1B33] text-white ring-2 ring-blue-400"
-                  : "checkout-fulfillment-card bg-white text-slate-800 ring-1 ring-[#D8E1EC] hover:ring-slate-300"
+                  : "bg-white text-slate-800 ring-1 ring-[#D8E1EC] hover:ring-slate-300"
               }`}
             >
-              <span className="block text-xs font-black">{label}</span>
+              <span className="block text-sm font-black">{label}</span>
               <span
-                className={`mt-1 block text-[10px] font-medium leading-relaxed ${
+                className={`mt-1 block text-[11px] font-semibold leading-relaxed ${
                   active ? "text-blue-50" : "text-slate-500"
                 }`}
               >

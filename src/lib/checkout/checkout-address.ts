@@ -22,11 +22,36 @@ export function deliveryAddressValid(fulfillment: OrderRequestFulfillment): bool
 }
 
 export function visitAddressValid(fulfillment: OrderRequestFulfillment): boolean {
+  const phoneDigits = fulfillment.recipientPhone?.replace(/\D/g, "") ?? "";
   return Boolean(
-    fulfillment.postalCode?.trim() &&
+    fulfillment.recipientName?.trim() &&
+      phoneDigits.length >= 9 &&
+      fulfillment.postalCode?.trim() &&
       fulfillment.address1?.trim() &&
       fulfillment.address2?.trim(),
   );
+}
+
+export function checkoutContactFromFulfillment(
+  fulfillment: OrderRequestFulfillment,
+  customer: { name: string; phone: string },
+): { name: string; phone: string } {
+  if (fulfillment.method === "delivery" || fulfillment.method === "visit_install") {
+    return {
+      name: fulfillment.recipientName?.trim() ?? "",
+      phone: fulfillment.recipientPhone?.trim() ?? "",
+    };
+  }
+  return { name: customer.name.trim(), phone: customer.phone.trim() };
+}
+
+export function checkoutContactValid(
+  fulfillment: OrderRequestFulfillment,
+  customer: { name: string; phone: string },
+): boolean {
+  const { name, phone } = checkoutContactFromFulfillment(fulfillment, customer);
+  const phoneDigits = phone.replace(/\D/g, "");
+  return Boolean(name && phoneDigits.length >= 9);
 }
 
 export function storeSelectionValid(fulfillment: OrderRequestFulfillment): boolean {

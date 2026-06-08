@@ -20,10 +20,14 @@ export function CheckoutVisitAddressSection({
   showMemberApply,
 }: Props) {
   return (
-    <section className="checkout-card space-y-4" id="checkout-visit-address">
+    <section
+      className="checkout-card space-y-4"
+      id="checkout-visit-address"
+      data-checkout-info-section="visit_install"
+    >
       <div>
-        <h2 className="checkout-card__title">방문 주소</h2>
-        <p className="checkout-card__hint">출장교체 방문 위치를 입력해 주세요.</p>
+        <h2 className="checkout-card__title">방문 정보</h2>
+        <p className="checkout-card__hint">출장 교체 받을 위치와 연락처를 입력해 주세요.</p>
       </div>
 
       {showMemberApply && onApplyMemberProfile ? (
@@ -35,6 +39,35 @@ export function CheckoutVisitAddressSection({
           회원정보와 동일
         </button>
       ) : null}
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="block">
+          <span className="checkout-label">
+            이름 <span className="text-red-600">*</span>
+          </span>
+          <input
+            type="text"
+            autoComplete="name"
+            className={inputClass}
+            value={values.recipientName ?? ""}
+            onChange={(e) => onChange({ recipientName: e.target.value })}
+            placeholder="홍길동"
+          />
+        </label>
+        <label className="block">
+          <span className="checkout-label">
+            연락처 <span className="text-red-600">*</span>
+          </span>
+          <input
+            type="tel"
+            autoComplete="tel"
+            className={inputClass}
+            value={values.recipientPhone ?? ""}
+            onChange={(e) => onChange({ recipientPhone: e.target.value })}
+            placeholder="010-0000-0000"
+          />
+        </label>
+      </div>
 
       <div className="space-y-2">
         <span className="checkout-label">

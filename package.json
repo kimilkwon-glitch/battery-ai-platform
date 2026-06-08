@@ -50,7 +50,11 @@
     "e2e:customer-flow": "node tools/e2e-customer-flow-check.mjs",
     "audit:button-actions": "node tools/audit-button-actions.mjs",
     "audit:full-ux": "node tools/full-customer-ux-audit.mjs",
-    "db:migrate:commerce": "npx tsx scripts/migrate-commerce-db.ts"
+    "db:migrate:commerce": "npx tsx scripts/migrate-commerce-db.ts",
+    "audit:journey": "npx tsx scripts/capture-customer-journey-audit.ts",
+    "audit:target": "npx tsx scripts/capture-target-audit.ts",
+    "audit:target:checkout": "npx tsx scripts/capture-target-audit.ts --scope=checkout",
+    "audit:target:checkout-logo": "npx tsx scripts/capture-target-audit.ts --scope=checkout-logo"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

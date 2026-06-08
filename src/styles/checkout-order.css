@@ -108,3 +108,53 @@
     gap: 1.25rem;
   }
 }
+
+/* 장바구니 · checkout 3차 UX */
+
+.cart-page .cart-item-card {
+  border-color: var(--checkout-border);
+}
+
+.cart-item-card__prices {
+  border: 1px solid #eef2f6;
+}
+
+.cart-item-card__prices dd {
+  font-size: 0.8125rem;
+}
+
+.cart-page__sticky-total .checkout-summary-total__amount {
+  font-size: 1rem;
+}
+
+.checkout-fulfillment-card {
+  touch-action: manipulation;
+}
+
+.checkout-fulfillment-card--active {
+  box-shadow: 0 4px 14px rgba(15, 27, 51, 0.18);
+}
+
+.checkout-price-summary .checkout-summary-total {
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.checkout-order__mobile-total .checkout-btn-primary,
+.checkout-order__mobile-total button {
+  min-height: 2.75rem;
+}
+
+.checkout-input {
+  min-height: 2.75rem;
+}
+
+@media (max-width: 639px) {
+  .cart-item-card__top {
+    gap: 0.75rem;
+  }
+
+  .checkout-fulfillment-grid {
+    grid-template-columns: 1fr;
+  }
+}

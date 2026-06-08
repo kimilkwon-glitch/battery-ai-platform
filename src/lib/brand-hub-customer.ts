@@ -15,7 +15,7 @@ import { batterySpecHref } from "@/lib/canonical-battery-code";
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 
 /** 배너 로고 캐시 무효화 */
-export const BRAND_HUB_LOGO_REV = "20260604-rocket-logo-contrast-v1";
+export const BRAND_HUB_LOGO_REV = "20260608-logo-original-v1";
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
 export type BrandHubLogoAssets = {
@@ -33,18 +33,18 @@ export type BrandHubLogoAssets = {
 
 export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
   rocket: {
-    src: "/assets/brand/rocket-logo-light.png",
-    logoLight: "/assets/brand/rocket-logo-light.png",
-    logoDark: "/assets/brand/rocket-logo-light.png",
+    src: "/assets/brand/rocket-logo.png",
+    logoLight: "/assets/brand/rocket-logo.png",
+    logoDark: "/assets/brand/rocket-logo.png",
     width: 574,
     height: 280,
     alt: "로케트 배터리 로고",
     fallbackText: "로케트 배터리",
   },
   solite: {
-    src: "/assets/brand/solite-logo-light.png",
-    logoLight: "/assets/brand/solite-logo-light.png",
-    logoDark: "/assets/brand/solite-logo-light.png",
+    src: "/assets/brand/solite-logo.png",
+    logoLight: "/assets/brand/solite-logo.png",
+    logoDark: "/assets/brand/solite-logo.png",
     width: 472,
     height: 196,
     alt: "쏠라이트 배터리 로고",
@@ -107,7 +107,7 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     bannerBg:
       "bg-gradient-to-br from-[#111318] via-[#151922] to-[#1a0f10] ring-1 ring-[#2d3544] shadow-[0_20px_40px_-24px_rgba(229,57,53,0.28)]",
     logoGlass:
-      "brand-hub-logo-glass brand-hub-logo-glass--rocket inline-flex max-w-full shrink-0 items-center justify-center rounded-xl",
+      "brand-hub-logo-glass brand-hub-logo-glass--safe logo-safe-box inline-flex max-w-full shrink-0 items-center justify-center rounded-xl",
     bannerText: "!text-[#E5E7EB]",
     bannerMuted: "text-[#CBD5E1]",
     contentTitle: "text-[#E5E7EB]",
@@ -147,7 +147,7 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     bannerBg:
       "bg-gradient-to-br from-[#0c1220] via-[#111827] to-[#0f1a2e] ring-1 ring-[#1e3a5f]/80 shadow-[0_20px_40px_-24px_rgba(37,99,235,0.32)]",
     logoGlass:
-      "brand-hub-logo-glass brand-hub-logo-glass--solite inline-flex max-w-full shrink-0 items-center justify-center rounded-xl",
+      "brand-hub-logo-glass brand-hub-logo-glass--safe logo-safe-box inline-flex max-w-full shrink-0 items-center justify-center rounded-xl",
     bannerText: "!text-[#E5E7EB]",
     bannerMuted: "text-[#CBD5E1]",
     contentTitle: "text-[#0F172A]",

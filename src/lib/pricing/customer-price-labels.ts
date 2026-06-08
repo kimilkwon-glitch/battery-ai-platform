@@ -38,14 +38,10 @@ export const CUSTOMER_FULFILLMENT_LABELS = {
 export type CustomerFulfillmentDisplayKey = keyof typeof CUSTOMER_FULFILLMENT_LABELS;
 
 export const CUSTOMER_FULFILLMENT_DESCRIPTIONS: Record<CustomerFulfillmentDisplayKey, string> = {
-  delivery:
-    "제품을 택배로 받아 직접 교체합니다. 택배비 15,000원이 추가됩니다.",
-  onsite_install:
-    "고객님 위치로 방문해 교체합니다. 출장 가능 지역은 확인 후 안내됩니다.",
-  store_install:
-    "매장 방문 후 교체합니다. 출장 교체가에서 5,000원이 차감됩니다.",
-  store_pickup_self:
-    "매장에서 제품만 수령해 직접 교체합니다. 제품 구매가 기준이며 택배비는 없습니다.",
+  delivery: "제품 구매가 + 택배비 15,000원 · 직접 교체 가능",
+  onsite_install: "출장 교체가 기준 · 방문 위치에서 교체",
+  store_install: "출장 교체가 −5,000원 · 매장 방문 후 교체",
+  store_pickup_self: "제품 구매가 기준 · 택배비 없음 · 매장 수령",
 };
 
 /** 상품 상세 상단 — 기본 노출 가격 라벨 */
