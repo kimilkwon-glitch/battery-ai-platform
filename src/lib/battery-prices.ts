@@ -54,19 +54,12 @@ function resolveOnsiteGroup(spec: string): OnsitePriceGroup | null {
   if (c === "GB50L" || c === "CMF50L") return "50L";
   if (c === "DIN50L" || c === "GB55066") return "DIN50L";
   if (c === "GB60AL" || c === "GB60R" || c === "CMF60L") return "60LR";
-  if (c === "GB80L" || c === "GB80R" || c === "CMF80L" || c === "CMF80R" || c === "GB58014") return "80LR";
-  if (
-    c === "GB90L" ||
-    c === "GB90R" ||
-    c === "CMF90L" ||
-    c === "CMF90R" ||
-    c === "GB95R"
-  ) {
-    return "90LR";
-  }
-  if (c === "GB100L" || c === "GB100R" || c === "CMF100L" || c === "CMF100R" || c === "100R") {
-    return "100LR";
-  }
+  if (c === "GB80L" || c === "CMF80L" || c === "GB58014" || c === "80L") return "80L";
+  if (c === "GB80R" || c === "CMF80R" || c === "80R") return "80R";
+  if (c === "GB90L" || c === "CMF90L") return "90L";
+  if (c === "GB90R" || c === "CMF90R" || c === "GB95R" || c === "90R") return "90R";
+  if (c === "GB100L" || c === "CMF100L" || c === "100L") return "100L";
+  if (c === "GB100R" || c === "CMF100R" || c === "100R") return "100R";
 
   if (c === "DIN50L" || c === "GB55066") return "DIN50L";
   if (c === "DIN62L" || c === "GB56219" || c === "CMF56219") return "DIN60L";
@@ -79,8 +72,10 @@ function resolveOnsiteGroup(spec: string): OnsitePriceGroup | null {
 
   if (c === "AGM60L") return "AGM60L";
   if (c === "AGM70L") return "AGM70L";
-  if (c === "AGM80L" || c === "AGM80R") return "AGM80LR";
-  if (c === "AGM95L" || c === "AGM95R") return "AGM95LR";
+  if (c === "AGM80L") return "AGM80L";
+  if (c === "AGM80R") return "AGM80R";
+  if (c === "AGM95L") return "AGM95L";
+  if (c === "AGM95R") return "AGM95R";
   if (c === "AGM105L") return "AGM105L";
 
   return null;

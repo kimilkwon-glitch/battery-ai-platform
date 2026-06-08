@@ -55,7 +55,8 @@
     "audit:target": "npx tsx scripts/capture-target-audit.ts",
     "audit:target:checkout": "npx tsx scripts/capture-target-audit.ts --scope=checkout",
     "audit:target:checkout-logo": "npx tsx scripts/capture-target-audit.ts --scope=checkout-logo",
-    "audit:target:mobile": "npx tsx scripts/capture-target-audit.ts --scope=mobile-overflow"
+    "audit:target:mobile": "npx tsx scripts/capture-target-audit.ts --scope=mobile-overflow",
+    "audit:target:battery-mapping": "npx tsx scripts/capture-target-audit.ts --scope=battery-mapping-hotfix"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

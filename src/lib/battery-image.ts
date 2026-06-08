@@ -9,6 +9,7 @@ import {
   normalizeBatteryCode,
   type BatteryImageSet,
 } from "./battery-alias-map";
+import { inferBatteryBrandKeyFromCode } from "@/lib/battery-brand-inference";
 import { resolveBatteryImageSetForCode, findBatteryImage, getBatteryImageCandidates } from "./batteryImages";
 
 export type { BatteryImageSet };
@@ -53,9 +54,10 @@ export function batteryFolderName(code: string): string {
   return normalizeBatteryCode(code);
 }
 
-/** catalog code → rocket/solite 병합 imageSet (없으면 alias fallback) */
-export function batteryImageSetForCode(code: string): BatteryImageSet {
-  return resolveBatteryImageSetForCode(code);
+/** catalog code → 브랜드별 strict imageSet (교차 브랜드 fallback 없음) */
+export function batteryImageSetForCode(code: string, brandKey?: import("./battery-alias-map").BatteryBrandKey): BatteryImageSet {
+  const brand = brandKey ?? inferBatteryBrandKeyFromCode(code);
+  return resolveBatteryImageSetForCode(code, brand);
 }
 
 export function batteryGalleryUrls(imageSet: BatteryImageSet | undefined, code: string): string[] {

@@ -34,6 +34,7 @@ import {
 } from "@/lib/vehicle-fuel-primary-battery";
 import { customerFacingBatteryCode } from "@/lib/canonical-battery-code";
 import {
+  isBatteryMatched,
   normalizeBatteryCode,
   productBatteryCode,
   resolveBatteryDisplay,
@@ -1061,8 +1062,9 @@ function formatFitmentLabel(r: VehicleBatteryRecord): string {
 
 /** 검색·쇼핑·배터리 상세 공통 — 대표 적용 차량 */
 export function getBatteryFitmentVehicles(code: string, limit = 8): FitmentVehicleCard[] {
-  const canonical = normalizeBatteryCode(code);
-  const sorted = getRecordsForBattery(canonical, 48);
+  const displayQuery =
+    canonicalBatteryCode(code) || productBatteryCode(code) || code.trim();
+  const sorted = getRecordsForBattery(displayQuery, 48);
   const seen = new Set<string>();
   const cards: FitmentVehicleCard[] = [];
 
@@ -1089,16 +1091,32 @@ export function getBatteryFitmentVehicleLabels(code: string, limit = 4): string[
   return getBatteryFitmentVehicles(code, limit).map((v) => v.label);
 }
 
+function recordMatchesBatteryFitment(queryCode: string, r: VehicleBatteryRecord): boolean {
+  if (!hasConfirmedBatteryData(r)) return false;
+
+  const displayQuery =
+    canonicalBatteryCode(queryCode) || productBatteryCode(queryCode) || queryCode.trim();
+  const slug = slugForRecord(r);
+  const operatorPrimary = OPERATOR_SLUG_PRIMARY_BATTERY[slug];
+
+  if (operatorPrimary) {
+    return isBatteryMatched(operatorPrimary, displayQuery);
+  }
+
+  return (
+    isBatteryMatched(r.primaryBattery, displayQuery) ||
+    r.batteryOptions.some((b) => isBatteryMatched(b, displayQuery))
+  );
+}
+
 function computeRecordsForBattery(code: string, limit = 24): VehicleBatteryRecord[] {
   if (isRetiredBatterySpec(code)) return [];
-  const canonical = normalizeBatteryCode(code);
+  const displayQuery =
+    canonicalBatteryCode(code) || productBatteryCode(code) || code.trim();
+  const family = normalizeBatteryCode(displayQuery);
   return records
-    .filter(
-      (r) =>
-        normalizeBatteryCode(r.primaryBattery) === canonical ||
-        r.batteryOptions.some((b) => normalizeBatteryCode(b) === canonical),
-    )
-    .sort((a, b) => scoreBatteryFitRecord(b, canonical) - scoreBatteryFitRecord(a, canonical))
+    .filter((r) => recordMatchesBatteryFitment(displayQuery, r))
+    .sort((a, b) => scoreBatteryFitRecord(b, family) - scoreBatteryFitRecord(a, family))
     .slice(0, limit);
 }
 
@@ -1330,9 +1348,8 @@ export function getBatteryDetailData(code: string) {
     canonicalBatteryCode(code) ||
     productBatteryCode(code) ||
     code.trim().replace(/\s+/g, "").toUpperCase();
-  const matchKey = normalizeBatteryCode(displayCode);
-  const matching = getRecordsForBattery(matchKey, 48);
-  const fitment = getBatteryFitmentVehicles(matchKey, 12);
+  const matching = getRecordsForBattery(displayCode, 48);
+  const fitment = getBatteryFitmentVehicles(displayCode, 12);
   const vehicles = fitment.map((v) => ({
     slug: v.slug,
     title: v.title,
@@ -1343,7 +1360,7 @@ export function getBatteryDetailData(code: string) {
     code: displayCode,
     records: matching,
     vehicles,
-    relatedCodes: getRelatedBatteryCodes(matchKey),
+    relatedCodes: getRelatedBatteryCodes(displayCode),
   };
 }
 

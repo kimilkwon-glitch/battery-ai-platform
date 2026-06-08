@@ -131,7 +131,7 @@ export const batteryAliasMap: Record<string, BatterySpecEntry> = {
     type: "AGM",
     terminal: "R",
     capacityAh: 80,
-    aliases: ["AGM80R", "AGM80 R", "AGM LN4 R", "GB80R", "CMF80R", "80R"],
+    aliases: ["AGM80R", "AGM80 R", "AGM LN4 R"],
     brandCodes: { rocket: ["GB80R"], solite: ["CMF80R"] },
     imageFolderByBrand: { rocket: "GB80R", solite: "CMF80R" },
   },

@@ -191,7 +191,8 @@ const HUB: Record<CoreBatteryDetailCode, BatteryDetailHubContent> = {
     ],
     confusionSpecs: ["80L", "CMF90L", "CMF100R"],
     featuredVehicles: [
-      { slug: "staria", title: "스타리아", fuel: "디젤", condition: "CMF80L" },
+      { slug: "i40", title: "i40", fuel: "디젤", condition: "CMF80L" },
+      { slug: "qm5", title: "QM5", fuel: "가솔린/디젤", condition: "CMF80L" },
     ],
     compareCards: [
       cmp("CMF90L", "CMF 계열 용량·단자 차이 — L/R 표기 확인", ["CMF80L", "CMF90L"]),

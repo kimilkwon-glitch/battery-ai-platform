@@ -1,9 +1,15 @@
-import { getBatteryImageSet, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
+import { EMPTY_BATTERY_IMAGE_SET, getBatteryImageSet, getCanonicalBatteryCode } from "@/lib/battery-alias-map";
 import type { BatteryImageSet } from "@/lib/battery-alias-map";
-import { batteryImageSetForCode } from "@/lib/battery-image";
+import { inferBatteryBrandKeyFromCode } from "@/lib/battery-brand-inference";
 import { getBattery } from "@/lib/platform-data";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
-import { isBatteryMatched, normalizeBatteryCode, terminalFromCode } from "@/lib/batteryNormalize";
+import {
+  isBatteryMatched,
+  isStrictProductCodeMatch,
+  normalizeBatteryCode,
+  productBatteryCode,
+  terminalFromCode,
+} from "@/lib/batteryNormalize";
 
 export type BatterySpecDisplay = {
   code: string;
@@ -37,8 +43,8 @@ export function resolveBatteryTerminalLabel(rawCode: string): string | null {
   const code = canonicalBatteryCode(rawCode) || normalizeBatteryCode(rawCode) || rawCode;
   const fromFamily = terminalFromCode(code);
   if (fromFamily) return `${fromFamily}타입`;
-  const bat = getBattery(code);
-  if (bat.terminal?.trim() && isBatteryMatched(code, bat.code)) {
+  const bat = getBattery(code, inferBatteryBrandKeyFromCode(code) === "solite" ? "solite" : "rocket");
+  if (bat.terminal?.trim() && isStrictProductCodeMatch(code, bat.code)) {
     return `${bat.terminal.trim()}타입`;
   }
   return parseSpecParts(code).terminal;
@@ -59,23 +65,28 @@ export function resolvePrimaryBatteryCode(
 
 export function parseBatterySpecDisplay(rawCode: string): BatterySpecDisplay {
   const code = canonicalBatteryCode(rawCode) || normalizeBatteryCode(rawCode) || rawCode;
-  const bat = getBattery(code);
-  const parts = parseSpecParts(code);
-  const rocket = getBatteryImageSet(code, "rocket");
-  let imageSet = rocket?.main ? rocket : batteryImageSetForCode(code);
-  if (!imageSet?.main && /^\d{2,3}R$/i.test(code)) {
-    imageSet =
-      batteryImageSetForCode("CMF100R") ??
-      batteryImageSetForCode("CMF90R") ??
-      batteryImageSetForCode("90R") ??
-      imageSet;
-  }
+  const brandKey = inferBatteryBrandKeyFromCode(code);
+  const brandId = brandKey === "solite" ? "solite" : "rocket";
+  const bat = getBattery(code, brandId);
+  const parts = parseSpecParts(productBatteryCode(code) || code);
+  const imageSet =
+    getBatteryImageSet(code, brandKey, { strictBrand: true }) ?? EMPTY_BATTERY_IMAGE_SET;
 
   const terminalLabel = resolveBatteryTerminalLabel(code);
 
+  const typeLabel = /^GB/i.test(code)
+    ? "GB"
+    : /^CMF/i.test(code)
+      ? "CMF"
+      : /^AGM/i.test(code)
+        ? "AGM"
+        : /^DIN/i.test(code)
+          ? "DIN"
+          : bat.type?.trim() || parts.type;
+
   return {
     code,
-    typeLabel: bat.type?.trim() || parts.type,
+    typeLabel,
     seriesLabel: parts.series,
     terminalLabel,
     capacity: bat.capacity?.trim() || null,

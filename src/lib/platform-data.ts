@@ -15,7 +15,13 @@ import {
   type ShopProduct,
 } from "./platform-catalog";
 import { getCanonicalBatteryCode, getBatteryImageSet, normalizeBatteryCode as normalizeBatteryToken, EMPTY_BATTERY_IMAGE_SET, brandIdToBatteryBrandKey, findBatteryProductByCode } from "./battery-alias-map";
-import { isBatteryMatched, resolveBatteryDisplay, isRetiredBatterySpec } from "./batteryNormalize";
+import {
+  isBatteryMatched,
+  isStrictProductCodeMatch,
+  resolveBatteryDisplay,
+  isRetiredBatterySpec,
+} from "./batteryNormalize";
+import { inferBatteryBrandKeyFromCode } from "./battery-brand-inference";
 import { resolveBatteryImageSetForCode } from "./batteryImages";
 import { getVehicleAsset, vehicleAssetBrandLabel } from "./car-assets";
 import { getVehicleCardBatteryInfo } from "./vehicleBattery";
@@ -161,24 +167,58 @@ export function getVehicleName(id: string) {
 
 export function getBattery(code: string, brandId?: string) {
   const display = resolveBatteryDisplay(code);
-  const brandKey = brandId ? brandIdToBatteryBrandKey(brandId) : "rocket";
-  const productCode = findBatteryProductByCode(code, brandKey ?? "rocket");
+  const brandKey = brandId
+    ? brandIdToBatteryBrandKey(brandId) ?? inferBatteryBrandKeyFromCode(display.displayCode)
+    : inferBatteryBrandKeyFromCode(display.displayCode);
+  const resolvedBrandId = brandId ?? (brandKey === "solite" ? "solite" : "rocket");
+  const productCode = findBatteryProductByCode(code, brandKey, { strictBrand: true });
   const canonical = productCode ?? getCanonicalBatteryCode(code);
 
   const found =
-    (brandId
-      ? batteries.find((b) => b.brandId === brandId && isBatteryMatched(code, b.code))
-      : undefined) ??
-    batteries.find((b) => isBatteryMatched(code, b.code)) ??
-    (productCode ? batteries.find((b) => b.code === productCode || isBatteryMatched(b.code, productCode)) : undefined) ??
-    batteries[0];
+    batteries.find(
+      (b) => b.brandId === resolvedBrandId && isStrictProductCodeMatch(code, b.code),
+    ) ??
+    batteries.find((b) => isStrictProductCodeMatch(code, b.code)) ??
+    (productCode
+      ? batteries.find((b) => b.code === productCode || isStrictProductCodeMatch(b.code, productCode))
+      : undefined);
 
-  const resolvedSet = resolveBatteryImageSetForCode(code);
-  const brandSet = brandKey ? getBatteryImageSet(code, brandKey) : undefined;
-  const images =
-    brandSet?.main ? brandSet : resolvedSet.main ? resolvedSet : EMPTY_BATTERY_IMAGE_SET;
+  const inferType = (): Battery["type"] => {
+    const c = display.displayCode.toUpperCase();
+    if (c.startsWith("CMF")) return "CMF";
+    if (c.startsWith("DIN")) return "DIN";
+    if (c.startsWith("EV")) return "EV";
+    if (c.startsWith("EFB")) return "EFB";
+    return "AGM";
+  };
 
-  return { ...found, code: display.displayCode, productCode: canonical ?? found.code, images };
+  const stub: Battery = {
+    code: display.displayCode,
+    brandId: resolvedBrandId,
+    type: inferType(),
+    capacity: "",
+    cca: "",
+    terminal: "",
+    size: "",
+    vehicleIds: [],
+    compareWith: [],
+    pros: "",
+    cons: "",
+    isgFit: "",
+    bmsNote: "",
+    images: EMPTY_BATTERY_IMAGE_SET,
+  };
+
+  const base = found ?? stub;
+  const images = resolveBatteryImageSetForCode(code, brandKey);
+
+  return {
+    ...base,
+    brandId: base.brandId || resolvedBrandId,
+    code: display.displayCode,
+    productCode: canonical ?? base.code,
+    images: images.main ? images : EMPTY_BATTERY_IMAGE_SET,
+  };
 }
 
 export {

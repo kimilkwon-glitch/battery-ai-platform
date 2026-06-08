@@ -109,6 +109,67 @@ const MOBILE_OVERFLOW_TARGETS: CaptureTarget[] = [
   },
 ];
 
+const BATTERY_MAPPING_HOTFIX_TARGETS: CaptureTarget[] = [
+  {
+    id: "cmf80l-product",
+    label: "CMF80L 상품 상세",
+    path: "/products/solite-cmf80l",
+    selector: "[data-battery-product='CMF80L'], [data-battery-detail-hub='CMF80L'], .battery-product-detail",
+    waitMs: 900,
+  },
+  {
+    id: "cmf80l-spec",
+    label: "CMF80L 규격보기",
+    path: "/battery-specs/CMF80L",
+    selector: "[data-battery-spec], .battery-spec-detail, main",
+    waitMs: 800,
+  },
+  {
+    id: "gb90r-product",
+    label: "GB90R 상품 상세",
+    path: "/products/rocket-gb90r",
+    selector: "[data-battery-product='GB90R'], [data-battery-detail-hub='GB90R'], .battery-product-detail",
+    waitMs: 900,
+  },
+  {
+    id: "gb90r-spec",
+    label: "GB90R 규격보기",
+    path: "/battery-specs/GB90R",
+    selector: "[data-battery-spec], .battery-spec-detail, main",
+    waitMs: 800,
+  },
+  {
+    id: "agm80l-spec",
+    label: "AGM80L 규격보기",
+    path: "/battery-specs/AGM80L",
+    selector: "[data-battery-spec], .battery-spec-detail, main",
+    waitMs: 800,
+  },
+  {
+    id: "agm80r-spec",
+    label: "AGM80R 규격보기",
+    path: "/battery-specs/AGM80R",
+    selector: "[data-battery-spec], .battery-spec-detail, main",
+    waitMs: 800,
+  },
+  {
+    id: "home-lineup-cards",
+    label: "홈 로케트/쏠라이트 상품 카드",
+    path: "/",
+    selector: "[data-home-section='brand-lineup-pair']",
+    scrollTo: "#home-lineup-rocket",
+    waitMs: 900,
+  },
+  {
+    id: "checkout-default-price",
+    label: "checkout 기본 가격",
+    path: "/checkout?flow=cart",
+    selector: "[data-page='checkout']",
+    waitMs: 1000,
+    seedCart: true,
+  },
+];
+
 const CHECKOUT_TARGETS: CaptureTarget[] = [
   {
     id: "cart-page",
@@ -254,6 +315,7 @@ function resolveTargets(): CaptureTarget[] {
   if (scope === "checkout" || scope === "order") return CHECKOUT_TARGETS;
   if (scope === "checkout-logo") return CHECKOUT_LOGO_TARGETS;
   if (scope === "mobile-overflow" || scope === "mobile") return MOBILE_OVERFLOW_TARGETS;
+  if (scope === "battery-mapping-hotfix" || scope === "battery-mapping") return BATTERY_MAPPING_HOTFIX_TARGETS;
   if (scope === "home") return ALL_TARGETS.filter((t) => t.id.startsWith("home-"));
   if (scope === "vehicle") return ALL_TARGETS.filter((t) => t.id === "vehicle-recommended-battery");
   return ALL_TARGETS.filter((t) => t.id === "vehicle-recommended-battery");
@@ -283,6 +345,95 @@ async function waitForPageReady(page: Page) {
 function isMobileOverflowScope(): boolean {
   const scope = resolveScope();
   return scope === "mobile-overflow" || scope === "mobile";
+}
+
+function isBatteryMappingScope(): boolean {
+  const scope = resolveScope();
+  return scope === "battery-mapping-hotfix" || scope === "battery-mapping";
+}
+
+type MappingCheckResult = {
+  id: string;
+  passed: boolean;
+  issues: string[];
+  signals: {
+    pageTextSample: string;
+    imageSrcs: string[];
+    specCode: string | null;
+    productPurchaseLabelSeen: boolean;
+    mobileInstallLabelSeen: boolean;
+  };
+};
+
+async function verifyBatteryMapping(page: Page, target: CaptureTarget): Promise<MappingCheckResult> {
+  const signals = await page.evaluate(() => {
+    const text = document.body?.innerText ?? "";
+    const imgs = [...document.querySelectorAll("img")].map((img) => (img as HTMLImageElement).src);
+    const specEl = document.querySelector("[data-spec-code], h1");
+    const specCode = specEl?.textContent?.trim() ?? null;
+    return {
+      pageTextSample: text.slice(0, 4000),
+      imageSrcs: imgs.slice(0, 20),
+      specCode,
+      productPurchaseLabelSeen: /제품\s*구매가|제품\s*판매가|인터넷/i.test(text),
+      mobileInstallLabelSeen: /출장\s*교체가|출장\s*교체/i.test(text),
+    };
+  });
+
+  const issues: string[] = [];
+  const text = signals.pageTextSample;
+  const imgs = signals.imageSrcs.join(" ");
+
+  const forbiddenOnL = [/스타리아/i, /GV70/i, /GV80/i];
+  const forbiddenCrossBrand = {
+    solite: [/\/assets\/batteries\/GB/i, /\/assets\/batteries\/AGM/i, /로케트\s*GB/i],
+    rocket: [/\/assets\/batteries\/CMF/i, /쏠라이트\s*CMF/i],
+  };
+
+  if (target.id.startsWith("cmf80l")) {
+    if (!/CMF80L/i.test(text)) issues.push("CMF80L 코드 미노출");
+    if (/GB80L|GB90R/i.test(text) && !/CMF/i.test(text)) issues.push("GB 코드가 CMF80L 화면에 노출");
+    for (const re of forbiddenOnL) if (re.test(text)) issues.push(`L규격에 R차량 노출: ${re}`);
+    for (const re of forbiddenCrossBrand.solite) if (re.test(imgs) || re.test(text)) issues.push(`쏠라이트에 로케트 이미지/표기: ${re}`);
+  }
+
+  if (target.id.startsWith("gb90r")) {
+    if (!/GB90R/i.test(text)) issues.push("GB90R 코드 미노출");
+    if (/쏠라이트\s*·\s*CMF/i.test(text)) issues.push("GB90R 화면에 쏠라이트/CMF 브랜드 표기");
+    if (/CMF90R|CMF80L/i.test(text) && !/GB90R/i.test(text)) issues.push("CMF 코드가 GB90R 화면에 노출");
+    for (const re of forbiddenCrossBrand.rocket) if (re.test(imgs) || re.test(text)) issues.push(`로케트에 쏠라이트 이미지/표기: ${re}`);
+  }
+
+  if (target.id === "agm80l-spec") {
+    for (const re of forbiddenOnL) if (re.test(text)) issues.push(`AGM80L에 R차량 노출: ${re}`);
+    if (/CMF80L/i.test(text) && /대표\s*적용/i.test(text)) issues.push("AGM80L 대표적용에 CMF80L 차량");
+  }
+
+  if (target.id === "agm80r-spec") {
+    if (!/AGM80R|80R/i.test(text)) issues.push("AGM80R 관련 표기 미노출");
+    if (/CMF80L/i.test(text) && /대표\s*적용/i.test(text)) issues.push("AGM80R 대표적용에 CMF80L 혼입");
+  }
+
+  if (target.id === "home-lineup-cards") {
+    if (!signals.productPurchaseLabelSeen) issues.push("홈 카드에 제품 구매가 라벨 없음");
+    if (!signals.mobileInstallLabelSeen) issues.push("홈 카드에 출장 교체가 라벨 없음");
+    if (/CMF/i.test(imgs) && /\/GB|\/AGM80L/i.test(imgs)) {
+      issues.push("홈 카드 이미지에 브랜드 혼재 가능");
+    }
+  }
+
+  if (target.id === "checkout-default-price") {
+    if (!signals.productPurchaseLabelSeen && signals.mobileInstallLabelSeen) {
+      issues.push("checkout에서 출장교체가만 보이고 제품 구매가 없음");
+    }
+  }
+
+  return {
+    id: target.id,
+    passed: issues.length === 0,
+    issues,
+    signals,
+  };
 }
 
 async function measureOverflow(page: Page, target: CaptureTarget): Promise<OverflowMetrics> {
@@ -582,6 +733,7 @@ async function main() {
   const runId = timestampFolder();
   const outDir = join(ROOT, "design-audit", "target-runs", runId);
   const mobileOnly = isMobileOverflowScope();
+  const mappingOnly = isBatteryMappingScope();
   mkdirSync(join(outDir, "screenshots", "pc"), { recursive: true });
   mkdirSync(join(outDir, "screenshots", "mobile"), { recursive: true });
 
@@ -600,9 +752,15 @@ async function main() {
     metrics: OverflowMetrics;
     mobile: { file: string; ok: boolean };
   }[] = [];
+  const mappingChecks: {
+    target: CaptureTarget;
+    check: MappingCheckResult;
+    mobile: { file: string; ok: boolean };
+  }[] = [];
 
   const needsCartSeed = targets.some((t) => t.seedCart);
-  const viewports = mobileOnly ? (["mobile"] as const) : (["pc", "mobile"] as const);
+  const viewports =
+    mobileOnly || mappingOnly ? (["mobile"] as const) : (["pc", "mobile"] as const);
 
   try {
     for (const viewport of viewports) {
@@ -635,6 +793,17 @@ async function main() {
             `[overflow] ${target.id}: inner=${metrics.innerWidth} html=${metrics.documentElementScrollWidth} body=${metrics.bodyScrollWidth} ${metrics.overflow ? "FAIL" : "ok"}`,
           );
         }
+        if (mappingOnly && viewport === "mobile") {
+          const check = await verifyBatteryMapping(page, target);
+          mappingChecks.push({
+            target,
+            check,
+            mobile: { file: cap.file, ok: cap.ok },
+          });
+          console.log(
+            `[mapping] ${target.id}: ${check.passed ? "ok" : "FAIL"} ${check.issues.join("; ") || ""}`,
+          );
+        }
         const existing = results.find((r) => r.target.id === target.id);
         if (existing) {
           if (viewport === "pc") {
@@ -661,7 +830,52 @@ async function main() {
     await browser.close();
   }
 
-  if (mobileOnly) {
+  if (mappingOnly) {
+    writeFileSync(
+      join(outDir, "mapping-check.json"),
+      JSON.stringify(
+        {
+          runId,
+          baseUrl: BASE_URL,
+          viewport: MOBILE_VIEWPORT,
+          generatedAt: new Date().toISOString(),
+          checks: mappingChecks.map((row) => ({
+            id: row.target.id,
+            label: row.target.label,
+            path: row.target.path,
+            screenshot: row.mobile.file,
+            passed: row.check.passed,
+            issues: row.check.issues,
+            signals: row.check.signals,
+          })),
+          allPassed: mappingChecks.every((row) => row.check.passed),
+        },
+        null,
+        2,
+      ),
+      "utf8",
+    );
+    const md = [
+      `# Battery Mapping Hotfix Audit`,
+      ``,
+      `- Run: \`${runId}\``,
+      `- Base URL: ${BASE_URL}`,
+      ``,
+      `| Target | Passed | Issues |`,
+      `| --- | --- | --- |`,
+      ...mappingChecks.map(
+        (r) =>
+          `| ${r.target.label} | ${r.check.passed ? "ok" : "FAIL"} | ${r.check.issues.join(", ") || "-"} |`,
+      ),
+      ``,
+    ].join("\n");
+    writeFileSync(join(outDir, "report.md"), md, "utf8");
+    writeFileSync(
+      join(outDir, "index.html"),
+      `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Mapping Audit ${runId}</title></head><body><pre>${md.replace(/</g, "&lt;")}</pre></body></html>`,
+      "utf8",
+    );
+  } else if (mobileOnly) {
     writeFileSync(join(outDir, "index.html"), buildOverflowIndexHtml(runId, overflowChecks), "utf8");
     writeFileSync(join(outDir, "report.md"), buildOverflowReportMd(runId, overflowChecks), "utf8");
     writeFileSync(
@@ -691,13 +905,15 @@ async function main() {
     writeFileSync(join(outDir, "report.md"), buildReportMd(runId, results), "utf8");
   }
 
-  const captureOk = mobileOnly
-    ? results.every((r) => r.mobile.ok)
-    : results.every((r) => r.pc.ok && r.mobile.ok);
+  const captureOk =
+    mobileOnly || mappingOnly
+      ? results.every((r) => r.mobile.ok)
+      : results.every((r) => r.pc.ok && r.mobile.ok);
   const overflowOk = mobileOnly ? overflowChecks.every((row) => !row.metrics.overflow) : true;
-  const allOk = captureOk && overflowOk;
+  const mappingOk = mappingOnly ? mappingChecks.every((row) => row.check.passed) : true;
+  const allOk = captureOk && overflowOk && mappingOk;
   console.log(
-    `[audit:target] done — ${allOk ? "all ok" : mobileOnly ? "overflow or capture issues" : "some captures missing"}`,
+    `[audit:target] done — ${allOk ? "all ok" : mappingOnly ? "mapping or capture issues" : mobileOnly ? "overflow or capture issues" : "some captures missing"}`,
   );
   console.log(`[audit:target] open ${join(outDir, "index.html")}`);
 

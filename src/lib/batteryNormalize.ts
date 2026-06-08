@@ -15,7 +15,7 @@ export const BATTERY_ALIAS_MAP: Record<string, string[]> = {
   AGM60L: ["AGM60L", "AGM60", "AGM LN2", "LN2 AGM"],
   AGM70L: ["AGM70L", "AGM70", "AGM LN3", "LN3 AGM"],
   AGM80L: ["AGM80L", "AGM80", "AGM LN4", "LN4 AGM"],
-  AGM80R: ["AGM80R", "AGM80 R", "AGM LN4 R", "GB80R", "CMF80R"],
+  AGM80R: ["AGM80R", "AGM80 R", "AGM LN4 R"],
   AGM95L: ["AGM95L", "AGM95", "AGM LN5", "LN5 AGM"],
   AGM95R: ["AGM95R", "AGM95 R", "AGM LN5 R"],
   AGM105L: ["AGM105L", "AGM105", "AGM LN6", "LN6 AGM"],
@@ -147,6 +147,17 @@ export function isBatteryMatched(vehicleBatteryCode: string, batteryProductCode:
   const ta = terminalFromCode(vehicleBatteryCode);
   const tb = terminalFromCode(batteryProductCode);
   if (ta && tb && ta !== tb) return false;
+  return true;
+}
+
+/** 상품 코드 정체성 — GB/CMF/AGM/DIN prefix가 다르면 동일 family라도 불일치 */
+export function isStrictProductCodeMatch(queryCode: string, catalogCode: string): boolean {
+  if (!isBatteryMatched(queryCode, catalogCode)) return false;
+  const q = productBatteryCode(queryCode).toUpperCase();
+  const c = productBatteryCode(catalogCode).toUpperCase();
+  const qPref = q.match(/^(CMF|GB|AGM|DIN)/)?.[1];
+  const cPref = c.match(/^(CMF|GB|AGM|DIN)/)?.[1];
+  if (qPref && cPref && qPref !== cPref) return false;
   return true;
 }
 

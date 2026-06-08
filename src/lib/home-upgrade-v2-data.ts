@@ -128,8 +128,8 @@ export const HOME_POPULAR_VEHICLES = [
   },
   {
     title: "스타리아",
-    hint: "디젤 CMF80L — 연식까지 같이 보는 것이 안전합니다.",
-    spec: "CMF80L",
+    hint: "디젤 AGM80R — R단자·연식까지 같이 보는 것이 안전합니다.",
+    spec: "AGM80R",
     href: getSearchHref("스타리아 AGM80R"),
     slug: "staria-us4",
   },

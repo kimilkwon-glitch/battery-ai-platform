@@ -11,9 +11,12 @@ export type OnsitePriceGroup =
   | "40L"
   | "50L"
   | "60LR"
-  | "80LR"
-  | "90LR"
-  | "100LR"
+  | "80L"
+  | "80R"
+  | "90L"
+  | "90R"
+  | "100L"
+  | "100R"
   | "DIN50L"
   | "DIN60L"
   | "DIN74L"
@@ -22,8 +25,10 @@ export type OnsitePriceGroup =
   | "DIN110L"
   | "AGM60L"
   | "AGM70L"
-  | "AGM80LR"
-  | "AGM95LR"
+  | "AGM80L"
+  | "AGM80R"
+  | "AGM95L"
+  | "AGM95R"
   | "AGM105L";
 
 /** 브랜드+규격 키 — 인터넷가(택배발송가) */
@@ -80,9 +85,12 @@ export const ONSITE_PRICES_WON: Record<OnsitePriceGroup, Record<BatteryPriceBran
   "40L": { rocket: 65_000, solite: 60_000 },
   "50L": { rocket: 75_000, solite: 70_000 },
   "60LR": { rocket: 85_000, solite: 80_000 },
-  "80LR": { rocket: 90_000, solite: 85_000 },
-  "90LR": { rocket: 100_000, solite: 95_000 },
-  "100LR": { rocket: 110_000, solite: 105_000 },
+  "80L": { rocket: 90_000, solite: 85_000 },
+  "80R": { rocket: 90_000, solite: 85_000 },
+  "90L": { rocket: 100_000, solite: 95_000 },
+  "90R": { rocket: 100_000, solite: 95_000 },
+  "100L": { rocket: 110_000, solite: 105_000 },
+  "100R": { rocket: 110_000, solite: 105_000 },
   DIN50L: { rocket: 75_000, solite: 70_000 },
   DIN60L: { rocket: 90_000, solite: 85_000 },
   DIN74L: { rocket: 95_000, solite: 90_000 },
@@ -91,8 +99,10 @@ export const ONSITE_PRICES_WON: Record<OnsitePriceGroup, Record<BatteryPriceBran
   DIN110L: { rocket: 140_000, solite: 130_000 },
   AGM60L: { rocket: 120_000, solite: 115_000 },
   AGM70L: { rocket: 135_000, solite: 130_000 },
-  "AGM80LR": { rocket: 150_000, solite: 145_000 },
-  "AGM95LR": { rocket: 180_000, solite: 175_000 },
+  AGM80L: { rocket: 150_000, solite: 145_000 },
+  AGM80R: { rocket: 150_000, solite: 145_000 },
+  AGM95L: { rocket: 180_000, solite: 175_000 },
+  AGM95R: { rocket: 180_000, solite: 175_000 },
   AGM105L: { rocket: 225_000, solite: 220_000 },
 };
 
@@ -112,7 +122,16 @@ export const INTERNET_PRICING_SPEC_ALIASES: Record<string, Partial<Record<Batter
   CMF54459: { solite: "DIN44L" },
   "100R": { rocket: "GB100R", solite: "CMF100R" },
   "90R": { rocket: "GB90R", solite: "CMF90R" },
+  "80L": { rocket: "GB80L", solite: "CMF80L" },
+  "80R": { rocket: "GB80R", solite: "CMF80R" },
+  "90L": { rocket: "GB90L", solite: "CMF90L" },
+  "100L": { rocket: "GB100L", solite: "CMF100L" },
   "40L": { solite: "CMF40L" },
+  CMF80L: { solite: "CMF80L" },
+  GB90R: { rocket: "GB90R" },
+  GB80L: { rocket: "GB80L" },
+  AGM80L: { rocket: "AGM80L" },
+  AGM80R: { rocket: "AGM80R" },
 };
 
 /** 상품명 기준 충돌 보정 (CSV 브랜드/모델명 무시) */

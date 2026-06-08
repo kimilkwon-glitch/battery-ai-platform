@@ -113,23 +113,11 @@ export function getBatteryImageCandidates(code: string): string[] {
   return [...new Set(urls.filter(Boolean))];
 }
 
-/** 대표 main URL 1장 */
+/** 대표 main URL 1장 — 브랜드 strict, 교차 브랜드 fallback 금지 */
 export function findBatteryImage(code: string, preferBrand: BatteryBrandKey = "rocket"): string | undefined {
-  const family = normalizeBatteryCode(resolveLookupCode(code));
-  const manifest = getBatteryImageManifest()[family];
-  if (preferBrand === "solite" && manifest?.solite) return manifest.solite;
-  if (manifest?.rocket) return manifest.rocket;
-  if (manifest?.solite) return manifest.solite;
-
-  const candidates = getBatteryImageCandidates(code);
-  if (preferBrand === "solite") {
-    const soliteFirst = candidates.find((u) => /\/CMF/i.test(u));
-    if (soliteFirst) return soliteFirst;
-  } else {
-    const rocketFirst = candidates.find((u) => /\/GB|\/AGM/i.test(u) && !/\/CMF/i.test(u));
-    if (rocketFirst) return rocketFirst;
-  }
-  return candidates[0];
+  const strict = getBatteryImageSet(code, preferBrand, { strictBrand: true });
+  if (strict?.main) return strict.main;
+  return undefined;
 }
 
 export function findBatteryBrandImages(code: string): { rocket?: string; solite?: string } {
@@ -143,24 +131,21 @@ export function findBatteryBrandImages(code: string): { rocket?: string; solite?
   };
 }
 
-/** BatteryThumbnail / getBattery 공통 imageSet */
-export function resolveBatteryImageSetForCode(code: string): BatteryImageSet {
-  const rocket = getBatteryImageSet(code, "rocket");
-  const solite = getBatteryImageSet(code, "solite");
-  const merged: BatteryImageSet = { main: "" };
-
-  if (rocket?.main) Object.assign(merged, rocket);
-  if (solite?.main) {
-    if (!merged.main) merged.main = solite.main;
-    if (!merged.productBox && solite.productBox) merged.productBox = solite.productBox;
-    if (!merged.frontLabel && solite.frontLabel) merged.frontLabel = solite.frontLabel;
-    if (!merged.labelTop && solite.labelTop) merged.labelTop = solite.labelTop;
+/** BatteryThumbnail / getBattery 공통 imageSet — brandKey 지정 시 해당 브랜드만 */
+export function resolveBatteryImageSetForCode(
+  code: string,
+  brandKey?: BatteryBrandKey,
+): BatteryImageSet {
+  if (brandKey) {
+    const strict = getBatteryImageSet(code, brandKey, { strictBrand: true });
+    if (strict?.main) return strict;
+    return EMPTY_BATTERY_IMAGE_SET;
   }
 
-  if (merged.main) return merged;
-
-  const primary = findBatteryImage(code);
-  if (primary) return { main: primary };
+  const rocket = getBatteryImageSet(code, "rocket", { strictBrand: true });
+  if (rocket?.main) return rocket;
+  const solite = getBatteryImageSet(code, "solite", { strictBrand: true });
+  if (solite?.main) return solite;
 
   return EMPTY_BATTERY_IMAGE_SET;
 }

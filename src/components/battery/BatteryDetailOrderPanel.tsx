@@ -7,6 +7,7 @@ import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { BuyNowButton } from "@/components/cart/BuyNowButton";
 import { ProductFulfillmentPricePanel } from "@/components/pricing/ProductFulfillmentPricePanel";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
+import { inferBrandIdFromCode } from "@/lib/battery-brand-inference";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
@@ -39,8 +40,9 @@ export function BatteryDetailOrderPanel({
 }: Props) {
   const spec = parseBatterySpecDisplay(code);
   const summary = getNormalizedBatterySummary(code);
+  const brandId = inferBrandIdFromCode(code);
   const imageSet = batteryImageSetForCode(code);
-  const bat = getBattery(code);
+  const bat = getBattery(code, brandId);
   const brand = getBrand(bat.brandId);
   const brandName =
     bat.brandId === "rocket" ? "로케트" : bat.brandId === "solite" ? "쏠라이트" : brand.displayName;

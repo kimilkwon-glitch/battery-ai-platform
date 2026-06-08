@@ -1,6 +1,7 @@
 import type { HomeCatalogProduct } from "@/lib/home-main-catalog-data";
 import { getBatteryPrices, formatBatteryPriceWon } from "@/lib/battery-prices";
 import type { HomeCatalogBrandId } from "@/lib/home-main-catalog-data";
+import { getBatteryFitmentVehicleLabels } from "@/lib/vehicleBattery";
 
 /** 메인 라인업 카드 — 후기·차종·가격 (운영 가격표 연동) */
 export type HomeCatalogCardDisplay = {
@@ -62,8 +63,12 @@ export function getHomeCatalogCardDisplay(product: HomeCatalogProduct): HomeCata
   const brand = brandFromProduct(product);
   const prices = getBatteryPrices(brand, product.searchCode);
   const meta = META_BY_CODE[product.searchCode] ?? fallbackMeta(product);
+  const fitmentLabels = getBatteryFitmentVehicleLabels(product.searchCode, 3);
+  const representativeVehicles =
+    fitmentLabels.length >= 2 ? fitmentLabels.join(" · ") : meta.representativeVehicles;
   return {
     ...meta,
+    representativeVehicles,
     onsitePriceWon: prices.onsitePriceWon,
     internetPriceWon: prices.internetPriceWon,
   };
