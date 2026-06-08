@@ -4,6 +4,7 @@ import { ensureCommerceSchema } from "@/lib/db/ensure-commerce-schema";
 import { getSql } from "@/lib/db/postgres";
 import type { BatteryCartItem } from "@/types/cart";
 import type { CommerceOrderPriceSnapshot } from "@/types/commerce-order";
+import { computeBatteryReturnFee } from "@/lib/pricing/order-price";
 import type {
   CommerceOrderRecord,
   CommerceOrderStatusEvent,
@@ -114,6 +115,10 @@ function rowToRecord(row: OrderRow, logs: StatusLogRow[]): CommerceOrderRecord {
     returnBatteryOption: row.return_battery_option as CommerceOrderRecord["returnBatteryOption"],
     deliveryFee: row.delivery_fee,
     storeInstallDiscount: row.store_install_discount,
+    batteryReturnFee: computeBatteryReturnFee(
+      row.return_battery_option as CommerceOrderRecord["returnBatteryOption"],
+      row.items_json ?? [],
+    ),
     finalAmount: row.final_amount,
     address: row.address ?? undefined,
     store: resolveStoreLabel(row.selected_store),

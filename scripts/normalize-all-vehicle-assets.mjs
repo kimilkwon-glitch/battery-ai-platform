@@ -15,7 +15,8 @@ import { fileURLToPath } from "url";
 import {
   CANVAS_H,
   CANVAS_W,
-  normalizeVehicleImageFile,
+  normalizeVehicleImageFileWithFloodFill,
+  safeNormalizeVehicleImageFile,
 } from "./lib/normalize-vehicle-image.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -66,6 +67,19 @@ async function copyFile(src, dest) {
 
 async function main() {
   const dryRun = process.argv.includes("--dry-run");
+  const useUnsafeFloodFill = process.argv.includes("--unsafe-flood-fill");
+  const normalizeFn = useUnsafeFloodFill
+    ? normalizeVehicleImageFileWithFloodFill
+    : safeNormalizeVehicleImageFile;
+
+  if (useUnsafeFloodFill) {
+    console.warn(
+      "WARNING: --unsafe-flood-fill enabled. May damage white/silver/gray vehicle body panels.",
+    );
+  } else {
+    console.log("Mode: safe normalize (no flood-fill, no background removal)");
+  }
+
   let ok = 0;
   const failed = [];
   const processed = [];
@@ -92,7 +106,7 @@ async function main() {
         if (!dryRun) {
           await copyFile(filePath, backupPath);
           const tmp = `${filePath}.normalize.tmp.png`;
-          await normalizeVehicleImageFile(filePath, tmp, path.basename(filePath));
+          await normalizeFn(filePath, tmp, path.basename(filePath));
           await fs.rename(tmp, filePath);
         }
         ok += 1;

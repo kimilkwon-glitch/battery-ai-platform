@@ -1,36 +1,19 @@
-import Link from "next/link";
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { PageShell } from "@/components/common/PageShell";
 import { OrderRequestLookupClient } from "@/components/order-request/OrderRequestLookupClient";
-import { CHECKOUT_PAGE, ORDER_REQUEST_COMPLETE_PAGE } from "@/lib/customer-center-routes";
-import { bm } from "@/lib/design-tokens";
+
+export const metadata: Metadata = {
+  title: "비회원 주문조회",
+  description: "주문번호와 연락처로 주문 상태를 확인할 수 있습니다.",
+};
 
 export default function OrderRequestLookupPage() {
   return (
-    <PageShell
-      zone="support"
-      pageLabel="접수 조회"
-      title="상담 주문 요청 조회"
-      description="접수번호와 연락처로 상담 접수 상태를 확인합니다."
-      searchPlaceholder="차량·규격 검색"
-    >
-      <div className="mx-auto max-w-2xl space-y-4">
-        <div className="flex flex-wrap gap-2">
-          <Link href={CHECKOUT_PAGE} className={`${bm.btnTertiary} text-xs`}>
-            ← 주문·상담 접수
-          </Link>
-          <Link href={ORDER_REQUEST_COMPLETE_PAGE} className={`${bm.btnTertiary} text-xs`}>
-            접수 완료 화면
-          </Link>
-        </div>
-        <Suspense
-          fallback={
-            <div className="text-center text-sm text-slate-500">불러오는 중…</div>
-          }
-        >
-          <OrderRequestLookupClient />
-        </Suspense>
-      </div>
+    <PageShell zone="lookup" plainBg showSearch={false} showPageHeader={false} showFooter>
+      <Suspense fallback={null}>
+        <OrderRequestLookupClient />
+      </Suspense>
     </PageShell>
   );
 }

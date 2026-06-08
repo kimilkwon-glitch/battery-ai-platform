@@ -117,8 +117,8 @@ export const MESSAGE_TEMPLATE_SAMPLE_VALUES: Record<MessageTemplateVariable, str
   trackingUrl: "https://example.com/tracking/123456789012",
   storePhone: "051-000-0000",
   returnDeadline: "2026-06-10",
-  pickupGuideUrl: "https://battery-ai-platform.vercel.app/support/used-battery-return",
-  orderDetailUrl: "https://battery-ai-platform.vercel.app/mypage",
+  pickupGuideUrl: "/support/used-battery-return",
+  orderDetailUrl: "/mypage",
 };
 
 export const ORDER_MESSAGE_TEMPLATES: OrderMessageTemplate[] = [
@@ -400,7 +400,7 @@ export const ORDER_MESSAGE_TEMPLATES: OrderMessageTemplate[] = [
 
 문의: {{storePhone}}`,
     variables: ["customerName", "orderNumber", "returnDeadline", "storePhone"],
-    caution: "추가 비용 금액은 상담 후 안내합니다.",
+    caution: "추가 비용은 별도 안내드립니다.",
   },
   {
     id: "order-cancel-scheduled",

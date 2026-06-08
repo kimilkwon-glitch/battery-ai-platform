@@ -68,7 +68,7 @@ function PaymentReadyContent() {
       <div className={`${bm.card} ${bm.cardPad} space-y-4`}>
         <PaymentPreparingNotice />
         <p className="text-sm font-medium text-slate-600">
-          결제 기능이 준비되는 대로 이 화면에서 안전하게 결제하실 수 있습니다.
+          주문서에서 결제를 진행해 주세요.
         </p>
         <Link href={CHECKOUT_PAGE} className={`${bm.btnNavy} inline-flex justify-center text-sm`}>
           주문서로 돌아가기
@@ -105,9 +105,9 @@ function PaymentReadyContent() {
   return (
     <div className="payment-ready space-y-5" data-page="payment-ready">
       <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
-        <h1 className="text-lg font-black text-slate-950">결제</h1>
+        <h1 className="text-lg font-black text-slate-950">주문 및 결제</h1>
         <p className="text-sm font-medium leading-relaxed text-slate-600">
-          주문 내용을 확인한 뒤 결제 수단을 선택해 주세요.
+          주문 내용을 확인한 뒤 결제를 진행해 주세요.
         </p>
       </section>
 
@@ -143,7 +143,7 @@ function PaymentReadyContent() {
           </div>
           <div>
             <dt className="font-bold text-slate-500">결제 금액</dt>
-            <dd className="text-base font-black tabular-nums text-blue-700">
+            <dd className="text-base font-black tabular-nums text-slate-950">
               {formatPriceWon(prepare.amount)}
             </dd>
           </div>

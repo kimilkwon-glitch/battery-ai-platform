@@ -8,7 +8,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const BASE = process.env.ALIAS_VERIFY_BASE ?? "https://battery-ai-platform.vercel.app";
+const BASE = process.env.ALIAS_VERIFY_BASE ?? "https://www.batterymanager.co.kr";
 const CB = process.env.ALIAS_VERIFY_CB ?? "alias-v01-20260530";
 
 const QUERIES = [

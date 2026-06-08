@@ -25,6 +25,7 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
 
   return (
     <PageShell
+      zone="product"
       pageLabel={displayCode}
       searchPlaceholder={`${displayCode} 호환 차종 검색`}
     >

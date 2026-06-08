@@ -48,6 +48,7 @@ function HeroImageSlide({
               alt={slide.imageAlt}
               className="home-hero-slide__img h-full w-full"
               decoding="async"
+              loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : "auto"}
               onError={() => setImgError(true)}
             />
@@ -138,22 +139,15 @@ export function HomeMainBanner() {
               className="home-hero-carousel__viewport home-hero-carousel__viewport--unified relative w-full"
               data-hero-slide-id={activeSlide.type === "image" ? activeSlide.id : undefined}
             >
-              {slides.map((s, i) => {
-                const isActive = i === index;
-                return (
-                  <div
-                    key={s.id}
-                    hidden={!isActive}
-                    className="home-hero-carousel__slide-layer absolute inset-0 h-full w-full"
-                  >
-                    {s.type === "image" ? (
-                      <HeroImageSlide slide={s} priority={i === 0} isActive={isActive} />
-                    ) : (
-                      <HeroPlaceholderSlide slide={s} />
-                    )}
-                  </div>
-                );
-              })}
+              {activeSlide.type === "image" ? (
+                <HeroImageSlide
+                  slide={activeSlide}
+                  priority={index === 0}
+                  isActive
+                />
+              ) : (
+                <HeroPlaceholderSlide slide={activeSlide} />
+              )}
             </div>
           </div>
 

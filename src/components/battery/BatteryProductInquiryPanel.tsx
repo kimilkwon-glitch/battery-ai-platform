@@ -7,7 +7,7 @@ import { addInquiry } from "@/lib/inquiry-storage";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
-import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
+import { CONTACT } from "@/lib/contact-info";
 import { bm } from "@/lib/design-tokens";
 
 const INQUIRY_TYPES = [
@@ -38,7 +38,7 @@ export function BatteryProductInquiryPanel({ batteryCode }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const storePhone = BUSAN_STORES[0]?.phoneTel ?? "tel:010-8339-8316";
+  const customerPhone = CONTACT.customerCenter.tel;
 
   const buildMemo = () => {
     const lines = [
@@ -89,11 +89,11 @@ export function BatteryProductInquiryPanel({ batteryCode }: Props) {
       <div className="rounded-xl border border-emerald-100 bg-emerald-50/80 p-5">
         <p className="text-sm font-black text-emerald-900">문의가 접수되었습니다.</p>
         <p className="mt-2 text-sm font-medium text-emerald-800/90">
-          확인 후 연락드리겠습니다. 급하시면 전화 상담을 이용해 주세요.
+          확인 후 연락드리겠습니다. 급하시면 고객센터로 전화해 주세요.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <a href={storePhone} className={`${bm.btnPrimary} text-sm font-black`}>
-            전화 상담하기
+          <a href={customerPhone} className={`${bm.btnPrimary} text-sm font-black`}>
+            고객센터 전화
           </a>
           <button
             type="button"
@@ -261,10 +261,10 @@ export function BatteryProductInquiryPanel({ batteryCode }: Props) {
             문의 접수하기
           </button>
           <a
-            href={storePhone}
+            href={customerPhone}
             className={`${bm.btnSecondary} inline-flex min-h-[3rem] flex-1 items-center justify-center text-sm font-black`}
           >
-            전화 상담하기
+            고객센터 {CONTACT.customerCenter.phone}
           </a>
           <Link
             href={HUB_STORE_DETAIL}
@@ -278,7 +278,7 @@ export function BatteryProductInquiryPanel({ batteryCode }: Props) {
           className="text-sm font-bold text-blue-700 hover:underline"
           onClick={goCheckoutWithDraft}
         >
-          상담 주문 화면으로 이어서 작성하기
+          주문서로 이어서 작성하기
         </button>
       </form>
     </div>

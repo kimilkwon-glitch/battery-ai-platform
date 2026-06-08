@@ -11,7 +11,7 @@ import { PERSONA_DEFINITIONS, ALIAS_QUERIES } from "./persona-definitions.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPORT_DIR = path.join(__dirname, "reports");
 
-const BASE = process.env.SEARCH_QA_BASE_URL ?? "https://battery-ai-platform.vercel.app";
+const BASE = process.env.SEARCH_QA_BASE_URL ?? "https://www.batterymanager.co.kr";
 const CACHE_BUST = process.env.SEARCH_QA_CB ?? "search-qa-persona-v1-20260530";
 
 const FORBIDDEN_RE = [

@@ -36,7 +36,7 @@ export function hubCtaForQuery(query: string): { label: string; href: string } |
     if (/주문\s*전|규격\s*확인/.test(query)) {
       return { label: "주문 전 규격 확인", href: HUB_SHOP_ANCHORS.orderCheck };
     }
-    return { label: "택배·쇼핑", href: HUB_SHOP };
+    return { label: "배터리 검색", href: HUB_SHOP };
   }
   return null;
 }
@@ -59,7 +59,7 @@ export function prependHubCtas(
   if (hub) add(hub.label, hub.href);
 
   if (flags.order && !hub) {
-    add("택배·쇼핑", HUB_SHOP);
+    add("배터리 검색", HUB_SHOP);
     add("주문 전 규격 확인", HUB_SHOP_ANCHORS.orderCheck);
   }
 

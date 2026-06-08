@@ -76,8 +76,8 @@ export function ProductFulfillmentPricePanel({
               onClick={() => selectMethod(m.value)}
               className={`min-h-[3.25rem] rounded-xl px-3 py-2.5 text-left transition-colors ${
                 active
-                  ? "bg-blue-600 text-white ring-2 ring-blue-300"
-                  : "bg-slate-50 text-slate-800 ring-1 ring-slate-200 hover:bg-slate-100"
+                  ? "bg-[#0F1B33] text-white ring-2 ring-blue-400 shadow-sm"
+                  : "bg-white text-[#0F172A] ring-1 ring-[#D8E1EC] hover:ring-slate-300"
               }`}
             >
               <span className="block text-xs font-black">{label}</span>

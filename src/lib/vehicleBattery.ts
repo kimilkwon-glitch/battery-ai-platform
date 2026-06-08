@@ -83,6 +83,12 @@ const db = dbJson as DbRoot;
 const userConfirmedRoot = userConfirmedJson as { records: VehicleBatteryRecord[] };
 const records = [...db.records, ...userConfirmedRoot.records];
 
+/** slug/query 단위 memo — 결과 동일, 반복 스캔만 제거 */
+const recordsForSlugCache = new Map<string, VehicleBatteryRecord[]>();
+const recordsForBatteryCache = new Map<string, VehicleBatteryRecord[]>();
+const vehicleBatteryPageDataCache = new Map<string, ReturnType<typeof computeVehicleBatteryPageData>>();
+const searchVehicleBatteryDbCache = new Map<string, VehicleSearchHit[]>();
+
 const SEARCH_SYNONYMS: [RegExp, string][] = [
   [/하브/g, "하이브리드"],
   [/hev/gi, "하이브리드"],
@@ -453,7 +459,7 @@ export function hasUsableBatteryData(
   return isUsableDbCandidate(record, profile);
 }
 
-export function getRecordsForSlug(slug: string): VehicleBatteryRecord[] {
+function computeRecordsForSlug(slug: string): VehicleBatteryRecord[] {
   const profile = getVehicleDbProfile(slug);
   let matched: VehicleBatteryRecord[];
   if (!profile) {
@@ -465,6 +471,16 @@ export function getRecordsForSlug(slug: string): VehicleBatteryRecord[] {
     matched = records.filter((r) => recordMatchesProfile(r, profile));
   }
   return matched.filter(recordHasBatterySpec);
+}
+
+export function getRecordsForSlug(slug: string): VehicleBatteryRecord[] {
+  const key = slug.trim();
+  if (!key) return [];
+  const hit = recordsForSlugCache.get(key);
+  if (hit) return hit;
+  const computed = computeRecordsForSlug(key);
+  recordsForSlugCache.set(key, computed);
+  return computed;
 }
 
 export type BatteryAlternativeKind = "upgrade" | "alternate";
@@ -901,7 +917,7 @@ function scoreVehicleBatteryRecordsForQuery(
   return scored;
 }
 
-export function searchVehicleBatteryDb(query: string, limit = 12): VehicleSearchHit[] {
+function computeSearchVehicleBatteryDb(query: string, limit = 12): VehicleSearchHit[] {
   const terms = [...new Set([query, ...expandKgMobilitySearchTerms(query)])].filter((t) => t.trim());
   if (!terms.length) return [];
 
@@ -957,6 +973,15 @@ export function searchVehicleBatteryDb(query: string, limit = 12): VehicleSearch
     });
   }
   return hits;
+}
+
+export function searchVehicleBatteryDb(query: string, limit = 12): VehicleSearchHit[] {
+  const key = `${norm(normalizeSearchQuery(query))}:${limit}`;
+  const hit = searchVehicleBatteryDbCache.get(key);
+  if (hit) return hit;
+  const computed = computeSearchVehicleBatteryDb(query, limit);
+  searchVehicleBatteryDbCache.set(key, computed);
+  return computed;
 }
 
 export function getRelatedVehicleSlugs(slug: string, limit = 4): { slug: string; title: string; battery: string }[] {
@@ -1064,7 +1089,7 @@ export function getBatteryFitmentVehicleLabels(code: string, limit = 4): string[
   return getBatteryFitmentVehicles(code, limit).map((v) => v.label);
 }
 
-export function getRecordsForBattery(code: string, limit = 24): VehicleBatteryRecord[] {
+function computeRecordsForBattery(code: string, limit = 24): VehicleBatteryRecord[] {
   if (isRetiredBatterySpec(code)) return [];
   const canonical = normalizeBatteryCode(code);
   return records
@@ -1075,6 +1100,15 @@ export function getRecordsForBattery(code: string, limit = 24): VehicleBatteryRe
     )
     .sort((a, b) => scoreBatteryFitRecord(b, canonical) - scoreBatteryFitRecord(a, canonical))
     .slice(0, limit);
+}
+
+export function getRecordsForBattery(code: string, limit = 24): VehicleBatteryRecord[] {
+  const cacheKey = `${code}:${limit}`;
+  const hit = recordsForBatteryCache.get(cacheKey);
+  if (hit) return hit;
+  const computed = computeRecordsForBattery(code, limit);
+  recordsForBatteryCache.set(cacheKey, computed);
+  return computed;
 }
 
 export type VehicleDbLinkTier = "confirmed" | "usable" | "none";
@@ -1161,7 +1195,7 @@ export function getVehicleCardBatteryInfo(slug: string): VehicleCardBatteryInfo 
   };
 }
 
-export function getVehicleBatteryPageData(slug: string) {
+function computeVehicleBatteryPageData(slug: string) {
   const profile = getVehicleDbProfile(slug);
   const recs = getRecordsForSlug(slug);
   const linkable = recs.filter((r) => {
@@ -1207,6 +1241,16 @@ export function getVehicleBatteryPageData(slug: string) {
   };
 }
 
+export function getVehicleBatteryPageData(slug: string) {
+  const key = slug.trim();
+  if (!key) return computeVehicleBatteryPageData(key);
+  const hit = vehicleBatteryPageDataCache.get(key);
+  if (hit) return hit;
+  const computed = computeVehicleBatteryPageData(key);
+  vehicleBatteryPageDataCache.set(key, computed);
+  return computed;
+}
+
 export type VehicleBatterySummaryLine = {
   label: string;
   battery: string;
@@ -1225,7 +1269,8 @@ export function buildVehicleBatterySummary(
   slug: string,
   fuelGroups: FuelBatteryGroup[],
 ): VehicleBatterySummary | null {
-  const facing = prepareCustomerFacingFuelGroups(slug, fuelGroups);
+  /** getVehicleBatteryPageData에서 이미 prepareCustomerFacingFuelGroups 적용됨 */
+  const facing = fuelGroups;
   if (facing.length === 0) return null;
 
   const lines: VehicleBatterySummaryLine[] = [];

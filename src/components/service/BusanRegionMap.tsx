@@ -82,7 +82,7 @@ function regionLine(gu: string, region: BusanGeoRegion): string {
   if (guHasDongLevelExceptions(gu)) {
     return "대저1동·대저2동 — 상담 시 지점 안내";
   }
-  return "전화 상담 후 안내";
+  return "고객센터 안내";
 }
 
 function normalizeSearch(q: string): string {
@@ -174,7 +174,7 @@ function MapLegend() {
         </li>
         <li className="flex items-center gap-2.5 sm:gap-3">
           <span className="size-4 shrink-0 rounded-sm bg-slate-300 shadow-sm sm:size-5" aria-hidden />
-          기타 · 상담 후 안내
+          기타 · 고객센터 안내
         </li>
       </ul>
       <p className="mt-2 text-[10px] font-medium leading-snug text-slate-500 sm:text-xs">
@@ -541,7 +541,7 @@ export function BusanRegionMap({
                     onBlur={handleGuLeave}
                     tabIndex={0}
                     role="button"
-                    aria-label={`${gu.gu} — ${storeLabelForRegion(gu.region) ?? "상담 후 안내"}`}
+                    aria-label={`${gu.gu} — ${storeLabelForRegion(gu.region) ?? "고객센터 안내"}`}
                   >
                     {gu.dongs.map((dong) => {
                       const style = pathStyle(dong.region, gu, {
@@ -677,7 +677,7 @@ export function BusanRegionMap({
                         : "text-slate-800",
                   )}
                 >
-                  {storeLabelForRegion(selectedGu.region) ?? "전화 상담 후 안내"}
+                  {storeLabelForRegion(selectedGu.region) ?? "고객센터 안내"}
                 </span>
                 {selectedGu.matchedDong ? (
                   <span className="text-slate-600"> ({selectedGu.matchedDong} 검색)</span>

@@ -1,3 +1,4 @@
+import "@/styles/checkout-order.css";
 import { Suspense } from "react";
 import { ContentAreaFallback } from "@/components/common/ContentAreaFallback";
 import { PageShell } from "@/components/common/PageShell";
@@ -6,13 +7,13 @@ import { CheckoutReviewPage } from "@/components/checkout/CheckoutReviewPage";
 export default function CheckoutReviewRoutePage() {
   return (
     <PageShell
-      zone="support"
-      pageLabel="결제 전 확인"
-      title="결제 전 최종 확인"
-      description="주문 내용과 결제 예정금액을 마지막으로 확인합니다."
+      zone="checkout"
+      pageLabel="주문 및 결제"
+      title="주문 및 결제"
+      description="주문 내용을 확인한 뒤 결제 수단을 선택해 주세요."
       searchPlaceholder="차량·규격 검색"
     >
-      <div className="mx-auto max-w-3xl space-y-4">
+      <div className="mx-auto w-full max-w-6xl space-y-4 px-0 sm:px-1">
         <Suspense fallback={<ContentAreaFallback lines={4} />}>
           <CheckoutReviewPage />
         </Suspense>

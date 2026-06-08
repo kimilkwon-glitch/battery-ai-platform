@@ -67,7 +67,7 @@ export type AiAuditReport = {
 
 function productionBaseUrl(): string {
   if (process.env.AI_AUDIT_PROBE_BASE) return process.env.AI_AUDIT_PROBE_BASE.replace(/\/$/, "");
-  if (process.env.VERCEL_ENV === "production") return "https://battery-ai-platform.vercel.app";
+  if (process.env.VERCEL_ENV === "production") return "https://www.batterymanager.co.kr";
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return "http://localhost:3000";
 }
@@ -182,7 +182,7 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
 
   const summary = {
     build_rev: BUILD_STAMP,
-    production_alias: "https://battery-ai-platform.vercel.app",
+    production_alias: "https://www.batterymanager.co.kr",
     qa_route_status: qaStatus,
     forbidden_keywords_found:
       customerFacingForbidden.length === 0 ? "none (customer-facing)" : customerFacingForbidden.join("; "),
@@ -211,7 +211,7 @@ export async function buildAiAuditReport(): Promise<AiAuditReport> {
       vercelDeploymentId: process.env.VERCEL_DEPLOYMENT_ID ?? null,
       vercelUrl: process.env.VERCEL_URL ?? null,
       deployedAt: auditSnapshot.generatedAt,
-      productionAlias: "https://battery-ai-platform.vercel.app",
+      productionAlias: "https://www.batterymanager.co.kr",
       isProduction: process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production",
       vercelEnv: process.env.VERCEL_ENV ?? null,
     },

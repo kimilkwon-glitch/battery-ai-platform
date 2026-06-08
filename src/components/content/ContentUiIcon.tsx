@@ -57,6 +57,8 @@ export function ContentUiIcon({
         aria-hidden
         className="object-contain"
         height={inner}
+        sizes={`${inner}px`}
+        loading="lazy"
         onError={() => setSrc(getContentUiIconSrc("faq"))}
         src={src}
         unoptimized

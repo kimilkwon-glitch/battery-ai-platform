@@ -3,7 +3,8 @@ import { AppIcon } from "@/components/common/AppIcon";
 import { HomeSectionShell } from "@/components/common/HomeSectionShell";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
-import { HUB_PHOTO, HUB_SHOP, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
+import { HUB_PHOTO, HUB_SHOP_ANCHORS } from "@/lib/customer-hub-routes";
+import { LEGAL_SHIPPING_PAGE } from "@/lib/legal/legal-routes";
 import { HOME_DELIVERY_STEPS, HOME_POPULAR_BATTERIES } from "@/lib/home-upgrade-v2-data";
 import { HOME_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import { DELIVERY_STEP_ICONS } from "@/lib/icon-map";
@@ -59,8 +60,8 @@ export function HomeDeliverySection() {
       </div>
       <p className={`mt-3 ${bm.typoCaption}`}>
         대표 규격: {HOME_POPULAR_BATTERIES.slice(0, 4).map((b) => b.code).join(" · ")} 등 —{" "}
-        <Link className="font-bold text-blue-700 underline-offset-2 hover:underline" href={HUB_SHOP}>
-          택배·쇼핑 안내
+        <Link className="font-bold text-blue-700 underline-offset-2 hover:underline" href={LEGAL_SHIPPING_PAGE}>
+          배송 안내
         </Link>
       </p>
     </HomeSectionShell>

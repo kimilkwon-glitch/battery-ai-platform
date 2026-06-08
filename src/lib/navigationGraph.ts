@@ -25,7 +25,6 @@ import {
   questions,
   searchHref,
   serviceHref,
-  shopHref,
   shopProducts,
   type ActionLink,
   vehicleHref,
@@ -81,8 +80,8 @@ function batteryDetailHref(code: string): string {
 }
 
 function shopForBattery(code?: string): string {
-  if (!code) return shopHref();
-  return `${shopHref()}?q=${encodeURIComponent(code)}`;
+  if (!code) return searchHref("배터리");
+  return batteryDetailHref(code);
 }
 
 function primaryBattery(ctx: NavContext): string {
@@ -435,7 +434,7 @@ export function getRelatedShops(context: NavContext, limit = 3): RelatedLink[] {
   return list.slice(0, limit).map((p) => ({
     label: p.batteryCode,
     meta: p.price != null ? `${p.price.toLocaleString()}원` : "상담 문의",
-    href: shopForBattery(p.batteryCode),
+    href: batteryDetailHref(p.batteryCode),
   }));
 }
 

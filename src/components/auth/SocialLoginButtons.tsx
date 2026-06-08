@@ -1,64 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { SocialLoginButton } from "@/components/auth/SocialLoginButton";
+import {
+  getOAuthStartPath,
+  type SocialLoginProvider,
+} from "@/lib/auth/social-login-brand";
+import { isSocialProviderEnabled } from "@/lib/auth/social-login-config";
 
-type Provider = "naver" | "kakao" | "google";
+const PROVIDERS: SocialLoginProvider[] = ["naver", "kakao", "google"];
 
-const BUTTONS: {
-  id: Provider;
-  label: string;
-  className: string;
-  icon: string;
-}[] = [
-  {
-    id: "naver",
-    label: "네이버로 계속하기",
-    className: "bm-social-btn bm-social-btn--naver",
-    icon: "N",
-  },
-  {
-    id: "kakao",
-    label: "카카오로 계속하기",
-    className: "bm-social-btn bm-social-btn--kakao",
-    icon: "K",
-  },
-  {
-    id: "google",
-    label: "구글로 계속하기",
-    className: "bm-social-btn bm-social-btn--google",
-    icon: "G",
-  },
-];
+type Props = {
+  redirect?: string | null;
+};
 
-export function SocialLoginButtons() {
-  const [notice, setNotice] = useState<string | null>(null);
+export function SocialLoginButtons({ redirect }: Props) {
+  const enabledProviders = PROVIDERS.filter((provider) => isSocialProviderEnabled(provider));
 
-  const handleClick = () => {
-    setNotice(
-      "간편 로그인은 준비 중입니다. 현재는 휴대폰 번호로 회원가입을 이용해 주세요.",
-    );
-  };
+  if (enabledProviders.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="bm-social-login space-y-3">
-      {BUTTONS.map((btn) => (
-        <button
-          key={btn.id}
-          type="button"
-          className={btn.className}
-          onClick={handleClick}
-        >
-          <span className="bm-social-btn__icon" aria-hidden>
-            {btn.icon}
-          </span>
-          <span className="bm-social-btn__label">{btn.label}</span>
-        </button>
+    <div className="bm-social-login">
+      {enabledProviders.map((provider) => (
+        <SocialLoginButton
+          key={provider}
+          provider={provider}
+          href={getOAuthStartPath(provider, redirect)}
+        />
       ))}
-      {notice ? (
-        <p className="bm-auth-notice" role="status">
-          {notice}
-        </p>
-      ) : null}
+      <p className="bm-auth-notice text-[10px]" role="note">
+        간편 로그인 시 제공되는 이름·이메일이 회원정보에 저장됩니다. 휴대폰·주소는 추가 입력 후
+        주문을 진행할 수 있습니다.
+      </p>
     </div>
   );
 }

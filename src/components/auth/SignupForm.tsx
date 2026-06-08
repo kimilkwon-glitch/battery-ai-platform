@@ -4,14 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthBenefitsBox } from "@/components/auth/AuthBenefitsBox";
-import { AuthGuestLinks } from "@/components/auth/AuthGuestLinks";
+import { SignupAddressFields } from "@/components/auth/SignupAddressFields";
 import { SocialLoginButtons } from "@/components/auth/SocialLoginButtons";
+import { hasAnySocialLoginEnabled } from "@/lib/auth/social-login-config";
 import { setCustomerSession } from "@/lib/customer-auth-session";
-import { saveCustomerProfile } from "@/lib/customer-profile-storage";
+import {
+  createEmptyProfile,
+  saveCustomerProfile,
+} from "@/lib/customer-profile-storage";
+import { syncSignupVehicleToProfile } from "@/lib/customer-signup-sync";
 import {
   CUSTOMER_LOGIN_PAGE,
   CUSTOMER_MYPAGE,
-  GUEST_ORDER_PAGE,
 } from "@/lib/customer-auth-routes";
 
 const FUEL_OPTIONS = ["가솔린", "디젤", "LPG", "하이브리드", "전기"] as const;
@@ -26,11 +30,13 @@ function formatPhoneInput(value: string): string {
 
 export function SignupForm({ redirect }: { redirect?: string | null }) {
   const router = useRouter();
-  const [done, setDone] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
   const [vehicleName, setVehicleName] = useState("");
   const [vehicleYear, setVehicleYear] = useState("");
   const [vehicleFuel, setVehicleFuel] = useState("");
@@ -41,6 +47,10 @@ export function SignupForm({ redirect }: { redirect?: string | null }) {
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const loginHref = redirect
+    ? `${CUSTOMER_LOGIN_PAGE}?redirect=${encodeURIComponent(redirect)}`
+    : CUSTOMER_LOGIN_PAGE;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,58 +73,61 @@ export function SignupForm({ redirect }: { redirect?: string | null }) {
       setError("비밀번호 확인이 일치하지 않습니다.");
       return;
     }
+    if (!postalCode.trim() || !address1.trim() || !address2.trim()) {
+      setError("주소 검색 후 상세주소까지 입력해 주세요.");
+      return;
+    }
     if (!agreeTerms || !agreePrivacy) {
       setError("필수 약관에 동의해 주세요.");
       return;
     }
 
     setSubmitting(true);
-    setCustomerSession({
-      displayName: name.trim(),
-      phone: phone.trim(),
-    });
-    saveCustomerProfile({
-      name: name.trim(),
-      phone: phone.trim(),
+    let profile = saveCustomerProfile({
+      ...createEmptyProfile({
+        name: name.trim(),
+        phone: phone.trim(),
+        provider: "credentials",
+      }),
+      postalCode: postalCode.trim(),
+      address1: address1.trim(),
+      address2: address2.trim(),
       vehicleName: vehicleName.trim() || undefined,
       vehicleYear: vehicleYear || undefined,
       vehicleFuel: vehicleFuel || undefined,
       preferredStore,
     });
+    profile = syncSignupVehicleToProfile(profile);
 
-    if (redirect?.trim()) {
-      router.push(redirect.trim());
-      return;
-    }
-    setDone(true);
-    setSubmitting(false);
+    setCustomerSession({
+      userId: profile.id,
+      displayName: profile.name,
+      phone: profile.phone,
+      provider: "credentials",
+    });
+
+    router.push(redirect?.trim() || CUSTOMER_MYPAGE);
   };
-
-  if (done) {
-    return (
-      <div className="bm-auth-complete" data-page="signup-complete">
-        <p className="bm-auth-complete__title">회원가입이 완료되었습니다</p>
-        <p className="bm-auth-complete__body">
-          첫 주문 시 3% 혜택이 자동 적용됩니다. 차량 정보를 등록하면 다음 주문이 더 빨라집니다.
-        </p>
-        <Link href={CUSTOMER_MYPAGE} className="bm-auth-submit mt-4 inline-flex justify-center">
-          마이페이지로 이동
-        </Link>
-        <Link href={CUSTOMER_LOGIN_PAGE} className="bm-auth-text-link mt-4 block text-center">
-          로그인으로 돌아가기
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <div className="bm-auth-form" data-page="customer-signup">
-      <AuthBenefitsBox variant="signup" />
+      <h1 className="text-lg font-black text-[#0F172A]">회원가입하고 주문하기</h1>
+      <p className="mt-2 text-sm font-medium text-slate-600">
+        기본 배송지와 차량정보를 저장하면 다음 주문이 더 빨라집니다.
+      </p>
 
-      <div className="bm-auth-divider">
-        <span>간편 회원가입</span>
+      <div className="mt-4">
+        <AuthBenefitsBox variant="signup" />
       </div>
-      <SocialLoginButtons />
+
+      {hasAnySocialLoginEnabled() ? (
+        <>
+          <div className="bm-auth-divider mt-5">
+            <span>간편 회원가입</span>
+          </div>
+          <SocialLoginButtons redirect={redirect} />
+        </>
+      ) : null}
 
       <div className="bm-auth-divider">
         <span>휴대폰 번호로 가입</span>
@@ -127,63 +140,79 @@ export function SignupForm({ redirect }: { redirect?: string | null }) {
       ) : null}
 
       <form className="bm-auth-form__fields" onSubmit={handleSubmit}>
-        <label className="bm-auth-field">
-          <span className="bm-auth-field__label">
-            이름 <span className="text-red-600">*</span>
-          </span>
-          <input
-            required
-            type="text"
-            autoComplete="name"
-            className="bm-auth-field__input"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
-        <label className="bm-auth-field">
-          <span className="bm-auth-field__label">
-            휴대폰 번호 <span className="text-red-600">*</span>
-          </span>
-          <input
-            required
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            className="bm-auth-field__input"
-            placeholder="010-0000-0000"
-            value={phone}
-            onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
-          />
-        </label>
-        <label className="bm-auth-field">
-          <span className="bm-auth-field__label">
-            비밀번호 <span className="text-red-600">*</span>
-          </span>
-          <input
-            required
-            type="password"
-            autoComplete="new-password"
-            className="bm-auth-field__input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <label className="bm-auth-field">
-          <span className="bm-auth-field__label">
-            비밀번호 확인 <span className="text-red-600">*</span>
-          </span>
-          <input
-            required
-            type="password"
-            autoComplete="new-password"
-            className="bm-auth-field__input"
-            value={passwordConfirm}
-            onChange={(e) => setPasswordConfirm(e.target.value)}
-          />
-        </label>
+        <fieldset className="space-y-3">
+          <legend className="bm-auth-section__title">기본 정보</legend>
+          <label className="bm-auth-field">
+            <span className="bm-auth-field__label">
+              이름 <span className="text-red-600">*</span>
+            </span>
+            <input
+              required
+              type="text"
+              autoComplete="name"
+              className="bm-auth-field__input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </label>
+          <label className="bm-auth-field">
+            <span className="bm-auth-field__label">
+              휴대폰 번호 <span className="text-red-600">*</span>
+            </span>
+            <input
+              required
+              type="tel"
+              autoComplete="tel"
+              className="bm-auth-field__input"
+              placeholder="010-0000-0000"
+              value={phone}
+              onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
+            />
+          </label>
+          <label className="bm-auth-field">
+            <span className="bm-auth-field__label">
+              비밀번호 <span className="text-red-600">*</span>
+            </span>
+            <input
+              required
+              type="password"
+              autoComplete="new-password"
+              className="bm-auth-field__input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </label>
+          <label className="bm-auth-field">
+            <span className="bm-auth-field__label">
+              비밀번호 확인 <span className="text-red-600">*</span>
+            </span>
+            <input
+              required
+              type="password"
+              autoComplete="new-password"
+              className="bm-auth-field__input"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+            />
+          </label>
+        </fieldset>
+
+        <SignupAddressFields
+          postalCode={postalCode}
+          address1={address1}
+          address2={address2}
+          onChange={(patch) => {
+            if (patch.postalCode != null) setPostalCode(patch.postalCode);
+            if (patch.address1 != null) setAddress1(patch.address1);
+            if (patch.address2 != null) setAddress2(patch.address2);
+          }}
+        />
 
         <fieldset className="bm-auth-optional">
-          <legend className="bm-auth-optional__title">선택 정보</legend>
+          <legend className="bm-auth-optional__title">선택 차량정보</legend>
+          <p className="text-[11px] font-medium text-slate-500">
+            입력하시면 주문서에 자동으로 불러올 수 있습니다.
+          </p>
           <label className="bm-auth-field">
             <span className="bm-auth-field__label">차량명</span>
             <input
@@ -250,7 +279,7 @@ export function SignupForm({ redirect }: { redirect?: string | null }) {
               onChange={(e) => setAgreeTerms(e.target.checked)}
             />
             <span>
-              <Link href="/support" className="bm-auth-text-link">
+              <Link href="/terms" className="bm-auth-text-link">
                 이용약관
               </Link>
               에 동의합니다 <span className="text-red-600">*</span>
@@ -263,7 +292,10 @@ export function SignupForm({ redirect }: { redirect?: string | null }) {
               onChange={(e) => setAgreePrivacy(e.target.checked)}
             />
             <span>
-              개인정보 수집 및 이용에 동의합니다 <span className="text-red-600">*</span>
+              <Link href="/privacy" className="bm-auth-text-link">
+                개인정보처리방침
+              </Link>
+              에 동의합니다 <span className="text-red-600">*</span>
             </span>
           </label>
         </div>
@@ -275,18 +307,10 @@ export function SignupForm({ redirect }: { redirect?: string | null }) {
 
       <p className="bm-auth-form__links text-center">
         이미 계정이 있으신가요?{" "}
-        <Link href={CUSTOMER_LOGIN_PAGE} className="bm-auth-text-link font-bold">
-          로그인
+        <Link href={loginHref} className="bm-auth-text-link font-bold">
+          로그인하고 주문 계속하기
         </Link>
       </p>
-
-      <div className="mt-4 text-center">
-        <Link href={GUEST_ORDER_PAGE} className="bm-auth-text-link text-sm">
-          비회원으로 계속하기
-        </Link>
-      </div>
-
-      <AuthGuestLinks showSignup={false} showLogin />
     </div>
   );
 }

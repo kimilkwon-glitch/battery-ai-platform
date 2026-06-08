@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { apiRecordPaymentFail } from "@/lib/payment/commerce-order-client";
-import { CHECKOUT_PAGE, paymentReadyUrl } from "@/lib/payment/payment-routes";
+import { CHECKOUT_PAGE, CHECKOUT_REVIEW_PAGE } from "@/lib/payment/payment-routes";
 import { loadCheckoutOrderMeta } from "@/lib/payment/checkout-session-storage";
 import { bm } from "@/lib/design-tokens";
 
@@ -26,7 +26,7 @@ function PaymentFailContent() {
   useEffect(() => {
     const meta = loadCheckoutOrderMeta();
     if (orderId && meta?.paymentRequestId) {
-      setRetryHref(paymentReadyUrl(orderId, meta.paymentRequestId));
+      setRetryHref(CHECKOUT_REVIEW_PAGE);
     }
   }, [orderId]);
 

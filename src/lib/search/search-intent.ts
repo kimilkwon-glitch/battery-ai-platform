@@ -152,7 +152,7 @@ export function buildIntentCtas(
   }
 
   if (flags.order) {
-    add("택배·쇼핑", HUB_SHOP);
+    add("배터리 검색", HUB_SHOP);
     add("주문 전 규격 확인", HUB_SHOP_ANCHORS.orderCheck);
     add("택배 주문 전 확인", HUB_SHOP_ANCHORS.delivery);
     add("단자 방향 확인", HUB_SHOP_ANCHORS.terminal);
@@ -213,7 +213,7 @@ export function buildIntentCtas(
   add("차량 정보 더 입력", "/vehicles");
   if (vehicleHref) add("차량 상세 보기", vehicleHref);
   if (hub === "store") add("매장·출장 안내", HUB_STORE);
-  if (hub === "shop") add("택배·쇼핑", HUB_SHOP);
+  if (hub === "shop") add("배터리 검색", HUB_SHOP);
   return prependHubCtas(ctas, query, flags);
 }
 

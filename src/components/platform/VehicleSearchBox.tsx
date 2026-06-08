@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { AppIcon } from "@/components/common/AppIcon";
@@ -13,6 +14,7 @@ import {
   searchCustomerSuggestions,
   type CustomerSearchSuggestion,
 } from "@/lib/search/customer-search-autocomplete";
+import { getHomeSearchHref, type HomeSearchType } from "@/lib/home-search-types";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -50,6 +52,7 @@ export function VehicleSearchBox({
   autocompleteHostEl,
   onAutocompleteOpenChange,
 }: Props) {
+  const router = useRouter();
   const [query, setQuery] = useState(defaultQuery);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -99,16 +102,20 @@ export function VehicleSearchBox({
           item.batterySummary.match(/AGM\d+[LR]|DIN\d+[LR]|\d+[LR]/i)?.[0],
       });
       recordVehicleClick(asset.catalogId ?? asset.id);
-      window.location.href = vehicleAssetHref(asset);
+      router.push(vehicleAssetHref(asset));
       return;
     }
     recordSearch(item.code, { matchedBattery: item.code });
-    window.location.href = customerSuggestionHref(item);
+    router.push(customerSuggestionHref(item));
   }
 
-  function onSearchSubmit() {
+  function onSearchSubmit(e?: React.FormEvent) {
+    e?.preventDefault();
     const q = query.trim();
-    if (q) recordSearch(q);
+    if (q) {
+      recordSearch(q);
+      router.push(getHomeSearchHref(q, (searchType as HomeSearchType | undefined) ?? "all"));
+    }
     setOpen(false);
   }
 
@@ -220,9 +227,8 @@ export function VehicleSearchBox({
         ref={wrapRef}
       >
         <form
-          action="/search"
           className={compoundBar ? "flex min-w-0 flex-1 items-stretch" : "flex min-w-0 flex-1 gap-2"}
-          onSubmit={() => onSearchSubmit()}
+          onSubmit={onSearchSubmit}
         >
           {searchType && searchType !== "all" ? (
             <input type="hidden" name="type" value={searchType} />
@@ -282,7 +288,7 @@ export function VehicleSearchBox({
 
   return (
     <div className={`relative min-w-0 flex-1 ${className}`} ref={wrapRef}>
-      <form action="/search" className="relative" onSubmit={() => onSearchSubmit()}>
+      <form className="relative" onSubmit={onSearchSubmit}>
         <input
           autoComplete="off"
           role="combobox"

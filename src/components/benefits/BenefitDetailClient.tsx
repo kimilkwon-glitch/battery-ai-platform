@@ -77,11 +77,6 @@ export function BenefitDetailClient({ benefit }: { benefit: BenefitCardConfig })
 
       {benefit.id === "first-order-3" ? <FirstOrder3AutoApplyPanel /> : null}
 
-      {benefit.couponBenefitId ? (
-        <section className="rounded-xl border border-amber-100 bg-amber-50/50 px-4 py-3 text-[11px] font-medium text-amber-900/90">
-          쿠폰은 localStorage에 임시 저장됩니다. 운영용 발급·중복 방지·만료 관리는 DB·인증 연동이 필요합니다.
-        </section>
-      ) : null}
 
       <BenefitsNotices />
     </div>

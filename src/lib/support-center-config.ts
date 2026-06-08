@@ -6,7 +6,6 @@ import {
   CUSTOMER_CENTER_USED_BATTERY,
   ORDER_REQUEST_LOOKUP_PAGE,
 } from "@/lib/customer-center-routes";
-import { GUEST_ORDER_CHECK_PAGE, GUEST_ORDER_PAGE } from "@/lib/customer-auth-routes";
 import { HUB_GUIDE, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import type { FaqCategory } from "@/lib/support-faq-data";
 
@@ -62,12 +61,21 @@ export const SUPPORT_HUB_BOTTOM_LINKS = [
   { label: "배터리 가이드", href: HUB_GUIDE, desc: "규격·증상·교체 팁" },
 ] as const;
 
-export const SUPPORT_HUB_FAQ_INITIAL_LIMIT = { mobile: 4, desktop: 5 } as const;
+export const SUPPORT_HUB_FAQ_INITIAL_LIMIT = { mobile: 6, desktop: 9 } as const;
+
+/** FAQ 영역 하단 빠른 링크 (메인 컬럼) */
+export const SUPPORT_HUB_FAQ_QUICK_LINKS = [
+  { label: "주문·배송", href: CUSTOMER_CENTER_ORDER_GUIDE },
+  { label: "반납·보증", href: CUSTOMER_CENTER_RETURN_EXCHANGE },
+  { label: "규격 가이드", href: HUB_GUIDE },
+  { label: "배송 안내", href: CUSTOMER_CENTER_DELIVERY },
+  { label: "폐전지 반납", href: CUSTOMER_CENTER_USED_BATTERY },
+] as const;
 
 export const SUPPORT_HUB_SECONDARY_CTAS = [
   { label: "배송 안내 보기", href: CUSTOMER_CENTER_DELIVERY },
   { label: "배터리 규격 가이드", href: HUB_GUIDE },
-  { label: "비회원 주문", href: GUEST_ORDER_PAGE },
+  { label: "로그인·주문내역", href: "/login?redirect=%2Fmypage" },
   { label: "매장·출장 안내", href: HUB_STORE_DETAIL },
   { label: "FAQ 전체", href: CUSTOMER_CENTER_FAQ },
 ];

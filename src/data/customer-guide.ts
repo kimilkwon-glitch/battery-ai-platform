@@ -1,13 +1,11 @@
 import {
   CUSTOMER_CENTER_DELIVERY,
   CUSTOMER_CENTER_FAQ,
-  CUSTOMER_CENTER_GUEST_ORDER,
   CUSTOMER_CENTER_HUB,
   CUSTOMER_CENTER_MESSAGE_GUIDE,
   CUSTOMER_CENTER_ORDER_GUIDE,
   CUSTOMER_CENTER_RETURN_EXCHANGE,
   CUSTOMER_CENTER_USED_BATTERY,
-  ORDER_REQUEST_LOOKUP_PAGE,
 } from "@/lib/customer-center-routes";
 
 export type GuideSectionBlock = {
@@ -52,11 +50,11 @@ export type CustomerCenterHeroCard = {
 export const CUSTOMER_CENTER_HERO_CARDS: CustomerCenterHeroCard[] = [
   {
     id: "lookup",
-    title: "주문/상담 조회",
-    description: "주문 상태나 상담 요청 내역을 확인할 수 있습니다.",
+    title: "주문내역 조회",
+    description: "로그인 후 주문·배송·장착 진행상태를 확인할 수 있습니다.",
     actions: [
-      { label: "상담 요청 확인", href: ORDER_REQUEST_LOOKUP_PAGE, variant: "primary" },
-      { label: "주문 조회 안내", href: CUSTOMER_CENTER_GUEST_ORDER, variant: "secondary" },
+      { label: "로그인하고 주문내역 보기", href: "/login?redirect=%2Fmypage", variant: "primary" },
+      { label: "배송 안내", href: CUSTOMER_CENTER_DELIVERY, variant: "secondary" },
     ],
   },
   {
@@ -105,10 +103,10 @@ export const CUSTOMER_CENTER_DETAIL_GROUPS: CustomerCenterDetailGroup[] = [
         href: CUSTOMER_CENTER_ORDER_GUIDE,
       },
       {
-        id: "guest-order",
-        title: "비회원 주문조회",
-        description: "주문번호·비밀번호로 결제 주문 조회",
-        href: CUSTOMER_CENTER_GUEST_ORDER,
+        id: "mypage-orders",
+        title: "주문내역 조회",
+        description: "로그인 후 마이페이지에서 주문·배송 상태 확인",
+        href: "/mypage",
       },
       {
         id: "message-guide",
@@ -202,7 +200,7 @@ export const CUSTOMER_CENTER_QUICK_LINKS: { label: string; href: string }[] = [
   { label: "주문 안내", href: CUSTOMER_CENTER_ORDER_GUIDE },
   { label: "배송 안내", href: CUSTOMER_CENTER_DELIVERY },
   { label: "교환·반품", href: CUSTOMER_CENTER_RETURN_EXCHANGE },
-  { label: "비회원 주문조회", href: CUSTOMER_CENTER_GUEST_ORDER },
+  { label: "마이페이지", href: "/mypage" },
   { label: "FAQ", href: CUSTOMER_CENTER_FAQ },
 ];
 
@@ -245,18 +243,17 @@ export const CUSTOMER_CENTER_HUB_CARDS: CustomerHubCard[] = [
   },
   {
     id: "consultation-lookup",
-    title: "상담 주문 요청 조회",
-    description:
-      "접수번호와 연락처로 상담 요청 상태를 확인합니다. 실제 결제 주문조회가 아닙니다.",
-    href: ORDER_REQUEST_LOOKUP_PAGE,
-    cta: "접수 상태 조회하기",
+    title: "마이페이지",
+    description: "로그인 후 주문내역, 차량정보, 혜택을 확인합니다.",
+    href: "/mypage",
+    cta: "마이페이지로 이동",
   },
   {
-    id: "guest-order",
-    title: "비회원 주문조회",
-    description: "결제 주문번호·비밀번호 조회(상담 접수 조회와 별도)",
-    href: CUSTOMER_CENTER_GUEST_ORDER,
-    cta: "결제 주문 조회 안내",
+    id: "mypage-orders",
+    title: "주문내역 조회",
+    description: "로그인 후 마이페이지에서 결제 주문·배송 상태 확인",
+    href: "/mypage",
+    cta: "마이페이지로 이동",
   },
   {
     id: "faq",
@@ -325,7 +322,7 @@ export const ORDER_GUIDE_PAGE: CustomerGuidePageData = {
       heading: "주문 완료 후 안내 메시지",
       bullets: [
         "주문 접수·무통장 입금·입금 확인 등 단계별 안내 메시지 예시를 확인할 수 있습니다.",
-        "비회원 주문은 주문번호와 주문 비밀번호를 반드시 보관해 주세요.",
+        "회원 주문은 마이페이지에서 주문번호와 진행 상태를 확인할 수 있습니다.",
       ],
       callout:
         "실제 문자·알림톡 자동 발송은 준비 중이며, 아래 페이지에서 문구 예시만 확인할 수 있습니다.",
@@ -340,11 +337,11 @@ export const ORDER_GUIDE_PAGE: CustomerGuidePageData = {
       cta: { label: "배송 안내 메시지 예시 보기", href: `${CUSTOMER_CENTER_MESSAGE_GUIDE}?group=배송` },
     },
     {
-      heading: "비회원 주문조회",
-      anchorId: "guest-order",
+      heading: "주문내역 조회",
+      anchorId: "member-orders",
       bullets: [
-        "비회원 주문은 주문 완료 시 안내된 주문번호와 주문 비밀번호로 조회합니다.",
-        "주문번호·비밀번호를 잊으셨다면 주문자명, 연락처, 상품 정보로 고객센터에서 조회를 도와드릴 수 있습니다.",
+        "로그인 후 마이페이지에서 결제 주문·배송·장착 진행 상태를 확인할 수 있습니다.",
+        "주문번호를 잊으셨다면 주문자명, 연락처, 상품 정보로 고객센터에서 조회를 도와드릴 수 있습니다.",
         "본인 확인을 위해 일부 정보 확인이 필요할 수 있습니다.",
       ],
     },

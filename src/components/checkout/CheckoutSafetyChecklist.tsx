@@ -31,9 +31,8 @@ export function CheckoutSafetyChecklist({
 
   return (
     <section className={`${bm.card} ${bm.cardPad}`} id="checkout-safety-checklist">
-      <h2 className="text-sm font-black text-slate-900">최종 확인</h2>
+      <h2 className="text-sm font-black text-slate-900">주문 전 확인</h2>
       <p className="mt-1 text-xs font-medium text-slate-500">{CHECKOUT_PAGE_COPY.checklistIntro}</p>
-      <p className="mt-2 text-[11px] font-medium text-slate-600">{CHECKOUT_PAGE_COPY.fitmentNote}</p>
       <ul className="mt-3 space-y-2">
         {CHECKOUT_CHECKLIST_ITEMS.map((item) => (
           <li key={item.id}>

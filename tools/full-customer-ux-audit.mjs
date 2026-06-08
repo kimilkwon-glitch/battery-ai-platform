@@ -681,12 +681,15 @@ async function main() {
     });
     await probePage(pageD, "/order-request", "order-request");
     await probePage(pageD, "/checkout", "checkout-order");
-    const guidance = await pageD
-      .locator("[data-order-request-vehicle-guidance]")
-      .first()
-      .isVisible()
-      .catch(() => false);
-    if (!guidance) {
+    const checkoutEmpty = (await pageD.locator('[data-checkout-state="empty"]').count()) > 0;
+    const guidance =
+      !checkoutEmpty &&
+      (await pageD
+        .locator("[data-order-request-vehicle-guidance]")
+        .first()
+        .isVisible()
+        .catch(() => false));
+    if (!checkoutEmpty && !guidance) {
       addFinding({
         priority: "P2",
         page: "checkout",

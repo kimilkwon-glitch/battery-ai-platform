@@ -4,7 +4,7 @@ import { PaymentSuccessPage } from "@/components/payment/PaymentSuccessPage";
 export default function PaymentSuccessRoutePage() {
   return (
     <PageShell
-      zone="support"
+      zone="checkout"
       pageLabel="결제 완료"
       title="결제 결과"
       description="결제 완료 여부를 확인합니다."

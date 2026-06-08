@@ -7,9 +7,7 @@ import {
   CUSTOMER_LOGIN_PAGE,
   CUSTOMER_SIGNUP_PAGE,
   CUSTOMER_MYPAGE,
-  GUEST_ORDER_CHECK_PAGE,
 } from "@/lib/customer-auth-routes";
-import { ORDER_REQUEST_LOOKUP_PAGE } from "@/lib/customer-center-routes";
 
 export function PortalHeaderAuth() {
   const router = useRouter();
@@ -33,7 +31,7 @@ export function PortalHeaderAuth() {
           {displayName ? `${displayName.slice(0, 8)}님` : "마이페이지"}
         </Link>
         <Link
-          href={ORDER_REQUEST_LOOKUP_PAGE}
+          href={`${CUSTOMER_MYPAGE}#orders`}
           className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 lg:inline-flex lg:text-xs"
         >
           주문내역
@@ -79,13 +77,6 @@ export function PortalHeaderAuth() {
         className="portal-header-auth-btn inline-flex rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 lg:text-xs"
       >
         회원가입
-      </Link>
-      <Link
-        href={GUEST_ORDER_CHECK_PAGE}
-        aria-label="비회원 주문조회"
-        className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-500 transition hover:bg-slate-50 hover:text-slate-800 md:inline-flex lg:text-xs"
-      >
-        주문조회
       </Link>
       <Link
         className="portal-header-my portal-header-auth-btn rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900 lg:px-3 lg:text-xs"

@@ -8,9 +8,9 @@ import clsx from "clsx";
 import { openChatInquiry } from "@/lib/chat-inquiry-events";
 import { addInquiry } from "@/lib/inquiry-storage";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
-import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
+import { CONTACT } from "@/lib/contact-info";
+import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { ORDER_REQUEST_LOOKUP_PAGE } from "@/lib/customer-center-routes";
-import { GUEST_ORDER_CHECK_PAGE } from "@/lib/customer-auth-routes";
 import { SUPPORT_NOTICES } from "@/lib/support-notices-data";
 import {
   SUPPORT_FAQ_ITEMS,
@@ -20,6 +20,7 @@ import {
   SUPPORT_HUB_BOTTOM_LINKS,
   SUPPORT_HUB_CATEGORIES,
   SUPPORT_HUB_FAQ_INITIAL_LIMIT,
+  SUPPORT_HUB_FAQ_QUICK_LINKS,
   SUPPORT_HUB_PRIMARY_CTAS,
   SUPPORT_HUB_SECONDARY_CTAS,
   faqCategoryToHub,
@@ -111,10 +112,9 @@ export function SupportCenterHubV2() {
   return (
     <div className="support-hub-v2 mx-auto max-w-6xl space-y-6 lg:space-y-8" data-page="support-center-v2">
       <header className="support-hub-v2__hero text-center sm:text-left">
-        <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-          고객센터
-        </h1>
-        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
+        <p className="support-hub-v2__hero-kicker">Battery Manager Support</p>
+        <h1 className="support-hub-v2__hero-title">고객센터</h1>
+        <p className="support-hub-v2__hero-desc">
           주문, 배송, 교체, 배터리 문의를 한곳에서 빠르게 확인하세요.
         </p>
         <div className="support-hub-v2__cta-row mt-5 flex flex-col gap-2 sm:flex-row">
@@ -180,20 +180,33 @@ export function SupportCenterHubV2() {
           </div>
 
           <section className="support-hub-v2__faq" aria-label="자주 묻는 질문">
-            <div className="space-y-2">
+            <div className="support-hub-v2__faq-head">
+              <span className="support-hub-v2__faq-badge">자주 찾는 질문</span>
+              <h2 className="support-hub-v2__section-title">자주 묻는 질문</h2>
+              <p className="support-hub-v2__faq-lead">
+                배터리 규격, 주문·배송, 반납, 장착 방식 등 자주 문의하시는 내용입니다.
+              </p>
+            </div>
+            <div className="support-hub-v2__faq-list">
               {visibleFaq.map((item) => {
                 const open = openFaqId === item.id;
                 return (
-                  <div key={item.id} className="support-hub-v2__faq-item">
+                  <div
+                    key={item.id}
+                    className={clsx("support-hub-v2__faq-item", open && "support-hub-v2__faq-item--open")}
+                  >
                     <button
                       type="button"
                       className="support-hub-v2__faq-trigger"
                       onClick={() => setOpenFaqId(open ? null : item.id)}
                       aria-expanded={open}
                     >
-                      <span>{item.question}</span>
+                      <span className="support-hub-v2__faq-question">{item.question}</span>
                       <ChevronDown
-                        className={clsx("size-4 shrink-0 text-slate-400 transition", open && "rotate-180")}
+                        className={clsx(
+                          "support-hub-v2__faq-chevron size-4 shrink-0 transition",
+                          open && "rotate-180",
+                        )}
                         aria-hidden
                       />
                     </button>
@@ -231,11 +244,18 @@ export function SupportCenterHubV2() {
                 FAQ 접기
               </button>
             ) : null}
+            <div className="support-hub-v2__faq-quicklinks" aria-label="FAQ 관련 빠른 링크">
+              {SUPPORT_HUB_FAQ_QUICK_LINKS.map((link) => (
+                <Link key={link.href} href={link.href} className="support-hub-v2__chip support-hub-v2__chip--link">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </section>
 
           <section
             id="support-inquiry"
-            className="support-hub-v2__inquiry support-hub-v2__inquiry--main scroll-mt-24 lg:hidden"
+            className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--main scroll-mt-24 lg:hidden"
           >
             <InquiryForm
               inquirySubmitted={inquirySubmitted}
@@ -247,21 +267,19 @@ export function SupportCenterHubV2() {
         </div>
 
         <aside className="support-hub-v2__sidebar space-y-3">
-          <div className="support-hub-v2__side-card">
+          <div className="support-hub-v2__side-card support-hub-v2__side-card--consult">
             <h3 className="support-hub-v2__side-title">상담이 필요하신가요?</h3>
             <p className="support-hub-v2__side-desc">
-              차량 정보나 주문 상태 확인이 필요하면 가까운 지점으로 문의해 주세요.
+              차량 정보나 주문 확인이 필요하시면 고객센터로 문의해 주세요.
             </p>
-            <ul className="support-hub-v2__phone-list">
-              {BUSAN_STORES.map((store) => (
-                <li key={store.id}>
-                  <span className="font-bold text-slate-700">{store.name}</span>
-                  <a href={store.phoneTel} className="font-black text-blue-700 hover:underline">
-                    {store.phone}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div className="support-hub-v2__phone-list">
+              <div className="support-hub-v2__phone-list-item">
+                <span className="font-bold text-slate-700">{CONTACT.customerCenter.label}</span>
+                <a href={CONTACT.customerCenter.tel} className="support-hub-v2__phone-number hover:underline">
+                  {CONTACT.customerCenter.phone}
+                </a>
+              </div>
+            </div>
             <button
               type="button"
               className="support-hub-v2__cta support-hub-v2__cta--primary mt-3 w-full"
@@ -269,21 +287,25 @@ export function SupportCenterHubV2() {
             >
               상담 문의하기
             </button>
+            <p className="mt-3 text-[11px] font-medium text-slate-500">
+              가까운 매장 정보는{" "}
+              <Link href={HUB_STORE_DETAIL} className="font-bold text-blue-700 hover:underline">
+                매장 안내
+              </Link>
+              에서 확인하실 수 있습니다.
+            </p>
           </div>
 
           <div className="support-hub-v2__side-card">
-            <h3 className="support-hub-v2__side-title">주문을 확인하고 싶으신가요?</h3>
+            <h3 className="support-hub-v2__side-title">비회원 주문조회</h3>
             <p className="support-hub-v2__side-desc">
-              비회원 주문도 주문번호와 연락처로 확인할 수 있습니다.
+              주문번호와 연락처로 주문 상태를 확인할 수 있습니다.
             </p>
             <Link
               href={ORDER_REQUEST_LOOKUP_PAGE}
               className="support-hub-v2__cta support-hub-v2__cta--secondary mt-3 w-full"
             >
-              주문 조회하기
-            </Link>
-            <Link href={GUEST_ORDER_CHECK_PAGE} className="support-hub-v2__side-link mt-2">
-              비회원 주문조회 바로가기 →
+              조회하기
             </Link>
           </div>
 
@@ -311,7 +333,7 @@ export function SupportCenterHubV2() {
             </ol>
           </div>
 
-          <section className="support-hub-v2__inquiry support-hub-v2__inquiry--sidebar hidden scroll-mt-24 lg:block">
+          <section className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--sidebar hidden scroll-mt-24 lg:block">
             <InquiryForm
               inquirySubmitted={inquirySubmitted}
               inquiryForm={inquiryForm}
@@ -325,8 +347,8 @@ export function SupportCenterHubV2() {
       <section className="support-hub-v2__bottom-grid" aria-label="안내 바로가기">
         {SUPPORT_HUB_BOTTOM_LINKS.map((link) => (
           <Link key={link.href} href={link.href} className="support-hub-v2__bottom-card">
-            <span className="font-black text-slate-900">{link.label}</span>
-            <span className="text-xs font-medium text-slate-500">{link.desc}</span>
+            <span>{link.label}</span>
+            <span>{link.desc}</span>
           </Link>
         ))}
       </section>
@@ -358,7 +380,13 @@ function InquiryForm({
   return (
     <>
       <h2 className="support-hub-v2__section-title text-base">상담 문의 접수</h2>
-      <p className="mt-1 text-sm text-slate-600">문의를 남겨주시면 확인 후 연락드립니다.</p>
+      <p className="mt-1 text-sm text-slate-600">
+        문의 내용을 확인한 뒤 순서대로 연락드립니다. 급하시면{" "}
+        <a href={CONTACT.customerCenter.tel} className="font-bold text-blue-700 hover:underline">
+          {CONTACT.customerCenter.phone}
+        </a>
+        로 전화해 주세요.
+      </p>
       {inquirySubmitted ? (
         <p className="mt-4 rounded-xl bg-emerald-50 px-4 py-5 text-center text-sm font-semibold text-emerald-800">
           문의가 접수되었습니다. 확인 후 연락드리겠습니다.

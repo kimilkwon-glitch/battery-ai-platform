@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getAdminSessionSecret } from "@/lib/admin/adminCredentials";
+import { ROOT_DOMAIN } from "@/lib/site-url";
 import {
   ADMIN_SESSION_COOKIE,
   verifySessionToken,
@@ -37,8 +38,22 @@ async function hasValidAdminSession(request: NextRequest): Promise<boolean> {
   return verifySessionToken(token, secret);
 }
 
+/** batterymanager.co.kr → www.batterymanager.co.kr */
+function redirectRootToWww(request: NextRequest): NextResponse | null {
+  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase() ?? "";
+  if (host !== ROOT_DOMAIN) return null;
+
+  const url = request.nextUrl.clone();
+  url.protocol = "https:";
+  url.host = `www.${ROOT_DOMAIN}`;
+  return NextResponse.redirect(url, 308);
+}
+
 /** /search · /batteries — query·규격별 CDN 캐시 혼재 방지 */
 export async function middleware(request: NextRequest) {
+  const wwwRedirect = redirectRootToWww(request);
+  if (wwwRedirect) return applyHeaders(wwwRedirect, {});
+
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/admin")) {

@@ -90,7 +90,7 @@ export function guTooltipHint(gu: string, region: BusanGeoRegion): string {
     return "대저1동·명지 등 동별 담당이 다를 수 있습니다 · 가까운 권역 기준 안내";
   }
   if (store) return "가까운 권역 기준 우선 안내";
-  return "전화 상담 후 가까운 직영점 안내";
+  return "고객센터 문의 시 가까운 직영점 안내";
 }
 
 export function guPanelCoverage(gu: string, region: BusanGeoRegion): string {

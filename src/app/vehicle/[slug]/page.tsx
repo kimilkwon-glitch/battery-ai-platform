@@ -14,7 +14,7 @@ import { getVehicleAsset } from "@/lib/car-assets";
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
 import { customerFacingRepresentativeBattery } from "@/lib/vehicle-detail-recommendation";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
-import { getVehicleDetail, getVehicleSlugs } from "@/lib/vehicle-data";
+import { getVehicleDetail, getVehicleSlugSet, getVehicleSlugs } from "@/lib/vehicle-data";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,7 +26,7 @@ export function generateStaticParams() {
 
 function isResolvableVehicleSlug(slug: string): boolean {
   if (!slug?.trim()) return false;
-  return Boolean(getVehicleAsset(slug)) || getVehicleSlugs().includes(slug);
+  return Boolean(getVehicleAsset(slug)) || getVehicleSlugSet().has(slug);
 }
 
 export default async function VehicleDetailPage({

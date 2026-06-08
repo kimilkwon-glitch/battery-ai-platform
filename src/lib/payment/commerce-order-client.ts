@@ -49,7 +49,7 @@ export async function apiPrepareCommercePayment(
   if (!res.ok || !data?.ok) {
     return {
       ok: false,
-      message: data?.message ?? "결제 준비에 실패했습니다. 다시 시도해 주세요.",
+      message: data?.message ?? "결제 정보를 불러오지 못했습니다. 다시 시도해 주세요.",
     };
   }
   return { ok: true, data: data as PaymentPrepareResponse };

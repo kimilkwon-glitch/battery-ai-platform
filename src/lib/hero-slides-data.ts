@@ -41,7 +41,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     type: "image",
     title: "전국 택배 주문",
     heading: "집에서도 간편하게 주문 후 저렴하게",
-    description: "셀프교체 가능 · 전국 빠른 배송",
+    description: "직접 교체 가능 · 전국 빠른 배송",
     imageAlt: "전국 택배 주문 메인 배너",
     image: MAIN_BANNER_DELIVERY_ORDER_PC_SRC,
     imageMobile: MAIN_BANNER_DELIVERY_ORDER_MOBILE_SRC,

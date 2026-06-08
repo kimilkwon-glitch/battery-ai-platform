@@ -245,8 +245,8 @@ export function CartDesignPreview() {
           <Link className={bm.btnTertiary} href={CART_DESIGN_LINKS.hub}>
             고객센터 문의
           </Link>
-          <Link className={bm.btnTertiary} href="/shop">
-            계속 쇼핑하기
+          <Link className={bm.btnTertiary} href="/search">
+            배터리 검색
           </Link>
         </div>
         <p className="mt-3 text-[11px] font-medium text-slate-500">

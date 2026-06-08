@@ -1,37 +1,38 @@
 import Link from "next/link";
-import {
-  CUSTOMER_LOGIN_PAGE,
-  CUSTOMER_SIGNUP_PAGE,
-  GUEST_ORDER_CHECK_PAGE,
-  GUEST_ORDER_PAGE,
-} from "@/lib/customer-auth-routes";
+import { CUSTOMER_LOGIN_PAGE, CUSTOMER_SIGNUP_PAGE } from "@/lib/customer-auth-routes";
 
 type Props = {
+  redirect?: string | null;
   showSignup?: boolean;
   showLogin?: boolean;
 };
 
-export function AuthGuestLinks({ showSignup = true, showLogin = false }: Props) {
+export function AuthGuestLinks({
+  redirect,
+  showSignup = true,
+  showLogin = false,
+}: Props) {
+  const loginHref = redirect
+    ? `${CUSTOMER_LOGIN_PAGE}?redirect=${encodeURIComponent(redirect)}`
+    : CUSTOMER_LOGIN_PAGE;
+  const signupHref = redirect
+    ? `${CUSTOMER_SIGNUP_PAGE}?redirect=${encodeURIComponent(redirect)}`
+    : CUSTOMER_SIGNUP_PAGE;
+
   return (
     <div className="bm-auth-guest-links">
       <p className="bm-auth-guest-links__lead">
-        회원가입 없이도 주문 요청과 주문 조회가 가능합니다.
+        배터리 주문·결제는 로그인 후 진행됩니다.
       </p>
       <div className="bm-auth-guest-links__grid">
-        <Link href={GUEST_ORDER_PAGE} className="bm-auth-guest-link">
-          비회원 주문하기
-        </Link>
-        <Link href={GUEST_ORDER_CHECK_PAGE} className="bm-auth-guest-link">
-          비회원 주문조회
-        </Link>
-        {showSignup ? (
-          <Link href={CUSTOMER_SIGNUP_PAGE} className="bm-auth-guest-link bm-auth-guest-link--accent">
-            회원가입
+        {showLogin ? (
+          <Link href={loginHref} className="bm-auth-guest-link bm-auth-guest-link--accent">
+            로그인하고 주문 계속하기
           </Link>
         ) : null}
-        {showLogin ? (
-          <Link href={CUSTOMER_LOGIN_PAGE} className="bm-auth-guest-link bm-auth-guest-link--accent">
-            로그인
+        {showSignup ? (
+          <Link href={signupHref} className="bm-auth-guest-link bm-auth-guest-link--accent">
+            회원가입하고 주문하기
           </Link>
         ) : null}
       </div>

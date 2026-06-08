@@ -23,7 +23,7 @@ export function VehicleDetailBatteryRecommendation({
     return (
       <section className={`${bm.card} ${bm.cardPad}`}>
         <p className="text-sm font-medium text-slate-600">
-          배터리 추천 정보를 불러오지 못했습니다. 상담을 통해 확인해 주세요.
+          배터리 추천 정보를 불러오지 못했습니다. 고객센터로 문의해 주세요.
         </p>
       </section>
     );

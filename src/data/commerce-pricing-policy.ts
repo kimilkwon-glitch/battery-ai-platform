@@ -1,25 +1,29 @@
+import {
+  CUSTOMER_FULFILLMENT_LABELS,
+  CUSTOMER_PRICE_LABELS,
+} from "@/lib/pricing/customer-price-labels";
 import { DELIVERY_FEE, STORE_INSTALL_DISCOUNT } from "@/lib/pricing/order-price";
 
 /** 토스 심사·주문/배송/환불 페이지 공통 가격 정책 문구 */
 export const COMMERCE_PRICING_POLICY = {
   delivery: {
-    label: "택배 발송",
-    formula: `상품 인터넷가 + 택배비 ${DELIVERY_FEE.toLocaleString("ko-KR")}원`,
-    note: "전국 택배 발송 기준이며, 상품별 인터넷가에 택배비가 추가됩니다.",
+    label: CUSTOMER_FULFILLMENT_LABELS.delivery,
+    formula: `${CUSTOMER_PRICE_LABELS.productPurchase} + ${CUSTOMER_PRICE_LABELS.deliveryFee} ${DELIVERY_FEE.toLocaleString("ko-KR")}원`,
+    note: "전국 택배 발송 기준이며, 제품 구매가에 택배비가 추가됩니다.",
   },
   visitInstall: {
-    label: "출장교체",
-    formula: "출장가",
-    note: "고객 위치로 방문해 교체하는 방식이며, 출장가 기준으로 계산됩니다.",
+    label: CUSTOMER_FULFILLMENT_LABELS.onsite_install,
+    formula: CUSTOMER_PRICE_LABELS.mobileInstall,
+    note: "고객 위치로 방문해 교체하는 방식이며, 출장 교체가 기준으로 계산됩니다.",
   },
   storeInstall: {
-    label: "내방교체",
-    formula: `출장가 − ${STORE_INSTALL_DISCOUNT.toLocaleString("ko-KR")}원`,
-    note: "매장 방문 후 교체 시 출장가에서 내방교체 차감액이 적용됩니다.",
+    label: CUSTOMER_FULFILLMENT_LABELS.store_install,
+    formula: `${CUSTOMER_PRICE_LABELS.mobileInstall} − ${STORE_INSTALL_DISCOUNT.toLocaleString("ko-KR")}원`,
+    note: "매장 방문 후 교체 시 출장 교체가에서 매장 방문 할인이 적용됩니다.",
   },
   storePickupSelf: {
-    label: "내방수령 / 셀프교체",
-    formula: "상품 인터넷가 (택배비 없음)",
+    label: CUSTOMER_FULFILLMENT_LABELS.store_pickup_self,
+    formula: `${CUSTOMER_PRICE_LABELS.productPurchase} (${CUSTOMER_PRICE_LABELS.noDeliveryFee})`,
     note: "매장에서 배터리만 수령해 직접 교체하는 방식입니다.",
   },
 } as const;

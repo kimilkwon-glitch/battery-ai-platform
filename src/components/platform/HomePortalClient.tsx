@@ -34,7 +34,6 @@ const featureLinks = [
   ["차종별 가이드", "/guides", "연료·연식"],
   ["규격 가이드", "/guide/spec", "AGM/DIN"],
   ["매장·출장", "/service-center", "직영·출장·상담"],
-  ["택배·쇼핑", "/shop", "주문 전 확인"],
 ];
 
 const brandFilters = ["전체", "현대", "기아", "제네시스", "수입차"] as const;

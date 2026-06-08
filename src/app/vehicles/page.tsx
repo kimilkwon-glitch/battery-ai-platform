@@ -4,7 +4,7 @@ import { VehiclesBrowseClient } from "@/components/platform/VehiclesBrowseClient
 
 export default function VehiclesPage() {
   return (
-    <PageShell pageLabel="차종검색" showPageHeader={false} wide>
+    <PageShell zone="vehicle" pageLabel="차종검색" showPageHeader={false} wide>
       <Suspense fallback={null}>
         <VehiclesBrowseClient />
       </Suspense>

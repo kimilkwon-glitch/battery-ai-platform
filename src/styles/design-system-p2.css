@@ -337,6 +337,12 @@
   max-width: 98%;
   object-fit: contain;
   object-position: center center;
+  mix-blend-mode: normal !important;
+  background-blend-mode: normal !important;
+  filter: none !important;
+  opacity: 1 !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
 }
 
 .bm-vehicle-card-media--fill,
@@ -2498,6 +2504,79 @@
 .home-brand-lineup__panel {
   flex: 1;
   min-height: 0;
+  position: relative;
+}
+
+.home-brand-lineup__nav-wrap {
+  position: relative;
+}
+
+.mobile-hscroll-hint {
+  display: none;
+  margin-left: auto;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+@media (max-width: 1023px) {
+  .home-brand-lineup__title-row .mobile-hscroll-hint {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.mobile-hscroll-nav {
+  position: relative;
+}
+
+.mobile-hscroll-nav__btn {
+  display: none;
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid #d8e1ec;
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.16);
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: opacity 160ms ease, box-shadow 160ms ease;
+}
+
+.mobile-hscroll-nav__btn:active {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+}
+
+.mobile-hscroll-nav__btn--prev {
+  left: 0.5rem;
+}
+
+.mobile-hscroll-nav__btn--next {
+  right: 0.5rem;
+}
+
+.mobile-hscroll-nav__btn--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 1023px) {
+  .mobile-hscroll-nav__btn {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-hscroll-nav__btn {
+    display: none !important;
+  }
 }
 
 /* 모바일·태블릿 — 가로 스와이프 상품 레일 (타이어픽형) */
@@ -2521,7 +2600,7 @@
 .home-brand-lineup__track {
   display: flex;
   align-items: stretch;
-  gap: 0.875rem;
+  gap: 1rem;
 }
 
 .home-brand-lineup__slide {

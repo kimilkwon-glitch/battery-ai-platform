@@ -86,6 +86,18 @@ export function AdminCommerceOrdersClient({ orders }: Props) {
                 <span className="font-bold text-slate-500">상품 </span>
                 {detail.order.productName} ({detail.order.batteryCode})
               </p>
+              <p>
+                <span className="font-bold text-slate-500">택배비 </span>
+                {detail.order.deliveryFee.toLocaleString("ko-KR")}원
+              </p>
+              <p>
+                <span className="font-bold text-slate-500">미반납 추가금 </span>
+                {(detail.order.batteryReturnFee ?? 0).toLocaleString("ko-KR")}원
+              </p>
+              <p>
+                <span className="font-bold text-slate-500">총 결제금액 </span>
+                {detail.order.finalAmount?.toLocaleString("ko-KR") ?? "—"}원
+              </p>
             </section>
           </>
         ) : null}

@@ -6,8 +6,8 @@ import { COMPANY_PAGE } from "@/data/legal-pages";
 export default function CompanyPage() {
   return (
     <PageShell
-      zone="support"
-      pageLabel="회사 정보"
+      zone="legal"
+      pageLabel="회사/매장 정보"
       title={COMPANY_PAGE.title}
       description={COMPANY_PAGE.description}
       showFooter

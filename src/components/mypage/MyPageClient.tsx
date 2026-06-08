@@ -10,20 +10,16 @@ import { getCustomerVehicles } from "@/lib/customer-vehicles-storage";
 import {
   CUSTOMER_LOGIN_PAGE,
   CUSTOMER_SIGNUP_PAGE,
-  GUEST_ORDER_CHECK_PAGE,
   HUB_PHOTO,
 } from "@/lib/customer-auth-routes";
-import {
-  CART_PAGE,
-  ORDER_REQUEST_LOOKUP_PAGE,
-} from "@/lib/customer-center-routes";
+import { CART_PAGE } from "@/lib/customer-center-routes";
 import { HUB_BENEFITS, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 
 const MENU_ITEMS = [
   {
     title: "내 주문내역",
-    desc: "상담·주문 요청 진행 상태를 확인합니다.",
-    href: ORDER_REQUEST_LOOKUP_PAGE,
+    desc: "결제 주문·배송·장착 진행 상태를 확인합니다.",
+    href: "/mypage#orders",
     empty: "아직 주문 내역이 없습니다.",
   },
   {
@@ -40,8 +36,8 @@ const MENU_ITEMS = [
   },
   {
     title: "배터리 교체 이력",
-    desc: "교체·상담 이력을 한곳에서 확인합니다.",
-    href: ORDER_REQUEST_LOOKUP_PAGE,
+    desc: "교체 이력을 한곳에서 확인합니다.",
+    href: "/mypage#orders",
     empty: "아직 교체 이력이 없습니다.",
   },
   {
@@ -114,9 +110,6 @@ export function MyPageClient() {
               </Link>
               <Link href={CUSTOMER_SIGNUP_PAGE} className={`${bm.btnSecondary} text-sm font-black`}>
                 회원가입
-              </Link>
-              <Link href={GUEST_ORDER_CHECK_PAGE} className={`${bm.btnTertiary} text-sm font-black`}>
-                비회원 주문조회
               </Link>
             </div>
           </div>

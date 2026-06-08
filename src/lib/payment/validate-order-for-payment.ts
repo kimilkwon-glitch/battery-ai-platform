@@ -18,6 +18,7 @@ export type OrderPaymentValidation =
       onsitePrice: number | null;
       deliveryFee: number;
       storeInstallDiscount: number;
+      batteryReturnFee: number;
     }
   | { ok: false; message: string; errors?: string[] };
 
@@ -43,7 +44,11 @@ export function validateOrderForPayment(order: CommerceOrderRecord): OrderPaymen
     return { ok: false, message: errors[0]!, errors };
   }
 
-  const amounts = computeServerOrderAmount(order.itemsJson, order.fulfillmentType);
+  const amounts = computeServerOrderAmount(
+    order.itemsJson,
+    order.fulfillmentType,
+    order.returnBatteryOption,
+  );
 
   if (amounts.finalAmount == null) {
     return {
@@ -67,5 +72,6 @@ export function validateOrderForPayment(order: CommerceOrderRecord): OrderPaymen
     onsitePrice: amounts.onsitePrice,
     deliveryFee: amounts.deliveryFee,
     storeInstallDiscount: amounts.storeInstallDiscount,
+    batteryReturnFee: amounts.batteryReturnFee,
   };
 }

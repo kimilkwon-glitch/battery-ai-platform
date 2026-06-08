@@ -122,7 +122,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
     { label: "포터2 90R/100R", href: "/guides/porter2-year-battery-guide" },
     { label: "EV 보조 12V", href: "/guides/knowledge/bk-ev-aux-12v" },
     { label: "용량 업그레이드", href: "/compare" },
-    { label: "택배·반납 안내", href: "/shop#order-check" },
+    { label: "택배·반납 안내", href: "/shipping" },
   ] as const;
 
   return (
@@ -166,8 +166,8 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
             <Link className={`${bm.btnSecondary} w-full`} href="/service-center">
               매장·출장 안내
             </Link>
-            <Link className={`${bm.btnSecondary} w-full`} href="/shop">
-              택배주문
+            <Link className={`${bm.btnSecondary} w-full`} href="/shipping">
+              배송 안내
             </Link>
             <Link className={`${bm.btnSecondary} w-full`} href="/compare">
               규격 비교

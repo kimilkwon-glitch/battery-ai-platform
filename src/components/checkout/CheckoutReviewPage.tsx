@@ -1,14 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { CheckoutBatteryReturnSummary } from "@/components/checkout/CheckoutBatteryReturnSummary";
 import { OrderPriceBreakdown, OrderPriceTotalBar } from "@/components/pricing/OrderPriceBreakdown";
+import {
+  CheckoutPaymentSection,
+  CheckoutSecurityNotice,
+} from "@/components/checkout/CheckoutPaymentSection";
 import {
   PaymentPreparingButton,
   PaymentPreparingNotice,
 } from "@/components/checkout/PaymentPreparingNotice";
 import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
+import { formatDeliveryAddress } from "@/lib/checkout/checkout-address";
 import { isCommercePaymentLive } from "@/lib/payment/commerce-checkout-mode";
 import {
   apiCreateCommerceOrder,
@@ -18,9 +23,9 @@ import {
   loadCheckoutSession,
   saveCheckoutOrderMeta,
 } from "@/lib/payment/checkout-session-storage";
-import { CHECKOUT_PAGE, paymentReadyUrl } from "@/lib/payment/payment-routes";
+import { CHECKOUT_PAGE } from "@/lib/payment/payment-routes";
 import { formatPriceWon } from "@/lib/pricing/order-price";
-import type { CheckoutSessionPayload, CreateOrderRequestBody } from "@/types/commerce-payment";
+import type { CheckoutSessionPayload, CreateOrderRequestBody, PaymentPrepareResponse } from "@/types/commerce-payment";
 import { bm } from "@/lib/design-tokens";
 
 const STORE_LABELS: Record<string, string> = {
@@ -33,26 +38,34 @@ function sessionToCreateBody(session: CheckoutSessionPayload): CreateOrderReques
     session.fulfillment.storeId === "deokcheon" || session.fulfillment.storeId === "hakjang"
       ? session.fulfillment.storeId
       : undefined;
+  const f = session.fulfillment;
 
   return {
     cartItems: session.items,
     customerInfo: {
       name: session.customer.name,
       phone: session.customer.phone,
-      email: session.customer.email,
       customerType: session.customer.customerType ?? "member",
-      orderMemo: session.customer.orderMemo,
+      userId: session.customer.userId,
     },
     vehicleInfo: session.vehicle,
     fulfillmentType: session.fulfillment.method,
     returnBatteryOption: session.usedBatteryReturn,
     addressInfo: {
       deliveryAddress:
-        session.fulfillment.method === "delivery" ? session.fulfillment.region : undefined,
+        session.fulfillment.method === "delivery" ? formatDeliveryAddress(f) : undefined,
       visitRegion:
-        session.fulfillment.method === "visit_install" ? session.fulfillment.region : undefined,
+        session.fulfillment.method === "visit_install" ? formatDeliveryAddress(f) : undefined,
       storeId,
-      preferredTime: session.fulfillment.preferredTime,
+      preferredTime: f.preferredTime,
+      recipientName: f.recipientName,
+      recipientPhone: f.recipientPhone,
+      postalCode: f.postalCode,
+      address1: f.address1,
+      address2: f.address2,
+      deliveryMessage: f.deliveryMessage,
+      visitMessage: f.visitMessage,
+      storeMessage: f.storeMessage,
     },
     selectedStore: storeId,
     requestMemo: session.memo,
@@ -66,7 +79,7 @@ function sessionToCreateBody(session: CheckoutSessionPayload): CreateOrderReques
 function fulfillmentLocation(session: CheckoutSessionPayload): string {
   const { method, region, storeId } = session.fulfillment;
   if (method === "delivery" || method === "visit_install") {
-    return region?.trim() || "—";
+    return formatDeliveryAddress(session.fulfillment) || region?.trim() || "—";
   }
   if (storeId === "deokcheon" || storeId === "hakjang") {
     return STORE_LABELS[storeId];
@@ -75,28 +88,15 @@ function fulfillmentLocation(session: CheckoutSessionPayload): string {
 }
 
 export function CheckoutReviewPage() {
-  const router = useRouter();
   const paymentLive = isCommercePaymentLive();
-  const [session, setSession] = useState<CheckoutSessionPayload | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [session] = useState<CheckoutSessionPayload | null>(() => loadCheckoutSession());
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
   const [amountConfirmed, setAmountConfirmed] = useState(false);
-
-  useEffect(() => {
-    const loaded = loadCheckoutSession();
-    setSession(loaded);
-    setLoading(false);
-  }, []);
+  const [prepare, setPrepare] = useState<PaymentPrepareResponse | null>(null);
 
   const primary = session?.items[0];
-  const usedLabel = session
-    ? session.usedBatteryReturn === "return"
-      ? "반납"
-      : session.usedBatteryReturn === "no_return"
-        ? "미반납"
-        : "상담 시 확인"
-    : "—";
 
   const fulfillmentLabel = session
     ? FULFILLMENT_METHOD_LABELS[session.fulfillment.method] ?? session.fulfillment.method
@@ -107,7 +107,7 @@ export function CheckoutReviewPage() {
     return CHECKOUT_PAGE;
   }, [session?.flow]);
 
-  const handleConfirm = async () => {
+  const handleStartPayment = async () => {
     if (!session) return;
 
     if (!paymentLive) {
@@ -117,10 +117,25 @@ export function CheckoutReviewPage() {
 
     setSubmitting(true);
     setError(null);
+    setPayError(null);
 
     const createRes = await apiCreateCommerceOrder(sessionToCreateBody(session));
     if (!createRes.ok) {
       setError(createRes.message);
+      setSubmitting(false);
+      return;
+    }
+
+    if (
+      session.estimatedTotal != null &&
+      createRes.order.finalAmount != null &&
+      Math.abs(session.estimatedTotal - createRes.order.finalAmount) >= 1
+    ) {
+      console.error("[checkout] AMOUNT_MISMATCH", {
+        client: session.estimatedTotal,
+        server: createRes.order.finalAmount,
+      });
+      setError("결제 예정금액이 변경되었습니다. 주문서를 다시 확인해 주세요.");
       setSubmitting(false);
       return;
     }
@@ -136,6 +151,19 @@ export function CheckoutReviewPage() {
       return;
     }
 
+    if (
+      session.estimatedTotal != null &&
+      Math.abs(session.estimatedTotal - prepareRes.data.amount) >= 1
+    ) {
+      console.error("[checkout] TOSS_AMOUNT_MISMATCH", {
+        client: session.estimatedTotal,
+        toss: prepareRes.data.amount,
+      });
+      setError("결제 금액이 일치하지 않습니다. 주문서를 다시 확인해 주세요.");
+      setSubmitting(false);
+      return;
+    }
+
     saveCheckoutOrderMeta({
       orderId: prepareRes.data.orderId,
       orderNumber: prepareRes.data.orderNumber,
@@ -143,24 +171,14 @@ export function CheckoutReviewPage() {
       finalAmount: prepareRes.data.amount,
     });
 
-    router.push(paymentReadyUrl(prepareRes.data.orderId, prepareRes.data.paymentRequestId));
+    setPrepare(prepareRes.data);
+    setSubmitting(false);
   };
-
-  if (loading) {
-    return (
-      <div className={`${bm.card} ${bm.cardPad} text-center`} role="status">
-        <p className="text-sm font-bold text-slate-800">주문 정보를 불러오는 중입니다</p>
-      </div>
-    );
-  }
 
   if (!session || session.items.length === 0) {
     return (
       <div className={`${bm.card} ${bm.cardPad} space-y-4 text-center`}>
         <h2 className="text-base font-black text-slate-900">확인할 주문 정보가 없습니다</h2>
-        <p className="text-sm font-medium text-slate-600">
-          주문서를 다시 작성한 뒤 결제 전 확인을 진행해 주세요.
-        </p>
         <Link href={CHECKOUT_PAGE} className={`${bm.btnNavy} inline-flex justify-center text-sm`}>
           주문서 작성으로 이동
         </Link>
@@ -170,73 +188,106 @@ export function CheckoutReviewPage() {
 
   if (amountConfirmed) {
     return (
-      <div className="checkout-review-confirmed space-y-5 pb-8" data-page="checkout-review-confirmed">
-        <PaymentPreparingNotice />
-        <section className={`${bm.card} ${bm.cardPad} space-y-4 text-center`}>
-          <h1 className="text-lg font-black text-slate-950">결제 예정금액 확인 완료</h1>
-          <p className="text-sm font-medium text-slate-600">
-            주문 정보와 결제 예정금액을 확인하셨습니다. 결제는 아직 진행되지 않았습니다.
+      <div className="checkout-review-confirmed space-y-5 pb-8">
+        <section className="checkout-card space-y-4 text-center">
+          <h1 className="text-lg font-black text-slate-950">주문 금액 확인 완료</h1>
+          <p className="text-2xl font-black tabular-nums text-slate-950">
+            {session.estimatedTotal != null ? formatPriceWon(session.estimatedTotal) : "—"}
           </p>
-          <p className="text-2xl font-black tabular-nums text-blue-700">
-            {session.estimatedTotal != null
-              ? formatPriceWon(session.estimatedTotal)
-              : "금액 확인 필요"}
-          </p>
-          <p className="text-xs font-medium text-slate-500">
-            {primary?.productName} · {fulfillmentLabel} · {usedLabel}
-          </p>
-          <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
-            <Link href={checkoutBackHref} className={`${bm.btnTertiary} justify-center text-sm`}>
-              주문서 수정하기
-            </Link>
-            <Link href="/cart" className={`${bm.btnNavy} justify-center text-sm`}>
-              장바구니로 이동
-            </Link>
-          </div>
         </section>
       </div>
     );
   }
 
+  const priceAside = (
+    <div className="space-y-4 lg:sticky lg:top-4">
+      <div className="checkout-summary-card rounded-2xl p-4">
+        <h2 className="text-sm font-black text-slate-900">결제금액 요약</h2>
+        <div className="mt-3">
+          <CheckoutBatteryReturnSummary value={session.usedBatteryReturn} />
+        </div>
+        <div className="mt-3 space-y-3">
+          {session.items.map((item) => (
+            <OrderPriceBreakdown
+              key={item.id}
+              item={item}
+              fulfillmentMethod={session.fulfillment.method}
+              compact
+            />
+          ))}
+        </div>
+        {(session.batteryReturnFee ?? 0) > 0 ? (
+          <p className="mt-2 text-xs font-black text-red-600">
+            미반납 추가금 +{formatPriceWon(session.batteryReturnFee ?? 0)}
+          </p>
+        ) : null}
+        <div className="mt-4">
+          <OrderPriceTotalBar
+            items={session.items}
+            fulfillmentMethod={session.fulfillment.method}
+            returnBatteryOption={session.usedBatteryReturn}
+          />
+        </div>
+      </div>
+
+      {paymentLive ? (
+        <CheckoutPaymentSection
+          prepare={prepare}
+          preparing={submitting}
+          onStartPayment={() => void handleStartPayment()}
+          canStartPayment={!prepare}
+          payError={payError}
+          onPayError={setPayError}
+        />
+      ) : (
+        <PaymentPreparingButton
+          disabled={submitting}
+          loading={submitting}
+          label="결제금액 확인"
+          onClick={() => void handleStartPayment()}
+        />
+      )}
+    </div>
+  );
+
   return (
-    <div className="checkout-review pb-28 lg:pb-8" data-page="checkout-review">
-      <div className="grid gap-5 lg:grid-cols-[1fr_320px] lg:items-start">
+    <div className="checkout-order checkout-review pb-28 lg:pb-10" data-page="checkout-review">
+      <div className="mb-5 lg:hidden">{priceAside}</div>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,400px)] lg:items-start">
         <div className="space-y-5">
-          <section className={`${bm.card} ${bm.cardPad}`}>
-            <h1 className="text-lg font-black text-slate-950">결제 전 최종 확인</h1>
-            <p className="mt-2 text-sm font-medium text-slate-600">
-              {paymentLive
-                ? "아래 내용을 확인하신 뒤 결제 준비 단계로 이동합니다."
-                : "아래 내용과 결제 예정금액을 최종 확인합니다."}
+          <section className="checkout-card">
+            <h1 className="text-xl font-black text-slate-950">주문 및 결제</h1>
+            <p className="mt-2 text-sm font-semibold text-slate-600">
+              주문 내용을 확인한 뒤 결제를 진행해 주세요.
             </p>
           </section>
 
-          <PaymentPreparingNotice compact />
-
-          <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
-            <h2 className="text-sm font-black text-slate-900">상품 정보</h2>
+          <section className="checkout-card space-y-3">
+            <h2 className="checkout-card__title">주문 상품</h2>
             <dl className="grid gap-2 text-xs sm:grid-cols-2">
               <div>
                 <dt className="font-bold text-slate-500">상품명</dt>
                 <dd className="font-black text-slate-900">{primary?.productName ?? "—"}</dd>
               </div>
               <div>
-                <dt className="font-bold text-slate-500">브랜드</dt>
-                <dd className="font-black text-slate-900">{primary?.brandName ?? "—"}</dd>
-              </div>
-              <div>
                 <dt className="font-bold text-slate-500">배터리 규격</dt>
                 <dd className="font-black text-slate-900">{primary?.batterySpec ?? "—"}</dd>
               </div>
+              <div>
+                <dt className="font-bold text-slate-500">수령/장착 방식</dt>
+                <dd className="font-black text-slate-900">{fulfillmentLabel}</dd>
+              </div>
             </dl>
+            <CheckoutBatteryReturnSummary value={session.usedBatteryReturn} />
           </section>
 
-          <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
-            <h2 className="text-sm font-black text-slate-900">차량 정보</h2>
+          <section className="checkout-card space-y-3">
+            <h2 className="checkout-card__title">차량 정보</h2>
             <dl className="grid gap-2 text-xs sm:grid-cols-2">
               <div>
                 <dt className="font-bold text-slate-500">차량명</dt>
-                <dd className="font-black text-slate-900">{session.vehicle.name ?? "—"}</dd>
+                <dd className="font-black text-slate-900">{session.vehicle.name ?? "미입력"}</dd>
               </div>
               <div>
                 <dt className="font-bold text-slate-500">연식</dt>
@@ -249,19 +300,11 @@ export function CheckoutReviewPage() {
             </dl>
           </section>
 
-          <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
-            <h2 className="text-sm font-black text-slate-900">수령·고객 정보</h2>
+          <section className="checkout-card space-y-3">
+            <h2 className="checkout-card__title">고객·수령 정보</h2>
             <dl className="grid gap-2 text-xs sm:grid-cols-2">
               <div>
-                <dt className="font-bold text-slate-500">수령/장착 방식</dt>
-                <dd className="font-black text-slate-900">{fulfillmentLabel}</dd>
-              </div>
-              <div>
-                <dt className="font-bold text-slate-500">반납/미반납</dt>
-                <dd className="font-black text-slate-900">{usedLabel}</dd>
-              </div>
-              <div>
-                <dt className="font-bold text-slate-500">고객명</dt>
+                <dt className="font-bold text-slate-500">주문자</dt>
                 <dd className="font-black text-slate-900">{session.customer.name}</dd>
               </div>
               <div>
@@ -273,14 +316,14 @@ export function CheckoutReviewPage() {
                   {session.fulfillment.method === "delivery"
                     ? "배송지"
                     : session.fulfillment.method === "visit_install"
-                      ? "출장지"
+                      ? "방문 주소"
                       : "방문 지점"}
                 </dt>
                 <dd className="font-black text-slate-900">{fulfillmentLocation(session)}</dd>
               </div>
               {session.memo ? (
                 <div className="sm:col-span-2">
-                  <dt className="font-bold text-slate-500">요청사항</dt>
+                  <dt className="font-bold text-slate-500">전달사항</dt>
                   <dd className="whitespace-pre-wrap font-medium text-slate-800">{session.memo}</dd>
                 </div>
               ) : null}
@@ -293,49 +336,26 @@ export function CheckoutReviewPage() {
             </p>
           ) : null}
 
-          <div className="hidden flex-col gap-2 lg:flex sm:flex-row">
-            <Link href={checkoutBackHref} className={`${bm.btnTertiary} justify-center text-sm`}>
-              이전으로 돌아가기
-            </Link>
-            <PaymentPreparingButton
-              disabled={submitting}
-              loading={submitting}
-              label={paymentLive ? "결제 준비하기" : "결제 예정금액 확인"}
-              onClick={() => void handleConfirm()}
-              className="flex-1"
-            />
-          </div>
+          <Link href={checkoutBackHref} className={`${bm.btnTertiary} hidden lg:inline-flex text-sm`}>
+            주문서 수정하기
+          </Link>
         </div>
 
-        <aside className="hidden lg:block">
-          <div className="space-y-3 lg:sticky lg:top-4">
-            <h2 className="text-sm font-black text-slate-900">가격 계산 내역</h2>
-            {session.items.map((item) => (
-              <OrderPriceBreakdown
-                key={item.id}
-                item={item}
-                fulfillmentMethod={session.fulfillment.method}
-              />
-            ))}
-            <OrderPriceTotalBar items={session.items} fulfillmentMethod={session.fulfillment.method} />
-          </div>
-        </aside>
+        <aside className="hidden lg:block">{priceAside}</aside>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur lg:hidden">
-        <OrderPriceTotalBar items={session.items} fulfillmentMethod={session.fulfillment.method} />
-        <div className="mt-2 flex gap-2">
-          <Link href={checkoutBackHref} className={`${bm.btnTertiary} flex-1 justify-center text-xs`}>
-            이전
-          </Link>
+      <div className="checkout-order__mobile-total fixed inset-x-0 bottom-0 z-40 border-t p-3 backdrop-blur lg:hidden">
+        <p className="mb-2 text-right text-lg font-black tabular-nums text-slate-900">
+          {session.estimatedTotal != null ? formatPriceWon(session.estimatedTotal) : "—"}
+        </p>
+        {!prepare && paymentLive ? (
           <PaymentPreparingButton
             disabled={submitting}
             loading={submitting}
-            label={paymentLive ? "결제 준비" : "금액 확인"}
-            onClick={() => void handleConfirm()}
-            className="flex-[2] text-xs"
+            label="결제하기"
+            onClick={() => void handleStartPayment()}
           />
-        </div>
+        ) : null}
       </div>
     </div>
   );

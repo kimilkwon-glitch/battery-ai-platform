@@ -15,7 +15,7 @@ import type {
 import { isSorentoMq4AmbiguousQuery } from "@/lib/search/sorento-mq4-fuel-split";
 
 const SITE_ORIGIN =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://battery-ai-platform.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://www.batterymanager.co.kr";
 
 function absUrl(path: string): string {
   if (!path) return SITE_ORIGIN;

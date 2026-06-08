@@ -5,7 +5,8 @@ import { ConversionActions } from "@/components/common/ConversionActions";
 import { VehicleSearchBox } from "@/components/platform/VehicleSearchBox";
 import { BRAND_HERO_LABEL } from "@/lib/brand";
 import { getSearchHref } from "@/lib/battery-search";
-import { HUB_PHOTO, HUB_SHOP, HUB_STORE } from "@/lib/customer-hub-routes";
+import { HUB_PHOTO, HUB_STORE } from "@/lib/customer-hub-routes";
+import { LEGAL_SHIPPING_PAGE } from "@/lib/legal/legal-routes";
 import { HERO_BATTERY_CODES, HERO_SEARCH_SUGGESTIONS } from "@/lib/home-page-data";
 import { getBatteryHref } from "@/lib/content";
 import { bm } from "@/lib/design-tokens";
@@ -106,9 +107,9 @@ export function HomeHero() {
             </Link>
             <Link
               className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:border-blue-200 hover:bg-blue-50"
-              href={HUB_SHOP}
+              href={LEGAL_SHIPPING_PAGE}
             >
-              택배·쇼핑
+              배송 안내
             </Link>
           </div>
         </div>

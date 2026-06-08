@@ -16,6 +16,7 @@ export function AuthBrandHeader({ tagline }: Props) {
           width={72}
           height={72}
           className="bm-auth-brand__logo h-[4.5rem] w-auto"
+          sizes="72px"
           priority
           unoptimized
         />

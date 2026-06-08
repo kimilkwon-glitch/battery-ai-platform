@@ -62,9 +62,37 @@ export async function generateCommerceOrderNumber(date = new Date()): Promise<st
   return `${prefix}${String(count + 1).padStart(4, "0")}`;
 }
 
+function formatStructuredAddress(parts: {
+  postalCode?: string;
+  address1?: string;
+  address2?: string;
+  fallback?: string;
+}): string | undefined {
+  const structured = [parts.postalCode?.trim(), parts.address1?.trim(), parts.address2?.trim()]
+    .filter(Boolean)
+    .join(" ");
+  if (structured) return structured;
+  return parts.fallback?.trim() || undefined;
+}
+
 function resolveAddress(body: CreateOrderRequestBody): string | undefined {
-  if (body.fulfillmentType === "delivery") return body.addressInfo?.deliveryAddress?.trim();
-  if (body.fulfillmentType === "visit_install") return body.addressInfo?.visitRegion?.trim();
+  const info = body.addressInfo;
+  if (body.fulfillmentType === "delivery") {
+    return formatStructuredAddress({
+      postalCode: info?.postalCode,
+      address1: info?.address1,
+      address2: info?.address2,
+      fallback: info?.deliveryAddress,
+    });
+  }
+  if (body.fulfillmentType === "visit_install") {
+    return formatStructuredAddress({
+      postalCode: info?.postalCode,
+      address1: info?.address1,
+      address2: info?.address2,
+      fallback: info?.visitRegion,
+    });
+  }
   return undefined;
 }
 
@@ -96,7 +124,11 @@ export async function createCommerceOrder(
     };
   }
 
-  const amounts = computeServerOrderAmount(body.cartItems, body.fulfillmentType);
+  const amounts = computeServerOrderAmount(
+    body.cartItems,
+    body.fulfillmentType,
+    body.returnBatteryOption,
+  );
   if (amounts.finalAmount == null) {
     return {
       ok: false,
@@ -132,6 +164,7 @@ export async function createCommerceOrder(
     customerPhone: body.customerInfo.phone.trim(),
     customerEmail: body.customerInfo.email?.trim(),
     customerType: body.customerInfo.customerType ?? "member",
+    userId: body.customerInfo.userId?.trim() || undefined,
     vehicleName: body.vehicleInfo?.name,
     vehicleYear: body.vehicleInfo?.year,
     vehicleFuel: body.vehicleInfo?.fuelType,
@@ -145,7 +178,11 @@ export async function createCommerceOrder(
     returnBatteryOption: body.returnBatteryOption,
     deliveryFee: amounts.deliveryFee,
     storeInstallDiscount: amounts.storeInstallDiscount,
+    batteryReturnFee: amounts.batteryReturnFee,
     finalAmount: amounts.finalAmount,
+    postalCode: body.addressInfo?.postalCode?.trim(),
+    address1: body.addressInfo?.address1?.trim(),
+    address2: body.addressInfo?.address2?.trim(),
     address: resolveAddress(body),
     store: resolveStore(body),
     selectedStore: body.selectedStore ?? body.addressInfo?.storeId,

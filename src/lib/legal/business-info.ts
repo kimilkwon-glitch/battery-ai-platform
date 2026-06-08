@@ -1,41 +1,57 @@
-import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
-
-export type BusinessInfo = {
-  tradeName: string;
-  representative: string | null;
-  businessRegistrationNumber: string | null;
-  mailOrderReportNumber: string | null;
-  address: string | null;
-  email: string | null;
-  privacyOfficer: string | null;
-  businessHours: string | null;
-  customerPhones: { label: string; phone: string; tel: string }[];
-};
-
-function envOrNull(key: string): string | null {
-  const v = process.env[key]?.trim();
-  return v || null;
-}
-
-/** 사업자 정보 — 환경변수 또는 심사 전 기본값(연락처만 확정) */
-export function getBusinessInfo(): BusinessInfo {
-  return {
-    tradeName: envOrNull("NEXT_PUBLIC_COMPANY_TRADE_NAME") ?? "배터리매니저",
-    representative: envOrNull("NEXT_PUBLIC_COMPANY_CEO"),
-    businessRegistrationNumber: envOrNull("NEXT_PUBLIC_COMPANY_BUSINESS_NO"),
-    mailOrderReportNumber: envOrNull("NEXT_PUBLIC_COMPANY_MAIL_ORDER_NO"),
-    address: envOrNull("NEXT_PUBLIC_COMPANY_ADDRESS"),
-    email: envOrNull("NEXT_PUBLIC_COMPANY_EMAIL"),
-    privacyOfficer: envOrNull("NEXT_PUBLIC_COMPANY_PRIVACY_OFFICER"),
-    businessHours: envOrNull("NEXT_PUBLIC_COMPANY_HOURS"),
-    customerPhones: BUSAN_STORES.map((s) => ({
-      label: s.name,
-      phone: s.phone,
-      tel: s.phoneTel,
-    })),
-  };
-}
-
-export function formatBusinessField(value: string | null, fallback = "고객센터 문의"): string {
-  return value?.trim() || fallback;
-}
+import {
+  BUSINESS_INFO,
+  CUSTOMER_CENTER,
+  formatBusinessHoursOneLine,
+} from "@/lib/business-config";
+
+export type BusinessInfo = {
+  tradeName: string;
+  representative: string;
+  businessRegistrationNumber: string;
+  mailOrderReportNumber: string;
+  address: string;
+  email: string;
+  privacyOfficer: string;
+  businessHours: string;
+  businessHoursLines: readonly string[];
+  customerPhones: { label: string; phone: string; tel: string }[];
+};
+
+function envOrNull(key: string): string | null {
+  const v = process.env[key]?.trim();
+  return v || null;
+}
+
+/** 사업자 정보 — business-config 기본값, 환경변수로 선택적 덮어쓰기 */
+export function getBusinessInfo(): BusinessInfo {
+  return {
+    tradeName: envOrNull("NEXT_PUBLIC_COMPANY_TRADE_NAME") ?? BUSINESS_INFO.tradeName,
+    representative: envOrNull("NEXT_PUBLIC_COMPANY_CEO") ?? BUSINESS_INFO.representative,
+    businessRegistrationNumber:
+      envOrNull("NEXT_PUBLIC_COMPANY_BUSINESS_NO") ?? BUSINESS_INFO.businessRegistrationNumber,
+    mailOrderReportNumber:
+      envOrNull("NEXT_PUBLIC_COMPANY_MAIL_ORDER_NO") ?? BUSINESS_INFO.mailOrderReportNumber,
+    address: envOrNull("NEXT_PUBLIC_COMPANY_ADDRESS") ?? BUSINESS_INFO.address,
+    email: envOrNull("NEXT_PUBLIC_COMPANY_EMAIL") ?? BUSINESS_INFO.email,
+    privacyOfficer:
+      envOrNull("NEXT_PUBLIC_COMPANY_PRIVACY_OFFICER") ?? BUSINESS_INFO.privacyOfficer,
+    businessHours: envOrNull("NEXT_PUBLIC_COMPANY_HOURS") ?? formatBusinessHoursOneLine(),
+    businessHoursLines: [
+      BUSINESS_INFO.hours.weekday,
+      BUSINESS_INFO.hours.saturday,
+      BUSINESS_INFO.hours.sunday,
+    ],
+    customerPhones: [
+      {
+        label: CUSTOMER_CENTER.label,
+        phone: CUSTOMER_CENTER.phone,
+        tel: CUSTOMER_CENTER.tel,
+      },
+    ],
+  };
+}
+
+export function formatBusinessField(value: string | null | undefined): string {
+  return value?.trim() || "";
+}
+

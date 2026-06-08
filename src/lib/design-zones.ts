@@ -12,7 +12,13 @@ export type DesignZone =
   | "store-deokcheon"
   | "store-hakjang"
   | "brand"
-  | "auth";
+  | "auth"
+  | "checkout"
+  | "cart"
+  | "lookup"
+  | "product"
+  | "vehicle"
+  | "legal";
 
 export function zoneClass(zone: DesignZone = "default"): string {
   if (zone === "default") return "";

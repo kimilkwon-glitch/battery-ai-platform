@@ -107,7 +107,7 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
     warnings.push("차량 정보가 없습니다. 호환 여부를 다시 확인해 주세요.");
   }
   const priceImpact =
-    usedOption === "return" ? -10000 : usedOption === "no_return" ? 10000 : undefined;
+    usedOption === "return" ? 0 : usedOption === "no_return" ? 25_000 : undefined;
 
   const method: FulfillmentMethod = input.fulfillmentMethod ?? "undecided";
   const draft: BatteryCartItem = {

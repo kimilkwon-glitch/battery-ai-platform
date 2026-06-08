@@ -31,7 +31,7 @@ export function BrandLogoLink({ className }: { className?: string }) {
             height={BRAND_LOGO_VISUAL_HEIGHT}
             sizes="(max-width: 1023px) 56px, 68px"
             className="portal-brand-lockup__logo-img h-12 w-auto sm:h-14 lg:h-16"
-            priority
+            loading="lazy"
             unoptimized
             onError={() => setImgError(true)}
           />

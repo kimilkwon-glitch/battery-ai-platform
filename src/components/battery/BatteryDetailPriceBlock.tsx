@@ -1,4 +1,5 @@
 import { getBatteryPrices, formatBatteryPriceWon } from "@/lib/battery-prices";
+import { CUSTOMER_DETAIL_PRICE_LABELS } from "@/lib/pricing/customer-price-labels";
 import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 
 type Props = {
@@ -7,7 +8,7 @@ type Props = {
   compact?: boolean;
 };
 
-/** 배터리 상세 — 택배발송가·출장교체가 분리 표시 */
+/** 배터리 상세 — 제품 구매가·출장 교체가 */
 export function BatteryDetailPriceBlock({ code, brandId, compact = false }: Props) {
   const brand = (brandId === "solite" ? "solite" : "rocket") as BatteryBrandKey;
   const { internetPriceWon, onsitePriceWon } = getBatteryPrices(brand, code);
@@ -15,29 +16,33 @@ export function BatteryDetailPriceBlock({ code, brandId, compact = false }: Prop
   if (internetPriceWon == null && onsitePriceWon == null) {
     return (
       <p className={compact ? "text-base font-black text-slate-900" : "mt-5 text-xl font-black text-slate-900"}>
-        상담 후 안내
+        가격 문의
       </p>
     );
   }
 
   return (
     <div
-      className={compact ? "space-y-2" : "mt-5 space-y-3"}
+      className={compact ? "battery-detail-prices space-y-2.5" : "battery-detail-prices mt-5 space-y-3"}
       aria-label="가격 안내"
       data-battery-prices
     >
       {internetPriceWon != null ? (
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="text-sm font-bold text-slate-500">택배발송가</span>
-          <span className="text-xl font-black text-slate-950 sm:text-2xl">
+          <span className="text-sm font-bold text-[#64748B]">
+            {CUSTOMER_DETAIL_PRICE_LABELS.productPurchase}
+          </span>
+          <span className="text-xl font-black text-[#0F172A] sm:text-2xl">
             {formatBatteryPriceWon(internetPriceWon)}
           </span>
         </div>
       ) : null}
       {onsitePriceWon != null ? (
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="text-sm font-bold text-slate-500">출장교체가</span>
-          <span className="text-lg font-black text-blue-900 sm:text-xl">
+          <span className="text-sm font-bold text-[#64748B]">
+            {CUSTOMER_DETAIL_PRICE_LABELS.mobileInstall}
+          </span>
+          <span className="text-lg font-black text-[#1E3A8A] sm:text-xl">
             {formatBatteryPriceWon(onsitePriceWon)}
           </span>
         </div>

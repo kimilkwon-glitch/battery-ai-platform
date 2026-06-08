@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { BatteryBrandBadges } from "@/components/BatteryBrandBadges";
 import { hasRocketBatteryAssets, hasSoliteBatteryAssets, hasBatteryAssets, getCanonicalBatteryCode, type BatteryBrandKey } from "@/lib/battery-alias-map";
@@ -199,7 +200,7 @@ export function BatteryImageCard({
     </>
   );
 
-  if (href) return <a href={href} className={`block overflow-hidden ${productCardShell}`} onClick={onNavigate}>{inner}</a>;
+  if (href) return <Link href={href} className={`block overflow-hidden ${productCardShell}`} onClick={onNavigate}>{inner}</Link>;
   return <div className={`overflow-hidden ${productCardShell}`}>{inner}</div>;
 }
 

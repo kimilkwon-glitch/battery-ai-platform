@@ -1,12 +1,17 @@
-import { buildPriceSnapshots, sumPriceSnapshots } from "@/lib/pricing/commerce-order-snapshot";
+import { computeCheckoutTotal } from "@/lib/pricing/compute-checkout-total";
 import { calculateCartItemPrice, resolveCartItemPrices } from "@/lib/pricing/order-price";
 import type { BatteryCartItem } from "@/types/cart";
 import type { CommerceOrderPriceSnapshot } from "@/types/commerce-order";
-import type { OrderRequestFulfillmentMethod } from "@/types/order-request";
+import type {
+  OrderRequestFulfillmentMethod,
+  OrderRequestUsedBatteryOption,
+} from "@/types/order-request";
 
 export type ServerAmountResult = {
   priceLines: CommerceOrderPriceSnapshot[];
   finalAmount: number | null;
+  productSubtotal: number | null;
+  batteryReturnFee: number;
   internetPrice: number | null;
   onsitePrice: number | null;
   deliveryFee: number;
@@ -16,18 +21,20 @@ export type ServerAmountResult = {
 export function computeServerOrderAmount(
   items: BatteryCartItem[],
   fulfillmentType: OrderRequestFulfillmentMethod,
+  returnBatteryOption?: OrderRequestUsedBatteryOption,
 ): ServerAmountResult {
-  const method = fulfillmentType === "undecided" ? items[0]?.fulfillment.method : fulfillmentType;
-  const priceLines = buildPriceSnapshots(items, method);
-  const finalAmount = sumPriceSnapshots(priceLines);
+  const totals = computeCheckoutTotal(items, fulfillmentType, returnBatteryOption);
 
   const primary = items[0];
+  const method = fulfillmentType === "undecided" ? items[0]?.fulfillment.method : fulfillmentType;
   const prices = primary ? resolveCartItemPrices(primary) : { internetPrice: null, onsitePrice: null };
   const calc = primary ? calculateCartItemPrice(primary, method) : null;
 
   return {
-    priceLines,
-    finalAmount,
+    priceLines: totals.priceLines,
+    finalAmount: totals.finalAmount,
+    productSubtotal: totals.productSubtotal,
+    batteryReturnFee: totals.batteryReturnFee,
     internetPrice: prices.internetPrice,
     onsitePrice: prices.onsitePrice,
     deliveryFee: calc?.deliveryFee ?? 0,

@@ -103,7 +103,7 @@ export function BatteryProductCardActions({
           )}
           aria-disabled
         >
-          상품 준비중
+          가격 문의
         </span>
       )}
     </div>

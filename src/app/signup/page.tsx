@@ -10,7 +10,7 @@ export default async function SignupPage({
   const redirect = sp.redirect?.trim() || null;
 
   return (
-    <AuthPageLayout tagline="차량별 배터리 규격부터 주문 확인까지 한 번에">
+    <AuthPageLayout tagline="회원가입 후 배송지·차량정보를 저장하고 빠르게 주문하세요">
       <SignupForm redirect={redirect} />
     </AuthPageLayout>
   );

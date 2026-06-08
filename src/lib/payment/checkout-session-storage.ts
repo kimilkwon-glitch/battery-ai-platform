@@ -1,3 +1,4 @@
+import { computeCheckoutTotal } from "@/lib/pricing/compute-checkout-total";
 import type { CheckoutSessionPayload } from "@/types/commerce-payment";
 
 export const CHECKOUT_SESSION_KEY = "battery-manager-checkout-session-v1" as const;
@@ -19,6 +20,19 @@ export function loadCheckoutSession(): CheckoutSessionPayload | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as CheckoutSessionPayload;
     if (parsed?.version !== 1 || !Array.isArray(parsed.items)) return null;
+    if (parsed.batteryReturnFee == null || parsed.estimatedTotal == null) {
+      const totals = computeCheckoutTotal(
+        parsed.items,
+        parsed.fulfillment.method,
+        parsed.usedBatteryReturn,
+      );
+      return {
+        ...parsed,
+        batteryReturnFee: totals.batteryReturnFee,
+        estimatedTotal: totals.finalAmount,
+        priceLines: parsed.priceLines?.length ? parsed.priceLines : totals.priceLines,
+      };
+    }
     return parsed;
   } catch {
     return null;

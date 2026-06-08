@@ -10,6 +10,7 @@ import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import { CONTACT } from "@/lib/contact-info";
 import { openProductInquiry } from "@/lib/chat-inquiry-events";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import {
@@ -65,10 +66,11 @@ export function BatteryDetailOrderPanel({
             code={code}
             imageSet={imageSet}
             minHeightClass="battery-product-detail__gallery-main"
+            variant="productDetail"
           />
         </div>
 
-        <div className="battery-product-detail__info relative min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="battery-product-detail__info battery-product-detail__order-card relative min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="absolute right-4 top-4">
             <BatteryWishlistButton code={code} />
           </div>
@@ -147,13 +149,29 @@ export function BatteryDetailOrderPanel({
             이 규격 제품 문의
           </button>
 
-          <div className="mt-4 border-t border-slate-100 pt-4">
-            <Link
-              href={HUB_STORE_DETAIL}
-              className="text-sm font-bold text-slate-600 hover:text-blue-700"
+          <div className="battery-product-detail__consult mt-4 border-t border-slate-100 pt-4">
+            <p className="text-sm font-black text-slate-900">상담이 필요하신가요?</p>
+            <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
+              차량 정보나 장착 방식이 헷갈리시면 고객센터로 문의해 주세요.
+            </p>
+            <a
+              href={CONTACT.customerCenter.tel}
+              className="mt-2 inline-block text-base font-black text-[#0F1B33] hover:text-blue-700"
             >
-              매장·출장 상담
-            </Link>
+              {CONTACT.customerCenter.phone}
+            </a>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className={`${bm.btnSecondary} text-xs font-black`}
+                onClick={() => openProductInquiry({ batteryCode: code })}
+              >
+                상담 문의하기
+              </button>
+              <Link href={HUB_STORE_DETAIL} className={`${bm.btnTertiary} text-xs font-black`}>
+                매장 안내
+              </Link>
+            </div>
           </div>
         </div>
       </div>

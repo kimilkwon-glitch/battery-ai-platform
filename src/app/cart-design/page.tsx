@@ -8,7 +8,7 @@ import { bm } from "@/lib/design-tokens";
 export default function CartDesignPage() {
   return (
     <PageShell
-      zone="support"
+      zone="cart"
       pageLabel="장바구니 설계"
       title={CART_DESIGN_COPY.pageTitle}
       description={CART_DESIGN_COPY.pageDescription}

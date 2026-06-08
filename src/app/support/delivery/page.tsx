@@ -5,7 +5,7 @@ import { DELIVERY_GUIDE_PAGE } from "@/data/customer-guide";
 export default function SupportDeliveryPage() {
   return (
     <PageShell
-      zone="support"
+      zone="legal"
       pageLabel="배송 안내"
       title={DELIVERY_GUIDE_PAGE.title}
       description={DELIVERY_GUIDE_PAGE.description}

@@ -7,11 +7,16 @@ import { OrderPriceTotalBar } from "@/components/pricing/OrderPriceBreakdown";
 import { CART_NEEDS_REVIEW_COPY } from "@/data/cart-flow-guide";
 import { clearBuyNowCheckoutItems } from "@/lib/cart/checkout-flow";
 import { formatPriceWon } from "@/lib/pricing/order-price";
+import { buildLoginRedirectUrl } from "@/lib/customer-auth-redirect";
+import { isCustomerLoggedIn } from "@/lib/customer-auth-session";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
 
 export function CartPageClient() {
   const { items, summary, hydrated } = useBatteryCart();
+  const checkoutHref = isCustomerLoggedIn()
+    ? `${CHECKOUT_PAGE}?flow=cart`
+    : buildLoginRedirectUrl(`${CHECKOUT_PAGE}?flow=cart`);
 
   if (!hydrated) {
     return (
@@ -32,8 +37,8 @@ export function CartPageClient() {
           <Link href="/" className={`${bm.btnNavy} inline-flex justify-center text-sm`}>
             차량 배터리 검색하기
           </Link>
-          <Link href="/shop" className={`${bm.btnSecondary} inline-flex justify-center text-sm`}>
-            배터리 규격 보기
+          <Link href="/search" className={`${bm.btnSecondary} inline-flex justify-center text-sm`}>
+            배터리 규격 검색
           </Link>
         </div>
       </div>
@@ -93,11 +98,11 @@ export function CartPageClient() {
       <section className={`${bm.card} ${bm.cardPad} hidden space-y-3 lg:block`}>
         <OrderPriceTotalBar items={items} />
         <div className="flex flex-wrap gap-2">
-          <Link href="/shop" className={`${bm.btnTertiary} text-xs`}>
-            계속 쇼핑하기
+          <Link href="/search" className={`${bm.btnTertiary} text-xs`}>
+            배터리 검색
           </Link>
           <Link
-            href={`${CHECKOUT_PAGE}?flow=cart`}
+            href={checkoutHref}
             className={`${bm.btnNavy} min-h-[3rem] flex-1 justify-center text-sm font-black sm:flex-none sm:px-8`}
             onClick={() => clearBuyNowCheckoutItems()}
           >
@@ -109,11 +114,11 @@ export function CartPageClient() {
       <div className="cart-page__sticky-total fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur lg:hidden">
         <OrderPriceTotalBar items={items} />
         <div className="mt-2 flex gap-2">
-          <Link href="/shop" className={`${bm.btnTertiary} flex-1 justify-center text-xs`}>
-            쇼핑
+          <Link href="/search" className={`${bm.btnTertiary} flex-1 justify-center text-xs`}>
+            검색
           </Link>
           <Link
-            href={`${CHECKOUT_PAGE}?flow=cart`}
+            href={checkoutHref}
             className={`${bm.btnNavy} min-h-[2.75rem] flex-[2] justify-center text-sm font-black`}
             onClick={() => clearBuyNowCheckoutItems()}
           >

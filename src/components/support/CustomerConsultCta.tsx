@@ -23,8 +23,8 @@ export function CustomerConsultCta({ compact = false }: { compact?: boolean }) {
     <section className={`${bm.card} ${bm.cardPad} bg-gradient-to-br from-slate-50 to-blue-50/40`}>
       <h2 className="text-base font-black text-slate-900">상담 연결</h2>
       <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-        주문·배송·반품·폐전지 반납 문의는 채팅 상담 또는 고객센터 문의 접수로 연결해 드립니다.
-        확인 후 안내드리는 항목은 상담 시 차량·주문 정보를 함께 알려 주시면 빠릅니다.
+        주문·배송·반품·폐전지 반납은 채팅 또는 고객센터 문의로 연결됩니다.
+        차량·주문 정보를 함께 알려 주시면 더 빠르게 도와드릴 수 있습니다.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         <button type="button" className={bm.btnNavy} onClick={() => openChatInquiry()}>

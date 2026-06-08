@@ -1,18 +1,12 @@
-import { PageShell } from "@/components/common/PageShell";
-import { GuestOrderForm } from "@/components/guest-order/GuestOrderForm";
+import { redirect } from "next/navigation";
 
-export default function GuestOrderPage() {
-  return (
-    <PageShell
-      zone="default"
-      pageLabel="비회원 주문"
-      title="비회원 주문 요청"
-      description="회원가입 없이 주문 요청을 접수합니다."
-      searchPlaceholder="차량·규격 검색"
-    >
-      <div className="mx-auto max-w-2xl">
-        <GuestOrderForm />
-      </div>
-    </PageShell>
-  );
+/** 비회원 주문 요청 비노출 — 로그인 후 checkout으로 안내 */
+export default async function GuestOrderPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>;
+}) {
+  const sp = await searchParams;
+  const returnPath = sp.redirect?.trim() || "/checkout";
+  redirect(`/login?redirect=${encodeURIComponent(returnPath)}`);
 }

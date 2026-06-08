@@ -4,7 +4,7 @@ import { CartPageClient } from "@/components/cart/CartPageClient";
 export default function CartPage() {
   return (
     <PageShell
-      zone="support"
+      zone="cart"
       pageLabel="장바구니"
       title="장바구니"
       description="담긴 상품과 수량·금액을 확인한 뒤 주문을 진행하세요."

@@ -468,9 +468,21 @@ export function getVehicleDetail(slug: string) {
   return fallbackVehicle;
 }
 
+let cachedVehicleSlugs: string[] | null = null;
+let cachedVehicleSlugSet: Set<string> | null = null;
+
 export function getVehicleSlugs() {
+  if (cachedVehicleSlugs) return cachedVehicleSlugs;
   const fromPlatform = platformVehicles.map((v) => v.id);
   const legacy = vehicleDetails.map((v) => v.slug);
   const fromAssets = vehicleAssets.map((a) => a.catalogId ?? a.id);
-  return [...new Set([...legacy, ...fromPlatform, ...fromAssets])];
+  cachedVehicleSlugs = [...new Set([...legacy, ...fromPlatform, ...fromAssets])];
+  return cachedVehicleSlugs;
+}
+
+export function getVehicleSlugSet(): Set<string> {
+  if (!cachedVehicleSlugSet) {
+    cachedVehicleSlugSet = new Set(getVehicleSlugs());
+  }
+  return cachedVehicleSlugSet;
 }

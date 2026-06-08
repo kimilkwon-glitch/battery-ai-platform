@@ -1,19 +1,20 @@
-import { Suspense } from "react";
-import { ContentAreaFallback } from "@/components/common/ContentAreaFallback";
-import { PageShell } from "@/components/common/PageShell";
-import { ShopClient } from "@/components/platform/ShopClient";
+import { redirect } from "next/navigation";
+import { batteryDetailHref } from "@/lib/canonical-battery-code";
 
-export default function ShopPage() {
-  return (
-    <PageShell
-      pageLabel="택배·쇼핑"
-      title="택배·쇼핑"
-      description="규격을 확인한 뒤 택배 주문 안내·상품 목록을 확인하세요."
-      searchPlaceholder="규격·차종·브랜드 검색"
-    >
-      <Suspense fallback={<ContentAreaFallback lines={3} />}>
-        <ShopClient />
-      </Suspense>
-    </PageShell>
-  );
+type Props = {
+  searchParams: Promise<{ code?: string; q?: string }>;
+};
+
+/** 고객 쇼핑 페이지 비노출 — 차량/규격 검색으로 안내 */
+export default async function ShopPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const code = params.code?.trim();
+  if (code) {
+    redirect(batteryDetailHref(code));
+  }
+  const q = params.q?.trim();
+  if (q) {
+    redirect(`/search?q=${encodeURIComponent(q)}`);
+  }
+  redirect("/search");
 }

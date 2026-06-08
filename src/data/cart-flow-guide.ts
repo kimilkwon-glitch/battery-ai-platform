@@ -6,6 +6,7 @@ import type {
   InstallMethod,
   UsedBatteryReturnOption,
 } from "@/types/cart";
+import { CUSTOMER_FULFILLMENT_LABELS } from "@/lib/pricing/customer-price-labels";
 import {
   CART_DESIGN_PAGE,
   CUSTOMER_CENTER_ORDER_GUIDE,
@@ -152,11 +153,11 @@ export const FULFILLMENT_METHOD_LABELS: Record<
   FulfillmentMethod,
   string
 > = {
-  delivery: "택배 발송",
-  visit_install: "출장교체",
-  store_install: "내방교체",
-  store_pickup_self: "내방수령 / 셀프교체",
-  store_pickup: "내방수령 / 셀프교체",
+  delivery: CUSTOMER_FULFILLMENT_LABELS.delivery,
+  visit_install: CUSTOMER_FULFILLMENT_LABELS.onsite_install,
+  store_install: CUSTOMER_FULFILLMENT_LABELS.store_install,
+  store_pickup_self: CUSTOMER_FULFILLMENT_LABELS.store_pickup_self,
+  store_pickup: CUSTOMER_FULFILLMENT_LABELS.store_pickup_self,
   undecided: "수령 방식 미선택",
 };
 
@@ -351,7 +352,7 @@ export const CART_DEMO_ITEMS: BatteryCartItem[] = [
     fitmentStatus: "confirmed",
     usedBatteryReturn: {
       option: "return",
-      priceImpact: -10000,
+      priceImpact: 0,
       guideRequired: true,
       guideAcknowledged: true,
     },
@@ -409,7 +410,7 @@ export const CART_DEMO_ITEMS: BatteryCartItem[] = [
     fitmentStatus: "unknown",
     usedBatteryReturn: {
       option: "no_return",
-      priceImpact: 10000,
+      priceImpact: 25000,
       guideRequired: false,
     },
     fulfillment: { method: "store_pickup", storeId: "deokcheon" },
@@ -466,6 +467,6 @@ export const CART_DESIGN_LINKS = {
   usedBattery: CUSTOMER_CENTER_USED_BATTERY,
   orderChecklist: "/order-checklist",
   photoCheck: "/photo-check",
-  existingShopCart: "/shop/cart",
+  existingShopCart: "/cart",
   doc: CART_DESIGN_DOC_PATH,
 } as const;

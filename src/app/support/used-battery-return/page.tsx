@@ -5,7 +5,7 @@ import { USED_BATTERY_GUIDE_COPY } from "@/data/used-battery-return-guide";
 export default function SupportUsedBatteryReturnPage() {
   return (
     <PageShell
-      zone="support"
+      zone="legal"
       pageLabel="폐전지 반납"
       title={USED_BATTERY_GUIDE_COPY.title}
       description={USED_BATTERY_GUIDE_COPY.description}

@@ -51,23 +51,25 @@ export function OrderRequestLookupClient() {
   };
 
   return (
-    <div className="order-request-lookup space-y-5" data-page="order-request-lookup">
+    <div className="order-request-lookup mx-auto max-w-2xl space-y-5" data-page="order-request-lookup">
       <section className={`${bm.card} ${bm.cardPad} border-slate-200`}>
-        <p className="text-[10px] font-black uppercase tracking-wide text-slate-500">
-          상담 접수 조회
-        </p>
-        <h1 className="mt-1 text-lg font-black text-slate-950 sm:text-xl">
+        <h1 className="text-xl font-black text-slate-950 sm:text-2xl">
           {ORDER_REQUEST_LOOKUP_COPY.pageTitle}
         </h1>
-        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
           {ORDER_REQUEST_LOOKUP_COPY.pageDescription}
-        </p>
-        <p className="mt-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-[11px] font-bold text-slate-600">
-          {ORDER_REQUEST_LOOKUP_COPY.notPaymentNotice}
         </p>
       </section>
 
       <form className={`${bm.card} ${bm.cardPad} space-y-4`} onSubmit={(e) => void handleSubmit(e)}>
+        <div>
+          <h2 className="text-base font-black text-slate-900">
+            {ORDER_REQUEST_LOOKUP_COPY.formTitle}
+          </h2>
+          <p className="mt-1 text-sm font-medium text-slate-600">
+            {ORDER_REQUEST_LOOKUP_COPY.formDescription}
+          </p>
+        </div>
         <input
           type="text"
           name="website"
@@ -80,7 +82,7 @@ export function OrderRequestLookupClient() {
         />
         <div className="space-y-2">
           <label className="block text-xs font-black text-slate-800">
-            접수번호
+            {ORDER_REQUEST_LOOKUP_COPY.orderNumberLabel}
             <input
               type="text"
               required
@@ -92,7 +94,7 @@ export function OrderRequestLookupClient() {
             />
           </label>
           <label className="block text-xs font-black text-slate-800">
-            연락처
+            {ORDER_REQUEST_LOOKUP_COPY.phoneLabel}
             <input
               type="tel"
               required
@@ -130,9 +132,6 @@ export function OrderRequestLookupClient() {
           <div className="flex flex-wrap justify-center gap-2">
             <Link href={ORDER_REQUEST_LOOKUP_CTAS.customerHub.href} className={`${bm.btnNavy} text-sm`}>
               {ORDER_REQUEST_LOOKUP_CTAS.customerHub.label}
-            </Link>
-            <Link href={ORDER_REQUEST_LOOKUP_CTAS.retryRequest.href} className={`${bm.btnSecondary} text-sm`}>
-              {ORDER_REQUEST_LOOKUP_CTAS.retryRequest.label}
             </Link>
             <Link href={ORDER_REQUEST_LOOKUP_CTAS.home.href} className={`${bm.btnTertiary} text-sm`}>
               {ORDER_REQUEST_LOOKUP_CTAS.home.label}

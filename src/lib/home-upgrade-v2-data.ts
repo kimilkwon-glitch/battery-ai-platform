@@ -1,7 +1,7 @@
 import { getSearchHref } from "@/lib/battery-search";
 import { buildVehicleDetailHref } from "@/lib/battery-cta";
 import { getBatteryHref } from "@/lib/content";
-import { HUB_PHOTO, HUB_SHOP, HUB_SHOP_ANCHORS, HUB_STORE, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
+import { HUB_PHOTO, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
 import { CORE_BATTERY_DETAIL_CODES } from "@/lib/battery-detail/core-battery-codes";
 
 /** 메인 hero — 검색 유형·예시 */

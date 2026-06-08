@@ -42,8 +42,8 @@ export function VehicleNavFooter({
           </span>
         </summary>
         <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
-          <Link className={`${bm.btnTertiary} text-[11px]`} href="/shop">
-            택배주문
+          <Link className={`${bm.btnTertiary} text-[11px]`} href="/shipping">
+            배송 안내
           </Link>
           <Link className={`${bm.btnTertiary} text-[11px]`} href="/guides">
             배터리 가이드

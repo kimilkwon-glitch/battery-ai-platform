@@ -51,8 +51,8 @@ export function ChatInquiryPanel({
 
   const title = productMode ? "제품 문의" : "채팅상담 문의";
   const subtitle = productMode
-    ? "장착 가능 여부, 재고, 배송 관련 문의를 남겨주세요. 확인 후 연락드리겠습니다."
-    : "실시간 채팅이 아닌 상담 접수입니다. 확인 후 연락드립니다.";
+    ? "장착 가능 여부, 재고, 배송 문의를 남겨 주세요. 순서대로 연락드립니다."
+    : "문의 내용을 남겨 주시면 순서대로 연락드립니다.";
 
   return (
     <AnimatePresence>

@@ -22,11 +22,12 @@ export const CHECKOUT_PAGE = "/checkout";
 /** 8차 상담 주문 요청 (localStorage, 서버 접수 없음) */
 export const ORDER_REQUEST_PAGE = "/order-request";
 export const ORDER_REQUEST_COMPLETE_PAGE = "/order-request/complete";
-/** 13차 — 상담 주문 요청 조회 (결제 주문조회 아님) */
+/** 비회원 주문조회 */
 export const ORDER_REQUEST_LOOKUP_PAGE = "/order-request/lookup";
+export const GUEST_ORDER_LOOKUP_PAGE = ORDER_REQUEST_LOOKUP_PAGE;
 
-/** 비회원 주문조회 안내 앵커 (주문 안내 페이지) */
-export const CUSTOMER_CENTER_GUEST_ORDER = `${CUSTOMER_CENTER_ORDER_GUIDE}#guest-order`;
+/** 회원 주문내역 조회 안내 앵커 (주문 안내 페이지) */
+export const CUSTOMER_CENTER_MEMBER_ORDERS = `${CUSTOMER_CENTER_ORDER_GUIDE}#member-orders`;
 
 export {
   GUEST_ORDER_PAGE,

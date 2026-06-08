@@ -5,7 +5,7 @@ import { SHIPPING_PAGE } from "@/data/legal-pages";
 export default function ShippingPage() {
   return (
     <PageShell
-      zone="support"
+      zone="legal"
       pageLabel="배송 안내"
       title={SHIPPING_PAGE.title}
       description={SHIPPING_PAGE.description}

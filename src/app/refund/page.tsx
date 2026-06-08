@@ -5,7 +5,7 @@ import { REFUND_PAGE } from "@/data/legal-pages";
 export default function RefundPage() {
   return (
     <PageShell
-      zone="support"
+      zone="legal"
       pageLabel="교환/환불"
       title={REFUND_PAGE.title}
       description={REFUND_PAGE.description}

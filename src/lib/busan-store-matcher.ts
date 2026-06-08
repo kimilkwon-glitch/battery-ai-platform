@@ -89,6 +89,6 @@ export const BUSAN_REGION_DISPLAY = {
 } as const;
 
 export const BUSAN_STORE_MATCH_UNKNOWN = {
-  title: "상담 후 가까운 직영점으로 안내",
-  body: "차량 위치와 일정에 따라 덕천점 또는 학장점으로 배정됩니다.",
+  title: "가까운 직영점 안내",
+  body: "차량 위치와 일정에 따라 덕천점 또는 학장점으로 안내드립니다.",
 } as const;

@@ -49,6 +49,8 @@ export function BatteryBrandImage({
           alt={`${code} ${brand === "rocket" ? "로케트" : "쏠라이트"}`}
           className="max-h-full max-w-full object-contain object-center"
           height={height - 16}
+          sizes={`${height}px`}
+          loading="lazy"
           onError={() => setIndex((i) => (i + 1 < candidates.length ? i + 1 : i))}
           src={src}
           unoptimized

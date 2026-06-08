@@ -16,7 +16,7 @@ export default function AdminSettingsPage() {
               <span className="font-mono">{BUILD_STAMP}</span>
             </p>
             <p className="text-xs text-slate-500">
-              Production: https://battery-ai-platform.vercel.app
+              Production: https://www.batterymanager.co.kr
             </p>
           </CardContent>
         </Card>

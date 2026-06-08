@@ -1,0 +1,110 @@
+/* 주문/결제 페이지 — 대비 강화 */
+
+.checkout-order {
+  --checkout-bg: #f3f6fa;
+  --checkout-text: #0f172a;
+  --checkout-muted: #475569;
+  --checkout-faint: #64748b;
+  --checkout-border: #d8e1ec;
+  --checkout-navy: #0f1b33;
+  --checkout-blue: #2563eb;
+  --checkout-danger: #dc2626;
+  background: var(--checkout-bg);
+  margin: -0.5rem -0.25rem;
+  padding: 0.5rem 0.25rem;
+  border-radius: 1rem;
+}
+
+.checkout-card {
+  border-radius: 1rem;
+  border: 1px solid var(--checkout-border);
+  background: #fff;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.checkout-card__title {
+  font-size: 0.9375rem;
+  font-weight: 900;
+  color: var(--checkout-text);
+}
+
+.checkout-card__hint {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--checkout-muted);
+  line-height: 1.5;
+}
+
+.checkout-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--checkout-text);
+}
+
+.checkout-input {
+  border-color: #c5d0dc !important;
+  color: var(--checkout-text);
+  background: #fff;
+}
+
+.checkout-input::placeholder {
+  color: var(--checkout-faint);
+}
+
+.checkout-btn-primary {
+  border-radius: 0.75rem;
+  background: var(--checkout-blue);
+  color: #fff;
+}
+
+.checkout-btn-primary:disabled {
+  opacity: 0.6;
+}
+
+.checkout-btn-secondary {
+  border-radius: 0.75rem;
+  border: 1px solid var(--checkout-border);
+  background: #fff;
+  color: var(--checkout-text);
+}
+
+.checkout-price-summary .checkout-summary-card {
+  border: 1px solid var(--checkout-border);
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.checkout-summary-total {
+  background: var(--checkout-navy);
+  color: #fff;
+}
+
+.checkout-summary-total__amount {
+  font-size: 1.375rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.checkout-summary-fee--highlight {
+  color: var(--checkout-danger);
+  font-weight: 900;
+}
+
+.checkout-order__mobile-total {
+  border-color: var(--checkout-border) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+}
+
+.checkout-order__mobile-total-amount {
+  font-size: 1.125rem;
+  font-weight: 900;
+  color: var(--checkout-text);
+}
+
+@media (max-width: 1023px) {
+  .checkout-order__main {
+    gap: 1.25rem;
+  }
+}

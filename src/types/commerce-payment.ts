@@ -23,6 +23,7 @@ export type CreateOrderCustomerInfo = {
   phone: string;
   email?: string;
   customerType?: OrderRequestCustomerType;
+  userId?: string;
   orderMemo?: string;
 };
 
@@ -31,6 +32,14 @@ export type CreateOrderAddressInfo = {
   visitRegion?: string;
   storeId?: OrderRequestStoreId;
   preferredTime?: string;
+  recipientName?: string;
+  recipientPhone?: string;
+  postalCode?: string;
+  address1?: string;
+  address2?: string;
+  deliveryMessage?: string;
+  visitMessage?: string;
+  storeMessage?: string;
 };
 
 export type CreateOrderPriceSummary = {
@@ -59,6 +68,7 @@ export type CommerceOrderRecord = {
   customerPhone: string;
   customerEmail?: string;
   customerType: OrderRequestCustomerType;
+  userId?: string;
   vehicleName?: string;
   vehicleYear?: string;
   vehicleFuel?: string;
@@ -72,7 +82,11 @@ export type CommerceOrderRecord = {
   returnBatteryOption: OrderRequestUsedBatteryOption;
   deliveryFee: number;
   storeInstallDiscount: number;
+  batteryReturnFee?: number;
   finalAmount: number | null;
+  postalCode?: string;
+  address1?: string;
+  address2?: string;
   address?: string;
   store?: string;
   selectedStore?: OrderRequestStoreId;
@@ -171,10 +185,19 @@ export type CheckoutSessionPayload = {
     storeId?: OrderRequestStoreId;
     region?: string;
     preferredTime?: string;
+    recipientName?: string;
+    recipientPhone?: string;
+    postalCode?: string;
+    address1?: string;
+    address2?: string;
+    deliveryMessage?: string;
+    visitMessage?: string;
+    storeMessage?: string;
   };
   usedBatteryReturn: OrderRequestUsedBatteryOption;
   memo?: string;
   priceLines: CommerceOrderPriceSnapshot[];
+  batteryReturnFee: number;
   estimatedTotal: number | null;
   savedAt: string;
 };

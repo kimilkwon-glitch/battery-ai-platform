@@ -88,7 +88,7 @@ export function BatteryDetailClient({ code, relatedCodes, vehicles }: Props) {
             ]}
             links={[
               { label: "문의하기", href: "/ai" },
-              { label: "택배·쇼핑", href: "/shop#shop-products" },
+              { label: "배송 안내", href: "/shipping" },
               { label: "규격 비교", href: compareHref(code, relatedCodes[0] ?? "DIN74L") },
               { label: "규격 가이드", href: guideHref("terminal-lr") },
             ]}

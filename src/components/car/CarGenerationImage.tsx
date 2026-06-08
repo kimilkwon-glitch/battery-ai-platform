@@ -50,7 +50,9 @@ export function CarGenerationImage({ src, alt, size = "compact", className = "",
         <img
           src={imgSrc}
           alt={alt}
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="max-h-[220px] w-full max-w-full object-contain object-center px-2 py-2 opacity-100 select-none"
           draggable={false}
           onError={handleError}

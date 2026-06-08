@@ -130,7 +130,7 @@ export function OrderRequestForm() {
       vehicle,
       usedBatteryReturnOption: usedBatteryOption,
       fulfillment,
-      memo: [memo, customer.orderMemo].filter(Boolean).join("\n"),
+      memo: [memo, customer.orderMemo ?? ""].filter(Boolean).join("\n"),
     });
 
     const request = {
@@ -139,8 +139,8 @@ export function OrderRequestForm() {
       customer: {
         name: customer.name.trim(),
         phone: customer.phone.trim(),
-        email: customer.email.trim() || undefined,
-        orderMemo: customer.orderMemo.trim() || undefined,
+        email: customer.email?.trim() || undefined,
+        orderMemo: customer.orderMemo?.trim() || undefined,
       },
       vehicle: Object.keys(vehicle).length ? vehicle : undefined,
       usedBatteryReturnOption: usedBatteryOption,
@@ -156,8 +156,8 @@ export function OrderRequestForm() {
     const apiPayload = {
       customerName: customer.name.trim(),
       customerPhone: customer.phone.trim(),
-      customerEmail: customer.email.trim() || undefined,
-      customerOrderMemo: customer.orderMemo.trim() || undefined,
+      customerEmail: customer.email?.trim() || undefined,
+      customerOrderMemo: customer.orderMemo?.trim() || undefined,
       vehicle: Object.keys(vehicle).length ? vehicle : undefined,
       usedBatteryReturnOption: usedBatteryOption,
       fulfillment,

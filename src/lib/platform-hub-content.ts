@@ -298,7 +298,7 @@ export const SERVICE_SCENARIOS = [
   { situation: "지금 당장 시동이 안 걸림", pick: "출장 또는 가까운 직영점", href: HUB_STORE_ANCHORS.visit },
   { situation: "규격을 알고 있음", pick: "택배 주문 + 오주문 체크", href: HUB_ORDER_CHECKLIST },
   { situation: "자가장착 자신 있음", pick: "택배 + 사진 확인", href: HUB_PHOTO_CHECK },
-  { situation: "하이브리드/EV", pick: "상담 후 진행 권장", href: searchHref("하이브리드 배터리") },
+  { situation: "하이브리드/EV", pick: "고객센터 문의 권장", href: searchHref("하이브리드 배터리") },
   { situation: "배터리 종류가 헷갈림", pick: "차종 검색 또는 사진 확인", href: "/search?q=AGM80L" },
 ];
 

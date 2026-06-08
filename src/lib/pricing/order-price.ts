@@ -4,14 +4,26 @@ import {
   getBatteryOnsitePriceWon,
   getBatteryPrices,
 } from "@/lib/battery-prices";
-import type { BatteryCartItem, FulfillmentMethod } from "@/types/cart";
-import type { OrderRequestFulfillmentMethod } from "@/types/order-request";
+import type { BatteryCartItem, FulfillmentMethod, UsedBatteryReturnOption } from "@/types/cart";
+import type {
+  OrderRequestFulfillmentMethod,
+  OrderRequestUsedBatteryOption,
+} from "@/types/order-request";
+import {
+  CUSTOMER_FULFILLMENT_DESCRIPTIONS,
+  CUSTOMER_FULFILLMENT_LABELS,
+  CUSTOMER_PRICE_LABELS,
+  type CustomerFulfillmentDisplayKey,
+} from "@/lib/pricing/customer-price-labels";
 
 /** 택배 발송 추가 택배비 */
 export const DELIVERY_FEE = 15_000;
 
 /** 내방교체 차감액 (출장가 기준) */
 export const STORE_INSTALL_DISCOUNT = 5_000;
+
+/** 폐배터리 미반납 추가금 (1개 기준) */
+export const BATTERY_NO_RETURN_FEE = 25_000;
 
 /** 가격 계산에 사용하는 수령/장착 방식 */
 export type FulfillmentPriceType =
@@ -43,26 +55,17 @@ export type OrderPriceResult = {
 export const FULFILLMENT_PRICE_LABELS: Record<
   Exclude<FulfillmentPriceType, "undecided">,
   string
-> = {
-  delivery: "택배 발송",
-  onsite_install: "출장교체",
-  store_install: "내방교체",
-  store_pickup_self: "내방수령 / 셀프교체",
-};
+> = CUSTOMER_FULFILLMENT_LABELS;
 
 export const FULFILLMENT_PRICE_DESCRIPTIONS: Record<
   Exclude<FulfillmentPriceType, "undecided">,
   string
-> = {
-  delivery: "배터리를 택배로 받습니다. 택배비 15,000원이 추가됩니다.",
-  onsite_install: "고객님 위치로 방문해 교체합니다. 출장가 기준으로 계산됩니다.",
-  store_install: "매장 방문 후 교체받는 방식입니다. 출장가에서 5,000원이 차감됩니다.",
-  store_pickup_self:
-    "매장에서 배터리만 수령해 직접 교체하는 방식입니다. 인터넷가 기준이며 택배비는 없습니다.",
-};
+> = CUSTOMER_FULFILLMENT_DESCRIPTIONS;
+
+export { CUSTOMER_PRICE_LABELS, CUSTOMER_FULFILLMENT_LABELS };
 
 export function formatPriceWon(amount: number | null | undefined): string {
-  if (amount == null || Number.isNaN(amount)) return "상담 후 안내";
+  if (amount == null || Number.isNaN(amount)) return "가격 문의";
   return `${amount.toLocaleString("ko-KR")}원`;
 }
 
@@ -115,20 +118,20 @@ export function calculateOrderPrice(input: OrderPriceInput): OrderPriceResult {
     case "delivery":
       basePrice = internetPrice;
       deliveryFee = DELIVERY_FEE;
-      priceBasisLabel = "인터넷가";
+      priceBasisLabel = CUSTOMER_PRICE_LABELS.productPurchase;
       break;
     case "onsite_install":
       basePrice = onsitePrice;
-      priceBasisLabel = "출장가";
+      priceBasisLabel = CUSTOMER_PRICE_LABELS.mobileInstall;
       break;
     case "store_install":
       basePrice = onsitePrice;
       storeInstallDiscount = STORE_INSTALL_DISCOUNT;
-      priceBasisLabel = "출장가";
+      priceBasisLabel = CUSTOMER_PRICE_LABELS.storeInstall;
       break;
     case "store_pickup_self":
       basePrice = internetPrice;
-      priceBasisLabel = "인터넷가";
+      priceBasisLabel = CUSTOMER_PRICE_LABELS.productPurchase;
       break;
   }
 
@@ -209,6 +212,20 @@ export function sumCartItemsPrice(
     }
   }
   return hasPrice ? total : null;
+}
+
+/** 주문 단위 폐배터리 미반납 추가금 */
+export function computeBatteryReturnFee(
+  option:
+    | OrderRequestUsedBatteryOption
+    | UsedBatteryReturnOption
+    | null
+    | undefined,
+  items: Pick<BatteryCartItem, "quantity">[],
+): number {
+  if (option !== "no_return") return 0;
+  const totalQty = items.reduce((sum, item) => sum + Math.max(1, item.quantity ?? 1), 0);
+  return BATTERY_NO_RETURN_FEE * totalQty;
 }
 
 export function applyPricingToCartItem(

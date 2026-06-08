@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { VehicleThumbnail } from "@/components/VehicleThumbnail";
 import { productCardShell, vehicleCardShell, vehicleCardTextCol } from "@/components/car/car-card-styles";
@@ -25,9 +26,9 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
         <span className="flex items-center gap-1" key={`${item.label}-${index}`}>
           {index > 0 ? <span className="text-slate-300">›</span> : null}
           {item.href ? (
-            <a className="font-black text-blue-600 hover:underline" href={item.href}>
+            <Link className="font-black text-blue-600 hover:underline" href={item.href}>
               {item.label}
-            </a>
+            </Link>
           ) : (
             <span className="font-black text-slate-600">{item.label}</span>
           )}
@@ -50,7 +51,7 @@ export function CrossLinkCard({
 }) {
   const key = iconKey ?? resolveIconKeyForHubLink(title, href);
   return (
-    <a
+    <Link
       className={`flex h-full flex-col ${bm.cardInteractive} ${bm.cardPad}`}
       href={href}
     >
@@ -60,7 +61,7 @@ export function CrossLinkCard({
       <span className={`block ${bm.cardTitle}`}>{title}</span>
       <span className={`mt-1.5 flex-1 ${bm.typoCaption}`}>{description}</span>
       <span className={`mt-3 text-xs font-bold text-[var(--bm-primary)]`}>안내 보기 →</span>
-    </a>
+    </Link>
   );
 }
 
@@ -114,14 +115,14 @@ export function RelatedSection({
             <p className="mb-1.5 text-[10px] font-black text-slate-400">{title}</p>
             <div className="space-y-1">
               {items.map((item, index) => (
-                <a
+                <Link
                   className="grid grid-cols-[1fr_auto] gap-2 rounded-md bg-slate-50 px-2 py-1.5 text-xs ring-1 ring-slate-200 hover:bg-blue-50"
                   href={item.href}
                   key={`${item.href}-${item.label}-${index}`}
                 >
                   <span className="truncate font-black">{item.label}</span>
                   <span className="text-[10px] font-bold text-blue-600">{item.meta}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -288,11 +289,11 @@ export function RankingWidget({ title, items }: { title: string; items: [string,
     <PortalPanel title={title}>
       <div className="space-y-1">
         {items.map(([label, meta, href], index) => (
-          <a className="grid grid-cols-[24px_1fr_auto] items-center gap-2 rounded-md px-2 py-1.5 hover:bg-blue-50" href={href ?? `/search?q=${encodeURIComponent(label)}`} key={label}>
+          <Link className="grid grid-cols-[24px_1fr_auto] items-center gap-2 rounded-md px-2 py-1.5 hover:bg-blue-50" href={href ?? `/search?q=${encodeURIComponent(label)}`} key={label}>
             <span className="text-xs font-black text-slate-400">{index + 1}</span>
             <span className="truncate text-xs font-black">{label}</span>
             <span className="text-[10px] font-black text-blue-600">{meta}</span>
-          </a>
+          </Link>
         ))}
       </div>
     </PortalPanel>
@@ -304,9 +305,9 @@ export function PopularKeywordWidget({ items }: { items: string[] }) {
     <PortalPanel title="인기 키워드">
       <div className="flex flex-wrap gap-1.5">
         {items.map((item) => (
-          <a className="rounded-md bg-slate-50 px-2 py-1 text-[11px] font-black text-slate-600 ring-1 ring-slate-200 hover:bg-blue-50 hover:text-blue-600" href={`/search?q=${encodeURIComponent(item)}`} key={item}>
+          <Link className="rounded-md bg-slate-50 px-2 py-1 text-[11px] font-black text-slate-600 ring-1 ring-slate-200 hover:bg-blue-50 hover:text-blue-600" href={`/search?q=${encodeURIComponent(item)}`} key={item}>
             {item}
-          </a>
+          </Link>
         ))}
       </div>
     </PortalPanel>
@@ -343,7 +344,7 @@ export function VehicleCard({
   const yearLine = hints.yearLine;
 
   return (
-    <a className={`${vehicleCardShell}`} href={href} onClick={onNavigate}>
+    <Link className={`${vehicleCardShell}`} href={href} onClick={onNavigate}>
       <VehicleThumbnail
         bodyType={bodyType}
         commercial={isCommercial}
@@ -372,7 +373,7 @@ export function VehicleCard({
           </div>
         ) : null}
       </span>
-    </a>
+    </Link>
   );
 }
 
@@ -397,7 +398,7 @@ export function BatteryCard({
   fit?: "cover" | "contain";
 }) {
   return (
-    <a className={`block overflow-hidden ${productCardShell}`} href={href}>
+    <Link className={`block overflow-hidden ${productCardShell}`} href={href}>
       <BatteryThumbnail code={title} imageSet={imageSet} image={image} role={role} fit={fit} ratio="16/9" tall darkOverlay={false} />
       <div className="px-4 pb-1 pt-3">
         <p className="text-sm font-black text-slate-950">{title}</p>
@@ -408,7 +409,7 @@ export function BatteryCard({
           </p>
         ) : null}
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -426,7 +427,7 @@ export function ArticleCard({
 }) {
   const resolved = iconKey ?? resolveContentUiIconFromText(`${title} ${meta}`);
   return (
-    <a
+    <Link
       className="grid grid-cols-[52px_1fr] items-center gap-2.5 rounded-lg bg-slate-50 p-2 ring-1 ring-slate-200/80 transition hover:bg-white hover:shadow-sm"
       href={href}
     >
@@ -435,6 +436,6 @@ export function ArticleCard({
         <span className="block line-clamp-2 text-sm font-black leading-snug text-slate-950">{title}</span>
         <span className="mt-1 block line-clamp-1 text-xs font-medium text-slate-500">{meta}</span>
       </span>
-    </a>
+    </Link>
   );
 }

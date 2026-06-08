@@ -186,7 +186,7 @@ export function PhotoAnalysisClient({ initialBattery }: { initialBattery?: strin
             ]}
             links={[
               { label: "문의하기", href: "/ai" },
-              { label: "택배·쇼핑", href: "/shop#shop-products" },
+              { label: "배송 안내", href: "/shipping" },
               { label: "매장·출장", href: "/service-center" },
               { label: "규격 비교", href: compareHref(batteryCode, battery.compareWith[0] ?? "DIN74L") },
             ]}

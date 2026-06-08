@@ -38,13 +38,23 @@ export type OrderRequestVehicle = {
   currentBatterySpec?: string;
   plateSuffix?: string;
   photoCheckNeeded?: boolean;
+  registrationPhotoNeeded?: boolean;
 };
 
 export type OrderRequestFulfillment = {
   method: OrderRequestFulfillmentMethod;
   storeId?: OrderRequestStoreId;
+  /** @deprecated — postalCode + address1 + address2 사용 */
   region?: string;
   preferredTime?: string;
+  recipientName?: string;
+  recipientPhone?: string;
+  postalCode?: string;
+  address1?: string;
+  address2?: string;
+  deliveryMessage?: string;
+  visitMessage?: string;
+  storeMessage?: string;
 };
 
 export type OrderRequestConfirmations = {

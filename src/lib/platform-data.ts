@@ -253,11 +253,11 @@ export function getShopProduct(id: string) {
 }
 
 export function shopHref() {
-  return "/shop";
+  return "/search";
 }
 
 export function cartHref() {
-  return "/shop/cart";
+  return "/cart";
 }
 
 // ——— URL (내부 id는 URL에만 사용, UI 미노출) ———

@@ -1,7 +1,11 @@
 /**
  * 결제·PG 환경변수 — 토스페이먼츠 확정 (Vercel / .env.local 에만 설정)
  */
+import { getSiteOrigin } from "@/lib/site-url";
+
 export type PaymentProviderId = "toss" | "kcp" | "inicis" | "none";
+
+export { getSiteOrigin };
 
 export function getPaymentProvider(): PaymentProviderId {
   const raw = process.env.PAYMENT_PROVIDER?.trim().toLowerCase();
@@ -34,16 +38,6 @@ export function isCommerceOrderStoreEnabled(): boolean {
   return Boolean(process.env.DATABASE_URL?.trim());
 }
 
-export function getSiteOrigin(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
-    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
-  }
-  if (process.env.VERCEL_URL?.trim()) {
-    return `https://${process.env.VERCEL_URL.replace(/\/$/, "")}`;
-  }
-  return "http://localhost:3000";
-}
-
 export const PAYMENT_ENV_KEYS = [
   "DATABASE_URL",
   "PAYMENT_PROVIDER",
@@ -57,4 +51,9 @@ export const PAYMENT_ENV_KEYS = [
   "COMMERCE_ORDERS_DISABLED",
   "NEXT_PUBLIC_COMMERCE_PAYMENT_LIVE",
   "NEXT_PUBLIC_SITE_URL",
+  "APP_URL",
+  "AUTH_URL",
+  "NAVER_REDIRECT_URI",
+  "KAKAO_REDIRECT_URI",
+  "GOOGLE_REDIRECT_URI",
 ] as const;

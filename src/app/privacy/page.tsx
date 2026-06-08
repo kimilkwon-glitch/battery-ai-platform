@@ -5,7 +5,7 @@ import { PRIVACY_PAGE } from "@/data/legal-pages";
 export default function PrivacyPage() {
   return (
     <PageShell
-      zone="support"
+      zone="legal"
       pageLabel="개인정보"
       title={PRIVACY_PAGE.title}
       description={PRIVACY_PAGE.description}

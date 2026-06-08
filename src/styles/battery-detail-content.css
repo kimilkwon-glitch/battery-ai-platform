@@ -15,8 +15,9 @@
 
 @media (min-width: 1024px) {
   .battery-product-detail__grid {
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+    gap: 1.75rem;
+    align-items: start;
   }
 }
 
@@ -25,24 +26,40 @@
 }
 
 .battery-product-detail__gallery-main {
-  min-height: 15rem;
+  min-height: 16rem;
 }
 
 @media (min-width: 640px) {
   .battery-product-detail__gallery-main {
-    min-height: 17.5rem;
+    min-height: 22rem;
   }
 }
 
 @media (min-width: 1024px) {
   .battery-product-detail__gallery-main {
-    min-height: 20rem;
+    min-height: 26rem;
+    height: clamp(26rem, 52vw, 34rem);
   }
 }
 
 .battery-product-detail__info {
   display: flex;
   flex-direction: column;
+}
+
+.battery-detail-prices {
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #faf8f3 0%, #f0f7ff 100%);
+  border: 1px solid #e8e0d4;
+}
+
+.battery-product-detail__consult {
+  padding: 0.875rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #faf8f3 0%, #f0f7ff 100%);
+  border: 1px solid #e8e0d4;
+  border-top: 1px solid #e8e0d4 !important;
 }
 
 .battery-detail-content {

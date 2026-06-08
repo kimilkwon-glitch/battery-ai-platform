@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,7 +18,8 @@ import {
   type ChatInquiryOpenDetail,
 } from "@/lib/chat-inquiry-events";
 import { SOCIAL_OFFICIAL_CHANNELS } from "@/lib/official-channels";
-import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
+import { CONTACT } from "@/lib/contact-info";
+import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 
 export function FloatingActionDock() {
   const pathname = usePathname();
@@ -131,17 +133,22 @@ export function FloatingActionDock() {
                   <Phone className="size-5" />
                 </button>
                 {phoneOpen ? (
-                  <div className="bm-floating-panel absolute bottom-14 right-0 w-44 bg-white p-2">
-                    {BUSAN_STORES.map((s) => (
-                      <a
-                        key={s.id}
-                        href={s.phoneTel}
-                        className="block rounded-lg px-2 py-2 text-[11px] font-black text-slate-800 hover:bg-slate-50"
-                      >
-                        {s.name} 전화
-                        <span className="mt-0.5 block font-semibold text-blue-700">{s.phone}</span>
-                      </a>
-                    ))}
+                  <div className="bm-floating-panel absolute bottom-14 right-0 w-48 bg-white p-2">
+                    <a
+                      href={CONTACT.customerCenter.tel}
+                      className="block rounded-lg px-2 py-2 text-[11px] font-black text-slate-800 hover:bg-slate-50"
+                    >
+                      고객센터
+                      <span className="mt-0.5 block font-semibold text-blue-700">
+                        {CONTACT.customerCenter.phone}
+                      </span>
+                    </a>
+                    <Link
+                      href={HUB_STORE_DETAIL}
+                      className="mt-1 block rounded-lg px-2 py-2 text-[10px] font-bold text-slate-500 hover:bg-slate-50 hover:text-blue-700"
+                    >
+                      매장별 번호는 매장 안내에서 확인
+                    </Link>
                   </div>
                 ) : null}
               </div>

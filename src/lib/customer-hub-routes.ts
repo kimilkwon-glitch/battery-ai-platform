@@ -9,7 +9,11 @@ export const HUB_PHOTO = "/photo-check";
 export const HUB_STORE = "/service";
 /** 직영점 상세·앵커 (매장 지도·연락) */
 export const HUB_STORE_DETAIL = "/service-center";
-export const HUB_SHOP = "/shop";
+/**
+ * 레거시 쇼핑 URL — /shop 접근 시 서버에서 /search 로 redirect.
+ * 신규 링크는 HUB_SEARCH 또는 HUB_SHOP_ANCHORS를 사용한다.
+ */
+export const HUB_SHOP = "/search";
 export const HUB_QA = "/qa";
 /** 브랜드 안내 (로케트·쏠라이트 선택은 페이지 내부) */
 export const HUB_BRANDS = "/brands";
@@ -33,14 +37,15 @@ export const HUB_STORE_ANCHORS = {
   hakjang: `${HUB_STORE_DETAIL}#store-hakjang`,
 } as const;
 
+/** 택배·주문 안내 — 쇼핑 페이지 대신 정책·체크리스트·검색으로 연결 */
 export const HUB_SHOP_ANCHORS = {
-  orderCheck: `${HUB_SHOP}#order-check`,
-  products: `${HUB_SHOP}#shop-products`,
-  delivery: `${HUB_SHOP}#delivery-notes`,
-  photo: `${HUB_SHOP}#photo-send`,
-  terminal: `${HUB_SHOP}#terminal-lr`,
-  returns: `${HUB_SHOP}#return-policy`,
-  contact: `${HUB_SHOP}#shop-contact`,
+  orderCheck: "/order-checklist",
+  products: HUB_SEARCH,
+  delivery: "/shipping",
+  photo: HUB_PHOTO,
+  terminal: "/order-checklist",
+  returns: "/support/used-battery-return",
+  contact: HUB_SUPPORT,
 } as const;
 
 /** 예전 더보기 메뉴 라벨 → 대표 URL(앵커) */
@@ -49,8 +54,8 @@ export const LEGACY_MENU_HREF: Record<string, string> = {
   "출장/내방 가능 지역": HUB_STORE_ANCHORS.regions,
   "교체 상담": HUB_STORE_ANCHORS.consultPrep,
   "부산 배터리 교체 가능 지역": HUB_STORE_ANCHORS.regions,
-  쇼핑: HUB_SHOP,
-  "배터리 상품 확인": HUB_SHOP_ANCHORS.products,
+  쇼핑: HUB_SEARCH,
+  "배터리 상품 확인": HUB_SEARCH,
   "주문 전 규격 확인": HUB_SHOP_ANCHORS.orderCheck,
   "택배 주문 전 확인": HUB_SHOP_ANCHORS.delivery,
 };

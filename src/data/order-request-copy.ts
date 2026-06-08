@@ -22,7 +22,7 @@ export const ORDER_REQUEST_COMPLETE_COPY = {
 
 export const ORDER_REQUEST_VEHICLE_COPY = {
   sectionTitle: "차량 정보 확인",
-  hint: "차량 정보가 정확할수록 배터리 규격과 단자 방향 확인이 빨라집니다. 정확하지 않다면 사진 확인을 먼저 진행해 주세요.",
+  hint: "차량 정보를 입력하면 배터리 확인에 도움이 됩니다. 모르시면 비워두셔도 됩니다.",
 } as const;
 
 /** 주문·상담 요청 — 차량정보·현장 공구 안내 (차분한 톤) */
@@ -32,8 +32,8 @@ export const ORDER_REQUEST_VEHICLE_GUIDANCE_COPY = {
 } as const;
 
 export const ORDER_REQUEST_USED_BATTERY_COPY = {
-  sectionTitle: "폐전지 반납 여부",
-  hint: "가격 조건은 상담 시 함께 안내드립니다.",
+  sectionTitle: "폐배터리 반납 여부",
+  hint: "폐배터리 반납 여부를 선택해 주세요.",
   options: [
     { value: "return" as const, label: "반납" },
     { value: "no_return" as const, label: "미반납" },
@@ -46,10 +46,10 @@ export const ORDER_REQUEST_FULFILLMENT_COPY = {
   visitHint: "출장 주소 또는 지역을 입력해 주세요.",
   visitAvailabilityNote: "출장 일정은 상담 후 확정됩니다.",
   methods: [
-    { value: "delivery" as const, label: "택배 발송" },
-    { value: "visit_install" as const, label: "출장교체" },
-    { value: "store_install" as const, label: "내방교체" },
-    { value: "store_pickup_self" as const, label: "내방수령 / 셀프교체" },
+    { value: "delivery" as const, label: "택배 주문" },
+    { value: "visit_install" as const, label: "출장 교체" },
+    { value: "store_install" as const, label: "매장 교체" },
+    { value: "store_pickup_self" as const, label: "매장 수령" },
   ],
   stores: [
     { value: "deokcheon" as const, label: "덕천점" },

@@ -94,7 +94,7 @@ export function validateLookupInput(body: unknown): LookupValidationResult {
   }
   const requestNumber = String(b.requestNumber ?? "").trim();
   const phone = String(b.phone ?? "").trim();
-  if (!requestNumber) errors.push("접수번호를 입력해 주세요.");
+  if (!requestNumber) errors.push("주문번호를 입력해 주세요.");
   if (!phone) errors.push("연락처를 입력해 주세요.");
   const digits = normalizePhoneDigits(phone);
   if (phone && digits.length < 9) errors.push("연락처 형식을 확인해 주세요.");

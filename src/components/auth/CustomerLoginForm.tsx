@@ -4,14 +4,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthBenefitsBox } from "@/components/auth/AuthBenefitsBox";
-import { AuthGuestLinks } from "@/components/auth/AuthGuestLinks";
 import { SocialLoginButtons } from "@/components/auth/SocialLoginButtons";
+import { hasAnySocialLoginEnabled } from "@/lib/auth/social-login-config";
 import { setCustomerSession } from "@/lib/customer-auth-session";
+import { buildCompleteProfileRedirectUrl } from "@/lib/customer-auth-redirect";
+import { isProfileCompleteForCheckout } from "@/lib/customer-profile-complete";
 import {
   CUSTOMER_SIGNUP_PAGE,
   CUSTOMER_MYPAGE,
-  GUEST_ORDER_CHECK_PAGE,
 } from "@/lib/customer-auth-routes";
+import { getCustomerProfile } from "@/lib/customer-profile-storage";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 
 type Props = {
@@ -37,6 +39,15 @@ export function CustomerLoginForm({ redirect }: Props) {
     ? `${CUSTOMER_SIGNUP_PAGE}?redirect=${encodeURIComponent(redirect)}`
     : CUSTOMER_SIGNUP_PAGE;
 
+  const finishLogin = (returnPath: string) => {
+    const profile = getCustomerProfile();
+    if (profile && !isProfileCompleteForCheckout(profile)) {
+      router.push(buildCompleteProfileRedirectUrl(returnPath));
+      return;
+    }
+    router.push(returnPath);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -51,11 +62,16 @@ export function CustomerLoginForm({ redirect }: Props) {
     }
     setSubmitting(true);
     try {
+      const profile = getCustomerProfile();
+      const userId = profile?.id ?? `bm-user-${Date.now()}`;
       setCustomerSession({
-        displayName: phone.trim(),
+        userId,
+        displayName: profile?.name ?? phone.trim(),
         phone: phone.trim(),
+        email: profile?.email,
+        provider: profile?.provider ?? "credentials",
       });
-      router.push(redirect?.trim() || CUSTOMER_MYPAGE);
+      finishLogin(redirect?.trim() || CUSTOMER_MYPAGE);
     } catch {
       setError("로그인에 실패했습니다. 입력 정보를 확인해 주세요.");
       setSubmitting(false);
@@ -64,12 +80,23 @@ export function CustomerLoginForm({ redirect }: Props) {
 
   return (
     <div className="bm-auth-form" data-page="customer-login">
-      <AuthBenefitsBox variant="login" />
+      <h1 className="text-lg font-black text-[#0F172A]">로그인 후 주문을 계속해 주세요</h1>
+      <p className="mt-2 text-sm font-medium text-slate-600">
+        회원정보를 이용해 배송지와 차량정보를 빠르게 불러올 수 있습니다.
+      </p>
 
-      <div className="bm-auth-divider">
-        <span>간편 로그인</span>
+      <div className="mt-4">
+        <AuthBenefitsBox variant="login" />
       </div>
-      <SocialLoginButtons />
+
+      {hasAnySocialLoginEnabled() ? (
+        <>
+          <div className="bm-auth-divider mt-5">
+            <span>간편 로그인</span>
+          </div>
+          <SocialLoginButtons redirect={redirect} />
+        </>
+      ) : null}
 
       <div className="bm-auth-divider">
         <span>배터리매니저 계정</span>
@@ -115,7 +142,7 @@ export function CustomerLoginForm({ redirect }: Props) {
           <span>로그인 상태 유지</span>
         </label>
         <button type="submit" disabled={submitting} className="bm-auth-submit">
-          {submitting ? "로그인 중…" : "배터리매니저 계정으로 로그인"}
+          {submitting ? "로그인 중…" : "로그인하고 주문 계속하기"}
         </button>
       </form>
 
@@ -129,15 +156,7 @@ export function CustomerLoginForm({ redirect }: Props) {
         <Link href={signupHref} className="bm-auth-text-link">
           아직 계정이 없으신가요? 회원가입
         </Link>
-        <span className="text-slate-300" aria-hidden>
-          ·
-        </span>
-        <Link href={GUEST_ORDER_CHECK_PAGE} className="bm-auth-text-link">
-          비회원 주문조회
-        </Link>
       </div>
-
-      <AuthGuestLinks showSignup={false} />
     </div>
   );
 }

@@ -83,11 +83,11 @@ export function OrderRequestCartSummary({ items, fulfillmentMethod }: Props) {
               </div>
               <dl className="grid gap-1 text-[11px] font-medium text-slate-600 sm:grid-cols-2">
                 <div>
-                  <span className="font-bold text-slate-500">인터넷가 </span>
+                  <span className="font-bold text-slate-500">제품 구매가 </span>
                   {formatPriceWon(prices.internetPrice)}
                 </div>
                 <div>
-                  <span className="font-bold text-slate-500">출장가 </span>
+                  <span className="font-bold text-slate-500">출장 교체가 </span>
                   {formatPriceWon(prices.onsitePrice)}
                 </div>
                 <div>

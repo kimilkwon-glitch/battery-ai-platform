@@ -3,6 +3,7 @@ import {
   formatCatalogPriceWon,
   type HomeCatalogCardDisplay,
 } from "@/lib/home-catalog-card-display";
+import { CUSTOMER_DETAIL_PRICE_LABELS } from "@/lib/pricing/customer-price-labels";
 
 type Props = {
   display: HomeCatalogCardDisplay;
@@ -24,13 +25,21 @@ export function HomeSpecCardDisplayMeta({ display }: Props) {
       </p>
 
       <div className="home-spec-card-prices" aria-label="가격 안내">
-        <div className="home-spec-card-price home-spec-card-price--onsite">
-          <span className="home-spec-card-price__label">출장가</span>
-          <span className="home-spec-card-price__amount">{formatCatalogPriceWon(display.onsitePriceWon)}</span>
-        </div>
         <div className="home-spec-card-price home-spec-card-price--internet">
-          <span className="home-spec-card-price__label">인터넷가</span>
-          <span className="home-spec-card-price__amount">{formatCatalogPriceWon(display.internetPriceWon)}</span>
+          <span className="home-spec-card-price__label">
+            {CUSTOMER_DETAIL_PRICE_LABELS.productPurchase}
+          </span>
+          <span className="home-spec-card-price__amount">
+            {formatCatalogPriceWon(display.internetPriceWon)}
+          </span>
+        </div>
+        <div className="home-spec-card-price home-spec-card-price--onsite">
+          <span className="home-spec-card-price__label">
+            {CUSTOMER_DETAIL_PRICE_LABELS.mobileInstall}
+          </span>
+          <span className="home-spec-card-price__amount">
+            {formatCatalogPriceWon(display.onsitePriceWon)}
+          </span>
         </div>
       </div>
     </div>

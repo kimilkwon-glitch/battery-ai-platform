@@ -22,13 +22,21 @@ type Props = {
   values: OrderRequestFulfillment;
   onChange: (patch: Partial<OrderRequestFulfillment>) => void;
   idPrefix?: string;
+  /** 주문서: 방식만 선택, 주소/지점은 별도 섹션 */
+  methodsOnly?: boolean;
 };
 
-export function FulfillmentMethodSelector({ values, onChange, idPrefix = "fulfillment" }: Props) {
+export function FulfillmentMethodSelector({
+  values,
+  onChange,
+  idPrefix = "fulfillment",
+  methodsOnly = false,
+}: Props) {
   const showStore =
-    values.method === "store_install" || values.method === "store_pickup_self";
-  const showDeliveryAddress = values.method === "delivery";
-  const showVisit = values.method === "visit_install";
+    !methodsOnly &&
+    (values.method === "store_install" || values.method === "store_pickup_self");
+  const showDeliveryAddress = !methodsOnly && values.method === "delivery";
+  const showVisit = !methodsOnly && values.method === "visit_install";
 
   const selectMethod = (method: OrderRequestFulfillment["method"]) => {
     const patch: Partial<OrderRequestFulfillment> = { method };
@@ -42,12 +50,17 @@ export function FulfillmentMethodSelector({ values, onChange, idPrefix = "fulfil
   };
 
   return (
-    <section className={`${bm.card} ${bm.cardPad} space-y-3`} id={`${idPrefix}-section`}>
-      <h2 className="text-sm font-black text-slate-900">수령/장착 방식</h2>
-      <p className="text-xs font-medium text-slate-600">
-        선택한 방식에 따라 결제 예정금액이 달라집니다.
+    <section
+      className={methodsOnly ? "checkout-card space-y-3" : `${bm.card} ${bm.cardPad} space-y-3`}
+      id={`${idPrefix}-section`}
+    >
+      <h2 className={methodsOnly ? "checkout-card__title" : "text-sm font-black text-slate-900"}>
+        수령/장착 방식
+      </h2>
+      <p className={methodsOnly ? "checkout-card__hint" : "text-xs font-medium text-slate-600"}>
+        선택한 방식에 따라 결제금액이 달라집니다.
       </p>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         {METHODS.map((m) => {
           const label = FULFILLMENT_PRICE_LABELS[m.priceType];
           const desc = FULFILLMENT_PRICE_DESCRIPTIONS[m.priceType];
@@ -57,10 +70,10 @@ export function FulfillmentMethodSelector({ values, onChange, idPrefix = "fulfil
               key={m.value}
               type="button"
               onClick={() => selectMethod(m.value)}
-              className={`rounded-xl px-3 py-3 text-left ${
+              className={`rounded-xl px-4 py-4 text-left transition-colors ${
                 active
-                  ? "bg-blue-600 text-white ring-2 ring-blue-300"
-                  : "bg-slate-50 text-slate-800 ring-1 ring-slate-200 hover:bg-slate-100"
+                  ? "checkout-fulfillment-card--active bg-[#0F1B33] text-white ring-2 ring-blue-400"
+                  : "checkout-fulfillment-card bg-white text-slate-800 ring-1 ring-[#D8E1EC] hover:ring-slate-300"
               }`}
             >
               <span className="block text-xs font-black">{label}</span>

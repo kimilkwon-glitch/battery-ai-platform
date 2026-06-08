@@ -3,7 +3,11 @@
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
+import {
+  MobileHorizontalScrollNav,
+  MobileScrollHint,
+} from "@/components/common/MobileHorizontalScrollNav";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
 import {
   filterCatalogProducts,
@@ -37,20 +41,11 @@ export function HomeBrandLineupSection({
   shopLinkLabel,
 }: Props) {
   const [typeTab, setTypeTab] = useState<HomeProductTypeTag>("AGM");
-  const scrollerRef = useRef<HTMLDivElement>(null);
 
   const products = useMemo(() => {
     const filtered = filterCatalogProducts(getCurrentLineup(brand), typeTab);
     return sortLineupWithPinned(filtered);
   }, [brand, typeTab]);
-
-  useEffect(() => {
-    scrollerRef.current?.scrollTo({ left: 0, behavior: "auto" });
-  }, [typeTab, brand]);
-
-  const handleTabChange = (tab: HomeProductTypeTag) => {
-    setTypeTab(tab);
-  };
 
   const themeClass = brand === "rocket" ? "home-brand-lineup--rocket" : "home-brand-lineup--solite";
 
@@ -67,6 +62,7 @@ export function HomeBrandLineupSection({
           <div className="home-brand-lineup__title-row">
             <h2 className="home-brand-lineup__title">{title}</h2>
             <span className="home-brand-lineup__label">{label}</span>
+            <MobileScrollHint />
           </div>
           <p className="home-brand-lineup__desc">
             <span className="home-brand-lineup__desc-long">{description}</span>
@@ -87,7 +83,7 @@ export function HomeBrandLineupSection({
                 "home-brand-lineup__tab",
                 typeTab === tab && "home-brand-lineup__tab--active",
               )}
-              onClick={() => handleTabChange(tab)}
+              onClick={() => setTypeTab(tab)}
             >
               {tab}
             </button>
@@ -104,10 +100,11 @@ export function HomeBrandLineupSection({
               등록된 {typeTab} 상품이 없습니다. 다른 타입을 선택하거나 전체 보기에서 확인해 주세요.
             </p>
           ) : (
-            <div
-              ref={scrollerRef}
-              className="home-brand-lineup__scroller"
-              aria-label={`${title} ${typeTab} 상품`}
+            <MobileHorizontalScrollNav
+              className="home-brand-lineup__nav-wrap"
+              scrollClassName="home-brand-lineup__scroller"
+              ariaLabel={`${title} ${typeTab} 상품`}
+              resetKey={`${brand}-${typeTab}`}
             >
               <div className="home-brand-lineup__track">
                 {products.map((item) => (
@@ -116,7 +113,7 @@ export function HomeBrandLineupSection({
                   </div>
                 ))}
               </div>
-            </div>
+            </MobileHorizontalScrollNav>
           )}
         </div>
 

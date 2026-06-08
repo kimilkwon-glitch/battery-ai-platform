@@ -179,14 +179,14 @@ export const AI_AUDIT_ROUTES: AuditRouteRow[] = [
   },
   {
     route: "/shop",
-    expectedStatus: 200,
+    expectedStatus: 307,
     pageFile: "src/app/shop/page.tsx",
-    component: "Shop hub",
+    component: "Shop redirect",
     buildRevSource: "layout",
     headerComponent: "PortalHeader",
-    templateComponent: "PageShell",
+    templateComponent: "redirect",
     knownIssue: false,
-    note: "",
+    note: "Redirects to /search (customer shop page hidden)",
   },
   {
     route: "/guides",

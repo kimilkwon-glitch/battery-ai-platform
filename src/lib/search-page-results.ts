@@ -324,7 +324,7 @@ function buildRequiredCtas(
   const base: SearchCta[] = [];
   if (flags.order) {
     base.push(
-      { label: "택배·쇼핑", href: HUB_SHOP },
+      { label: "배터리 검색", href: HUB_SHOP },
       { label: "주문 전 규격 확인", href: HUB_SHOP_ANCHORS.orderCheck },
       { label: "택배 주문 전 확인", href: HUB_SHOP_ANCHORS.delivery },
       { label: "단자 방향 확인", href: HUB_SHOP_ANCHORS.terminal },

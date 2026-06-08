@@ -137,6 +137,8 @@ export default async function GuideDetailPage({ params }: Props) {
                         alt={`${section.heading} 참고 이미지`}
                         className="max-h-[160px] w-auto max-w-full object-contain p-4"
                         height={160}
+                        sizes="(max-width: 768px) 100vw, 320px"
+                        loading="lazy"
                         src={sectionImg}
                         width={320}
                       />

@@ -28,8 +28,8 @@ function vehicleInfoValue(item: BatteryCartItem): string {
 }
 
 function returnPriceImpact(option: UsedBatteryReturnOption): number | undefined {
-  if (option === "return") return -10_000;
-  if (option === "no_return") return 10_000;
+  if (option === "return") return 0;
+  if (option === "no_return") return 25_000;
   return undefined;
 }
 
@@ -126,9 +126,9 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
           </div>
 
           <dl className="grid grid-cols-2 gap-x-3 gap-y-1 rounded-lg bg-slate-50 px-2.5 py-2 text-[10px] font-bold text-slate-600">
-            <dt>인터넷가</dt>
+            <dt>제품 구매가</dt>
             <dd className="text-right tabular-nums">{formatPriceWon(prices.internetPrice)}</dd>
-            <dt>출장가</dt>
+            <dt>출장 교체가</dt>
             <dd className="text-right tabular-nums">{formatPriceWon(prices.onsitePrice)}</dd>
             <dt>수령/장착</dt>
             <dd className="text-right">{fulfillmentLabel}</dd>

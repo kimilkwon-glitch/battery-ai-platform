@@ -7,14 +7,27 @@ import { BuildVersionStamp } from "@/components/common/BuildVersionStamp";
 import { FloatingActionDock } from "@/components/support/FloatingActionDock";
 import { BRAND_NAME, BRAND_META_DESCRIPTION } from "@/lib/brand";
 import { BUILD_STAMP } from "@/lib/build-stamp";
+import { getSiteOrigin } from "@/lib/site-url";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteOrigin()),
   title: `${BRAND_NAME} | 차량별 배터리 규격 검색`,
   description: BRAND_META_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: "/",
+    siteName: BRAND_NAME,
+    title: `${BRAND_NAME} | 차량별 배터리 규격 검색`,
+    description: BRAND_META_DESCRIPTION,
+  },
 };
 
 /** 전 route 동일 build stamp — ISR/정적 HTML에 구버전 stamp 잔류 방지 */

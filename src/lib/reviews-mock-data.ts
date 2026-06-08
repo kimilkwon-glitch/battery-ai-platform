@@ -6,7 +6,7 @@
 import { batterySpecHref } from "@/lib/canonical-battery-code";
 
 export type ReviewBranchName = "덕천점" | "학장점";
-export type ReviewServiceType = "내방교체" | "출장교체" | "택배주문";
+export type ReviewServiceType = "매장 교체" | "출장 교체" | "택배 주문";
 
 export type ReviewBadgeId =
   | "deokcheon"
@@ -89,7 +89,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "김*수",
     createdAt: "2025-11-12",
     branchName: "덕천점",
-    serviceType: "내방교체",
+    serviceType: "매장 교체",
     badges: ["deokcheon", "visit", "agm", "kind", "spec_easy"],
     vehicleName: "쏘렌토 MQ4",
     batteryCode: "AGM80L",
@@ -112,7 +112,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "박*영",
     createdAt: "2025-10-28",
     branchName: "학장점",
-    serviceType: "출장교체",
+    serviceType: "출장 교체",
     badges: ["hakjang", "outbound", "porter2", "accurate_consult", "fast_fix"],
     vehicleName: "포터2",
     batteryCode: "CMF100R",
@@ -129,7 +129,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "이*진",
     createdAt: "2025-10-05",
     branchName: "학장점",
-    serviceType: "택배주문",
+    serviceType: "택배 주문",
     badges: ["hakjang", "delivery", "din", "easy_explain"],
     vehicleName: "그랜저 IG",
     batteryCode: "DIN74L",
@@ -143,7 +143,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "최*미",
     createdAt: "2025-09-20",
     branchName: "덕천점",
-    serviceType: "출장교체",
+    serviceType: "출장 교체",
     badges: ["deokcheon", "outbound", "hybrid", "slow_start", "easy_explain"],
     vehicleName: "아반떼 CN7",
     batteryCode: "AGM60L",
@@ -157,7 +157,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "정*호",
     createdAt: "2025-09-02",
     branchName: "덕천점",
-    serviceType: "내방교체",
+    serviceType: "매장 교체",
     badges: ["deokcheon", "visit", "agm", "good_value", "accurate_consult"],
     vehicleName: "팰리세이드",
     batteryCode: "AGM95L",
@@ -173,7 +173,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "한*우",
     createdAt: "2025-08-15",
     branchName: "학장점",
-    serviceType: "내방교체",
+    serviceType: "매장 교체",
     badges: ["hakjang", "visit", "discharge", "good_value"],
     vehicleName: "레이",
     batteryCode: "CMF80L",
@@ -185,7 +185,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     rating: 5,
     customerName: "윤*아",
     createdAt: "2025-07-30",
-    serviceType: "택배주문",
+    serviceType: "택배 주문",
     badges: ["delivery", "agm", "affordable", "spec_easy"],
     vehicleName: "스타리아",
     batteryCode: "AGM70L",
@@ -198,7 +198,7 @@ export const REVIEWS_MOCK: ReviewItem[] = [
     customerName: "오*석",
     createdAt: "2025-07-08",
     branchName: "학장점",
-    serviceType: "출장교체",
+    serviceType: "출장 교체",
     badges: ["hakjang", "outbound", "porter2", "accurate_consult", "fast_fix"],
     vehicleName: "포터2",
     batteryCode: "GB100R",

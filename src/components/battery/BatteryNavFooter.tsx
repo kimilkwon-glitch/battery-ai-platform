@@ -18,9 +18,6 @@ export function BatteryNavFooter({ code }: { code: string }) {
           </span>
         </summary>
         <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
-          <Link className={`${bm.btnTertiary} text-[11px]`} href={`/shop#shop-products`}>
-            택배·쇼핑
-          </Link>
           <Link className={`${bm.btnTertiary} text-[11px]`} href={compareHref(code, "DIN74L")}>
             규격 비교
           </Link>

@@ -21,7 +21,10 @@ export function LegalPageLayout({ page }: { page: LegalPageData }) {
       <p className="text-xs font-medium text-slate-500">최종 업데이트: {page.updatedAt}</p>
 
       {page.sections.map((section) => (
-        <section key={section.heading} className={`${bm.card} ${bm.cardPad} scroll-mt-24`}>
+        <section
+          key={section.heading}
+          className={`legal-page-section ${bm.card} ${bm.cardPad} scroll-mt-24`}
+        >
           <h2 className="text-base font-black text-slate-950">{section.heading}</h2>
           {section.paragraphs?.map((p) => (
             <p key={p} className="mt-3 text-sm font-medium leading-relaxed text-slate-600">

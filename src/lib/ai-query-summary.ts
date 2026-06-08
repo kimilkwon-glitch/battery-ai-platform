@@ -80,7 +80,7 @@ function buildPurposeLabel(query: string, flags: ReturnType<typeof detectQueryIn
 function buildCtas(flags: ReturnType<typeof detectQueryIntentFlags>): AiQuerySummary["ctas"] {
   if (flags.order) {
     return [
-      { label: "주문 전 규격 확인", href: "/shop" },
+      { label: "주문 전 규격 확인", href: "/order-checklist" },
       { label: "단자 방향 확인", href: "/guides" },
       { label: "사진으로 확인", href: "/analysis/photo" },
       { label: "문의하기", href: "/service-center" },

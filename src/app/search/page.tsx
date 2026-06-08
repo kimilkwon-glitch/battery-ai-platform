@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import { SearchActivityRecorder } from "@/components/platform/SearchActivityRecorder";
 import { SearchResultsView } from "@/components/platform/SearchResultsView";
@@ -77,13 +78,13 @@ export default async function SearchPage({
               <h2 className="text-sm font-black text-slate-950">관련 검색</h2>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {relatedKeywords.map((keyword) => (
-                  <a
+                  <Link
                     className="rounded-lg bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:bg-blue-50 hover:text-blue-700"
                     href={getSearchHref(keyword)}
                     key={keyword}
                   >
                     {keyword}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </section>
@@ -96,12 +97,12 @@ export default async function SearchPage({
             <section className={`${bm.card} p-4`}>
               <h2 className="text-sm font-black text-slate-950">증상 확인</h2>
               <p className="mt-1 text-xs font-medium text-slate-500">{related.intent.symptom.subtitle}</p>
-              <a
+              <Link
                 className={`${bm.btnPrimary} mt-3 inline-flex w-full justify-center text-xs`}
                 href={`/diagnosis/${related.intent.symptom.id}`}
               >
                 {related.intent.symptom.title} 확인
-              </a>
+              </Link>
             </section>
           ) : null}
         </aside>

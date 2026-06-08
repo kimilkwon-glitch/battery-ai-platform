@@ -1,3 +1,5 @@
+import { STORE_PHONES } from "@/lib/contact-info";
+
 /** 부산 덕천점·학장점 직영 — 매장·출장 대표 허브 */
 
 
@@ -21,8 +23,8 @@ export const BUSAN_STORES = [
     visit: "내방 교체",
     mobile: "출장 교체 (권역 내)",
     mapsQuery: "부산 북구 덕천 배터리",
-    phone: "010-8339-8316",
-    phoneTel: "tel:010-8339-8316",
+    phone: STORE_PHONES.deokcheon.phone,
+    phoneTel: STORE_PHONES.deokcheon.tel,
     imageSrc: "/assets/stores/deokcheon.jpg",
     imageAlt: "부산배터리매니저 덕천점 매장 사진",
   },
@@ -36,8 +38,8 @@ export const BUSAN_STORES = [
     visit: "내방 교체",
     mobile: "출장 교체 (권역 내)",
     mapsQuery: "부산 사상구 학장 배터리",
-    phone: "010-8896-8316",
-    phoneTel: "tel:010-8896-8316",
+    phone: STORE_PHONES.hakjang.phone,
+    phoneTel: STORE_PHONES.hakjang.tel,
     imageSrc: "/assets/stores/hakjang.jpg",
     imageAlt: "부산배터리매니저 학장점 매장 사진",
   },
@@ -99,6 +101,6 @@ export const BUSAN_REGION_FOOTNOTE =
 
 /** 대표 권역 외 지역 클릭 시 정보 패널 안내 */
 export const BUSAN_OUTBOUND_FEE_NOTE =
-  "대표 권역 외 지역은 거리와 일정에 따라 별도 출장비가 발생할 수 있습니다. 정확한 가능 여부와 비용은 상담 후 안내드립니다.";
+  "대표 권역 밖은 거리와 일정에 따라 출장비가 달라질 수 있습니다. 가능 여부와 비용은 고객센터로 문의해 주세요.";
 
 

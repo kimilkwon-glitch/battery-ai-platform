@@ -12,6 +12,7 @@ import {
 } from "@/types/commerce-order";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { PaymentConfirmResponse } from "@/types/commerce-payment";
+import { CONTACT } from "@/lib/contact-info";
 import { bm } from "@/lib/design-tokens";
 
 function PaymentSuccessContent() {
@@ -82,7 +83,7 @@ function PaymentSuccessContent() {
       <section className={`${bm.card} ${bm.cardPad} space-y-3`}>
         <h1 className="text-lg font-black text-emerald-950">결제가 완료되었습니다</h1>
         <p className="text-sm font-medium text-slate-600">
-          주문이 정상적으로 접수되었습니다. 담당자가 확인 후 안내드리겠습니다.
+          주문이 접수되었습니다. 배송·장착 일정은 주문 상태에서 확인하실 수 있습니다.
         </p>
       </section>
 
@@ -135,7 +136,7 @@ function PaymentSuccessContent() {
           </div>
         </dl>
         <p className="text-[11px] font-medium text-slate-500">
-          담당자가 주문을 확인한 뒤 수령·장착 일정을 안내드립니다.
+          수령·장착 일정은 문자 또는 고객센터({CONTACT.customerCenter.phone})로 안내드립니다.
         </p>
       </section>
 

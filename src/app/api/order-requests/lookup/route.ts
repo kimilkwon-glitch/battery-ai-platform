@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const NOT_FOUND_MESSAGE =
-  "접수번호와 연락처를 확인할 수 없습니다. 입력 정보를 다시 확인하거나 고객센터로 문의해 주세요.";
+  "주문번호와 연락처를 확인할 수 없습니다. 입력 정보를 다시 확인하거나 고객센터로 문의해 주세요.";
 
 /**
  * POST — 상담 주문 요청 조회 (접수번호 + 연락처, 13차)

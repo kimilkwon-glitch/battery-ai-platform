@@ -1,6 +1,9 @@
+import { isCommercePaymentLive } from "@/lib/payment/commerce-checkout-mode";
 import { bm } from "@/lib/design-tokens";
 
 export function PaymentPreparingNotice({ compact }: { compact?: boolean }) {
+  if (isCommercePaymentLive()) return null;
+
   return (
     <div
       className={`rounded-xl border border-blue-100 bg-blue-50/80 ${compact ? "p-3" : "p-4"} space-y-2`}

@@ -23,8 +23,8 @@ export function CartPageClient() {
       {lines.length === 0 ? (
         <div className="rounded-xl bg-white p-6 text-center ring-1 ring-slate-200">
           <p className="text-sm font-black">장바구니가 비어 있습니다</p>
-          <Link href="/shop" className="mt-3 inline-block rounded-lg bg-blue-600 px-4 py-2 text-xs font-black text-white">
-            배터리 쇼핑 둘러보기
+          <Link href="/search" className="mt-3 inline-block rounded-lg bg-blue-600 px-4 py-2 text-xs font-black text-white">
+            차량·배터리 검색하기
           </Link>
         </div>
       ) : (

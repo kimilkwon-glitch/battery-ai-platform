@@ -18,7 +18,7 @@ export function OrderRequestLookupResult({ lookup }: { lookup: CustomerOrderRequ
         className={`${bm.card} ${bm.cardPad} border-blue-100/80 bg-gradient-to-br from-white to-blue-50/20`}
       >
         <p className="text-[10px] font-black uppercase tracking-wide text-blue-800">
-          상담 접수 상태
+          {ORDER_REQUEST_LOOKUP_COPY.resultStatusKicker}
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <span
@@ -30,11 +30,11 @@ export function OrderRequestLookupResult({ lookup }: { lookup: CustomerOrderRequ
         </div>
         <dl className="mt-4 grid gap-2 text-xs sm:grid-cols-2">
           <div className="rounded-lg bg-white/80 px-3 py-2 ring-1 ring-slate-100">
-            <dt className="font-bold text-slate-500">접수번호</dt>
+            <dt className="font-bold text-slate-500">{ORDER_REQUEST_LOOKUP_COPY.orderNumberResultLabel}</dt>
             <dd className="font-mono font-black text-slate-900">{lookup.requestNumber}</dd>
           </div>
           <div className="rounded-lg bg-white/80 px-3 py-2 ring-1 ring-slate-100">
-            <dt className="font-bold text-slate-500">접수일</dt>
+            <dt className="font-bold text-slate-500">{ORDER_REQUEST_LOOKUP_COPY.orderDateLabel}</dt>
             <dd className="font-black text-slate-900">
               {new Date(lookup.createdAt).toLocaleString("ko-KR")}
             </dd>
@@ -46,9 +46,6 @@ export function OrderRequestLookupResult({ lookup }: { lookup: CustomerOrderRequ
             </dd>
           </div>
         </dl>
-        <p className="mt-3 text-[10px] font-bold text-slate-500">
-          실제 결제·배송 주문조회가 아닌 상담 접수 상태 조회입니다.
-        </p>
       </section>
 
       <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
@@ -71,7 +68,7 @@ export function OrderRequestLookupResult({ lookup }: { lookup: CustomerOrderRequ
           </div>
           {lookup.productSummaries.length > 0 ? (
             <div className="rounded-lg bg-slate-50 px-3 py-2">
-              <dt className="font-bold text-slate-500">상담 상품</dt>
+              <dt className="font-bold text-slate-500">주문 상품</dt>
               <dd className="font-black">{lookup.productSummaries.join(", ")}</dd>
             </div>
           ) : null}

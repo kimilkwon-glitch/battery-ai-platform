@@ -5,7 +5,7 @@ import { TERMS_PAGE } from "@/data/legal-pages";
 export default function TermsPage() {
   return (
     <PageShell
-      zone="support"
+      zone="legal"
       pageLabel="이용약관"
       title={TERMS_PAGE.title}
       description={TERMS_PAGE.description}
