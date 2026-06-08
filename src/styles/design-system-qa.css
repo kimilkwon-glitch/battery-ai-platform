@@ -1525,6 +1525,158 @@ main:has(.bm-zone--legal) {
   color: #334155;
 }
 
+.bm-auth-form__title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.bm-auth-form__lead {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.bm-auth-fieldset {
+  display: grid;
+  gap: 0.875rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.bm-auth-field__hint {
+  margin-top: 0.2rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.bm-auth-field__ok {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.bm-auth-field__warn {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #b45309;
+}
+
+.bm-auth-field-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.bm-auth-field-row .bm-auth-field__input {
+  flex: 1;
+  min-width: 0;
+}
+
+.bm-auth-inline-btn {
+  flex-shrink: 0;
+  min-height: 3rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.bm-auth-inline-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.bm-auth-postcode-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.bm-auth-field--grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.bm-auth-postcode-btn {
+  flex-shrink: 0;
+  min-height: 3rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #2563eb;
+  background: #eff6ff;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #1d4ed8;
+  white-space: nowrap;
+}
+
+.bm-auth-postcode-btn:hover:not(:disabled) {
+  background: #dbeafe;
+}
+
+.bm-auth-postcode-btn:disabled {
+  opacity: 0.6;
+}
+
+.bm-auth-vehicle-details {
+  border-radius: 0.875rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.bm-auth-vehicle-details__summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.875rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.bm-auth-vehicle-details__summary::-webkit-details-marker {
+  display: none;
+}
+
+.bm-auth-vehicle-details__body {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.bm-social-login--loading {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.bm-social-login__skeleton {
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: bm-auth-skeleton 1.2s ease-in-out infinite;
+}
+
+@keyframes bm-auth-skeleton {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
 .bm-auth-field__input {
   min-height: 3rem;
   width: 100%;

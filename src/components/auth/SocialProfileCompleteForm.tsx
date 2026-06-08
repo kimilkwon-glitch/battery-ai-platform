@@ -2,19 +2,26 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SignupAddressFields } from "@/components/auth/SignupAddressFields";
-import { setCustomerSession } from "@/lib/customer-auth-session";
-import { isProfileCompleteForCheckout } from "@/lib/customer-profile-complete";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { patchCustomerProfile } from "@/lib/auth/customer-auth-client";
 import {
-  getCustomerProfile,
-  saveCustomerProfile,
-  type CustomerProfile,
-} from "@/lib/customer-profile-storage";
-import { syncSignupVehicleToProfile } from "@/lib/customer-signup-sync";
+  memberPreferredStoreToUi,
+  uiPreferredStoreToMember,
+} from "@/lib/auth/member-preferred-store";
+import type { PreferredStoreId } from "@/lib/customer-profile-storage";
 import { CUSTOMER_MYPAGE } from "@/lib/customer-auth-routes";
+import { getCustomerProfile } from "@/lib/customer-profile-storage";
+import { syncSignupVehicleToProfile } from "@/lib/customer-signup-sync";
 
 const FUEL_OPTIONS = ["가솔린", "디젤", "LPG", "하이브리드", "전기"] as const;
+
+const STORE_OPTIONS: { id: PreferredStoreId; label: string }[] = [
+  { id: "deokcheon", label: "덕천점" },
+  { id: "hakjang", label: "학장점" },
+  { id: "undecided", label: "아직 정하지 않음" },
+];
 
 function formatPhoneInput(value: string): string {
   const digits = value.replace(/\D/g, "").slice(0, 11);
@@ -29,18 +36,35 @@ type Props = {
 
 export function SocialProfileCompleteForm({ redirect }: Props) {
   const router = useRouter();
-  const existing = getCustomerProfile();
-  const [phone, setPhone] = useState(existing?.phone ?? "");
-  const [postalCode, setPostalCode] = useState(existing?.postalCode ?? "");
-  const [address1, setAddress1] = useState(existing?.address1 ?? "");
-  const [address2, setAddress2] = useState(existing?.address2 ?? "");
-  const [vehicleName, setVehicleName] = useState(existing?.vehicleName ?? "");
-  const [vehicleYear, setVehicleYear] = useState(existing?.vehicleYear ?? "");
-  const [vehicleFuel, setVehicleFuel] = useState(existing?.vehicleFuel ?? "");
+  const { member, isLoggedIn, ready, refresh } = useCustomerAuth();
+  const [phone, setPhone] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [vehicleName, setVehicleName] = useState("");
+  const [vehicleYear, setVehicleYear] = useState("");
+  const [vehicleFuel, setVehicleFuel] = useState("");
+  const [preferredStore, setPreferredStore] = useState<PreferredStoreId>("undecided");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  if (!existing) {
+  useEffect(() => {
+    if (!member) return;
+    setPhone(member.phone !== "미입력" ? member.phone : "");
+    setPostalCode(member.zonecode ?? "");
+    setAddress1(member.address ?? "");
+    setAddress2(member.detailAddress ?? "");
+    setVehicleName(member.vehicleInfo?.name ?? "");
+    setVehicleYear(member.vehicleInfo?.year ?? "");
+    setVehicleFuel(member.vehicleInfo?.fuel ?? "");
+    setPreferredStore(memberPreferredStoreToUi(member.preferredStore));
+  }, [member]);
+
+  if (!ready) {
+    return <p className="text-sm font-medium text-slate-500">로그인 정보를 확인하는 중…</p>;
+  }
+
+  if (!isLoggedIn || !member) {
     return (
       <div className="bm-auth-complete">
         <p className="bm-auth-complete__title">로그인 정보가 없습니다</p>
@@ -51,45 +75,52 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     const digits = phone.replace(/\D/g, "");
     if (digits.length < 10) {
-      setError("휴대폰 번호를 확인해 주세요.");
+      setError("입력 정보를 다시 확인해 주세요.");
       return;
     }
     if (!postalCode.trim() || !address1.trim() || !address2.trim()) {
-      setError("주소 검색 후 상세주소까지 입력해 주세요.");
+      setError("입력 정보를 다시 확인해 주세요.");
       return;
     }
 
     setSubmitting(true);
-    let profile: CustomerProfile = saveCustomerProfile({
-      ...existing,
+    const vehicleInfo =
+      vehicleName.trim() || vehicleYear.trim() || vehicleFuel.trim()
+        ? {
+            name: vehicleName.trim() || undefined,
+            year: vehicleYear.trim() || undefined,
+            fuel: vehicleFuel.trim() || undefined,
+          }
+        : undefined;
+
+    const result = await patchCustomerProfile({
       phone: phone.trim(),
-      postalCode: postalCode.trim(),
-      address1: address1.trim(),
-      address2: address2.trim(),
-      vehicleName: vehicleName.trim() || undefined,
-      vehicleYear: vehicleYear || undefined,
-      vehicleFuel: vehicleFuel || undefined,
+      zonecode: postalCode.trim(),
+      address: address1.trim(),
+      detailAddress: address2.trim(),
+      vehicleInfo,
+      preferredStore: uiPreferredStoreToMember(preferredStore),
     });
-    profile = syncSignupVehicleToProfile(profile);
+    setSubmitting(false);
 
-    setCustomerSession({
-      userId: profile.id,
-      displayName: profile.name,
-      phone: profile.phone,
-      email: profile.email,
-      provider: profile.provider,
-    });
-
-    const target = redirect?.trim() || CUSTOMER_MYPAGE;
-    if (isProfileCompleteForCheckout(profile)) {
-      router.push(target);
+    if (!result.ok) {
+      setError(result.message);
       return;
     }
+
+    await refresh();
+
+    const cached = getCustomerProfile();
+    if (cached && vehicleName.trim()) {
+      syncSignupVehicleToProfile(cached);
+    }
+
+    const target = redirect?.trim() || CUSTOMER_MYPAGE;
     router.push(target);
   };
 
@@ -115,7 +146,7 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
             type="text"
             readOnly
             className="bm-auth-field__input bg-slate-50"
-            value={existing.name}
+            value={member.name}
           />
         </label>
         <label className="bm-auth-field">
@@ -142,6 +173,24 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
             if (patch.address2 != null) setAddress2(patch.address2);
           }}
         />
+
+        <label className="bm-auth-field">
+          <span className="bm-auth-field__label">자주 이용하는 지점</span>
+          <select
+            className="bm-auth-field__input"
+            value={preferredStore}
+            onChange={(e) => setPreferredStore(e.target.value as PreferredStoreId)}
+          >
+            {STORE_OPTIONS.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <span className="mt-1 block text-xs font-medium text-slate-500">
+            자주 이용하는 지점을 선택해 주세요.
+          </span>
+        </label>
 
         <fieldset className="bm-auth-optional">
           <legend className="bm-auth-optional__title">선택 차량정보</legend>

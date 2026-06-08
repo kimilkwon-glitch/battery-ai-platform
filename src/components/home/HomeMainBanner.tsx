@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import clsx from "clsx";
+import { apiFetchPublicBanners } from "@/lib/cms/cms-client";
 import { HERO_CAROUSEL_INTERVAL_MS, HERO_SLIDES, type HeroSlide } from "@/lib/hero-slides-data";
 
 function HeroPlaceholderSlide({ slide }: { slide: Extract<HeroSlide, { type: "placeholder" }> }) {
@@ -46,7 +47,7 @@ function HeroImageSlide({
             <img
               src={slide.image}
               alt={slide.imageAlt}
-              className="home-hero-slide__img h-full w-full"
+              className="home-hero-slide__img h-full w-full object-cover"
               decoding="async"
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : "auto"}
@@ -54,8 +55,10 @@ function HeroImageSlide({
             />
           </picture>
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-xs font-semibold text-slate-300">
-            배너 이미지를 불러올 수 없습니다
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 px-6 text-center text-white">
+            <ImageIcon className="mb-3 size-8 opacity-70" aria-hidden />
+            <p className="text-sm font-black">{slide.title}</p>
+            <p className="mt-1 text-xs font-medium text-slate-300">{slide.heading}</p>
           </div>
         )}
         <div className="sr-only">
@@ -69,10 +72,20 @@ function HeroImageSlide({
 }
 
 export function HomeMainBanner() {
-  const slides = HERO_SLIDES;
+  const [slides, setSlides] = useState<HeroSlide[]>(HERO_SLIDES);
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
-  const activeSlide = slides[index]!;
+  const activeSlide = slides[index];
+
+  useEffect(() => {
+    void (async () => {
+      const res = await apiFetchPublicBanners();
+      if (res.ok && res.slides.length > 0) {
+        setSlides(res.slides);
+        setIndex(0);
+      }
+    })();
+  }, []);
 
   const goTo = useCallback(
     (next: number) => {
@@ -90,8 +103,18 @@ export function HomeMainBanner() {
     return () => window.clearInterval(t);
   }, [slides.length]);
 
-  const activePromoLabel =
-    activeSlide.type === "image" ? activeSlide.promoLabel : undefined;
+  if (!activeSlide) {
+    return (
+      <section className="home-hero-carousel w-full" aria-label="메인 프로모션" data-home-section="main-banner">
+        <div className="home-hero-carousel__shell rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 py-16 text-center">
+          <p className="text-sm font-bold text-slate-500">등록된 메인 배너가 없습니다.</p>
+        </div>
+      </section>
+    );
+  }
+
+  const activePromoLabel = activeSlide.type === "image" ? activeSlide.promoLabel : undefined;
+  const showDots = slides.length > 1 && slides.length <= 12;
 
   return (
     <section
@@ -140,11 +163,7 @@ export function HomeMainBanner() {
               data-hero-slide-id={activeSlide.type === "image" ? activeSlide.id : undefined}
             >
               {activeSlide.type === "image" ? (
-                <HeroImageSlide
-                  slide={activeSlide}
-                  priority={index === 0}
-                  isActive
-                />
+                <HeroImageSlide slide={activeSlide} priority={index === 0} isActive />
               ) : (
                 <HeroPlaceholderSlide slide={activeSlide} />
               )}
@@ -153,22 +172,24 @@ export function HomeMainBanner() {
 
           {slides.length > 1 ? (
             <div className="home-hero-carousel__indicators">
-              <div className="home-hero-carousel__dots" role="tablist" aria-label="배너 슬라이드">
-                {slides.map((s, slideIndex) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    role="tab"
-                    onClick={() => goTo(slideIndex)}
-                    className={clsx(
-                      "home-hero-carousel__dot",
-                      slideIndex === index && "home-hero-carousel__dot--active",
-                    )}
-                    aria-label={`배너 ${slideIndex + 1}`}
-                    aria-selected={slideIndex === index}
-                  />
-                ))}
-              </div>
+              {showDots ? (
+                <div className="home-hero-carousel__dots" role="tablist" aria-label="배너 슬라이드">
+                  {slides.map((s, slideIndex) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      role="tab"
+                      onClick={() => goTo(slideIndex)}
+                      className={clsx(
+                        "home-hero-carousel__dot",
+                        slideIndex === index && "home-hero-carousel__dot--active",
+                      )}
+                      aria-label={`배너 ${slideIndex + 1}`}
+                      aria-selected={slideIndex === index}
+                    />
+                  ))}
+                </div>
+              ) : null}
               <span className="home-hero-carousel__counter" aria-live="polite">
                 {index + 1}/{slides.length}
               </span>

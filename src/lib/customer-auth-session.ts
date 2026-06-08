@@ -1,7 +1,18 @@
 import type { AuthProvider } from "@/lib/customer-profile-storage";
+import {
+  clearCustomerAuthCache,
+  getCustomerAuthCache,
+  getCustomerUserId as getCachedUserId,
+  isCustomerLoggedIn as isCachedLoggedIn,
+  setLegacyOAuthAuthCache,
+} from "@/lib/auth/customer-auth-client";
 
 /**
- * 고객 로그인 세션 (localStorage) — OAuth 연동 전 클라이언트 세션
+ * 고객 로그인 세션 — 서버 httpOnly 쿠키 + /api/auth/me가 source of truth
+ *
+ * 이 모듈의 동기 API는 인메모리 캐시만 읽습니다.
+ * 캐시는 useCustomerAuth / fetchCustomerAuthMe로 /api/auth/me와 동기화됩니다.
+ * localStorage 세션 저장은 사용하지 않습니다.
  */
 export type CustomerSession = {
   userId: string;
@@ -12,48 +23,42 @@ export type CustomerSession = {
   provider?: AuthProvider;
 };
 
-const SESSION_KEY = "bm-customer-session-v1";
-
-function readSession(): CustomerSession | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as CustomerSession;
-    return parsed?.loggedInAt && parsed?.userId ? parsed : null;
-  } catch {
-    return null;
-  }
-}
-
 export function isCustomerLoggedIn(): boolean {
-  return readSession() != null;
+  return isCachedLoggedIn();
 }
 
 export function getCustomerSession(): CustomerSession | null {
-  return readSession();
+  const member = getCustomerAuthCache();
+  if (!member) return null;
+  return {
+    userId: member.id,
+    loggedInAt: member.updatedAt,
+    displayName: member.name,
+    phone: member.phone,
+    email: member.email,
+    provider: member.provider,
+  };
 }
 
 export function getCustomerUserId(): string | null {
-  return readSession()?.userId ?? null;
+  return getCachedUserId();
 }
 
+/**
+ * @deprecated OAuth는 callback에서 bm_customer_session 발급. 레거시 호환용 인메모리 캐시만.
+ */
 export function setCustomerSession(
   input: Omit<CustomerSession, "loggedInAt"> & { loggedInAt?: string },
 ): void {
-  if (typeof window === "undefined") return;
-  const row: CustomerSession = {
+  setLegacyOAuthAuthCache({
     userId: input.userId,
-    loggedInAt: input.loggedInAt ?? new Date().toISOString(),
     displayName: input.displayName,
     phone: input.phone,
     email: input.email,
     provider: input.provider,
-  };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(row));
+  });
 }
 
 export function clearCustomerSession(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(SESSION_KEY);
+  clearCustomerAuthCache();
 }

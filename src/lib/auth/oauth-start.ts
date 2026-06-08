@@ -2,6 +2,7 @@
  * OAuth authorize URL 생성 — provider별 start 라우트에서 사용
  */
 
+import { getGoogleOAuthConfig, getGoogleOAuthScopes } from "@/lib/auth/google-oauth";
 import { getKakaoOAuthConfig } from "@/lib/auth/kakao-oauth";
 import { getOAuthRedirectUri, type OAuthProvider } from "@/lib/auth/oauth-config";
 
@@ -32,14 +33,14 @@ export function buildKakaoAuthorizeUrl(state: string): string | null {
 }
 
 export function buildGoogleAuthorizeUrl(state: string): string | null {
-  const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
-  if (!clientId) return null;
+  const config = getGoogleOAuthConfig();
+  if (!config) return null;
 
   const params = new URLSearchParams({
     response_type: "code",
-    client_id: clientId,
-    redirect_uri: getOAuthRedirectUri("google"),
-    scope: "openid email profile",
+    client_id: config.clientId,
+    redirect_uri: config.redirectUri,
+    scope: getGoogleOAuthScopes(),
     state,
     access_type: "online",
     prompt: "select_account",

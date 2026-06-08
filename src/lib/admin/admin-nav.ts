@@ -21,6 +21,9 @@ export const ADMIN_ROUTES = {
   orderRequests: "/admin/order-requests",
   inquiries: "/admin/inquiries",
   coupons: "/admin/coupons",
+  promotions: "/admin/promotions",
+  banners: "/admin/banners",
+  reviews: "/admin/reviews",
 } as const;
 
 export type AdminNavItem = {
@@ -40,6 +43,9 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: ADMIN_ROUTES.batteries, label: "배터리 DB", group: "DB" },
   { href: ADMIN_ROUTES.matching, label: "매칭 검수", group: "DB" },
   { href: ADMIN_ROUTES.products, label: "제품 관리", group: "DB" },
+  { href: ADMIN_ROUTES.banners, label: "메인 배너", group: "콘텐츠" },
+  { href: ADMIN_ROUTES.promotions, label: "쿠폰/혜택 관리", group: "콘텐츠" },
+  { href: ADMIN_ROUTES.reviews, label: "고객 후기", group: "콘텐츠" },
   { href: ADMIN_ROUTES.content, label: "콘텐츠", group: "콘텐츠" },
   { href: ADMIN_ROUTES.assets, label: "이미지/에셋", group: "에셋" },
   { href: ADMIN_ROUTES.vehicleImageReview, label: "차량 이미지 검수", group: "에셋" },

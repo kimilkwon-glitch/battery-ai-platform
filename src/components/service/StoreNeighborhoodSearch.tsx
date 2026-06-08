@@ -15,10 +15,12 @@ export function StoreNeighborhoodSearch({
   onMatch,
   activeStore,
   onSearchQuery,
+  enhanced,
 }: {
   onMatch: (storeId: BusanStoreId | null) => void;
   activeStore: BusanStoreId | null;
   onSearchQuery?: (query: string | null) => void;
+  enhanced?: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
@@ -39,7 +41,13 @@ export function StoreNeighborhoodSearch({
   const result = submitted ? recommendBusanStore(submitted) : null;
 
   return (
-    <section className="busan-store-search rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5" id="neighborhood-search">
+    <section
+      className={clsx(
+        "busan-store-search rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5",
+        enhanced && "busan-store-search--enhanced",
+      )}
+      id="neighborhood-search"
+    >
       <form className="flex flex-col gap-3 sm:flex-row sm:items-stretch" onSubmit={handleSubmit}>
         <label className="relative flex-1">
           <span className="sr-only">동네명 검색</span>

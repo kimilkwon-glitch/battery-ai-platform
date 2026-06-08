@@ -4,8 +4,8 @@ import { PageShell } from "@/components/common/PageShell";
 import { OrderRequestLookupClient } from "@/components/order-request/OrderRequestLookupClient";
 
 export const metadata: Metadata = {
-  title: "비회원 주문조회",
-  description: "주문번호와 연락처로 주문 상태를 확인할 수 있습니다.",
+  title: "상담 접수 조회",
+  description: "상담 접수번호와 연락처로 문의 접수 상태를 확인할 수 있습니다.",
 };
 
 export default function OrderRequestLookupPage() {

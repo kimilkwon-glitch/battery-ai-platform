@@ -7,6 +7,21 @@ import type { OAuthProvider } from "@/lib/auth/oauth-config";
 
 export type SocialLoginProvider = Extract<AuthProvider, OAuthProvider>;
 
+export type SocialLoginVariant = "login" | "signup";
+
+export const SOCIAL_LOGIN_LABELS: Record<SocialLoginVariant, Record<SocialLoginProvider, string>> = {
+  login: {
+    naver: "네이버로 계속하기",
+    kakao: "카카오로 계속하기",
+    google: "Google로 계속하기",
+  },
+  signup: {
+    naver: "네이버로 시작하기",
+    kakao: "카카오로 시작하기",
+    google: "Google로 시작하기",
+  },
+};
+
 export const SOCIAL_LOGIN_BRAND = {
   naver: {
     label: "네이버로 계속하기",
@@ -46,8 +61,15 @@ export const SOCIAL_LOGIN_BRAND = {
   }
 >;
 
-export function getSocialLoginBrand(provider: SocialLoginProvider) {
-  return SOCIAL_LOGIN_BRAND[provider];
+export function getSocialLoginBrand(
+  provider: SocialLoginProvider,
+  variant: SocialLoginVariant = "login",
+) {
+  const brand = SOCIAL_LOGIN_BRAND[provider];
+  return {
+    ...brand,
+    label: SOCIAL_LOGIN_LABELS[variant][provider],
+  };
 }
 
 export function getOAuthStartPath(provider: SocialLoginProvider, redirect?: string | null): string {

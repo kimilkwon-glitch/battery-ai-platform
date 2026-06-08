@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Quote } from "lucide-react";
+import { useEffect, useState } from "react";
 import { HomeReplacementStoriesMobileCarousel } from "@/components/home/HomeReplacementStoriesMobileCarousel";
 import { HomeTrustStoryCard } from "@/components/home/HomeTrustStoryCard";
+import { apiFetchPublicReviews } from "@/lib/cms/cms-client";
+import { CONTENT_DISPLAY_LIMITS } from "@/lib/content-display-limits";
 import {
   HOME_REPLACEMENT_REVIEWS_HREF,
   HOME_REPLACEMENT_STORIES_DESC,
@@ -9,7 +14,6 @@ import {
   HOME_REPLACEMENT_STORIES_LABEL,
   HOME_REPLACEMENT_STORIES_PILLS,
   HOME_REPLACEMENT_STORIES_TITLE,
-  HOME_REPLACEMENT_STORIES_VISIBLE_COUNT,
   HOME_REPLACEMENT_STORY_CARDS,
   HOME_REPLACEMENT_WORK_CASES_HREF,
   type HomeReplacementStoryCard,
@@ -44,9 +48,37 @@ function StoryActions({ className }: { className?: string }) {
   );
 }
 
-/** 메인 — 실제 교체 후기·작업 사례 (라인업 아래, 타이어픽형 신뢰 카드) */
+/** 메인 — 실제 교체 후기 (DB 연동, 개수 제한 + 더보기) */
 export function HomeReplacementStoriesSection() {
-  const visibleCards = HOME_REPLACEMENT_STORY_CARDS.slice(0, HOME_REPLACEMENT_STORIES_VISIBLE_COUNT);
+  const [cards, setCards] = useState<HomeReplacementStoryCard[]>(
+    HOME_REPLACEMENT_STORY_CARDS.slice(0, CONTENT_DISPLAY_LIMITS.mainReviews),
+  );
+
+  useEffect(() => {
+    void (async () => {
+      const res = await apiFetchPublicReviews({
+        page: 1,
+        limit: CONTENT_DISPLAY_LIMITS.mainReviews,
+        mainOnly: true,
+      });
+      if (res.ok && res.storyCards.length > 0) {
+        setCards(res.storyCards);
+      }
+    })();
+  }, []);
+
+  if (cards.length === 0) {
+    return (
+      <section className="home-replacement-stories" data-home-section="replacement-stories">
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
+          <p className="text-sm font-bold text-slate-600">등록된 후기가 없습니다.</p>
+          <Link href={HOME_REPLACEMENT_REVIEWS_HREF} className="mt-3 inline-block text-xs font-black text-blue-700 hover:underline">
+            후기 페이지 보기
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -78,13 +110,13 @@ export function HomeReplacementStoriesSection() {
         </div>
 
         <div className="home-replacement-stories__cards-wrap">
-          <HomeReplacementStoriesMobileCarousel cards={visibleCards} />
+          <HomeReplacementStoriesMobileCarousel cards={cards} />
           <div
             className="home-replacement-stories__scroller home-replacement-stories__scroller--from-tablet"
             aria-label="교체 후기 카드"
           >
             <ul className="home-replacement-stories__list">
-              {visibleCards.map((card) => (
+              {cards.map((card) => (
                 <StoryCard key={card.id} card={card} />
               ))}
             </ul>

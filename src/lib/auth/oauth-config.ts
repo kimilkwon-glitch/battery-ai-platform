@@ -28,7 +28,7 @@ export const OAUTH_DEFAULT_REDIRECT_URIS: Record<OAuthProvider, string> = {
 export function getOAuthRedirectUri(provider: OAuthProvider): string {
   const fromEnv = process.env[ENV_KEY[provider]]?.trim();
   if (fromEnv) return fromEnv.replace(/\/$/, "");
-  if (provider === "kakao") return "";
+  if (provider === "kakao" || provider === "google") return "";
   return absoluteUrl(DEFAULT_CALLBACK_PATH[provider]);
 }
 

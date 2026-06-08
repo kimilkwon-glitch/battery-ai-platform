@@ -17,8 +17,15 @@ export const CUSTOMER_PRICE_LABELS = {
   total: "총 결제금액",
   priceBasis: "가격 기준",
   subtotal: "소계",
+  baseSelectionPrice: "기본 선택가",
+  finalAmount: "최종금액",
   noDeliveryFee: "택배비 없음",
   productAmount: "상품 합계",
+} as const;
+
+export const BATTERY_RETURN_POLICY_COPY = {
+  return: "폐배터리 반납 조건 가격입니다.",
+  noReturn: "폐배터리 미반납 시 전 제품 공통 25,000원이 추가됩니다.",
 } as const;
 
 export const CUSTOMER_FULFILLMENT_LABELS = {

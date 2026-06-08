@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS commerce_orders (
   order_status TEXT NOT NULL,
   payment_status TEXT NOT NULL,
   payment_request_id TEXT,
+  user_id TEXT,
   items_json JSONB NOT NULL DEFAULT '[]'::jsonb,
   price_lines_json JSONB NOT NULL DEFAULT '[]'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -65,6 +66,10 @@ CREATE TABLE IF NOT EXISTS commerce_order_status_logs (
 
 CREATE INDEX IF NOT EXISTS idx_commerce_orders_created_at
   ON commerce_orders (created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_commerce_orders_user_id_created
+  ON commerce_orders (user_id, created_at DESC)
+  WHERE user_id IS NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_commerce_orders_order_number_prefix
   ON commerce_orders (order_number text_pattern_ops);

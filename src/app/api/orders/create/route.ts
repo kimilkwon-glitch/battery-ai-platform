@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
 import { createCommerceOrder } from "@/lib/payment/commerce-order-service";
 import { validateCreateOrderBody } from "@/lib/payment/validate-order-payload";
 
@@ -28,7 +29,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await createCommerceOrder(validated.data);
+  const session = await getVerifiedCustomerSessionFromRequest(request);
+  const orderBody = {
+    ...validated.data,
+    customerInfo: {
+      ...validated.data.customerInfo,
+      userId: session?.userId,
+      customerType: session ? "member" : (validated.data.customerInfo.customerType ?? "guest"),
+    },
+  };
+
+  const result = await createCommerceOrder(orderBody);
   if (!result.ok) {
     return NextResponse.json(
       { ok: false, message: result.message, errors: result.errors },

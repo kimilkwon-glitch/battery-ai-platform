@@ -1,6 +1,7 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
 import { ensureCommerceSchema } from "@/lib/db/ensure-commerce-schema";
+import { ensurePromotionSchema } from "@/lib/db/ensure-promotion-schema";
 import { getSql } from "@/lib/db/postgres";
 import type { BatteryCartItem } from "@/types/cart";
 import type { CommerceOrderPriceSnapshot } from "@/types/commerce-order";
@@ -9,6 +10,7 @@ import type {
   CommerceOrderRecord,
   CommerceOrderStatusEvent,
 } from "@/types/commerce-payment";
+import type { AppliedPromotion } from "@/types/promotion";
 
 type OrderRow = {
   id: string;
@@ -37,8 +39,11 @@ type OrderRow = {
   order_status: string;
   payment_status: string;
   payment_request_id: string | null;
+  user_id: string | null;
   items_json: BatteryCartItem[];
   price_lines_json: CommerceOrderPriceSnapshot[];
+  promotion_discount_total: number;
+  applied_promotions_json: AppliedPromotion[];
   created_at: string;
   updated_at: string;
   payment_provider: string | null;
@@ -102,6 +107,7 @@ function rowToRecord(row: OrderRow, logs: StatusLogRow[]): CommerceOrderRecord {
     customerPhone: row.customer_phone,
     customerEmail: row.customer_email ?? undefined,
     customerType: row.customer_type as CommerceOrderRecord["customerType"],
+    userId: row.user_id ?? undefined,
     vehicleName: row.vehicle_name ?? undefined,
     vehicleYear: row.vehicle_year ?? undefined,
     vehicleFuel: row.vehicle_fuel ?? undefined,
@@ -119,6 +125,8 @@ function rowToRecord(row: OrderRow, logs: StatusLogRow[]): CommerceOrderRecord {
       row.return_battery_option as CommerceOrderRecord["returnBatteryOption"],
       row.items_json ?? [],
     ),
+    promotionDiscountTotal: row.promotion_discount_total ?? 0,
+    appliedPromotions: row.applied_promotions_json ?? [],
     finalAmount: row.final_amount,
     address: row.address ?? undefined,
     store: resolveStoreLabel(row.selected_store),
@@ -296,6 +304,7 @@ function extractSelectedStoreId(record: CommerceOrderRecord): string | null {
 
 async function ensureDb(): Promise<void> {
   await ensureCommerceSchema();
+  await ensurePromotionSchema();
 }
 
 export async function pgStoreCommerceOrderCreate(
@@ -312,7 +321,8 @@ export async function pgStoreCommerceOrderCreate(
       product_name, brand, battery_code, internet_price, onsite_price,
       fulfillment_type, return_battery_option, delivery_fee, store_install_discount,
       final_amount, address, selected_store, request_memo,
-      order_status, payment_status, payment_request_id, items_json, price_lines_json,
+      order_status, payment_status, payment_request_id, user_id, items_json, price_lines_json,
+      promotion_discount_total, applied_promotions_json,
       created_at, updated_at
     ) VALUES (
       ${record.orderId},
@@ -341,8 +351,11 @@ export async function pgStoreCommerceOrderCreate(
       ${record.orderStatus},
       ${record.paymentStatus},
       ${record.paymentRequestId ?? null},
+      ${record.userId ?? null},
       ${JSON.stringify(record.itemsJson)}::jsonb,
       ${JSON.stringify(record.priceLines)}::jsonb,
+      ${record.promotionDiscountTotal ?? 0},
+      ${JSON.stringify(record.appliedPromotions ?? [])}::jsonb,
       ${record.createdAt}::timestamptz,
       ${record.updatedAt}::timestamptz
     )
@@ -416,6 +429,8 @@ export async function pgStoreCommerceOrderUpdate(
       payment_request_id = ${next.paymentRequestId ?? null},
       items_json = ${JSON.stringify(next.itemsJson)}::jsonb,
       price_lines_json = ${JSON.stringify(next.priceLines)}::jsonb,
+      promotion_discount_total = ${next.promotionDiscountTotal ?? 0},
+      applied_promotions_json = ${JSON.stringify(next.appliedPromotions ?? [])}::jsonb,
       updated_at = NOW()
     WHERE id = ${orderId}
   `;
@@ -487,4 +502,41 @@ export async function pgStoreCommerceOrderList(limit = 200): Promise<CommerceOrd
     if (record) records.push(record);
   }
   return records;
+}
+
+export async function pgStoreCommerceOrderListByUserId(
+  userId: string,
+  limit = 50,
+): Promise<CommerceOrderRecord[]> {
+  await ensureDb();
+  const sql = getSql();
+  const ids = (await sql`
+    SELECT id FROM commerce_orders
+    WHERE user_id = ${userId}
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `) as { id: string }[];
+
+  const records: CommerceOrderRecord[] = [];
+  for (const { id } of ids) {
+    const record = await pgStoreCommerceOrderGet(id);
+    if (record) records.push(record);
+  }
+  return records;
+}
+
+export async function pgStoreCommerceOrderLookupByRef(
+  orderRef: string,
+): Promise<CommerceOrderRecord | null> {
+  await ensureDb();
+  const sql = getSql();
+  const trimmed = orderRef.trim();
+  const rows = (await sql`
+    SELECT id FROM commerce_orders
+    WHERE id = ${trimmed} OR order_number = ${trimmed}
+    LIMIT 1
+  `) as { id: string }[];
+  const id = rows[0]?.id;
+  if (!id) return null;
+  return pgStoreCommerceOrderGet(id);
 }

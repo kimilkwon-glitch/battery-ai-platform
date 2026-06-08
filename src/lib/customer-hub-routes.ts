@@ -29,9 +29,9 @@ export const HUB_MYPAGE = "/mypage";
 export const HUB_STORE_ANCHORS = {
   stores: `${HUB_STORE_DETAIL}#stores`,
   regions: `${HUB_STORE_DETAIL}#regions`,
-  visit: `${HUB_STORE_DETAIL}#visit`,
-  consultPrep: `${HUB_STORE_DETAIL}#consult-prep`,
-  photo: `${HUB_STORE_DETAIL}#photo-guide`,
+  visit: `${HUB_STORE_DETAIL}#visit-prep`,
+  consultPrep: `${HUB_STORE_DETAIL}#visit-prep`,
+  photo: HUB_PHOTO,
   contact: `${HUB_STORE_DETAIL}#contact`,
   deokcheon: `${HUB_STORE_DETAIL}#store-deokcheon`,
   hakjang: `${HUB_STORE_DETAIL}#store-hakjang`,

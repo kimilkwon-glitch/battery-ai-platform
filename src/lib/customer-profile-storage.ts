@@ -1,10 +1,17 @@
-/** 회원 프로필 (localStorage — 서버 연동 전 단일 source of truth) */
+/**
+ * 회원 프로필 UI 캐시 (localStorage — 인증 source of truth 아님)
+ * - 로그인·회원 식별: 서버 httpOnly 세션 + GET /api/auth/me
+ * - 주문서·프로필 편집 UI 편의용으로만 동기화
+ * - 비밀번호·비밀번호 stub 필드는 저장하지 않는다
+ */
 
 export type PreferredStoreId = "deokcheon" | "hakjang" | "undecided";
 export type AuthProvider = "credentials" | "naver" | "kakao" | "google";
 
 export type CustomerProfile = {
   id: string;
+  /** 일반 회원가입 아이디 */
+  loginId?: string;
   name: string;
   phone: string;
   email?: string;
@@ -14,15 +21,30 @@ export type CustomerProfile = {
   defaultVehicleId?: string;
   preferredStore?: PreferredStoreId;
   /** 회원가입 시 단일 차량 입력 (차량 프로필로 동기화) */
+  vehicleManufacturer?: string;
   vehicleName?: string;
   vehicleYear?: string;
   vehicleFuel?: string;
+  batterySpec?: string;
   provider: AuthProvider;
   createdAt: string;
   updatedAt: string;
 };
 
 const PROFILE_KEY = "bm-customer-profile-v1";
+
+/** 레거시 stub·비밀번호성 필드 제거 (localStorage에 저장·반환하지 않음) */
+function stripSensitiveProfileFields(
+  profile: CustomerProfile & Record<string, unknown>,
+): CustomerProfile {
+  const {
+    credentialsPasswordStub: _stub,
+    password: _password,
+    passwordHash: _hash,
+    ...safe
+  } = profile;
+  return safe as CustomerProfile;
+}
 
 function newProfileId(): string {
   return `bm-user-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -58,12 +80,12 @@ export function saveCustomerProfile(
   }
   const existing = getCustomerProfile();
   const now = new Date().toISOString();
-  const row: CustomerProfile = {
+  const row = stripSensitiveProfileFields({
     ...profile,
     id: profile.id || existing?.id || newProfileId(),
     createdAt: profile.createdAt ?? existing?.createdAt ?? now,
     updatedAt: now,
-  };
+  } as CustomerProfile & Record<string, unknown>);
   localStorage.setItem(PROFILE_KEY, JSON.stringify(row));
   return row;
 }
@@ -79,15 +101,15 @@ export function getCustomerProfile(): CustomerProfile | null {
   try {
     const raw = localStorage.getItem(PROFILE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as CustomerProfile;
+    const parsed = JSON.parse(raw) as CustomerProfile & Record<string, unknown>;
     if (!parsed?.phone && !parsed?.name) return null;
-    return {
+    return stripSensitiveProfileFields({
       ...parsed,
       id: parsed.id || newProfileId(),
       provider: parsed.provider ?? "credentials",
       createdAt: parsed.createdAt ?? new Date().toISOString(),
       updatedAt: parsed.updatedAt ?? parsed.createdAt ?? new Date().toISOString(),
-    };
+    });
   } catch {
     return null;
   }

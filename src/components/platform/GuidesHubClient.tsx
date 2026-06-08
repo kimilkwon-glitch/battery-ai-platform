@@ -108,7 +108,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
     { label: "시동지연", href: "/symptoms" },
     { label: "블랙박스 방전", href: "/diagnosis/blackbox-drain" },
     { label: "장기주차 방전", href: "/symptoms" },
-    { label: "AGM 배터리 차이", href: "/guides/knowledge/bk-agm-vs-din" },
+    { label: "AGM 배터리 차이", href: "/guides/knowledge/bk-agm-when" },
     { label: "하이브리드 보조배터리", href: "/guides/knowledge/bk-ev-aux-12v" },
     { label: "배터리 규격 보는 법", href: "/guide/spec" },
     { label: "주문 전 확인사항", href: "/order-checklist" },
@@ -117,7 +117,7 @@ export function GuidesHubClient({ initialCategory }: { initialCategory?: string 
   const quickTopics = [
     { label: "자주 묻는 질문", href: "/qa" },
     { label: "오주문 방지", href: "/guides?category=오주문 방지" },
-    { label: "AGM/DIN 차이", href: "/guides/knowledge/bk-agm-vs-din" },
+    { label: "AGM/DIN 차이", href: "/guides/knowledge/bk-din-vs-jis" },
     { label: "L/R 단자", href: "/guide/spec" },
     { label: "포터2 90R/100R", href: "/guides/porter2-year-battery-guide" },
     { label: "EV 보조 12V", href: "/guides/knowledge/bk-ev-aux-12v" },

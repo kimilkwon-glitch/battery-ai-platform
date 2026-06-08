@@ -153,7 +153,7 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
             onReturnChange={onReturnChange}
           />
 
-          <OrderPriceBreakdown item={item} compact />
+          <OrderPriceBreakdown item={item} compact includeBatteryReturnFee />
 
           <span
             className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-black ring-1 ${fitmentTone(item.fitmentStatus)}`}

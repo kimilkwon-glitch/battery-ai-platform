@@ -7,6 +7,8 @@ import type {
   CommerceOrderPriceSnapshot,
   CommercePaymentStatus,
 } from "@/types/commerce-order";
+import type { OrderAmountBreakdown } from "@/lib/pricing/order-amount-breakdown";
+import type { AppliedPromotion } from "@/types/promotion";
 import type {
   OrderRequestCustomerType,
   OrderRequestFulfillmentMethod,
@@ -47,6 +49,10 @@ export type CreateOrderPriceSummary = {
   priceLines?: CommerceOrderPriceSnapshot[];
 };
 
+export type CreateOrderPromotionInput = {
+  couponCode?: string | null;
+};
+
 export type CreateOrderRequestBody = {
   cartItems: BatteryCartItem[];
   customerInfo: CreateOrderCustomerInfo;
@@ -57,6 +63,7 @@ export type CreateOrderRequestBody = {
   selectedStore?: OrderRequestStoreId;
   requestMemo?: string;
   priceSummary?: CreateOrderPriceSummary;
+  promotion?: CreateOrderPromotionInput;
 };
 
 export type CommerceOrderRecord = {
@@ -83,6 +90,10 @@ export type CommerceOrderRecord = {
   deliveryFee: number;
   storeInstallDiscount: number;
   batteryReturnFee?: number;
+  promotionDiscountTotal?: number;
+  appliedPromotions?: AppliedPromotion[];
+  /** 토스 결제·정산용 금액 산출 내역 */
+  amountBreakdown?: OrderAmountBreakdown;
   finalAmount: number | null;
   postalCode?: string;
   address1?: string;
@@ -199,6 +210,10 @@ export type CheckoutSessionPayload = {
   priceLines: CommerceOrderPriceSnapshot[];
   batteryReturnFee: number;
   estimatedTotal: number | null;
+  promotionDiscountTotal?: number;
+  appliedPromotions?: AppliedPromotion[];
+  couponCode?: string | null;
+  eligibleAutomaticTitles?: string[];
   savedAt: string;
 };
 

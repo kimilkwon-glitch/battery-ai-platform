@@ -1,26 +1,54 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getOAuthRedirectUri } from "@/lib/auth/oauth-config";
+import { NextRequest } from "next/server";
+import {
+  oauthLoginFailRedirect,
+  oauthLoginSuccessRedirect,
+} from "@/lib/auth/oauth-callback.server";
+import {
+  exchangeGoogleAuthorizationCode,
+  fetchGoogleUserProfile,
+  OAUTH_RETURN_COOKIE,
+} from "@/lib/auth/google-oauth";
+import { oauthStateCookieName } from "@/lib/auth/oauth-start";
+import { upsertSocialOAuthMember } from "@/lib/auth/social-oauth-login.server";
 
-/** 구글 로그인 callback — URL 등록 준비 (토큰 교환 추후 구현) */
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
   const error = request.nextUrl.searchParams.get("error");
+  const state = request.nextUrl.searchParams.get("state");
 
-  if (process.env.NODE_ENV !== "production" && request.nextUrl.searchParams.get("debug") === "1") {
-    return NextResponse.json({
-      provider: "google",
-      redirectUri: getOAuthRedirectUri("google"),
-      code: code ? "present" : null,
-      error,
-    });
-  }
-
-  const login = new URL("/login", request.url);
   if (error || !code) {
-    login.searchParams.set("error", "google_login_cancelled");
-    return NextResponse.redirect(login);
+    return oauthLoginFailRedirect(request, "google_login_cancelled");
   }
 
-  login.searchParams.set("oauth", "google_pending");
-  return NextResponse.redirect(login);
+  const expectedState = request.cookies.get(oauthStateCookieName("google"))?.value;
+  if (!expectedState || !state || expectedState !== state) {
+    return oauthLoginFailRedirect(request, "google_login_invalid_state");
+  }
+
+  const tokenResult = await exchangeGoogleAuthorizationCode(code);
+  if (!tokenResult) {
+    return oauthLoginFailRedirect(request, "google_login_failed");
+  }
+
+  const profile = await fetchGoogleUserProfile(tokenResult.accessToken);
+  if (!profile) {
+    return oauthLoginFailRedirect(request, "google_login_failed");
+  }
+
+  const member = await upsertSocialOAuthMember({
+    provider: "google",
+    providerId: profile.googleId,
+    name: profile.name,
+    email: profile.email ?? null,
+  });
+
+  if (!member) {
+    return oauthLoginFailRedirect(request, "google_login_failed");
+  }
+
+  const returnPath = request.cookies.get(OAUTH_RETURN_COOKIE)?.value;
+  const response = await oauthLoginSuccessRedirect(request, member, returnPath);
+  response.cookies.delete(oauthStateCookieName("google"));
+  response.cookies.delete(OAUTH_RETURN_COOKIE);
+  return response;
 }

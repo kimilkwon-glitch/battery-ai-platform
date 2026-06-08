@@ -1,5 +1,10 @@
 import { randomBytes } from "node:crypto";
-import { computeServerOrderAmount } from "@/lib/payment/compute-order-amount";
+import { computeOrderAmountWithPromotions } from "@/lib/promotion/promotion-order-service";
+import {
+  hasPromotionUsagesForOrder,
+  recordPromotionUsages,
+} from "@/lib/promotion/promotion-store.postgres";
+import { buildOrderAmountBreakdown } from "@/lib/pricing/order-amount-breakdown";
 import {
   isCommerceOrderCreateEnabled,
   isCommerceOrderStoreEnabled,
@@ -44,6 +49,18 @@ const STORE_LABELS: Record<string, string> = {
   deokcheon: "덕천점",
   hakjang: "학장점",
 };
+
+/** 토스 orderName — 상품명 중심, 선택 정보는 과도하게 넣지 않음 */
+export function buildCommerceOrderName(
+  order: Pick<CommerceOrderRecord, "brand" | "productName" | "batteryCode">,
+): string {
+  const brand = order.brand?.trim();
+  const code = order.batteryCode?.trim();
+  if (brand && code) return `${brand} ${code} 자동차 배터리`;
+  const name = order.productName?.trim();
+  if (name) return name.replace(/\s*배터리\s*$/, " 자동차 배터리");
+  return code ? `${code} 자동차 배터리` : "자동차 배터리";
+}
 
 export function generateCommerceOrderId(): string {
   return `co_${Date.now()}_${randomBytes(4).toString("hex")}`;
@@ -124,11 +141,25 @@ export async function createCommerceOrder(
     };
   }
 
-  const amounts = computeServerOrderAmount(
+  const couponCode = body.promotion?.couponCode?.trim() || undefined;
+  const memberId = body.customerInfo.userId?.trim() || undefined;
+
+  const amounts = await computeOrderAmountWithPromotions(
     body.cartItems,
     body.fulfillmentType,
     body.returnBatteryOption,
+    { memberId, couponCode },
   );
+
+  if (couponCode && amounts.couponError) {
+    return {
+      ok: false,
+      status: 400,
+      message: amounts.couponError,
+      errors: ["COUPON_INVALID"],
+    };
+  }
+
   if (amounts.finalAmount == null) {
     return {
       ok: false,
@@ -154,6 +185,11 @@ export async function createCommerceOrder(
   const now = new Date().toISOString();
   const orderId = generateCommerceOrderId();
   const orderNumber = await generateCommerceOrderNumber();
+  const amountBreakdown = buildOrderAmountBreakdown(
+    body.cartItems,
+    body.fulfillmentType,
+    body.returnBatteryOption,
+  );
 
   const record: CommerceOrderRecord = {
     orderId,
@@ -179,6 +215,9 @@ export async function createCommerceOrder(
     deliveryFee: amounts.deliveryFee,
     storeInstallDiscount: amounts.storeInstallDiscount,
     batteryReturnFee: amounts.batteryReturnFee,
+    promotionDiscountTotal: amounts.promotionDiscountTotal,
+    appliedPromotions: amounts.appliedPromotions,
+    amountBreakdown,
     finalAmount: amounts.finalAmount,
     postalCode: body.addressInfo?.postalCode?.trim(),
     address1: body.addressInfo?.address1?.trim(),
@@ -290,6 +329,8 @@ export async function prepareCommercePayment(
     onsitePrice: validation.onsitePrice,
     deliveryFee: validation.deliveryFee,
     storeInstallDiscount: validation.storeInstallDiscount,
+    promotionDiscountTotal: validation.promotionDiscountTotal,
+    appliedPromotions: validation.appliedPromotions,
     statusHistory: [
       ...order.statusHistory,
       {
@@ -318,7 +359,7 @@ export async function prepareCommercePayment(
       orderId: o.orderId,
       orderNumber: o.orderNumber,
       amount: serverAmount,
-      orderName: `${o.productName} (${o.batteryCode})`,
+      orderName: buildCommerceOrderName(o),
       customerName: o.customerName,
       customerPhone: o.customerPhone,
       customerEmail: o.customerEmail,
@@ -459,8 +500,46 @@ export async function confirmCommercePayment(
     };
   }
 
+  if (Math.abs(tossResult.totalAmount - serverAmount) >= 1) {
+    await storeCommerceOrderUpdate(order.orderId, {
+      paymentStatus: "failed",
+      orderStatus: "payment_failed",
+      paymentFailCode: "AMOUNT_MISMATCH",
+      paymentFailReason: "토스 승인 금액이 주문 금액과 일치하지 않습니다.",
+      statusHistory: [
+        ...order.statusHistory,
+        {
+          status: "payment_failed",
+          paymentStatus: "failed",
+          note: "토스 승인 금액 불일치",
+          at: new Date().toISOString(),
+        },
+      ],
+    });
+    return {
+      ok: false,
+      status: 400,
+      message: "결제 금액이 일치하지 않습니다. 고객센터로 문의해 주세요.",
+      code: "AMOUNT_MISMATCH",
+    };
+  }
+
   const approvedAt = tossResult.approvedAt;
   const now = new Date().toISOString();
+
+  const alreadyRecorded = await hasPromotionUsagesForOrder(order.orderId);
+  if (!alreadyRecorded && order.appliedPromotions?.length) {
+    await recordPromotionUsages(
+      order.appliedPromotions.map((p) => ({
+        promotionId: p.promotionId,
+        memberId: order.userId ?? null,
+        orderId: order.orderId,
+        discountAmount: p.discountAmount,
+        couponCode: p.code,
+      })),
+    );
+  }
+
   await storeCommerceOrderUpdate(order.orderId, {
     paymentStatus: "completed",
     orderStatus: "payment_completed",

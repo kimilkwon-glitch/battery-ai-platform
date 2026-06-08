@@ -10,7 +10,10 @@ import { addInquiry } from "@/lib/inquiry-storage";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { CONTACT } from "@/lib/contact-info";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
-import { ORDER_REQUEST_LOOKUP_PAGE } from "@/lib/customer-center-routes";
+import {
+  COMMERCE_ORDER_LOOKUP_PAGE,
+  ORDER_REQUEST_LOOKUP_PAGE,
+} from "@/lib/customer-center-routes";
 import { SUPPORT_NOTICES } from "@/lib/support-notices-data";
 import {
   SUPPORT_FAQ_ITEMS,
@@ -115,7 +118,7 @@ export function SupportCenterHubV2() {
         <p className="support-hub-v2__hero-kicker">Battery Manager Support</p>
         <h1 className="support-hub-v2__hero-title">고객센터</h1>
         <p className="support-hub-v2__hero-desc">
-          주문, 배송, 교체, 배터리 문의를 한곳에서 빠르게 확인하세요.
+          FAQ 검색, 주문 조회, 상담 문의를 한곳에서 이용하세요.
         </p>
         <div className="support-hub-v2__cta-row mt-5 flex flex-col gap-2 sm:flex-row">
           {SUPPORT_HUB_PRIMARY_CTAS.map((cta) =>
@@ -296,16 +299,35 @@ export function SupportCenterHubV2() {
             </p>
           </div>
 
-          <div className="support-hub-v2__side-card">
-            <h3 className="support-hub-v2__side-title">비회원 주문조회</h3>
+          <div className="support-hub-v2__side-card support-hub-v2__side-card--store">
+            <h3 className="support-hub-v2__side-title">매장·출장 안내</h3>
             <p className="support-hub-v2__side-desc">
-              주문번호와 연락처로 주문 상태를 확인할 수 있습니다.
+              부산 덕천점·학장점 위치와 출장 가능 권역을 확인하세요.
             </p>
             <Link
-              href={ORDER_REQUEST_LOOKUP_PAGE}
+              href={HUB_STORE_DETAIL}
               className="support-hub-v2__cta support-hub-v2__cta--secondary mt-3 w-full"
             >
-              조회하기
+              매장 안내 보기
+            </Link>
+          </div>
+
+          <div className="support-hub-v2__side-card support-hub-v2__side-card--lookup">
+            <h3 className="support-hub-v2__side-title">주문 조회</h3>
+            <p className="support-hub-v2__side-desc">
+              주문번호와 연락처로 결제·주문 내역을 확인할 수 있습니다.
+            </p>
+            <Link
+              href={COMMERCE_ORDER_LOOKUP_PAGE}
+              className="support-hub-v2__cta support-hub-v2__cta--secondary mt-3 w-full"
+            >
+              주문 조회하기
+            </Link>
+            <Link
+              href={ORDER_REQUEST_LOOKUP_PAGE}
+              className="mt-2 block text-center text-xs font-bold text-slate-600 underline"
+            >
+              상담 접수 조회
             </Link>
           </div>
 

@@ -190,7 +190,7 @@ export const CUSTOMER_CENTER_DETAIL_GROUPS: CustomerCenterDetailGroup[] = [
         id: "agm-diff",
         title: "AGM / 일반 배터리 차이",
         description: "AGM·DIN·일반형 선택 시 참고",
-        href: "/guides/knowledge/bk-agm-vs-din",
+        href: "/guides/knowledge/bk-agm-when",
       },
     ],
   },

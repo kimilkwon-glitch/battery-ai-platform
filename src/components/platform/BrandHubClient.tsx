@@ -102,7 +102,7 @@ export function BrandHubClient() {
       data-brand-hub-active={active}
     >
       <nav
-        className={clsx("flex gap-2.5 sm:gap-3", theme.tabRail)}
+        className={clsx("brand-hub-tabs-enhanced flex gap-2.5 sm:gap-3", theme.tabRail)}
         role="tablist"
         aria-label="브랜드 선택"
       >

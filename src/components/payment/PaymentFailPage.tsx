@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { apiRecordPaymentFail } from "@/lib/payment/commerce-order-client";
+import { CUSTOMER_CENTER_HUB } from "@/lib/customer-center-routes";
 import { CHECKOUT_PAGE, CHECKOUT_REVIEW_PAGE } from "@/lib/payment/payment-routes";
 import { loadCheckoutOrderMeta } from "@/lib/payment/checkout-session-storage";
 import { bm } from "@/lib/design-tokens";
@@ -65,6 +66,9 @@ function PaymentFailContent() {
           data-payment-retry
         >
           다시 결제하기
+        </Link>
+        <Link href={CUSTOMER_CENTER_HUB} className={`${bm.btnTertiary} justify-center text-sm`}>
+          고객센터 문의
         </Link>
       </div>
     </div>

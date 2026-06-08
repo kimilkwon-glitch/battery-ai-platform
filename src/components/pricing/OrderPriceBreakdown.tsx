@@ -1,15 +1,16 @@
 "use client";
 
 import {
-  BATTERY_NO_RETURN_FEE,
   calculateCartItemPrice,
   computeBatteryReturnFee,
+  computeLineAmountWithReturnFee,
   formatPriceWon,
   FULFILLMENT_PRICE_DESCRIPTIONS,
   normalizeFulfillmentPriceType,
   type FulfillmentPriceType,
 } from "@/lib/pricing/order-price";
 import {
+  BATTERY_RETURN_POLICY_COPY,
   CUSTOMER_FULFILLMENT_LABELS,
   CUSTOMER_PRICE_LABELS,
   type CustomerFulfillmentDisplayKey,
@@ -23,6 +24,9 @@ type Props = {
   compact?: boolean;
   returnBatteryOption?: OrderRequestUsedBatteryOption | null;
   allItems?: BatteryCartItem[];
+  /** true: 상품상세·장바구니 미리보기 — 미반납 surcharge 즉시 반영 */
+  includeBatteryReturnFee?: boolean;
+  /** true: 주문서 — 다건 합산 미반납 fee */
   showOrderFees?: boolean;
 };
 
@@ -31,12 +35,29 @@ function fulfillmentBadge(type: FulfillmentPriceType): string | null {
   return CUSTOMER_FULFILLMENT_LABELS[type as CustomerFulfillmentDisplayKey];
 }
 
+function resolveReturnOption(
+  item: BatteryCartItem,
+  returnBatteryOption?: OrderRequestUsedBatteryOption | null,
+  includeBatteryReturnFee?: boolean,
+): OrderRequestUsedBatteryOption | null {
+  if (returnBatteryOption) return returnBatteryOption;
+  if (!includeBatteryReturnFee) return null;
+  const opt = item.usedBatteryReturn.option;
+  if (opt === "return" || opt === "no_return") return opt;
+  return null;
+}
+
 function breakdownRows(
   type: FulfillmentPriceType,
   result: ReturnType<typeof calculateCartItemPrice>,
-  returnBatteryOption?: OrderRequestUsedBatteryOption | null,
-  allItems?: BatteryCartItem[],
-  showOrderFees?: boolean,
+  lineAmount: ReturnType<typeof computeLineAmountWithReturnFee>,
+  options: {
+    returnOption: OrderRequestUsedBatteryOption | null;
+    includeBatteryReturnFee?: boolean;
+    showOrderFees?: boolean;
+    allItems?: BatteryCartItem[];
+    returnBatteryOption?: OrderRequestUsedBatteryOption | null;
+  },
 ): { label: string; value: string; emphasis?: boolean; highlight?: boolean }[] {
   if (type === "undecided" || result.finalPrice == null) {
     return [{ label: CUSTOMER_PRICE_LABELS.total, value: "수령 방식 선택 후 표시", emphasis: true }];
@@ -68,33 +89,54 @@ function breakdownRows(
       break;
   }
 
-  if (showOrderFees && returnBatteryOption && allItems?.length) {
-    const fee = computeBatteryReturnFee(returnBatteryOption, allItems);
-    if (returnBatteryOption === "no_return" && fee > 0) {
+  const showReturnLines = options.includeBatteryReturnFee || options.showOrderFees;
+  const returnOpt = options.returnOption;
+
+  if (showReturnLines && returnOpt === "no_return" && lineAmount.usedBatteryReturnSurcharge > 0) {
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.baseSelectionPrice,
+      value: formatPriceWon(lineAmount.fulfillmentSubtotal),
+    });
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.noReturnFee,
+      value: `+${formatPriceWon(lineAmount.usedBatteryReturnSurcharge)}`,
+      highlight: true,
+    });
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.finalAmount,
+      value: formatPriceWon(lineAmount.finalAmount),
+      emphasis: true,
+    });
+    return rows;
+  }
+
+  if (showReturnLines && returnOpt === "return") {
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.batteryReturn,
+      value: CUSTOMER_PRICE_LABELS.batteryReturnFree,
+    });
+  }
+
+  if (options.showOrderFees && returnOpt && options.allItems?.length) {
+    const fee = computeBatteryReturnFee(returnOpt, options.allItems);
+    if (returnOpt === "no_return" && fee > 0) {
       rows.push({
         label: CUSTOMER_PRICE_LABELS.noReturnFeeIfSelected,
         value: `+${formatPriceWon(fee)}`,
         highlight: true,
       });
-    } else if (returnBatteryOption === "return") {
-      rows.push({
-        label: CUSTOMER_PRICE_LABELS.batteryReturn,
-        value: CUSTOMER_PRICE_LABELS.batteryReturnFree,
-      });
     }
   }
 
-  const returnFee =
-    showOrderFees && returnBatteryOption && allItems?.length
-      ? computeBatteryReturnFee(returnBatteryOption, allItems)
-      : 0;
-  const total = result.lineTotal != null ? result.lineTotal + returnFee : null;
+  const totalLabel = showReturnLines && returnOpt ? CUSTOMER_PRICE_LABELS.finalAmount : CUSTOMER_PRICE_LABELS.subtotal;
+  const totalValue = showReturnLines && returnOpt ? lineAmount.finalAmount : lineAmount.fulfillmentSubtotal;
 
   rows.push({
-    label: showOrderFees ? CUSTOMER_PRICE_LABELS.total : CUSTOMER_PRICE_LABELS.subtotal,
-    value: formatPriceWon(showOrderFees ? total : result.lineTotal),
+    label: options.showOrderFees ? CUSTOMER_PRICE_LABELS.total : totalLabel,
+    value: formatPriceWon(totalValue),
     emphasis: true,
   });
+
   return rows;
 }
 
@@ -104,15 +146,34 @@ export function OrderPriceBreakdown({
   compact,
   returnBatteryOption,
   allItems,
+  includeBatteryReturnFee = false,
   showOrderFees,
 }: Props) {
   const method = fulfillmentMethod ?? item.fulfillment.method;
   const type = normalizeFulfillmentPriceType(method);
   const result = calculateCartItemPrice(item, method);
-  const items = allItems ?? [item];
-  const rows = breakdownRows(type, result, returnBatteryOption, items, showOrderFees);
+  const returnOption = resolveReturnOption(item, returnBatteryOption, includeBatteryReturnFee);
+  const lineAmount = computeLineAmountWithReturnFee(
+    item,
+    method,
+    returnBatteryOption ?? returnOption ?? undefined,
+  );
+  const rows = breakdownRows(type, result, lineAmount, {
+    returnOption,
+    includeBatteryReturnFee,
+    showOrderFees,
+    allItems: allItems ?? [item],
+    returnBatteryOption,
+  });
   const desc = type !== "undecided" ? FULFILLMENT_PRICE_DESCRIPTIONS[type] : null;
   const badge = fulfillmentBadge(type);
+
+  const policyHint =
+    includeBatteryReturnFee && returnOption === "return"
+      ? BATTERY_RETURN_POLICY_COPY.return
+      : includeBatteryReturnFee && returnOption === "no_return"
+        ? BATTERY_RETURN_POLICY_COPY.noReturn
+        : null;
 
   return (
     <div
@@ -128,6 +189,9 @@ export function OrderPriceBreakdown({
           <span className="font-black text-slate-800">{result.priceBasisLabel}</span>
         )}
       </div>
+      {policyHint ? (
+        <p className="text-[11px] font-bold leading-relaxed text-slate-600">{policyHint}</p>
+      ) : null}
       {desc && !compact ? (
         <p className="text-[11px] font-medium leading-relaxed text-[#475569]">{desc}</p>
       ) : null}
@@ -198,26 +262,4 @@ export function OrderPriceTotalBar({
       </span>
     </div>
   );
-}
-
-export function BatteryReturnFeeHint({
-  option,
-}: {
-  option?: OrderRequestUsedBatteryOption | null;
-}) {
-  if (option === "no_return") {
-    return (
-      <p className="text-[11px] font-bold text-red-600">
-        {CUSTOMER_PRICE_LABELS.noReturnFeeIfSelected} +{formatPriceWon(BATTERY_NO_RETURN_FEE)} (수량별 합산)
-      </p>
-    );
-  }
-  if (option === "return") {
-    return (
-      <p className="text-[11px] font-bold text-slate-600">
-        {CUSTOMER_PRICE_LABELS.batteryReturn} · {CUSTOMER_PRICE_LABELS.batteryReturnFree}
-      </p>
-    );
-  }
-  return null;
 }

@@ -13,6 +13,7 @@ import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { CONTACT } from "@/lib/contact-info";
 import { openProductInquiry } from "@/lib/chat-inquiry-events";
 import { getBattery, getBrand } from "@/lib/platform-data";
+import { BATTERY_RETURN_POLICY_COPY } from "@/lib/pricing/customer-price-labels";
 import {
   BATTERY_RETURN_OPTIONS,
   type BatteryReturnOption,
@@ -106,6 +107,11 @@ export function BatteryDetailOrderPanel({
                 );
               })}
             </div>
+            <p className="mt-2 text-[11px] font-bold leading-relaxed text-slate-600">
+              {returnOption === "no-return"
+                ? BATTERY_RETURN_POLICY_COPY.noReturn
+                : BATTERY_RETURN_POLICY_COPY.return}
+            </p>
           </div>
 
           <ProductFulfillmentPricePanel

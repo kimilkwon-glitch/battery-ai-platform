@@ -214,6 +214,37 @@ export function sumCartItemsPrice(
   return hasPrice ? total : null;
 }
 
+export type LineAmountWithReturnFee = {
+  fulfillmentSubtotal: number | null;
+  usedBatteryReturnSurcharge: number;
+  finalAmount: number | null;
+  returnOption: "return" | "no_return" | "undecided" | "unknown" | null;
+};
+
+/** 수령/장착 소계 + 폐배터리 미반납 surcharge → 최종 라인 금액 */
+export function computeLineAmountWithReturnFee(
+  item: BatteryCartItem,
+  fulfillmentMethod?: FulfillmentMethod | OrderRequestFulfillmentMethod,
+  returnOptionOverride?: OrderRequestUsedBatteryOption | null,
+): LineAmountWithReturnFee {
+  const result = calculateCartItemPrice(item, fulfillmentMethod);
+  const returnOption =
+    returnOptionOverride ??
+    (item.usedBatteryReturn.option === "return" || item.usedBatteryReturn.option === "no_return"
+      ? item.usedBatteryReturn.option
+      : null);
+  const surcharge = computeBatteryReturnFee(returnOption, [item]);
+  const fulfillmentSubtotal = result.lineTotal;
+  const finalAmount =
+    fulfillmentSubtotal != null ? fulfillmentSubtotal + surcharge : null;
+  return {
+    fulfillmentSubtotal,
+    usedBatteryReturnSurcharge: surcharge,
+    finalAmount,
+    returnOption,
+  };
+}
+
 /** 주문 단위 폐배터리 미반납 추가금 */
 export function computeBatteryReturnFee(
   option:

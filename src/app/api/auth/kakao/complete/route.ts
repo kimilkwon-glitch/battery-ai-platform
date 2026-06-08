@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { attachCustomerSessionCookie } from "@/lib/auth/member-api-helpers";
+import { toMemberPublic } from "@/lib/auth/member-public";
 import {
   KAKAO_OAUTH_HANDOFF_COOKIE,
   type KakaoOAuthProfile,
 } from "@/lib/auth/kakao-oauth";
+import { upsertSocialOAuthMember } from "@/lib/auth/social-oauth-login.server";
 
+const FAIL_MESSAGE = "카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+
+/** @deprecated callback에서 세션 발급 — 레거시 handoff 쿠키 호환용 */
 export async function GET(request: NextRequest) {
   const raw = request.cookies.get(KAKAO_OAUTH_HANDOFF_COOKIE)?.value;
-  const response = NextResponse.json({ ok: false as const, message: "카카오 로그인 정보가 없습니다." });
-
   if (!raw) {
-    return response;
+    return NextResponse.json({ ok: false as const, message: FAIL_MESSAGE });
   }
 
   let profile: KakaoOAuthProfile;
@@ -17,19 +21,29 @@ export async function GET(request: NextRequest) {
     profile = JSON.parse(raw) as KakaoOAuthProfile;
     if (!profile?.kakaoId || !profile?.name) throw new Error("invalid");
   } catch {
-    response.cookies.delete(KAKAO_OAUTH_HANDOFF_COOKIE);
-    return NextResponse.json({ ok: false as const, message: "카카오 로그인 정보가 올바르지 않습니다." });
+    const fail = NextResponse.json({ ok: false as const, message: FAIL_MESSAGE });
+    fail.cookies.delete(KAKAO_OAUTH_HANDOFF_COOKIE);
+    return fail;
   }
 
-  const ok = NextResponse.json({
-    ok: true as const,
-    profile: {
-      userId: `bm-user-kakao-${profile.kakaoId}`,
-      name: profile.name,
-      email: profile.email,
-      provider: "kakao" as const,
-    },
+  const member = await upsertSocialOAuthMember({
+    provider: "kakao",
+    providerId: profile.kakaoId,
+    name: profile.name,
+    email: profile.email ?? null,
   });
-  ok.cookies.delete(KAKAO_OAUTH_HANDOFF_COOKIE);
-  return ok;
+
+  if (!member) {
+    const fail = NextResponse.json({ ok: false as const, message: FAIL_MESSAGE });
+    fail.cookies.delete(KAKAO_OAUTH_HANDOFF_COOKIE);
+    return fail;
+  }
+
+  const response = NextResponse.json({
+    ok: true as const,
+    member: toMemberPublic(member),
+  });
+  response.cookies.delete(KAKAO_OAUTH_HANDOFF_COOKIE);
+  await attachCustomerSessionCookie(response, member.id);
+  return response;
 }

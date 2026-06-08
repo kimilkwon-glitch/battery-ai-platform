@@ -45,8 +45,7 @@ export function PortalHeaderAuth() {
         <button
           type="button"
           onClick={() => {
-            logout();
-            router.refresh();
+            void logout().then(() => router.refresh());
           }}
           className="portal-header-auth-btn rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 lg:text-xs"
         >

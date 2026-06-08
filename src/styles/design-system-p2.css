@@ -4187,8 +4187,11 @@
 
 .home-hero-carousel__dots {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.375rem;
+  justify-content: center;
+  gap: 0.3rem;
+  max-width: min(280px, 72vw);
 }
 
 .home-hero-carousel__dot {

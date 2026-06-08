@@ -42,11 +42,20 @@ async function runMigration(): Promise<void> {
       order_status TEXT NOT NULL,
       payment_status TEXT NOT NULL,
       payment_request_id TEXT,
+      user_id TEXT,
       items_json JSONB NOT NULL DEFAULT '[]'::jsonb,
       price_lines_json JSONB NOT NULL DEFAULT '[]'::jsonb,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `;
+
+  await sql`ALTER TABLE commerce_orders ADD COLUMN IF NOT EXISTS user_id TEXT`;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_commerce_orders_user_id_created
+      ON commerce_orders (user_id, created_at DESC)
+      WHERE user_id IS NOT NULL
   `;
 
   await sql`

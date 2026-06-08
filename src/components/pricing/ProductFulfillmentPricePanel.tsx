@@ -1,15 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
 import {
+  computeLineAmountWithReturnFee,
+  formatPriceWon,
   FULFILLMENT_PRICE_DESCRIPTIONS,
   FULFILLMENT_PRICE_LABELS,
   type FulfillmentPriceType,
 } from "@/lib/pricing/order-price";
 import { OrderPriceBreakdown } from "@/components/pricing/OrderPriceBreakdown";
 import type { FulfillmentMethod } from "@/types/cart";
-import type { BatteryReturnOption } from "@/lib/shop-order-types";
+import {
+  mapShopReturnOptionToUsedBattery,
+  type BatteryReturnOption,
+} from "@/lib/shop-order-types";
 
 const METHODS: {
   value: FulfillmentMethod;
@@ -36,8 +41,7 @@ export function ProductFulfillmentPricePanel({
   fulfillmentMethod: controlledMethod,
   onFulfillmentChange,
 }: Props) {
-  const [internalMethod, setInternalMethod] = useState<FulfillmentMethod>("delivery");
-  const method = controlledMethod ?? internalMethod;
+  const method = controlledMethod ?? "delivery";
 
   const previewItem = useMemo(
     () =>
@@ -45,15 +49,32 @@ export function ProductFulfillmentPricePanel({
         batteryCode,
         brandName,
         usedBatteryReturnOption: returnOption,
+        fulfillmentMethod: method,
         source: "battery_detail",
         quantity: 1,
       }),
-    [batteryCode, brandName, returnOption],
+    [batteryCode, brandName, returnOption, method],
   );
 
+  const usedBatteryOption = mapShopReturnOptionToUsedBattery(returnOption);
+
+  const methodPrices = useMemo(() => {
+    const map = new Map<FulfillmentMethod, ReturnType<typeof computeLineAmountWithReturnFee>>();
+    for (const m of METHODS) {
+      map.set(m.value, computeLineAmountWithReturnFee(previewItem, m.value, usedBatteryOption));
+    }
+    return map;
+  }, [previewItem, usedBatteryOption]);
+
   const selectMethod = (next: FulfillmentMethod) => {
-    if (controlledMethod == null) setInternalMethod(next);
     onFulfillmentChange?.(next);
+  };
+
+  const formatMethodPrice = (fulfillmentMethod: FulfillmentMethod): string => {
+    const line = methodPrices.get(fulfillmentMethod);
+    if (line?.fulfillmentSubtotal == null && line?.finalAmount == null) return "가격 문의";
+    const amount = line?.finalAmount ?? line?.fulfillmentSubtotal;
+    return formatPriceWon(amount ?? null);
   };
 
   return (
@@ -69,6 +90,7 @@ export function ProductFulfillmentPricePanel({
           const active = method === m.value;
           const label = FULFILLMENT_PRICE_LABELS[m.priceType];
           const desc = FULFILLMENT_PRICE_DESCRIPTIONS[m.priceType];
+          const priceLabel = formatMethodPrice(m.value);
           return (
             <button
               key={m.value}
@@ -80,7 +102,16 @@ export function ProductFulfillmentPricePanel({
                   : "bg-white text-[#0F172A] ring-1 ring-[#D8E1EC] hover:ring-slate-300"
               }`}
             >
-              <span className="block text-xs font-black">{label}</span>
+              <span className="flex items-baseline justify-between gap-2">
+                <span className="text-xs font-black">{label}</span>
+                <span
+                  className={`shrink-0 text-xs font-black tabular-nums ${
+                    active ? "text-blue-100" : "text-[#1E3A8A]"
+                  }`}
+                >
+                  {priceLabel}
+                </span>
+              </span>
               <span
                 className={`mt-0.5 block text-[10px] font-medium leading-snug ${
                   active ? "text-blue-50" : "text-slate-500"
@@ -92,7 +123,11 @@ export function ProductFulfillmentPricePanel({
           );
         })}
       </div>
-      <OrderPriceBreakdown item={previewItem} fulfillmentMethod={method} />
+      <OrderPriceBreakdown
+        item={previewItem}
+        fulfillmentMethod={method}
+        includeBatteryReturnFee
+      />
       <p className="text-[10px] font-medium text-slate-500">
         배송지·방문 지점은 주문서 작성 단계에서 입력합니다.
       </p>

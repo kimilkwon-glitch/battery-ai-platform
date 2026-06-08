@@ -1,6 +1,6 @@
 /**
- * 소셜 로그인 노출 설정 — OAuth 연동 완료 전까지 버튼 숨김
- * 클라이언트 노출: NEXT_PUBLIC_* 환경변수 필요
+ * @deprecated 버튼 노출은 /api/auth/providers + SocialLoginButtons 가 서버 OAuth 설정으로 판단합니다.
+ * NEXT_PUBLIC_* 플래그는 개발 환경 mismatch 경고용으로만 참고합니다.
  */
 
 import type { AuthProvider } from "@/lib/customer-profile-storage";

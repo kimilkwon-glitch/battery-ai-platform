@@ -4,7 +4,7 @@ import {
   CUSTOMER_CENTER_ORDER_GUIDE,
   CUSTOMER_CENTER_RETURN_EXCHANGE,
   CUSTOMER_CENTER_USED_BATTERY,
-  ORDER_REQUEST_LOOKUP_PAGE,
+  COMMERCE_ORDER_LOOKUP_PAGE,
 } from "@/lib/customer-center-routes";
 import { HUB_GUIDE, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import type { FaqCategory } from "@/lib/support-faq-data";
@@ -50,7 +50,7 @@ export const SUPPORT_HUB_PRIMARY_CTAS = [
   {
     id: "lookup",
     label: "주문 조회하기",
-    href: ORDER_REQUEST_LOOKUP_PAGE,
+    href: COMMERCE_ORDER_LOOKUP_PAGE,
     variant: "secondary" as const,
   },
 ] as const;

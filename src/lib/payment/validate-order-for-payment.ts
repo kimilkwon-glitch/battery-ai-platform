@@ -1,4 +1,4 @@
-import { computeServerOrderAmount } from "@/lib/payment/compute-order-amount";
+import { computeFinalFromStoredPromotions } from "@/lib/promotion/promotion-order-service";
 import type { CommerceOrderRecord } from "@/types/commerce-payment";
 import type { OrderRequestFulfillmentMethod } from "@/types/order-request";
 
@@ -19,6 +19,8 @@ export type OrderPaymentValidation =
       deliveryFee: number;
       storeInstallDiscount: number;
       batteryReturnFee: number;
+      promotionDiscountTotal: number;
+      appliedPromotions: CommerceOrderRecord["appliedPromotions"];
     }
   | { ok: false; message: string; errors?: string[] };
 
@@ -44,10 +46,12 @@ export function validateOrderForPayment(order: CommerceOrderRecord): OrderPaymen
     return { ok: false, message: errors[0]!, errors };
   }
 
-  const amounts = computeServerOrderAmount(
+  const applied = order.appliedPromotions ?? [];
+  const amounts = computeFinalFromStoredPromotions(
     order.itemsJson,
     order.fulfillmentType,
     order.returnBatteryOption,
+    applied,
   );
 
   if (amounts.finalAmount == null) {
@@ -64,6 +68,14 @@ export function validateOrderForPayment(order: CommerceOrderRecord): OrderPaymen
     };
   }
 
+  const storedDiscount = order.promotionDiscountTotal ?? 0;
+  if (Math.abs(storedDiscount - amounts.promotionDiscountTotal) >= 1) {
+    return {
+      ok: false,
+      message: "혜택 할인 정보가 일치하지 않습니다. 주문서를 다시 확인해 주세요.",
+    };
+  }
+
   return {
     ok: true,
     finalAmount: amounts.finalAmount,
@@ -73,5 +85,7 @@ export function validateOrderForPayment(order: CommerceOrderRecord): OrderPaymen
     deliveryFee: amounts.deliveryFee,
     storeInstallDiscount: amounts.storeInstallDiscount,
     batteryReturnFee: amounts.batteryReturnFee,
+    promotionDiscountTotal: amounts.promotionDiscountTotal,
+    appliedPromotions: amounts.appliedPromotions,
   };
 }

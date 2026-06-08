@@ -2,40 +2,45 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
-  clearCustomerSession,
-  getCustomerSession,
-  type CustomerSession,
-} from "@/lib/customer-auth-session";
+  clearCustomerAuthCache,
+  fetchCustomerAuthMe,
+  getCustomerAuthCache,
+} from "@/lib/auth/customer-auth-client";
+import { syncMemberToProfileCache } from "@/lib/auth/sync-member-profile-cache";
+import type { MemberPublic } from "@/lib/auth/member-types";
 
 export function useCustomerAuth() {
-  const [session, setSession] = useState<CustomerSession | null>(null);
+  const [member, setMember] = useState<MemberPublic | null>(() => getCustomerAuthCache());
   const [ready, setReady] = useState(false);
 
-  const refresh = useCallback(() => {
-    setSession(getCustomerSession());
+  const refresh = useCallback(async () => {
+    const m = await fetchCustomerAuthMe();
+    setMember(m);
+    if (m) syncMemberToProfileCache(m);
     setReady(true);
+    return m;
   }, []);
 
   useEffect(() => {
-    refresh();
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === "bm-customer-session-v1") refresh();
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    void refresh();
   }, [refresh]);
 
-  const logout = useCallback(() => {
-    clearCustomerSession();
-    setSession(null);
+  const logout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    } finally {
+      clearCustomerAuthCache();
+      setMember(null);
+    }
   }, []);
 
   return {
-    session,
-    isLoggedIn: Boolean(session),
+    member,
+    isLoggedIn: Boolean(member),
     ready,
     refresh,
     logout,
-    displayName: session?.displayName ?? null,
+    displayName: member?.name ?? null,
+    userId: member?.id ?? null,
   };
 }

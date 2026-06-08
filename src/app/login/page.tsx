@@ -16,7 +16,7 @@ export default async function LoginPage({
   const redirect = sp.redirect?.trim() || null;
 
   return (
-    <AuthPageLayout tagline="로그인 후 주문·결제를 계속 진행하세요">
+    <AuthPageLayout tagline="배터리매니저 회원 로그인">
       <Suspense fallback={<ContentAreaFallback lines={4} />}>
         <LoginFormWithRedirect redirect={redirect ?? undefined} />
       </Suspense>

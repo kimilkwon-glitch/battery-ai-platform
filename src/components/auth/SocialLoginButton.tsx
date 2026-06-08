@@ -5,15 +5,17 @@ import clsx from "clsx";
 import {
   getSocialLoginBrand,
   type SocialLoginProvider,
+  type SocialLoginVariant,
 } from "@/lib/auth/social-login-brand";
 
 type Props = {
   provider: SocialLoginProvider;
   href: string;
+  variant?: SocialLoginVariant;
 };
 
-export function SocialLoginButton({ provider, href }: Props) {
-  const brand = getSocialLoginBrand(provider);
+export function SocialLoginButton({ provider, href, variant = "login" }: Props) {
+  const brand = getSocialLoginBrand(provider, variant);
 
   return (
     <a

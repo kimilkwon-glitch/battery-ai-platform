@@ -12,6 +12,7 @@ export default function GuidesPage() {
       title="배터리 가이드"
       description="점검·증상·불량·AS 안내를 카테고리별로 확인하세요."
       searchPlaceholder="차량명, 연식, 배터리 규격 검색"
+      showPageHeader={false}
     >
       <Suspense fallback={<ContentAreaFallback lines={6} />}>
         <BatteryGuideHubClient />

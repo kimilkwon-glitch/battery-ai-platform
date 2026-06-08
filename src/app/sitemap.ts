@@ -10,6 +10,7 @@ const STATIC_PATHS = [
   "/checkout",
   "/login",
   "/signup",
+  "/orders/lookup",
   "/order-request/lookup",
   "/support",
   "/support/faq",

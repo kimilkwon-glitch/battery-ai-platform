@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle, MapPin, Phone } from "lucide-react";
 import { BusanRegionMap } from "@/components/service/BusanRegionMap";
 import { StoreHubCompactCards } from "@/components/service/StoreHubCompactCards";
 import { StoreNeighborhoodSearch } from "@/components/service/StoreNeighborhoodSearch";
+import { CONTACT } from "@/lib/contact-info";
 import { VISIT_OUTBOUND_PREP_ITEMS } from "@/lib/busan-service-hub-data";
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
 
@@ -18,13 +20,21 @@ export function ServiceCenterClient({
   symptom?: string;
 }) {
   const context = [vehicleLabel, battery, symptom].filter(Boolean);
-  /** 지도·토글·카드 공통 — 선택된 지점 (null이면 두 카드 기본 강조) */
   const [selectedBranch, setSelectedBranch] = useState<BusanStoreId | null>(null);
   const [hoveredBranch, setHoveredBranch] = useState<BusanStoreId | null>(null);
   const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
 
   return (
     <div className="busan-service-hub space-y-6 pb-8">
+      <header className="busan-service-hero">
+        <p className="cp-hero__kicker">Busan Direct Stores</p>
+        <h2 className="busan-service-hero__title">부산 직영점 · 출장 교체 안내</h2>
+        <p className="busan-service-hero__desc">
+          동네명을 입력하면 가까운 덕천점·학장점을 안내해 드립니다. 지도에서 권역을 확인하고 지점을 선택하세요.
+        </p>
+        <span className="cp-hero__accent" aria-hidden />
+      </header>
+
       {context.length > 0 ? (
         <p className="rounded-xl bg-blue-50/60 px-4 py-2 text-xs font-bold text-blue-800 ring-1 ring-blue-100">
           연결 정보: {context.join(" · ")}
@@ -35,14 +45,18 @@ export function ServiceCenterClient({
         activeStore={selectedBranch ?? hoveredBranch}
         onMatch={setSelectedBranch}
         onSearchQuery={setMapSearchQuery}
+        enhanced
       />
 
-      <BusanRegionMap
-        selectedBranch={selectedBranch}
-        searchQuery={mapSearchQuery}
-        onHoverBranch={setHoveredBranch}
-        onSelectBranch={setSelectedBranch}
-      />
+      <section id="regions" className="scroll-mt-24">
+        <BusanRegionMap
+          selectedBranch={selectedBranch}
+          searchQuery={mapSearchQuery}
+          onHoverBranch={setHoveredBranch}
+          onSelectBranch={setSelectedBranch}
+        />
+      </section>
+
       <p className="text-center text-xs font-medium text-slate-500">
         지도가 보이지 않으면 가까운 지점으로 전화 상담해 주세요.
       </p>
@@ -75,6 +89,44 @@ export function ServiceCenterClient({
             </li>
           ))}
         </ul>
+      </section>
+
+      <section
+        id="contact"
+        className="busan-service-contact scroll-mt-24"
+      >
+        <div className="flex items-start gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+            <Phone className="size-5" aria-hidden />
+          </span>
+          <div>
+            <h3 className="text-base font-black text-slate-900">전화 상담</h3>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              매장·출장 가능 여부와 예약 시간을 안내해 드립니다.
+            </p>
+            <a
+              href={CONTACT.customerCenter.tel}
+              className="mt-2 inline-block text-lg font-black text-blue-800 hover:underline"
+            >
+              {CONTACT.customerCenter.phone}
+            </a>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            href="/support?tab=inquiry"
+            className="inline-flex min-h-[2.5rem] items-center rounded-lg bg-slate-900 px-4 text-sm font-black text-white hover:bg-slate-800"
+          >
+            상담 문의하기
+          </Link>
+          <Link
+            href="#stores"
+            className="inline-flex min-h-[2.5rem] items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-800 hover:border-blue-200"
+          >
+            <MapPin className="size-4" aria-hidden />
+            지점 위치 보기
+          </Link>
+        </div>
       </section>
     </div>
   );

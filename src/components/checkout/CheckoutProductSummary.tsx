@@ -95,7 +95,12 @@ export function CheckoutProductSummary({ items, fulfillmentMethod }: Props) {
             </p>
 
             {method && method !== "undecided" ? (
-              <OrderPriceBreakdown item={primary} fulfillmentMethod={method} compact />
+              <OrderPriceBreakdown
+                item={primary}
+                fulfillmentMethod={method}
+                compact
+                includeBatteryReturnFee
+              />
             ) : null}
           </div>
         </div>

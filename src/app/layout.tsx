@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CustomerAuthBootstrap } from "@/components/auth/CustomerAuthBootstrap";
 import { BatteryCartProvider } from "@/components/cart/BatteryCartProvider";
 import { CartProvider } from "@/components/platform/CartContext";
 import "./globals.css";
@@ -45,6 +46,7 @@ export default function RootLayout({
       <body className="antialiased" data-build-version={BUILD_STAMP} data-build-rev="benefit-review-layout-fix-v1-20260530">
         <CartProvider>
           <BatteryCartProvider>
+            <CustomerAuthBootstrap />
             {children}
             <FloatingActionDock />
             <BuildVersionStamp />

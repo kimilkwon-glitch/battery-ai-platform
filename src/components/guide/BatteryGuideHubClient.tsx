@@ -46,6 +46,15 @@ export function BatteryGuideHubClient({ initialCategory }: { initialCategory?: s
 
   return (
     <div className="battery-guide-hub space-y-5" data-page="battery-guide-hub">
+      <header className="cp-hero battery-guide-hero cp-hero--emerald">
+        <p className="cp-hero__kicker">Battery Guide</p>
+        <h2 className="cp-hero__title">배터리 점검·증상·AS 가이드</h2>
+        <p className="cp-hero__desc">
+          카테고리를 선택하면 점검 방법, 증상 진단, 불량 안내, AS 절차를 확인할 수 있습니다.
+        </p>
+        <span className="cp-hero__accent" aria-hidden />
+      </header>
+
       <div className="grid gap-3 sm:grid-cols-2">
         {GUIDE_HUB_ITEMS.map((item) => {
           const Icon = item.Icon;
@@ -57,9 +66,9 @@ export function BatteryGuideHubClient({ initialCategory }: { initialCategory?: s
               onClick={() => selectCategory(item.id)}
               aria-pressed={selected}
               className={cn(
-                `${bm.card} ${bm.cardPad} flex w-full gap-4 text-left transition`,
+                `${bm.card} ${bm.cardPad} battery-guide-cat flex w-full gap-4 text-left transition`,
                 selected
-                  ? "border-2 border-blue-500 bg-blue-50/60 shadow-sm ring-0"
+                  ? "battery-guide-cat--active border-2 border-blue-500 bg-blue-50/60 shadow-sm ring-0"
                   : "border border-slate-200/90 bg-white hover:border-blue-200 hover:bg-slate-50/80",
               )}
             >
@@ -110,7 +119,7 @@ export function BatteryGuideHubClient({ initialCategory }: { initialCategory?: s
           {content.cards.map((card) => (
             <article
               key={card.title}
-              className={`${bm.card} relative overflow-hidden border-slate-200/90 ${bm.cardPad}`}
+              className={`${bm.card} battery-guide-content-card relative overflow-hidden border-slate-200/90 ${bm.cardPad}`}
             >
               <span
                 className="absolute inset-y-0 left-0 w-1 bg-blue-500/80"
@@ -132,7 +141,7 @@ export function BatteryGuideHubClient({ initialCategory }: { initialCategory?: s
         </div>
       </section>
 
-      <section className={`${bm.card} ${bm.cardPad} flex flex-col gap-2 sm:flex-row sm:flex-wrap`}>
+      <section className={`${bm.card} ${bm.cardPad} battery-guide-cta-bar flex flex-col gap-2 sm:flex-row sm:flex-wrap`}>
         {GUIDE_CTAS.map((cta) => (
           <Link
             key={cta.href}

@@ -10,7 +10,7 @@ export default async function SignupPage({
   const redirect = sp.redirect?.trim() || null;
 
   return (
-    <AuthPageLayout tagline="회원가입 후 배송지·차량정보를 저장하고 빠르게 주문하세요">
+    <AuthPageLayout tagline="회원가입 후 더 빠르게 주문하세요" wide>
       <SignupForm redirect={redirect} />
     </AuthPageLayout>
   );

@@ -14,8 +14,12 @@ import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { PaymentConfirmResponse } from "@/types/commerce-payment";
 import { CONTACT } from "@/lib/contact-info";
 import { bm } from "@/lib/design-tokens";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { COMMERCE_ORDER_LOOKUP_PAGE } from "@/lib/customer-center-routes";
+import { CUSTOMER_MYPAGE } from "@/lib/customer-auth-routes";
 
 function PaymentSuccessContent() {
+  const { isLoggedIn, ready: authReady } = useCustomerAuth();
   const searchParams = useSearchParams();
   const paymentKey = searchParams.get("paymentKey")?.trim() ?? "";
   const orderId = searchParams.get("orderId")?.trim() ?? "";
@@ -144,8 +148,11 @@ function PaymentSuccessContent() {
         <Link href="/" className={`${bm.btnNavy} justify-center text-sm`}>
           홈으로
         </Link>
-        <Link href="/order-request/lookup" className={`${bm.btnTertiary} justify-center text-sm`}>
-          주문 조회
+        <Link
+          href={authReady && isLoggedIn ? `${CUSTOMER_MYPAGE}#orders` : COMMERCE_ORDER_LOOKUP_PAGE}
+          className={`${bm.btnTertiary} justify-center text-sm`}
+        >
+          {authReady && isLoggedIn ? "주문 내역 보기" : "주문 조회"}
         </Link>
       </div>
     </div>

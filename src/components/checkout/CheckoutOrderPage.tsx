@@ -41,7 +41,10 @@ import { computeCheckoutTotal } from "@/lib/pricing/compute-checkout-total";
 import { applyPricingToCartItem } from "@/lib/pricing/order-price";
 import { CART_PAGE } from "@/lib/customer-center-routes";
 import { buildLoginRedirectUrl } from "@/lib/customer-auth-redirect";
-import { getCustomerUserId, isCustomerLoggedIn } from "@/lib/customer-auth-session";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
+import { patchCustomerProfile } from "@/lib/auth/customer-auth-client";
+import { memberPreferredStoreToUi } from "@/lib/auth/member-preferred-store";
+import type { MemberPublic } from "@/lib/auth/member-types";
 import { HUB_SEARCH } from "@/lib/customer-hub-routes";
 import { getSearchHref } from "@/lib/battery-search";
 import {
@@ -49,7 +52,7 @@ import {
   isUsedBatterySelected,
   type UsedBatteryFormSelection,
 } from "@/lib/order-request/order-request-form-helpers";
-import { getCustomerProfile, updateCustomerProfile } from "@/lib/customer-profile-storage";
+import { getCustomerProfile, type CustomerProfile } from "@/lib/customer-profile-storage";
 import { fulfillmentAddressValid } from "@/lib/checkout/checkout-address";
 import type { OrderRequestFulfillment, OrderRequestVehicle } from "@/types/order-request";
 import type { BatteryCartItem, FulfillmentMethod } from "@/types/cart";
@@ -57,10 +60,43 @@ import type { CheckoutSessionPayload } from "@/types/commerce-payment";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { bm } from "@/lib/design-tokens";
 import { formatPriceWon } from "@/lib/pricing/order-price";
+import { CheckoutPromotionSection } from "@/components/checkout/CheckoutPromotionSection";
+import type { AppliedPromotion } from "@/types/promotion";
 
 function phoneValid(phone: string): boolean {
   const digits = phone.replace(/\D/g, "");
   return digits.length >= 9;
+}
+
+function isCustomerProfile(source: MemberPublic | CustomerProfile): source is CustomerProfile {
+  return "postalCode" in source || "address1" in source;
+}
+
+function checkoutProfileFields(source: MemberPublic | CustomerProfile) {
+  if (!isCustomerProfile(source)) {
+    return {
+      name: source.name || "",
+      phone: source.phone === "미입력" ? "" : source.phone || "",
+      postalCode: source.zonecode,
+      address1: source.address,
+      address2: source.detailAddress,
+      vehicleName: source.vehicleInfo?.name,
+      vehicleYear: source.vehicleInfo?.year,
+      vehicleFuel: source.vehicleInfo?.fuel,
+      preferredStore: memberPreferredStoreToUi(source.preferredStore),
+    };
+  }
+  return {
+    name: source.name || "",
+    phone: source.phone || "",
+    postalCode: source.postalCode,
+    address1: source.address1,
+    address2: source.address2,
+    vehicleName: source.vehicleName,
+    vehicleYear: source.vehicleYear,
+    vehicleFuel: source.vehicleFuel,
+    preferredStore: source.preferredStore ?? "undecided",
+  };
 }
 
 function initialVehicleFromCart(items: BatteryCartItem[]): OrderRequestVehicle {
@@ -129,18 +165,17 @@ export function CheckoutOrderPage() {
   const { items: cartItems, hydrated, updateItem } = useBatteryCart();
   const [buyNowItems, setBuyNowItems] = useState<BatteryCartItem[] | null>(null);
   const [checkoutItems, setCheckoutItems] = useState<BatteryCartItem[]>([]);
-  const [authReady, setAuthReady] = useState(false);
+  const { isLoggedIn, ready: customerAuthReady, userId, member } = useCustomerAuth();
+  const authReady = hydrated && customerAuthReady && isLoggedIn;
 
   useEffect(() => {
-    if (!hydrated) return;
-    if (!isCustomerLoggedIn()) {
+    if (!hydrated || !customerAuthReady) return;
+    if (!isLoggedIn) {
       const qs = searchParams.toString();
       const path = qs ? `/checkout?${qs}` : "/checkout";
       router.replace(buildLoginRedirectUrl(path));
-      return;
     }
-    setAuthReady(true);
-  }, [hydrated, router, searchParams]);
+  }, [hydrated, customerAuthReady, isLoggedIn, router, searchParams]);
 
   useEffect(() => {
     if (!hydrated || !authReady) return;
@@ -203,6 +238,11 @@ export function CheckoutOrderPage() {
   const [navigating, setNavigating] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [saveAddressToProfile, setSaveAddressToProfile] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedPromotions, setAppliedPromotions] = useState<AppliedPromotion[]>([]);
+  const [promotionDiscountTotal, setPromotionDiscountTotal] = useState(0);
+  const [promotionFinalTotal, setPromotionFinalTotal] = useState<number | null>(null);
+  const [eligibleAutomaticTitles, setEligibleAutomaticTitles] = useState<string[]>([]);
 
   const usedBatteryFromCart = useMemo(() => initialUsedBatteryFromCart(items), [items]);
   const needsUsedBatteryPick = usedBatteryFromCart == null;
@@ -218,57 +258,64 @@ export function CheckoutOrderPage() {
     );
   }, [hydrated, items, usedBatteryFromCart]);
 
-  useEffect(() => {
-    if (!hydrated || !authReady || profileLoaded) return;
-    const profile = getCustomerProfile();
-    if (profile) {
-      setCustomer({
-        name: profile.name || "",
-        phone: profile.phone || "",
-      });
-      if (profile.postalCode || profile.address1) {
+  const applyMemberFieldsToCheckout = useCallback(
+    (source: MemberPublic | CustomerProfile | null) => {
+      if (!source) return;
+      const {
+        name,
+        phone,
+        postalCode,
+        address1,
+        address2,
+        vehicleName,
+        vehicleYear,
+        vehicleFuel,
+        preferredStore,
+      } = checkoutProfileFields(source);
+
+      setCustomer({ name, phone });
+      if (postalCode || address1) {
         setFulfillment((f) => ({
           ...f,
-          recipientName: profile.name,
-          recipientPhone: profile.phone,
-          postalCode: profile.postalCode,
-          address1: profile.address1,
-          address2: profile.address2,
-          region: [profile.postalCode, profile.address1].filter(Boolean).join(" ").trim() || f.region,
+          recipientName: name,
+          recipientPhone: phone,
+          postalCode,
+          address1,
+          address2,
+          region: [postalCode, address1].filter(Boolean).join(" ").trim() || f.region,
         }));
       }
-      if (profile.vehicleName && !vehicle.name) {
-        setVehicle({
-          name: profile.vehicleName,
-          year: profile.vehicleYear,
-          fuelType: profile.vehicleFuel,
-        });
+      if (vehicleName) {
+        setVehicle((v) =>
+          v.name
+            ? v
+            : {
+                name: vehicleName,
+                year: vehicleYear,
+                fuelType: vehicleFuel,
+              },
+        );
       }
-      if (
-        profile.preferredStore &&
-        profile.preferredStore !== "undecided" &&
-        fulfillment.storeId === "undecided"
-      ) {
-        setFulfillment((f) => ({ ...f, storeId: profile.preferredStore }));
+      if (preferredStore && preferredStore !== "undecided") {
+        setFulfillment((f) =>
+          f.storeId === "undecided" ? { ...f, storeId: preferredStore } : f,
+        );
       }
-    }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!hydrated || !authReady || profileLoaded) return;
+    const source = member ?? getCustomerProfile();
+    applyMemberFieldsToCheckout(source);
     setProfileLoaded(true);
-  }, [hydrated, authReady, profileLoaded, vehicle.name, fulfillment.storeId]);
+  }, [hydrated, authReady, profileLoaded, member, applyMemberFieldsToCheckout]);
 
   const applyMemberProfileToShipping = useCallback(() => {
-    const profile = getCustomerProfile();
-    if (!profile) return;
-    setCustomer({ name: profile.name, phone: profile.phone });
-    setFulfillment((f) => ({
-      ...f,
-      recipientName: profile.name,
-      recipientPhone: profile.phone,
-      postalCode: profile.postalCode,
-      address1: profile.address1,
-      address2: profile.address2,
-      region: [profile.postalCode, profile.address1].filter(Boolean).join(" ").trim() || f.region,
-    }));
-  }, []);
+    const source = member ?? getCustomerProfile();
+    applyMemberFieldsToCheckout(source);
+  }, [member, applyMemberFieldsToCheckout]);
 
   const applyFulfillmentToItems = useCallback(
     (next: OrderRequestFulfillment) => {
@@ -313,6 +360,7 @@ export function CheckoutOrderPage() {
   };
 
   const totals = computeCheckoutTotal(items, fulfillment.method, usedBattery ?? undefined);
+  const displayTotal = promotionFinalTotal ?? totals.finalAmount;
 
   const canConfirm =
     customer.name.trim().length > 0 &&
@@ -332,10 +380,10 @@ export function CheckoutOrderPage() {
     }
 
     if (saveAddressToProfile && fulfillment.postalCode?.trim() && fulfillment.address1?.trim()) {
-      updateCustomerProfile({
-        postalCode: fulfillment.postalCode.trim(),
-        address1: fulfillment.address1.trim(),
-        address2: fulfillment.address2?.trim() || undefined,
+      void patchCustomerProfile({
+        zonecode: fulfillment.postalCode.trim(),
+        address: fulfillment.address1.trim(),
+        detailAddress: fulfillment.address2?.trim() || undefined,
       });
     }
 
@@ -356,7 +404,7 @@ export function CheckoutOrderPage() {
         name: customer.name.trim(),
         phone: customer.phone.trim(),
         customerType: "member",
-        userId: getCustomerUserId() ?? undefined,
+        userId: userId ?? undefined,
       },
       vehicle,
       fulfillment: {
@@ -380,7 +428,11 @@ export function CheckoutOrderPage() {
       memo: resolveRequestMemo(fulfillment),
       priceLines: totals.priceLines,
       batteryReturnFee: totals.batteryReturnFee,
-      estimatedTotal: totals.finalAmount,
+      estimatedTotal: displayTotal,
+      promotionDiscountTotal,
+      appliedPromotions,
+      couponCode: couponCode.trim() || null,
+      eligibleAutomaticTitles,
       savedAt: new Date().toISOString(),
     };
 
@@ -491,6 +543,25 @@ export function CheckoutOrderPage() {
 
           <CheckoutVehicleSection values={vehicle} onChange={(p) => setVehicle((v) => ({ ...v, ...p }))} />
 
+          <CheckoutPromotionSection
+            items={items}
+            fulfillmentType={fulfillment.method}
+            returnBatteryOption={usedBattery ?? "unknown"}
+            baseTotal={totals.finalAmount}
+            couponCode={couponCode}
+            onCouponCodeChange={setCouponCode}
+            appliedPromotions={appliedPromotions}
+            promotionDiscountTotal={promotionDiscountTotal}
+            finalTotal={displayTotal}
+            eligibleAutomaticTitles={eligibleAutomaticTitles}
+            onPromotionUpdate={(data) => {
+              setAppliedPromotions(data.appliedPromotions);
+              setPromotionDiscountTotal(data.promotionDiscountTotal);
+              setPromotionFinalTotal(data.finalTotal);
+              setEligibleAutomaticTitles(data.eligibleAutomaticTitles);
+            }}
+          />
+
           <CheckoutSafetyChecklist onAllRequiredCheckedChange={setChecklistComplete} />
 
           {validationError ? (
@@ -522,7 +593,7 @@ export function CheckoutOrderPage() {
         <div className="mb-2 flex items-center justify-between px-1">
           <span className="text-xs font-bold text-[#64748B]">총 결제금액</span>
           <span className="checkout-order__mobile-total-amount tabular-nums">
-            {totals.finalAmount != null ? formatPriceWon(totals.finalAmount) : "—"}
+            {displayTotal != null ? formatPriceWon(displayTotal) : "—"}
           </span>
         </div>
         <div className="flex gap-2">

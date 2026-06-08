@@ -1,0 +1,535 @@
+/**
+ * 고객 화면 UI 강화 — 마이페이지·매장안내·가이드·고객센터·브랜드
+ * 기존 design-system-qa.css 보완 (덮어쓰기·확장)
+ */
+
+/* ── 공통 히어로 ── */
+.cp-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 45%, #eff6ff 100%);
+  padding: 1.5rem 1.25rem;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+}
+
+.cp-hero::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -8%;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cp-hero--navy {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #1e3a8a 100%);
+  border-color: rgba(30, 58, 138, 0.4);
+  color: #fff;
+}
+
+.cp-hero--navy::before {
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.2) 0%, transparent 70%);
+}
+
+.cp-hero--emerald {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #ffffff 100%);
+  border-color: #a7f3d0;
+}
+
+.cp-hero--amber {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 35%, #ffffff 100%);
+  border-color: #fde68a;
+}
+
+.cp-hero__kicker {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.cp-hero--navy .cp-hero__kicker {
+  color: #93c5fd;
+}
+
+.cp-hero__title {
+  margin-top: 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.cp-hero--navy .cp-hero__title {
+  color: #fff;
+}
+
+.cp-hero__desc {
+  margin-top: 0.5rem;
+  max-width: 36rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.cp-hero--navy .cp-hero__desc {
+  color: #cbd5e1;
+}
+
+.cp-hero__accent {
+  display: inline-block;
+  margin-top: 0.75rem;
+  height: 3px;
+  width: 2.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+.cp-hero--navy .cp-hero__accent {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+/* ── 마이페이지 ── */
+.bm-mypage-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: linear-gradient(145deg, #0f172a 0%, #1e3a5f 42%, #1e40af 100%);
+  padding: 1.75rem 1.5rem;
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+}
+
+.bm-mypage-hero__pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image: radial-gradient(circle at 20% 80%, #fff 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.bm-mypage-hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.bm-mypage-hero__title {
+  font-size: 1.625rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.bm-mypage-hero__desc {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #bfdbfe;
+  line-height: 1.5;
+}
+
+.bm-mypage-welcome {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.875rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.bm-mypage-guest-cta {
+  margin-top: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1.25rem;
+  backdrop-filter: blur(6px);
+}
+
+.bm-mypage-guest-cta__title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+.bm-mypage-guest-cta__actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bm-mypage-guest-cta__btn-primary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 0 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 900;
+  color: #1e3a8a;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.bm-mypage-guest-cta__btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.bm-mypage-guest-cta__btn-secondary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  padding: 0 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.bm-mypage-guest-cta__btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.bm-mypage-menu {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .bm-mypage-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bm-mypage-menu__item {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 1rem 1.125rem;
+  text-decoration: none;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+
+.bm-mypage-menu__item:hover {
+  border-color: var(--item-accent, #93c5fd);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+.bm-mypage-menu__item:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.bm-mypage-menu__icon {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: var(--item-icon-bg, #eff6ff);
+  color: var(--item-icon-color, #1d4ed8);
+}
+
+.bm-mypage-menu__body {
+  min-width: 0;
+  flex: 1;
+}
+
+.bm-mypage-menu__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.bm-mypage-menu__arrow {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  transition: transform 0.15s;
+}
+
+.bm-mypage-menu__item:hover .bm-mypage-menu__arrow {
+  transform: translateX(2px);
+  color: var(--item-icon-color, #1d4ed8);
+}
+
+.bm-mypage-menu__desc {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.bm-mypage-shortcuts {
+  display: grid;
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .bm-mypage-shortcuts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bm-mypage-shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  border-radius: 0.875rem;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.bm-mypage-shortcut:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.1);
+}
+
+.bm-mypage-shortcut--cart {
+  border-color: #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff 0%, #fff 100%);
+}
+
+.bm-mypage-shortcut--benefits {
+  border-color: #fde68a;
+  background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+}
+
+.bm-mypage-orders {
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 1.25rem;
+}
+
+.bm-mypage-orders__empty {
+  margin-top: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.bm-mypage-orders__empty p {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.bm-mypage-orders__actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+/* ── 매장·출장 안내 ── */
+.busan-service-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 50%, #ffffff 100%);
+  padding: 1.5rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.busan-service-hero__title {
+  font-size: 1.375rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.busan-service-hero__desc {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.busan-store-search--enhanced {
+  border: 1px solid #93c5fd !important;
+  background: linear-gradient(180deg, #fff 0%, #f8fafc 100%) !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.08) !important;
+}
+
+.busan-store-search--enhanced button[type="submit"] {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.busan-store-search--enhanced button[type="submit"]:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+}
+
+.busan-service-contact {
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 1.25rem;
+}
+
+/* ── 배터리 가이드 ── */
+.battery-guide-hero {
+  margin-bottom: 1.25rem;
+}
+
+.battery-guide-cat {
+  border-radius: 1rem !important;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s !important;
+}
+
+.battery-guide-cat:hover {
+  transform: translateY(-1px);
+}
+
+.battery-guide-cat--active {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12) !important;
+}
+
+.battery-guide-content-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.battery-guide-content-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4rem;
+  height: 4rem;
+  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.06), transparent);
+  pointer-events: none;
+}
+
+.battery-guide-cta-bar {
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+}
+
+/* ── 브랜드 허브 ── */
+.brand-hub-page-hero {
+  margin-bottom: 1rem;
+  padding-bottom: 0.25rem;
+}
+
+.brand-hub-tabs-enhanced button[role="tab"] {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.brand-hub-tabs-enhanced button[role="tab"][aria-selected="true"] {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+/* ── 고객센터 v2 강화 ── */
+.support-hub-v2__hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 55%, #eff6ff 100%);
+  padding: 1.75rem 1.5rem !important;
+  text-align: left !important;
+}
+
+.support-hub-v2__hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 1.5rem;
+  width: 3rem;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #10b981);
+}
+
+.support-hub-v2__side-card--consult {
+  border-color: #86efac !important;
+  background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%) !important;
+}
+
+.support-hub-v2__side-card--lookup {
+  border-color: #fde68a !important;
+  background: linear-gradient(180deg, #fffbeb 0%, #fff 100%) !important;
+}
+
+.support-hub-v2__side-card--store {
+  border-color: #bfdbfe !important;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 100%) !important;
+}
+
+.support-hub-v2__faq-item--open {
+  border-color: #93c5fd !important;
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%) !important;
+}
+
+.support-hub-v2__faq-trigger {
+  padding: 1rem 1.125rem !important;
+}
+
+.support-hub-v2__faq-question {
+  font-size: 0.875rem !important;
+  line-height: 1.45 !important;
+}
+
+/* ── 소셜 로그인 (비활성) ── */
+.bm-social-btn--disabled {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  cursor: not-allowed;
+  opacity: 0.75;
+}

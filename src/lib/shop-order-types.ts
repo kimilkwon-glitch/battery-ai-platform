@@ -1,6 +1,15 @@
 /** 택배 주문 UI — 반납/미반납 (가격 정책 연결 필요: 실제 금액은 상담 시 안내) */
 
+import type { OrderRequestUsedBatteryOption } from "@/types/order-request";
+
 export type BatteryReturnOption = "return" | "no-return";
+
+/** 상품상세/장바구니 → 주문 가격 계산용 */
+export function mapShopReturnOptionToUsedBattery(
+  option: BatteryReturnOption,
+): Extract<OrderRequestUsedBatteryOption, "return" | "no_return"> {
+  return option === "no-return" ? "no_return" : "return";
+}
 
 export const BATTERY_RETURN_OPTIONS: {
   id: BatteryReturnOption;

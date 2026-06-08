@@ -49,3 +49,20 @@ export async function storeCommerceOrderList(limit = 200): Promise<CommerceOrder
   const pg = await getPostgresStore();
   return pg.pgStoreCommerceOrderList(limit);
 }
+
+export async function storeCommerceOrderListByUserId(
+  userId: string,
+  limit = 50,
+): Promise<CommerceOrderRecord[]> {
+  if (!isPostgresConfigured()) return [];
+  const pg = await getPostgresStore();
+  return pg.pgStoreCommerceOrderListByUserId(userId, limit);
+}
+
+export async function storeCommerceOrderLookupByRef(
+  orderRef: string,
+): Promise<CommerceOrderRecord | null> {
+  if (!isPostgresConfigured()) return null;
+  const pg = await getPostgresStore();
+  return pg.pgStoreCommerceOrderLookupByRef(orderRef);
+}

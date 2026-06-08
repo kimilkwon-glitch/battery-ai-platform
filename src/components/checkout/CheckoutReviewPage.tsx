@@ -73,6 +73,9 @@ function sessionToCreateBody(session: CheckoutSessionPayload): CreateOrderReques
       clientFinalAmount: session.estimatedTotal,
       priceLines: session.priceLines,
     },
+    promotion: {
+      couponCode: session.couponCode,
+    },
   };
 }
 
@@ -221,6 +224,11 @@ export function CheckoutReviewPage() {
             미반납 추가금 +{formatPriceWon(session.batteryReturnFee ?? 0)}
           </p>
         ) : null}
+        {(session.appliedPromotions ?? []).map((p) => (
+          <p key={p.promotionId} className="mt-1 text-xs font-black text-red-600">
+            {p.title}: -{formatPriceWon(p.discountAmount)}
+          </p>
+        ))}
         <div className="mt-4">
           <OrderPriceTotalBar
             items={session.items}
