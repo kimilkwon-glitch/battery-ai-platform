@@ -15,7 +15,7 @@ export function PortalHeaderAuth() {
 
   if (!ready) {
     return (
-      <div className="portal-header-auth flex shrink-0 items-center gap-1 sm:gap-1.5">
+      <div className="portal-header-auth hidden shrink-0 items-center gap-1 sm:gap-1.5 lg:flex">
         <span className="h-8 w-16 animate-pulse rounded-full bg-slate-100" aria-hidden />
       </div>
     );
@@ -23,10 +23,10 @@ export function PortalHeaderAuth() {
 
   if (isLoggedIn) {
     return (
-      <div className="portal-header-auth flex shrink-0 items-center gap-1 sm:gap-1.5">
+      <div className="portal-header-auth hidden shrink-0 items-center gap-1 sm:gap-1.5 lg:flex">
         <Link
           href={CUSTOMER_MYPAGE}
-          className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:inline-flex lg:text-xs"
+          className="portal-header-auth-btn hidden rounded-full px-2.5 py-1.5 text-[11px] font-extrabold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 xl:inline-flex lg:text-xs"
         >
           {displayName ? `${displayName.slice(0, 8)}님` : "마이페이지"}
         </Link>
@@ -62,7 +62,7 @@ export function PortalHeaderAuth() {
   }
 
   return (
-    <div className="portal-header-auth flex shrink-0 items-center gap-1 sm:gap-1.5">
+    <div className="portal-header-auth hidden shrink-0 items-center gap-1 sm:gap-1.5 lg:flex">
       <Link
         href={CUSTOMER_LOGIN_PAGE}
         aria-label="로그인"

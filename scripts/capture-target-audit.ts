@@ -6,6 +6,7 @@
  * Usage:
  *   BASE_URL=http://localhost:3000 npm run audit:target
  *   npm run audit:target -- --scope=checkout
+ *   npm run audit:target -- --scope=mobile-overflow
  *   AUDIT_TARGET_SCOPE=checkout npm run audit:target
  */
 import { chromium, type Page } from "@playwright/test";
@@ -45,7 +46,68 @@ type CaptureTarget = {
   /** 뷰포트별 셀렉터 (PC aside / 모바일 인라인 등) */
   selectorPc?: string;
   selectorMobile?: string;
+  /** true면 요소 클립 대신 뷰포트 전체 캡처 (mobile-overflow) */
+  captureViewport?: boolean;
 };
+
+type OverflowMetrics = {
+  innerWidth: number;
+  documentElementScrollWidth: number;
+  bodyScrollWidth: number;
+  overflow: boolean;
+};
+
+const MOBILE_OVERFLOW_TARGETS: CaptureTarget[] = [
+  {
+    id: "mobile-overflow-home",
+    label: "홈 모바일",
+    path: "/",
+    selector: "body",
+    waitMs: 900,
+    captureViewport: true,
+  },
+  {
+    id: "mobile-overflow-vehicles",
+    label: "차종검색 모바일",
+    path: "/vehicles",
+    selector: "body",
+    waitMs: 800,
+    captureViewport: true,
+  },
+  {
+    id: "mobile-overflow-brands",
+    label: "브랜드 안내 모바일",
+    path: "/brands",
+    selector: "body",
+    waitMs: 900,
+    captureViewport: true,
+  },
+  {
+    id: "mobile-overflow-service",
+    label: "매장·출장 안내 모바일",
+    path: "/service-center",
+    selector: "body",
+    waitMs: 900,
+    captureViewport: true,
+  },
+  {
+    id: "mobile-overflow-support",
+    label: "고객센터 모바일",
+    path: "/support",
+    selector: "body",
+    waitMs: 900,
+    captureViewport: true,
+  },
+  {
+    id: "mobile-overflow-checkout",
+    label: "checkout 모바일",
+    path: "/checkout?flow=cart",
+    selector: "body",
+    waitMs: 1000,
+    seedCart: true,
+    captureViewport: true,
+  },
+];
 
 const CHECKOUT_TARGETS: CaptureTarget[] = [
   {
@@ -191,6 +253,7 @@ function resolveTargets(): CaptureTarget[] {
   if (scope === "all" || scope === "full") return [...ALL_TARGETS, ...CHECKOUT_TARGETS];
   if (scope === "checkout" || scope === "order") return CHECKOUT_TARGETS;
   if (scope === "checkout-logo") return CHECKOUT_LOGO_TARGETS;
+  if (scope === "mobile-overflow" || scope === "mobile") return MOBILE_OVERFLOW_TARGETS;
   if (scope === "home") return ALL_TARGETS.filter((t) => t.id.startsWith("home-"));
   if (scope === "vehicle") return ALL_TARGETS.filter((t) => t.id === "vehicle-recommended-battery");
   return ALL_TARGETS.filter((t) => t.id === "vehicle-recommended-battery");
@@ -215,6 +278,24 @@ async function waitForPageReady(page: Page) {
     .waitForFunction(() => document.readyState === "complete", undefined, { timeout: 8_000 })
     .catch(() => undefined);
   await page.waitForTimeout(500);
+}
+
+function isMobileOverflowScope(): boolean {
+  const scope = resolveScope();
+  return scope === "mobile-overflow" || scope === "mobile";
+}
+
+async function measureOverflow(page: Page, target: CaptureTarget): Promise<OverflowMetrics> {
+  const metrics = await page.evaluate(() => ({
+    innerWidth: window.innerWidth,
+    documentElementScrollWidth: document.documentElement.scrollWidth,
+    bodyScrollWidth: document.body.scrollWidth,
+  }));
+  const tolerance = 1;
+  const overflow =
+    metrics.documentElementScrollWidth > metrics.innerWidth + tolerance ||
+    metrics.bodyScrollWidth > metrics.innerWidth + tolerance;
+  return { ...metrics, overflow };
 }
 
 async function scrollToSelector(page: Page, scrollTo?: string) {
@@ -260,6 +341,11 @@ async function captureTarget(
     }
     await scrollToSelector(page, scrollTarget);
     if (target.waitMs) await page.waitForTimeout(target.waitMs);
+
+    if (target.captureViewport) {
+      await page.screenshot({ path: filePath, fullPage: false });
+      return { ok: true, file: relFile, notes: "" };
+    }
 
     const locator = page.locator(activeSelector).first();
     const count = await locator.count();
@@ -402,10 +488,100 @@ function buildReportMd(
   return lines.join("\n");
 }
 
+function buildOverflowReportMd(
+  runId: string,
+  checks: { target: CaptureTarget; metrics: OverflowMetrics; mobile: { file: string; ok: boolean } }[],
+): string {
+  const lines = [
+    `# Mobile Overflow Audit`,
+    ``,
+    `- Run: \`${runId}\``,
+    `- Base URL: ${BASE_URL}`,
+    `- Generated: ${new Date().toISOString()}`,
+    ``,
+    `## scrollWidth 검사`,
+    ``,
+    `| Page | innerWidth | html scrollWidth | body scrollWidth | overflow |`,
+    `| --- | ---: | ---: | ---: | --- |`,
+  ];
+
+  for (const row of checks) {
+    const status = row.metrics.overflow ? "FAIL" : "ok";
+    lines.push(
+      `| ${row.target.label} | ${row.metrics.innerWidth} | ${row.metrics.documentElementScrollWidth} | ${row.metrics.bodyScrollWidth} | ${status} |`,
+    );
+  }
+
+  lines.push("", "## 캡처", "", ...checks.map((r) => `- ${r.target.label}: \`${r.mobile.file}\``), "");
+  return lines.join("\n");
+}
+
+function buildOverflowIndexHtml(
+  runId: string,
+  checks: { target: CaptureTarget; metrics: OverflowMetrics; mobile: { file: string; ok: boolean } }[],
+): string {
+  const rows = checks
+    .map((r) => {
+      const status = r.metrics.overflow ? "fail" : "ok";
+      return `
+      <section class="target-block ${status}" id="${r.target.id}">
+        <h2>${r.target.label} <span class="badge">${status}</span></h2>
+        <p class="meta">${r.target.path}</p>
+        <ul class="metrics">
+          <li>innerWidth: <strong>${r.metrics.innerWidth}</strong></li>
+          <li>documentElement.scrollWidth: <strong>${r.metrics.documentElementScrollWidth}</strong></li>
+          <li>body.scrollWidth: <strong>${r.metrics.bodyScrollWidth}</strong></li>
+        </ul>
+        <figure>
+          <a href="${r.mobile.file}" target="_blank" rel="noopener">
+            <img src="${r.mobile.file}" alt="${r.target.label}" loading="lazy" />
+          </a>
+        </figure>
+      </section>`;
+    })
+    .join("\n");
+
+  return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mobile Overflow Audit — ${runId}</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Pretendard", system-ui, sans-serif; background: #f1f5f9; color: #0f172a; }
+    header { padding: 1.25rem 1.5rem; background: #0f172a; color: #f8fafc; }
+    header h1 { margin: 0 0 0.25rem; font-size: 1.25rem; }
+    header p { margin: 0; font-size: 0.8125rem; opacity: 0.85; }
+    main { max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 2.5rem; }
+    .target-block { margin-bottom: 1.5rem; padding: 1rem; border-radius: 1rem; background: #fff; border: 1px solid #e2e8f0; }
+    .target-block.fail { border-color: #f87171; }
+    .target-block h2 { margin: 0 0 0.375rem; font-size: 1rem; }
+    .badge { float: right; text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.04em; }
+    .target-block.ok .badge { color: #15803d; }
+    .target-block.fail .badge { color: #b91c1c; }
+    .meta { margin: 0 0 0.5rem; font-size: 0.75rem; color: #64748b; }
+    .metrics { margin: 0 0 0.75rem; padding-left: 1.125rem; font-size: 0.75rem; color: #475569; }
+    figure { margin: 0; border-radius: 0.75rem; overflow: hidden; border: 1px solid #e2e8f0; }
+    img { width: 100%; height: auto; cursor: zoom-in; display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mobile Overflow Audit (390px)</h1>
+    <p>Run: ${runId} · Base: ${BASE_URL}</p>
+  </header>
+  <main>${rows}</main>
+</body>
+</html>`;
+}
+
 async function main() {
   const targets = resolveTargets();
   const runId = timestampFolder();
   const outDir = join(ROOT, "design-audit", "target-runs", runId);
+  const mobileOnly = isMobileOverflowScope();
   mkdirSync(join(outDir, "screenshots", "pc"), { recursive: true });
   mkdirSync(join(outDir, "screenshots", "mobile"), { recursive: true });
 
@@ -419,11 +595,17 @@ async function main() {
     pc: { file: string; ok: boolean; notes: string };
     mobile: { file: string; ok: boolean; notes: string };
   }[] = [];
+  const overflowChecks: {
+    target: CaptureTarget;
+    metrics: OverflowMetrics;
+    mobile: { file: string; ok: boolean };
+  }[] = [];
 
   const needsCartSeed = targets.some((t) => t.seedCart);
+  const viewports = mobileOnly ? (["mobile"] as const) : (["pc", "mobile"] as const);
 
   try {
-    for (const viewport of ["pc", "mobile"] as const) {
+    for (const viewport of viewports) {
       const context = await browser.newContext({
         viewport: viewport === "pc" ? PC_VIEWPORT : MOBILE_VIEWPORT,
         ...(viewport === "mobile"
@@ -442,6 +624,17 @@ async function main() {
 
       for (const target of targets) {
         const cap = await captureTarget(page, target, viewport, outDir);
+        if (mobileOnly && viewport === "mobile") {
+          const metrics = await measureOverflow(page, target);
+          overflowChecks.push({
+            target,
+            metrics,
+            mobile: { file: cap.file, ok: cap.ok },
+          });
+          console.log(
+            `[overflow] ${target.id}: inner=${metrics.innerWidth} html=${metrics.documentElementScrollWidth} body=${metrics.bodyScrollWidth} ${metrics.overflow ? "FAIL" : "ok"}`,
+          );
+        }
         const existing = results.find((r) => r.target.id === target.id);
         if (existing) {
           if (viewport === "pc") {
@@ -468,11 +661,44 @@ async function main() {
     await browser.close();
   }
 
-  writeFileSync(join(outDir, "index.html"), buildIndexHtml(runId, results), "utf8");
-  writeFileSync(join(outDir, "report.md"), buildReportMd(runId, results), "utf8");
+  if (mobileOnly) {
+    writeFileSync(join(outDir, "index.html"), buildOverflowIndexHtml(runId, overflowChecks), "utf8");
+    writeFileSync(join(outDir, "report.md"), buildOverflowReportMd(runId, overflowChecks), "utf8");
+    writeFileSync(
+      join(outDir, "overflow-check.json"),
+      JSON.stringify(
+        {
+          runId,
+          baseUrl: BASE_URL,
+          viewport: MOBILE_VIEWPORT,
+          generatedAt: new Date().toISOString(),
+          checks: overflowChecks.map((row) => ({
+            id: row.target.id,
+            label: row.target.label,
+            path: row.target.path,
+            screenshot: row.mobile.file,
+            ...row.metrics,
+          })),
+          allPassed: overflowChecks.every((row) => !row.metrics.overflow),
+        },
+        null,
+        2,
+      ),
+      "utf8",
+    );
+  } else {
+    writeFileSync(join(outDir, "index.html"), buildIndexHtml(runId, results), "utf8");
+    writeFileSync(join(outDir, "report.md"), buildReportMd(runId, results), "utf8");
+  }
 
-  const allOk = results.every((r) => r.pc.ok && r.mobile.ok);
-  console.log(`[audit:target] done — ${allOk ? "all ok" : "some captures missing"}`);
+  const captureOk = mobileOnly
+    ? results.every((r) => r.mobile.ok)
+    : results.every((r) => r.pc.ok && r.mobile.ok);
+  const overflowOk = mobileOnly ? overflowChecks.every((row) => !row.metrics.overflow) : true;
+  const allOk = captureOk && overflowOk;
+  console.log(
+    `[audit:target] done — ${allOk ? "all ok" : mobileOnly ? "overflow or capture issues" : "some captures missing"}`,
+  );
   console.log(`[audit:target] open ${join(outDir, "index.html")}`);
 
   if (!allOk) process.exitCode = 1;

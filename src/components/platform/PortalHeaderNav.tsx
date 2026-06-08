@@ -11,7 +11,9 @@ import {
   HUB_SUPPORT,
   HUB_VEHICLES,
 } from "@/lib/customer-hub-routes";
-import { GuideDesktopMegaMenu, GuideMobileAccordion } from "@/components/platform/GuideMegaMenu";
+import { GuideDesktopMegaMenu } from "@/components/platform/GuideMegaMenu";
+import { HUB_GUIDE } from "@/lib/customer-hub-routes";
+import { isGuideHubPath } from "@/lib/guide-hub-routes";
 
 /** 상단 카테고리 — 홈은 좌측 로고, 텍스트 홈 메뉴 없음 */
 export const portalNavPrimary = [
@@ -107,8 +109,8 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
   }
 
   return (
-    <nav className="relative border-t border-slate-100 bg-white" aria-label="모바일 메뉴">
-      <div className="portal-header-mobile-nav mx-auto flex max-w-[1440px] flex-nowrap items-center justify-start gap-2.5 overflow-x-auto px-3 py-3">
+    <nav className="relative w-full max-w-full border-t border-slate-100 bg-white" aria-label="모바일 메뉴">
+      <div className="portal-header-mobile-nav mx-auto flex w-full max-w-full flex-nowrap items-center justify-start">
         {portalNavPrimary.slice(0, 2).map(([label, href]) => (
           <NavPill
             active={isNavActive(pathname, label, href)}
@@ -122,7 +124,11 @@ export function PortalSiteNav({ variant }: { variant: "desktop" | "mobile" }) {
           href={HUB_STORE_DETAIL}
           label="매장·출장 안내"
         />
-        <GuideMobileAccordion />
+        <NavPill
+          active={isGuideHubPath(pathname)}
+          href={HUB_GUIDE}
+          label="배터리 가이드"
+        />
         {portalNavPrimary.slice(3).map(([label, href]) => (
           <NavPill
             active={isNavActive(pathname, label, href)}

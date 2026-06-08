@@ -54,7 +54,8 @@
     "audit:journey": "npx tsx scripts/capture-customer-journey-audit.ts",
     "audit:target": "npx tsx scripts/capture-target-audit.ts",
     "audit:target:checkout": "npx tsx scripts/capture-target-audit.ts --scope=checkout",
-    "audit:target:checkout-logo": "npx tsx scripts/capture-target-audit.ts --scope=checkout-logo"
+    "audit:target:checkout-logo": "npx tsx scripts/capture-target-audit.ts --scope=checkout-logo",
+    "audit:target:mobile": "npx tsx scripts/capture-target-audit.ts --scope=mobile-overflow"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
