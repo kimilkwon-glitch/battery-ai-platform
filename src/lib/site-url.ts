@@ -22,14 +22,25 @@ function firstEnvOrigin(): string | null {
   return null;
 }
 
+function isLegacyVercelDefaultOrigin(origin: string): boolean {
+  try {
+    const host = new URL(origin).hostname.toLowerCase();
+    return host.endsWith(".vercel.app") || host === "battery-ai-platform.vercel.app";
+  } catch {
+    return false;
+  }
+}
+
 /** 절대 URL이 필요할 때 (결제 redirect, sitemap, metadataBase 등) */
 export function getSiteOrigin(): string {
-  const fromEnv = firstEnvOrigin();
-  if (fromEnv) return fromEnv;
-
   if (process.env.VERCEL_ENV === "production") {
+    const fromEnv = firstEnvOrigin();
+    if (fromEnv && !isLegacyVercelDefaultOrigin(fromEnv)) return fromEnv;
     return PRODUCTION_SITE_ORIGIN;
   }
+
+  const fromEnv = firstEnvOrigin();
+  if (fromEnv) return fromEnv;
 
   if (process.env.VERCEL_URL?.trim()) {
     return `https://${process.env.VERCEL_URL.replace(/\/$/, "")}`;
