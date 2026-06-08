@@ -2,6 +2,7 @@
  * OAuth authorize URL 생성 — provider별 start 라우트에서 사용
  */
 
+import { getKakaoOAuthConfig } from "@/lib/auth/kakao-oauth";
 import { getOAuthRedirectUri, type OAuthProvider } from "@/lib/auth/oauth-config";
 
 export function buildNaverAuthorizeUrl(state: string): string | null {
@@ -18,13 +19,13 @@ export function buildNaverAuthorizeUrl(state: string): string | null {
 }
 
 export function buildKakaoAuthorizeUrl(state: string): string | null {
-  const clientId = process.env.KAKAO_REST_API_KEY?.trim();
-  if (!clientId) return null;
+  const config = getKakaoOAuthConfig();
+  if (!config) return null;
 
   const params = new URLSearchParams({
     response_type: "code",
-    client_id: clientId,
-    redirect_uri: getOAuthRedirectUri("kakao"),
+    client_id: config.clientId,
+    redirect_uri: config.redirectUri,
     state,
   });
   return `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;

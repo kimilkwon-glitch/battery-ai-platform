@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { AuthBenefitsBox } from "@/components/auth/AuthBenefitsBox";
+import { OAuthHandoffHandler } from "@/components/auth/OAuthHandoffHandler";
 import { SocialLoginButtons } from "@/components/auth/SocialLoginButtons";
 import { hasAnySocialLoginEnabled } from "@/lib/auth/social-login-config";
 import { setCustomerSession } from "@/lib/customer-auth-session";
@@ -27,13 +28,27 @@ function formatPhoneInput(value: string): string {
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 }
 
-export function CustomerLoginForm({ redirect }: Props) {
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  kakao_login_cancelled: "카카오 로그인이 취소되었습니다.",
+  kakao_login_invalid_state: "카카오 로그인 요청이 만료되었습니다. 다시 시도해 주세요.",
+  kakao_login_failed: "카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+};
+
+function CustomerLoginFormInner({ redirect }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const oauthError = searchParams.get("error");
+    if (oauthError && OAUTH_ERROR_MESSAGES[oauthError]) {
+      setError(OAUTH_ERROR_MESSAGES[oauthError]);
+    }
+  }, [searchParams]);
 
   const signupHref = redirect
     ? `${CUSTOMER_SIGNUP_PAGE}?redirect=${encodeURIComponent(redirect)}`
@@ -80,6 +95,7 @@ export function CustomerLoginForm({ redirect }: Props) {
 
   return (
     <div className="bm-auth-form" data-page="customer-login">
+      <OAuthHandoffHandler redirect={redirect} onError={setError} />
       <h1 className="text-lg font-black text-[#0F172A]">로그인 후 주문을 계속해 주세요</h1>
       <p className="mt-2 text-sm font-medium text-slate-600">
         회원정보를 이용해 배송지와 차량정보를 빠르게 불러올 수 있습니다.
@@ -158,5 +174,13 @@ export function CustomerLoginForm({ redirect }: Props) {
         </Link>
       </div>
     </div>
+  );
+}
+
+export function CustomerLoginForm(props: Props) {
+  return (
+    <Suspense fallback={null}>
+      <CustomerLoginFormInner {...props} />
+    </Suspense>
   );
 }

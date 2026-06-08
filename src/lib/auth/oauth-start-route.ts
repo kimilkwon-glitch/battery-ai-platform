@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { KAKAO_OAUTH_RETURN_COOKIE } from "@/lib/auth/kakao-oauth";
 import {
   buildOAuthAuthorizeUrl,
   oauthStateCookieName,
@@ -30,7 +31,8 @@ export function handleOAuthStart(request: NextRequest, provider: OAuthProvider):
   });
 
   if (redirect && redirect.startsWith("/") && !redirect.startsWith("//")) {
-    response.cookies.set(OAUTH_RETURN_COOKIE, redirect, {
+    const returnCookieName = provider === "kakao" ? KAKAO_OAUTH_RETURN_COOKIE : OAUTH_RETURN_COOKIE;
+    response.cookies.set(returnCookieName, redirect, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
