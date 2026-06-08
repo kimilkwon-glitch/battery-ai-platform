@@ -1,6 +1,19 @@
 import type { NextConfig } from "next";
 
+const vehicleAssetTraceExcludes = [
+  "./public/assets/cars-normalized/**/*",
+  "./public/assets/vehicles/cars-normalized/**/*",
+  "./public/assets/cars-generated-review/**/*",
+  "./public/assets/vehicle-damaged-backup-before-restore/**/*",
+  "./reports/**/*",
+];
+
 const nextConfig: NextConfig = {
+  // Admin image-review routes read PNGs at runtime; exclude from serverless bundles.
+  outputFileTracingExcludes: {
+    "/admin/vehicle-image-review": vehicleAssetTraceExcludes,
+    "/admin/vehicle-reference-review": vehicleAssetTraceExcludes,
+  },
   async redirects() {
     return [
       { source: "/customer", destination: "/support", permanent: false },
