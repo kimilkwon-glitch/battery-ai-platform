@@ -1,78 +1,26 @@
-import fs from "fs";
-import path from "path";
 import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
-import { VehicleImageReviewClient } from "@/components/admin/VehicleImageReviewClient";
-import { buildVehicleImageInventory } from "@/lib/vehicle-image-inventory";
+
 export const metadata = {
   title: "차량 이미지 검수 | Battery Manager",
   robots: { index: false, follow: false },
 };
 
-type StoredReport = {
-  entries?: ReturnType<typeof buildVehicleImageInventory>["entries"];
-  orphans?: ReturnType<typeof buildVehicleImageInventory>["orphans"];
-  summary?: ReturnType<typeof buildVehicleImageInventory>["summary"];
-  restoreBuckets?: ReturnType<typeof buildVehicleImageInventory>["restoreBuckets"];
-};
-
-function mergeGeneratedReviewFields(
-  entries: ReturnType<typeof buildVehicleImageInventory>["entries"],
-  live: ReturnType<typeof buildVehicleImageInventory>["entries"],
-) {
-  const liveBySlug = new Map(live.map((e) => [e.slug, e]));
-  return entries.map((entry) => {
-    const disk = liveBySlug.get(entry.slug);
-    if (!disk) return entry;
-    return {
-      ...entry,
-      generatedReviewImageUrl: disk.generatedFluxDevImageUrl,
-      generatedReviewDiskPath: disk.generatedFluxDevDiskPath,
-      generatedReviewExists: disk.generatedFluxDevExists,
-      generatedFluxDevImageUrl: disk.generatedFluxDevImageUrl,
-      generatedFluxDevDiskPath: disk.generatedFluxDevDiskPath,
-      generatedFluxDevExists: disk.generatedFluxDevExists,
-      generatedFlux11ProImageUrl: disk.generatedFlux11ProImageUrl,
-      generatedFlux11ProDiskPath: disk.generatedFlux11ProDiskPath,
-      generatedFlux11ProExists: disk.generatedFlux11ProExists,
-    };
-  });
-}
-
-function loadCachedReport(): StoredReport | null {
-  const reportPath = path.join(process.cwd(), "reports", "vehicle-image-audit.json");
-  if (!fs.existsSync(reportPath)) return null;
-  try {
-    return JSON.parse(fs.readFileSync(reportPath, "utf8")) as StoredReport;
-  } catch {
-    return null;
-  }
-}
-
+/** Vercel 서버리스 용량 제한 — 로컬 `npm run audit:vehicle-images` 사용 */
 export default function AdminVehicleImageReviewPage() {
-  const cached = loadCachedReport();
-  const fallback = buildVehicleImageInventory();
-
-  const inventory =
-    cached?.entries?.length && cached.summary
-      ? {
-          entries: mergeGeneratedReviewFields(cached.entries, fallback.entries),
-          orphans: cached.orphans ?? [],
-          summary: cached.summary,
-          restoreBuckets: cached.restoreBuckets ?? fallback.restoreBuckets,
-        }
-      : fallback;
-
   return (
     <AdminShellLayout
       title="차량 이미지 검수 (Before / After)"
-      description="현재 / 백업 / flux-dev / flux-1.1-pro Replicate 생성 이미지를 나란히 비교합니다."
+      description="Production 배포 환경에서는 비활성화되어 있습니다."
     >
-      <VehicleImageReviewClient
-        entries={inventory.entries}
-        orphans={inventory.orphans}
-        summary={inventory.summary}
-        restoreBuckets={inventory.restoreBuckets}
-      />
+      <div className="admin-panel" style={{ padding: "1.25rem", maxWidth: 640 }}>
+        <p style={{ margin: 0, lineHeight: 1.6 }}>
+          차량 PNG 전수 검수 UI는 서버리스 함수 용량 제한으로 Vercel Production에서는 제공하지 않습니다.
+        </p>
+        <p style={{ margin: "0.75rem 0 0", lineHeight: 1.6, color: "var(--muted, #666)" }}>
+          로컬 개발 환경에서 <code>npm run audit:vehicle-images</code> 또는{" "}
+          <code>reports/vehicle-image-audit.json</code>을 확인해 주세요.
+        </p>
+      </div>
     </AdminShellLayout>
   );
 }
