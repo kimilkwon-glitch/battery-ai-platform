@@ -123,7 +123,7 @@ export function CheckoutPromotionSection({
             ))}
           </ul>
           <p className="mt-1 text-[11px] font-medium text-amber-800">
-            로그인 후 첫 주문 시 자동으로 적용됩니다.
+            로그인 후 주문 조건에 맞는 혜택은 자동으로 적용됩니다.
           </p>
         </div>
       ) : null}
@@ -164,6 +164,11 @@ export function CheckoutPromotionSection({
           {message}
         </p>
       ) : null}
+
+      <p className="text-[11px] font-medium leading-relaxed text-slate-500">
+        회원 혜택과 쿠폰은 주문 조건에 따라 결제금액에 반영됩니다. 쿠폰코드가 있는 혜택은 위 입력란에서
+        적용할 수 있습니다.
+      </p>
 
       {appliedPromotions.length > 0 || (promotionDiscountTotal ?? 0) > 0 ? (
         <div className="space-y-1 border-t border-slate-100 pt-3">

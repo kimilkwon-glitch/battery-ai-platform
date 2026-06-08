@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { BenefitCardMedia } from "@/components/home/BenefitCardMedia";
 import { BenefitsNotices } from "@/components/benefits/BenefitsNotices";
-import { CouponIssuerPanel } from "@/components/benefits/CouponIssuerPanel";
 import { FirstOrder3AutoApplyPanel } from "@/components/benefits/FirstOrder3AutoApplyPanel";
 import {
   type BenefitCardConfig,
@@ -48,10 +47,6 @@ export function BenefitDetailClient({ benefit }: { benefit: BenefitCardConfig })
           <p className="mt-3 text-sm font-medium leading-relaxed text-slate-600">{benefit.detailIntro}</p>
         ) : null}
       </div>
-
-      {benefit.couponBenefitId ? (
-        <CouponIssuerPanel benefitId={benefit.couponBenefitId} benefitName={benefit.title} />
-      ) : null}
 
       {benefit.detailBullets && benefit.detailBullets.length > 0 ? (
         <section className={`${bm.card} ${bm.cardPad} space-y-3`}>

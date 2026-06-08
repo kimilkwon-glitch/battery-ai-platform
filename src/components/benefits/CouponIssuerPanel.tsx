@@ -66,10 +66,9 @@ export function CouponIssuerPanel({
           <Ticket className="size-5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-black text-amber-900">첫 주문 3% 쿠폰 자동 적용</p>
+          <p className="text-xs font-black text-amber-900">회원가입 첫 주문 3% 자동 혜택</p>
           <p className="mt-0.5 text-[11px] font-medium leading-relaxed text-amber-800/80">
-            회원가입 후 첫 주문 조건을 만족하면 주문 단계에서 자동 반영됩니다. 이 브라우저에서 쿠폰을
-            받아 두면 주문·결제 시 적용됩니다.
+            로그인 후 첫 주문 조건을 만족하면 주문 단계에서 자동으로 적용됩니다.
           </p>
         </div>
       </div>
@@ -95,7 +94,7 @@ export function CouponIssuerPanel({
             복사하기
           </button>
           <p className="text-[10px] font-medium leading-relaxed text-slate-500">
-            이 브라우저에 저장됩니다. 다른 기기에서는 다시 발급될 수 있습니다.
+            쿠폰코드가 있는 혜택은 주문서에서 입력해 사용할 수 있습니다.
           </p>
         </div>
       ) : (

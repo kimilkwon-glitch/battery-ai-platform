@@ -62,7 +62,6 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
     fallbackIcon: "percent",
     status: "active",
     href: HUB_BENEFIT_FIRST_ORDER_3,
-    couponBenefitId: "first-order-3",
     detailIntro:
       "첫 주문 고객을 위한 3% 혜택입니다. 회원가입 후 첫 주문 조건을 만족하면 주문·결제 단계에서 자동으로 반영됩니다.",
     detailBullets: [

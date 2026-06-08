@@ -1,33 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getUserCouponForBenefit } from "@/lib/coupon-storage";
-
 type Props = {
   className?: string;
   /** 결제·주문 단계 — 할인 반영 문구 강조 */
   variant?: "detail" | "checkout";
 };
 
-/**
- * 고객 화면용 할인 안내 — 쿠폰 코드 문자열은 노출하지 않음.
- * 발급된 쿠폰이 있으면 체크아웃·주문 시 자동 반영된다고 안내.
- */
+/** 고객 화면용 자동 혜택 안내 — DB promotion 기준, 코드 문자열은 노출하지 않음. */
 export function BatteryAutoDiscountHint({ className = "", variant = "detail" }: Props) {
-  const [hasCoupon, setHasCoupon] = useState(false);
-
-  useEffect(() => {
-    setHasCoupon(Boolean(getUserCouponForBenefit("first-order-3")));
-  }, []);
-
   const lines =
     variant === "checkout"
-      ? hasCoupon
-        ? ["첫 주문 할인이 주문 내역에 자동 반영됩니다.", "상담·주문 시 별도 코드 입력 없이 적용됩니다."]
-        : ["첫 주문 시 할인이 자동 적용될 수 있습니다.", "혜택 페이지에서 쿠폰을 받으면 주문 시 자동 반영됩니다."]
-      : hasCoupon
-        ? ["첫 주문 할인 자동 적용", "상담·주문 시 자동 반영"]
-        : ["첫 주문 할인 자동 적용 가능", "주문·결제 단계에서 자동 반영"];
+      ? [
+          "로그인 후 주문 조건에 맞는 혜택은 자동으로 적용됩니다.",
+          "회원가입 첫 주문 3% 혜택은 별도 코드 입력 없이 주문서에 반영됩니다.",
+        ]
+      : [
+          "회원가입 첫 주문 3% 자동 혜택",
+          "로그인 후 첫 주문 시 주문·결제 단계에서 자동 적용",
+        ];
 
   return (
     <ul

@@ -23,9 +23,9 @@ export function FirstOrder3AutoApplyPanel({ compact = false }: { compact?: boole
             <Percent className="size-5" strokeWidth={2.25} />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-black text-amber-950 sm:text-[15px]">첫 주문 3% 쿠폰 자동 적용</p>
+            <p className="text-sm font-black text-amber-950 sm:text-[15px]">회원가입 첫 주문 3% 자동 혜택</p>
             <p className="mt-1 text-xs font-medium leading-relaxed text-amber-900/85 sm:text-[13px]">
-              회원가입 후 첫 주문 조건을 만족하면 주문 단계에서 자동으로 반영됩니다.
+              로그인 후 첫 주문 조건을 만족하면 주문 단계에서 자동으로 적용됩니다.
             </p>
           </div>
         </div>

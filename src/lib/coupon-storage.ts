@@ -1,8 +1,7 @@
 /**
- * 쿠폰 임시 저장 — localStorage 전용 (운영용 아님).
- *
- * 운영 시 필요: DB, 회원 인증, 서버 발급·중복 방지, 만료·사용 처리, 관리자 인증.
- * 현재는 동일 브라우저 1회 발급·다른 기기/브라우저 재발급 가능.
+ * 레거시 쿠폰 localStorage — 주문·결제 할인 source of truth 아님.
+ * 실제 혜택·할인은 DB promotions + evaluatePromotions 기준.
+ * 고객 화면·주문 계산에 사용하지 않음. /admin/coupons 임시 화면 호환용만 유지.
  */
 
 export type CouponStatus = "unused" | "used";
