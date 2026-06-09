@@ -1,8 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { getCustomerVehicles, type CustomerVehicleRecord } from "@/lib/customer-vehicles-storage";
+import { useEffect, useMemo, useState } from "react";
 import { isCustomerLoggedIn } from "@/lib/customer-auth-session";
+import {
+  findCheckoutVehicleById,
+  getCheckoutVehicleChoices,
+  resolveDefaultCheckoutVehicleId,
+  type CheckoutVehicleChoice,
+} from "@/lib/checkout/checkout-vehicle-choices";
 import type { OrderRequestVehicle } from "@/types/order-request";
 
 const inputClass =
@@ -15,25 +20,57 @@ type Props = {
   onChange: (patch: Partial<OrderRequestVehicle>) => void;
 };
 
+function vehicleChoiceLabel(vehicle: CheckoutVehicleChoice): string {
+  const parts = [vehicle.displayName];
+  const year = vehicle.year ?? vehicle.yearRange;
+  if (year) parts.push(year);
+  return parts.join(" · ");
+}
+
 export function CheckoutVehicleSection({ values, onChange }: Props) {
   const [open, setOpen] = useState(
     Boolean(values.name || values.year || values.fuelType || values.plateSuffix),
   );
   const loggedIn = isCustomerLoggedIn();
-  const savedVehicles = useMemo(
-    () => (typeof window !== "undefined" ? getCustomerVehicles() : []),
-    [open, loggedIn],
-  );
+  const [selectedVehicleId, setSelectedVehicleId] = useState("");
+  const [defaultApplied, setDefaultApplied] = useState(false);
 
-  const applyVehicle = (v: CustomerVehicleRecord) => {
+  const vehicleChoices = useMemo(() => {
+    if (!loggedIn || typeof window === "undefined") return [];
+    return getCheckoutVehicleChoices();
+  }, [loggedIn, open]);
+
+  const applyVehicle = (vehicle: CheckoutVehicleChoice) => {
     onChange({
-      name: v.displayName,
-      year: v.year ?? v.yearRange,
-      fuelType: v.fuel ?? v.fuelHint,
-      currentBatterySpec: v.recommendedBattery,
+      name: vehicle.displayName,
+      year: vehicle.year ?? vehicle.yearRange,
+      fuelType: vehicle.fuel ?? vehicle.fuelHint,
+      currentBatterySpec: vehicle.recommendedBattery,
     });
+    setSelectedVehicleId(vehicle.id);
     setOpen(true);
   };
+
+  useEffect(() => {
+    if (!loggedIn || defaultApplied || vehicleChoices.length === 0) return;
+
+    const defaultId = resolveDefaultCheckoutVehicleId(vehicleChoices);
+    if (!defaultId) return;
+
+    setSelectedVehicleId(defaultId);
+    if (!values.name?.trim()) {
+      const row = findCheckoutVehicleById(vehicleChoices, defaultId);
+      if (row) {
+        onChange({
+          name: row.displayName,
+          year: row.year ?? row.yearRange,
+          fuelType: row.fuel ?? row.fuelHint,
+          currentBatterySpec: row.recommendedBattery,
+        });
+      }
+    }
+    setDefaultApplied(true);
+  }, [loggedIn, defaultApplied, vehicleChoices, values.name, onChange]);
 
   return (
     <section className="checkout-card space-y-3" id="checkout-vehicle">
@@ -43,22 +80,19 @@ export function CheckoutVehicleSection({ values, onChange }: Props) {
         className="flex w-full items-start justify-between gap-3 text-left"
       >
         <div>
-          <h2 className="checkout-card__title">차량 정보 확인</h2>
-          <p className="checkout-card__hint">
-            차량 정보를 입력하면 배터리 확인에 도움이 됩니다. 모르시면 비워두셔도 됩니다.
-          </p>
+          <h2 className="checkout-card__title">차량 정보 (선택)</h2>
         </div>
         <span className="shrink-0 text-xs font-black text-blue-700">
           {open ? "접기" : "펼치기"}
         </span>
       </button>
 
-      {loggedIn && savedVehicles.length > 0 ? (
+      {loggedIn && vehicleChoices.length > 0 ? (
         <div className="flex flex-wrap items-center gap-2">
-          {savedVehicles.length === 1 ? (
+          {vehicleChoices.length === 1 ? (
             <button
               type="button"
-              onClick={() => applyVehicle(savedVehicles[0]!)}
+              onClick={() => applyVehicle(vehicleChoices[0]!)}
               className="checkout-btn-secondary px-4 py-2 text-xs font-black"
             >
               내 차량 정보 불러오기
@@ -68,19 +102,18 @@ export function CheckoutVehicleSection({ values, onChange }: Props) {
               <span className="shrink-0">내 차량</span>
               <select
                 className="checkout-input min-h-[2.5rem] flex-1 rounded-xl px-2 py-2 text-xs font-bold"
-                defaultValue=""
+                value={selectedVehicleId}
                 onChange={(e) => {
-                  const row = savedVehicles.find((v) => v.id === e.target.value);
+                  const row = findCheckoutVehicleById(vehicleChoices, e.target.value);
                   if (row) applyVehicle(row);
                 }}
               >
                 <option value="" disabled>
                   차량 선택
                 </option>
-                {savedVehicles.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.displayName}
-                    {v.year ? ` · ${v.year}` : ""}
+                {vehicleChoices.map((vehicle) => (
+                  <option key={vehicle.id} value={vehicle.id}>
+                    {vehicleChoiceLabel(vehicle)}
                   </option>
                 ))}
               </select>
@@ -149,31 +182,6 @@ export function CheckoutVehicleSection({ values, onChange }: Props) {
               placeholder="예: AGM80L"
             />
           </label>
-          <p className="text-[11px] font-medium text-slate-500">
-            차량정보를 모르셔도 주문은 가능합니다. 정확한 규격 확인이 필요하면 사진 확인 후
-            안내드릴 수 있습니다.
-          </p>
-          <div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50/80 p-3">
-            <p className="text-[10px] font-bold text-slate-500">사진 확인 (선택)</p>
-            <label className="flex items-start gap-2 text-[11px] font-medium text-slate-700">
-              <input
-                type="checkbox"
-                checked={Boolean(values.photoCheckNeeded)}
-                onChange={(e) => onChange({ photoCheckNeeded: e.target.checked })}
-                className="mt-0.5"
-              />
-              <span>기존 배터리 사진 확인 필요</span>
-            </label>
-            <label className="flex items-start gap-2 text-[11px] font-medium text-slate-700">
-              <input
-                type="checkbox"
-                checked={Boolean(values.registrationPhotoNeeded)}
-                onChange={(e) => onChange({ registrationPhotoNeeded: e.target.checked })}
-                className="mt-0.5"
-              />
-              <span>차량등록증 사진 확인 필요</span>
-            </label>
-          </div>
         </div>
       ) : null}
     </section>

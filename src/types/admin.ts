@@ -132,6 +132,23 @@ export type AdminTodayTaskItem = {
   href: string;
 };
 
+export type AdminDashboardSection = {
+  title: string;
+  items: AdminTodayTaskItem[];
+};
+
+export type AdminRecentUnifiedOrder = {
+  id: string;
+  channel: "commerce" | "consultation";
+  orderNumber: string;
+  customerName: string;
+  productName: string;
+  fulfillmentLabel: string;
+  finalAmount: number | null;
+  orderStatusLabel: string;
+  createdAt: string;
+};
+
 export type AdminDashboardStats = {
   todayOrders: number;
   todayInquiries: number;
@@ -150,6 +167,11 @@ export type AdminDashboardStats = {
   productImageMissing: number;
   productDetailMissing: number;
   todayTasks: AdminTodayTaskItem[];
+  orderSections: AdminTodayTaskItem[];
+  claimSections: AdminTodayTaskItem[];
+  inquirySections: AdminTodayTaskItem[];
+  productSections: AdminTodayTaskItem[];
+  recentUnifiedOrders: AdminRecentUnifiedOrder[];
   recentOrders: AdminOrderRequestSummary[];
   recentVehicles: AdminRecentDbItem[];
   recentBatteries: AdminRecentDbItem[];

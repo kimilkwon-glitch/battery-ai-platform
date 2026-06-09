@@ -39,7 +39,6 @@ export function AdminSidebarNav({ navBadges, onNavigate, className }: Props) {
       "주문/고객": true,
       "상품/DB": false,
       "콘텐츠/마케팅": false,
-      "이미지/에셋": false,
       시스템: false,
     };
     if (activeGroup) map[activeGroup] = true;

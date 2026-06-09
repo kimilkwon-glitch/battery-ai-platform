@@ -13,7 +13,15 @@ export type BatteryImageStageVariant =
   | "hero"
   | "search"
   | "compare"
-  | "compareRow";
+  | "compareRow"
+  /** 메인 라인업 카드 전용 */
+  | "homeLineup"
+  /** 차량검색·추천 배터리 카드 전용 */
+  | "vehicleResult"
+  /** 상품상세 추천/연관 카드 전용 */
+  | "productDetail"
+  /** 소형 카드 전용 */
+  | "compact";
 
 export type BatteryImageCompactVariant = "chip" | "chipMd" | "mini" | "content";
 
@@ -27,7 +35,11 @@ export function isBatteryStageVariant(v: BatteryImageVariant): v is BatteryImage
     v === "hero" ||
     v === "search" ||
     v === "compare" ||
-    v === "compareRow"
+    v === "compareRow" ||
+    v === "homeLineup" ||
+    v === "vehicleResult" ||
+    v === "productDetail" ||
+    v === "compact"
   );
 }
 
@@ -45,6 +57,10 @@ export const batteryImageStageHeight: Record<BatteryImageStageVariant, string> =
   search: "h-[128px] min-h-[128px] md:h-full md:min-h-[156px]",
   compare: "h-[128px] min-h-[128px] md:h-full md:min-h-[152px]",
   compareRow: "h-[128px] min-h-[128px] md:h-full md:min-h-[152px]",
+  homeLineup: "h-full min-h-0 max-h-full",
+  vehicleResult: "h-full min-h-0 max-h-full",
+  productDetail: "h-full min-h-0 max-h-full",
+  compact: "h-[96px] min-h-[96px] md:h-full md:min-h-[132px]",
 };
 
 export const batteryImageStageInset =
@@ -62,9 +78,28 @@ export const batteryImageStageImgHeight: Record<BatteryImageStageVariant, string
   search: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
   compare: "h-[116px] min-h-[116px] md:h-[138px] md:min-h-[138px]",
   compareRow: "h-[116px] min-h-[116px] md:h-[140px] md:min-h-[140px]",
+  homeLineup: "h-full max-h-full min-h-0",
+  vehicleResult: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
+  productDetail: "h-[128px] min-h-[128px] md:h-[152px] md:min-h-[152px]",
+  compact: "h-[88px] min-h-[88px] md:h-[110px] md:min-h-[110px]",
 };
 
+/** @deprecated variant별 maxWidth 사용 */
 export const batteryImageStageImgMaxWidth = "max-w-[94%]";
+
+export const batteryImageStageImgMaxWidthByVariant: Record<BatteryImageStageVariant, string> = {
+  card: "max-w-[94%]",
+  cardRow: "max-w-[94%]",
+  cardCompact: "max-w-[92%]",
+  hero: "max-w-[96%]",
+  search: "max-w-[94%]",
+  compare: "max-w-[92%]",
+  compareRow: "max-w-[94%]",
+  homeLineup: "max-w-[92%]",
+  vehicleResult: "max-w-[94%]",
+  productDetail: "max-w-[94%]",
+  compact: "max-w-[90%]",
+};
 
 /** asset 여백 보정 — stage 높이 확보 후 center scale (잘림 시 scale 낮출 것) */
 export const batteryImageStagePhotoScale: Record<BatteryImageStageVariant, string> = {
@@ -75,6 +110,10 @@ export const batteryImageStagePhotoScale: Record<BatteryImageStageVariant, strin
   search: "inline-flex origin-center scale-[1.2] md:scale-[1.24]",
   compare: "inline-flex origin-center scale-[1.12] md:scale-[1.16]",
   compareRow: "inline-flex origin-center scale-[1.14] md:scale-[1.2]",
+  homeLineup: "inline-flex h-full w-full origin-center items-center justify-center scale-[1.34] md:scale-[1.22]",
+  vehicleResult: "inline-flex origin-center scale-[1.22] md:scale-[1.24]",
+  productDetail: "inline-flex origin-center scale-[1.18] md:scale-[1.2]",
+  compact: "inline-flex origin-center scale-[1.1] md:scale-[1.14]",
 };
 
 /** height 기준 img class (fill 미사용) */

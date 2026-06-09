@@ -2,13 +2,24 @@
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { Battery, MessageCircle } from "lucide-react";
+import { Phone } from "lucide-react";
+import { BatteryTalkCarIcon } from "@/components/batterytalk/BatteryTalkCarIcon";
 import { BatteryTalkPanel } from "@/components/batterytalk/BatteryTalkPanel";
 import {
   BATTERYTALK_OPEN_EVENT,
   type BatteryTalkOpenDetail,
 } from "@/lib/batterytalk/batterytalk-events";
+import { CONTACT } from "@/lib/contact-info";
 import type { ConsultationChannelSettings } from "@/lib/consultation/consultation-settings";
+
+function isProductDetailPage(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return (
+    pathname.startsWith("/batteries/") ||
+    pathname.startsWith("/battery-specs/") ||
+    pathname.startsWith("/products/")
+  );
+}
 
 export function BatteryTalkFloating() {
   const pathname = usePathname();
@@ -20,7 +31,8 @@ export function BatteryTalkFloating() {
     pathname?.startsWith("/__ai-audit") ||
     pathname === "/ai-audit" ||
     pathname?.startsWith("/admin") ||
-    pathname?.startsWith("/checkout");
+    pathname?.startsWith("/checkout") ||
+    isProductDetailPage(pathname);
 
   const openTalk = useCallback((detail?: BatteryTalkOpenDetail) => {
     setPreset(detail);
@@ -50,21 +62,27 @@ export function BatteryTalkFloating() {
   return (
     <>
       <div
-        className="batterytalk-floating fixed bottom-4 right-4 z-[80] sm:bottom-6 sm:right-6"
+        className="batterytalk-floating fixed bottom-4 right-4 z-[80] flex flex-col items-end gap-2.5 sm:bottom-6 sm:right-6"
         data-component="batterytalk-floating"
       >
+        <a
+          href={CONTACT.customerCenter.tel}
+          className="batterytalk-floating__phone flex size-[52px] items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg transition hover:scale-[1.04] sm:size-14"
+          aria-label="전화 문의"
+        >
+          <Phone className="size-5" aria-hidden />
+        </a>
         <button
           type="button"
           onClick={() => openTalk()}
-          className="batterytalk-floating__btn group flex items-center gap-2 rounded-full bg-gradient-to-br from-[#0F172A] via-[#2563EB] to-[#06B6D4] px-4 py-3 text-white shadow-[0_8px_28px_rgba(37,99,235,0.45)] transition hover:scale-[1.03] active:scale-[0.98]"
-          aria-label="배터리톡 상담"
+          className="batterytalk-floating__btn relative flex size-[52px] items-center justify-center rounded-full bg-gradient-to-br from-[#0F172A] via-[#2563EB] to-[#06B6D4] text-white shadow-[0_6px_22px_rgba(37,99,235,0.4)] transition hover:scale-[1.05] active:scale-[0.97] sm:size-[56px]"
+          aria-label="배터리톡 열기"
         >
-          <span className="relative flex size-8 items-center justify-center rounded-full bg-white/15">
-            <Battery className="size-4" aria-hidden />
-            <MessageCircle className="absolute -bottom-0.5 -right-0.5 size-3.5 fill-white text-[#2563EB]" aria-hidden />
-          </span>
-          <span className="text-sm font-black tracking-tight">배터리톡</span>
-          <span className="batterytalk-floating__dot absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-emerald-400 ring-2 ring-white" aria-hidden />
+          <BatteryTalkCarIcon className="size-6 sm:size-7" />
+          <span
+            className="batterytalk-floating__dot absolute right-0.5 top-0.5 size-2.5 rounded-full bg-emerald-400 ring-2 ring-white"
+            aria-hidden
+          />
         </button>
       </div>
 

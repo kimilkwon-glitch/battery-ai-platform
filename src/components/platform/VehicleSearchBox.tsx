@@ -36,7 +36,7 @@ type Props = {
   autocompleteHostEl?: HTMLDivElement | null;
   /** 자동완성 패널 열림 상태 (추천 칩 숨김 등) */
   onAutocompleteOpenChange?: (open: boolean) => void;
-  /** 모바일 compact — 큰 검색 버튼 대신 입력칸 우측 돋보기 아이콘 */
+  /** 모바일 compact — 별도 아이콘 검색 버튼 열 (select | input | button) */
   iconSubmit?: boolean;
 };
 
@@ -247,8 +247,8 @@ export function VehicleSearchBox({
               className={cn(
                 inputClassName ||
                   "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300",
-                hasQuery && (iconSubmit ? "pr-[4.25rem]" : compoundBar ? "pr-12 sm:pr-14" : "pr-10"),
-                iconSubmit && !hasQuery && "pr-11",
+                hasQuery && (iconSubmit && compoundBar ? "pr-10" : iconSubmit ? "pr-[4.25rem]" : compoundBar ? "pr-12 sm:pr-14" : "pr-10"),
+                iconSubmit && !compoundBar && !hasQuery && "pr-11",
               )}
               name="q"
               onChange={(e) => {
@@ -261,8 +261,8 @@ export function VehicleSearchBox({
               type="search"
               value={query}
             />
-            {renderClearButton(compoundBar, iconSubmit)}
-            {iconSubmit ? (
+            {renderClearButton(compoundBar, iconSubmit && !compoundBar)}
+            {iconSubmit && !compoundBar ? (
               <button
                 type="submit"
                 className="bm-search-icon-submit absolute right-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
@@ -272,7 +272,15 @@ export function VehicleSearchBox({
               </button>
             ) : null}
           </div>
-          {!iconSubmit && shimmerSubmit ? (
+          {iconSubmit && compoundBar ? (
+            <button
+              type="submit"
+              className="home-hero-search-submit home-hero-search-submit--icon-only flex shrink-0 items-center justify-center border-0 border-l border-slate-200/90 bg-blue-600 text-white hover:bg-blue-700"
+              aria-label="검색"
+            >
+              <AppIcon iconKey="search" size="sm" className="!text-white" />
+            </button>
+          ) : !iconSubmit && shimmerSubmit ? (
             <ShimmerButton
               type="submit"
               background="rgb(37, 99, 235)"

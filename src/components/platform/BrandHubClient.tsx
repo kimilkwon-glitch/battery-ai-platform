@@ -66,7 +66,8 @@ const panelVariants = {
   },
 };
 
-const PRODUCT_IMAGE_HEIGHT = "battery-image-role--brand-hub h-[7.25rem] sm:h-[9.5rem] lg:h-[10.5rem]";
+const PRODUCT_IMAGE_HEIGHT =
+  "battery-image-role--brand-hub h-[8.75rem] sm:h-[11.5rem] lg:h-[13rem] xl:h-[14rem]";
 
 const PANEL_INNER =
   "relative px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12";
@@ -331,7 +332,7 @@ function BrandHubBannerLogo({
       width={assets.width}
       height={assets.height}
       className={clsx("brand-hub-logo-image", presentation.imageClassName)}
-      sizes="(max-width: 639px) 11rem, (max-width: 1023px) 13rem, 15rem"
+      sizes="(max-width: 639px) 14rem, (max-width: 1023px) 17rem, 22rem"
       loading="lazy"
       onError={() => setImgError(true)}
     />
@@ -369,33 +370,43 @@ function BrandHeroBanner({
   return (
     <section
       className={clsx(
-        "relative overflow-hidden rounded-2xl p-6 sm:flex sm:items-stretch sm:gap-8 sm:p-8 lg:gap-10 lg:p-10",
+        "brand-hub-hero-banner relative flex flex-col overflow-hidden rounded-2xl p-7 sm:flex-row sm:items-stretch sm:gap-10 sm:p-10 lg:gap-14 lg:p-12 xl:gap-16 xl:p-14",
         theme.bannerBg,
       )}
     >
       <div
         aria-hidden
         className={clsx(
-          "pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full blur-3xl",
+          "pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full blur-3xl lg:h-64 lg:w-64",
           theme.id === "rocket" ? "bg-[#E53935]/20" : "bg-blue-400/20",
         )}
       />
-      <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-0">
+      <div className="brand-hub-hero-banner__content relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-4 sm:gap-5 lg:gap-6">
         <BrandHubBannerLogo brandId={brandId} theme={theme} fallbackTitle={banner.title} />
-        <p className={clsx("mt-4 text-xl font-bold leading-snug sm:mt-5 sm:text-2xl", theme.bannerText)}>
+        <p
+          className={clsx(
+            "brand-hub-hero-banner__headline text-2xl font-black leading-snug tracking-tight sm:text-3xl lg:text-4xl",
+            theme.bannerText,
+          )}
+        >
           {banner.headline}
         </p>
-        <p className={clsx("mt-4 max-w-xl text-lg font-medium leading-relaxed", theme.bannerMuted)}>
+        <p
+          className={clsx(
+            "brand-hub-hero-banner__desc max-w-2xl text-base font-medium leading-relaxed sm:text-lg lg:max-w-3xl lg:text-xl lg:leading-relaxed",
+            theme.bannerMuted,
+          )}
+        >
           {banner.description}
         </p>
       </div>
       <div
         className={clsx(
-          "relative z-10 mt-6 flex shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:mt-0 sm:w-[min(48%,22rem)] lg:w-[min(46%,24rem)]",
+          "brand-hub-hero-banner__media relative z-10 mt-6 flex w-full shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:mt-0 sm:w-[min(54%,28rem)] lg:w-[min(52%,32rem)] xl:w-[min(50%,34rem)]",
           theme.bannerImageWrap,
         )}
       >
-        <div className="flex h-48 w-full items-center justify-center p-1.5 sm:h-56 lg:h-[15.5rem]">
+        <div className="brand-hub-hero-banner__media-inner flex h-56 w-full items-center justify-center p-4 sm:h-64 sm:p-5 lg:h-[19rem] xl:h-[21rem]">
           <BatteryThumbnail
             code={banner.heroCode}
             imageSet={product.images}
@@ -404,7 +415,7 @@ function BrandHeroBanner({
             ratio="16/9"
             overlayLabel={false}
             darkOverlay={false}
-            className="h-full w-full max-h-full [&_img]:mx-auto [&_img]:max-h-[92%] [&_img]:w-auto [&_img]:object-contain"
+            className="h-full w-full max-h-full [&_img]:mx-auto [&_img]:max-h-[96%] [&_img]:max-w-[95%] [&_img]:w-auto [&_img]:object-contain"
           />
         </div>
       </div>
@@ -550,7 +561,7 @@ function BrandProductCard({
             ratio="16/9"
             overlayLabel={false}
             darkOverlay={false}
-            className="h-full w-full px-1 [&_img]:mx-auto [&_img]:min-h-[5rem] [&_img]:max-h-[92%] [&_img]:w-auto [&_img]:object-contain sm:[&_img]:min-h-0"
+            className="h-full w-full px-2 sm:px-3 [&_img]:mx-auto [&_img]:min-h-[6.5rem] [&_img]:max-h-[96%] [&_img]:w-auto [&_img]:object-contain sm:[&_img]:min-h-[7.5rem] lg:[&_img]:min-h-[8.5rem]"
           />
         ) : (
           <p className={clsx("px-3 text-center text-base font-bold", theme.contentMuted)}>

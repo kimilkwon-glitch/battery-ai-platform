@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { openChatInquiry } from "@/lib/chat-inquiry-events";
+import { openBatteryTalk } from "@/lib/batterytalk/batterytalk-events";
 import { CUSTOMER_CENTER_HUB } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
 
@@ -9,7 +9,7 @@ export function CustomerConsultCta({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
       <div className="flex flex-wrap gap-2">
-        <button type="button" className={`${bm.btnNavy} text-xs`} onClick={() => openChatInquiry()}>
+        <button type="button" className={`${bm.btnNavy} text-xs`} onClick={() => openBatteryTalk()}>
           배터리톡
         </button>
         <Link className={`${bm.btnSecondary} text-xs`} href={`${CUSTOMER_CENTER_HUB}?tab=inquiry`}>
@@ -27,7 +27,7 @@ export function CustomerConsultCta({ compact = false }: { compact?: boolean }) {
         차량·주문 정보를 함께 알려 주시면 더 빠르게 도와드릴 수 있습니다.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
-        <button type="button" className={bm.btnNavy} onClick={() => openChatInquiry()}>
+        <button type="button" className={bm.btnNavy} onClick={() => openBatteryTalk()}>
           배터리톡 상담
         </button>
         <Link className={bm.btnSecondary} href={`${CUSTOMER_CENTER_HUB}?tab=inquiry`}>

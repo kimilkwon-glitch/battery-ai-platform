@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import {
+  ADMIN_CLAIM_STATUS_LABELS,
   CLAIM_REASON_LABELS,
-  CLAIM_STATUS_LABELS,
   CLAIM_TYPE_LABELS,
   type CommerceClaimRecord,
 } from "@/types/commerce-claim";
@@ -71,7 +71,9 @@ export function AdminCommerceOrderClaimsPanel({ orderId }: Props) {
             <span className="rounded-full bg-amber-100 px-2 py-0.5 font-black text-amber-900">
               {CLAIM_TYPE_LABELS[claim.claimType]}
             </span>
-            <span className="font-bold text-slate-700">{CLAIM_STATUS_LABELS[claim.claimStatus]}</span>
+            <span className="font-bold text-slate-700">
+              {ADMIN_CLAIM_STATUS_LABELS[claim.claimStatus]}
+            </span>
             {claim.needsCustomerNotice ? (
               <span className="rounded bg-red-100 px-1.5 py-0.5 font-bold text-red-800">고객 안내 필요</span>
             ) : null}

@@ -139,7 +139,7 @@ export function TossPaymentWidget({ prepare, onPayError }: Props) {
     <section className="space-y-4" data-toss-payment-widget data-toss-mode={usePaymentWindow ? "window" : "widget"}>
       {usePaymentWindow ? (
         <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm font-medium text-slate-700">
-          카드 결제를 토스페이먼츠 보안 결제창에서 진행합니다.
+          카드 결제를 보안 결제창에서 진행합니다.
         </p>
       ) : (
         <>

@@ -34,6 +34,7 @@ const PAYMENT_STATUS_LABELS: Record<string, string> = {
   completed: "결제 완료",
   failed: "결제 실패",
   canceled: "결제 취소",
+  refunded: "환불 완료",
 };
 
 export type MallOrderMineListItemExtended = MallOrderMineListItem & {

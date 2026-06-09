@@ -47,7 +47,7 @@ console.log(
         hasBack: notice.text.includes("공지 목록"),
       },
       floating: {
-        dock: home.text.includes("bm-floating-dock") || home.text.includes("floating-dock"),
+        batterytalk: home.text.includes("batterytalk-floating"),
       },
       cacheBustUrl: `${BASE}/support?_cb=${cb}`,
     },

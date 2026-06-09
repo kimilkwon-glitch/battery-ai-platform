@@ -11,7 +11,7 @@ export type BatteryTalkPageType =
   | "home"
   | "other";
 
-export type BatteryTalkMessageSender = "customer" | "admin";
+export type BatteryTalkMessageSender = "customer" | "admin" | "system";
 
 export type BatteryTalkMessage = {
   id: string;

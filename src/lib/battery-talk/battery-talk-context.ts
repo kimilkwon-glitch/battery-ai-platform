@@ -5,7 +5,12 @@ export function inferBatteryTalkPageType(pageUrl?: string | null): BatteryTalkPa
   try {
     const path = new URL(pageUrl).pathname.toLowerCase();
     if (path.includes("/checkout")) return "checkout";
-    if (path.includes("/batteries/") || path.includes("/battery-specs/")) return "product";
+    if (
+      path.includes("/batteries/") ||
+      path.includes("/battery-specs/") ||
+      path.includes("/products/")
+    )
+      return "product";
     if (path.includes("/vehicles/")) return "vehicle";
     if (path.includes("/support") || path.includes("/customer-center")) return "support";
     if (path === "/" || path === "") return "home";

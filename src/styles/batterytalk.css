@@ -1,5 +1,131 @@
+.batterytalk-floating__btn {
+  position: relative;
+}
+
 .batterytalk-floating__dot {
   animation: batterytalk-pulse 2.4s ease-in-out infinite;
+}
+
+/* 인라인 CTA */
+.batterytalk-inline-card {
+  min-height: 0;
+}
+
+/* 채팅 패널 */
+.batterytalk-chat__messages {
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+}
+
+.batterytalk-chat__bubble {
+  max-width: 88%;
+  margin-bottom: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.batterytalk-chat__bubble--system {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 92%;
+  background: #f1f5f9;
+  color: #475569;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+}
+
+.batterytalk-chat__bubble--customer {
+  margin-left: auto;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  color: #fff;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.batterytalk-chat__bubble--admin {
+  margin-right: auto;
+  background: #fff;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.batterytalk-chat__time {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  opacity: 0.65;
+}
+
+.batterytalk-chat__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.batterytalk-chat__chip {
+  padding: 0.375rem 0.625rem;
+  border-radius: 999px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #1d4ed8;
+  transition: background 0.15s ease;
+}
+
+.batterytalk-chat__chip:hover {
+  background: #dbeafe;
+}
+
+.batterytalk-chat__composer {
+  background: #fff;
+}
+
+.batterytalk-chat__input {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+}
+
+.batterytalk-chat__input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
+}
+
+.batterytalk-chat__send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 55%, #06b6d4 100%);
+  color: #fff;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.batterytalk-chat__send-btn:disabled {
+  opacity: 0.45;
+}
+
+.batterytalk-chat__send-btn:not(:disabled):hover {
+  transform: scale(1.04);
+}
+
+.batterytalk-chat__phone-prompt .batterytalk-chat__send-btn {
+  width: auto;
+  padding: 0 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 800;
 }
 
 @keyframes batterytalk-pulse {
@@ -11,20 +137,6 @@
   50% {
     opacity: 0.65;
     transform: scale(0.85);
-  }
-}
-
-@media (max-width: 767px) {
-  body:has([data-battery-detail-hub][data-sticky-visible="true"]) .batterytalk-floating {
-    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  body:has([data-battery-detail-hub]) .batterytalk-floating {
-    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  body:has([data-page="checkout"]) .batterytalk-floating {
-    display: none;
   }
 }
 

@@ -16,13 +16,9 @@ import { CONTACT } from "@/lib/contact-info";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
 
-const RETURN_TOGGLE_OPTIONS: {
-  id: BatteryReturnOption;
-  shortLabel: string;
-  description: string;
-}[] = [
-  { id: "return", shortLabel: "반납", description: "폐배터리 반납 조건 가격입니다." },
-  { id: "no-return", shortLabel: "미반납", description: "폐배터리 미반납 조건 가격입니다." },
+const RETURN_TOGGLE_OPTIONS: { id: BatteryReturnOption; shortLabel: string }[] = [
+  { id: "return", shortLabel: "반납" },
+  { id: "no-return", shortLabel: "미반납" },
 ];
 import { BatteryTalkInlineCard } from "@/components/batterytalk/BatteryTalkInlineCard";
 import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
@@ -139,9 +135,9 @@ export function BatteryDetailOrderPanel({
 
           <BatteryDetailPriceBlock code={code} brandId={bat.brandId} />
 
-          <div className="mt-4 min-w-0">
+          <div className="mt-3 min-w-0">
             <p className="text-sm font-black text-slate-700">폐배터리 반납</p>
-            <div className="battery-order-panel__return mt-2" role="group" aria-label="폐배터리 반납 선택">
+            <div className="battery-order-panel__return mt-1.5" role="group" aria-label="폐배터리 반납 선택">
               {RETURN_TOGGLE_OPTIONS.map((opt) => {
                 const selected = returnOption === opt.id;
                 return (
@@ -159,9 +155,6 @@ export function BatteryDetailOrderPanel({
                 );
               })}
             </div>
-            <p className="battery-order-panel__return-desc mt-2 text-xs font-medium leading-relaxed text-slate-600">
-              {RETURN_TOGGLE_OPTIONS.find((opt) => opt.id === returnOption)?.description}
-            </p>
           </div>
 
           <ProductFulfillmentPricePanel

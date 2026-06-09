@@ -191,7 +191,7 @@ export function RecommendedBatteryCard({
 
             code={display.code}
 
-            variant="search"
+            variant="vehicleResult"
 
             imageSet={display.imageSet ?? undefined}
 
@@ -306,7 +306,7 @@ export function RecommendedBatteryCard({
 
             code={display.code}
 
-            variant="search"
+            variant="vehicleResult"
 
             imageSet={display.imageSet ?? undefined}
 

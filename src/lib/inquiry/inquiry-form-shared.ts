@@ -6,15 +6,6 @@ export type InquiryChip = {
   category?: InquiryCategory;
 };
 
-export const BATTERYTALK_INQUIRY_CHIPS: InquiryChip[] = [
-  { id: "spec", label: "규격 문의", category: "battery" },
-  { id: "install", label: "장착 가능", category: "battery" },
-  { id: "order", label: "주문/배송", category: "order" },
-  { id: "battery_return", label: "폐배터리", category: "return" },
-  { id: "visit", label: "출장 문의", category: "shipping" },
-  { id: "other", label: "기타", category: "other" },
-];
-
 export const SUPPORT_INQUIRY_CHIPS: InquiryChip[] = [
   { id: "order", label: "주문/배송", category: "order" },
   { id: "spec", label: "규격 문의", category: "battery" },

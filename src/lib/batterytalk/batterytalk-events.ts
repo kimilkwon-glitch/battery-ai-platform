@@ -25,8 +25,3 @@ export function openBatteryTalk(detail?: BatteryTalkOpenDetail) {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent(BATTERYTALK_OPEN_EVENT, { detail }));
 }
-
-/** @deprecated openBatteryTalk 사용 */
-export function openChatInquiry(detail?: BatteryTalkOpenDetail) {
-  openBatteryTalk(detail);
-}

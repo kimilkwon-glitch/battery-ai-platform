@@ -89,3 +89,36 @@
   font-size: 11px;
   color: #475569;
 }
+
+@media (max-width: 390px) {
+  .order-claim-actions__btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+  }
+
+  .order-claim-actions__btn {
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+    font-size: 10px;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .order-claim-actions__hint,
+  .order-claim-actions__note {
+    font-size: 10px;
+  }
+
+  .order-claim-form__field input,
+  .order-claim-form__field select,
+  .order-claim-form__field textarea {
+    font-size: 16px;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .order-claim-form__policy {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+}

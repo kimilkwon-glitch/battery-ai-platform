@@ -40,7 +40,7 @@ console.log(
       },
       reviews: { status: reviews.status, hasTitle: reviews.text.includes("배터리 교체 후기") },
       login: { status: login.status, preparing: login.text.includes("준비") },
-      floating: home.text.includes("floating-dock") || home.text.includes("bm-floating-dock"),
+      floating: home.text.includes("batterytalk-floating"),
       admin: { status: admin.status },
     },
     null,

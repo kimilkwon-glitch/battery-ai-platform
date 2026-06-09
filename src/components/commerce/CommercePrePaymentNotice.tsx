@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
 import { COMMERCE_PRICING_POLICY } from "@/data/commerce-pricing-policy";
@@ -119,8 +119,141 @@ function PolicyLink({ className = "" }: { className?: string }) {
       href={LEGAL_SHIPPING_RETURNS_PAGE}
       className={clsx("font-bold text-blue-700 hover:underline", className)}
     >
-      배송·교환·반품 기준 보기 →
+      배송·교환·반품·환불 안내 전체 보기 →
     </Link>
+  );
+}
+
+type AccordionShellProps = {
+  children: ReactNode;
+  className?: string;
+  dataVariant: string;
+  dataCheckoutStep?: string;
+  ariaLabel?: string;
+};
+
+function PrePaymentAccordionShell({
+  children,
+  className,
+  dataVariant,
+  dataCheckoutStep,
+  ariaLabel = "결제 전 확인 사항",
+}: AccordionShellProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <section
+      className={clsx(
+        "commerce-pre-payment-notice commerce-pre-payment-notice--accordion",
+        expanded && "commerce-pre-payment-notice--expanded",
+        className,
+      )}
+      data-component="commerce-pre-payment-notice"
+      data-variant={dataVariant}
+      data-checkout-step={dataCheckoutStep}
+      aria-label={ariaLabel}
+    >
+      <button
+        type="button"
+        className="commerce-pre-payment-notice__toggle"
+        aria-expanded={expanded}
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <span className="commerce-pre-payment-notice__toggle-text">
+          <span className="commerce-pre-payment-notice__title">결제 전 확인 사항</span>
+          <span className="commerce-pre-payment-notice__subtitle">배송·교환·반품·환불 안내 보기</span>
+        </span>
+        <ChevronDown
+          className={clsx("commerce-pre-payment-notice__chevron size-4 shrink-0", expanded && "is-expanded")}
+          aria-hidden
+        />
+      </button>
+
+      <div className="commerce-pre-payment-notice__policy-link">
+        <PolicyLink />
+      </div>
+
+      {expanded ? (
+        <div className="commerce-pre-payment-notice__body">{children}</div>
+      ) : null}
+    </section>
+  );
+}
+
+const CHECKOUT_POLICY_LINES = [
+  "자동차 배터리는 차량정보·규격·단자 방향을 반드시 확인해 주세요.",
+  "장착·사용 흔적이 있는 배터리는 상품 특성상 반품이 제한될 수 있습니다.",
+  "단순 변심 반품 시 반품 배송비 또는 왕복 배송비가 차감될 수 있습니다.",
+] as const;
+
+function PrePaymentDetailContent({
+  resolvedTotal,
+  fulfillmentMethod,
+  usedBatteryReturn,
+  includeCheckoutCoreLines = false,
+  checkoutSimplified = false,
+}: {
+  resolvedTotal: number | null;
+  fulfillmentMethod?: FulfillmentMethod;
+  usedBatteryReturn?: ReturnOptionInput;
+  includeCheckoutCoreLines?: boolean;
+  checkoutSimplified?: boolean;
+}) {
+  return (
+    <div className="commerce-pre-payment-notice__detail space-y-3">
+      {includeCheckoutCoreLines && !checkoutSimplified ? (
+        <ul className="commerce-pre-payment-notice__core-lines space-y-1 text-[11px] font-medium leading-snug text-slate-600">
+          {CHECKOUT_CORE_LINES.map((line) => (
+            <li key={line} className="flex gap-1.5">
+              <span className="text-slate-400" aria-hidden>
+                ·
+              </span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      {checkoutSimplified ? null : (
+        <dl className="grid gap-2 text-xs font-medium text-slate-700">
+          <div>
+            <dt className="font-black text-slate-800">총 결제금액</dt>
+            <dd className="mt-0.5 tabular-nums font-black text-slate-950">
+              {resolvedTotal != null ? formatPriceWon(resolvedTotal) : "수령 방식·반납 조건 선택 후 표시"}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-black text-slate-800">수령방식별 가격 기준</dt>
+            <dd className="mt-0.5 leading-relaxed">{fulfillmentBasisLabel(fulfillmentMethod)}</dd>
+          </div>
+          <div>
+            <dt className="font-black text-slate-800">택배비</dt>
+            <dd className="mt-0.5">{deliveryFeeNote(fulfillmentMethod)}</dd>
+          </div>
+          <div>
+            <dt className="font-black text-slate-800">폐전지 반납 조건</dt>
+            <dd className="mt-0.5 leading-relaxed">{usedBatteryNote(usedBatteryReturn)}</dd>
+          </div>
+        </dl>
+      )}
+
+      <ul className="list-disc space-y-1 pl-4 text-xs font-medium leading-relaxed text-slate-600">
+        {(checkoutSimplified ? CHECKOUT_POLICY_LINES : [
+          "자동차 배터리는 차량정보·규격·단자 방향을 반드시 확인해 주세요. 오주문 방지를 위해 주문 전 상담을 권장합니다.",
+          "장착·사용 흔적이 있는 배터리는 상품 특성상 반품이 제한될 수 있으며, 단순 변심 반품 시 반품 배송비 또는 왕복 배송비가 차감될 수 있습니다.",
+          `택배: ${CUSTOMER_PRICE_LABELS.productPurchase} + 택배비 ${DELIVERY_FEE.toLocaleString("ko-KR")}원 · 내방교체: 출장가에서 5,000원 할인 · 매장 수령/셀프교체: ${CUSTOMER_PRICE_LABELS.productPurchase} 기준(택배비 없음)`,
+        ]).map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+
+      <p className="text-xs font-bold text-slate-800">
+        문의: 고객센터{" "}
+        <a href="tel:07079542143" className="text-blue-800 hover:underline">
+          {CUSTOMER_CENTER_PHONE}
+        </a>
+      </p>
+    </div>
   );
 }
 
@@ -149,33 +282,18 @@ function CheckoutReviewNotice({
   usedBatteryReturn?: ReturnOptionInput;
 }) {
   return (
-    <div
-      className="commerce-pre-payment-notice commerce-pre-payment-notice--review rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2.5"
-      data-component="commerce-pre-payment-notice"
-      data-variant="checkout"
-      data-checkout-step="review"
-      aria-label="결제 요약"
+    <PrePaymentAccordionShell
+      className="commerce-pre-payment-notice--review"
+      dataVariant="checkout"
+      dataCheckoutStep="review"
     >
-      <dl className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px]">
-        <div>
-          <dt className="font-bold text-slate-500">최종 결제금액</dt>
-          <dd className="font-black tabular-nums text-slate-900">
-            {resolvedTotal != null ? formatPriceWon(resolvedTotal) : "—"}
-          </dd>
-        </div>
-        <div>
-          <dt className="font-bold text-slate-500">수령방식</dt>
-          <dd className="font-bold text-slate-800">{fulfillmentLabel(fulfillmentMethod)}</dd>
-        </div>
-        <div>
-          <dt className="font-bold text-slate-500">폐전지 반납</dt>
-          <dd className="font-bold text-slate-800">{usedBatteryReturnLabel(usedBatteryReturn)}</dd>
-        </div>
-        <div className="col-span-2">
-          <PolicyLink className="text-[11px]" />
-        </div>
-      </dl>
-    </div>
+      <PrePaymentDetailContent
+        resolvedTotal={resolvedTotal}
+        fulfillmentMethod={fulfillmentMethod}
+        usedBatteryReturn={usedBatteryReturn}
+        checkoutSimplified
+      />
+    </PrePaymentAccordionShell>
   );
 }
 
@@ -188,84 +306,19 @@ function CheckoutOrderNotice({
   fulfillmentMethod?: FulfillmentMethod;
   usedBatteryReturn?: ReturnOptionInput;
 }) {
-  const [expanded, setExpanded] = useState(false);
-
   return (
-    <section
-      className="commerce-pre-payment-notice commerce-pre-payment-notice--checkout rounded-lg border border-slate-100 bg-slate-50/50 px-3 py-2.5"
-      data-component="commerce-pre-payment-notice"
-      data-variant="checkout"
-      data-checkout-step="order"
-      aria-label="주문 전 확인"
+    <PrePaymentAccordionShell
+      className="commerce-pre-payment-notice--checkout"
+      dataVariant="checkout"
+      dataCheckoutStep="order"
     >
-      <ul className="space-y-1 text-[11px] font-medium leading-snug text-slate-600">
-        {CHECKOUT_CORE_LINES.map((line) => (
-          <li key={line} className="flex gap-1.5">
-            <span className="text-slate-400" aria-hidden>
-              ·
-            </span>
-            <span>{line}</span>
-          </li>
-        ))}
-      </ul>
-
-      <button
-        type="button"
-        className="mt-2 flex w-full items-center gap-1 text-left text-[11px] font-bold text-slate-600 hover:text-slate-900"
-        aria-expanded={expanded}
-        onClick={() => setExpanded((v) => !v)}
-      >
-        자세히 보기
-        <ChevronDown className={clsx("size-3.5 transition", expanded && "rotate-180")} aria-hidden />
-      </button>
-
-      {expanded ? (
-        <div className="mt-2 space-y-2 border-t border-slate-100 pt-2 text-[11px] font-medium text-slate-600">
-          <dl className="grid gap-1.5">
-            <div>
-              <dt className="font-black text-slate-700">총 결제금액</dt>
-              <dd className="tabular-nums font-black text-slate-900">
-                {resolvedTotal != null ? formatPriceWon(resolvedTotal) : "수령 방식·반납 조건 선택 후 표시"}
-              </dd>
-            </div>
-            <div>
-              <dt className="font-black text-slate-700">수령방식별 가격 기준</dt>
-              <dd className="leading-relaxed">{fulfillmentBasisLabel(fulfillmentMethod)}</dd>
-            </div>
-            <div>
-              <dt className="font-black text-slate-700">택배비</dt>
-              <dd>{deliveryFeeNote(fulfillmentMethod)}</dd>
-            </div>
-            <div>
-              <dt className="font-black text-slate-700">폐전지 반납 조건</dt>
-              <dd className="leading-relaxed">{usedBatteryNote(usedBatteryReturn)}</dd>
-            </div>
-          </dl>
-          <ul className="list-disc space-y-1 pl-4 leading-relaxed">
-            <li>
-              자동차 배터리는 차량정보·규격·단자 방향을 반드시 확인해 주세요. 오주문 방지를 위해 주문 전
-              상담을 권장합니다.
-            </li>
-            <li>
-              장착·사용 흔적이 있는 배터리는 상품 특성상 반품이 제한될 수 있으며, 단순 변심 반품 시 반품
-              배송비 또는 왕복 배송비가 차감될 수 있습니다.
-            </li>
-            <li>
-              택배: {CUSTOMER_PRICE_LABELS.productPurchase} + 택배비{" "}
-              {DELIVERY_FEE.toLocaleString("ko-KR")}원 · 내방교체: 출장가에서 5,000원 할인 · 매장
-              수령/셀프교체: {CUSTOMER_PRICE_LABELS.productPurchase} 기준(택배비 없음)
-            </li>
-          </ul>
-          <p className="font-bold text-slate-700">
-            문의: 고객센터{" "}
-            <a href="tel:07079542143" className="text-blue-800 hover:underline">
-              {CUSTOMER_CENTER_PHONE}
-            </a>
-          </p>
-          <PolicyLink className="text-[11px]" />
-        </div>
-      ) : null}
-    </section>
+      <PrePaymentDetailContent
+        resolvedTotal={resolvedTotal}
+        fulfillmentMethod={fulfillmentMethod}
+        usedBatteryReturn={usedBatteryReturn}
+        checkoutSimplified
+      />
+    </PrePaymentAccordionShell>
   );
 }
 
@@ -279,60 +332,13 @@ function FullNotice({
   usedBatteryReturn?: ReturnOptionInput;
 }) {
   return (
-    <section
-      className="commerce-pre-payment-notice commerce-pre-payment-notice--full rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-3"
-      data-component="commerce-pre-payment-notice"
-      data-variant="full"
-      aria-label="결제 전 확인 사항"
-    >
-      <h2 className="text-sm font-black text-slate-900">결제 전 확인 사항</h2>
-
-      <dl className="grid gap-2 text-xs font-medium text-slate-700">
-        <div>
-          <dt className="font-black text-slate-800">총 결제금액</dt>
-          <dd className="mt-0.5 tabular-nums font-black text-slate-950">
-            {resolvedTotal != null ? formatPriceWon(resolvedTotal) : "수령 방식·반납 조건 선택 후 표시"}
-          </dd>
-        </div>
-        <div>
-          <dt className="font-black text-slate-800">수령방식별 가격 기준</dt>
-          <dd className="mt-0.5 leading-relaxed">{fulfillmentBasisLabel(fulfillmentMethod)}</dd>
-        </div>
-        <div>
-          <dt className="font-black text-slate-800">택배비</dt>
-          <dd className="mt-0.5">{deliveryFeeNote(fulfillmentMethod)}</dd>
-        </div>
-        <div>
-          <dt className="font-black text-slate-800">폐전지 반납 조건</dt>
-          <dd className="mt-0.5 leading-relaxed">{usedBatteryNote(usedBatteryReturn)}</dd>
-        </div>
-      </dl>
-
-      <ul className="list-disc space-y-1 pl-4 text-xs font-medium leading-relaxed text-slate-600">
-        <li>
-          자동차 배터리는 차량정보·규격·단자 방향을 반드시 확인해 주세요. 오주문 방지를 위해 주문 전
-          상담을 권장합니다.
-        </li>
-        <li>
-          장착·사용 흔적이 있는 배터리는 상품 특성상 반품이 제한될 수 있으며, 단순 변심 반품 시 반품
-          배송비 또는 왕복 배송비가 차감될 수 있습니다.
-        </li>
-        <li>
-          택배: {CUSTOMER_PRICE_LABELS.productPurchase} + 택배비 {DELIVERY_FEE.toLocaleString("ko-KR")}
-          원 · 내방교체: 출장가에서 5,000원 할인 · 매장 수령/셀프교체: {CUSTOMER_PRICE_LABELS.productPurchase}{" "}
-          기준(택배비 없음)
-        </li>
-      </ul>
-
-      <p className="text-xs font-bold text-slate-800">
-        문의: 고객센터{" "}
-        <a href="tel:07079542143" className="text-blue-800 hover:underline">
-          {CUSTOMER_CENTER_PHONE}
-        </a>
-      </p>
-
-      <PolicyLink className="text-xs" />
-    </section>
+    <PrePaymentAccordionShell className="commerce-pre-payment-notice--full" dataVariant="full">
+      <PrePaymentDetailContent
+        resolvedTotal={resolvedTotal}
+        fulfillmentMethod={fulfillmentMethod}
+        usedBatteryReturn={usedBatteryReturn}
+      />
+    </PrePaymentAccordionShell>
   );
 }
 

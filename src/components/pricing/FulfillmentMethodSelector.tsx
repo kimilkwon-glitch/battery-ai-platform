@@ -1,23 +1,9 @@
 "use client";
 
-import {
-  CUSTOMER_FULFILLMENT_DESC_PRIMARY,
-  CUSTOMER_FULFILLMENT_DESC_SECONDARY,
-  FULFILLMENT_PRICE_LABELS,
-  type FulfillmentPriceType,
-} from "@/lib/pricing/order-price";
+import { FULFILLMENT_METHOD_CARD_META } from "@/lib/pricing/fulfillment-method-card-meta";
+import { FulfillmentMethodCardButton } from "@/components/pricing/FulfillmentMethodCardButton";
 import type { OrderRequestFulfillment } from "@/types/order-request";
 import { bm } from "@/lib/design-tokens";
-
-const METHODS: {
-  value: OrderRequestFulfillment["method"];
-  priceType: Exclude<FulfillmentPriceType, "undecided">;
-}[] = [
-  { value: "delivery", priceType: "delivery" },
-  { value: "visit_install", priceType: "onsite_install" },
-  { value: "store_install", priceType: "store_install" },
-  { value: "store_pickup_self", priceType: "store_pickup_self" },
-];
 
 type Props = {
   values: OrderRequestFulfillment;
@@ -62,40 +48,16 @@ export function FulfillmentMethodSelector({
       <p className={methodsOnly ? "checkout-card__hint" : "text-xs font-medium text-slate-600"}>
         선택한 방식에 따라 결제금액이 달라집니다. 가격 요약에서 바로 확인할 수 있습니다.
       </p>
-      <div className="checkout-fulfillment-grid grid gap-3 sm:grid-cols-2">
-        {METHODS.map((m) => {
-          const label = FULFILLMENT_PRICE_LABELS[m.priceType];
-          const descPrimary = CUSTOMER_FULFILLMENT_DESC_PRIMARY[m.priceType];
-          const descSecondary = CUSTOMER_FULFILLMENT_DESC_SECONDARY[m.priceType];
+      <div className="product-fulfillment-panel__grid checkout-fulfillment-grid grid gap-2 sm:grid-cols-2">
+        {FULFILLMENT_METHOD_CARD_META.map((m) => {
           const active = values.method === m.value;
           return (
-            <button
+            <FulfillmentMethodCardButton
               key={m.value}
-              type="button"
-              onClick={() => selectMethod(m.value)}
-              aria-pressed={active}
-              data-checkout-fulfillment={m.value}
-              className={`checkout-fulfillment-card min-h-[4.5rem] rounded-xl px-4 py-3.5 text-left transition-colors sm:min-h-[5rem] sm:py-4 ${
-                active
-                  ? "checkout-fulfillment-card--active bg-[#0F1B33] text-white ring-2 ring-blue-400"
-                  : "bg-white text-slate-800 ring-1 ring-[#D8E1EC] hover:ring-slate-300"
-              }`}
-            >
-              <span className="block text-sm font-black">{label}</span>
-              <span
-                className={`mt-1 block text-[11px] font-semibold leading-relaxed ${
-                  active ? "text-blue-50" : "text-slate-500"
-                }`}
-              >
-                {descPrimary}
-                {descSecondary ? (
-                  <>
-                    <br />
-                    {descSecondary}
-                  </>
-                ) : null}
-              </span>
-            </button>
+              meta={m}
+              active={active}
+              onSelect={() => selectMethod(m.value as OrderRequestFulfillment["method"])}
+            />
           );
         })}
       </div>

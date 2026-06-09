@@ -8,6 +8,10 @@ import { filterAdminTestInquiries } from "@/lib/admin/admin-test-data-filter";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import { inquiryList } from "@/lib/inquiry/inquiry-store";
 import type { CustomerInquiryRecord, InquiryStatus } from "@/types/customer-inquiry";
+import {
+  BATTERY_TALK_SYSTEM_WELCOME,
+  batteryTalkSystemProductLine,
+} from "@/lib/battery-talk/battery-talk-chat-copy";
 import type {
   BatteryTalkContext,
   BatteryTalkMessage,
@@ -132,14 +136,103 @@ async function ensureLegacyMigration(): Promise<void> {
   globalCache.__bmBatteryTalkMigrated = true;
 }
 
-export type BatteryTalkCreateInput = {
-  customerName: string;
-  phone: string;
-  message: string;
+export type BatteryTalkOpenThreadInput = {
+  customerName?: string;
+  phone?: string;
   userId?: string;
   isMember?: boolean;
   context?: BatteryTalkContext;
 };
+
+function buildSystemMessages(context: BatteryTalkContext, now: string): BatteryTalkMessage[] {
+  const messages: BatteryTalkMessage[] = [
+    {
+      id: newId("btm"),
+      sender: "system",
+      body: BATTERY_TALK_SYSTEM_WELCOME,
+      createdAt: now,
+    },
+  ];
+  const productLabel =
+    context.productName && context.batteryCode
+      ? `${context.productName} · ${context.batteryCode}`
+      : context.productName ?? context.batteryCode ?? context.productCode;
+  if (productLabel) {
+    messages.push({
+      id: newId("btm"),
+      sender: "system",
+      body: batteryTalkSystemProductLine(
+        context.productName && context.batteryCode
+          ? `${context.productName} 상품 문의`
+          : `${productLabel} 상품 문의`,
+      ),
+      createdAt: now,
+    });
+  }
+  return messages;
+}
+
+export async function batteryTalkOpenThread(
+  input: BatteryTalkOpenThreadInput,
+): Promise<BatteryTalkThread> {
+  await ensureLegacyMigration();
+  const now = new Date().toISOString();
+  const context: BatteryTalkContext = {
+    ...input.context,
+    pageType: input.context?.pageType ?? inferBatteryTalkPageType(input.context?.pageUrl),
+  };
+  const thread: BatteryTalkThread = {
+    threadId: newId("btt"),
+    source: "batterytalk",
+    status: "waiting",
+    customerName: input.customerName?.trim() || "고객",
+    phone: input.phone?.trim() || "",
+    userId: input.userId,
+    isMember: input.isMember === true,
+    messages: buildSystemMessages(context, now),
+    context,
+    createdAt: now,
+    updatedAt: now,
+    lastMessageAt: now,
+    adminMemo: "",
+    unreadByAdmin: false,
+  };
+  const threads = await loadThreads();
+  threads.unshift(thread);
+  await saveThreads(threads);
+  return thread;
+}
+
+export async function batteryTalkAddCustomerMessage(
+  threadId: string,
+  body: string,
+  opts?: { phone?: string; customerName?: string },
+): Promise<BatteryTalkThread | null> {
+  const threads = await loadThreads();
+  const idx = threads.findIndex((t) => t.threadId === threadId);
+  if (idx < 0) return null;
+  const now = new Date().toISOString();
+  const prev = threads[idx]!;
+  const message: BatteryTalkMessage = {
+    id: newId("btm"),
+    sender: "customer",
+    body: body.trim(),
+    createdAt: now,
+  };
+  const next: BatteryTalkThread = {
+    ...prev,
+    customerName: opts?.customerName?.trim() || prev.customerName,
+    phone: opts?.phone?.trim() || prev.phone,
+    messages: [...prev.messages, message],
+    status: prev.status === "done" ? "waiting" : prev.status,
+    updatedAt: now,
+    lastMessageAt: now,
+    unreadByAdmin: true,
+  };
+  threads[idx] = next;
+  await saveThreads(threads);
+  return next;
+}
 
 export type BatteryTalkListFilters = {
   status?: BatteryTalkThreadStatus | "all" | null;
@@ -148,7 +241,9 @@ export type BatteryTalkListFilters = {
 };
 
 function toSummary(thread: BatteryTalkThread): BatteryTalkThreadSummary {
-  const last = thread.messages[thread.messages.length - 1];
+  const last =
+    [...thread.messages].reverse().find((m) => m.sender !== "system") ??
+    thread.messages[thread.messages.length - 1];
   return {
     threadId: thread.threadId,
     status: thread.status,
@@ -163,41 +258,6 @@ function toSummary(thread: BatteryTalkThread): BatteryTalkThreadSummary {
     productName: thread.context.productName,
     pageType: thread.context.pageType,
   };
-}
-
-export async function batteryTalkCreate(input: BatteryTalkCreateInput): Promise<BatteryTalkThread> {
-  await ensureLegacyMigration();
-  const now = new Date().toISOString();
-  const context: BatteryTalkContext = {
-    ...input.context,
-    pageType: input.context?.pageType ?? inferBatteryTalkPageType(input.context?.pageUrl),
-  };
-  const message: BatteryTalkMessage = {
-    id: newId("btm"),
-    sender: "customer",
-    body: input.message.trim(),
-    createdAt: now,
-  };
-  const thread: BatteryTalkThread = {
-    threadId: newId("btt"),
-    source: "batterytalk",
-    status: "waiting",
-    customerName: input.customerName.trim() || "고객",
-    phone: input.phone.trim(),
-    userId: input.userId,
-    isMember: input.isMember === true,
-    messages: [message],
-    context,
-    createdAt: now,
-    updatedAt: now,
-    lastMessageAt: now,
-    adminMemo: "",
-    unreadByAdmin: true,
-  };
-  const threads = await loadThreads();
-  threads.unshift(thread);
-  await saveThreads(threads);
-  return thread;
 }
 
 function threadToInquiryShape(t: BatteryTalkThread): CustomerInquiryRecord {

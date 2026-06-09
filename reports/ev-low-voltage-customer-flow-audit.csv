@@ -1,9 +1,0 @@
-slug,fuel,expectedDisplay,actualDisplay,fuelCards,batteryHrefBlocked,orderBlocked,ev12vHrefBlocked
-ioniq5-ne,전기,EV 저전압 배터리,EV 저전압 배터리,1,true,true,true
-ioniq6-ce,전기,EV 저전압 배터리,EV 저전압 배터리,1,true,true,true
-renault-samsung-sm3-ze-2013,전기,EV 저전압 배터리,EV 저전압 배터리,2,true,true,true
-ssangyong-korando-emotion-2022,전기,EV 저전압 배터리,EV 저전압 배터리,1,true,true,true
-niro-sg2,—,리튬 배터리 장착 차량으로 해당 제품,리튬 배터리 장착 차량으로 해당 제품,0,true,true,true
-kona-sx2,가솔린,AGM60L,AGM60L,3,false,false,true
-kona-sx2,전기,EV 저전압 배터리,EV 저전압 배터리,3,true,true,true
-kona-sx2,하이브리드,sales_excluded,sales_excluded,0,true,true,true

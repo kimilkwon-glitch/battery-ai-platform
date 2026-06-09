@@ -2263,14 +2263,14 @@
 .home-brand-lineup-pair__grid {
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  gap: 1rem;
 }
 
 @media (min-width: 1024px) {
   .home-brand-lineup-pair__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.125rem;
+    gap: 1.375rem;
     align-items: stretch;
   }
 
@@ -2295,22 +2295,22 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  padding: 1rem 1rem 0.875rem;
+  padding: 1.125rem 1.125rem 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.18);
   text-align: left;
 }
 
 @media (min-width: 640px) {
   .home-brand-lineup__header {
-    padding: 1.125rem 1.25rem 1rem;
+    padding: 1.375rem 1.375rem 1.125rem;
   }
 }
 
 @media (min-width: 1024px) {
   .home-brand-lineup__header {
     box-sizing: border-box;
-    min-height: 8.5rem;
-    padding: 1.25rem 1.375rem 1.125rem;
+    min-height: 9.5rem;
+    padding: 1.5rem 1.5rem 1.25rem;
   }
 }
 
@@ -2338,7 +2338,7 @@
   flex: 1 1 auto;
   min-width: 0;
   font-family: var(--font-body);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 1.35;
@@ -2347,15 +2347,15 @@
 
 @media (min-width: 640px) {
   .home-brand-lineup__title {
-    font-size: 1.1875rem;
+    font-size: 1.3125rem;
     line-height: 1.32;
   }
 }
 
 @media (min-width: 1024px) {
   .home-brand-lineup__title {
-    font-size: 1.25rem;
-    line-height: 1.3;
+    font-size: 1.4375rem;
+    line-height: 1.28;
   }
 }
 
@@ -2380,13 +2380,13 @@
 }
 
 .home-brand-lineup__desc {
-  margin: 0.4375rem 0 0;
+  margin: 0.5rem 0 0;
   width: 100%;
   max-width: 100%;
   font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.5;
   text-align: left;
   color: var(--bm-muted, #64748b);
   display: -webkit-box;
@@ -2399,9 +2399,16 @@
 
 @media (min-width: 640px) {
   .home-brand-lineup__desc {
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.44;
+    margin-top: 0.5625rem;
+    font-size: 0.9375rem;
+    line-height: 1.48;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-brand-lineup__desc {
+    font-size: 1rem;
+    line-height: 1.5;
   }
 }
 
@@ -2920,10 +2927,10 @@
 /* 브랜드 컬럼 — 컴팩트 상품 카드 (메타·가격 포함) */
 @media (min-width: 640px) {
   .home-brand-lineup .home-spec-card-image {
-    height: 8.5rem;
-    min-height: 8.5rem;
-    max-height: 8.5rem;
-    padding: 0.5rem 0.5rem 0.375rem;
+    height: 9.75rem;
+    min-height: 9.75rem;
+    max-height: 9.75rem;
+    padding: 0.625rem 0.625rem 0.5rem;
   }
 }
 
@@ -4455,26 +4462,33 @@
   }
 }
 
-/* 모바일 — 검색창 한 줄 compact (카테고리 | input | 검색) */
+/* 모바일 — 검색창 한 줄 compact (텍스트 검색 버튼 — icon-submit 모드는 mobile-customer-roles.css) */
 @media (max-width: 639px) {
-  .home-hero-search-compound--premium {
+  .home-hero-search-compound--premium:not(.home-hero-search-compound--icon-submit) {
     min-height: 3.5rem;
     max-height: 3.5rem;
   }
 
-  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
+  .home-main-search-shell
+    .home-hero-search-compound--premium:not(.home-hero-search-compound--icon-submit)
+    .home-search-type-trigger {
     min-height: 3.5rem;
     max-height: 3.5rem;
     gap: 0.25rem;
     padding-inline: 0.625rem;
   }
 
-  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger .truncate {
+  .home-main-search-shell
+    .home-hero-search-compound--premium:not(.home-hero-search-compound--icon-submit)
+    .home-search-type-trigger
+    .truncate {
     font-size: 0.8125rem;
     font-weight: 800;
   }
 
-  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
+  .home-main-search-shell
+    .home-hero-search-compound--premium:not(.home-hero-search-compound--icon-submit)
+    .home-main-search-input {
     min-height: 3.5rem;
     max-height: 3.5rem;
     padding-inline: 0.75rem;
@@ -4482,11 +4496,15 @@
     border-radius: 0;
   }
 
-  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input::placeholder {
+  .home-main-search-shell
+    .home-hero-search-compound--premium:not(.home-hero-search-compound--icon-submit)
+    .home-main-search-input::placeholder {
     font-size: 0.875rem;
   }
 
-  .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
+  .home-main-search-shell
+    .home-hero-search-compound--premium:not(.home-hero-search-compound--icon-submit)
+    button[type="submit"] {
     min-height: 3.5rem;
     max-height: 3.5rem;
     min-width: 4.75rem;

@@ -9,8 +9,9 @@ import { claimRefundPolicyLines } from "@/lib/claims/claim-refund-estimate";
 import { returnBatteryLabel } from "@/lib/payment/commerce-order-admin-mapper";
 import { bm } from "@/lib/design-tokens";
 import {
+  ADMIN_CLAIM_STATUS_ACTIONS,
+  ADMIN_CLAIM_STATUS_LABELS,
   CLAIM_REASON_LABELS,
-  CLAIM_STATUS_LABELS,
   CLAIM_TYPE_LABELS,
   type ClaimHistoryRecord,
   type ClaimStatus,
@@ -31,24 +32,7 @@ const TYPE_FILTERS: { id: ClaimType | "all"; label: string }[] = [
 
 const STATUS_FILTERS: { id: ClaimStatus | "all"; label: string }[] = [
   { id: "all", label: "전체" },
-  { id: "REQUESTED", label: "접수됨" },
-  { id: "REVIEWING", label: "확인중" },
-  { id: "APPROVED", label: "승인" },
-  { id: "REJECTED", label: "거절" },
-  { id: "RETURN_PICKUP_PENDING", label: "반품수거중" },
-  { id: "RETURN_RECEIVED", label: "반품완료" },
-  { id: "REFUNDED", label: "환불완료" },
-  { id: "COMPLETED", label: "처리완료" },
-];
-
-const STATUS_ACTIONS: { status: ClaimStatus; label: string }[] = [
-  { status: "REVIEWING", label: "접수 확인" },
-  { status: "APPROVED", label: "승인" },
-  { status: "REJECTED", label: "거절" },
-  { status: "RETURN_PICKUP_PENDING", label: "반품수거중" },
-  { status: "RETURN_RECEIVED", label: "반품완료" },
-  { status: "REFUNDED", label: "환불완료 처리" },
-  { status: "COMPLETED", label: "처리완료" },
+  ...ADMIN_CLAIM_STATUS_ACTIONS.map((a) => ({ id: a.status, label: ADMIN_CLAIM_STATUS_LABELS[a.status] })),
 ];
 
 function formatDt(iso: string): string {
@@ -69,14 +53,39 @@ function formatAmount(n: number | null | undefined): string {
   return `${n.toLocaleString("ko-KR")}원`;
 }
 
+function parseClaimType(raw: string | null): ClaimType | "all" {
+  const allowed: ClaimType[] = ["CANCEL", "RETURN", "REFUND", "EXCHANGE", "OTHER"];
+  if (raw && allowed.includes(raw as ClaimType)) return raw as ClaimType;
+  return "all";
+}
+
+function parseClaimStatus(raw: string | null): ClaimStatus | "all" {
+  const allowed: ClaimStatus[] = [
+    "REQUESTED",
+    "REVIEWING",
+    "APPROVED",
+    "REJECTED",
+    "RETURN_PICKUP_PENDING",
+    "RETURN_RECEIVED",
+    "REFUNDED",
+    "COMPLETED",
+  ];
+  if (raw && allowed.includes(raw as ClaimStatus)) return raw as ClaimStatus;
+  return "all";
+}
+
 export function AdminCommerceClaimsClient() {
   const searchParams = useSearchParams();
   const initialClaimId = searchParams.get("claimId")?.trim() ?? "";
 
   const [items, setItems] = useState<CommerceClaimSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [typeFilter, setTypeFilter] = useState<ClaimType | "all">("all");
-  const [statusFilter, setStatusFilter] = useState<ClaimStatus | "all">("all");
+  const [typeFilter, setTypeFilter] = useState<ClaimType | "all">(
+    parseClaimType(searchParams.get("type")),
+  );
+  const [statusFilter, setStatusFilter] = useState<ClaimStatus | "all">(
+    parseClaimStatus(searchParams.get("status")),
+  );
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(initialClaimId || null);
   const [detail, setDetail] = useState<{
@@ -172,6 +181,12 @@ export function AdminCommerceClaimsClient() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
+      <p className="lg:col-span-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold leading-relaxed text-amber-950">
+        <strong className="font-black">PG 환불 미연동 안내:</strong> &quot;환불완료 상태로 변경&quot;은
+        클레임·주문 <span className="font-black">내부 상태</span>만 바꿉니다. 실제 결제 취소/환불은
+        토스페이먼츠 PG 관리자 또는 API 연동 후 별도로 처리해야 합니다. 결제상태는 PG 환불 성공 시에만
+        자동으로 환불완료로 바뀝니다.
+      </p>
       <div className="space-y-3">
         <div className="flex flex-wrap gap-2">
           {TYPE_FILTERS.map((f) => (
@@ -246,7 +261,7 @@ export function AdminCommerceClaimsClient() {
                       <td className="px-3 py-2 whitespace-nowrap">{formatDt(row.requestedAt)}</td>
                       <td className="px-3 py-2 font-mono">{row.orderNumber}</td>
                       <td className="px-3 py-2 font-bold">{CLAIM_TYPE_LABELS[row.claimType]}</td>
-                      <td className="px-3 py-2">{CLAIM_STATUS_LABELS[row.claimStatus]}</td>
+                      <td className="px-3 py-2">{ADMIN_CLAIM_STATUS_LABELS[row.claimStatus]}</td>
                       <td className="px-3 py-2">{orderStatusLabel(row.orderStatus)}</td>
                       <td className="px-3 py-2">{paymentStatusLabel(row.paymentStatus)}</td>
                       <td className="px-3 py-2">{row.customerName}</td>
@@ -278,7 +293,8 @@ export function AdminCommerceClaimsClient() {
               <h3 className="font-black text-slate-900">요청 상세</h3>
               <p>
                 <span className="font-bold text-slate-500">유형 </span>
-                {CLAIM_TYPE_LABELS[detail.claim.claimType]} · {CLAIM_STATUS_LABELS[detail.claim.claimStatus]}
+                {CLAIM_TYPE_LABELS[detail.claim.claimType]} ·{" "}
+                {ADMIN_CLAIM_STATUS_LABELS[detail.claim.claimStatus]}
               </p>
               <p>
                 <span className="font-bold text-slate-500">사유 </span>
@@ -299,7 +315,7 @@ export function AdminCommerceClaimsClient() {
                 </ul>
               ) : null}
               <Link
-                href={`${ADMIN_ROUTES.commerceOrders}?orderId=${encodeURIComponent(detail.claim.orderId)}`}
+                href={`${ADMIN_ROUTES.orders}?channel=commerce&orderId=${encodeURIComponent(detail.claim.orderId)}`}
                 className="font-bold text-blue-700 hover:underline"
               >
                 주문 {detail.claim.orderNumber} 보기
@@ -330,18 +346,29 @@ export function AdminCommerceClaimsClient() {
             <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
               <h3 className="text-xs font-black text-slate-900">처리</h3>
               <div className="flex flex-wrap gap-1.5">
-                {STATUS_ACTIONS.map((a) => (
+                {ADMIN_CLAIM_STATUS_ACTIONS.map((a) => (
                   <button
                     key={a.status}
                     type="button"
                     disabled={saving || detail.claim.claimStatus === a.status}
+                    title={a.hint}
                     onClick={() => void patchClaim({ claimStatus: a.status, adminMemo, customerReply, assignedTo, needsCustomerNotice: needsNotice })}
-                    className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-bold text-slate-800 hover:bg-slate-50 disabled:opacity-40"
+                    className={`rounded-lg border px-2 py-1 text-[11px] font-bold hover:bg-slate-50 disabled:opacity-40 ${
+                      a.status === "REFUNDED"
+                        ? "border-amber-300 bg-amber-50 text-amber-950"
+                        : "border-slate-200 bg-white text-slate-800"
+                    }`}
                   >
                     {a.label}
                   </button>
                 ))}
               </div>
+              {detail.claim.claimStatus === "REFUNDED" ? (
+                <p className="text-[11px] font-semibold leading-relaxed text-amber-800">
+                  내부 환불완료 표시 상태입니다. 실제 PG 환불 여부는 결제상태·PG 관리자에서 별도
+                  확인하세요.
+                </p>
+              ) : null}
               <label className="flex items-center gap-2 text-xs font-bold text-red-800">
                 <input
                   type="checkbox"
@@ -395,8 +422,8 @@ export function AdminCommerceClaimsClient() {
                   {detail.histories.map((h) => (
                     <li key={h.id} className="rounded-lg bg-slate-50 p-2">
                       <p className="font-bold text-slate-800">
-                        {h.previousStatus ? CLAIM_STATUS_LABELS[h.previousStatus] : "—"} →{" "}
-                        {CLAIM_STATUS_LABELS[h.nextStatus]}
+                        {h.previousStatus ? ADMIN_CLAIM_STATUS_LABELS[h.previousStatus] : "—"} →{" "}
+                        {ADMIN_CLAIM_STATUS_LABELS[h.nextStatus]}
                       </p>
                       <p className="text-slate-600">
                         {formatDt(h.createdAt)} · {h.actorName ?? h.actorType}

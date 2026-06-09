@@ -12,9 +12,15 @@ export type CommerceOrderLifecycleStatus =
   | "payment_completed"
   | "payment_failed"
   | "order_confirmed"
+  | "preparing"
   | "shipping_prep"
+  | "shipping"
+  | "shipped"
+  | "in_transit"
   | "visit_scheduled"
   | "store_visit_scheduled"
+  | "delivered"
+  | "picked_up"
   | "work_completed"
   | "canceled"
   | "refunded";
@@ -75,10 +81,16 @@ export const COMMERCE_LIFECYCLE_LABELS: Record<CommerceOrderLifecycleStatus, str
   payment_pending: "결제대기",
   payment_completed: "결제완료",
   payment_failed: "결제실패",
-  order_confirmed: "주문확인",
-  shipping_prep: "출고준비",
+  order_confirmed: "발주확인",
+  preparing: "상품준비",
+  shipping_prep: "배송준비",
+  shipping: "배송중",
+  shipped: "발송처리",
+  in_transit: "배송중",
   visit_scheduled: "출장예약",
   store_visit_scheduled: "매장방문예정",
+  delivered: "배송완료",
+  picked_up: "수령완료",
   work_completed: "작업완료",
   canceled: "취소",
   refunded: "환불",

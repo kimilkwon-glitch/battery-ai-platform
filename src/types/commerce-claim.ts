@@ -32,16 +32,43 @@ export const CLAIM_TYPE_LABELS: Record<ClaimType, string> = {
   OTHER: "기타문의",
 };
 
+/** 고객 화면 노출용 */
 export const CLAIM_STATUS_LABELS: Record<ClaimStatus, string> = {
+  REQUESTED: "접수됨",
+  REVIEWING: "확인 중",
+  APPROVED: "승인됨",
+  REJECTED: "거절됨",
+  RETURN_PICKUP_PENDING: "반품 수거 중",
+  RETURN_RECEIVED: "반품 확인됨",
+  REFUNDED: "환불 안내 완료",
+  COMPLETED: "처리 완료",
+};
+
+/** 관리자 화면 전용 — PG 미연동 시 내부 상태와 실제 환불 구분 */
+export const ADMIN_CLAIM_STATUS_LABELS: Record<ClaimStatus, string> = {
   REQUESTED: "접수됨",
   REVIEWING: "확인중",
   APPROVED: "승인",
   REJECTED: "거절",
   RETURN_PICKUP_PENDING: "반품수거중",
   RETURN_RECEIVED: "반품완료",
-  REFUNDED: "환불완료",
+  REFUNDED: "내부 환불완료 표시",
   COMPLETED: "처리완료",
 };
+
+export const ADMIN_CLAIM_STATUS_ACTIONS: { status: ClaimStatus; label: string; hint?: string }[] = [
+  { status: "REVIEWING", label: "접수 확인" },
+  { status: "APPROVED", label: "승인" },
+  { status: "REJECTED", label: "거절" },
+  { status: "RETURN_PICKUP_PENDING", label: "반품수거중" },
+  { status: "RETURN_RECEIVED", label: "반품완료" },
+  {
+    status: "REFUNDED",
+    label: "환불완료 상태로 변경",
+    hint: "내부 클레임 상태만 변경됩니다. 실제 PG 환불은 별도 처리가 필요합니다.",
+  },
+  { status: "COMPLETED", label: "처리완료" },
+];
 
 export const CLAIM_REASON_LABELS: Record<ClaimReasonCode, string> = {
   change_of_mind: "단순 변심",

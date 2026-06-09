@@ -30,7 +30,10 @@ function resolveVariant(
   if (layout !== "row") return base;
   if (base === "card" || base === "search") return "cardRow";
   if (base === "compare") return "compareRow";
-  if (base === "cardCompact") return "cardCompact";
+  if (base === "cardCompact") return "compact";
+  if (base === "homeLineup" || base === "vehicleResult" || base === "productDetail" || base === "compact") {
+    return base;
+  }
   return base;
 }
 

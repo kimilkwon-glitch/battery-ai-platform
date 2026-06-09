@@ -12,6 +12,7 @@ import {
   batteryImageHeightFit,
   batteryImageStageImgHeight,
   batteryImageStageImgMaxWidth,
+  batteryImageStageImgMaxWidthByVariant,
   batteryImageStageInset,
   batteryImageStagePhotoScale,
   type BatteryImageCompactVariant,
@@ -129,7 +130,7 @@ export function BatteryStagePhoto({
           src={src}
           alt={`${code} 배터리`}
           heightClass={batteryImageStageImgHeight[variant]}
-          maxWidthClass={batteryImageStageImgMaxWidth}
+          maxWidthClass={batteryImageStageImgMaxWidthByVariant[variant]}
           onError={() => {
             if (index < candidates.length - 1) onFail();
           }}

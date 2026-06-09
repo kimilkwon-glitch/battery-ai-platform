@@ -29,13 +29,13 @@ export const HOME_SEARCH_PLACEHOLDERS: Record<HomeSearchType, string> = {
   qa: "궁금한 내용은 Q&A에서 확인",
 };
 
-/** 모바일 메인 검색 — 짧은 placeholder */
+/** 모바일 메인 검색 — 7~9자 이상 placeholder */
 export const HOME_SEARCH_PLACEHOLDERS_MOBILE: Record<HomeSearchType, string> = {
   all: "차종·규격 검색",
-  vehicle: "차종 검색",
-  battery: "규격 검색",
-  symptom: "증상·가이드",
-  qa: "Q&A 검색",
+  vehicle: "차종명으로 검색",
+  battery: "배터리 규격 검색",
+  symptom: "증상·가이드 확인",
+  qa: "Q&A 내용 검색",
 };
 
 export function getHomeSearchHref(query: string, type: HomeSearchType = "all"): string {

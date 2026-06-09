@@ -59,8 +59,15 @@ export function OrderClaimActions({ order }: Props) {
     void loadClaims();
   }, [loadClaims]);
 
-  if (ui.showCompletedOnly) {
-    const latest = claims[0];
+  const settledClaim = claims.find((c) =>
+    ["COMPLETED", "REFUNDED"].includes(c.claimStatus),
+  );
+  const activeClaim = claims.find(
+    (c) => !["COMPLETED", "REJECTED", "REFUNDED"].includes(c.claimStatus),
+  );
+
+  if (ui.showCompletedOnly || (settledClaim && !activeClaim)) {
+    const latest = settledClaim ?? claims[0];
     if (!latest) return null;
     return (
       <div className="order-claim-actions" data-order-claim-actions>
@@ -75,8 +82,6 @@ export function OrderClaimActions({ order }: Props) {
   }
 
   if (ui.actions.length === 0) return null;
-
-  const activeClaim = claims.find((c) => !["COMPLETED", "REJECTED", "REFUNDED"].includes(c.claimStatus));
 
   return (
     <div className="order-claim-actions" data-order-claim-actions>

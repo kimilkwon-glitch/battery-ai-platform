@@ -100,6 +100,12 @@ export function AdminBatteryTalkClient() {
     else setDetail(null);
   }, [selectedId, loadDetail]);
 
+  useEffect(() => {
+    if (!selectedId) return;
+    const id = setInterval(() => void loadDetail(selectedId), 4000);
+    return () => clearInterval(id);
+  }, [selectedId, loadDetail]);
+
   const selectThread = (threadId: string) => {
     setSelectedId(threadId);
     setMobileView("chat");
@@ -288,13 +294,15 @@ export function AdminBatteryTalkClient() {
                 {thread.messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`admin-battery-talk__bubble ${msg.sender === "admin" ? "admin-battery-talk__bubble--admin" : "admin-battery-talk__bubble--customer"}`}
+                    className={`admin-battery-talk__bubble admin-battery-talk__bubble--${msg.sender}`}
                   >
                     <p>{msg.body}</p>
-                    <p className="admin-battery-talk__bubble-time">
-                      {msg.sender === "admin" ? "관리자 · " : "고객 · "}
-                      {formatTime(msg.createdAt)}
-                    </p>
+                    {msg.sender !== "system" ? (
+                      <p className="admin-battery-talk__bubble-time">
+                        {msg.sender === "admin" ? "관리자 · " : "고객 · "}
+                        {formatTime(msg.createdAt)}
+                      </p>
+                    ) : null}
                   </div>
                 ))}
               </div>
@@ -477,7 +485,7 @@ export function AdminBatteryTalkClient() {
                       <strong>{detail.order.orderStatus}</strong>
                     </div>
                     <Link
-                      href={`/admin/commerce-orders?order=${detail.order.orderNumber}`}
+                      href={`/admin/orders?channel=commerce&orderId=${encodeURIComponent(detail.order.orderId)}`}
                       className="mt-2 inline-block text-xs font-bold text-blue-700 hover:underline"
                     >
                       관리자 주문 상세

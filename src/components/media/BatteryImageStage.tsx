@@ -119,5 +119,5 @@ export function BatteryImageStage({
 }
 
 export function batteryStageForCard(compact = false): BatteryImageStageVariant {
-  return compact ? "cardCompact" : "card";
+  return compact ? "compact" : "card";
 }

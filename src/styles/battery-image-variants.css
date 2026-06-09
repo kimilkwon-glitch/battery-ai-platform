@@ -1,0 +1,97 @@
+/**
+ * 배터리 이미지 variant별 역할 분리
+ * homeLineup / vehicleResult / productDetail / compact — 전역 img 축소 금지
+ */
+
+/* ── 메인 라인업 (homeLineup) ── */
+@media (max-width: 639px) {
+  .home-brand-lineup .home-spec-card-image,
+  .home-catalog-products .home-spec-card-image {
+    height: 7.75rem;
+    min-height: 7.75rem;
+    max-height: 7.75rem;
+    padding: 0.5rem 0.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .home-spec-card-image [data-battery-image-stage="homeLineup"] {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    box-shadow: none !important;
+    border-radius: 0.5rem;
+  }
+
+  .home-spec-card-image [data-battery-image-stage="homeLineup"] .battery-image-stage__photo-wrap,
+  .home-spec-card-image [data-battery-image-stage="homeLineup"] > div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-spec-card-image [data-battery-image-stage="homeLineup"] .battery-stage-photo {
+    height: 88% !important;
+    max-height: 88% !important;
+    min-height: 0 !important;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-spec-card-image [data-battery-image-stage="homeLineup"] img {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    width: auto !important;
+    max-width: 92% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 640px) {
+  .home-spec-card-image [data-battery-image-stage="homeLineup"] {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+}
+
+/* ── 차량검색 추천 (vehicleResult) — 홈 라인업과 분리 ── */
+@media (max-width: 1023px) {
+  [data-battery-image-role="search-recommend"] [data-battery-image-stage="vehicleResult"] {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+
+  [data-battery-image-role="search-recommend"] [data-battery-image-stage="vehicleResult"] img {
+    min-height: 4.25rem !important;
+    max-height: 5rem !important;
+    width: auto !important;
+    max-width: 94% !important;
+    object-fit: contain !important;
+  }
+}
+
+@media (min-width: 768px) {
+  [data-battery-image-role="search-recommend"] [data-battery-image-stage="vehicleResult"] img {
+    min-height: 0 !important;
+    max-height: 6.5rem !important;
+  }
+}
+
+/* ── 상품상세 갤러리 (productDetail) — 카드 stage와 분리 ── */
+.battery-gallery-main-frame[data-battery-gallery] img,
+.battery-product-detail__gallery [data-battery-gallery] img {
+  max-width: 100%;
+  object-fit: contain;
+}

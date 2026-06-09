@@ -1,5 +1,0 @@
-slug,legacySource,legacyValue,customerValue,blocked
-grandeur-tg,car-assets.defaultBatteryCode,DIN74L,80L,yes
-grandeur-hg,car-assets.defaultBatteryCode,DIN74L,80L,yes
-santafe-tm,car-assets.defaultBatteryCode,AGM80L,AGM95L,yes
-sorento-mq4,vehicle-battery-enrichment.primaryBattery,AGM60L,AGM95L,yes

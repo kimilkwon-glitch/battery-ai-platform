@@ -5,7 +5,7 @@ import {
   claimListHistories,
   claimUpdate,
 } from "@/lib/claims/claim-store";
-import { requestTossPaymentRefund } from "@/lib/payment/toss-refund-stub";
+import { isPgRefundIntegrated, requestTossPaymentRefund } from "@/lib/payment/toss-refund-stub";
 import { storeCommerceOrderGet, storeCommerceOrderUpdate } from "@/lib/payment/commerce-order-store";
 import type { ClaimStatus } from "@/types/commerce-claim";
 
@@ -79,21 +79,31 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
     if (body.claimStatus === "REFUNDED") {
       const order = await storeCommerceOrderGet(existing.orderId);
       if (order) {
-        await requestTossPaymentRefund({
+        const refundResult = await requestTossPaymentRefund({
           orderId: order.orderId,
           paymentKey: order.paymentKey,
           cancelAmount: existing.estimatedRefundAmount ?? order.finalAmount ?? 0,
           cancelReason: `클레임 ${existing.id}`,
         });
+        const pgRefunded = refundResult.ok && !refundResult.stub;
+        const historyNote = pgRefunded
+          ? `PG 환불 완료 (${claimId})`
+          : `클레임 내부 환불완료 표시 (${claimId}) — 실제 결제 취소/환불은 PG 관리자 또는 토스 연동 후 별도 처리`;
+        if (history) {
+          history.memo = history.memo
+            ? `${history.memo}\n${refundResult.message}`
+            : refundResult.message;
+        }
         await storeCommerceOrderUpdate(existing.orderId, {
-          orderStatus: "refunded",
-          paymentStatus: "refunded",
+          ...(pgRefunded
+            ? { orderStatus: "refunded" as const, paymentStatus: "refunded" as const }
+            : {}),
           statusHistory: [
             ...order.statusHistory,
             {
-              status: "refunded",
-              paymentStatus: "refunded",
-              note: `클레임 환불 처리 (${claimId})`,
+              status: pgRefunded ? "refunded" : order.orderStatus,
+              paymentStatus: pgRefunded ? "refunded" : order.paymentStatus,
+              note: historyNote,
               at: now,
             },
           ],
@@ -103,14 +113,23 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
     if (body.claimStatus === "APPROVED" && existing.claimType === "CANCEL") {
       const order = await storeCommerceOrderGet(existing.orderId);
       if (order) {
+        const pgIntegrated = isPgRefundIntegrated();
+        const paymentWasCompleted = order.paymentStatus === "completed";
+        const cancelNote = pgIntegrated
+          ? `클레임 취소 승인 (${claimId})`
+          : `클레임 취소 승인 (${claimId}) — 주문 내부 취소 처리. 실제 결제 취소/환불은 PG 관리자 또는 토스 연동 후 별도 처리`;
         await storeCommerceOrderUpdate(existing.orderId, {
           orderStatus: "canceled",
-          paymentStatus: order.paymentStatus === "completed" ? "canceled" : order.paymentStatus,
+          ...(pgIntegrated && paymentWasCompleted
+            ? { paymentStatus: "canceled" as const }
+            : {}),
           statusHistory: [
             ...order.statusHistory,
             {
               status: "canceled",
-              note: `클레임 취소 승인 (${claimId})`,
+              paymentStatus:
+                pgIntegrated && paymentWasCompleted ? "canceled" : order.paymentStatus,
+              note: cancelNote,
               at: now,
             },
           ],

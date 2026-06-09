@@ -25,7 +25,7 @@ export function CheckoutSecurityNotice({ compact }: { compact?: boolean }) {
         className={`list-inside list-disc space-y-0.5 font-medium text-slate-600 ${compact ? "text-[10px]" : "text-[11px]"}`}
       >
         <li>카드정보는 배터리매니저에 저장되지 않습니다.</li>
-        <li>결제는 토스페이먼츠 보안 결제창에서 처리됩니다.</li>
+        <li>결제는 보안 결제창에서 처리됩니다.</li>
       </ul>
     </div>
   );
@@ -44,7 +44,7 @@ export function CheckoutPaymentSection({
       <div>
         <h2 className="text-sm font-black text-slate-900">결제 수단</h2>
         <p className="mt-1 text-xs font-medium text-slate-600">
-          토스페이먼츠 보안 결제창을 통해 안전하게 결제됩니다.
+          보안 결제창을 통해 안전하게 결제됩니다.
         </p>
       </div>
 

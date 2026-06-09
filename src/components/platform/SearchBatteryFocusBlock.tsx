@@ -244,7 +244,7 @@ export function SearchBatteryFocusBlock({
         <div className={`${bm.card} overflow-hidden p-0`}>
           <div className="flex flex-col md:grid md:grid-cols-[44%_56%]">
             <div className={bm.cardHorizontalMedia}>
-              <BatteryCardImage code={ux.specMeta.code} variant="search" layout="row" flushTop />
+              <BatteryCardImage code={ux.specMeta.code} variant="vehicleResult" layout="row" flushTop />
             </div>
             <div className={bm.cardHorizontalBody}>
             <p className="spec-code text-2xl font-bold tracking-normal text-slate-950" data-spec-code>

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CheckoutOrderSummary } from "@/components/checkout/CheckoutOrderSummary";
 import { CheckoutDeliveryAddressSection } from "@/components/checkout/CheckoutDeliveryAddressSection";
 import { CheckoutPriceSummaryPanel } from "@/components/checkout/CheckoutPriceSummaryPanel";
 import { CheckoutProductSummary } from "@/components/checkout/CheckoutProductSummary";
@@ -12,7 +11,6 @@ import { CheckoutSecurityNotice } from "@/components/checkout/CheckoutPaymentSec
 import { CheckoutStoreSection } from "@/components/checkout/CheckoutStoreSection";
 import { CheckoutVehicleSection } from "@/components/checkout/CheckoutVehicleSection";
 import { CheckoutVisitAddressSection } from "@/components/checkout/CheckoutVisitAddressSection";
-import { BatteryTalkInlineCard } from "@/components/batterytalk/BatteryTalkInlineCard";
 import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
 import {
   PaymentPreparingButton,
@@ -498,14 +496,7 @@ export function CheckoutOrderPage() {
             </div>
           </section>
 
-          <PaymentPreparingNotice />
-
-          <BatteryTalkInlineCard
-            preset={{
-              topic: "order",
-              orderSummary: items.map((i) => i.batterySpec ?? i.productName).join(", "),
-            }}
-          />
+          <PaymentPreparingNotice compact />
 
           <CommercePrePaymentNotice
             variant="checkout"
@@ -516,11 +507,12 @@ export function CheckoutOrderPage() {
             items={items}
           />
 
-          <CheckoutOrderSummary
+          <CheckoutProductSummary
             items={items}
-            fulfillment={fulfillment}
+            fulfillmentMethod={fulfillment.method}
             usedBattery={usedBattery}
             totalAmount={displayTotal}
+            vehicle={vehicle}
             optionsComplete={optionsComplete}
             isBuyNow={isBuyNow}
           />
@@ -569,8 +561,6 @@ export function CheckoutOrderPage() {
               />
             </div>
           ) : null}
-
-          <CheckoutProductSummary items={items} fulfillmentMethod={fulfillment.method} />
 
           <CheckoutVehicleSection values={vehicle} onChange={(p) => setVehicle((v) => ({ ...v, ...p }))} />
 

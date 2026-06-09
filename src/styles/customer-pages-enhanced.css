@@ -1102,6 +1102,59 @@
   }
 }
 
+/* ── 브랜드 안내 히어로 배너 (로고·카피·대표 제품컷) ── */
+.brand-hub-hero-banner {
+  min-height: 0;
+}
+
+.brand-hub-hero-banner__content {
+  max-width: none;
+}
+
+.brand-hub-hero-banner__headline {
+  letter-spacing: -0.02em;
+}
+
+.brand-hub-hero-banner__desc {
+  max-width: 42rem;
+}
+
+.brand-hub-hero-banner__media-inner {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .brand-hub-hero-banner {
+    min-height: 18rem;
+  }
+
+  .brand-hub-hero-banner__content {
+    padding-right: 0.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .brand-hub-hero-banner {
+    min-height: 20rem;
+  }
+}
+
+[data-battery-image-role="brand-hub"] {
+  padding: 0.75rem 1rem;
+}
+
+[data-battery-image-role="brand-hub"] img,
+[data-battery-image-role="brand-hub"] picture img {
+  object-fit: contain !important;
+  object-position: center;
+}
+
+@media (min-width: 1024px) {
+  [data-battery-image-role="brand-hub"] {
+    padding: 1rem 1.25rem;
+  }
+}
+
 /* ── 고객센터 v2 강화 ── */
 .support-hub-v2__hero {
   position: relative;

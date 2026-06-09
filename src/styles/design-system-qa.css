@@ -1021,7 +1021,7 @@ textarea.support-hub-v2__field {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 0.3125rem 0.4375rem;
+  padding: 0.5rem 0.625rem;
   border-radius: 0.875rem;
 }
 
@@ -1035,7 +1035,7 @@ textarea.support-hub-v2__field {
   align-items: center;
   justify-content: center;
   border-radius: 0.625rem;
-  padding: 0.125rem 0.25rem;
+  padding: 0.25rem 0.375rem;
 }
 
 .brand-hub-logo-wrap {
@@ -1044,7 +1044,8 @@ textarea.support-hub-v2__field {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  height: 3.5rem;
+  height: 4.75rem;
+  min-height: 4.5rem;
 }
 
 .brand-hub-logo-image-surface--stacked {
@@ -1081,7 +1082,7 @@ textarea.support-hub-v2__field {
 /* 스택형 로고 — 세방전지·하이성능쏠라이트 */
 .brand-hub-logo-badge[data-logo-layout="stacked"] {
   width: auto;
-  max-width: min(100%, 11.5rem);
+  max-width: min(100%, 15rem);
 }
 
 .brand-hub-logo-badge[data-logo-layout="stacked"] .brand-hub-logo-glass {
@@ -1092,74 +1093,74 @@ textarea.support-hub-v2__field {
 }
 
 .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
-  max-width: min(100%, 10.5rem);
+  max-width: min(100%, 14rem);
 }
 
 .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-  max-width: min(100%, 13rem);
+  max-width: min(100%, 17rem);
 }
 
 @media (min-width: 640px) {
   .brand-hub-logo-wrap {
-    height: 4rem;
+    height: 5.5rem;
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"] {
-    max-width: min(100%, 13rem);
+    max-width: min(100%, 17rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 11.5rem);
+    max-width: min(100%, 15rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 14.5rem);
+    max-width: min(100%, 19rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"] .brand-hub-logo-glass {
-    padding: 0.375rem 0.5rem;
+    padding: 0.5625rem 0.6875rem;
   }
 }
 
 @media (min-width: 768px) {
   .brand-hub-logo-wrap {
-    height: 4.5rem;
+    height: 6.25rem;
   }
 }
 
 @media (min-width: 1024px) {
   .brand-hub-logo-wrap {
-    height: 5rem;
+    height: 7rem;
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"] {
-    max-width: min(100%, 14.5rem);
+    max-width: min(100%, 19rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 12.5rem);
+    max-width: min(100%, 17rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 16rem);
+    max-width: min(100%, 21rem);
   }
 }
 
 @media (min-width: 1280px) {
   .brand-hub-logo-wrap {
-    height: 5.75rem;
+    height: 8rem;
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"] {
-    max-width: min(100%, 15.5rem);
+    max-width: min(100%, 21rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 13.5rem);
+    max-width: min(100%, 18rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 17rem);
+    max-width: min(100%, 23rem);
   }
 }
 
@@ -1891,30 +1892,6 @@ main:has(.bm-zone--legal) {
   font-size: 0.875rem;
   font-weight: 600;
   color: #64748b;
-}
-
-/* —— Floating —— */
-.bm-floating-dock .bm-floating-btn {
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 9999px;
-  transition: transform var(--motion-normal), box-shadow var(--motion-normal);
-}
-
-.bm-floating-dock .bm-floating-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.bm-floating-dock .bm-floating-btn--primary {
-  background: var(--bm-navy);
-  color: white;
-}
-
-.bm-floating-panel {
-  border-radius: 14px;
-  border: 1px solid var(--bm-border);
-  box-shadow: var(--bm-shadow-md);
 }
 
 /* —— 홈 스펙 카드 —— */

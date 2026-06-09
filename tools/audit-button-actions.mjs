@@ -163,7 +163,7 @@ const BUTTONS = [
     nonLoggedIn: "문의 패널 표시",
     loggedIn: "동일",
     priority: "P1",
-    probeFiles: ["src/components/battery/BatteryProductInquiryPanel.tsx"],
+    probeFiles: ["src/components/battery/BatteryProductQnaPanel.tsx"],
     mustContain: ["문의", "Inquiry"],
   },
 ];

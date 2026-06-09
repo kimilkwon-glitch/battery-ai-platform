@@ -2,19 +2,18 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CheckoutBatteryReturnSummary } from "@/components/checkout/CheckoutBatteryReturnSummary";
-import { OrderPriceBreakdown, OrderPriceTotalBar } from "@/components/pricing/OrderPriceBreakdown";
+import { CheckoutPriceSummaryPanel } from "@/components/checkout/CheckoutPriceSummaryPanel";
+import { CheckoutProductSummary } from "@/components/checkout/CheckoutProductSummary";
 import {
   CheckoutPaymentSection,
-  CheckoutSecurityNotice,
 } from "@/components/checkout/CheckoutPaymentSection";
 import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
 import {
   PaymentPreparingButton,
   PaymentPreparingNotice,
 } from "@/components/checkout/PaymentPreparingNotice";
-import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
 import { formatDeliveryAddress } from "@/lib/checkout/checkout-address";
+import type { UsedBatteryFormSelection } from "@/lib/order-request/order-request-form-helpers";
 import { isCommercePaymentLive } from "@/lib/payment/commerce-checkout-mode";
 import {
   apiCreateCommerceOrder,
@@ -91,6 +90,11 @@ function fulfillmentLocation(session: CheckoutSessionPayload): string {
   return "—";
 }
 
+function sessionUsedBattery(value: CheckoutSessionPayload["usedBatteryReturn"]): UsedBatteryFormSelection {
+  if (value === "return" || value === "no_return") return value;
+  return null;
+}
+
 export function CheckoutReviewPage() {
   const paymentLive = isCommercePaymentLive();
   const [session] = useState<CheckoutSessionPayload | null>(() => loadCheckoutSession());
@@ -99,12 +103,6 @@ export function CheckoutReviewPage() {
   const [payError, setPayError] = useState<string | null>(null);
   const [amountConfirmed, setAmountConfirmed] = useState(false);
   const [prepare, setPrepare] = useState<PaymentPrepareResponse | null>(null);
-
-  const primary = session?.items[0];
-
-  const fulfillmentLabel = session
-    ? FULFILLMENT_METHOD_LABELS[session.fulfillment.method] ?? session.fulfillment.method
-    : "—";
 
   const checkoutBackHref = useMemo(() => {
     if (session?.flow === "buy_now") return `${CHECKOUT_PAGE}?flow=buy_now`;
@@ -203,41 +201,40 @@ export function CheckoutReviewPage() {
     );
   }
 
-  const priceAside = (
+  const usedBattery = sessionUsedBattery(session.usedBatteryReturn);
+  const promotionDiscounts = (session.appliedPromotions ?? []).map((p) => ({
+    title: p.title,
+    amount: p.discountAmount,
+  }));
+
+  const pricePanelMobile = (
+    <CheckoutPriceSummaryPanel
+      items={session.items}
+      fulfillment={{
+        method: session.fulfillment.method,
+        storeId: session.fulfillment.storeId ?? "undecided",
+      }}
+      usedBattery={usedBattery}
+      panelPlacement="inline"
+      finalAmountOverride={session.estimatedTotal}
+      promotionDiscounts={promotionDiscounts}
+    />
+  );
+
+  const pricePanelAside = (
     <div className="space-y-4 lg:sticky lg:top-4">
-      <div className="checkout-summary-card rounded-2xl p-4">
-        <h2 className="text-sm font-black text-slate-900">결제금액 요약</h2>
-        <div className="mt-3">
-          <CheckoutBatteryReturnSummary value={session.usedBatteryReturn} />
-        </div>
-        <div className="mt-3 space-y-3">
-          {session.items.map((item) => (
-            <OrderPriceBreakdown
-              key={item.id}
-              item={item}
-              fulfillmentMethod={session.fulfillment.method}
-              compact
-            />
-          ))}
-        </div>
-        {(session.batteryReturnFee ?? 0) > 0 ? (
-          <p className="mt-2 text-xs font-black text-red-600">
-            미반납 추가금 +{formatPriceWon(session.batteryReturnFee ?? 0)}
-          </p>
-        ) : null}
-        {(session.appliedPromotions ?? []).map((p) => (
-          <p key={p.promotionId} className="mt-1 text-xs font-black text-red-600">
-            {p.title}: -{formatPriceWon(p.discountAmount)}
-          </p>
-        ))}
-        <div className="mt-4">
-          <OrderPriceTotalBar
-            items={session.items}
-            fulfillmentMethod={session.fulfillment.method}
-            returnBatteryOption={session.usedBatteryReturn}
-          />
-        </div>
-      </div>
+      <CheckoutPriceSummaryPanel
+        items={session.items}
+        fulfillment={{
+          method: session.fulfillment.method,
+          storeId: session.fulfillment.storeId ?? "undecided",
+        }}
+        usedBattery={usedBattery}
+        sticky
+        panelPlacement="aside"
+        finalAmountOverride={session.estimatedTotal}
+        promotionDiscounts={promotionDiscounts}
+      />
 
       {paymentLive ? (
         <CheckoutPaymentSection
@@ -261,7 +258,7 @@ export function CheckoutReviewPage() {
 
   return (
     <div className="checkout-order checkout-review pb-28 lg:pb-10" data-page="checkout-review">
-      <div className="mb-5 lg:hidden">{priceAside}</div>
+      <div className="mb-5 lg:hidden">{pricePanelMobile}</div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,400px)] lg:items-start">
         <div className="space-y-5">
@@ -283,24 +280,15 @@ export function CheckoutReviewPage() {
             items={session.items}
           />
 
-          <section className="checkout-card space-y-3">
-            <h2 className="checkout-card__title">주문 상품</h2>
-            <dl className="grid gap-2 text-xs sm:grid-cols-2">
-              <div>
-                <dt className="font-bold text-slate-500">상품명</dt>
-                <dd className="font-black text-slate-900">{primary?.productName ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="font-bold text-slate-500">배터리 규격</dt>
-                <dd className="font-black text-slate-900">{primary?.batterySpec ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="font-bold text-slate-500">수령/장착 방식</dt>
-                <dd className="font-black text-slate-900">{fulfillmentLabel}</dd>
-              </div>
-            </dl>
-            <CheckoutBatteryReturnSummary value={session.usedBatteryReturn} />
-          </section>
+          <CheckoutProductSummary
+            items={session.items}
+            fulfillmentMethod={session.fulfillment.method}
+            usedBattery={usedBattery}
+            totalAmount={session.estimatedTotal}
+            vehicle={session.vehicle}
+            optionsComplete
+            isBuyNow={session.flow === "buy_now"}
+          />
 
           <section className="checkout-card space-y-3">
             <h2 className="checkout-card__title">차량 정보</h2>
@@ -361,7 +349,7 @@ export function CheckoutReviewPage() {
           </Link>
         </div>
 
-        <aside className="hidden lg:block">{priceAside}</aside>
+        <aside className="hidden lg:block">{pricePanelAside}</aside>
       </div>
 
       <div className="checkout-order__mobile-total fixed inset-x-0 bottom-0 z-40 border-t p-3 backdrop-blur lg:hidden">

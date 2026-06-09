@@ -1,18 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Battery, Phone, Store, X } from "lucide-react";
-import { SimpleInquiryForm, type SimpleInquiryFormValues } from "@/components/inquiry/SimpleInquiryForm";
-import { submitBatteryTalk } from "@/lib/battery-talk/battery-talk-client";
+import { Phone, Send, Store, X } from "lucide-react";
+import { BatteryTalkCarIcon } from "@/components/batterytalk/BatteryTalkCarIcon";
+import {
+  BATTERY_TALK_POLL_MS,
+  BATTERY_TALK_QUICK_CHIPS,
+} from "@/lib/battery-talk/battery-talk-chat-copy";
+import {
+  fetchBatteryTalkThread,
+  getStoredBatteryTalkThreadId,
+  openBatteryTalkThread,
+  sendBatteryTalkMessage,
+  storeBatteryTalkThreadId,
+} from "@/lib/battery-talk/battery-talk-client";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
-import { BATTERYTALK_INQUIRY_CHIPS } from "@/lib/inquiry/inquiry-form-shared";
 import type { BatteryTalkOpenDetail } from "@/lib/batterytalk/batterytalk-constants";
 import { CONTACT } from "@/lib/contact-info";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import type { ConsultationChannelSettings } from "@/lib/consultation/consultation-settings";
 import { bm } from "@/lib/design-tokens";
+import type { BatteryTalkMessage } from "@/types/battery-talk";
+
+function formatChatTime(iso: string): string {
+  try {
+    return new Date(iso).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return "";
+  }
+}
 
 export function BatteryTalkPanel({
   open,
@@ -25,45 +43,156 @@ export function BatteryTalkPanel({
   preset?: BatteryTalkOpenDetail;
   settings?: ConsultationChannelSettings | null;
 }) {
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [formKey, setFormKey] = useState(0);
+  const [threadId, setThreadId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<BatteryTalkMessage[]>([]);
+  const [phone, setPhone] = useState("");
+  const [draft, setDraft] = useState("");
+  const [phoneDraft, setPhoneDraft] = useState("");
+  const [showPhonePrompt, setShowPhonePrompt] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pendingBodyRef = useRef<string | null>(null);
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  const buildContext = useCallback(() => {
+    const pageUrl = typeof window !== "undefined" ? window.location.href : undefined;
+    return {
+      pageUrl,
+      pageType: inferBatteryTalkPageType(pageUrl),
+      topic: preset?.topic,
+      batteryCode: preset?.batteryCode,
+      productCode: preset?.productCode ?? preset?.batteryCode,
+      productName: preset?.productName,
+      vehicleSlug: preset?.vehicleSlug,
+      vehicleName: preset?.vehicleName,
+      selectedFuel: preset?.fuelType,
+      cartSummary: preset?.orderSummary,
+    };
+  }, [preset]);
+
+  const threadScope = useCallback(
+    () => ({
+      batteryCode: preset?.batteryCode,
+      productCode: preset?.productCode,
+    }),
+    [preset?.batteryCode, preset?.productCode],
+  );
+
+  const initThread = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const scope = threadScope();
+    const stored = getStoredBatteryTalkThreadId(scope);
+    if (stored) {
+      const existing = await fetchBatteryTalkThread(stored);
+      if (existing.ok && existing.messages) {
+        setThreadId(stored);
+        setMessages(existing.messages);
+        setPhone(existing.phone ?? "");
+        setLoading(false);
+        return;
+      }
+    }
+    const created = await openBatteryTalkThread({ context: buildContext() });
+    setLoading(false);
+    if (created.ok && created.threadId && created.messages) {
+      storeBatteryTalkThreadId(created.threadId, scope);
+      setThreadId(created.threadId);
+      setMessages(created.messages);
+      setPhone(created.phone ?? "");
+    } else {
+      setError("채팅을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+    }
+  }, [buildContext, threadScope]);
 
   useEffect(() => {
     if (!open) return;
-    setSubmitted(false);
-    setFormKey((k) => k + 1);
-  }, [open, preset?.topic, preset?.batteryCode]);
+    setDraft("");
+    setShowPhonePrompt(false);
+    pendingBodyRef.current = null;
+    void initThread();
+  }, [open, initThread, preset?.batteryCode, preset?.productCode]);
 
-  const productHint = preset?.productName
-    ? `${preset.productName} · 규격·장착 문의`
-    : undefined;
+  useEffect(() => {
+    if (!open || !threadId) return;
+    const poll = async () => {
+      const data = await fetchBatteryTalkThread(threadId);
+      if (data.ok && data.messages) {
+        setMessages(data.messages);
+        if (data.phone) setPhone(data.phone);
+      }
+    };
+    const id = setInterval(() => void poll(), BATTERY_TALK_POLL_MS);
+    return () => clearInterval(id);
+  }, [open, threadId]);
 
-  const handleSubmit = async (values: SimpleInquiryFormValues) => {
-    setSubmitting(true);
-    const pageUrl = typeof window !== "undefined" ? window.location.href : undefined;
-    const result = await submitBatteryTalk({
-      customerName: values.name?.trim() || "고객",
-      phone: values.contact.trim(),
-      message: values.message.trim(),
-      userId: values.userId,
-      isMember: values.isMember,
-      context: {
-        pageUrl,
-        pageType: inferBatteryTalkPageType(pageUrl),
-        topic: values.chipLabel,
-        batteryCode: preset?.batteryCode,
-        productCode: preset?.productCode ?? preset?.batteryCode,
-        productName: preset?.productName,
-        vehicleSlug: preset?.vehicleSlug,
-        vehicleName: values.vehicle?.trim() || preset?.vehicleName,
-        selectedFuel: preset?.fuelType,
-        cartSummary: preset?.orderSummary,
-        region: values.region?.trim() || undefined,
-      },
+  useEffect(() => {
+    if (open && messages.length) scrollToBottom();
+  }, [open, messages, scrollToBottom]);
+
+  const doSend = async (body: string, contactPhone?: string) => {
+    if (!threadId || !body.trim()) return;
+    setSending(true);
+    setError(null);
+
+    const optimistic: BatteryTalkMessage = {
+      id: `opt-${Date.now()}`,
+      sender: "customer",
+      body: body.trim(),
+      createdAt: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, optimistic]);
+    setDraft("");
+
+    const result = await sendBatteryTalkMessage({
+      threadId,
+      body: body.trim(),
+      phone: contactPhone?.trim() || phone || undefined,
     });
-    setSubmitting(false);
-    if (result.ok) setSubmitted(true);
+    setSending(false);
+
+    if (result.ok && result.messages) {
+      setMessages(result.messages);
+      if (result.phone) setPhone(result.phone);
+      setShowPhonePrompt(false);
+      pendingBodyRef.current = null;
+    } else {
+      setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
+      setError("메시지 전송에 실패했습니다.");
+      setDraft(body);
+    }
+  };
+
+  const handleSend = async () => {
+    const body = draft.trim();
+    if (!body || sending) return;
+    if (!phone.trim()) {
+      pendingBodyRef.current = body;
+      setShowPhonePrompt(true);
+      return;
+    }
+    await doSend(body);
+  };
+
+  const handlePhoneConfirm = async () => {
+    const contact = phoneDraft.trim();
+    if (!contact) {
+      setError("연락처를 입력해 주세요.");
+      return;
+    }
+    setPhone(contact);
+    const body = pendingBodyRef.current ?? draft.trim();
+    if (body) await doSend(body, contact);
+    else setShowPhonePrompt(false);
+  };
+
+  const handleChip = (message: string) => {
+    setDraft(message);
   };
 
   const ext = settings?.externalChannelsEnabled;
@@ -92,18 +221,16 @@ export function BatteryTalkPanel({
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.22 }}
           >
-            <header className="batterytalk-panel__head flex items-start justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#0891B2] px-4 py-4 text-white">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-white/15">
-                    <Battery className="size-5" aria-hidden />
-                  </span>
-                  <div>
-                    <h2 id="batterytalk-title" className="text-base font-black">
-                      배터리톡
-                    </h2>
-                    <p className="text-[11px] font-semibold text-white/80">규격·장착·주문 상담</p>
-                  </div>
+            <header className="batterytalk-panel__head flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#0891B2] px-4 py-3 text-white">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
+                  <BatteryTalkCarIcon className="size-5" />
+                </span>
+                <div className="min-w-0">
+                  <h2 id="batterytalk-title" className="text-sm font-black">
+                    배터리톡
+                  </h2>
+                  <p className="text-[10px] font-semibold text-white/75">실시간 규격·장착 상담</p>
                 </div>
               </div>
               <button
@@ -116,74 +243,132 @@ export function BatteryTalkPanel({
               </button>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-4">
-              {submitted ? (
-                <div className="batterytalk-panel__done space-y-4 text-center">
-                  <p className="text-lg font-black text-slate-900">상담 접수 완료</p>
-                  <p className="text-sm font-medium text-slate-600">확인 후 순서대로 연락드립니다.</p>
-                  <a href={CONTACT.customerCenter.tel} className="inline-block text-xl font-black text-blue-700">
-                    {CONTACT.customerCenter.phone}
-                  </a>
-                  <Link href={HUB_STORE_DETAIL} className={`${bm.btnSecondary} w-full justify-center text-sm`}>
-                    매장 안내 보기
-                  </Link>
-                </div>
+            <div className="batterytalk-chat__messages flex-1 overflow-y-auto px-3 py-3">
+              {loading ? (
+                <p className="py-8 text-center text-sm font-medium text-slate-500">채팅 연결 중…</p>
               ) : (
                 <>
-                  <SimpleInquiryForm
-                    key={formKey}
-                    chips={BATTERYTALK_INQUIRY_CHIPS}
-                    defaultChipId={preset?.topic ?? "spec"}
-                    productHint={productHint}
-                    submitLabel="상담 접수하기"
-                    submitting={submitting}
-                    optionalFields={["name", "vehicle", "region"]}
-                    initialVehicle={preset?.vehicleName}
-                    onSubmit={handleSubmit}
-                  />
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <a
-                      href={CONTACT.customerCenter.tel}
-                      className={`${bm.btnTertiary} flex-1 justify-center gap-1.5 text-xs font-black`}
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`batterytalk-chat__bubble batterytalk-chat__bubble--${msg.sender}`}
                     >
-                      <Phone className="size-3.5" />
-                      전화 문의
-                    </a>
-                    <Link
-                      href={HUB_STORE_DETAIL}
-                      className={`${bm.btnTertiary} flex-1 justify-center gap-1.5 text-xs font-black`}
-                    >
-                      <Store className="size-3.5" />
-                      매장 안내
-                    </Link>
-                  </div>
-                  {ext && (naverUrl || kakaoUrl) ? (
-                    <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
-                      {naverUrl ? (
-                        <a
-                          href={naverUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`${bm.btnSecondary} flex-1 justify-center text-xs`}
-                        >
-                          네이버 톡톡
-                        </a>
-                      ) : null}
-                      {kakaoUrl ? (
-                        <a
-                          href={kakaoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`${bm.btnSecondary} flex-1 justify-center text-xs`}
-                        >
-                          카카오 채널
-                        </a>
+                      <p className="whitespace-pre-wrap">{msg.body}</p>
+                      {msg.sender !== "system" ? (
+                        <span className="batterytalk-chat__time">{formatChatTime(msg.createdAt)}</span>
                       ) : null}
                     </div>
-                  ) : null}
+                  ))}
+                  <div ref={messagesEndRef} />
                 </>
               )}
             </div>
+
+            {!loading && messages.length > 0 && messages.every((m) => m.sender === "system") ? (
+              <div className="batterytalk-chat__chips shrink-0 border-t border-slate-100 px-3 py-2">
+                {BATTERY_TALK_QUICK_CHIPS.map((chip) => (
+                  <button
+                    key={chip.id}
+                    type="button"
+                    className="batterytalk-chat__chip"
+                    onClick={() => handleChip(chip.message)}
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            {showPhonePrompt ? (
+              <div className="batterytalk-chat__phone-prompt shrink-0 border-t border-amber-100 bg-amber-50 px-3 py-2.5">
+                <p className="text-xs font-bold text-amber-900">답변을 위해 연락처를 남겨주세요.</p>
+                <div className="mt-2 flex gap-2">
+                  <input
+                    type="tel"
+                    className="batterytalk-chat__input flex-1"
+                    placeholder="010-0000-0000"
+                    value={phoneDraft}
+                    onChange={(e) => setPhoneDraft(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="batterytalk-chat__send-btn shrink-0"
+                    disabled={sending}
+                    onClick={() => void handlePhoneConfirm()}
+                  >
+                    확인
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            {error ? (
+              <p className="shrink-0 px-3 pb-1 text-xs font-bold text-red-600">{error}</p>
+            ) : null}
+
+            <footer className="batterytalk-chat__composer shrink-0 border-t border-slate-100 p-3">
+              <div className="flex items-end gap-2">
+                <textarea
+                  className="batterytalk-chat__input min-h-[2.5rem] flex-1 resize-none"
+                  rows={1}
+                  placeholder="메시지를 입력하세요"
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      void handleSend();
+                    }
+                  }}
+                  disabled={loading || sending}
+                />
+                <button
+                  type="button"
+                  className="batterytalk-chat__send-btn"
+                  aria-label="보내기"
+                  disabled={loading || sending || !draft.trim()}
+                  onClick={() => void handleSend()}
+                >
+                  <Send className="size-4" />
+                </button>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <a
+                  href={CONTACT.customerCenter.tel}
+                  className={`${bm.btnTertiary} gap-1 px-2.5 py-1.5 text-[10px] font-black`}
+                >
+                  <Phone className="size-3" />
+                  전화 문의
+                </a>
+                <Link
+                  href={HUB_STORE_DETAIL}
+                  className={`${bm.btnTertiary} gap-1 px-2.5 py-1.5 text-[10px] font-black`}
+                >
+                  <Store className="size-3" />
+                  매장 안내
+                </Link>
+                {ext && naverUrl ? (
+                  <a
+                    href={naverUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${bm.btnTertiary} px-2.5 py-1.5 text-[10px] font-black`}
+                  >
+                    네이버 톡톡
+                  </a>
+                ) : null}
+                {ext && kakaoUrl ? (
+                  <a
+                    href={kakaoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${bm.btnTertiary} px-2.5 py-1.5 text-[10px] font-black`}
+                  >
+                    카카오 채널
+                  </a>
+                ) : null}
+              </div>
+            </footer>
           </motion.aside>
         </>
       ) : null}

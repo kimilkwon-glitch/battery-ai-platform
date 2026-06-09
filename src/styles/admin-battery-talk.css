@@ -159,6 +159,16 @@
   border-bottom-right-radius: 0.25rem;
 }
 
+[data-admin-console] .admin-battery-talk__bubble--system {
+  align-self: center;
+  max-width: 90%;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
 [data-admin-console] .admin-battery-talk__bubble-time {
   margin-top: 0.25rem;
   font-size: 0.6875rem;

@@ -83,6 +83,13 @@ export function AdminProductQnaClient() {
         />
         {loading ? (
           <p className="text-sm text-slate-500">불러오는 중…</p>
+        ) : filtered.length === 0 ? (
+          <div className="admin-panel rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+            <p className="text-sm font-bold text-slate-700">답변 대기 중인 상품 문의가 없습니다.</p>
+            <p className="mt-2 text-xs font-medium text-slate-500">
+              새 상품 문의가 접수되면 이곳에서 확인할 수 있습니다.
+            </p>
+          </div>
         ) : (
           <ul className="space-y-2">
             {filtered.map((row) => (
