@@ -1,7 +1,30 @@
 import { NextResponse } from "next/server";
-import { inquiryCreate, type InquiryCreateInput } from "@/lib/inquiry/inquiry-store";
+import { inquiryCreate, inquiryList, type InquiryCreateInput } from "@/lib/inquiry/inquiry-store";
+import { toProductQnaPublicItem } from "@/lib/product-qna-public";
 
 export const dynamic = "force-dynamic";
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const batteryCode = searchParams.get("battery")?.trim();
+  const isPublic = searchParams.get("public") === "1";
+
+  if (!batteryCode || !isPublic) {
+    return NextResponse.json({ ok: false, message: "잘못된 요청입니다." }, { status: 400 });
+  }
+
+  try {
+    const records = await inquiryList({
+      batteryCode,
+      source: "product_detail",
+      limit: 50,
+    });
+    const items = records.map(toProductQnaPublicItem);
+    return NextResponse.json({ ok: true, items });
+  } catch {
+    return NextResponse.json({ ok: false, message: "문의 목록을 불러오지 못했습니다." }, { status: 500 });
+  }
+}
 
 export async function POST(request: Request) {
   let body: InquiryCreateInput;

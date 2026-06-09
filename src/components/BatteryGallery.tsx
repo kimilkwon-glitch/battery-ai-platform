@@ -80,7 +80,7 @@ export function BatteryGallery({
   const hasNav = items.length > 1;
 
   const mainFrameClass = isProductDetail
-    ? `relative flex items-center justify-center overflow-hidden rounded-xl bg-[#f1f5f9] ring-1 ring-slate-200 ${minHeightClass}`
+    ? `battery-gallery-main-frame relative flex items-center justify-center overflow-hidden rounded-xl ${minHeightClass}`
     : `relative overflow-hidden rounded-xl bg-[#f1f5f9] ring-1 ring-slate-200 ${minHeightClass}`;
 
   const imageFrameClass = isProductDetail
@@ -187,9 +187,9 @@ export function BatteryGallery({
                 onClick={() => select(i)}
                 aria-label={`${item.label} 보기`}
                 aria-current={safeActive === i ? "true" : undefined}
-                className={`battery-gallery-thumb relative shrink-0 overflow-hidden rounded-lg ring-2 ${
-                  !isProductDetail ? "aspect-square" : ""
-                } ${safeActive === i ? "ring-blue-600" : "ring-slate-200"}`}
+                className={`battery-gallery-thumb relative shrink-0 overflow-hidden rounded-lg ${
+                  !isProductDetail ? "aspect-square ring-2" : ""
+                } ${safeActive === i ? "battery-gallery-thumb--active" : "battery-gallery-thumb--idle"}`}
               >
                 {failed[i] ? (
                   <BatteryGraphicSmall code={code} />

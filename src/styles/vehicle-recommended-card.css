@@ -27,10 +27,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 0;
-  max-height: 5rem;
-  padding: 0.375rem 0.75rem 0.5rem;
-  background: #fff;
+  min-height: 4.75rem;
+  max-height: 5.5rem;
+  padding: 0.5rem 0.875rem 0.625rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
   border-top: 1px solid #f1f5f9;
 }
 
@@ -49,10 +49,11 @@
 .vehicle-recommended-card__media .battery-image-stage,
 .vehicle-recommended-card__media .battery-stage-photo,
 .vehicle-recommended-card__media img {
-  max-height: 4.25rem !important;
+  max-height: 4.5rem !important;
   width: auto !important;
-  max-width: 100% !important;
+  max-width: 92% !important;
   object-fit: contain !important;
+  object-position: center !important;
 }
 
 @media (min-width: 768px) {

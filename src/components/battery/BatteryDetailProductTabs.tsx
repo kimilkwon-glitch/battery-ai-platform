@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { MessageSquare, Star } from "lucide-react";
 import { BatteryDetailBodyImages } from "@/components/battery/BatteryDetailBodyImages";
-import { BatteryProductInquiryPanel } from "@/components/battery/BatteryProductInquiryPanel";
+import { BatteryProductQnaPanel } from "@/components/battery/BatteryProductQnaPanel";
 import { getBattery } from "@/lib/platform-data";
 
 const TABS = [
@@ -116,19 +117,24 @@ export function BatteryDetailProductTabs({ code }: Props) {
               role="tabpanel"
               id="battery-reviews"
               aria-labelledby="battery-tab-reviews"
-              className="battery-detail-tabs__panel mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+              className="battery-detail-tabs__panel battery-detail-reviews-panel mt-6"
               initial={reduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
               transition={{ duration: 0.22, ease: panelEase }}
             >
-              <p className="text-sm font-medium text-slate-500">아직 등록된 리뷰가 없습니다.</p>
-              <Link
-                href={reviewsHref}
-                className="mt-4 inline-flex rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-slate-800 transition hover:border-blue-200 hover:text-blue-700"
-              >
-                리뷰 페이지 보기
-              </Link>
+              <div className="battery-detail-reviews-panel__empty">
+                <span className="battery-detail-reviews-panel__icon" aria-hidden>
+                  <Star className="size-6" strokeWidth={2} />
+                </span>
+                <p className="battery-detail-reviews-panel__title">아직 등록된 리뷰가 없습니다</p>
+                <p className="battery-detail-reviews-panel__desc">
+                  교체 후기를 남겨 주시면 다른 고객의 규격 선택에 도움이 됩니다.
+                </p>
+                <Link href={reviewsHref} className="battery-detail-reviews-panel__cta">
+                  리뷰 페이지 보기
+                </Link>
+              </div>
             </motion.div>
           ) : null}
 
@@ -138,21 +144,17 @@ export function BatteryDetailProductTabs({ code }: Props) {
               role="tabpanel"
               id="battery-qna"
               aria-labelledby="battery-tab-qna"
-              className="battery-detail-tabs__panel mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+              className="battery-detail-tabs__panel battery-detail-qna-panel mt-6"
               initial={reduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
               transition={{ duration: 0.22, ease: panelEase }}
             >
-              <BatteryProductInquiryPanel batteryCode={code} />
-              <div className="mt-6 border-t border-slate-100 pt-4">
-                <Link
-                  href="/community"
-                  className="text-sm font-bold text-slate-600 transition hover:text-blue-700"
-                >
-                  Q&amp;A 게시판 보기 →
-                </Link>
-              </div>
+              <BatteryProductQnaPanel batteryCode={code} />
+              <p className="battery-detail-qna-panel__hint mt-4 flex items-start gap-2 text-xs font-medium text-slate-500">
+                <MessageSquare className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+                일반 상담·주문 문의는 고객센터 또는 하단 상담 버튼을 이용해 주세요.
+              </p>
             </motion.div>
           ) : null}
         </AnimatePresence>

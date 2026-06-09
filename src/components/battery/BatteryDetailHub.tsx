@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageCircle } from "lucide-react";
 import { BatteryDetailOrderPanel } from "@/components/battery/BatteryDetailOrderPanel";
 import { BatteryDetailProductTabs } from "@/components/battery/BatteryDetailProductTabs";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { BuyNowButton } from "@/components/cart/BuyNowButton";
 import { BATTERY_DETAIL_BUILD_STAMP } from "@/lib/battery-detail/core-battery-codes";
 import { resolveBatteryDetailHubContent } from "@/lib/battery-detail/battery-detail-hub-fallback";
-import { openProductInquiry } from "@/lib/chat-inquiry-events";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
 import type { FulfillmentMethod } from "@/types/cart";
@@ -19,19 +17,6 @@ type Props = {
   vehicles?: { slug: string; title: string; brand: string; fuel: string }[];
   relatedCodes?: string[];
 };
-
-function BatteryDetailMobileConsultFab({ code }: { code: string }) {
-  return (
-    <button
-      type="button"
-      className="battery-detail-consult-fab md:hidden"
-      aria-label="상담 문의"
-      onClick={() => openProductInquiry({ batteryCode: code })}
-    >
-      <MessageCircle className="size-5" aria-hidden />
-    </button>
-  );
-}
 
 function BatteryDetailMobileSticky({
   code,
@@ -47,9 +32,7 @@ function BatteryDetailMobileSticky({
   visible: boolean;
 }) {
   return (
-    <>
-      <BatteryDetailMobileConsultFab code={code} />
-      <div
+    <div
         className={`${bm.stickyMobileBar} battery-detail-sticky-bar${visible ? "" : " battery-detail-sticky-bar--hidden"}`}
         data-battery-detail-sticky
         data-sticky-visible={visible ? "true" : "false"}
@@ -80,7 +63,6 @@ function BatteryDetailMobileSticky({
           />
         </div>
       </div>
-    </>
   );
 }
 

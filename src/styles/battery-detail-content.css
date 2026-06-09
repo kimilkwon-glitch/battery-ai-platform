@@ -29,6 +29,24 @@
   min-height: 14rem;
 }
 
+.battery-gallery-main-frame {
+  border: 1px solid #dbe3ee;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 72%);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+.battery-gallery-thumb--idle {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.battery-gallery-thumb--active {
+  border: 2px solid #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18), 0 4px 12px rgba(37, 99, 235, 0.14);
+}
+
 /* 상품 상세 — 썸네일 필름스트립 (모바일) */
 .battery-gallery-thumbs-wrap {
   position: relative;
@@ -357,6 +375,211 @@
 .battery-detail-tabs__panel {
   scroll-margin-top: 7.5rem;
   padding-top: 0.25rem;
+}
+
+.battery-detail-reviews-panel,
+.battery-detail-qna-panel {
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 1.125rem 1.25rem;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+.battery-detail-reviews-panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.25rem 0.75rem;
+}
+
+.battery-detail-reviews-panel__icon {
+  display: inline-flex;
+  width: 3rem;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.875rem;
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.battery-detail-reviews-panel__title {
+  margin: 0.875rem 0 0;
+  font-size: 0.9375rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.battery-detail-reviews-panel__desc {
+  margin: 0.375rem 0 0;
+  max-width: 18rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.battery-detail-reviews-panel__cta {
+  display: inline-flex;
+  margin-top: 1rem;
+  min-height: 2.625rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 0 1rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.battery-detail-reviews-panel__cta:hover {
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.battery-product-qna__head {
+  margin-bottom: 0.875rem;
+}
+
+.battery-product-qna__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.battery-product-qna__desc {
+  margin: 0.375rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.battery-product-qna__empty {
+  border-radius: 0.875rem;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  padding: 1rem 1.125rem;
+}
+
+.battery-product-qna__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.battery-product-qna__item {
+  border-radius: 0.875rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  overflow: hidden;
+}
+
+.battery-product-qna__item--open {
+  border-color: #bfdbfe;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+.battery-product-qna__trigger {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.375rem;
+  border: none;
+  background: transparent;
+  padding: 0.75rem 0.875rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.battery-product-qna__trigger-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.battery-product-qna__status {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.battery-product-qna__status--pending {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.battery-product-qna__status--done {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.battery-product-qna__summary {
+  min-width: 0;
+  flex: 1;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #0f172a;
+}
+
+.battery-product-qna__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.battery-product-qna__chevron {
+  margin-left: auto;
+  transition: transform 0.15s ease;
+}
+
+.battery-product-qna__panel {
+  border-top: 1px solid #f1f5f9;
+  padding: 0.75rem 0.875rem 0.875rem;
+}
+
+.battery-product-qna__panel-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.battery-product-qna__question,
+.battery-product-qna__answer {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.55;
+  color: #334155;
+}
+
+.battery-product-qna__answer {
+  margin-top: 0.625rem;
+  padding-top: 0.625rem;
+  border-top: 1px dashed #e2e8f0;
+  color: #1e3a8a;
 }
 
 @media (prefers-reduced-motion: reduce) {

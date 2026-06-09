@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { bm } from "@/lib/design-tokens";
-import { FUEL_FILTER_HINT, FUEL_MISMATCH_HINT } from "@/lib/vehicle-fuel-selection";
+import { FUEL_MISMATCH_HINT } from "@/lib/vehicle-fuel-selection";
 
 type Props = {
   fuels: string[];
@@ -33,7 +33,7 @@ export function VehicleFuelTabBar({ fuels, selectedFuel, onSelect }: Props) {
         ))}
       </div>
       <p className="vehicle-fuel-tab-bar__hint text-xs font-medium leading-relaxed text-slate-500">
-        {FUEL_MISMATCH_HINT} {FUEL_FILTER_HINT}
+        {FUEL_MISMATCH_HINT}
       </p>
     </div>
   );

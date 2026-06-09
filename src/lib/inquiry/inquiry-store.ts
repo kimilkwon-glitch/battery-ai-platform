@@ -85,6 +85,8 @@ export type InquiryCreateInput = {
 export type InquiryListFilters = {
   status?: InquiryStatus | "all" | null;
   category?: InquiryCategory | "all" | null;
+  batteryCode?: string | null;
+  source?: InquirySource | null;
   q?: string | null;
   limit?: number;
 };
@@ -127,6 +129,13 @@ export async function inquiryList(
   const category = filters.category?.trim();
   if (category && category !== "all") {
     records = records.filter((r) => r.category === category);
+  }
+  const batteryCode = filters.batteryCode?.trim().toUpperCase();
+  if (batteryCode) {
+    records = records.filter((r) => r.batteryCode?.trim().toUpperCase() === batteryCode);
+  }
+  if (filters.source) {
+    records = records.filter((r) => r.source === filters.source);
   }
   const q = filters.q?.trim().toLowerCase();
   if (q) {

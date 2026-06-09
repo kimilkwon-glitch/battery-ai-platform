@@ -4926,10 +4926,6 @@
   font-weight: 600;
   line-height: 1.45;
   color: #64748b;
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   word-break: keep-all;
 }
 
@@ -4946,8 +4942,13 @@
 }
 
 .home-spec-card-vehicles__list {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   font-weight: 700;
   color: #475569;
+  word-break: keep-all;
 }
 
 .home-spec-card-prices {

@@ -12,7 +12,6 @@ import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { CONTACT } from "@/lib/contact-info";
-import { openProductInquiry } from "@/lib/chat-inquiry-events";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
 
@@ -179,18 +178,10 @@ export function BatteryDetailOrderPanel({
             />
           </div>
 
-          <button
-            type="button"
-            className="battery-product-inquiry-cta mt-3 w-full"
-            onClick={() => openProductInquiry({ batteryCode: code })}
-          >
-            이 규격 제품 문의
-          </button>
-
           <div className="battery-product-detail__consult mt-4 border-t border-slate-100 pt-4">
-            <p className="text-sm font-black text-slate-900">상담이 필요하신가요?</p>
+            <p className="text-sm font-black text-slate-900">규격이 맞는지 확인이 필요하신가요?</p>
             <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
-              차량 정보나 장착 방식이 헷갈리시면 고객센터로 문의해 주세요.
+              이 상품 문의는 하단 상품문의 탭에서 남겨 주세요. 급한 상담은 고객센터로 연락해 주세요.
             </p>
             <a
               href={CONTACT.customerCenter.tel}
@@ -202,9 +193,12 @@ export function BatteryDetailOrderPanel({
               <button
                 type="button"
                 className={`${bm.btnSecondary} text-xs font-black`}
-                onClick={() => openProductInquiry({ batteryCode: code })}
+                onClick={() => {
+                  document.getElementById("battery-tab-qna")?.click();
+                  document.getElementById("battery-qna")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
               >
-                상담 문의하기
+                상품 문의 보기
               </button>
               <Link href={HUB_STORE_DETAIL} className={`${bm.btnTertiary} text-xs font-black`}>
                 매장 안내

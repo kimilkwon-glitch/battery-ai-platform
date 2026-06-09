@@ -215,7 +215,7 @@ export function SupportCenterHubV2({ notices }: Props) {
         <div
           className={clsx(
             "support-hub-v2__cta-row mt-5 flex gap-2",
-            isMobile ? "support-hub-v2__cta-row--compact flex-row" : "flex-col sm:flex-row",
+            isMobile ? "hidden" : "flex-col sm:flex-row",
           )}
         >
           {heroCtas.map((cta) =>
@@ -258,7 +258,7 @@ export function SupportCenterHubV2({ notices }: Props) {
           </section>
 
           <div
-            className="support-hub-v2__chips"
+            className="support-hub-v2__chips hidden lg:flex"
             role="tablist"
             aria-label="FAQ 카테고리"
           >
@@ -426,7 +426,7 @@ export function SupportCenterHubV2({ notices }: Props) {
                   className="support-hub-v2__cta support-hub-v2__cta--secondary support-hub-v2__inquiry-open mt-4 w-full"
                   onClick={expandInquiryAndScroll}
                 >
-                  문의 양식 열기
+                  상담 문의하기
                 </button>
               </div>
             )}

@@ -154,6 +154,12 @@
 
 .home-spec-card-prices {
   min-height: 0;
+  margin-bottom: 0;
+  gap: 0.3125rem;
+}
+
+.home-spec-card-price {
+  padding: 0.25rem 0.375rem 0.1875rem;
 }
 
 .home-spec-card-actions {
@@ -173,7 +179,7 @@
 
 .battery-card-price {
   border-radius: 0.5rem;
-  padding: 0.3125rem 0.4375rem 0.25rem;
+  padding: 0.25rem 0.375rem 0.1875rem;
   text-align: left;
   min-width: 0;
 }
