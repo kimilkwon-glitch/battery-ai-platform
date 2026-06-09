@@ -355,15 +355,15 @@ export function RecommendedBatteryCard({
 
             {showPricing && (internetPrice != null || onsitePrice != null) ? (
 
-              <dl className="mt-1.5 grid grid-cols-2 gap-2 text-xs">
+              <dl className="battery-card-prices" aria-label="가격 안내">
 
                 {internetPrice != null ? (
 
-                  <div className="rounded-lg bg-slate-50 px-2.5 py-2">
+                  <div className="battery-card-price battery-card-price--internet">
 
-                    <dt className="font-bold text-slate-500">제품 구매가</dt>
+                    <dt className="battery-card-price__label">제품 구매가</dt>
 
-                    <dd className="font-black text-slate-900">{formatPriceWon(internetPrice)}</dd>
+                    <dd className="battery-card-price__amount">{formatPriceWon(internetPrice)}</dd>
 
                   </div>
 
@@ -371,11 +371,11 @@ export function RecommendedBatteryCard({
 
                 {onsitePrice != null ? (
 
-                  <div className="rounded-lg bg-blue-50 px-2.5 py-2">
+                  <div className="battery-card-price battery-card-price--onsite">
 
-                    <dt className="font-bold text-blue-700">출장 교체가</dt>
+                    <dt className="battery-card-price__label">출장 교체가</dt>
 
-                    <dd className="font-black text-blue-900">{formatPriceWon(onsitePrice)}</dd>
+                    <dd className="battery-card-price__amount">{formatPriceWon(onsitePrice)}</dd>
 
                   </div>
 
@@ -387,7 +387,7 @@ export function RecommendedBatteryCard({
 
             {showPricing ? (
 
-              <div className="mt-2.5 flex flex-col gap-2 sm:hidden">
+              <div className="battery-card-prices-actions flex flex-col gap-2 sm:hidden">
 
                 <BuyNowButton
 

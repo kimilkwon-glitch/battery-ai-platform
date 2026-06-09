@@ -379,9 +379,7 @@ export function SupportCenterHubV2({ notices }: Props) {
                 <li key={notice.id}>
                   <Link href={`/support/notices/${notice.id}`} className="support-hub-v2__notice-row">
                     <span className="support-hub-v2__notice-row-inner">
-                      {notice.important ? (
-                        <span className="support-hub-v2__notice-badge">중요</span>
-                      ) : null}
+                      <SupportNoticeBadge important={notice.important} />
                       <span className="support-hub-v2__notice-title">{notice.title}</span>
                     </span>
                   </Link>
@@ -529,9 +527,7 @@ export function SupportCenterHubV2({ notices }: Props) {
                 <li key={notice.id}>
                   <Link href={`/support/notices/${notice.id}`} className="support-hub-v2__notice-row">
                     <span className="support-hub-v2__notice-row-inner">
-                      {notice.important ? (
-                        <span className="support-hub-v2__notice-badge">중요</span>
-                      ) : null}
+                      <SupportNoticeBadge important={notice.important} />
                       <span className="support-hub-v2__notice-title">{notice.title}</span>
                     </span>
                   </Link>
@@ -571,6 +567,13 @@ export function SupportCenterHubV2({ notices }: Props) {
   );
 }
 
+function SupportNoticeBadge({ important }: { important?: boolean }) {
+  if (important) {
+    return <span className="support-hub-v2__notice-badge">중요</span>;
+  }
+  return <span className="support-hub-v2__notice-badge support-hub-v2__notice-badge--info">안내</span>;
+}
+
 function InquiryForm({
   inquirySubmitted,
   inquiryForm,
@@ -599,7 +602,7 @@ function InquiryForm({
           문의가 접수되었습니다. 확인 후 연락드리겠습니다.
         </p>
       ) : (
-        <form className="mt-4 grid gap-3" onSubmit={onSubmit}>
+        <form className="support-hub-v2__inquiry-form" onSubmit={onSubmit}>
           <input
             id="support-inquiry-name"
             required

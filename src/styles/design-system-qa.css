@@ -560,22 +560,26 @@ main:has([data-page="support-center-v2"]) {
 }
 
 .support-hub-v2__notice-list--compact .support-hub-v2__notice-row {
-  padding: 0.6875rem 0;
+  padding: 0.75rem 0.25rem;
   border-bottom: 1px solid #e8eef4;
   font-size: 0.8125rem;
 }
 
 .support-hub-v2__notice-list--compact {
-  margin-top: 0.75rem;
+  margin-top: 0.875rem;
   border: 1px solid #e8eef4;
   background: #f8fafc;
   border-radius: 0.625rem;
-  padding: 0 0.625rem;
+  padding: 0.625rem 0.875rem;
 }
 
 .support-hub-v2__inquiry--sidebar {
-  padding-top: 0;
+  padding: 1.375rem 1.5rem;
   border-top: 0;
+}
+
+.support-hub-v2__inquiry--main {
+  padding: 1.25rem 1.375rem;
 }
 
 .support-hub-v2__hero {
@@ -920,6 +924,10 @@ main:has([data-page="support-center-v2"]) {
 
 .support-hub-v2__notice-badge {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.375rem;
   padding: 0.1875rem 0.4375rem;
   border-radius: 0.25rem;
   background: #fff7ed;
@@ -928,11 +936,29 @@ main:has([data-page="support-center-v2"]) {
   font-size: 0.625rem;
   font-weight: 800;
   letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.support-hub-v2__notice-badge--info {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+
+.support-hub-v2__inquiry-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.support-hub-v2__inquiry-form .support-hub-v2__cta {
+  margin-top: 0.25rem;
 }
 
 .support-hub-v2__field {
   width: 100%;
-  padding: 0.8125rem 0.9375rem;
+  min-height: 2.75rem;
+  padding: 0.6875rem 0.9375rem;
   border-radius: 0.625rem;
   border: 1px solid #b8c5d6;
   font-size: 0.875rem;
@@ -940,6 +966,13 @@ main:has([data-page="support-center-v2"]) {
   color: #0f172a;
   background: #fff;
   transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+textarea.support-hub-v2__field {
+  min-height: 6rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  resize: vertical;
 }
 
 .support-hub-v2__field:focus {
@@ -2071,8 +2104,8 @@ main:has(.bm-zone--legal) {
   display: flex;
   min-width: 0;
   flex: 1;
-  align-items: baseline;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.625rem;
 }
 
 .support-hub-v2__notice-title {
@@ -2089,7 +2122,7 @@ main:has(.bm-zone--legal) {
 }
 
 .support-hub-v2__notice-list--compact .support-hub-v2__notice-row {
-  min-height: 2.75rem;
+  min-height: 3rem;
 }
 
 .support-hub-v2__notice-list--compact li:last-child .support-hub-v2__notice-row {
