@@ -4942,13 +4942,11 @@
 }
 
 .home-spec-card-vehicles__list {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  display: inline;
   font-weight: 700;
   color: #475569;
   word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .home-spec-card-prices {

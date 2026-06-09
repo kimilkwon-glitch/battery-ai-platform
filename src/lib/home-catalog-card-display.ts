@@ -1,7 +1,7 @@
 import type { HomeCatalogProduct } from "@/lib/home-main-catalog-data";
 import { getBatteryPrices, formatBatteryPriceWon } from "@/lib/battery-prices";
 import type { HomeCatalogBrandId } from "@/lib/home-main-catalog-data";
-import { getBatteryFitmentVehicleLabels } from "@/lib/vehicleBattery";
+import { resolveBatteryCardRepresentativeVehicles } from "@/lib/battery-card-representative-display";
 
 /** 메인 라인업 카드 — 후기·차종·가격 (운영 가격표 연동) */
 export type HomeCatalogCardDisplay = {
@@ -18,17 +18,19 @@ const META_BY_CODE: Partial<
 > = {
   AGM60L: { rating: 4.8, reviewCount: 12, representativeVehicles: "아반떼 · K3 · 코나" },
   AGM70L: { rating: 4.9, reviewCount: 9, representativeVehicles: "쏘렌토 · 스포티지 · 투싼" },
-  AGM80L: { rating: 4.8, reviewCount: 14, representativeVehicles: "그랜저 · K5 · G80" },
-  AGM95L: { rating: 4.7, reviewCount: 7, representativeVehicles: "팰리세이드 · 카니발 · G90" },
+  AGM80L: { rating: 4.8, reviewCount: 14, representativeVehicles: "그랜저 IG · K5 · 쏘렌토" },
+  AGM95L: { rating: 4.7, reviewCount: 7, representativeVehicles: "싼타페TM · 팰리세이드 · 올뉴쏘렌토" },
   AGM95R: { rating: 4.9, reviewCount: 6, representativeVehicles: "GV80 · G80" },
-  AGM105L: { rating: 5.0, reviewCount: 5, representativeVehicles: "G90 · EQ900 · K9" },
-  GB90R: { rating: 4.9, reviewCount: 8, representativeVehicles: "렉스턴 · 마이티" },
-  GB80L: { rating: 4.7, reviewCount: 10, representativeVehicles: "그랜저HG · LF쏘나타" },
+  AGM105L: { rating: 5.0, reviewCount: 5, representativeVehicles: "K9 · G80 · G90" },
+  GB90R: { rating: 4.9, reviewCount: 8, representativeVehicles: "포터2 · 투싼ix" },
+  GB80L: { rating: 4.7, reviewCount: 10, representativeVehicles: "K5 1세대 · YF쏘나타" },
   GB100R: { rating: 4.8, reviewCount: 6, representativeVehicles: "뉴쏘렌토 · 쏘렌토" },
   DIN74L: { rating: 4.8, reviewCount: 11, representativeVehicles: "QM6 · SM6 · 말리부" },
   CMF57412: { rating: 4.7, reviewCount: 5, representativeVehicles: "말리부 · SM5" },
-  CMF80L: { rating: 4.8, reviewCount: 7, representativeVehicles: "i40 · QM5" },
-  CMF90R: { rating: 4.6, reviewCount: 4, representativeVehicles: "스포티지R · 렉스턴" },
+  CMF80L: { rating: 4.8, reviewCount: 7, representativeVehicles: "i40 · QM5 · SM5 뉴임프" },
+  CMF90R: { rating: 4.6, reviewCount: 4, representativeVehicles: "스포티지R 디젤 · 렉스턴스포츠" },
+  CMF54459: { rating: 4.6, reviewCount: 4, representativeVehicles: "스파크 · 마티즈 크리에이티브" },
+  GB55066: { rating: 4.7, reviewCount: 5, representativeVehicles: "캐스퍼 · 모닝 어반" },
   CMF40L: { rating: 4.7, reviewCount: 3, representativeVehicles: "레이 · 모닝" },
   CMF100R: { rating: 4.8, reviewCount: 5, representativeVehicles: "봉고3 · 카니발" },
 };
@@ -63,9 +65,11 @@ export function getHomeCatalogCardDisplay(product: HomeCatalogProduct): HomeCata
   const brand = brandFromProduct(product);
   const prices = getBatteryPrices(brand, product.searchCode);
   const meta = META_BY_CODE[product.searchCode] ?? fallbackMeta(product);
-  const fitmentLabels = getBatteryFitmentVehicleLabels(product.searchCode, 3);
-  const representativeVehicles =
-    fitmentLabels.length >= 2 ? fitmentLabels.join(" · ") : meta.representativeVehicles;
+  const representativeVehicles = resolveBatteryCardRepresentativeVehicles(
+    product.searchCode,
+    brand,
+    meta.representativeVehicles,
+  );
   return {
     ...meta,
     representativeVehicles,

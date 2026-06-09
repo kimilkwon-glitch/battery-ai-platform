@@ -142,7 +142,7 @@
 }
 
 .home-spec-card-vehicles {
-  min-height: 2.5rem;
+  min-height: 0;
 }
 
 .home-spec-card-vehicles__list {

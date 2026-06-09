@@ -1,4 +1,7 @@
-import { getBatteryFitmentVehicleLabels } from "@/lib/battery-fitment-display";
+import {
+  resolveBatteryCardRepresentativeVehicles,
+  type BatteryCardBrandId,
+} from "@/lib/battery-card-representative-display";
 import { brandSpecMatchingTable } from "./brand-hub-data";
 import { compareHref, getBattery, getBrand, getVehicleName, searchHref, shopProducts, type ShopProduct } from "./platform-data";
 
@@ -262,18 +265,34 @@ export function isPassengerProduct(p: ShopProduct): boolean {
   return !isCommercialProduct(p);
 }
 
+function shopBrandForCard(brandId: string): BatteryCardBrandId | null {
+  if (brandId === "rocket" || brandId === "solite") return brandId;
+  return null;
+}
+
 export function getProductMeta(p: ShopProduct): ShopProductMeta {
-  const fitmentVehicles = getBatteryFitmentVehicleLabels(p.batteryCode, 3);
   const custom = productMetaByCode[p.batteryCode];
+  const featuredText = resolveBatteryCardRepresentativeVehicles(
+    p.batteryCode,
+    shopBrandForCard(p.brandId),
+    custom?.featuredVehicles.join(" · "),
+  );
+  const featuredVehicles = featuredText.split(" · ").map((s) => s.trim()).filter(Boolean);
   if (custom) {
     return {
       ...custom,
-      featuredVehicles: fitmentVehicles.length >= 2 ? fitmentVehicles : custom.featuredVehicles,
+      featuredVehicles,
     };
   }
 
   const b = getBattery(p.batteryCode, p.brandId);
-  const vehicles = p.vehicleIds.slice(0, 3).map(getVehicleName);
+  const vehicleFallback = p.vehicleIds.slice(0, 3).map(getVehicleName).join(" · ");
+  const featuredFromCard = resolveBatteryCardRepresentativeVehicles(
+    p.batteryCode,
+    shopBrandForCard(p.brandId),
+    vehicleFallback || undefined,
+  );
+  const vehicles = featuredFromCard.split(" · ").map((s) => s.trim()).filter(Boolean);
   const badges: ShopProductMeta["badges"] = [];
 
   if (b.isgFit === "매우 적합" || b.isgFit === "적합") {
@@ -288,7 +307,7 @@ export function getProductMeta(p: ShopProduct): ShopProductMeta {
   return {
     usage: b.pros || `${p.type} ${p.capacity}`,
     badges: badges.length ? badges : [{ label: p.type, tone: "blue" }],
-    featuredVehicles: vehicles.length ? vehicles : ["차량별 배터리 확인"],
+    featuredVehicles: vehicles.length ? vehicles : ["국산 승용 · SUV"],
   };
 }
 
