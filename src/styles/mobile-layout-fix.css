@@ -306,14 +306,34 @@
     padding: 0.625rem 0.875rem 0.75rem;
   }
 
-  [data-vehicle-recommended-card] .vehicle-recommended-card__media .battery-image-stage,
-  [data-vehicle-recommended-card] .vehicle-recommended-card__media .battery-thumbnail,
-  [data-vehicle-recommended-card] .vehicle-recommended-card__media img {
-    max-height: 3.5rem !important;
+  [data-vehicle-recommended-card] .vehicle-recommended-card__media > div {
     height: 3.5rem !important;
+    min-height: 0 !important;
+    max-height: 3.5rem !important;
+    width: 100% !important;
+    aspect-ratio: auto !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+  }
+
+  [data-vehicle-recommended-card] .vehicle-recommended-card__media .absolute {
+    position: relative !important;
+    inset: auto !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  [data-vehicle-recommended-card] .vehicle-recommended-card__media img,
+  [data-vehicle-recommended-card] .vehicle-recommended-card__media .battery-height-image {
+    max-height: 3.25rem !important;
+    height: 3.25rem !important;
+    min-height: 0 !important;
     max-width: 72% !important;
+    width: auto !important;
     object-fit: contain !important;
     transform: none !important;
+    margin-inline: auto;
   }
 
   /* ── 홈 ── */
