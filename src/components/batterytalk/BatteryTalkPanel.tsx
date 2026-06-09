@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Battery, MessageCircle, Phone, Store, X } from "lucide-react";
 import clsx from "clsx";
-import { submitInquiry } from "@/lib/inquiry-storage";
+import { submitBatteryTalk } from "@/lib/battery-talk/battery-talk-client";
+import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import {
   BATTERYTALK_TOPIC_LABELS,
   type BatteryTalkOpenDetail,
@@ -72,28 +73,24 @@ export function BatteryTalkPanel({
       .filter(Boolean)
       .join("\n");
 
-    const result = await submitInquiry({
-      name: name.trim() || "고객",
-      contact: contact.trim(),
-      vehicle: vehicle.trim() || undefined,
-      region: region.trim() || undefined,
+    const pageUrl = typeof window !== "undefined" ? window.location.href : undefined;
+    const result = await submitBatteryTalk({
+      customerName: name.trim() || "고객",
+      phone: contact.trim(),
       message: body,
-      batteryCode: preset?.batteryCode,
-      productCode: preset?.productCode ?? preset?.batteryCode,
-      productName: preset?.productName,
-      pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
-      source: "batterytalk",
-      inquiryType: BATTERYTALK_TOPIC_LABELS[topic],
-      category:
-        topic === "order"
-          ? "order"
-          : topic === "visit"
-            ? "shipping"
-            : topic === "battery_return"
-              ? "return"
-              : topic === "spec" || topic === "product"
-                ? "battery"
-                : "other",
+      context: {
+        pageUrl,
+        pageType: inferBatteryTalkPageType(pageUrl),
+        topic: BATTERYTALK_TOPIC_LABELS[topic],
+        batteryCode: preset?.batteryCode,
+        productCode: preset?.productCode ?? preset?.batteryCode,
+        productName: preset?.productName,
+        vehicleSlug: preset?.vehicleSlug,
+        vehicleName: vehicle.trim() || preset?.vehicleName,
+        selectedFuel: preset?.fuelType,
+        cartSummary: preset?.orderSummary,
+        region: region.trim() || undefined,
+      },
     });
     setSubmitting(false);
     if (result.ok) setSubmitted(true);

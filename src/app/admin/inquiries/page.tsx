@@ -12,7 +12,7 @@ export default function AdminInquiriesPage() {
   return (
     <AdminShellLayout
       title="고객 문의 관리"
-      description="고객센터·채팅·제품상세 접수 문의를 확인하고 처리합니다."
+      description="고객센터·채팅 접수 문의를 확인합니다. 배터리톡 상담은 배터리톡 메뉴에서 처리하세요."
     >
       <AdminInquiriesClient />
     </AdminShellLayout>

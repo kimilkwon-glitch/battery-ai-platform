@@ -152,7 +152,9 @@ export async function inquiryList(
   if (filters.productQnaOnly === true) {
     records = records.filter((r) => isProductQnaSource(r.source) && !r.hidden);
   } else if (filters.productQnaOnly === false) {
-    records = records.filter((r) => !isProductQnaSource(r.source));
+    records = records.filter(
+      (r) => !isProductQnaSource(r.source) && r.source !== "batterytalk",
+    );
   }
   if (filters.source) {
     records = records.filter((r) => r.source === filters.source);
