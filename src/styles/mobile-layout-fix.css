@@ -943,6 +943,12 @@
     min-width: 0;
   }
 
+  .support-hub-v2__chips.hidden,
+  .support-hub-v2__faq-quicklinks.hidden,
+  .support-hub-v2__bottom-grid.hidden {
+    display: none !important;
+  }
+
   .support-hub-v2__chips {
     width: 100%;
     max-width: 100%;
