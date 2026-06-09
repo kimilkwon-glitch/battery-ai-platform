@@ -461,6 +461,35 @@
     display: none !important;
   }
 
+  .brand-hub-field-mobile {
+    min-height: 0 !important;
+    padding: 0.875rem 1rem !important;
+    overflow: hidden;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  .brand-hub-field-mobile__heading {
+    margin: 0;
+    font-size: 0.9375rem !important;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+
+  .brand-hub-field-mobile__lead {
+    margin: 0.625rem 0 0;
+    font-size: 0.8125rem !important;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .brand-hub-field-mobile__desc {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem !important;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
   /* ── 메인 배너 ── */
   .home-hero-carousel__nav--prev {
     display: none !important;
@@ -542,10 +571,10 @@
   }
 
   .home-brand-lineup .home-spec-card-image {
-    height: 7.25rem !important;
-    min-height: 7.25rem !important;
-    max-height: 7.25rem !important;
-    padding: 0.5rem 0.625rem !important;
+    height: 6rem !important;
+    min-height: 6rem !important;
+    max-height: 6rem !important;
+    padding: 0.5rem 0.75rem !important;
     display: flex;
     align-items: center;
     justify-content: center;

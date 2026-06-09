@@ -431,25 +431,6 @@ export function SupportCenterHubV2({ notices }: Props) {
               </div>
             )}
           </section>
-
-          <div className="support-hub-v2__contact-mini lg:hidden">
-            <p className="support-hub-v2__contact-mini-title">
-              고객센터{" "}
-              <a href={CONTACT.customerCenter.tel} className="hover:underline">
-                {CONTACT.customerCenter.phone}
-              </a>
-            </p>
-            <p className="support-hub-v2__contact-mini-desc">
-              차량 정보나 주문 확인이 필요하시면 문의해 주세요.
-            </p>
-            <button
-              type="button"
-              className="support-hub-v2__cta support-hub-v2__cta--primary support-hub-v2__contact-mini-cta mt-3 w-full"
-              onClick={scrollToInquiry}
-            >
-              상담 문의하기
-            </button>
-          </div>
         </div>
 
         <aside className="support-hub-v2__sidebar hidden space-y-3 lg:block">

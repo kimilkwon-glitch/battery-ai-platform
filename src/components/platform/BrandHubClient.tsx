@@ -29,7 +29,6 @@ import {
   type CustomerBrandHubId,
 } from "@/lib/brand-hub-customer";
 import { getBrandHubLogoPresentation } from "@/lib/brand-hub-logo-presentation";
-import { BRAND_HUB_REFERENCE_BRANDS } from "@/lib/brand-hub-reference-brands";
 import type { BatteryBrandSpec } from "@/data/battery/types";
 import { getBattery } from "@/lib/platform-data";
 import { BrandHubMobileSpecExplorer } from "@/components/platform/BrandHubMobileSpecExplorer";
@@ -175,6 +174,7 @@ export function BrandHubClient() {
 
             <div className="grid gap-5 lg:grid-cols-2 lg:gap-7">
               <InsightCardMobileAdvantage theme={theme} card={insights.advantage} />
+              <InsightCardMobileField theme={theme} card={insights.field} />
               <InsightCard
                 theme={theme}
                 card={insights.advantage}
@@ -187,6 +187,7 @@ export function BrandHubClient() {
                 card={insights.field}
                 variant="field"
                 dividerBorder={dividerBorder}
+                className="brand-hub-insight-desktop"
               />
             </div>
 
@@ -293,48 +294,6 @@ export function BrandHubClient() {
         </AnimatePresence>
       </div>
 
-      <section
-        className={`${bm.card} ${bm.cardPad} space-y-5`}
-        aria-labelledby="brand-hub-reference-title"
-      >
-        <header>
-          <p className={bm.intentBadge}>참고 브랜드</p>
-          <h2 id="brand-hub-reference-title" className={`${bm.sectionTitle} mt-2`}>
-            함께 비교하는 브랜드
-          </h2>
-          <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-            상담 시 로케트·쏠라이트 외에도 아래 브랜드를 규격 비교용으로 안내할 수 있습니다.
-          </p>
-        </header>
-        <div className="grid gap-4 md:grid-cols-2">
-          {BRAND_HUB_REFERENCE_BRANDS.map((ref) => (
-            <article
-              key={ref.id}
-              className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 ring-1 ring-slate-100"
-            >
-              <h3 className="text-lg font-black text-slate-950">{ref.title}</h3>
-              <p className="mt-2 text-sm font-bold text-slate-800">{ref.headline}</p>
-              <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-                {ref.description}
-              </p>
-              <ul className="mt-3 space-y-1.5 text-sm font-medium text-slate-700">
-                {ref.advantageBullets.map((b) => (
-                  <li key={b} className="flex gap-2">
-                    <span className="text-blue-600" aria-hidden>
-                      ·
-                    </span>
-                    {b}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-600 ring-1 ring-slate-100">
-                <span className="font-black text-slate-800">현장 코멘트 · </span>
-                {ref.fieldComment}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
     </motion.div>
   );
 }
@@ -476,7 +435,7 @@ function InsightCardMobileAdvantage({
         {items.map((item) => (
           <li key={item.title} className="brand-hub-advantage-mobile__item">
             <p className={clsx("brand-hub-advantage-mobile__item-title", theme.insightTitle)}>
-              [{item.title}]
+              {item.title}
             </p>
             <p className={clsx("brand-hub-advantage-mobile__item-desc", theme.insightBody)}>
               {item.desc}
@@ -484,6 +443,24 @@ function InsightCardMobileAdvantage({
           </li>
         ))}
       </ul>
+    </article>
+  );
+}
+
+function InsightCardMobileField({
+  theme,
+  card,
+}: {
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  card: BrandHubInsightCard;
+}) {
+  const summary = card.mobileField ?? { title: card.lead, desc: card.body };
+
+  return (
+    <article className={clsx("brand-hub-field-mobile md:hidden", theme.insightCard)}>
+      <h3 className={clsx("brand-hub-field-mobile__heading", theme.insightTitle)}>{card.title}</h3>
+      <p className={clsx("brand-hub-field-mobile__lead", theme.insightTitle)}>{summary.title}</p>
+      <p className={clsx("brand-hub-field-mobile__desc", theme.insightBody)}>{summary.desc}</p>
     </article>
   );
 }
@@ -502,50 +479,71 @@ function InsightCard({
   className?: string;
 }) {
   const Icon = variant === "advantage" ? Sparkles : MessageCircle;
+  const isCompactField = variant === "field";
 
   return (
     <article
       className={clsx(
-        "relative flex min-h-[15.5rem] flex-col overflow-hidden rounded-2xl sm:min-h-[16.5rem]",
+        "relative flex flex-col overflow-hidden rounded-2xl",
+        isCompactField ? "min-h-0" : "min-h-[15.5rem] sm:min-h-[16.5rem]",
         theme.insightCard,
         className,
       )}
     >
-      <div className="flex flex-1 flex-col p-7 sm:p-9">
+      <div className={clsx("flex flex-1 flex-col", isCompactField ? "p-6 sm:p-7" : "p-7 sm:p-9")}>
         <div className="flex items-start gap-4 sm:gap-5">
           <div
             className={clsx(
-              "flex size-14 shrink-0 items-center justify-center rounded-xl sm:size-16",
+              "flex shrink-0 items-center justify-center rounded-xl",
+              isCompactField ? "size-12 sm:size-14" : "size-14 sm:size-16",
               theme.insightIconWrap,
             )}
           >
-            <Icon className="size-7 sm:size-8" strokeWidth={2} aria-hidden />
+            <Icon
+              className={isCompactField ? "size-6 sm:size-7" : "size-7 sm:size-8"}
+              strokeWidth={2}
+              aria-hidden
+            />
           </div>
           <div className="min-w-0 flex-1 pt-0.5">
             <p className={clsx("text-sm font-bold uppercase tracking-[0.14em]", theme.accent)}>
               {card.title}
             </p>
-            <h3 className={clsx("mt-2 text-2xl font-black leading-snug sm:text-3xl", theme.insightTitle)}>
+            <h3
+              className={clsx(
+                "mt-2 font-black leading-snug",
+                isCompactField ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl",
+                theme.insightTitle,
+              )}
+            >
               {card.lead}
             </h3>
-            <p className={clsx("mt-3 text-lg font-medium leading-relaxed", theme.insightBody)}>
+            <p
+              className={clsx(
+                "mt-3 font-medium leading-relaxed",
+                isCompactField ? "text-base sm:text-lg" : "text-lg",
+                theme.insightBody,
+              )}
+            >
               {card.body}
             </p>
           </div>
         </div>
-        <ul
-          className={clsx(
-            "mt-8 space-y-3.5 border-t pt-8 text-lg font-medium leading-relaxed",
-            dividerBorder,
-          )}
-        >
-          {card.bullets.map((b) => (
-            <li key={b} className="flex items-start gap-3 pl-0.5">
-              <span className={clsx("mt-[0.65rem] h-0.5 w-5 shrink-0 rounded-full", theme.accentLine)} />
-              <span className={theme.insightBullet}>{b}</span>
-            </li>
-          ))}
-        </ul>
+        {card.bullets.length > 0 ? (
+          <ul
+            className={clsx(
+              "mt-8 space-y-3.5 border-t pt-8 text-lg font-medium leading-relaxed",
+              dividerBorder,
+            )}
+          >
+            {card.bullets.map((b) => (
+              <li key={b} className="flex items-start gap-3 pl-0.5">
+                <span className={clsx("mt-[0.65rem] h-0.5 w-5 shrink-0 rounded-full", theme.accentLine)} />
+                <span className={theme.insightBullet}>{b}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     </article>
   );
