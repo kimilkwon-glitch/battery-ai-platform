@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
+import { AdminStatusTabs } from "@/components/admin/AdminStatusTabs";
 import { Badge } from "@/components/ui/badge";
 import { VEHICLE_REVIEW_STATUS_BADGE } from "@/lib/admin/admin-status-tokens";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -151,8 +152,25 @@ export function VehicleImageReviewClient({
     });
   }, [entries, query, brand, filter, reviewFilter, reviewsBySlug]);
 
+  const reviewTabs = useMemo(() => {
+    const counts: Record<string, number> = { all: entries.length };
+    for (const s of Object.keys(VEHICLE_IMAGE_REVIEW_STATUS_LABELS) as VehicleImageReviewStatus[]) {
+      counts[s] = entries.filter((e) => (reviewsBySlug[e.slug]?.status ?? "pending") === s).length;
+    }
+    counts.no_image = entries.filter((e) => !e.primaryExists).length;
+    return [
+      { id: "all", label: "전체", count: counts.all },
+      { id: "pending", label: "대기", count: counts.pending, tone: counts.pending > 0 ? ("warning" as const) : ("default" as const) },
+      { id: "reviewing", label: "검수중", count: counts.reviewing },
+      { id: "approved", label: "승인", count: counts.approved, tone: "info" as const },
+      { id: "on_hold", label: "보류", count: counts.on_hold },
+      { id: "regeneration_needed", label: "재생성 필요", count: counts.regeneration_needed, tone: "danger" as const },
+      { id: "no_image", label: "이미지 없음", count: counts.no_image, tone: "danger" as const },
+    ];
+  }, [entries, reviewsBySlug]);
+
   return (
-    <div className="space-y-6">
+    <div className="admin-vehicle-image-review space-y-4">
       {restoreBuckets ? (
         <section className="grid gap-3 md:grid-cols-3">
           <BucketCard title="A. 즉시 복구 권장" slugs={restoreBuckets.immediateRestore} tone="violet" />
@@ -161,21 +179,27 @@ export function VehicleImageReviewClient({
         </section>
       ) : null}
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-end gap-3">
-          <label className="flex min-w-[12rem] flex-1 flex-col gap-1 text-xs font-bold text-slate-600">
-            차량명 / slug 검색
+      <AdminStatusTabs
+        tabs={reviewTabs}
+        activeId={reviewFilter}
+        onChange={(id) => setReviewFilter(id as ReviewFilterKey)}
+      />
+
+      <div className="admin-filter-bar">
+        <div className="admin-filter-bar__fields">
+          <div className="admin-filter-bar__field admin-filter-bar__field--wide">
+            <label className="admin-filter-bar__label">차량명 / slug 검색</label>
             <input
-              className="h-10 rounded-lg border border-slate-200 px-3 text-sm font-semibold"
+              className="admin-filter-bar__input h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="tucson-jm, 티볼리, tivoli"
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-bold text-slate-600">
-            브랜드
+          </div>
+          <div className="admin-filter-bar__field">
+            <label className="admin-filter-bar__label">브랜드</label>
             <select
-              className="h-10 rounded-lg border border-slate-200 px-3 text-sm font-semibold"
+              className="admin-filter-bar__input h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
             >
@@ -186,51 +210,44 @@ export function VehicleImageReviewClient({
                 </option>
               ))}
             </select>
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-bold text-slate-600">
-            검수 상태
+          </div>
+          <div className="admin-filter-bar__field">
+            <label className="admin-filter-bar__label">위험 필터</label>
             <select
-              className="h-10 min-w-[8rem] rounded-lg border border-slate-200 px-3 text-sm font-semibold"
-              value={reviewFilter}
-              onChange={(e) => setReviewFilter(e.target.value as ReviewFilterKey)}
-            >
-              <option value="all">전체</option>
-              {(Object.keys(VEHICLE_IMAGE_REVIEW_STATUS_LABELS) as VehicleImageReviewStatus[]).map(
-                (s) => (
-                  <option key={s} value={s}>
-                    {VEHICLE_IMAGE_REVIEW_STATUS_LABELS[s]}
-                  </option>
-                ),
-              )}
-              <option value="no_image">이미지 없음</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-bold text-slate-600">
-            위험 필터
-            <select
-              className="h-10 min-w-[10rem] rounded-lg border border-slate-200 px-3 text-sm font-semibold"
+              className="admin-filter-bar__input h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
               value={filter}
               onChange={(e) => setFilter(e.target.value as FilterKey)}
             >
               <option value="all">전체</option>
-              <option value="DAMAGED_FILE">DAMAGED</option>
-              <option value="NEEDS_CHECK">NEEDS_CHECK</option>
+              <option value="DAMAGED_FILE">손상 파일</option>
+              <option value="NEEDS_CHECK">확인 필요</option>
               <option value="BRIGHT_REVIEW">밝은 차량 의심</option>
               <option value="RESTORE_CANDIDATE_REVIEW">복구 후보</option>
-              <option value="restore_candidate">복구 후보 (플래그)</option>
               <option value="large_diff">현재/백업 차이 큼</option>
-              <option value="manual_bright_ok">자동 OK + 육안 검수</option>
-              <option value="has_generated">Replicate 생성 있음</option>
-              <option value="has_flux_dev">flux-dev 있음</option>
-              <option value="has_flux_pro">flux-1.1-pro 있음</option>
-              <option value="bright">밝은 차체 힌트</option>
+              <option value="has_generated">생성 이미지 있음</option>
             </select>
-          </label>
+          </div>
         </div>
-        <p className="mt-3 text-xs font-medium text-slate-500">
-          {filtered.length}건 / {entries.length}건 · <strong>현재</strong> / <strong>백업</strong> / <strong>flux-dev</strong> / <strong>flux-1.1-pro</strong>
-        </p>
-      </section>
+        <div className="admin-filter-bar__actions">
+          <p className="admin-filter-bar__count">
+            {filtered.length} / {entries.length}건
+          </p>
+          {(query || brand !== "all" || filter !== "all" || reviewFilter !== "all") ? (
+            <button
+              type="button"
+              className="admin-btn admin-btn--ghost admin-btn--md"
+              onClick={() => {
+                setQuery("");
+                setBrand("all");
+                setFilter("all");
+                setReviewFilter("all");
+              }}
+            >
+              초기화
+            </button>
+          ) : null}
+        </div>
+      </div>
 
       <div className="grid gap-4 md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
         {filtered.map((entry) => (
@@ -391,7 +408,7 @@ function ReviewCard({
         <div className="admin-mobile-card__actions mt-3 flex flex-wrap gap-2">
           <button
             type="button"
-            className="admin-btn admin-btn--primary admin-btn--sm"
+            className="admin-btn admin-btn--primary admin-btn--md"
             disabled={saving}
             onClick={onApprove}
           >
@@ -399,7 +416,7 @@ function ReviewCard({
           </button>
           <button
             type="button"
-            className="admin-btn admin-btn--secondary admin-btn--sm"
+            className="admin-btn admin-btn--secondary admin-btn--md"
             disabled={saving}
             onClick={onHold}
           >
@@ -407,7 +424,7 @@ function ReviewCard({
           </button>
           <button
             type="button"
-            className="admin-btn admin-btn--danger admin-btn--sm"
+            className="admin-btn admin-btn--danger admin-btn--md"
             disabled={saving}
             onClick={onRegenerate}
           >
@@ -445,7 +462,7 @@ function ComparePane({ label, src, alt }: { label: string; src: string | null; a
           // eslint-disable-next-line @next/next/no-img-element
           <img src={src} alt={alt} className="vehicle-image-review-img" loading="lazy" />
         ) : (
-          <div className="flex h-full min-h-[100px] items-center justify-center text-[10px] font-bold text-slate-400">
+          <div className="flex h-full min-h-[180px] items-center justify-center text-sm font-bold text-slate-400">
             없음
           </div>
         )}

@@ -24,6 +24,7 @@ import {
 import { listOrderRequestRecords } from "@/lib/order-request/order-request-admin-storage";
 import { ORDER_REQUEST_PAGE } from "@/lib/customer-center-routes";
 import type { OrderRequestRecord } from "@/types/order-request";
+import { AdminStatusTabs } from "@/components/admin/AdminStatusTabs";
 import { bm } from "@/lib/design-tokens";
 
 type Props = {
@@ -197,22 +198,15 @@ export function AdminOrderRequestsClient({ allowLocalFallback }: Props) {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {ADMIN_ORDER_REQUEST_FILTERS.map((f) => (
-                <button
-                  key={f.key}
-                  type="button"
-                  onClick={() => setFilter(f.key)}
-                  className={`rounded-full px-3 py-1 text-[11px] font-black ${
-                    filter === f.key
-                      ? "bg-blue-600 text-white"
-                      : "bg-white text-slate-600 ring-1 ring-slate-200"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
+            <AdminStatusTabs
+              tabs={ADMIN_ORDER_REQUEST_FILTERS.map((f) => ({
+                id: f.key,
+                label: f.label,
+                count: records.filter((r) => matchesAdminOrderFilter(r, f.key)).length,
+              }))}
+              activeId={filter}
+              onChange={(id) => setFilter(id as AdminOrderRequestFilterKey)}
+            />
 
             {filtered.length === 0 ? (
               <p className="text-sm font-medium text-slate-500">

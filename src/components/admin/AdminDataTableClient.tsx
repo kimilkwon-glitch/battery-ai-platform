@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminStatusTabs, type AdminStatusTab } from "@/components/admin/AdminStatusTabs";
 import {
   Table,
   TableBody,
@@ -28,12 +29,20 @@ export type AdminTableFilter = {
   match?: (row: unknown, value: string) => boolean;
 };
 
+export type AdminTableStatusTab<T> = AdminStatusTab & {
+  match: (row: T) => boolean;
+};
+
 type Props<T> = {
   rows: T[];
   columns: AdminTableColumn<T>[];
   filters?: AdminTableFilter[];
+  statusTabs?: AdminTableStatusTab<T>[];
+  initialStatusTab?: string;
+  initialValues?: Record<string, string>;
   emptyMessage?: string;
   getRowId: (row: T) => string;
+  stickyHeader?: boolean;
   /** 모바일(≤767px) 카드 뷰 — 제공 시 테이블 대신 카드 목록 표시 */
   mobileCardRender?: (row: T) => React.ReactNode;
 };
@@ -42,14 +51,33 @@ export function AdminDataTableClient<T>({
   rows,
   columns,
   filters = [],
+  statusTabs,
+  initialStatusTab = "all",
+  initialValues = {},
   emptyMessage = "데이터가 없습니다.",
   getRowId,
+  stickyHeader = true,
   mobileCardRender,
 }: Props<T>) {
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [statusTab, setStatusTab] = useState(initialStatusTab);
+  const [values, setValues] = useState<Record<string, string>>(initialValues);
+
+  const tabsWithCounts = useMemo(() => {
+    if (!statusTabs?.length) return [];
+    return statusTabs.map((tab) => ({
+      ...tab,
+      count: tab.id === "all" ? rows.length : rows.filter(tab.match).length,
+    }));
+  }, [rows, statusTabs]);
+
+  const activeTabDef = statusTabs?.find((t) => t.id === statusTab);
 
   const filtered = useMemo(() => {
-    return rows.filter((row) =>
+    let list = rows;
+    if (activeTabDef && statusTab !== "all") {
+      list = list.filter(activeTabDef.match);
+    }
+    return list.filter((row) =>
       filters.every((f) => {
         const v = values[f.key]?.trim();
         if (!v) return true;
@@ -60,24 +88,30 @@ export function AdminDataTableClient<T>({
         return field === v;
       }),
     );
-  }, [rows, filters, values]);
+  }, [rows, filters, values, activeTabDef, statusTab]);
+
+  const resetFilters = () => setValues({});
 
   return (
-    <div className="space-y-3">
+    <div className="admin-data-table space-y-3">
+      {tabsWithCounts.length > 0 ? (
+        <AdminStatusTabs tabs={tabsWithCounts} activeId={statusTab} onChange={setStatusTab} />
+      ) : null}
+
       {filters.length > 0 ? (
         <AdminFilterBar
           filters={filters}
           values={values}
           onChange={(key, value) => setValues((prev) => ({ ...prev, [key]: value }))}
+          onReset={resetFilters}
+          resultCount={{ filtered: filtered.length, total: rows.length }}
         />
       ) : null}
 
       {mobileCardRender ? (
         <div className="admin-data-table__mobile-cards space-y-3 md:hidden">
           {filtered.length === 0 ? (
-            <p className="rounded-lg border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-500">
-              {emptyMessage}
-            </p>
+            <p className="admin-data-table__empty">{emptyMessage}</p>
           ) : (
             filtered.map((row) => (
               <div key={getRowId(row)} className="admin-data-table__mobile-card">
@@ -85,18 +119,15 @@ export function AdminDataTableClient<T>({
               </div>
             ))
           )}
-          <p className="text-[10px] text-slate-500">
-            {filtered.length} / {rows.length}건
-          </p>
         </div>
       ) : null}
 
       <div
-        className={`rounded-lg border border-slate-200 bg-white ${
+        className={`admin-data-table__wrap rounded-lg border border-slate-200 bg-white ${
           mobileCardRender ? "admin-data-table__desktop-table hidden md:block" : ""
-        }`}
+        }${stickyHeader ? " admin-data-table__wrap--sticky" : ""}`}
       >
-        <Table className="admin-table admin-table--compact">
+        <Table className="admin-table">
           <TableHeader>
             <TableRow>
               {columns.map((c) => (
@@ -126,9 +157,11 @@ export function AdminDataTableClient<T>({
             )}
           </TableBody>
         </Table>
-        <p className="border-t border-slate-100 px-3 py-2 text-[10px] text-slate-500">
-          {filtered.length} / {rows.length}건
-        </p>
+        {!filters.length ? (
+          <p className="admin-data-table__footer-count">
+            {filtered.length} / {rows.length}건
+          </p>
+        ) : null}
       </div>
     </div>
   );

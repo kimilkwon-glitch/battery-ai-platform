@@ -110,11 +110,13 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStats> {
 
   const matchReview = countMatchingReview(matchingRows);
 
+  const productIssues = productCounts.price_missing + productCounts.needs_review;
+
   const todayTasks: AdminTodayTaskItem[] = [
     {
       label: "신규 주문",
       count: pendingOrders.length,
-      href: ADMIN_ROUTES.orders,
+      href: `${ADMIN_ROUTES.orderRequests}?filter=new`,
     },
     {
       label: "신규 문의",
@@ -122,17 +124,22 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStats> {
       href: ADMIN_ROUTES.inquiries,
     },
     {
-      label: "매칭 확인 필요",
+      label: "확인 필요 매칭",
       count: matchReview,
       href: ADMIN_ROUTES.matching,
     },
     {
-      label: "차량 이미지 검수 대기",
+      label: "이미지 검수 대기",
       count: vehicleImageReviewPending,
       href: ADMIN_ROUTES.vehicleImageReview,
     },
     {
-      label: "노출 중인 공지",
+      label: "가격/검수 제품",
+      count: productIssues,
+      href: `${ADMIN_ROUTES.products}?review=price_missing`,
+    },
+    {
+      label: "최근 공지",
       count: publishedNotices,
       href: ADMIN_ROUTES.notices,
     },

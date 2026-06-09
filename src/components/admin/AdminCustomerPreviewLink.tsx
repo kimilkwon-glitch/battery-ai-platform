@@ -5,10 +5,12 @@ type Props = {
   href: string;
   className?: string;
   showUrl?: boolean;
+  label?: string;
 };
 
 /** 고객 화면 미리보기 — 항상 새 탭 */
-export function AdminCustomerPreviewLink({ href, className, showUrl }: Props) {
+export function AdminCustomerPreviewLink({ href, className, showUrl, label }: Props) {
+  const text = label ?? "고객 화면 미리보기";
   if (!isCustomerPreviewHref(href)) {
     return (
       <Link href={href} className={className ?? "admin-link-internal"}>
@@ -24,7 +26,7 @@ export function AdminCustomerPreviewLink({ href, className, showUrl }: Props) {
       rel="noopener noreferrer"
       className={className ?? "admin-link-preview"}
     >
-      <span>고객 화면 미리보기</span>
+      <span>{text}</span>
       <span className="admin-link-preview__icon" aria-hidden>
         ↗
       </span>
