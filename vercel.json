@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "app/admin/vehicle-image-review/**": {
+      "excludeFiles": "{public/assets/cars-normalized/**,public/assets/vehicles/cars-normalized/**,public/assets/cars/**,public/assets/cars-generated-review/**,public/assets/vehicles-original-backup/**,public/assets/vehicle-damaged-backup-before-restore/**}"
+    },
+    "app/admin/vehicle-reference-review/**": {
+      "excludeFiles": "{public/assets/cars-normalized/**,public/assets/vehicles/cars-normalized/**,public/assets/cars/**,public/assets/cars-generated-review/**,public/assets/vehicles-original-backup/**,public/assets/vehicle-damaged-backup-before-restore/**}"
+    }
+  }
+}

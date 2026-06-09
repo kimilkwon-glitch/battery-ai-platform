@@ -1,18 +1,20 @@
 import type { NextConfig } from "next";
 
 const vehicleAssetTraceExcludes = [
-  "./public/assets/cars-normalized/**/*",
-  "./public/assets/vehicles/cars-normalized/**/*",
-  "./public/assets/cars-generated-review/**/*",
-  "./public/assets/vehicles-original-backup/**/*",
-  "./public/assets/vehicle-damaged-backup-before-restore/**/*",
-  "./reports/**/*",
+  "./public/assets/cars-normalized/**",
+  "./public/assets/vehicles/cars-normalized/**",
+  "./public/assets/cars/**",
+  "./public/assets/cars-generated-review/**",
+  "./public/assets/vehicles-original-backup/**",
+  "./public/assets/vehicle-damaged-backup-before-restore/**",
+  "./reports/**",
 ];
 
 const nextConfig: NextConfig = {
-  // Admin image-review routes read PNGs at runtime; exclude from serverless bundles.
+  // Admin image routes must not trace public PNG trees into serverless functions.
   outputFileTracingExcludes: {
-    "*": vehicleAssetTraceExcludes,
+    "/*": vehicleAssetTraceExcludes,
+    "/admin/**": vehicleAssetTraceExcludes,
     "/admin/vehicle-image-review": vehicleAssetTraceExcludes,
     "/admin/vehicle-reference-review": vehicleAssetTraceExcludes,
     "/admin": vehicleAssetTraceExcludes,

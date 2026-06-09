@@ -15,14 +15,17 @@ export {
   KONTEXT_NEXT3_SLUGS,
 } from "@/lib/vehicle-reference-candidates-shared";
 
-const ROOT = process.cwd();
-const PUBLIC = path.join(ROOT, "public");
-const REPORT = path.join(ROOT, "reports", "vehicle-reference-candidates-test5.json");
-const KONTEXT_REPORT = path.join(ROOT, "reports", "vehicle-reference-candidates-test2-kontext.json");
-const KONTEXT_NEXT3_REPORT = path.join(ROOT, "reports", "vehicle-reference-candidates-next3-kontext.json");
-const GEN_REF_ROOT = path.join(PUBLIC, "assets", "cars-generated-review", "reference-based");
-const GEN_KONTEXT_ROOT = path.join(PUBLIC, "assets", "cars-generated-review", "reference-based-kontext");
-const GEN_KONTEXT_NEXT3_ROOT = path.join(PUBLIC, "assets", "cars-generated-review", "reference-based-kontext-next3");
+const REPORT = path.join(process.cwd(), "reports", "vehicle-reference-candidates-test5.json");
+const KONTEXT_REPORT = path.join(
+  process.cwd(),
+  "reports",
+  "vehicle-reference-candidates-test2-kontext.json",
+);
+const KONTEXT_NEXT3_REPORT = path.join(
+  process.cwd(),
+  "reports",
+  "vehicle-reference-candidates-next3-kontext.json",
+);
 
 const IMAGE_FILE_BY_SLUG: Record<string, string> = {
   "tucson-jm": "tucson_jm.png",
@@ -32,10 +35,11 @@ const IMAGE_FILE_BY_SLUG: Record<string, string> = {
   "chevrolet-cruze-2011": "chevrolet_cruze_2011.png",
 };
 
-function resolveGenerated(brand: string, imageFile: string, root: string, folder: string) {
-  const abs = path.join(root, brand, imageFile);
-  if (!fs.existsSync(abs)) return { url: null, exists: false };
-  return { url: `/assets/cars-generated-review/${folder}/${brand}/${imageFile}`, exists: true };
+/** public URL만 조합 — fs.existsSync/path.join(public) 미사용 */
+function resolveGeneratedUrl(brand: string, imageFile: string, folder: string) {
+  if (!imageFile.trim()) return { url: null, exists: false };
+  const url = `/assets/cars-generated-review/${folder}/${brand}/${imageFile}`;
+  return { url, exists: true };
 }
 
 type KontextOverride = {
@@ -68,7 +72,9 @@ function loadKontextReport(filePath: string): Map<string, KontextOverride> {
   );
 }
 
-export function loadVehicleReferenceCandidateEntries(filterSlugs?: string[]): VehicleReferenceCandidateEntry[] {
+export function loadVehicleReferenceCandidateEntries(
+  filterSlugs?: string[],
+): VehicleReferenceCandidateEntry[] {
   if (!fs.existsSync(REPORT)) return [];
 
   const report = JSON.parse(fs.readFileSync(REPORT, "utf8")) as {
@@ -97,14 +103,9 @@ export function loadVehicleReferenceCandidateEntries(filterSlugs?: string[]): Ve
 
   return vehicles.map((v) => {
     const imageFile = v.imageFile ?? IMAGE_FILE_BY_SLUG[v.slug] ?? `${v.slug.replace(/-/g, "_")}.png`;
-    const gen = resolveGenerated(v.brand, imageFile, GEN_REF_ROOT, "reference-based");
-    const kontext = resolveGenerated(v.brand, imageFile, GEN_KONTEXT_ROOT, "reference-based-kontext");
-    const kontextNext3 = resolveGenerated(
-      v.brand,
-      imageFile,
-      GEN_KONTEXT_NEXT3_ROOT,
-      "reference-based-kontext-next3",
-    );
+    const gen = resolveGeneratedUrl(v.brand, imageFile, "reference-based");
+    const kontext = resolveGeneratedUrl(v.brand, imageFile, "reference-based-kontext");
+    const kontextNext3 = resolveGeneratedUrl(v.brand, imageFile, "reference-based-kontext-next3");
     const k = kontextBySlug.get(v.slug);
     const k3 = kontextNext3BySlug.get(v.slug);
 

@@ -12,8 +12,11 @@ export const metadata = {
 
 export default function AdminVehicleReferenceReviewPage() {
   const referenceEntries = loadVehicleReferenceCandidateEntries();
+  const slugSet = new Set(referenceEntries.map((e) => e.slug));
   const { entries } = buildVehicleImageInventory();
-  const inventoryBySlug = Object.fromEntries(entries.map((e) => [e.slug, e]));
+  const inventoryBySlug = Object.fromEntries(
+    entries.filter((e) => slugSet.has(e.slug)).map((e) => [e.slug, e]),
+  );
 
   return (
     <AdminShellLayout
