@@ -13,10 +13,17 @@ import {
   Package,
   ShoppingCart,
   UserCog,
+  X,
 } from "lucide-react";
+import { CustomerActionModal } from "@/components/common/CustomerActionModal";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { getCustomerProfile } from "@/lib/customer-profile-storage";
-import { getCustomerVehicles } from "@/lib/customer-vehicles-storage";
+import {
+  getCustomerVehicles,
+  removeCustomerVehicle,
+  type CustomerVehicleRecord,
+} from "@/lib/customer-vehicles-storage";
+import { bm } from "@/lib/design-tokens";
 import {
   CUSTOMER_LOGIN_PAGE,
   CUSTOMER_PROFILE_PAGE,
@@ -106,7 +113,21 @@ function MyPageClientInner() {
   const { isLoggedIn, displayName, logout, member, ready } = useCustomerAuth();
   const [vehicles, setVehicles] = useState<ReturnType<typeof getCustomerVehicles>>([]);
   const [preferredStore, setPreferredStore] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<CustomerVehicleRecord | null>(null);
+  const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const showWelcome = searchParams.get("welcome") === "1";
+
+  const handleDeleteConfirm = () => {
+    if (!deleteTarget) return;
+    try {
+      removeCustomerVehicle(deleteTarget.id);
+      setVehicles(getCustomerVehicles());
+      setDeleteTarget(null);
+      setToast({ type: "success", message: "등록 차량이 삭제되었습니다." });
+    } catch {
+      setToast({ type: "error", message: "삭제에 실패했습니다. 잠시 후 다시 시도해 주세요." });
+    }
+  };
 
   useEffect(() => {
     setVehicles(getCustomerVehicles());
@@ -121,6 +142,12 @@ function MyPageClientInner() {
     }, 12000);
     return () => window.clearTimeout(timer);
   }, [showWelcome, router]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 4000);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   return (
     <div className="mypage-hub space-y-6" data-page="mypage">
@@ -230,6 +257,14 @@ function MyPageClientInner() {
               return (
                 <li key={v.id}>
                   <article className="bm-mypage-vehicle-card">
+                    <button
+                      type="button"
+                      className="bm-mypage-vehicle-card__delete"
+                      aria-label="등록 차량 삭제"
+                      onClick={() => setDeleteTarget(v)}
+                    >
+                      <X className="size-4" strokeWidth={2.25} aria-hidden />
+                    </button>
                     <div className="bm-mypage-vehicle-card__head">
                       <span className="bm-mypage-vehicle-card__icon" aria-hidden>
                         <Car className="size-5" />
@@ -335,6 +370,47 @@ function MyPageClientInner() {
           </Link>
         </div>
       </section>
+
+      <CustomerActionModal
+        open={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        title="등록 차량을 삭제할까요?"
+        footer={
+          <>
+            <button
+              type="button"
+              autoFocus
+              className={`${bm.btnSecondary} w-full justify-center text-sm font-black sm:flex-1`}
+              onClick={() => setDeleteTarget(null)}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              className={`${bm.btnDanger} w-full justify-center text-sm font-black sm:flex-1`}
+              onClick={handleDeleteConfirm}
+            >
+              삭제하기
+            </button>
+          </>
+        }
+      >
+        <p className="text-sm font-medium leading-relaxed text-slate-600">
+          삭제하면 마이페이지에서 해당 차량 정보가 사라집니다. 필요하면 다시 등록할 수 있습니다.
+        </p>
+        {deleteTarget ? (
+          <p className="mt-2 text-sm font-bold text-slate-800">{deleteTarget.displayName}</p>
+        ) : null}
+      </CustomerActionModal>
+
+      {toast ? (
+        <p
+          role="status"
+          className={`bm-mypage-toast bm-mypage-toast--${toast.type}`}
+        >
+          {toast.message}
+        </p>
+      ) : null}
     </div>
   );
 }
