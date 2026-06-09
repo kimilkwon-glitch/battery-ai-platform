@@ -7,14 +7,15 @@ const TEXT_MARKERS: RegExp[] = [
   /\[AUDIT\]/i,
   /API테스트/,
   /김테스트/,
-  /테스트\s*주문/,
-  /테스트\s*문의/,
+  /테스트/,
   /개발검수/,
   /기능검수/,
   /검수용/,
   /로컬\s*테스트/,
   /\bfixture\b/i,
   /\bdummy\b/i,
+  /\btest\b/i,
+  /\bsample\b/i,
 ];
 
 const TEST_NAME_EXACT = new Set(["API테스트", "김테스트", "테스트고객", "테스트 사용자"]);
@@ -48,6 +49,7 @@ function isPlaceholderGuest(name: string | undefined | null, phone: string | und
 }
 
 export function isAdminTestOrderRequest(record: {
+  id?: string | null;
   customerName?: string | null;
   customerPhone?: string | null;
   requestNumber?: string | null;
@@ -70,10 +72,34 @@ export function isAdminTestOrderRequest(record: {
   ) {
     return true;
   }
-  if (/^BM-20260609-/i.test(record.requestNumber ?? "") && hasTestPhone(record.customerPhone)) {
+  const requestNumber = record.requestNumber ?? "";
+  if (/^BM-20260609-/i.test(requestNumber)) {
+    return true;
+  }
+  if (/or_178096/i.test(record.id ?? "")) {
     return true;
   }
   return false;
+}
+
+export function isAdminTestOrderRequestRecord(record: {
+  id?: string;
+  customer?: { name?: string; phone?: string };
+  requestNumber?: string | null;
+  staffNotes?: string | null;
+  vehicle?: { name?: string } | null;
+  items?: { batterySpec?: string }[];
+}): boolean {
+  const batteryLine = record.items?.map((i) => i.batterySpec).filter(Boolean).join(", ");
+  return isAdminTestOrderRequest({
+    id: record.id,
+    customerName: record.customer?.name,
+    customerPhone: record.customer?.phone,
+    requestNumber: record.requestNumber,
+    memo: record.staffNotes,
+    vehicleName: record.vehicle?.name,
+    batterySpecSummary: batteryLine,
+  });
 }
 
 export function isAdminTestInquiry(record: {

@@ -6,11 +6,11 @@
   --admin-border: #e2e8f0;
   --admin-text-title: 1.5rem;
   --admin-text-desc: 0.875rem;
-  --admin-text-table-head: 0.8125rem;
+  --admin-text-table-head: 0.875rem;
   --admin-text-table-body: 0.875rem;
   --admin-text-muted: 0.8125rem;
   --admin-text-badge: 0.8125rem;
-  --admin-btn-height: 2.375rem;
+  --admin-btn-height: 2.5rem;
 }
 
 [data-admin-console] .admin-page-title {
@@ -1733,4 +1733,79 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.5rem;
+}
+
+/* ── 가독성 v3: 워크스페이스·간격·잔여 소형 글씨 상향 ── */
+[data-admin-console] .admin-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+[data-admin-console] .admin-page-frame__body > .space-y-3,
+[data-admin-console] .admin-page-frame__body > .space-y-4 {
+  margin-top: 0;
+}
+
+[data-admin-console] .admin-stat-card {
+  padding: 0.75rem 1rem 0.875rem;
+}
+
+[data-admin-console] .admin-stat-card__label {
+  font-size: 0.8125rem;
+}
+
+[data-admin-console] .admin-cell-primary--title {
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+[data-admin-console] .admin-order-requests__list {
+  max-height: calc(100vh - 14rem);
+  overflow: auto;
+}
+
+[data-admin-console] .admin-order-requests__workspace {
+  min-height: 24rem;
+}
+
+[data-admin-console] .admin-banners__grid {
+  display: grid;
+  gap: 0.875rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 900px) {
+  [data-admin-console] .admin-banners__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  [data-admin-console] .admin-banners__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+[data-admin-console] .admin-banners__card {
+  border: 1px solid var(--admin-border);
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 0.875rem;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+}
+
+[data-admin-console] .text-\[10px\],
+[data-admin-console] .text-\[11px\] {
+  font-size: 0.8125rem !important;
+  line-height: 1.35;
+}
+
+[data-admin-console] .admin-vehicle-image-review .text-xs {
+  font-size: 0.8125rem;
+}
+
+[data-admin-console] .admin-promotions .text-\[10px\],
+[data-admin-console] .admin-promotions .text-\[11px\] {
+  font-size: 0.8125rem !important;
 }

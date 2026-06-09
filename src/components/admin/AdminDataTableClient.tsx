@@ -96,7 +96,7 @@ export function AdminDataTableClient<T>({
   const resetFilters = () => setValues({});
 
   return (
-    <div className="admin-data-table space-y-3">
+    <div className="admin-data-table admin-workspace space-y-2">
       {tabsWithCounts.length > 0 ? (
         <AdminStatusTabs tabs={tabsWithCounts} activeId={statusTab} onChange={setStatusTab} />
       ) : null}

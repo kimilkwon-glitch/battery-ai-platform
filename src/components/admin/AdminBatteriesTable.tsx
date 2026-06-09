@@ -64,23 +64,18 @@ export function AdminBatteriesTable({ rows }: Props) {
             </div>
           ),
         },
-        { key: "capacityAh", label: "용량", render: (r) => <span className="admin-cell-muted">{r.capacityAh ? `${r.capacityAh}Ah` : "—"}</span> },
         {
-          key: "missingSpecs",
-          label: "제원",
+          key: "status",
+          label: "상태",
           render: (r) => (
-            <Badge variant={r.missingSpecs ? "warning" : "success"}>
-              {r.missingSpecs ? "누락" : "완료"}
-            </Badge>
-          ),
-        },
-        {
-          key: "hasHeroImage",
-          label: "이미지",
-          render: (r) => (
-            <Badge variant={r.hasHeroImage ? "success" : "danger"}>
-              {r.hasHeroImage ? "있음" : "없음"}
-            </Badge>
+            <div className="flex flex-wrap gap-1.5">
+              <Badge variant={r.missingSpecs ? "warning" : "success"}>
+                제원 {r.missingSpecs ? "누락" : "완료"}
+              </Badge>
+              <Badge variant={r.hasHeroImage ? "success" : "danger"}>
+                이미지 {r.hasHeroImage ? "있음" : "없음"}
+              </Badge>
+            </div>
           ),
         },
         {

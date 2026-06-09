@@ -15,8 +15,6 @@ import type {
   OrderRequestReviewFlag,
   OrderRequestWorkflowStatus,
 } from "@/types/order-request";
-import { bm } from "@/lib/design-tokens";
-
 const USED_BATTERY_FORM = {
   return: "반납",
   no_return: "미반납",
@@ -141,9 +139,10 @@ export function OrderRequestDetailPanel({
     : null;
 
   return (
-    <aside className={`${bm.card} ${bm.cardPad} space-y-4 lg:sticky lg:top-4`}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-black text-slate-900">요청 상세</h2>
+    <aside className="admin-panel admin-inquiries__detail">
+      <div className="admin-inquiries__detail-inner">
+      <div className="admin-inquiries__section flex flex-wrap items-center justify-between gap-2">
+        <h2 className="admin-matching__detail-title">요청 상세</h2>
         <OrderRequestWorkflowBadge status={statusValue} />
       </div>
       {record.requestNumber ? (
@@ -249,7 +248,7 @@ export function OrderRequestDetailPanel({
           type="button"
           disabled={flagsSaving}
           onClick={() => void handleFlagsSave()}
-          className={`${bm.btnSecondary} w-full text-xs disabled:opacity-50`}
+          className="admin-btn admin-btn--secondary admin-btn--md w-full disabled:opacity-50"
         >
           {flagsSaving ? "저장 중…" : "플래그 저장"}
         </button>
@@ -291,12 +290,13 @@ export function OrderRequestDetailPanel({
             type="button"
             disabled={memoSaving}
             onClick={() => void handleMemoSave()}
-            className={`${bm.btnNavy} w-full text-xs disabled:opacity-50`}
+            className="admin-btn admin-btn--primary admin-btn--md w-full disabled:opacity-50"
           >
             {memoSaving ? "저장 중…" : "메모 저장"}
           </button>
         </div>
       </section>
+      </div>
     </aside>
   );
 }

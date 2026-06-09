@@ -170,7 +170,7 @@ export function VehicleImageReviewClient({
   }, [entries, reviewsBySlug]);
 
   return (
-    <div className="admin-vehicle-image-review space-y-4">
+    <div className="admin-vehicle-image-review admin-workspace space-y-3">
       {restoreBuckets ? (
         <section className="grid gap-3 md:grid-cols-3">
           <BucketCard title="A. 즉시 복구 권장" slugs={restoreBuckets.immediateRestore} tone="violet" />

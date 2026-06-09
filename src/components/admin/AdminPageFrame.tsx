@@ -21,7 +21,7 @@ type Props = {
 /** 관리자 페이지 공통: 제목 · 설명 · 요약 · 본문 */
 export function AdminPageFrame({ title, description, actions, summary, children }: Props) {
   return (
-    <div className="admin-page-frame space-y-4">
+    <div className="admin-page-frame space-y-3">
       <header className="admin-page-frame__header">
         <div className="min-w-0 flex-1">
           <h1 className="admin-page-title">{title}</h1>
@@ -31,7 +31,7 @@ export function AdminPageFrame({ title, description, actions, summary, children 
       </header>
 
       {summary && summary.length > 0 ? (
-        <section className="admin-page-frame__summary grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="admin-page-frame__summary grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
           {summary.map((item) =>
             item.href ? (
               <AdminStatCard

@@ -126,16 +126,18 @@ export function AdminVehiclesTable({ rows }: Props) {
         { key: "brand", label: "제조사", render: (r) => <span className="admin-cell-muted">{r.brand}</span> },
         {
           key: "primaryBattery",
-          label: "대표 규격",
-          render: (r) => <span className="admin-cell-primary font-mono">{r.primaryBattery}</span>,
-        },
-        {
-          key: "candidates",
-          label: "추천 규격",
+          label: "규격",
           render: (r) => (
-            <span className="admin-cell-muted">
-              {r.candidateBatteries.slice(0, 2).join(", ") || "—"}
-            </span>
+            <div className="flex flex-col gap-1">
+              <Badge variant="info" className="w-fit font-mono">
+                {r.primaryBattery}
+              </Badge>
+              {r.candidateBatteries.length > 0 ? (
+                <span className="admin-cell-muted font-mono">
+                  {r.candidateBatteries.slice(0, 2).join(" · ")}
+                </span>
+              ) : null}
+            </div>
           ),
         },
         {

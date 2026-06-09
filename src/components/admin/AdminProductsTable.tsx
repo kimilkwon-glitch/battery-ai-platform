@@ -94,9 +94,9 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
       label: "상품",
       render: (r) => (
         <div className="admin-cell-product">
-          <p className="admin-cell-primary">{r.displayName}</p>
+          <p className="admin-cell-primary admin-cell-primary--title">{r.displayName}</p>
           <p className="admin-cell-muted">
-            {r.brandLabel} · <span className="font-mono">{r.batteryCode}</span>
+            {r.brandLabel} · <span className="font-mono font-semibold">{r.batteryCode}</span>
           </p>
         </div>
       ),

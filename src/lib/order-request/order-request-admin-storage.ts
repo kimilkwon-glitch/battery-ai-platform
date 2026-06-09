@@ -1,3 +1,4 @@
+import { isAdminTestOrderRequestRecord } from "@/lib/admin/admin-test-data-filter";
 import { maskPhone } from "@/lib/order-request/order-request-summary";
 import {
   ORDER_REQUEST_LAST_KEY,
@@ -122,7 +123,9 @@ function listRawOrderRequests(): OrderRequest[] {
 
 export function listOrderRequestRecords(): OrderRequestRecord[] {
   const meta = loadMetaMap();
-  return listRawOrderRequests().map((r) => toRecord(r, meta[r.id]));
+  return listRawOrderRequests()
+    .map((r) => toRecord(r, meta[r.id]))
+    .filter((r) => !isAdminTestOrderRequestRecord(r));
 }
 
 export function updateOrderRequestAdminMeta(
