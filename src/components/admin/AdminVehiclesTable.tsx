@@ -113,7 +113,7 @@ export function AdminVehiclesTable({ rows }: Props) {
           label: "차량",
           render: (r) => (
             <div className="admin-cell-product">
-              <p className="admin-cell-primary">{r.displayName}</p>
+              <p className="admin-cell-primary admin-cell-primary--title">{r.displayName}</p>
               {r.generationName ? (
                 <p className="admin-cell-muted">{r.generationName}</p>
               ) : null}

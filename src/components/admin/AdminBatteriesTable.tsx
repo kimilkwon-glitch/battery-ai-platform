@@ -56,7 +56,7 @@ export function AdminBatteriesTable({ rows }: Props) {
           label: "규격",
           render: (r) => (
             <div className="admin-cell-product">
-              <p className="admin-cell-primary font-mono">{r.specCode}</p>
+              <p className="admin-cell-primary admin-cell-primary--title font-mono">{r.specCode}</p>
               <p className="admin-cell-muted">
                 {r.batteryType}
                 {r.capacityAh ? ` · ${r.capacityAh}Ah` : ""}

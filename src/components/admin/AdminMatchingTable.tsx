@@ -79,7 +79,7 @@ export function AdminMatchingTable({ rows }: Props) {
   const selected = displayRows.find((r) => r.slug === selectedSlug) ?? null;
 
   return (
-    <div className="admin-matching space-y-4">
+    <div className="admin-matching admin-workspace">
       <AdminQuickFilterChips
         chips={QUICK_VEHICLES.map((v) => ({ id: v.id, label: v.label }))}
         activeId={quickFilter}

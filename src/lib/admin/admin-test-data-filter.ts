@@ -73,7 +73,7 @@ export function isAdminTestOrderRequest(record: {
     return true;
   }
   const requestNumber = record.requestNumber ?? "";
-  if (/^BM-20260609-/i.test(requestNumber)) {
+  if (/BM-20260609/i.test(requestNumber)) {
     return true;
   }
   if (/or_178096/i.test(record.id ?? "")) {

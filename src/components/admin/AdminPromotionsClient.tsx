@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminStatusTabs } from "@/components/admin/AdminStatusTabs";
+import { Badge } from "@/components/ui/badge";
 import type { PromotionRecord, PromotionUpsertInput } from "@/types/promotion";
 import {
   DEFAULT_PROMOTION_IDS,
@@ -52,21 +53,21 @@ const FULFILLMENT_OPTIONS = [
   { value: "store_pickup_self", label: "매장 수령" },
 ] as const;
 
-function statusBadge(promo: PromotionRecord): { label: string; className: string } {
+function statusBadge(promo: PromotionRecord): { label: string; variant: "muted" | "info" | "success" | "warning" } {
   const now = new Date();
   if (promo.status === "inactive") {
-    return { label: "비활성", className: "bg-slate-100 text-slate-600" };
+    return { label: "비활성", variant: "muted" };
   }
   if (promo.endsAt && new Date(promo.endsAt) < now) {
-    return { label: "종료", className: "bg-slate-200 text-slate-700" };
+    return { label: "종료", variant: "muted" };
   }
   if (promo.startsAt && new Date(promo.startsAt) > now) {
-    return { label: "예정", className: "bg-blue-100 text-blue-800" };
+    return { label: "예정", variant: "info" };
   }
   if (promo.status === "active") {
-    return { label: "진행중", className: "bg-emerald-100 text-emerald-800" };
+    return { label: "진행중", variant: "success" };
   }
-  return { label: promo.status, className: "bg-slate-100 text-slate-600" };
+  return { label: promo.status, variant: "muted" };
 }
 
 function parseCsv(value: string): string[] | null {
@@ -317,7 +318,7 @@ export function AdminPromotionsClient() {
       <section className="admin-promotions__preset-cards">
         {DEFAULT_PROMOTION_SEEDS.map((seed) => {
           const existing = items.find((i) => i.id === seed.id);
-          const badge = existing ? statusBadge(existing) : { label: "미등록", className: "bg-slate-100 text-slate-600" };
+          const badge = existing ? statusBadge(existing) : { label: "미등록", variant: "muted" as const };
           return (
             <article key={seed.id} className="admin-promotions__preset-card">
               <h3 className="admin-promotions__preset-card-title">{seed.title}</h3>
@@ -338,9 +339,7 @@ export function AdminPromotionsClient() {
                 <div>
                   <dt>상태</dt>
                   <dd>
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${badge.className}`}>
-                      {badge.label}
-                    </span>
+                    <Badge variant={badge.variant}>{badge.label}</Badge>
                   </dd>
                 </div>
               </dl>
@@ -360,7 +359,7 @@ export function AdminPromotionsClient() {
 
       {error ? (
         <p
-          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-bold text-red-900"
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-900"
           role="alert"
         >
           {error}
@@ -398,11 +397,7 @@ export function AdminPromotionsClient() {
                     <span className="admin-promotions__row-meta">
                       <span>{formatAdminPromotionType(item)}</span>
                       <span>{formatAdminPromotionDiscount(item)}</span>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[10px] font-black ${badge.className}`}
-                      >
-                        {badge.label}
-                      </span>
+                      <Badge variant={badge.variant}>{badge.label}</Badge>
                       {item.showOnMain ? <span>메인</span> : null}
                       {item.showOnBenefitsPage ? <span>혜택페이지</span> : null}
                     </span>
@@ -424,7 +419,7 @@ export function AdminPromotionsClient() {
                 <h2 className="admin-promotions__form-title">
                   {editingId ? "혜택 수정" : "새 혜택 만들기"}
                 </h2>
-                <button type="button" className="text-xs font-bold text-slate-500" onClick={closeForm}>
+                <button type="button" className="admin-btn admin-btn--ghost admin-btn--md" onClick={closeForm}>
                   닫기
                 </button>
               </div>

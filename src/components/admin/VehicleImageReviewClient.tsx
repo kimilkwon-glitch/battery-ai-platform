@@ -187,10 +187,10 @@ export function VehicleImageReviewClient({
 
       <div className="admin-filter-bar">
         <div className="admin-filter-bar__fields">
-          <div className="admin-filter-bar__field admin-filter-bar__field--wide">
+          <div className="admin-filter-bar__field admin-filter-bar__field--search">
             <label className="admin-filter-bar__label">차량명 / slug 검색</label>
             <input
-              className="admin-filter-bar__input h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="admin-filter-bar__input w-full rounded-lg border border-slate-200 px-3"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="tucson-jm, 티볼리, tivoli"
@@ -199,7 +199,7 @@ export function VehicleImageReviewClient({
           <div className="admin-filter-bar__field">
             <label className="admin-filter-bar__label">브랜드</label>
             <select
-              className="admin-filter-bar__input h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="admin-filter-bar__input w-full rounded-lg border border-slate-200 px-3"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
             >
@@ -214,7 +214,7 @@ export function VehicleImageReviewClient({
           <div className="admin-filter-bar__field">
             <label className="admin-filter-bar__label">위험 필터</label>
             <select
-              className="admin-filter-bar__input h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="admin-filter-bar__input w-full rounded-lg border border-slate-200 px-3"
               value={filter}
               onChange={(e) => setFilter(e.target.value as FilterKey)}
             >
@@ -266,8 +266,8 @@ export function VehicleImageReviewClient({
 
       {orphans.length > 0 ? (
         <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4">
-          <h2 className="text-sm font-black text-slate-800">미사용 디스크 파일 ({orphans.length})</h2>
-          <ul className="mt-2 max-h-48 space-y-1 overflow-auto text-xs font-semibold text-slate-600">
+          <h2 className="admin-panel__title">미사용 디스크 파일 ({orphans.length})</h2>
+          <ul className="admin-mobile-card__lines mt-2 max-h-48 overflow-auto">
             {orphans.slice(0, 30).map((o) => (
               <li key={o.relativePath}>{o.relativePath}</li>
             ))}
@@ -294,7 +294,7 @@ function BucketCard({
       <p className="text-sm font-black text-slate-900">
         {title} <span className="text-slate-500">({slugs.length})</span>
       </p>
-      <p className="mt-2 max-h-28 overflow-auto text-[11px] font-semibold leading-relaxed text-slate-600">
+      <p className="admin-cell-muted mt-2 max-h-28 overflow-auto leading-relaxed">
         {slugs.length ? slugs.join(", ") : "—"}
       </p>
     </div>
@@ -342,8 +342,8 @@ function ReviewCard({
       <div className="vehicle-image-review-card__head border-b border-slate-200 px-3 py-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="admin-mobile-card__title truncate">{entry.displayName}</p>
-            <p className="truncate text-[11px] font-semibold text-slate-500">
+            <p className="admin-cell-primary admin-cell-primary--title truncate">{entry.displayName}</p>
+            <p className="admin-cell-muted truncate">
               {entry.brand} · {entry.slug}
             </p>
           </div>
@@ -394,8 +394,8 @@ function ReviewCard({
           </li>
           <li className="line-clamp-2">{entry.visualRiskReason}</li>
         </ul>
-        <details className="vehicle-image-review-card__details mt-2 text-[10px] text-slate-500">
-          <summary className="cursor-pointer font-bold text-slate-600">상세 지표</summary>
+        <details className="vehicle-image-review-card__details mt-2">
+          <summary className="admin-cell-muted cursor-pointer font-bold">상세 지표</summary>
           <dl className="mt-2 grid gap-1 font-semibold sm:grid-cols-2">
             <Metric label="legacy" value={entry.status} />
             <Metric label="visual" value={entry.visualRiskStatus} />
