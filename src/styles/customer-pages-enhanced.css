@@ -123,10 +123,12 @@
   z-index: 1;
 }
 
+.bm-mypage-hero h1,
 .bm-mypage-hero__title {
   font-size: 1.625rem;
   font-weight: 900;
   letter-spacing: -0.02em;
+  color: #fff;
 }
 
 .bm-mypage-hero__desc {
@@ -163,6 +165,7 @@
 .bm-mypage-guest-cta__title {
   font-size: 0.9375rem;
   font-weight: 800;
+  color: #fff;
 }
 
 .bm-mypage-guest-cta__actions {
@@ -363,6 +366,23 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: center;
+}
+
+.bm-mypage-orders__guest-link {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.bm-mypage-orders__guest-link a {
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.bm-mypage-orders__guest-link a:hover {
+  text-decoration: underline;
 }
 
 /* ── 매장·출장 안내 ── */

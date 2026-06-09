@@ -113,7 +113,21 @@ export function MyPageOrdersSection({ isLoggedIn, authReady }: Props) {
       ) : !isLoggedIn ? (
         <div className="bm-mypage-orders__empty">
           <Package className="mx-auto size-8 text-slate-300" aria-hidden />
-          <p className="mt-2">로그인 후 주문 내역을 확인하세요.</p>
+          <p className="mt-2">로그인 후 주문 내역을 확인할 수 있습니다.</p>
+          <div className="bm-mypage-orders__actions">
+            <Link
+              href={MYPAGE_ORDER_CTAS.guestOrderLookup}
+              className="bm-auth-submit inline-flex w-auto px-5 no-underline"
+            >
+              비회원 주문 조회
+            </Link>
+            <Link
+              href={MYPAGE_ORDER_CTAS.consultationLookup}
+              className="bm-auth-inline-btn no-underline"
+            >
+              상담 접수 조회
+            </Link>
+          </div>
         </div>
       ) : error ? (
         <div className="bm-mypage-orders__empty">
@@ -132,15 +146,13 @@ export function MyPageOrdersSection({ isLoggedIn, authReady }: Props) {
       ) : fetched ? (
         <div className="bm-mypage-orders__empty">
           <Package className="mx-auto size-8 text-slate-300" aria-hidden />
-          <p className="mt-2">
-            표시할 주문이 없습니다. 주문 후 여기에서 진행 상태를 확인할 수 있습니다.
-          </p>
+          <p className="mt-2">아직 주문 내역이 없습니다.</p>
           <div className="bm-mypage-orders__actions">
             <Link
-              href={MYPAGE_ORDER_CTAS.guestOrderLookup}
+              href={MYPAGE_ORDER_CTAS.search}
               className="bm-auth-submit inline-flex w-auto px-5 no-underline"
             >
-              비회원 주문 조회
+              배터리 찾기
             </Link>
             <Link
               href={MYPAGE_ORDER_CTAS.consultationLookup}
@@ -148,13 +160,11 @@ export function MyPageOrdersSection({ isLoggedIn, authReady }: Props) {
             >
               상담 접수 조회
             </Link>
-            <Link
-              href={MYPAGE_ORDER_CTAS.search}
-              className="bm-auth-inline-btn no-underline"
-            >
-              배터리 찾기
-            </Link>
           </div>
+          <p className="bm-mypage-orders__guest-link">
+            비회원으로 주문하셨나요?{" "}
+            <Link href={MYPAGE_ORDER_CTAS.guestOrderLookup}>비회원 주문 조회</Link>
+          </p>
         </div>
       ) : null}
     </section>
