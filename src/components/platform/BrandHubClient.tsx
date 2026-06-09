@@ -5,7 +5,16 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircle, Sparkles } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
+  Battery,
+  BatteryCharging,
+  Building2,
+  CarFront,
+  MessageSquareQuote,
+  Star,
+  Trophy,
+} from "lucide-react";
 import clsx from "clsx";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { hasRocketBatteryAssets, hasSoliteBatteryAssets } from "@/lib/battery-alias-map";
@@ -24,8 +33,10 @@ import {
   isCustomerBrandHubId,
   listBrandHubProductsForTab,
   resolveBrandHubSpecCard,
+  type BrandHubAdvantageIconKey,
+  type BrandHubAdvantageSection,
   type BrandHubFamilyTabId,
-  type BrandHubInsightCard,
+  type BrandHubFieldSection,
   type CustomerBrandHubId,
 } from "@/lib/brand-hub-customer";
 import { getBrandHubLogoPresentation } from "@/lib/brand-hub-logo-presentation";
@@ -172,24 +183,11 @@ export function BrandHubClient() {
 
             <BrandHeroBanner theme={theme} banner={banner} imageBrandKey={imageBrandKey} brandId={active} />
 
-            <div className="grid gap-5 lg:grid-cols-2 lg:gap-7">
-              <InsightCardMobileAdvantage theme={theme} card={insights.advantage} />
-              <InsightCardMobileField theme={theme} card={insights.field} />
-              <InsightCard
-                theme={theme}
-                card={insights.advantage}
-                variant="advantage"
-                dividerBorder={dividerBorder}
-                className="brand-hub-insight-desktop"
-              />
-              <InsightCard
-                theme={theme}
-                card={insights.field}
-                variant="field"
-                dividerBorder={dividerBorder}
-                className="brand-hub-insight-desktop"
-              />
-            </div>
+            <BrandHubInsightsPanel
+              theme={theme}
+              advantage={insights.advantage}
+              field={insights.field}
+            />
 
             <section className="pt-1">
               <header className="mb-5 sm:mb-6">
@@ -412,139 +410,76 @@ function BrandHeroBanner({
   );
 }
 
-function InsightCardMobileAdvantage({
+const BRAND_HUB_ADVANTAGE_ICONS: Record<BrandHubAdvantageIconKey, LucideIcon> = {
+  trophy: Trophy,
+  building2: Building2,
+  battery: Battery,
+  star: Star,
+  "car-front": CarFront,
+  "battery-charging": BatteryCharging,
+};
+
+function BrandHubInsightsPanel({
   theme,
-  card,
+  advantage,
+  field,
 }: {
   theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
-  card: BrandHubInsightCard;
+  advantage: BrandHubAdvantageSection;
+  field: BrandHubFieldSection;
 }) {
-  const items =
-    card.mobileItems ??
-    card.bullets.map((b) => ({
-      title: b,
-      desc: card.body,
-    }));
-
   return (
-    <article className={clsx("brand-hub-advantage-mobile md:hidden", theme.insightCard)}>
-      <h3 className={clsx("brand-hub-advantage-mobile__heading", theme.insightTitle)}>
-        {card.title}
-      </h3>
-      <ul className="brand-hub-advantage-mobile__list">
-        {items.map((item) => (
-          <li key={item.title} className="brand-hub-advantage-mobile__item">
-            <p className={clsx("brand-hub-advantage-mobile__item-title", theme.insightTitle)}>
-              {item.title}
-            </p>
-            <p className={clsx("brand-hub-advantage-mobile__item-desc", theme.insightBody)}>
-              {item.desc}
-            </p>
-          </li>
-        ))}
-      </ul>
-    </article>
+    <div className="brand-hub-insights space-y-4 sm:space-y-5">
+      <section className="brand-hub-strengths">
+        <h3 className={clsx("brand-hub-strengths__heading", theme.insightTitle)}>
+          {advantage.title}
+        </h3>
+        <ul className="brand-hub-strengths__grid">
+          {advantage.items.map((item) => (
+            <BrandHubStrengthCard key={item.text} item={item} theme={theme} />
+          ))}
+        </ul>
+      </section>
+      <BrandHubFieldCommentCard theme={theme} field={field} />
+    </div>
   );
 }
 
-function InsightCardMobileField({
+function BrandHubStrengthCard({
+  item,
   theme,
-  card,
 }: {
+  item: BrandHubAdvantageSection["items"][number];
   theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
-  card: BrandHubInsightCard;
 }) {
-  const summary = card.mobileField ?? { title: card.lead, desc: card.body };
+  const Icon = BRAND_HUB_ADVANTAGE_ICONS[item.icon];
 
   return (
-    <article className={clsx("brand-hub-field-mobile md:hidden", theme.insightCard)}>
-      <h3 className={clsx("brand-hub-field-mobile__heading", theme.insightTitle)}>{card.title}</h3>
-      <p className={clsx("brand-hub-field-mobile__lead", theme.insightTitle)}>{summary.title}</p>
-      <p className={clsx("brand-hub-field-mobile__desc", theme.insightBody)}>{summary.desc}</p>
-    </article>
-  );
-}
-
-function InsightCard({
-  theme,
-  card,
-  variant,
-  dividerBorder,
-  className,
-}: {
-  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
-  card: BrandHubInsightCard;
-  variant: "advantage" | "field";
-  dividerBorder: string;
-  className?: string;
-}) {
-  const Icon = variant === "advantage" ? Sparkles : MessageCircle;
-  const isCompactField = variant === "field";
-
-  return (
-    <article
-      className={clsx(
-        "relative flex flex-col overflow-hidden rounded-2xl",
-        isCompactField ? "min-h-0" : "min-h-[15.5rem] sm:min-h-[16.5rem]",
-        theme.insightCard,
-        className,
-      )}
-    >
-      <div className={clsx("flex flex-1 flex-col", isCompactField ? "p-6 sm:p-7" : "p-7 sm:p-9")}>
-        <div className="flex items-start gap-4 sm:gap-5">
-          <div
-            className={clsx(
-              "flex shrink-0 items-center justify-center rounded-xl",
-              isCompactField ? "size-12 sm:size-14" : "size-14 sm:size-16",
-              theme.insightIconWrap,
-            )}
-          >
-            <Icon
-              className={isCompactField ? "size-6 sm:size-7" : "size-7 sm:size-8"}
-              strokeWidth={2}
-              aria-hidden
-            />
-          </div>
-          <div className="min-w-0 flex-1 pt-0.5">
-            <p className={clsx("text-sm font-bold uppercase tracking-[0.14em]", theme.accent)}>
-              {card.title}
-            </p>
-            <h3
-              className={clsx(
-                "mt-2 font-black leading-snug",
-                isCompactField ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl",
-                theme.insightTitle,
-              )}
-            >
-              {card.lead}
-            </h3>
-            <p
-              className={clsx(
-                "mt-3 font-medium leading-relaxed",
-                isCompactField ? "text-base sm:text-lg" : "text-lg",
-                theme.insightBody,
-              )}
-            >
-              {card.body}
-            </p>
-          </div>
-        </div>
-        {card.bullets.length > 0 ? (
-          <ul
-            className={clsx(
-              "mt-8 space-y-3.5 border-t pt-8 text-lg font-medium leading-relaxed",
-              dividerBorder,
-            )}
-          >
-            {card.bullets.map((b) => (
-              <li key={b} className="flex items-start gap-3 pl-0.5">
-                <span className={clsx("mt-[0.65rem] h-0.5 w-5 shrink-0 rounded-full", theme.accentLine)} />
-                <span className={theme.insightBullet}>{b}</span>
-              </li>
-            ))}
-          </ul>
-        ) : null}
+    <li className={clsx("brand-hub-strength-card", theme.insightCard)}>
+      <div className={clsx("brand-hub-strength-card__badge", theme.insightIconWrap)}>
+        <Icon className="brand-hub-strength-card__icon" strokeWidth={2} aria-hidden />
       </div>
+      <p className={clsx("brand-hub-strength-card__text", theme.insightBody)}>{item.text}</p>
+    </li>
+  );
+}
+
+function BrandHubFieldCommentCard({
+  theme,
+  field,
+}: {
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  field: BrandHubFieldSection;
+}) {
+  return (
+    <article className={clsx("brand-hub-field-comment", theme.insightCard)}>
+      <div className="brand-hub-field-comment__header">
+        <div className={clsx("brand-hub-field-comment__badge", theme.insightIconWrap)}>
+          <MessageSquareQuote className="brand-hub-strength-card__icon" strokeWidth={2} aria-hidden />
+        </div>
+        <h3 className={clsx("brand-hub-field-comment__title", theme.insightTitle)}>{field.title}</h3>
+      </div>
+      <p className={clsx("brand-hub-field-comment__body", theme.insightBody)}>{field.body}</p>
     </article>
   );
 }

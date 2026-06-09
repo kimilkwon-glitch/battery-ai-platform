@@ -203,96 +203,77 @@ export const BRAND_HUB_BANNER: Record<CustomerBrandHubId, BrandHubBannerCopy> = 
   },
 };
 
-export type BrandHubMobileAdvantageItem = {
-  title: string;
-  desc: string;
+export type BrandHubAdvantageIconKey =
+  | "trophy"
+  | "building2"
+  | "battery"
+  | "star"
+  | "car-front"
+  | "battery-charging";
+
+export type BrandHubAdvantageItem = {
+  icon: BrandHubAdvantageIconKey;
+  text: string;
 };
 
-export type BrandHubInsightCard = {
+export type BrandHubAdvantageSection = {
   title: string;
-  lead: string;
+  items: BrandHubAdvantageItem[];
+};
+
+export type BrandHubFieldSection = {
+  title: string;
   body: string;
-  bullets: string[];
-  /** 모바일 전용 간결 장점 카드 */
-  mobileItems?: BrandHubMobileAdvantageItem[];
-  /** 모바일 전용 현장 코멘트 (제목·한 줄·보조) */
-  mobileField?: BrandHubMobileAdvantageItem;
 };
 
 export const BRAND_HUB_INSIGHTS: Record<
   CustomerBrandHubId,
-  { advantage: BrandHubInsightCard; field: BrandHubInsightCard }
+  { advantage: BrandHubAdvantageSection; field: BrandHubFieldSection }
 > = {
   rocket: {
     advantage: {
       title: "브랜드가 말하는 장점",
-      lead: "국산차 교체 상담에서 자주 나오는 브랜드",
-      body: "규격명만 맞춰도 설명이 이어지기 쉬운 편입니다.",
-      bullets: [
-        "고객 인지도가 높아 설명 전환이 빠름",
-        "일반형·DIN·일부 AGM까지 한 흐름으로 안내",
-        "차종별 대체·비교 설명이 편함",
-      ],
-      mobileItems: [
+      items: [
         {
-          title: "설명 전환이 빠름",
-          desc: "로케트만 말해도 규격 이야기로 넘어가기 쉽습니다.",
+          icon: "trophy",
+          text: "K-BPI 자동차 배터리 부문 16년 연속 1위 이력",
         },
         {
-          title: "규격 타입 연결이 편함",
-          desc: "일반형·DIN·AGM을 한 브랜드 안에서 정리해 안내합니다.",
+          icon: "building2",
+          text: "국내 납축전지 대표 기업 세방전지의 자동차 배터리 브랜드",
         },
         {
-          title: "차종별 비교가 수월함",
-          desc: "순정 규격과 나란히 비교해 설명하기 좋습니다.",
+          icon: "battery",
+          text: "오랜 기간 승용·상용·산업용까지 이어온 배터리 제조 기반",
         },
       ],
     },
     field: {
       title: "현장 코멘트",
-      lead: "기존 장착이 로케트인 경우가 많음",
-      body: "라벨·단자 방향만 맞으면 확인이 빠르고, 같은 규격으로 마무리하기 좋습니다.",
-      bullets: [],
-      mobileField: {
-        title: "기존 장착이 로케트인 경우가 많음",
-        desc: "라벨만 맞춰 확인하는 상담이 자주 이어집니다.",
-      },
+      body: "로케트는 국산차 배터리 교체 현장에서 오래 쓰여온 브랜드라 고객님들이 낯설어하지 않는 편입니다. 기존 장착 배터리와 같은 용량으로 맞추거나 가격대별로 비교하기 좋습니다.",
     },
   },
   solite: {
     advantage: {
       title: "브랜드가 말하는 장점",
-      lead: "현대·기아 차주가 CMF 규격에 익숙한 편",
-      body: "규격명 중심으로 상담 흐름을 잡기 좋습니다.",
-      bullets: [
-        "CMF 표기로 설명 연결이 편함",
-        "일반형·DIN 구분 안내가 비교적 쉬움",
-        "가격대 선택지를 함께 비교 안내하기 좋음",
-      ],
-      mobileItems: [
+      items: [
         {
-          title: "CMF 규격에 익숙함",
-          desc: "차종 다음에 CMF 표기로 바로 연결하기 쉽습니다.",
+          icon: "star",
+          text: "현대·기아 품질 평가 '품질 5스타' 이력",
         },
         {
-          title: "타입 구분이 명확함",
-          desc: "일반형·DIN을 나눠 설명하기 수월합니다.",
+          icon: "car-front",
+          text: "완성차 순정 납품 기반의 자동차 배터리 브랜드",
         },
         {
-          title: "가격대 비교가 편함",
-          desc: "비슷한 규격 안에서 선택지를 함께 안내합니다.",
+          icon: "battery-charging",
+          text: "AGM·EFB 등 스탑앤고 차량용 라인업 보유",
         },
       ],
     },
     field: {
       title: "현장 코멘트",
-      lead: "교체 상담에서 규격 확인이 수월함",
-      body: "기존 배터리 사진이나 CMF 표기만 있어도 후보를 빠르게 좁히기 좋습니다.",
-      bullets: [],
-      mobileField: {
-        title: "교체 상담에서 규격 확인이 수월함",
-        desc: "CMF 표기만 있어도 후보 규격을 빠르게 좁힙니다.",
-      },
+      body: "쏠라이트는 현대·기아 차량 고객님들이 익숙하게 받아들이는 브랜드입니다. 순정 납품 이력과 품질 평가 근거가 있어 국산차 교체 상담에서 무난하게 권하기 좋습니다.",
     },
   },
 };
