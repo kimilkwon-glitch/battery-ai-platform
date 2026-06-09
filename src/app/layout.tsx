@@ -5,7 +5,8 @@ import { CartProvider } from "@/components/platform/CartContext";
 import "./globals.css";
 
 import { BuildVersionStamp } from "@/components/common/BuildVersionStamp";
-import { FloatingActionDock } from "@/components/support/FloatingActionDock";
+import { BatteryTalkFloating } from "@/components/batterytalk/BatteryTalkFloating";
+import "@/styles/batterytalk.css";
 import { BRAND_NAME, BRAND_META_DESCRIPTION } from "@/lib/brand";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 import { getSiteOrigin } from "@/lib/site-url";
@@ -48,7 +49,7 @@ export default function RootLayout({
           <BatteryCartProvider>
             <CustomerAuthBootstrap />
             {children}
-            <FloatingActionDock />
+            <BatteryTalkFloating />
             <BuildVersionStamp />
           </BatteryCartProvider>
         </CartProvider>

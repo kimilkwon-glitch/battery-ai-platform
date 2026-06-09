@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { BatteryGallery } from "@/components/BatteryGallery";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
@@ -23,7 +24,11 @@ const RETURN_TOGGLE_OPTIONS: {
   { id: "return", shortLabel: "반납", description: "폐배터리 반납 조건 가격입니다." },
   { id: "no-return", shortLabel: "미반납", description: "폐배터리 미반납 조건 가격입니다." },
 ];
+import { BatteryTalkInlineCard } from "@/components/batterytalk/BatteryTalkInlineCard";
+import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
 import { BatteryDetailPriceBlock } from "@/components/battery/BatteryDetailPriceBlock";
+import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
+import { mapShopReturnOptionToUsedBattery } from "@/lib/shop-order-types";
 import type { FulfillmentMethod } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
 
@@ -65,6 +70,20 @@ export function BatteryDetailOrderPanel({
   const specChips = [typeChip, spec.capacity, spec.cca, spec.terminalLabel].filter(
     (chip): chip is string => Boolean(chip),
   );
+
+  const previewItem = useMemo(
+    () =>
+      createCartItemFromBattery({
+        batteryCode: code,
+        brandName,
+        usedBatteryReturnOption: returnOption,
+        fulfillmentMethod: fulfillmentMethod,
+        source: "battery_detail",
+        quantity: 1,
+      }),
+    [code, brandName, returnOption, fulfillmentMethod],
+  );
+  const usedBatteryOption = mapShopReturnOptionToUsedBattery(returnOption);
 
   return (
     <section
@@ -152,6 +171,26 @@ export function BatteryDetailOrderPanel({
             fulfillmentMethod={fulfillmentMethod}
             onFulfillmentChange={onFulfillmentChange}
           />
+
+          <div className="mt-4">
+            <BatteryTalkInlineCard
+              preset={{
+                batteryCode: code,
+                productCode: code,
+                productName: code,
+                topic: "spec",
+              }}
+            />
+          </div>
+
+          <div className="mt-4">
+            <CommercePrePaymentNotice
+              variant="compact"
+              items={[previewItem]}
+              fulfillmentMethod={fulfillmentMethod}
+              usedBatteryReturn={usedBatteryOption}
+            />
+          </div>
 
           <div className="battery-order-panel__cta-row mt-5" data-battery-order-panel-cta>
             <BuyNowButton

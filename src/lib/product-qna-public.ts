@@ -2,10 +2,12 @@ import type { CustomerInquiryRecord, InquiryStatus } from "@/types/customer-inqu
 
 export type ProductQnaPublicItem = {
   id: string;
+  title: string;
   summary: string;
   authorMasked: string;
   createdAt: string;
   statusLabel: "답변대기" | "답변완료";
+  isSecret: boolean;
   question: string;
   answer?: string;
 };
@@ -18,7 +20,8 @@ export function maskInquiryAuthor(name: string): string {
   return `${trimmed[0]}${"*".repeat(Math.min(trimmed.length - 2, 2))}${trimmed.slice(-1)}`;
 }
 
-function extractQuestionBody(message: string): string {
+function extractQuestionBody(message: string, title?: string): string {
+  if (title?.trim()) return message.trim();
   const lines = message
     .split("\n")
     .map((l) => l.trim())
@@ -36,16 +39,24 @@ function extractSummary(question: string): string {
 }
 
 export function toProductQnaPublicItem(record: CustomerInquiryRecord): ProductQnaPublicItem {
-  const question = extractQuestionBody(record.message);
+  const isSecret = record.isSecret === true;
+  const title = record.title?.trim() || "상품 문의";
+  const question = extractQuestionBody(record.message, record.title);
   const answered = record.status === "done" || Boolean(record.adminMemo?.trim());
+  const displayTitle = isSecret ? "비밀글입니다" : title;
+  const displayQuestion = isSecret
+    ? "작성자와 관리자만 확인할 수 있습니다."
+    : question;
   return {
     id: record.id,
-    summary: extractSummary(question),
+    title: displayTitle,
+    summary: isSecret ? displayTitle : extractSummary(title || question),
     authorMasked: maskInquiryAuthor(record.name),
     createdAt: record.createdAt,
     statusLabel: answered ? "답변완료" : "답변대기",
-    question,
-    answer: record.adminMemo?.trim() || undefined,
+    isSecret,
+    question: displayQuestion,
+    answer: isSecret ? undefined : record.adminMemo?.trim() || undefined,
   };
 }
 

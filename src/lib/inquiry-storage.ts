@@ -41,14 +41,19 @@ export type SubmitInquiryInput = {
   name: string;
   contact: string;
   vehicle?: string;
+  region?: string;
   message: string;
+  title?: string;
   batteryCode?: string;
+  productCode?: string;
+  productName?: string;
   returnOption?: string;
   pageUrl?: string;
   source?: InquirySource;
   inquiryType?: string;
   category?: InquiryCategory;
   couponCode?: string;
+  isSecret?: boolean;
 };
 
 /** @deprecated 관리자는 /api/admin/inquiries 사용 */
@@ -84,8 +89,13 @@ export async function submitInquiry(
       name: input.name.trim() || "고객",
       contact: input.contact.trim(),
       vehicle: input.vehicle?.trim(),
+      region: input.region?.trim(),
       message: input.message.trim(),
+      title: input.title?.trim(),
       batteryCode: input.batteryCode?.trim(),
+      productCode: input.productCode?.trim(),
+      productName: input.productName?.trim(),
+      isSecret: input.isSecret === true,
       returnOption: input.returnOption?.trim(),
       pageUrl: input.pageUrl?.trim(),
       source: input.source,

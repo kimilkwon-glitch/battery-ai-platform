@@ -10,7 +10,7 @@ export function CustomerConsultCta({ compact = false }: { compact?: boolean }) {
     return (
       <div className="flex flex-wrap gap-2">
         <button type="button" className={`${bm.btnNavy} text-xs`} onClick={() => openChatInquiry()}>
-          채팅 상담
+          배터리톡
         </button>
         <Link className={`${bm.btnSecondary} text-xs`} href={`${CUSTOMER_CENTER_HUB}?tab=inquiry`}>
           문의 접수
@@ -28,7 +28,7 @@ export function CustomerConsultCta({ compact = false }: { compact?: boolean }) {
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         <button type="button" className={bm.btnNavy} onClick={() => openChatInquiry()}>
-          상담 문의하기
+          배터리톡 상담
         </button>
         <Link className={bm.btnSecondary} href={`${CUSTOMER_CENTER_HUB}?tab=inquiry`}>
           문의 폼 작성

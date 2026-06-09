@@ -9,7 +9,19 @@ export type InquiryCategory =
   | "return"
   | "other";
 
-export type InquirySource = "chat" | "support" | "product_detail";
+export type InquirySource =
+  | "chat"
+  | "support"
+  | "product_detail"
+  | "batterytalk"
+  | "product_qna";
+
+/** 상품 Q&A 전용 소스 (전체 문의와 분리) */
+export const PRODUCT_QNA_SOURCES: InquirySource[] = ["product_qna", "product_detail"];
+
+export function isProductQnaSource(source?: InquirySource | null): boolean {
+  return Boolean(source && PRODUCT_QNA_SOURCES.includes(source));
+}
 
 export type CustomerInquiryRecord = {
   id: string;
@@ -20,8 +32,12 @@ export type CustomerInquiryRecord = {
   name: string;
   contact: string;
   vehicle?: string;
+  region?: string;
   message: string;
+  title?: string;
   batteryCode?: string;
+  productCode?: string;
+  productName?: string;
   returnOption?: string;
   pageUrl?: string;
   source?: InquirySource;
@@ -29,6 +45,8 @@ export type CustomerInquiryRecord = {
   inquiryType?: string;
   couponCode?: string;
   adminMemo?: string;
+  isSecret?: boolean;
+  hidden?: boolean;
 };
 
 export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, string> = {

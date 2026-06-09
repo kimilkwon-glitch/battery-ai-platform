@@ -1,19 +1,24 @@
+import {
+  openBatteryTalk,
+  BATTERYTALK_OPEN_EVENT,
+  type BatteryTalkOpenDetail,
+} from "@/lib/batterytalk/batterytalk-events";
+
+export type ChatInquiryOpenDetail = BatteryTalkOpenDetail;
 export type ChatInquiryVariant = "product" | "general";
 
-export type ChatInquiryOpenDetail = {
-  batteryCode?: string;
-  returnOption?: string;
-  vehicle?: string;
-  variant?: ChatInquiryVariant;
-};
-
-export const CHAT_INQUIRY_OPEN_EVENT = "bm-open-chat-inquiry";
+export const CHAT_INQUIRY_OPEN_EVENT = BATTERYTALK_OPEN_EVENT;
 
 export function openChatInquiry(detail?: ChatInquiryOpenDetail) {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent(CHAT_INQUIRY_OPEN_EVENT, { detail }));
+  openBatteryTalk(detail);
 }
 
+export { openBatteryTalk };
+
 export function openProductInquiry(detail: { batteryCode: string; vehicle?: string }) {
-  openChatInquiry({ ...detail, variant: "product" });
+  openBatteryTalk({
+    batteryCode: detail.batteryCode,
+    vehicleName: detail.vehicle,
+    topic: "product",
+  });
 }

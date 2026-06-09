@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { adminUnauthorizedResponse, verifyAdminApiRequest } from "@/lib/admin/adminApiAuth";
 import {
   inquiryGetById,
+  inquirySetHidden,
   inquiryUpdateMemo,
   inquiryUpdateStatus,
 } from "@/lib/inquiry/inquiry-store";
@@ -33,16 +34,16 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
   }
 
   const { id } = await ctx.params;
-  let body: { status?: InquiryStatus; adminMemo?: string };
+  let body: { status?: InquiryStatus; adminMemo?: string; hidden?: boolean };
   try {
-    body = (await request.json()) as { status?: InquiryStatus; adminMemo?: string };
+    body = (await request.json()) as { status?: InquiryStatus; adminMemo?: string; hidden?: boolean };
   } catch {
     return NextResponse.json({ ok: false, message: "요청 형식이 올바르지 않습니다." }, { status: 400 });
   }
 
   try {
-    if (body.status) {
-      const item = await inquiryUpdateStatus(id, body.status);
+    if (body.hidden !== undefined) {
+      const item = await inquirySetHidden(id, body.hidden);
       if (!item) {
         return NextResponse.json({ ok: false, message: "문의를 찾을 수 없습니다." }, { status: 404 });
       }
@@ -50,6 +51,17 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
     }
     if (body.adminMemo !== undefined) {
       const item = await inquiryUpdateMemo(id, body.adminMemo);
+      if (!item) {
+        return NextResponse.json({ ok: false, message: "문의를 찾을 수 없습니다." }, { status: 404 });
+      }
+      if (body.status) {
+        const withStatus = await inquiryUpdateStatus(id, body.status);
+        return NextResponse.json({ ok: true, item: withStatus ?? item });
+      }
+      return NextResponse.json({ ok: true, item });
+    }
+    if (body.status) {
+      const item = await inquiryUpdateStatus(id, body.status);
       if (!item) {
         return NextResponse.json({ ok: false, message: "문의를 찾을 수 없습니다." }, { status: 404 });
       }

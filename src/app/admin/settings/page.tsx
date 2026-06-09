@@ -1,3 +1,4 @@
+import { AdminConsultationSettingsCard } from "@/components/admin/AdminConsultationSettingsCard";
 import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +33,7 @@ export default function AdminSettingsPage() {
             <p className="mt-2 text-slate-500">다중 운영자·RBAC·감사 로그는 추후 확장 예정</p>
           </CardContent>
         </Card>
+        <AdminConsultationSettingsCard />
         <Card>
           <CardHeader>
             <CardTitle>데이터 저장</CardTitle>

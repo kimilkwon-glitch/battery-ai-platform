@@ -139,9 +139,17 @@ export function CommerceOrderLookupResult({
       </section>
 
       <div className="flex flex-wrap gap-2">
+        {["completed", "payment_completed", "shipping"].includes(lookup.orderStatus) ? (
+          <Link
+            href={`/reviews/write?orderNumber=${encodeURIComponent(lookup.orderNumber)}&battery=${encodeURIComponent(lookup.batteryCode)}`}
+            className={`${bm.btnNavy} text-xs no-underline`}
+          >
+            후기 작성
+          </Link>
+        ) : null}
         <Link
           href={COMMERCE_ORDER_LOOKUP_CTAS.customerHub.href}
-          className={`${bm.btnNavy} text-xs no-underline`}
+          className={`${bm.btnTertiary} text-xs no-underline`}
         >
           {COMMERCE_ORDER_LOOKUP_CTAS.customerHub.label}
         </Link>

@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   try {
     const records = await inquiryList({
       batteryCode,
-      source: "product_detail",
+      productQnaOnly: true,
       limit: 50,
     });
     const items = records.map(toProductQnaPublicItem);

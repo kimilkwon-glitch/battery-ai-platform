@@ -78,5 +78,15 @@ async function runMigration(): Promise<void> {
       ON customer_reviews (status, pinned DESC, sort_order DESC, created_at DESC)
   `;
 
+  await sql`ALTER TABLE customer_reviews ADD COLUMN IF NOT EXISTS order_id TEXT`;
+  await sql`ALTER TABLE customer_reviews ADD COLUMN IF NOT EXISTS user_id TEXT`;
+  await sql`ALTER TABLE customer_reviews ADD COLUMN IF NOT EXISTS review_source TEXT NOT NULL DEFAULT 'admin_import'`;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_customer_reviews_order_id
+      ON customer_reviews (order_id)
+      WHERE order_id IS NOT NULL
+  `;
+
   await seedDefaultCmsContent();
 }

@@ -18,7 +18,9 @@ import {
 const SOURCE_LABELS: Record<string, string> = {
   support: "고객센터",
   chat: "채팅",
-  product_detail: "제품상세",
+  batterytalk: "배터리톡",
+  product_detail: "제품상세(레거시)",
+  product_qna: "상품Q&A",
 };
 
 const CATEGORY_CHIPS = [

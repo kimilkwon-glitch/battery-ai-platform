@@ -1,0 +1,74 @@
+.batterytalk-floating__dot {
+  animation: batterytalk-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes batterytalk-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 767px) {
+  body:has([data-battery-detail-hub][data-sticky-visible="true"]) .batterytalk-floating {
+    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  body:has([data-battery-detail-hub]) .batterytalk-floating {
+    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  body:has([data-page="checkout"]) .batterytalk-floating {
+    display: none;
+  }
+}
+
+.battery-product-reviews__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgb(226 232 240);
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 55%, #ecfeff 100%);
+}
+
+.battery-product-reviews__stars {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.battery-product-qna__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.battery-product-qna__stat {
+  rounded: 9999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.battery-product-qna__secret-badge {
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+}

@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { MessageSquare, Star } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { BatteryDetailBodyImages } from "@/components/battery/BatteryDetailBodyImages";
 import { BatteryProductQnaPanel } from "@/components/battery/BatteryProductQnaPanel";
+import { BatteryProductReviewsPanel } from "@/components/battery/BatteryProductReviewsPanel";
 import { getBattery } from "@/lib/platform-data";
 
 const TABS = [
@@ -26,7 +26,6 @@ export function BatteryDetailProductTabs({ code }: Props) {
   const [tab, setTab] = useState<TabId>("detail");
   const reduceMotion = useReducedMotion();
   const catalogBattery = getBattery(code);
-  const reviewsHref = `/reviews?battery=${encodeURIComponent(code)}`;
 
   const scrollToPanel = useCallback((panelId: string) => {
     if (typeof window === "undefined") return;
@@ -123,18 +122,7 @@ export function BatteryDetailProductTabs({ code }: Props) {
               exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
               transition={{ duration: 0.22, ease: panelEase }}
             >
-              <div className="battery-detail-reviews-panel__empty">
-                <span className="battery-detail-reviews-panel__icon" aria-hidden>
-                  <Star className="size-6" strokeWidth={2} />
-                </span>
-                <p className="battery-detail-reviews-panel__title">아직 등록된 리뷰가 없습니다</p>
-                <p className="battery-detail-reviews-panel__desc">
-                  교체 후기를 남겨 주시면 다른 고객의 규격 선택에 도움이 됩니다.
-                </p>
-                <Link href={reviewsHref} className="battery-detail-reviews-panel__cta">
-                  리뷰 페이지 보기
-                </Link>
-              </div>
+              <BatteryProductReviewsPanel batteryCode={code} />
             </motion.div>
           ) : null}
 

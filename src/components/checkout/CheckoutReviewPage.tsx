@@ -8,6 +8,7 @@ import {
   CheckoutPaymentSection,
   CheckoutSecurityNotice,
 } from "@/components/checkout/CheckoutPaymentSection";
+import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
 import {
   PaymentPreparingButton,
   PaymentPreparingNotice,
@@ -270,6 +271,15 @@ export function CheckoutReviewPage() {
               주문 내용을 확인한 뒤 결제를 진행해 주세요.
             </p>
           </section>
+
+          <PaymentPreparingNotice compact />
+
+          <CommercePrePaymentNotice
+            totalAmount={session.estimatedTotal}
+            fulfillmentMethod={session.fulfillment.method}
+            usedBatteryReturn={session.usedBatteryReturn}
+            items={session.items}
+          />
 
           <section className="checkout-card space-y-3">
             <h2 className="checkout-card__title">주문 상품</h2>

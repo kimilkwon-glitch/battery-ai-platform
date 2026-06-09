@@ -34,6 +34,9 @@ type ReviewRow = {
   pinned: boolean;
   sort_order: number;
   show_on_main: boolean;
+  order_id: string | null;
+  user_id: string | null;
+  review_source: string | null;
   starts_at: string | null;
   ends_at: string | null;
   created_at: string;
@@ -64,6 +67,9 @@ function rowToRecord(row: ReviewRow): CustomerReviewRecord {
     pinned: row.pinned,
     sortOrder: row.sort_order,
     showOnMain: row.show_on_main,
+    orderId: row.order_id ?? null,
+    userId: row.user_id ?? null,
+    reviewSource: (row.review_source as CustomerReviewRecord["reviewSource"]) ?? "admin_import",
     startsAt: row.starts_at ? new Date(row.starts_at).toISOString() : null,
     endsAt: row.ends_at ? new Date(row.ends_at).toISOString() : null,
     createdAt: new Date(row.created_at).toISOString(),
@@ -166,7 +172,8 @@ export async function createCustomerReview(
       id, author_name, vehicle_name, branch_name, service_type, battery_code,
       rating, content, summary, image_url, images_json, badges_json, home_badges_json,
       work_info_json, operator_reply, operator_summary, product_href, status,
-      featured, pinned, sort_order, show_on_main, starts_at, ends_at, created_at, updated_at
+      featured, pinned, sort_order, show_on_main, order_id, user_id, review_source,
+      starts_at, ends_at, created_at, updated_at
     ) VALUES (
       ${id}, ${input.authorName}, ${input.vehicleName ?? null}, ${input.branchName ?? null},
       ${input.serviceType ?? null}, ${input.batteryCode ?? null}, ${input.rating ?? 5},
@@ -178,7 +185,9 @@ export async function createCustomerReview(
       ${input.operatorReply ?? null}, ${input.operatorSummary ?? null},
       ${input.productHref ?? null}, ${input.status ?? "inactive"},
       ${input.featured ?? false}, ${input.pinned ?? false}, ${input.sortOrder ?? 0},
-      ${input.showOnMain ?? false}, ${input.startsAt ?? null}::timestamptz,
+      ${input.showOnMain ?? false}, ${input.orderId ?? null}, ${input.userId ?? null},
+      ${input.reviewSource ?? "own_store"},
+      ${input.startsAt ?? null}::timestamptz,
       ${input.endsAt ?? null}::timestamptz, ${now}::timestamptz, ${now}::timestamptz
     )
   `;
@@ -224,6 +233,15 @@ export async function updateCustomerReview(
     WHERE id = ${id}
   `;
   return getCustomerReviewById(id);
+}
+
+export async function reviewExistsForOrder(orderId: string): Promise<boolean> {
+  await ensureDb();
+  const sql = getSql();
+  const rows = (await sql`
+    SELECT id FROM customer_reviews WHERE order_id = ${orderId} LIMIT 1
+  `) as { id: string }[];
+  return rows.length > 0;
 }
 
 export async function toggleCustomerReviewStatus(id: string): Promise<CustomerReviewRecord | null> {

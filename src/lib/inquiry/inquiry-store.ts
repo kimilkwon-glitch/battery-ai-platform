@@ -6,6 +6,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { filterAdminTestInquiries } from "@/lib/admin/admin-test-data-filter";
 import {
+  isProductQnaSource,
   normalizeInquiryCategory,
   type CustomerInquiryRecord,
   type InquiryCategory,
@@ -73,14 +74,19 @@ export type InquiryCreateInput = {
   name: string;
   contact: string;
   vehicle?: string;
+  region?: string;
   message: string;
+  title?: string;
   batteryCode?: string;
+  productCode?: string;
+  productName?: string;
   returnOption?: string;
   pageUrl?: string;
   source?: InquirySource;
   category?: InquiryCategory;
   inquiryType?: string;
   couponCode?: string;
+  isSecret?: boolean;
 };
 
 export type InquiryListFilters = {
@@ -88,6 +94,8 @@ export type InquiryListFilters = {
   category?: InquiryCategory | "all" | null;
   batteryCode?: string | null;
   source?: InquirySource | null;
+  /** true: 상품 Q&A만, false: 상품 Q&A 제외(기본 전체 문의) */
+  productQnaOnly?: boolean;
   q?: string | null;
   limit?: number;
 };
@@ -104,14 +112,20 @@ export async function inquiryCreate(input: InquiryCreateInput): Promise<Customer
     name: input.name.trim() || "고객",
     contact: input.contact.trim(),
     vehicle: input.vehicle?.trim() || undefined,
+    region: input.region?.trim() || undefined,
     message: input.message.trim(),
+    title: input.title?.trim() || undefined,
     batteryCode: input.batteryCode?.trim() || undefined,
+    productCode: input.productCode?.trim() || input.batteryCode?.trim() || undefined,
+    productName: input.productName?.trim() || undefined,
     returnOption: input.returnOption?.trim() || undefined,
     pageUrl: input.pageUrl?.trim() || undefined,
     source: input.source,
     inquiryType: input.inquiryType?.trim() || undefined,
     couponCode: input.couponCode?.trim() || undefined,
     adminMemo: "",
+    isSecret: input.isSecret === true,
+    hidden: false,
   };
   const records = await loadRecords();
   records.unshift(record);
@@ -134,6 +148,11 @@ export async function inquiryList(
   const batteryCode = filters.batteryCode?.trim().toUpperCase();
   if (batteryCode) {
     records = records.filter((r) => r.batteryCode?.trim().toUpperCase() === batteryCode);
+  }
+  if (filters.productQnaOnly === true) {
+    records = records.filter((r) => isProductQnaSource(r.source) && !r.hidden);
+  } else if (filters.productQnaOnly === false) {
+    records = records.filter((r) => !isProductQnaSource(r.source));
   }
   if (filters.source) {
     records = records.filter((r) => r.source === filters.source);
@@ -194,6 +213,24 @@ export async function inquiryUpdateMemo(
   const next: CustomerInquiryRecord = {
     ...prev,
     adminMemo: adminMemo.trim(),
+    updatedAt: new Date().toISOString(),
+  };
+  records[idx] = next;
+  await saveRecords(records);
+  return next;
+}
+
+export async function inquirySetHidden(
+  id: string,
+  hidden: boolean,
+): Promise<CustomerInquiryRecord | null> {
+  const records = await loadRecords();
+  const idx = records.findIndex((r) => r.id === id);
+  if (idx < 0) return null;
+  const prev = records[idx]!;
+  const next: CustomerInquiryRecord = {
+    ...prev,
+    hidden,
     updatedAt: new Date().toISOString(),
   };
   records[idx] = next;

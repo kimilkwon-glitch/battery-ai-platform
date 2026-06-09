@@ -12,6 +12,8 @@ import { CheckoutSecurityNotice } from "@/components/checkout/CheckoutPaymentSec
 import { CheckoutStoreSection } from "@/components/checkout/CheckoutStoreSection";
 import { CheckoutVehicleSection } from "@/components/checkout/CheckoutVehicleSection";
 import { CheckoutVisitAddressSection } from "@/components/checkout/CheckoutVisitAddressSection";
+import { BatteryTalkInlineCard } from "@/components/batterytalk/BatteryTalkInlineCard";
+import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
 import {
   PaymentPreparingButton,
   PaymentPreparingNotice,
@@ -497,6 +499,20 @@ export function CheckoutOrderPage() {
           </section>
 
           <PaymentPreparingNotice />
+
+          <BatteryTalkInlineCard
+            preset={{
+              topic: "order",
+              orderSummary: items.map((i) => i.batterySpec ?? i.productName).join(", "),
+            }}
+          />
+
+          <CommercePrePaymentNotice
+            totalAmount={displayTotal}
+            fulfillmentMethod={fulfillment.method}
+            usedBatteryReturn={usedBattery}
+            items={items}
+          />
 
           <CheckoutOrderSummary
             items={items}

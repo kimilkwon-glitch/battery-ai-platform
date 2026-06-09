@@ -53,6 +53,14 @@ function OrderCard({ order }: { order: MallOrderMineListItemExtended }) {
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
+        {["completed", "payment_completed", "shipping"].includes(order.orderStatus) ? (
+          <Link
+            href={`/reviews/write?orderId=${encodeURIComponent(order.orderId)}&battery=${encodeURIComponent(order.batteryCode)}`}
+            className="bm-mypage-btn-primary no-underline text-xs"
+          >
+            후기 작성
+          </Link>
+        ) : null}
         <Link
           href={`${HUB_SUPPORT}?tab=inquiry`}
           className="bm-mypage-btn-secondary no-underline text-xs"

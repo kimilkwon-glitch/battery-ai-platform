@@ -9,7 +9,7 @@ import type { ChatInquiryOpenDetail } from "@/lib/chat-inquiry-events";
 import { bm } from "@/lib/design-tokens";
 
 function isProductInquiry(preset?: ChatInquiryOpenDetail): boolean {
-  return preset?.variant === "product" || Boolean(preset?.batteryCode);
+  return preset?.topic === "product" || Boolean(preset?.batteryCode);
 }
 
 export function ChatInquiryPanel({
@@ -24,15 +24,15 @@ export function ChatInquiryPanel({
   const productMode = isProductInquiry(preset);
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
-  const [vehicle, setVehicle] = useState(preset?.vehicle ?? "");
+  const [vehicle, setVehicle] = useState(preset?.vehicleName ?? "");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     setSubmitted(false);
-    setVehicle(preset?.vehicle ?? "");
-  }, [open, preset?.vehicle]);
+    setVehicle(preset?.vehicleName ?? "");
+  }, [open, preset?.vehicleName]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

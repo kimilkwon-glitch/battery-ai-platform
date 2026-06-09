@@ -1,6 +1,8 @@
 import type { ReviewBadgeId } from "@/lib/reviews-mock-data";
 
-export type CustomerReviewStatus = "active" | "inactive";
+export type CustomerReviewStatus = "active" | "inactive" | "pending" | "hidden";
+
+export type CustomerReviewSource = "own_store" | "naver_pay" | "admin_import";
 
 export type CustomerReviewWorkInfo = {
   placeLine: string;
@@ -32,6 +34,9 @@ export type CustomerReviewRecord = {
   pinned: boolean;
   sortOrder: number;
   showOnMain: boolean;
+  orderId: string | null;
+  userId: string | null;
+  reviewSource: CustomerReviewSource;
   startsAt: string | null;
   endsAt: string | null;
   createdAt: string;
