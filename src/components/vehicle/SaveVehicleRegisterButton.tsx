@@ -1,9 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { CustomerActionModal } from "@/components/common/CustomerActionModal";
 import { isCustomerLoggedIn } from "@/lib/customer-auth-session";
+import {
+  applySignupVehicleSelection,
+  isSignupVehicleSelectActive,
+  isSignupVehicleSelectMode,
+  SIGNUP_VEHICLE_SELECT_MODE,
+} from "@/lib/signup-vehicle-draft";
 import {
   buildLoginRedirectUrl,
   buildSignupRedirectUrl,
@@ -26,6 +33,8 @@ export type SaveVehicleRegisterButtonProps = {
   className?: string;
   label?: string;
   source?: "vehicleDetail" | "vehicleSearch" | "vehicleBrowse";
+  /** 회원가입 중 차량 선택 흐름 — 로그인 요구 없이 가입 폼으로 복귀 */
+  signupVehicleSelect?: boolean;
 };
 
 export function SaveVehicleRegisterButton({
@@ -39,10 +48,18 @@ export function SaveVehicleRegisterButton({
   className,
   label = "내 차량으로 정보등록",
   source = "vehicleDetail",
+  signupVehicleSelect = false,
 }: SaveVehicleRegisterButtonProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [modal, setModal] = useState<ModalKind>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const inSignupVehicleSelect =
+    signupVehicleSelect ||
+    isSignupVehicleSelectMode(searchParams.get("mode")) ||
+    isSignupVehicleSelectActive();
 
   const persistVehicle = useCallback(() => {
     setSaving(true);
@@ -66,8 +83,25 @@ export function SaveVehicleRegisterButton({
     return false;
   }, [slug, displayName, yearRange, fuelHint, recommendedBattery, batteryOptions, source]);
 
+  const returnToSignupWithVehicle = useCallback(() => {
+    setSaving(true);
+    applySignupVehicleSelection({
+      slug,
+      displayName,
+      yearRange,
+      fuelHint,
+      recommendedBattery,
+    });
+    setSaving(false);
+    router.push("/signup?vehicle_selected=1");
+  }, [slug, displayName, yearRange, fuelHint, recommendedBattery, router]);
+
   const handleClick = () => {
     if (saving) return;
+    if (inSignupVehicleSelect && !isCustomerLoggedIn()) {
+      returnToSignupWithVehicle();
+      return;
+    }
     if (!isCustomerLoggedIn()) {
       setModal("guest");
       return;
@@ -83,6 +117,7 @@ export function SaveVehicleRegisterButton({
 
   const loginHref = buildLoginRedirectUrl(slug);
   const signupHref = buildSignupRedirectUrl(slug);
+  const buttonLabel = inSignupVehicleSelect && !isCustomerLoggedIn() ? "이 차량 선택" : label;
 
   return (
     <>
@@ -91,9 +126,10 @@ export function SaveVehicleRegisterButton({
         onClick={handleClick}
         disabled={saving}
         className={className ?? `${bm.btnSecondary} text-sm font-black`}
-        data-action="save-vehicle"
+        data-action={inSignupVehicleSelect ? "signup-vehicle-select" : "save-vehicle"}
+        data-signup-mode={inSignupVehicleSelect ? SIGNUP_VEHICLE_SELECT_MODE : undefined}
       >
-        {saving ? "저장 중…" : label}
+        {saving ? "저장 중…" : buttonLabel}
       </button>
 
       <CustomerActionModal

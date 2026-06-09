@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronDown, Search } from "lucide-react";
 import clsx from "clsx";
 import { openChatInquiry } from "@/lib/chat-inquiry-events";
-import { addInquiry } from "@/lib/inquiry-storage";
+import { submitInquiry } from "@/lib/inquiry-storage";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { CONTACT } from "@/lib/contact-info";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
@@ -14,7 +14,7 @@ import {
   COMMERCE_ORDER_LOOKUP_PAGE,
   ORDER_REQUEST_LOOKUP_PAGE,
 } from "@/lib/customer-center-routes";
-import { SUPPORT_NOTICES } from "@/lib/support-notices-data";
+import type { SupportNotice } from "@/lib/support-notices-data";
 import {
   SUPPORT_FAQ_ITEMS,
   type FaqCategory,
@@ -24,11 +24,35 @@ import {
   SUPPORT_HUB_CATEGORIES,
   SUPPORT_HUB_FAQ_INITIAL_LIMIT,
   SUPPORT_HUB_FAQ_QUICK_LINKS,
+  SUPPORT_HUB_MOBILE_FAQ_PRIORITY,
+  SUPPORT_HUB_MOBILE_QUICK_LINKS,
+  SUPPORT_HUB_NOTICE_INITIAL_LIMIT,
   SUPPORT_HUB_PRIMARY_CTAS,
   SUPPORT_HUB_SECONDARY_CTAS,
   faqCategoryToHub,
   type SupportHubCategoryId,
+  type SupportHubCtaVariant,
 } from "@/lib/support-center-config";
+
+function supportHubCtaVariantClass(variant: SupportHubCtaVariant): string {
+  return variant === "primary"
+    ? "support-hub-v2__cta--primary"
+    : "support-hub-v2__cta--secondary";
+}
+
+function useViewportMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  return isMobile;
+}
 
 function useFaqInitialLimit() {
   const [limit, setLimit] = useState<number>(SUPPORT_HUB_FAQ_INITIAL_LIMIT.desktop);
@@ -45,13 +69,36 @@ function useFaqInitialLimit() {
   return limit;
 }
 
-export function SupportCenterHubV2() {
+function useNoticeLimit() {
+  const [limit, setLimit] = useState<number>(SUPPORT_HUB_NOTICE_INITIAL_LIMIT.desktop);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () =>
+      setLimit(mq.matches ? SUPPORT_HUB_NOTICE_INITIAL_LIMIT.mobile : SUPPORT_HUB_NOTICE_INITIAL_LIMIT.desktop);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  return limit;
+}
+
+type Props = {
+  notices: SupportNotice[];
+};
+
+export function SupportCenterHubV2({ notices }: Props) {
   const searchParams = useSearchParams();
+  const isMobile = useViewportMobile();
   const faqInitialLimit = useFaqInitialLimit();
+  const noticeLimit = useNoticeLimit();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<SupportHubCategoryId>("all");
   const [openFaqId, setOpenFaqId] = useState<string | null>(null);
   const [faqExpanded, setFaqExpanded] = useState(false);
+  const [inquiryExpanded, setInquiryExpanded] = useState(false);
+  const [noticesExpanded, setNoticesExpanded] = useState(false);
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
   const [inquiryForm, setInquiryForm] = useState({
     name: "",
@@ -60,11 +107,22 @@ export function SupportCenterHubV2() {
     message: "",
   });
 
+  const expandInquiryAndScroll = useCallback(() => {
+    setInquiryExpanded(true);
+    requestAnimationFrame(() => {
+      document.getElementById("support-inquiry-name")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }, []);
+
   useEffect(() => {
     if (searchParams.get("tab") === "inquiry") {
-      document.getElementById("support-inquiry")?.scrollIntoView({ behavior: "smooth" });
+      if (isMobile) {
+        expandInquiryAndScroll();
+      } else {
+        document.getElementById("support-inquiry")?.scrollIntoView({ behavior: "smooth" });
+      }
     }
-  }, [searchParams]);
+  }, [searchParams, isMobile, expandInquiryAndScroll]);
 
   const q = query.trim().toLowerCase();
 
@@ -85,13 +143,39 @@ export function SupportCenterHubV2() {
     });
   }, [q, category]);
 
-  const visibleFaq = faqExpanded ? filteredFaq : filteredFaq.slice(0, faqInitialLimit);
-  const hiddenFaqCount = Math.max(0, filteredFaq.length - faqInitialLimit);
-  const recentNotices = SUPPORT_NOTICES.slice(0, 4);
+  const useMobileFaqPriority = isMobile && !q && category === "all" && !faqExpanded;
 
-  const submitInquiry = (e: React.FormEvent) => {
+  const priorityFaq = useMemo(() => {
+    if (!useMobileFaqPriority) return [];
+    const byId = new Map(filteredFaq.map((item) => [item.id, item]));
+    return SUPPORT_HUB_MOBILE_FAQ_PRIORITY.map((id) => byId.get(id)).filter(
+      (item): item is (typeof SUPPORT_FAQ_ITEMS)[number] => Boolean(item),
+    );
+  }, [filteredFaq, useMobileFaqPriority]);
+
+  const visibleFaq = faqExpanded
+    ? filteredFaq
+    : useMobileFaqPriority
+      ? priorityFaq
+      : filteredFaq.slice(0, faqInitialLimit);
+
+  const hiddenFaqCount = faqExpanded
+    ? 0
+    : useMobileFaqPriority
+      ? Math.max(0, filteredFaq.length - priorityFaq.length)
+      : Math.max(0, filteredFaq.length - faqInitialLimit);
+
+  const recentNotices = notices.slice(0, noticeLimit);
+  const mobileNotices = noticesExpanded ? notices : notices.slice(0, noticeLimit);
+  const hiddenNoticeCount = Math.max(0, notices.length - noticeLimit);
+
+  const heroCtas = isMobile
+    ? [...SUPPORT_HUB_PRIMARY_CTAS].reverse()
+    : SUPPORT_HUB_PRIMARY_CTAS;
+
+  const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInquiry({
+    const result = await submitInquiry({
       name: inquiryForm.name.trim() || "고객",
       contact: inquiryForm.contact.trim(),
       vehicle: inquiryForm.vehicle.trim() || undefined,
@@ -99,34 +183,47 @@ export function SupportCenterHubV2() {
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
       source: "support",
       inquiryType: "일반문의",
+      category: "other",
     });
-    setInquirySubmitted(true);
+    if (result.ok) setInquirySubmitted(true);
   };
 
   const scrollToInquiry = () => {
     openChatInquiry();
-    const target =
-      typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches
-        ? document.querySelector(".support-hub-v2__inquiry--sidebar")
-        : document.getElementById("support-inquiry");
-    target?.scrollIntoView({ behavior: "smooth" });
+    if (isMobile) {
+      expandInquiryAndScroll();
+      return;
+    }
+    document.querySelector(".support-hub-v2__inquiry--sidebar")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="support-hub-v2 mx-auto max-w-6xl space-y-6 lg:space-y-8" data-page="support-center-v2">
-      <header className="support-hub-v2__hero text-center sm:text-left">
-        <p className="support-hub-v2__hero-kicker">Battery Manager Support</p>
+      <header
+        className={clsx(
+          "support-hub-v2__hero text-center sm:text-left",
+          isMobile && "support-hub-v2__hero--compact",
+        )}
+      >
+        <p className="support-hub-v2__hero-kicker hidden sm:block">Battery Manager Support</p>
         <h1 className="support-hub-v2__hero-title">고객센터</h1>
         <p className="support-hub-v2__hero-desc">
-          FAQ 검색, 주문 조회, 상담 문의를 한곳에서 이용하세요.
+          {isMobile
+            ? "주문 조회, 상담 문의, FAQ를 한곳에서 확인하세요."
+            : "FAQ 검색, 주문 조회, 상담 문의를 한곳에서 이용하세요."}
         </p>
-        <div className="support-hub-v2__cta-row mt-5 flex flex-col gap-2 sm:flex-row">
-          {SUPPORT_HUB_PRIMARY_CTAS.map((cta) =>
+        <div
+          className={clsx(
+            "support-hub-v2__cta-row mt-5 flex gap-2",
+            isMobile ? "support-hub-v2__cta-row--compact flex-row" : "flex-col sm:flex-row",
+          )}
+        >
+          {heroCtas.map((cta) =>
             cta.id === "consult" ? (
               <button
                 key={cta.id}
                 type="button"
-                className="support-hub-v2__cta support-hub-v2__cta--primary"
+                className={clsx("support-hub-v2__cta", supportHubCtaVariantClass(cta.variant))}
                 onClick={scrollToInquiry}
               >
                 {cta.label}
@@ -135,7 +232,7 @@ export function SupportCenterHubV2() {
               <Link
                 key={cta.id}
                 href={cta.href}
-                className="support-hub-v2__cta support-hub-v2__cta--secondary"
+                className={clsx("support-hub-v2__cta", supportHubCtaVariantClass(cta.variant))}
               >
                 {cta.label}
               </Link>
@@ -146,7 +243,7 @@ export function SupportCenterHubV2() {
 
       <div className="support-hub-v2__layout">
         <div className="support-hub-v2__main space-y-5">
-          <section className="support-hub-v2__search">
+          <section className={clsx("support-hub-v2__search", isMobile && "support-hub-v2__search--compact")}>
             <h2 className="support-hub-v2__section-title">무엇을 도와드릴까요?</h2>
             <label className="support-hub-v2__search-label">
               <Search className="support-hub-v2__search-icon" aria-hidden />
@@ -186,7 +283,7 @@ export function SupportCenterHubV2() {
             <div className="support-hub-v2__faq-head">
               <span className="support-hub-v2__faq-badge">자주 찾는 질문</span>
               <h2 className="support-hub-v2__section-title">자주 묻는 질문</h2>
-              <p className="support-hub-v2__faq-lead">
+              <p className="support-hub-v2__faq-lead hidden sm:block">
                 배터리 규격, 주문·배송, 반납, 장착 방식 등 자주 문의하시는 내용입니다.
               </p>
             </div>
@@ -232,7 +329,10 @@ export function SupportCenterHubV2() {
             {!faqExpanded && hiddenFaqCount > 0 ? (
               <button
                 type="button"
-                className="support-hub-v2__faq-more mt-3 w-full"
+                className={clsx(
+                  "support-hub-v2__faq-more mt-3",
+                  isMobile ? "support-hub-v2__faq-more--compact" : "w-full",
+                )}
                 onClick={() => setFaqExpanded(true)}
               >
                 자주 묻는 질문 더보기 (+{hiddenFaqCount})
@@ -241,13 +341,16 @@ export function SupportCenterHubV2() {
             {faqExpanded && filteredFaq.length > faqInitialLimit ? (
               <button
                 type="button"
-                className="support-hub-v2__faq-more mt-3 w-full"
+                className={clsx(
+                  "support-hub-v2__faq-more mt-3",
+                  isMobile ? "support-hub-v2__faq-more--compact" : "w-full",
+                )}
                 onClick={() => setFaqExpanded(false)}
               >
                 FAQ 접기
               </button>
             ) : null}
-            <div className="support-hub-v2__faq-quicklinks" aria-label="FAQ 관련 빠른 링크">
+            <div className="support-hub-v2__faq-quicklinks hidden lg:flex" aria-label="FAQ 관련 빠른 링크">
               {SUPPORT_HUB_FAQ_QUICK_LINKS.map((link) => (
                 <Link key={link.href} href={link.href} className="support-hub-v2__chip support-hub-v2__chip--link">
                   {link.label}
@@ -256,20 +359,102 @@ export function SupportCenterHubV2() {
             </div>
           </section>
 
+          <section className="support-hub-v2__quick-menu lg:hidden" aria-label="빠른 안내">
+            <h2 className="support-hub-v2__section-title">빠른 안내</h2>
+            <div className="support-hub-v2__quick-grid">
+              {SUPPORT_HUB_MOBILE_QUICK_LINKS.map((link) => (
+                <Link key={link.href} href={link.href} className="support-hub-v2__quick-btn">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section id="support-notices-mobile" className="support-hub-v2__notices-mobile lg:hidden">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="support-hub-v2__section-title">최근 안내</h2>
+            </div>
+            <ol className="support-hub-v2__notice-list support-hub-v2__notice-list--compact">
+              {mobileNotices.map((notice) => (
+                <li key={notice.id}>
+                  <Link href={`/support/notices/${notice.id}`} className="support-hub-v2__notice-row">
+                    <span className="support-hub-v2__notice-row-inner">
+                      {notice.important ? (
+                        <span className="support-hub-v2__notice-badge">중요</span>
+                      ) : null}
+                      <span className="support-hub-v2__notice-title">{notice.title}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+            {!noticesExpanded && hiddenNoticeCount > 0 ? (
+              <button
+                type="button"
+                className="support-hub-v2__faq-more support-hub-v2__faq-more--compact mt-2"
+                onClick={() => setNoticesExpanded(true)}
+              >
+                최근 안내 더보기 (+{hiddenNoticeCount})
+              </button>
+            ) : null}
+          </section>
+
           <section
             id="support-inquiry"
             className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--main scroll-mt-24 lg:hidden"
           >
-            <InquiryForm
-              inquirySubmitted={inquirySubmitted}
-              inquiryForm={inquiryForm}
-              setInquiryForm={setInquiryForm}
-              onSubmit={submitInquiry}
-            />
+            {inquiryExpanded || inquirySubmitted ? (
+              <InquiryForm
+                inquirySubmitted={inquirySubmitted}
+                inquiryForm={inquiryForm}
+                setInquiryForm={setInquiryForm}
+                onSubmit={handleInquirySubmit}
+              />
+            ) : (
+              <div className="support-hub-v2__inquiry-collapsed">
+                <h2 className="support-hub-v2__section-title text-base">상담 문의 접수</h2>
+                <p className="mt-1 text-sm text-slate-600">
+                  차량 정보나 주문 확인이 필요하시면 문의를 남겨주세요.
+                </p>
+                <p className="mt-2 text-xs font-medium text-slate-500">
+                  급하시면{" "}
+                  <a href={CONTACT.customerCenter.tel} className="font-bold text-blue-700 hover:underline">
+                    {CONTACT.customerCenter.phone}
+                  </a>
+                  으로 전화해 주세요.
+                </p>
+                <button
+                  type="button"
+                  className="support-hub-v2__cta support-hub-v2__cta--secondary support-hub-v2__inquiry-open mt-4 w-full"
+                  onClick={expandInquiryAndScroll}
+                >
+                  문의 양식 열기
+                </button>
+              </div>
+            )}
           </section>
+
+          <div className="support-hub-v2__contact-mini lg:hidden">
+            <p className="support-hub-v2__contact-mini-title">
+              고객센터{" "}
+              <a href={CONTACT.customerCenter.tel} className="hover:underline">
+                {CONTACT.customerCenter.phone}
+              </a>
+            </p>
+            <p className="support-hub-v2__contact-mini-desc">
+              차량 정보나 주문 확인이 필요하시면 문의해 주세요.
+            </p>
+            <button
+              type="button"
+              className="support-hub-v2__cta support-hub-v2__cta--primary support-hub-v2__contact-mini-cta mt-3 w-full"
+              onClick={scrollToInquiry}
+            >
+              상담 문의하기
+            </button>
+          </div>
         </div>
 
-        <aside className="support-hub-v2__sidebar space-y-3">
+        <aside className="support-hub-v2__sidebar hidden space-y-3 lg:block">
           <div className="support-hub-v2__side-card support-hub-v2__side-card--consult">
             <h3 className="support-hub-v2__side-title">상담이 필요하신가요?</h3>
             <p className="support-hub-v2__side-desc">
@@ -343,11 +528,11 @@ export function SupportCenterHubV2() {
               {recentNotices.map((notice) => (
                 <li key={notice.id}>
                   <Link href={`/support/notices/${notice.id}`} className="support-hub-v2__notice-row">
-                    {notice.important ? (
-                      <span className="support-hub-v2__notice-badge">중요</span>
-                    ) : null}
-                    <span className="min-w-0 flex-1 truncate font-semibold text-slate-900">
-                      {notice.title}
+                    <span className="support-hub-v2__notice-row-inner">
+                      {notice.important ? (
+                        <span className="support-hub-v2__notice-badge">중요</span>
+                      ) : null}
+                      <span className="support-hub-v2__notice-title">{notice.title}</span>
                     </span>
                   </Link>
                 </li>
@@ -355,18 +540,18 @@ export function SupportCenterHubV2() {
             </ol>
           </div>
 
-          <section className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--sidebar hidden scroll-mt-24 lg:block">
+          <section className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--sidebar scroll-mt-24">
             <InquiryForm
               inquirySubmitted={inquirySubmitted}
               inquiryForm={inquiryForm}
               setInquiryForm={setInquiryForm}
-              onSubmit={submitInquiry}
+              onSubmit={handleInquirySubmit}
             />
           </section>
         </aside>
       </div>
 
-      <section className="support-hub-v2__bottom-grid" aria-label="안내 바로가기">
+      <section className="support-hub-v2__bottom-grid hidden lg:grid" aria-label="안내 바로가기">
         {SUPPORT_HUB_BOTTOM_LINKS.map((link) => (
           <Link key={link.href} href={link.href} className="support-hub-v2__bottom-card">
             <span>{link.label}</span>
@@ -375,7 +560,7 @@ export function SupportCenterHubV2() {
         ))}
       </section>
 
-      <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
+      <div className="hidden flex-wrap justify-center gap-2 lg:flex lg:justify-start">
         {SUPPORT_HUB_SECONDARY_CTAS.map((cta) => (
           <Link key={cta.href} href={cta.href} className="support-hub-v2__chip support-hub-v2__chip--link">
             {cta.label}
@@ -416,6 +601,7 @@ function InquiryForm({
       ) : (
         <form className="mt-4 grid gap-3" onSubmit={onSubmit}>
           <input
+            id="support-inquiry-name"
             required
             placeholder="이름"
             className="support-hub-v2__field"

@@ -188,8 +188,8 @@ export const BM_TOTAL_OPERATOR_FUEL_PRIMARY = {
   "grandeur-hg": {
     "가솔린": "80L",
     "LPG": "80L",
-    "디젤": "90L",
-    "하이브리드": "DIN74L"
+    "디젤": "DIN74L",
+    "하이브리드": "DIN72R"
   },
   "carnival-vq": {
     "디젤": "100L",

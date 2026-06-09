@@ -1,0 +1,331 @@
+/**
+ * 배터리매니저 고객 화면 2차 디자인 고도화 — 부분 시각 위계 조정
+ * 구조·슬라이드·로직 변경 없음. 원복 시 이 파일 import 제거로 되돌릴 수 있음.
+ */
+
+/* ── 1. 섹션별 시선 유도 (미세 대비) ── */
+
+[data-home-section="hero-top"] .home-hero-stack__search {
+  position: relative;
+  border-radius: 1rem;
+  padding: 0.125rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.06) 0%, rgba(255, 255, 255, 0.9) 55%);
+  box-shadow: 0 6px 22px rgba(37, 99, 235, 0.07);
+}
+
+.home-main-section--benefits {
+  margin-top: 0.25rem;
+  padding: 0.75rem 0 0.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 72%);
+}
+
+.home-main-brand-region {
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 28%, #ffffff 100%);
+}
+
+[data-home-section="brand-lineup-pair"] .home-brand-lineup__header-inner {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  padding-bottom: 0.625rem;
+}
+
+[data-home-section="replacement-stories"] {
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 640px) {
+  [data-home-section="replacement-stories"] {
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* ── 2. 홈 상품 카드 시각 위계 ── */
+
+.home-spec-card-brand {
+  margin: 0.375rem 0 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.home-spec-card .home-spec-code-title {
+  font-size: 1.375rem;
+}
+
+@media (min-width: 640px) {
+  .home-spec-card .home-spec-code-title {
+    font-size: 1.4375rem;
+  }
+}
+
+.home-spec-card-image {
+  height: 10rem;
+  min-height: 10rem;
+  max-height: 10rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+@media (min-width: 640px) {
+  .home-spec-card-image {
+    height: 10.25rem;
+    min-height: 10.25rem;
+    max-height: 10.25rem;
+  }
+}
+
+.home-spec-card-prices {
+  gap: 0.4375rem;
+  margin-top: 0.375rem;
+}
+
+.home-spec-card-price {
+  padding: 0.4375rem 0.5rem;
+}
+
+.home-spec-card-price__label {
+  font-size: 0.6875rem;
+}
+
+.home-spec-card-price__amount {
+  margin-top: 0.1875rem;
+  font-size: 0.8125rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+@media (min-width: 640px) {
+  .home-spec-card-price__amount {
+    font-size: 0.875rem;
+  }
+}
+
+.home-spec-card-price--internet .home-spec-card-price__amount {
+  color: #1d4ed8;
+}
+
+.home-spec-card-price--onsite .home-spec-card-price__amount {
+  color: #0f172a;
+}
+
+.home-spec-card.bm-card-unified {
+  height: 100%;
+}
+
+.home-spec-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home-spec-card-meta {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home-spec-card-title-row {
+  min-height: 2rem;
+}
+
+.home-spec-card .home-spec-code-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.home-spec-card-vehicles {
+  min-height: 2.5rem;
+}
+
+.home-spec-card-vehicles__list {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.home-spec-card-prices {
+  min-height: 4.75rem;
+}
+
+.home-spec-card-actions {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.home-spec-card-actions--compact {
+  gap: 0.625rem;
+}
+
+.home-spec-card-actions__text-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 1.5rem;
+}
+
+.home-spec-card-text-link {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #64748b;
+  text-decoration: none;
+}
+
+.home-spec-card-text-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.home-spec-card-text-link__sep {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.home-spec-card-action--order {
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.22) !important;
+}
+
+.home-brand-lineup .home-spec-card-action--order {
+  min-height: 2.375rem !important;
+  font-size: 0.8125rem !important;
+}
+
+.home-spec-card-review-link {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.75rem;
+  padding: 0 0.375rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #64748b;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.home-spec-card-review-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.home-spec-card-actions__sub-row .home-spec-card-action--spec {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 모바일 가로 넘김 카드 — 존재감 미세 강화 */
+@media (max-width: 639px) {
+  .home-brand-lineup__slide > .home-spec-card {
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.07);
+  }
+
+  .home-spec-card-body {
+    padding-bottom: 0.6875rem;
+  }
+
+  .home-spec-card-title-row {
+    margin-top: 0.4375rem;
+    margin-bottom: 0.4375rem;
+  }
+}
+
+/* ── 3. 리뷰 섹션 압축 ── */
+
+.home-replacement-stories__layout {
+  gap: 0.875rem;
+  padding: 1rem 0.875rem 1rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+@media (min-width: 1024px) {
+  .home-replacement-stories__layout {
+    gap: 1rem 1.5rem;
+    padding: 1.25rem 1.25rem 1.375rem;
+  }
+
+  .home-replacement-stories__intro-inner {
+    padding: 1.375rem 1.25rem 1.5rem;
+  }
+}
+
+.home-replacement-stories__desc {
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.home-replacement-stories__pills {
+  margin-top: 0.625rem;
+}
+
+@media (max-width: 639px) {
+  .home-replacement-stories__pills {
+    display: none;
+  }
+
+  .home-replacement-stories__intro-inner {
+    padding: 1.125rem 1rem 1.125rem;
+  }
+}
+
+.home-trust-story-card__inner {
+  gap: 0.625rem;
+  padding: 1rem 0.875rem 0.875rem;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.home-trust-story-card__quote {
+  font-weight: 600;
+}
+
+@media (max-width: 639px) {
+  .home-trust-story-card__quote {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .home-trust-story-card__badges {
+    display: none;
+  }
+
+  .home-trust-story-card__work-line--services,
+  .home-trust-story-card__work-line:not(.home-trust-story-card__work-line--place):not(
+      .home-trust-story-card__work-line--battery
+    ) {
+    display: none;
+  }
+
+  .home-trust-story-card__work {
+    padding: 0.5rem 0.625rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-trust-story-card__inner {
+    padding: 0.9375rem 0.875rem 0.8125rem;
+  }
+
+  .home-trust-story-card__work {
+    padding: 0.625rem 0.75rem;
+  }
+}

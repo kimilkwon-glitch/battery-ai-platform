@@ -1,9 +1,8 @@
-import { SearchConditionChips } from "@/components/platform/search-ux/SearchConditionChips";
-import { VehicleCustomerBatteryShop } from "@/components/vehicle/VehicleCustomerBatteryShop";
+import { VehicleFuelBatterySection } from "@/components/vehicle/VehicleFuelBatterySection";
 import { VehicleSearchCatalogFooter } from "@/components/vehicle/VehicleSearchCatalogFooter";
 import { VehicleSearchCompactHeader } from "@/components/vehicle/VehicleSearchCompactHeader";
 import { customerFacingRepresentativeBattery } from "@/lib/vehicle-detail-recommendation";
-import { buildVehicleFuelChips } from "@/lib/vehicle-fuel-chips";
+import { resolveDefaultSelectedFuel } from "@/lib/vehicle-fuel-selection";
 import { resolveCustomerCatalogPrimaryBattery } from "@/lib/vehicle-battery-match";
 import type { SearchUxChip } from "@/lib/search/search-ux-presentation";
 import { getVehicleBatteryPageData } from "@/lib/vehicleBattery";
@@ -31,14 +30,12 @@ export function VehicleSearchCatalogSection({
     batteryPage.profile?.title ?? batteryPage.profile?.subtitle ?? slug;
   const yearRange = batteryPage.profile?.yearRange ?? "";
   const activeFuel = highlightFuel?.trim() || null;
+  const selectedFuel = resolveDefaultSelectedFuel(slug, batteryPage.fuelGroups, activeFuel);
   const recommendedSpec =
     customerFacingRepresentativeBattery(slug, batteryPage.fuelGroups) ||
-    (activeFuel ? resolveCustomerCatalogPrimaryBattery(slug, activeFuel) : null) ||
+    (selectedFuel ? resolveCustomerCatalogPrimaryBattery(slug, selectedFuel) : null) ||
     resolveCustomerCatalogPrimaryBattery(slug) ||
     null;
-
-  const fuelChips = buildVehicleFuelChips(slug, batteryPage.fuelGroups, activeFuel, yearChipId);
-  const chips = [...extraChips.filter((c) => c.variant === "year"), ...fuelChips];
 
   return (
     <div
@@ -49,18 +46,18 @@ export function VehicleSearchCatalogSection({
       <VehicleSearchCompactHeader
         vehicleTitle={vehicleTitle}
         yearRange={yearRange}
-        highlightFuel={activeFuel}
+        highlightFuel={selectedFuel}
         recommendedSpec={recommendedSpec}
         displayQuery={displayQuery}
         intentLabel={intentLabel}
       />
-      {chips.length > 0 ? <SearchConditionChips chips={chips} /> : null}
-      <VehicleCustomerBatteryShop
+      <VehicleFuelBatterySection
         slug={slug}
         vehicleTitle={vehicleTitle}
         fuelGroups={batteryPage.fuelGroups}
-        highlightFuel={activeFuel}
+        initialFuel={selectedFuel}
         yearRange={yearRange}
+        yearChipId={yearChipId}
       />
       <VehicleSearchCatalogFooter />
     </div>

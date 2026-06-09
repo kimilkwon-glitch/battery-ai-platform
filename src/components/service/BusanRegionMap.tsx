@@ -17,7 +17,12 @@ import {
   type BusanGeoRegion,
   type BusanHangjeongProps,
 } from "@/lib/busan-geo-region";
-import { BUSAN_OUTBOUND_FEE_NOTE } from "@/lib/busan-service-hub-data";
+import {
+  BUSAN_MOBILE_REGION_LINES,
+  BUSAN_MOBILE_SERVICE_COPY,
+  BUSAN_OUTBOUND_FEE_NOTE,
+  BUSAN_STORES,
+} from "@/lib/busan-service-hub-data";
 import {
   BUSAN_MAP_DISCLAIMER,
   BUSAN_MAP_HEIGHT,
@@ -28,6 +33,7 @@ import {
   pinsForStores,
 } from "@/lib/busan-map-palette";
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
+import { Navigation, Phone } from "lucide-react";
 
 const GEOJSON_URL = "/assets/maps/busan-hangjeongdong.geojson";
 
@@ -150,7 +156,17 @@ function pathStyle(
   };
 }
 
-function MapLegend() {
+function MapLegend({ compact = false }: { compact?: boolean }) {
+  if (compact) {
+    return (
+      <div className="busan-map-legend-chips" aria-label="지도 범례">
+        <span className="busan-map-legend-chip busan-map-legend-chip--deokcheon">덕천점</span>
+        <span className="busan-map-legend-chip busan-map-legend-chip--hakjang">학장점</span>
+        <span className="busan-map-legend-chip busan-map-legend-chip--neutral">기타</span>
+      </div>
+    );
+  }
+
   return (
     <aside
       className="busan-map-legend shrink-0 rounded-xl border border-slate-200 bg-slate-50/90 px-4 py-3 sm:py-4 lg:w-[11.5rem] lg:bg-white"
@@ -185,6 +201,62 @@ function MapLegend() {
 }
 
 const STORE_BRANCHES: BusanStoreId[] = ["deokcheon", "hakjang"];
+
+function MobileBranchSummaryCard({
+  store,
+  active,
+}: {
+  store: (typeof BUSAN_STORES)[number];
+  active: boolean;
+}) {
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.mapsQuery)}`;
+  const isDeokcheon = store.id === "deokcheon";
+
+  return (
+    <article
+      className={clsx(
+        "busan-branch-summary rounded-xl border px-4 py-3",
+        active
+          ? isDeokcheon
+            ? "border-blue-300 bg-blue-50/70 ring-2 ring-blue-200"
+            : "border-emerald-300 bg-emerald-50/70 ring-2 ring-emerald-200"
+          : "border-slate-200 bg-white",
+      )}
+    >
+      <p className="text-base font-black text-slate-950">{store.name}</p>
+      <p className="mt-1 text-sm font-semibold leading-relaxed text-slate-600">
+        {BUSAN_MOBILE_REGION_LINES[store.id]}
+      </p>
+      <a
+        href={store.phoneTel}
+        className="mt-2 inline-block text-sm font-black text-blue-800"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {store.phone}
+      </a>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <a
+          href={store.phoneTel}
+          className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-slate-900 text-xs font-black text-white"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Phone className="size-3.5" aria-hidden />
+          전화하기
+        </a>
+        <a
+          href={mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white text-xs font-black text-slate-800"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Navigation className="size-3.5" aria-hidden />
+          길찾기
+        </a>
+      </div>
+    </article>
+  );
+}
 
 function MapBranchToggle({
   selectedBranch,
@@ -320,6 +392,11 @@ export function BusanRegionMap({
   const [selectedGu, setSelectedGu] = useState<SelectedGu | null>(null);
   const [tooltip, setTooltip] = useState<MapTooltip | null>(null);
   const [clickPopover, setClickPopover] = useState<ClickPopover | null>(null);
+  const [mapExpanded, setMapExpanded] = useState(false);
+
+  const selectedStore = selectedBranch
+    ? BUSAN_STORES.find((s) => s.id === selectedBranch)
+    : null;
 
   useEffect(() => {
     let cancelled = false;
@@ -476,25 +553,11 @@ export function BusanRegionMap({
     }
   };
 
-  return (
-    <section
-      className="busan-region-map rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6"
-      id="store-map"
+  const mapCanvas = (
+    <div
+      ref={mapCanvasRef}
+      className="busan-map-canvas relative min-w-0 flex-1 overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-50/80"
     >
-      <div>
-        <h3 className="text-xl font-black text-slate-950 sm:text-2xl">부산 권역 지도</h3>
-        <p className="mt-2 text-base font-semibold text-slate-600">
-          구·지점 핀을 누르거나 아래 토글을 선택하면 해당 지점 카드가 앞으로 강조됩니다.
-          동네명 검색으로 해당 구를 찾을 수 있습니다.
-        </p>
-        <MapBranchToggle selectedBranch={selectedBranch} onSelectBranch={onSelectBranch} />
-      </div>
-
-      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-4">
-        <div
-          ref={mapCanvasRef}
-          className="busan-map-canvas relative h-[440px] min-w-0 flex-1 overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-50/80 sm:h-[500px] lg:h-[560px]"
-        >
           {loadError ? (
             <p className="py-16 text-center text-sm font-semibold text-red-600">{loadError}</p>
           ) : !collection ? (
@@ -651,64 +714,149 @@ export function BusanRegionMap({
               ) : null}
             </div>
           ) : null}
-        </div>
+    </div>
+  );
 
-        <MapLegend />
-      </div>
+  const selectionBar = (
+    <div
+      className="busan-map-selection-bar rounded-xl border border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-semibold leading-relaxed text-slate-700"
+      aria-live="polite"
+    >
+      {selectedGu ? (
+        <>
+          <p>
+            <span className="font-black text-slate-900">{selectedGu.gu}</span>
+            {" · "}
+            담당:{" "}
+            <span
+              className={clsx(
+                "font-black",
+                selectedGu.region === "deokcheon"
+                  ? "text-blue-700"
+                  : selectedGu.region === "hakjang"
+                    ? "text-green-700"
+                    : "text-slate-800",
+              )}
+            >
+              {storeLabelForRegion(selectedGu.region) ?? "고객센터 안내"}
+            </span>
+            {selectedGu.matchedDong ? (
+              <span className="text-slate-600"> ({selectedGu.matchedDong} 검색)</span>
+            ) : null}
+          </p>
+          {selectedGu.region === "deokcheon" || selectedGu.region === "hakjang" ? (
+            <p className="mt-2 text-sm font-medium text-slate-600">기본 출장 가능 권역</p>
+          ) : null}
+          {selectedGu.region === "neutral" ? (
+            <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+              {BUSAN_OUTBOUND_FEE_NOTE}
+            </p>
+          ) : null}
+          {guHasDongLevelExceptions(selectedGu.gu) ? (
+            <p className="mt-2 text-xs font-medium text-amber-800">
+              {guTooltipHint(selectedGu.gu, selectedGu.region)}
+            </p>
+          ) : null}
+        </>
+      ) : (
+        <p>지도에서 구를 선택하면 아래 덕천점·학장점 카드가 강조됩니다.</p>
+      )}
+    </div>
+  );
 
-      <div className="mt-4">
-        <div
-          className="busan-map-selection-bar mt-4 min-h-[7.5rem] rounded-xl border border-slate-100 bg-slate-50/90 px-4 py-3 text-sm font-semibold leading-relaxed text-slate-700"
-          aria-live="polite"
-        >
-          {selectedGu ? (
-            <>
-              <p>
-                <span className="font-black text-slate-900">{selectedGu.gu}</span>
-                {" · "}
-                담당:{" "}
-                <span
-                  className={clsx(
-                    "font-black",
-                    selectedGu.region === "deokcheon"
-                      ? "text-blue-700"
-                      : selectedGu.region === "hakjang"
-                        ? "text-green-700"
-                        : "text-slate-800",
-                  )}
-                >
-                  {storeLabelForRegion(selectedGu.region) ?? "고객센터 안내"}
+  return (
+    <section
+      className="busan-region-map rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6"
+      id="store-map"
+    >
+      <div className="lg:hidden">
+        <h3 className="text-lg font-black text-slate-950">{BUSAN_MOBILE_SERVICE_COPY.title}</h3>
+        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
+          {BUSAN_MOBILE_SERVICE_COPY.lead}
+        </p>
+        <MapBranchToggle selectedBranch={selectedBranch} onSelectBranch={onSelectBranch} />
+
+        <div className="mt-3 space-y-2">
+          {STORE_BRANCHES.map((id) => {
+            const store = BUSAN_STORES.find((s) => s.id === id)!;
+            const isDeokcheon = id === "deokcheon";
+            return (
+              <div
+                key={id}
+                className={clsx(
+                  "rounded-lg px-3 py-2 text-xs font-semibold",
+                  isDeokcheon ? "bg-blue-50/60 text-blue-900" : "bg-emerald-50/60 text-emerald-900",
+                )}
+              >
+                <span className="font-black">{store.name} 권역</span>
+                <span className="mx-1.5 text-slate-400" aria-hidden>
+                  ·
                 </span>
-                {selectedGu.matchedDong ? (
-                  <span className="text-slate-600"> ({selectedGu.matchedDong} 검색)</span>
-                ) : null}
-              </p>
-              {selectedGu.region === "deokcheon" || selectedGu.region === "hakjang" ? (
-                <p className="mt-2 text-sm font-medium text-slate-600">기본 출장 가능 권역</p>
-              ) : null}
-              {selectedGu.region === "neutral" ? (
-                <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-                  {BUSAN_OUTBOUND_FEE_NOTE}
-                </p>
-              ) : null}
-              {guHasDongLevelExceptions(selectedGu.gu) ? (
-                <p className="mt-2 text-xs font-medium text-amber-800">
-                  {guTooltipHint(selectedGu.gu, selectedGu.region)}
-                </p>
-              ) : null}
-            </>
-          ) : (
-            <p>지도에서 구를 선택하면 아래 덕천점·학장점 카드가 강조됩니다.</p>
-          )}
+                {BUSAN_MOBILE_REGION_LINES[id]}
+              </div>
+            );
+          })}
         </div>
 
-        <p className="mt-3 text-center text-xs font-medium leading-relaxed text-slate-500 sm:text-sm">
-          {BUSAN_MAP_DISCLAIMER}
-        </p>
-        <p className="mt-1 text-center text-[10px] text-slate-400 sm:text-xs">
-          {BUSAN_MAP_SOURCE_ATTRIBUTION}
+        {selectedStore ? (
+          <div className="mt-4">
+            <MobileBranchSummaryCard store={selectedStore} active />
+          </div>
+        ) : (
+          <p className="mt-4 text-sm font-medium text-slate-600">
+            {BUSAN_MOBILE_SERVICE_COPY.branchHint}
+          </p>
+        )}
+
+        <button
+          type="button"
+          className="busan-region-map__map-toggle mt-4 flex w-full min-h-[44px] items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-800"
+          aria-expanded={mapExpanded}
+          onClick={() => setMapExpanded((v) => !v)}
+        >
+          지도 보기
+          <span className="text-xs font-bold text-slate-500">{mapExpanded ? "접기" : "펼치기"}</span>
+        </button>
+
+        <p className="mt-3 text-[10px] font-medium leading-relaxed text-slate-400">
+          {BUSAN_MOBILE_SERVICE_COPY.visitNote}
         </p>
       </div>
+
+      <div className="hidden lg:block">
+        <h3 className="text-xl font-black text-slate-950 sm:text-2xl">부산 권역 지도</h3>
+        <p className="mt-2 text-base font-semibold text-slate-600">
+          구·지점 핀을 누르거나 지점을 선택하면 해당 지점 카드가 강조됩니다.
+          동네명 검색으로 해당 구를 찾을 수 있습니다.
+        </p>
+        <MapBranchToggle selectedBranch={selectedBranch} onSelectBranch={onSelectBranch} />
+      </div>
+
+      <div
+        className={clsx(
+          "busan-region-map__map-panel",
+          mapExpanded ? "max-lg:block" : "max-lg:hidden",
+          "lg:block",
+        )}
+      >
+        <div className="mt-3 lg:mt-6">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-4">
+            {mapCanvas}
+            <div className="hidden lg:block">
+              <MapLegend />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 hidden lg:mt-4 lg:block">{selectionBar}</div>
+      </div>
+
+      <p className="mt-3 text-center text-xs font-medium leading-relaxed text-slate-500 max-lg:text-[10px] lg:text-sm">
+        {BUSAN_MAP_DISCLAIMER}
+      </p>
+      <p className="mt-1 hidden text-center text-[10px] text-slate-400 lg:block lg:text-xs">
+        {BUSAN_MAP_SOURCE_ATTRIBUTION}
+      </p>
     </section>
   );
 }

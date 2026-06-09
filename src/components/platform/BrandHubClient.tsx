@@ -32,6 +32,7 @@ import { getBrandHubLogoPresentation } from "@/lib/brand-hub-logo-presentation";
 import { BRAND_HUB_REFERENCE_BRANDS } from "@/lib/brand-hub-reference-brands";
 import type { BatteryBrandSpec } from "@/data/battery/types";
 import { getBattery } from "@/lib/platform-data";
+import { BrandHubMobileSpecExplorer } from "@/components/platform/BrandHubMobileSpecExplorer";
 import { bm } from "@/lib/design-tokens";
 
 const PANEL_TRANSITION = { duration: 0.78, ease: [0.65, 0, 0.35, 1] as const };
@@ -62,7 +63,12 @@ const PANEL_INNER =
 export function BrandHubClient() {
   const params = useSearchParams();
   const router = useRouter();
-  const [active, setActive] = useState<CustomerBrandHubId>("rocket");
+  const [active, setActive] = useState<CustomerBrandHubId>(() => {
+    if (typeof window === "undefined") return "rocket";
+    const hash = window.location.hash.replace("#", "");
+    if (isCustomerBrandHubId(hash)) return hash;
+    return "rocket";
+  });
   const [familyTab, setFamilyTab] = useState<BrandHubFamilyTabId>("general");
 
   useEffect(() => {
@@ -72,6 +78,21 @@ export function BrandHubClient() {
       router.replace("/brands?brand=rocket", { scroll: false });
     }
   }, [params, router]);
+
+  useEffect(() => {
+    const applyHash = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (!isCustomerBrandHubId(hash)) return;
+      setActive(hash);
+      router.replace(`/brands?brand=${hash}`, { scroll: false });
+      window.setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 120);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, [router]);
 
   useEffect(() => {
     setFamilyTab("general");
@@ -148,14 +169,18 @@ export function BrandHubClient() {
               style={{ background: theme.washGradient }}
             />
 
+            <div id={active} className="brand-section-anchor scroll-mt-[140px] md:scroll-mt-[120px]" />
+
             <BrandHeroBanner theme={theme} banner={banner} imageBrandKey={imageBrandKey} brandId={active} />
 
             <div className="grid gap-5 lg:grid-cols-2 lg:gap-7">
+              <InsightCardMobileAdvantage theme={theme} card={insights.advantage} />
               <InsightCard
                 theme={theme}
                 card={insights.advantage}
                 variant="advantage"
                 dividerBorder={dividerBorder}
+                className="brand-hub-insight-desktop"
               />
               <InsightCard
                 theme={theme}
@@ -177,7 +202,7 @@ export function BrandHubClient() {
 
               <nav
                 className={clsx(
-                  "mb-6 flex flex-wrap gap-2 rounded-xl p-2 sm:gap-2.5",
+                  "mb-6 hidden flex-wrap gap-2 rounded-xl p-2 sm:gap-2.5 lg:flex",
                   theme.id === "rocket"
                     ? "bg-[#111318]/80 ring-1 ring-[#2d3544]"
                     : "bg-slate-100/90 ring-1 ring-slate-200",
@@ -220,10 +245,12 @@ export function BrandHubClient() {
                 })}
               </nav>
 
-              <p className={clsx("mb-5 text-base font-semibold", theme.contentMuted)}>
+              <p className={clsx("mb-5 hidden text-base font-semibold lg:block", theme.contentMuted)}>
                 {BRAND_HUB_FAMILY_TABS.find((t) => t.id === familyTab)?.label} · {products.length}개
                 규격
               </p>
+
+              <BrandHubMobileSpecExplorer brandId={active} theme={theme} tabCounts={tabCounts} />
 
               {products.length === 0 ? (
                 <p
@@ -237,7 +264,7 @@ export function BrandHubClient() {
                   이 분류에 등록된 제품이 없습니다.
                 </p>
               ) : (
-                <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="hidden gap-5 sm:grid-cols-2 sm:gap-6 lg:grid xl:grid-cols-4 lg:grid-cols-3">
                   {products.map((spec) => (
                     <BrandProductCard
                       key={spec.code}
@@ -426,16 +453,53 @@ function BrandHeroBanner({
   );
 }
 
+function InsightCardMobileAdvantage({
+  theme,
+  card,
+}: {
+  theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
+  card: BrandHubInsightCard;
+}) {
+  const items =
+    card.mobileItems ??
+    card.bullets.map((b) => ({
+      title: b,
+      desc: card.body,
+    }));
+
+  return (
+    <article className={clsx("brand-hub-advantage-mobile md:hidden", theme.insightCard)}>
+      <h3 className={clsx("brand-hub-advantage-mobile__heading", theme.insightTitle)}>
+        {card.title}
+      </h3>
+      <ul className="brand-hub-advantage-mobile__list">
+        {items.map((item) => (
+          <li key={item.title} className="brand-hub-advantage-mobile__item">
+            <p className={clsx("brand-hub-advantage-mobile__item-title", theme.insightTitle)}>
+              [{item.title}]
+            </p>
+            <p className={clsx("brand-hub-advantage-mobile__item-desc", theme.insightBody)}>
+              {item.desc}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
+
 function InsightCard({
   theme,
   card,
   variant,
   dividerBorder,
+  className,
 }: {
   theme: (typeof BRAND_HUB_THEMES)[CustomerBrandHubId];
   card: BrandHubInsightCard;
   variant: "advantage" | "field";
   dividerBorder: string;
+  className?: string;
 }) {
   const Icon = variant === "advantage" ? Sparkles : MessageCircle;
 
@@ -444,6 +508,7 @@ function InsightCard({
       className={clsx(
         "relative flex min-h-[15.5rem] flex-col overflow-hidden rounded-2xl sm:min-h-[16.5rem]",
         theme.insightCard,
+        className,
       )}
     >
       <div className="flex flex-1 flex-col p-7 sm:p-9">

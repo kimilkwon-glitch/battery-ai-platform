@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { addInquiry } from "@/lib/inquiry-storage";
+import { submitInquiry } from "@/lib/inquiry-storage";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
@@ -54,14 +54,14 @@ export function BatteryProductInquiryPanel({ batteryCode }: Props) {
     return lines.join("\n");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!name.trim() || !contact.trim()) {
       setError("이름과 연락처를 입력해 주세요.");
       return;
     }
-    addInquiry({
+    const result = await submitInquiry({
       name: name.trim(),
       contact: contact.trim(),
       vehicle: vehicleName.trim() || undefined,
@@ -70,8 +70,10 @@ export function BatteryProductInquiryPanel({ batteryCode }: Props) {
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
       source: "product_detail",
       inquiryType: inquiryType,
+      category: inquiryType.includes("반납") ? "return" : "battery",
     });
-    setSubmitted(true);
+    if (result.ok) setSubmitted(true);
+    else setError("문의 접수에 실패했습니다. 잠시 후 다시 시도해 주세요.");
   };
 
   const goCheckoutWithDraft = () => {

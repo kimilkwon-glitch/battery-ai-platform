@@ -203,11 +203,18 @@ export const BRAND_HUB_BANNER: Record<CustomerBrandHubId, BrandHubBannerCopy> = 
   },
 };
 
+export type BrandHubMobileAdvantageItem = {
+  title: string;
+  desc: string;
+};
+
 export type BrandHubInsightCard = {
   title: string;
   lead: string;
   body: string;
   bullets: string[];
+  /** 모바일 전용 간결 장점 카드 */
+  mobileItems?: BrandHubMobileAdvantageItem[];
 };
 
 export const BRAND_HUB_INSIGHTS: Record<
@@ -223,6 +230,20 @@ export const BRAND_HUB_INSIGHTS: Record<
         "일반형·DIN·AGM까지 폭넓은 라인업",
         "국산차 교체 상담에서 익숙한 브랜드",
         "규격 비교와 설명이 쉬움",
+      ],
+      mobileItems: [
+        {
+          title: "일반형·DIN·AGM 대응",
+          desc: "국산차에서 자주 쓰이는 주요 규격을 폭넓게 안내합니다.",
+        },
+        {
+          title: "교체 상담에 익숙한 브랜드",
+          desc: "현장 상담과 규격 설명이 비교적 쉽습니다.",
+        },
+        {
+          title: "규격 비교가 쉬움",
+          desc: "차종별 후보 규격을 비교하기 좋습니다.",
+        },
       ],
     },
     field: {
@@ -245,6 +266,20 @@ export const BRAND_HUB_INSIGHTS: Record<
         "CMF 표기 중심",
         "일반형·DIN 라인 구분 용이",
         "현대·기아 교체 상담에서 설명이 편함",
+      ],
+      mobileItems: [
+        {
+          title: "CMF 표기 중심",
+          desc: "현대·기아 교체 상담에서 규격명 비교가 수월합니다.",
+        },
+        {
+          title: "일반형·DIN 구분 용이",
+          desc: "타입별 라인업을 한눈에 확인하기 좋습니다.",
+        },
+        {
+          title: "가격대 선택지 설명 편함",
+          desc: "합리적인 선택지를 함께 비교 안내하기 좋습니다.",
+        },
       ],
     },
     field: {

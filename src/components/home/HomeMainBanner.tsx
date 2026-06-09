@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import clsx from "clsx";
 import { apiFetchPublicBanners } from "@/lib/cms/cms-client";
@@ -71,10 +71,13 @@ function HeroImageSlide({
   );
 }
 
+const SWIPE_THRESHOLD_PX = 48;
+
 export function HomeMainBanner() {
   const [slides, setSlides] = useState<HeroSlide[]>(HERO_SLIDES);
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
+  const touchStartXRef = useRef<number | null>(null);
   const activeSlide = slides[index];
 
   useEffect(() => {
@@ -93,6 +96,20 @@ export function HomeMainBanner() {
     },
     [slides.length],
   );
+
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartXRef.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    const startX = touchStartXRef.current;
+    const endX = e.changedTouches[0]?.clientX;
+    touchStartXRef.current = null;
+    if (startX == null || endX == null) return;
+    const delta = endX - startX;
+    if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
+    goTo(delta < 0 ? index + 1 : index - 1);
+  };
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -144,7 +161,7 @@ export function HomeMainBanner() {
             <button
               type="button"
               onClick={() => goTo(index + 1)}
-              className="home-hero-carousel__nav home-hero-carousel__nav--next"
+              className="home-hero-carousel__nav home-hero-carousel__nav--next home-hero-carousel__nav--next-mobile"
               aria-label="다음 배너"
             >
               <ChevronRight className="size-5" aria-hidden />
@@ -152,7 +169,11 @@ export function HomeMainBanner() {
           </>
         ) : null}
 
-        <div className="home-hero-carousel__frame">
+        <div
+          className="home-hero-carousel__frame"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {activePromoLabel ? (
             <span className="home-hero-carousel__promo-label">{activePromoLabel}</span>
           ) : null}

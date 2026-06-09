@@ -1,4 +1,9 @@
+import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
+import { inquiryList } from "@/lib/inquiry/inquiry-store";
 import { listOrderRequests } from "@/lib/order-request/order-request-service";
+import { listHubSupportNotices } from "@/lib/support-notices-store";
+import { buildVehicleImageInventory } from "@/lib/vehicle-image-inventory";
+import type { AdminTodayTaskItem } from "@/types/admin";
 import {
   buildAdminVehicleRows,
   countMissingVehicleImages,
@@ -91,20 +96,66 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStats> {
       href: b.detailHref,
     }));
 
+  const inquiries = await inquiryList({ limit: 500 });
+  const newInquiries = inquiries.filter((i) => i.status === "new").length;
+  const todayInquiries = inquiries.filter((i) => isToday(i.createdAt)).length;
+
+  const { entries: imageEntries } = buildVehicleImageInventory();
+  const vehicleImageReviewPending = imageEntries.filter(
+    (e) => !e.primaryExists || e.visualRiskStatus !== "OK",
+  ).length;
+
+  const hubNotices = await listHubSupportNotices();
+  const publishedNotices = hubNotices.length;
+
+  const matchReview = countMatchingReview(matchingRows);
+
+  const todayTasks: AdminTodayTaskItem[] = [
+    {
+      label: "신규 주문",
+      count: pendingOrders.length,
+      href: ADMIN_ROUTES.orders,
+    },
+    {
+      label: "신규 문의",
+      count: newInquiries,
+      href: ADMIN_ROUTES.inquiries,
+    },
+    {
+      label: "매칭 확인 필요",
+      count: matchReview,
+      href: ADMIN_ROUTES.matching,
+    },
+    {
+      label: "차량 이미지 검수 대기",
+      count: vehicleImageReviewPending,
+      href: ADMIN_ROUTES.vehicleImageReview,
+    },
+    {
+      label: "노출 중인 공지",
+      count: publishedNotices,
+      href: ADMIN_ROUTES.notices,
+    },
+  ].filter((t) => t.count > 0);
+
   return {
     todayOrders: todayOrders.length,
-    todayInquiries: 0,
+    todayInquiries,
+    newInquiries,
     guestOrders: guestOrders.length,
     pendingOrders: pendingOrders.length,
     photoCheckRequests: photoItems.length,
-    vehicleMatchReview: countMatchingReview(matchingRows),
+    vehicleMatchReview: matchReview,
     batteryDbReview: countBatteriesNeedingReview(batteryRows),
     missingVehicleImages: countMissingVehicleImages(vehicleRows),
     missingBatteryImages: countMissingBatteryImages(batteryRows),
+    vehicleImageReviewPending,
+    publishedNotices,
     ctaLinkErrors: countCtaLinkErrors(ctaRows),
     productPriceMissing: productCounts.price_missing,
     productImageMissing: productCounts.image_missing,
     productDetailMissing: productCounts.detail_missing,
+    todayTasks,
     recentOrders,
     recentVehicles,
     recentBatteries,

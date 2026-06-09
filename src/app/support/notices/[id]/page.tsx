@@ -12,7 +12,7 @@ export default async function SupportNoticeDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const notice = getSupportNotice(id);
+  const notice = await getSupportNotice(id);
   if (!notice) notFound();
 
   return (

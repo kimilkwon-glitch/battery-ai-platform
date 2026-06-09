@@ -8,10 +8,8 @@ import { BatterySpecBadge } from "@/components/common/BatterySpecBadge";
 import { bm } from "@/lib/design-tokens";
 import { getBatteryImageSet, getBatteryDisplaySpec } from "@/lib/battery-alias-map";
 import { findBatteryBrandImages, resolveBatteryImageSetForCode } from "@/lib/batteryImages";
-import { buildVehicleDetailHref } from "@/lib/battery-cta";
+import { ApplicableVehiclesStrip } from "@/components/battery/ApplicableVehiclesStrip";
 import { compareHref, guideHref, getBattery } from "@/lib/platform-data";
-
-const VEHICLE_PREVIEW = 6;
 
 type Props = {
   code: string;
@@ -29,9 +27,6 @@ export function BatteryDetailClient({ code, relatedCodes, vehicles }: Props) {
   const solite = getBatteryImageSet(code, "solite") ?? (brandImgs.solite ? { main: brandImgs.solite } : undefined);
   const spec = getBatteryDisplaySpec(code);
   const catalog = getBattery(code);
-  const previewVehicles = vehicles.slice(0, VEHICLE_PREVIEW);
-  const hasMoreVehicles = vehicles.length > VEHICLE_PREVIEW;
-
   return (
     <div className="space-y-4">
       <section className={`${bm.card} ${bm.cardPad}`}>
@@ -96,34 +91,12 @@ export function BatteryDetailClient({ code, relatedCodes, vehicles }: Props) {
         </div>
       </section>
 
-      {previewVehicles.length > 0 ? (
+      {vehicles.length > 0 ? (
         <section className={`${bm.card} ${bm.cardPad}`}>
-          <SectionHeader
-            title="대표 적용 차량"
-            description={hasMoreVehicles ? `외 ${vehicles.length - VEHICLE_PREVIEW}개 차종 더 있음` : undefined}
+          <ApplicableVehiclesStrip
+            vehicles={vehicles.map((v) => ({ slug: v.slug, title: v.title, fuel: v.fuel }))}
+            specCode={code}
           />
-          <div className="mt-2 space-y-2">
-            {previewVehicles.map((v) => (
-              <Link
-                className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-[var(--bm-border)] hover:bg-blue-50"
-                href={buildVehicleDetailHref(v.slug, v.fuel)}
-                key={`${v.slug}-${v.fuel}-${v.title}`}
-              >
-                <span>
-                  <span className="block text-xs font-black">{v.title}</span>
-                  <span className="text-[10px] font-bold text-slate-500">
-                    {v.brand} · {v.fuel} · {code}
-                  </span>
-                </span>
-                <span className="text-[10px] font-black text-[var(--bm-primary)]">차량 →</span>
-              </Link>
-            ))}
-          </div>
-          {hasMoreVehicles ? (
-            <Link className={`${bm.btnTertiary} mt-3 inline-flex`} href={`/search?q=${encodeURIComponent(code)}`}>
-              전체 적용 차량 검색
-            </Link>
-          ) : null}
         </section>
       ) : null}
 

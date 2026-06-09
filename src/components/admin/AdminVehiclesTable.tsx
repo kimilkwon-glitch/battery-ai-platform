@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { AdminReviewBadge } from "@/components/admin/AdminReviewBadge";
 import { AdminBatteryMatchBadge } from "@/components/admin/AdminBatteryMatchBadge";
+import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { AdminDataTableClient } from "@/components/admin/AdminDataTableClient";
+import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import type { AdminVehicleRow } from "@/types/admin";
 
 type Props = { rows: AdminVehicleRow[] };
@@ -30,47 +31,28 @@ export function AdminVehiclesTable({ rows }: Props) {
         },
         {
           key: "vehicleStatus",
-          label: "차량 검수",
+          label: "검수",
           type: "select",
           options: [
             { value: "ok", label: "정상" },
-            { value: "sales_excluded", label: "판매 제외" },
             { value: "image_needed", label: "이미지 필요" },
             { value: "db_fix_needed", label: "규격 검수" },
           ],
         },
-        {
-          key: "batteryMatchStatus",
-          label: "배터리 매칭",
-          type: "select",
-          options: [
-            { value: "matched", label: "완료" },
-            { value: "unmatched", label: "미완료" },
-          ],
-        },
       ]}
       columns={[
-        { key: "slug", label: "slug", render: (r) => <span className="font-mono text-[10px]">{r.slug}</span> },
-        { key: "brand", label: "제조사", render: (r) => r.brand },
-        { key: "displayName", label: "차량명", render: (r) => r.displayName },
-        { key: "yearRange", label: "연식", render: (r) => r.yearRange },
-        { key: "fuel", label: "연료", render: (r) => r.fuel },
-        { key: "primaryBattery", label: "대표 규격", render: (r) => r.primaryBattery },
         {
-          key: "candidateBatteries",
-          label: "후보",
+          key: "displayName",
+          label: "차량명",
           render: (r) => (
-            <span className="max-w-[120px] truncate text-[10px]" title={r.candidateBatteries.join(", ")}>
-              {r.candidateBatteries.length > 0 ? r.candidateBatteries.slice(0, 3).join(", ") : "—"}
-            </span>
+            <div>
+              <p className="admin-cell-primary">{r.displayName}</p>
+              <p className="admin-cell-muted font-mono">{r.slug}</p>
+            </div>
           ),
         },
-        {
-          key: "isAgm",
-          label: "AGM",
-          render: (r) => (r.isAgm ? <Badge variant="info">AGM</Badge> : "—"),
-        },
-        { key: "terminalDirection", label: "단자", render: (r) => r.terminalDirection },
+        { key: "brand", label: "제조사", render: (r) => <span className="admin-cell-muted">{r.brand}</span> },
+        { key: "primaryBattery", label: "대표 규격", render: (r) => <span className="admin-cell-primary">{r.primaryBattery}</span> },
         {
           key: "imageStatus",
           label: "이미지",
@@ -82,24 +64,31 @@ export function AdminVehiclesTable({ rows }: Props) {
         },
         {
           key: "vehicleStatus",
-          label: "차량 검수",
+          label: "검수",
           render: (r) => <AdminReviewBadge status={r.vehicleStatus} />,
         },
         {
           key: "batteryMatchStatus",
-          label: "배터리 매칭",
+          label: "매칭",
           render: (r) => <AdminBatteryMatchBadge status={r.batteryMatchStatus} />,
         },
         {
           key: "detail",
-          label: "상세",
-          render: (r) => (
-            <Link href={r.detailHref} className="text-[10px] font-bold text-blue-600" target="_blank">
-              보기
-            </Link>
-          ),
+          label: "",
+          className: "admin-cell-actions",
+          render: (r) => <AdminCustomerPreviewLink href={r.detailHref} />,
         },
       ]}
+      mobileCardRender={(r) => (
+        <AdminMobileCard
+          title={r.displayName}
+          badges={[
+            { label: r.imageStatus === "present" ? "이미지 있음" : "이미지 없음", tone: r.imageStatus === "present" ? "success" : "danger" },
+          ]}
+          lines={[`${r.brand} · ${r.primaryBattery}`, `${r.yearRange} · ${r.fuel}`]}
+          actions={<AdminCustomerPreviewLink href={r.detailHref} />}
+        />
+      )}
     />
   );
 }

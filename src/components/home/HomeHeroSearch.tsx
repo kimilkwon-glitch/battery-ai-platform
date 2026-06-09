@@ -39,7 +39,9 @@ export function HomeHeroSearch({ inputClassName, onAutocompleteOpenChange }: Pro
   return (
     <div className="home-hero-search w-full" data-home-search-type={searchType}>
       <div className="home-hero-search-stack flex w-full flex-col">
-        <div className="home-hero-search-compound home-hero-search-compound--premium w-full">
+        <div
+          className={`home-hero-search-compound home-hero-search-compound--premium w-full${isMobile ? " home-hero-search-compound--icon-submit" : ""}`}
+        >
           <HomeSearchTypeDropdown value={searchType} onChange={setSearchType} />
           <div className="home-hero-search-compound__divider hidden shrink-0 sm:block" aria-hidden />
           <VehicleSearchBox
@@ -47,6 +49,7 @@ export function HomeHeroSearch({ inputClassName, onAutocompleteOpenChange }: Pro
             inputClassName={compoundInputClass}
             placeholder={placeholder}
             showButton
+            iconSubmit={isMobile}
             buttonLabel="검색"
             searchType={searchType}
             compoundBar

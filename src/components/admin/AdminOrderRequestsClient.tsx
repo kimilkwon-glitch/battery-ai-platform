@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AdminShell } from "@/components/admin/AdminShell";
-import type { AdminNavBadges } from "@/lib/admin/data/nav-badges";
+import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { OrderRequestDetailPanel } from "@/components/admin/order-requests/OrderRequestDetailPanel";
 import { OrderRequestList } from "@/components/admin/order-requests/OrderRequestList";
 import {
@@ -15,7 +13,6 @@ import {
   matchesAdminOrderFilter,
   matchesAdminOrderSearch,
 } from "@/lib/order-request/order-request-admin-filters";
-import { statsFromRecords } from "@/lib/order-request/order-request-admin-stats";
 import {
   fetchAdminOrderRequestDetail,
   fetchAdminOrderRequests,
@@ -25,17 +22,16 @@ import {
   persistedToOrderRequestRecord,
 } from "@/lib/order-request/order-request-mapper";
 import { listOrderRequestRecords } from "@/lib/order-request/order-request-admin-storage";
-import { CUSTOMER_CENTER_HUB, ORDER_REQUEST_PAGE } from "@/lib/customer-center-routes";
+import { ORDER_REQUEST_PAGE } from "@/lib/customer-center-routes";
 import type { OrderRequestRecord } from "@/types/order-request";
 import { bm } from "@/lib/design-tokens";
 
 type Props = {
   /** 개발용: ?fallback=local 일 때만 localStorage 사용 */
   allowLocalFallback?: boolean;
-  navBadges?: AdminNavBadges;
 };
 
-export function AdminOrderRequestsClient({ allowLocalFallback, navBadges }: Props) {
+export function AdminOrderRequestsClient({ allowLocalFallback }: Props) {
   const [records, setRecords] = useState<OrderRequestRecord[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [filter, setFilter] = useState<AdminOrderRequestFilterKey>("all");
@@ -138,51 +134,26 @@ export function AdminOrderRequestsClient({ allowLocalFallback, navBadges }: Prop
     setRecords((prev) => prev.map((r) => (r.id === next.id ? next : r)));
   }, []);
 
-  const stats = statsFromRecords(records);
-
   return (
-    <AdminShell
-      title="상담 주문 요청 (상세)"
-      description="주문 요청 API · 상세 패널·상태 변경 — 결제 완료가 아닌 상담 접수 기준"
-      navBadges={navBadges}
-    >
-      <div className="mx-auto max-w-6xl space-y-4">
-        {usingLocalFallback ? (
-          <p className="text-xs font-bold text-amber-800" role="status">
-            API 실패 — 개발용 localStorage fallback 사용 중
-          </p>
-        ) : null}
+    <div className="space-y-4">
+      {usingLocalFallback ? (
+        <p className="text-xs font-bold text-amber-800" role="status">
+          API 실패 — 개발용 localStorage fallback 사용 중
+        </p>
+      ) : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={() => void loadList()}
-            disabled={loading}
-            className={`${bm.btnSecondary} text-xs disabled:opacity-50`}
-          >
-            다시 시도
-          </button>
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        <button
+          type="button"
+          onClick={() => void loadList()}
+          disabled={loading}
+          className="admin-btn admin-btn--secondary admin-btn--sm disabled:opacity-50"
+        >
+          새로고침
+        </button>
+      </div>
 
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-          {[
-            { label: "전체 상담 요청", value: stats.total },
-            { label: "확인 필요", value: stats.needsReview },
-            { label: "연락 완료", value: stats.contacted },
-            { label: "폐전지 반납", value: stats.usedBatteryReturn },
-            { label: "출장 상담", value: stats.visitInstall },
-          ].map((card) => (
-            <div
-              key={card.label}
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm"
-            >
-              <p className="text-[10px] font-bold text-slate-500">{card.label}</p>
-              <p className="text-xl font-black text-slate-900">{card.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {loading ? (
+      {loading ? (
           <div className={`${bm.card} ${bm.cardPad} text-center text-sm font-medium text-slate-600`}>
             관리자 주문 요청을 불러오는 중입니다.
           </div>
@@ -208,9 +179,7 @@ export function AdminOrderRequestsClient({ allowLocalFallback, navBadges }: Prop
             <p className="text-sm font-medium text-slate-600">
               고객이 상담 주문 요청 폼을 작성하면 이곳에서 확인할 수 있습니다.
             </p>
-            <Link href={ORDER_REQUEST_PAGE} className={`${bm.btnNavy} text-sm`}>
-              주문 요청 폼 보기
-            </Link>
+            <AdminCustomerPreviewLink href={ORDER_REQUEST_PAGE} />
           </div>
         ) : (
           <>
@@ -278,7 +247,6 @@ export function AdminOrderRequestsClient({ allowLocalFallback, navBadges }: Prop
             ) : null}
           </>
         )}
-      </div>
-    </AdminShell>
+    </div>
   );
 }

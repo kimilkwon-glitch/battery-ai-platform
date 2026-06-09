@@ -9,8 +9,7 @@ export default function CheckoutPage() {
     <PageShell
       zone="checkout"
       pageLabel="주문 및 결제"
-      title="주문 및 결제"
-      description="주문 정보를 확인한 뒤 결제를 진행해 주세요."
+      showPageHeader={false}
       searchPlaceholder="차량·규격 검색"
     >
       <div className="mx-auto w-full max-w-6xl space-y-4 px-0 sm:px-1">

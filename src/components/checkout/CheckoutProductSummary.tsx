@@ -1,7 +1,6 @@
 "use client";
 
-import { BatteryGallery } from "@/components/BatteryGallery";
-import { OrderPriceBreakdown } from "@/components/pricing/OrderPriceBreakdown";
+import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import {
@@ -9,8 +8,6 @@ import {
   formatCheckoutTerminal,
   formatCheckoutVehicle,
 } from "@/lib/checkout/checkout-review";
-import { formatPriceWon, resolveCartItemPrices } from "@/lib/pricing/order-price";
-import { CUSTOMER_PRICE_LABELS } from "@/lib/pricing/customer-price-labels";
 import type { BatteryCartItem } from "@/types/cart";
 import type { OrderRequestFulfillmentMethod } from "@/types/order-request";
 import { bm } from "@/lib/design-tokens";
@@ -31,77 +28,60 @@ export function CheckoutProductSummary({ items, fulfillmentMethod }: Props) {
   const method = fulfillmentMethod ?? items[0]?.fulfillment.method;
   const primary = items[0];
   const code = primary ? itemBatteryCode(primary) : null;
-  const prices = primary ? resolveCartItemPrices(primary) : null;
   const fulfillmentLabel =
     method && method !== "undecided"
       ? FULFILLMENT_METHOD_LABELS[method as keyof typeof FULFILLMENT_METHOD_LABELS]
       : null;
 
+  const imageSet = code ? batteryImageSetForCode(code) : undefined;
+
   return (
-    <section className={`${bm.card} ${bm.cardPad}`} id="checkout-product-summary">
+    <section className={`checkout-product-summary ${bm.card} ${bm.cardPad}`} id="checkout-product-summary">
       <h2 className="text-sm font-black text-slate-900">주문 상품</h2>
 
       {primary ? (
-        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start">
-          {code ? (
-            <div className="mx-auto w-full shrink-0 sm:mx-0 sm:w-[140px] lg:w-[160px]">
-              <BatteryGallery
+        <div className="checkout-product-summary__body mt-3 flex gap-3">
+          {code && imageSet?.main ? (
+            <div className="checkout-product-summary__thumb h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-lg bg-slate-50 ring-1 ring-slate-100 sm:h-[5rem] sm:w-[5rem]">
+              <BatteryThumbnail
                 code={code}
-                imageSet={batteryImageSetForCode(code)}
-                minHeightClass="min-h-[120px] sm:min-h-[140px]"
+                imageSet={imageSet}
+                role="main"
+                fit="contain"
+                overlayLabel={false}
+                surface="transparent"
+                className="h-full w-full"
               />
             </div>
           ) : null}
 
-          <div className="min-w-0 flex-1 space-y-2">
-            <div>
-              <p className="text-base font-black text-slate-950 lg:text-lg">
-                {primary.brandName ? `${primary.brandName} ` : ""}
-                {primary.batterySpec || "배터리"}
-              </p>
-              <p className="mt-0.5 text-sm font-bold text-slate-700">
-                {primary.productName?.trim() || "차량용 배터리"}
-                {primary.batterySpec ? ` · ${primary.batterySpec}` : ""}
-              </p>
-            </div>
-
-            <dl className="grid gap-1.5 text-xs font-medium text-slate-600 sm:grid-cols-2">
-              {prices ? (
-                <div>
-                  <dt className="font-bold text-slate-500">대표 제원</dt>
-                  <dd className="font-black text-slate-800">
-                    {CUSTOMER_PRICE_LABELS.productPurchase} {formatPriceWon(prices.internetPrice)}
-                  </dd>
+          <div className="min-w-0 flex-1 space-y-1.5">
+            <p className="text-sm font-black text-slate-950 sm:text-base">
+              {primary.brandName ? `${primary.brandName} ` : ""}
+              {primary.batterySpec || "배터리"}
+            </p>
+            <p className="text-xs font-semibold text-slate-600">
+              {primary.productName?.trim() || "차량용 배터리"}
+            </p>
+            <dl className="checkout-product-summary__meta space-y-1 text-xs text-slate-600">
+              {fulfillmentLabel ? (
+                <div className="flex justify-between gap-2">
+                  <dt className="font-bold text-slate-500">수령/장착</dt>
+                  <dd className="font-black text-slate-800">{fulfillmentLabel}</dd>
                 </div>
               ) : null}
-              <div>
+              <div className="flex justify-between gap-2">
                 <dt className="font-bold text-slate-500">단자</dt>
                 <dd>{formatCheckoutTerminal(primary.terminalDirection)}</dd>
               </div>
-              {fulfillmentLabel ? (
-                <div>
-                  <dt className="font-bold text-slate-500">수령 방식</dt>
-                  <dd className="font-black text-slate-900">{fulfillmentLabel}</dd>
-                </div>
-              ) : null}
-              <div>
+              <div className="flex justify-between gap-2">
                 <dt className="font-bold text-slate-500">차량</dt>
-                <dd>{formatCheckoutVehicle(primary)}</dd>
+                <dd className="text-right">{formatCheckoutVehicle(primary)}</dd>
               </div>
             </dl>
-
-            <p className="text-lg font-black tabular-nums text-slate-950">
+            <p className="hidden text-sm font-black tabular-nums text-slate-950 sm:block">
               결제금액: {formatCheckoutPrice(primary, method)}
             </p>
-
-            {method && method !== "undecided" ? (
-              <OrderPriceBreakdown
-                item={primary}
-                fulfillmentMethod={method}
-                compact
-                includeBatteryReturnFee
-              />
-            ) : null}
           </div>
         </div>
       ) : null}

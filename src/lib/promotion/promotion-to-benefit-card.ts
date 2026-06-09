@@ -1,5 +1,6 @@
 import type { BenefitCardConfig } from "@/lib/benefits-data";
 import { HUB_BENEFIT_FIRST_ORDER_3, HUB_BENEFITS } from "@/lib/benefits-data";
+import { resolveBenefitImageUrl } from "@/lib/benefits-image-resolve";
 import type { PublicPromotionCard } from "@/types/promotion";
 
 const FIRST_ORDER_PROMO_ID = "promo_first_order_3pct";
@@ -18,8 +19,8 @@ export function publicPromotionToBenefitCard(promo: PublicPromotionCard): Benefi
     label: promo.type === "automatic" ? "자동 적용" : promo.code ? `쿠폰 ${promo.code}` : "쿠폰",
     description: promo.description,
     note: promo.badgeText ?? undefined,
-    image: promo.bannerImageUrl ?? promo.imageUrl ?? undefined,
-    imageMobile: promo.imageUrl ?? promo.bannerImageUrl ?? undefined,
+    image: resolveBenefitImageUrl(promo.bannerImageUrl ?? promo.imageUrl),
+    imageMobile: resolveBenefitImageUrl(promo.imageUrl ?? promo.bannerImageUrl),
     imageAlt: promo.title,
     fallbackIcon: "percent",
     status: promo.displayStatus === "active" ? "active" : "coming_soon",

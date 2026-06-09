@@ -10,6 +10,13 @@ import {
 
 const PROVIDERS: SocialLoginProvider[] = ["naver", "kakao", "google"];
 
+/** 고객 화면 — 소셜 버튼은 항상 노출 (연동 상태는 서버 route에서 처리) */
+const CUSTOMER_VISIBLE_PROVIDERS: ProviderAvailability = {
+  naver: true,
+  kakao: true,
+  google: true,
+};
+
 type ProviderAvailability = Record<SocialLoginProvider, boolean>;
 
 type Props = {
@@ -66,8 +73,8 @@ export function SocialLoginButtons({ redirect, variant = "login", onAvailability
         onAvailability?.(PROVIDERS.filter((p) => data[p]).length);
       } catch {
         if (!cancelled) {
-          setAvailable({ naver: false, kakao: false, google: false });
-          onAvailability?.(0);
+          setAvailable(CUSTOMER_VISIBLE_PROVIDERS);
+          onAvailability?.(PROVIDERS.length);
         }
       }
     })();
@@ -87,8 +94,9 @@ export function SocialLoginButtons({ redirect, variant = "login", onAvailability
     );
   }
 
-  const enabledProviders = PROVIDERS.filter((provider) => available[provider]);
-  if (enabledProviders.length === 0) return null;
+  const enabledProviders = PROVIDERS.filter(
+    (provider) => available[provider] || CUSTOMER_VISIBLE_PROVIDERS[provider],
+  );
 
   return (
     <div className="bm-social-login">

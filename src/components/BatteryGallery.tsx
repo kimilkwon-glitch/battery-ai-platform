@@ -166,30 +166,51 @@ export function BatteryGallery({
         ) : null}
       </div>
       {hasNav ? (
-        <div className={`grid gap-1.5 ${items.length <= 4 ? "grid-cols-4" : "grid-cols-4 sm:grid-cols-7"}`}>
-          {items.map((item, i) => (
-            <button
-              type="button"
-              key={item.key}
-              onClick={() => select(i)}
-              aria-label={`${item.label} 보기`}
-              aria-current={safeActive === i ? "true" : undefined}
-              className={`relative aspect-square overflow-hidden rounded-lg ring-2 ${safeActive === i ? "ring-blue-600" : "ring-slate-200"}`}
-            >
-              {failed[i] ? (
-                <BatteryGraphicSmall code={code} />
-              ) : (
-                <Image
-                  src={item.url}
-                  alt={item.label}
-                  fill
-                  className="object-cover object-center"
-                  sizes="80px"
-                  onError={() => setFailed((f) => ({ ...f, [i]: true }))}
-                />
-              )}
-            </button>
-          ))}
+        <div
+          className={
+            isProductDetail
+              ? "battery-gallery-thumbs-wrap"
+              : `grid gap-1.5 ${items.length <= 4 ? "grid-cols-4" : "grid-cols-4 sm:grid-cols-7"}`
+          }
+        >
+          <div
+            className={
+              isProductDetail
+                ? "battery-gallery-thumbs battery-gallery-thumbs--filmstrip"
+                : "contents"
+            }
+          >
+            {items.map((item, i) => (
+              <button
+                type="button"
+                key={item.key}
+                onClick={() => select(i)}
+                aria-label={`${item.label} 보기`}
+                aria-current={safeActive === i ? "true" : undefined}
+                className={`battery-gallery-thumb relative shrink-0 overflow-hidden rounded-lg ring-2 ${
+                  !isProductDetail ? "aspect-square" : ""
+                } ${safeActive === i ? "ring-blue-600" : "ring-slate-200"}`}
+              >
+                {failed[i] ? (
+                  <BatteryGraphicSmall code={code} />
+                ) : (
+                  <Image
+                    src={item.url}
+                    alt={item.label}
+                    fill
+                    className="object-cover object-center"
+                    sizes="80px"
+                    onError={() => setFailed((f) => ({ ...f, [i]: true }))}
+                  />
+                )}
+              </button>
+            ))}
+            {isProductDetail && items.length > 4 ? (
+              <span className="battery-gallery-thumbs__more" aria-hidden>
+                +{items.length - 4}
+              </span>
+            ) : null}
+          </div>
         </div>
       ) : null}
     </div>

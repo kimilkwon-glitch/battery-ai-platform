@@ -35,7 +35,7 @@ export function PortalMobileMenu() {
     <>
       <button
         type="button"
-        className="portal-header-menu-btn inline-flex size-9 shrink-0 items-center justify-center rounded-full text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 lg:hidden"
+        className="portal-header-menu-btn portal-header-menu-btn--accent inline-flex size-9 shrink-0 items-center justify-center rounded-full lg:hidden"
         aria-label="메뉴 열기"
         aria-expanded={open}
         onClick={() => setOpen(true)}

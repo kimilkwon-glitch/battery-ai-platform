@@ -1,5 +1,5 @@
 import { PageShell } from "@/components/common/PageShell";
-import { BatteryGuidePostsHub } from "@/components/guide/BatteryGuidePostsHub";
+import { PhotoCheckIntakeSection } from "@/components/photo-check/PhotoCheckIntakeSection";
 
 export const dynamic = "force-dynamic";
 
@@ -7,11 +7,13 @@ export default function PhotoCheckPage() {
   return (
     <PageShell
       pageLabel="사진 확인"
-      title="사진 확인 가이드"
-      description="라벨·단자·트레이 사진으로 규격을 확인하는 안내 글 목록입니다."
+      title="사진으로 배터리 확인"
+      description="배터리 라벨·단자 사진을 보내주시면 규격 확인을 도와드립니다."
       searchPlaceholder="차종·규격 검색"
     >
-      <BatteryGuidePostsHub category="photo_check" />
+      <div className="mx-auto max-w-2xl">
+        <PhotoCheckIntakeSection />
+      </div>
     </PageShell>
   );
 }

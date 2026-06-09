@@ -18,6 +18,7 @@ import { bm } from "@/lib/design-tokens";
 export function VehiclesBrowseClient() {
   const searchParams = useSearchParams();
   const registerMode = searchParams.get("register") === "1";
+  const signupVehicleSelect = searchParams.get("mode") === "signup_vehicle_select";
   const [brand, setBrand] = useState<VehiclesBrandFilter>("전체");
 
   const manufacturerSections = useMemo(() => getVehiclesByManufacturerSections(), []);
@@ -30,6 +31,14 @@ export function VehiclesBrowseClient() {
 
   return (
     <div className="vehicle-search-hub">
+      {signupVehicleSelect ? (
+        <section className="signup-vehicle-select-banner">
+          <p className="signup-vehicle-select-banner__title">회원가입 중 차량 선택</p>
+          <p className="signup-vehicle-select-banner__desc">
+            차량을 선택하면 회원가입 폼으로 돌아갑니다. 로그인 없이 진행됩니다.
+          </p>
+        </section>
+      ) : null}
       <section className="vehicle-search-hub__hero">
         <div className="vehicle-search-hub__hero-inner">
           <h1 className="vehicle-search-hub__title">차종검색</h1>
@@ -51,7 +60,12 @@ export function VehiclesBrowseClient() {
 
       <div className="vehicle-search-hub__sections">
         {manufacturerSections.map((section) => (
-          <ManufacturerVehicleRail key={section.id} label={section.label} items={section.items} />
+          <ManufacturerVehicleRail
+            key={section.id}
+            label={section.label}
+            items={section.items}
+            signupVehicleSelect={signupVehicleSelect}
+          />
         ))}
       </div>
 

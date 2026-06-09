@@ -34,6 +34,8 @@ type Props<T> = {
   filters?: AdminTableFilter[];
   emptyMessage?: string;
   getRowId: (row: T) => string;
+  /** 모바일(≤767px) 카드 뷰 — 제공 시 테이블 대신 카드 목록 표시 */
+  mobileCardRender?: (row: T) => React.ReactNode;
 };
 
 export function AdminDataTableClient<T>({
@@ -42,6 +44,7 @@ export function AdminDataTableClient<T>({
   filters = [],
   emptyMessage = "데이터가 없습니다.",
   getRowId,
+  mobileCardRender,
 }: Props<T>) {
   const [values, setValues] = useState<Record<string, string>>({});
 
@@ -68,8 +71,32 @@ export function AdminDataTableClient<T>({
           onChange={(key, value) => setValues((prev) => ({ ...prev, [key]: value }))}
         />
       ) : null}
-      <div className="rounded-lg border border-slate-200 bg-white">
-        <Table className="admin-table">
+
+      {mobileCardRender ? (
+        <div className="admin-data-table__mobile-cards space-y-3 md:hidden">
+          {filtered.length === 0 ? (
+            <p className="rounded-lg border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-500">
+              {emptyMessage}
+            </p>
+          ) : (
+            filtered.map((row) => (
+              <div key={getRowId(row)} className="admin-data-table__mobile-card">
+                {mobileCardRender(row)}
+              </div>
+            ))
+          )}
+          <p className="text-[10px] text-slate-500">
+            {filtered.length} / {rows.length}건
+          </p>
+        </div>
+      ) : null}
+
+      <div
+        className={`rounded-lg border border-slate-200 bg-white ${
+          mobileCardRender ? "admin-data-table__desktop-table hidden md:block" : ""
+        }`}
+      >
+        <Table className="admin-table admin-table--compact">
           <TableHeader>
             <TableRow>
               {columns.map((c) => (

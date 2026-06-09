@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
-import { VehicleCardImage } from "@/components/media/VehicleCardImage";
+import { ApplicableVehiclesStrip } from "@/components/battery/ApplicableVehiclesStrip";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
@@ -81,46 +81,7 @@ export function BatterySpecDetailView({ code, vehicles }: Props) {
       </section>
 
       {vehicles.length > 0 ? (
-        <section aria-labelledby="battery-spec-vehicles">
-          <h2 id="battery-spec-vehicles" className="text-lg font-black text-slate-900">
-            대표 적용 차량
-          </h2>
-          <p className="mt-1 text-sm font-medium text-slate-500">
-            연식·트림에 따라 다를 수 있습니다.
-          </p>
-          <ul className="mt-4 grid list-none gap-3 sm:grid-cols-2">
-            {vehicles.slice(0, 8).map((v) => (
-              <li key={v.slug}>
-                <Link
-                  href={`/vehicle/${v.slug}`}
-                  className="group bm-card-vehicle-match flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-blue-200 hover:shadow-md md:grid md:grid-cols-[minmax(0,44%)_56%]"
-                >
-                  <div className="bm-card-horizontal__media !border-0 !p-0">
-                    <VehicleCardImage slug={v.slug} title={v.title} />
-                  </div>
-                  <div className="flex flex-col justify-center border-t border-slate-100 px-3 py-2.5 md:border-l md:border-t-0">
-                    <p className="text-sm font-bold text-slate-800 group-hover:text-blue-700">{v.title}</p>
-                    <p className="mt-0.5 text-xs font-semibold text-slate-500">{code}</p>
-                    <span className="mt-1 inline-block text-xs font-black text-blue-600">차량 상세 보기 →</span>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          {vehicles.length > 8 ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {vehicles.slice(8, 14).map((v) => (
-                <Link
-                  key={v.slug}
-                  href={`/vehicle/${v.slug}`}
-                  className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-blue-50 hover:text-blue-800"
-                >
-                  {v.title}
-                </Link>
-              ))}
-            </div>
-          ) : null}
-        </section>
+        <ApplicableVehiclesStrip vehicles={vehicles} specCode={code} />
       ) : null}
 
       <section className="mt-2 pt-4 sm:pt-6">

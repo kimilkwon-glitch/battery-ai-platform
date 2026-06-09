@@ -1933,3 +1933,165 @@ main:has(.bm-zone--legal) {
 .bm-section-eyebrow--review {
   color: var(--color-accent-review);
 }
+
+/* —— 회원가입 폼 정렬/간격 개선 —— */
+.bm-auth-form--signup .bm-auth-form__fields {
+  gap: 1.125rem;
+}
+
+.bm-auth-form--signup .bm-auth-fieldset {
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+
+.bm-auth-form--signup .bm-auth-field {
+  gap: 0.5rem;
+}
+
+.bm-auth-form--signup .bm-auth-field__label {
+  line-height: 1.35;
+}
+
+.bm-auth-form--signup .bm-auth-field__input,
+.bm-auth-form--signup .bm-auth-inline-btn,
+.bm-auth-form--signup .bm-auth-submit {
+  min-height: 3rem;
+  line-height: 1.4;
+}
+
+.bm-auth-social-block {
+  margin-top: 1rem;
+}
+
+.bm-auth-divider--signup {
+  margin-top: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.bm-auth-vehicle-select-btn {
+  display: inline-flex;
+  width: 100%;
+  text-decoration: none;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #1d4ed8;
+  text-align: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.bm-auth-vehicle-select-btn:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.bm-auth-vehicle-fields {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.bm-auth-fieldset--vehicle {
+  padding-bottom: 0.25rem;
+}
+
+.bm-auth-agreements {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem 0 0.25rem;
+}
+
+.bm-auth-check {
+  align-items: flex-start;
+  line-height: 1.45;
+}
+
+.bm-auth-check input {
+  margin-top: 0.2rem;
+}
+
+.bm-social-login {
+  gap: 0.75rem;
+}
+
+.bm-social-btn {
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  justify-content: center;
+}
+
+.bm-social-btn__logo {
+  position: absolute;
+  left: 1rem;
+}
+
+.bm-social-btn__label {
+  width: 100%;
+  text-align: center;
+}
+
+.signup-vehicle-select-banner {
+  margin: 0 0 1rem;
+  border-radius: 0.875rem;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+  padding: 0.875rem 1rem;
+}
+
+.signup-vehicle-select-banner__title {
+  font-size: 0.875rem;
+  font-weight: 900;
+  color: #1e3a8a;
+}
+
+.signup-vehicle-select-banner__desc {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #475569;
+}
+
+/* —— 고객센터 최근 안내 리스트 —— */
+.support-hub-v2__notice-row {
+  align-items: flex-start;
+  padding-top: 0.6875rem;
+  padding-bottom: 0.6875rem;
+}
+
+.support-hub-v2__notice-row-inner {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.support-hub-v2__notice-title {
+  min-width: 0;
+  flex: 1;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #0f172a;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.support-hub-v2__notice-list--compact .support-hub-v2__notice-row {
+  min-height: 2.75rem;
+}
+
+.support-hub-v2__notice-list--compact li:last-child .support-hub-v2__notice-row {
+  border-bottom: 0;
+}

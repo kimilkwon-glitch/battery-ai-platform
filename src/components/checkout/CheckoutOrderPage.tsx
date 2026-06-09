@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CheckoutBatteryReturnSummary } from "@/components/checkout/CheckoutBatteryReturnSummary";
+import { CheckoutOrderSummary } from "@/components/checkout/CheckoutOrderSummary";
 import { CheckoutDeliveryAddressSection } from "@/components/checkout/CheckoutDeliveryAddressSection";
 import { CheckoutPriceSummaryPanel } from "@/components/checkout/CheckoutPriceSummaryPanel";
 import { CheckoutProductSummary } from "@/components/checkout/CheckoutProductSummary";
@@ -17,7 +17,6 @@ import {
   PaymentPreparingNotice,
 } from "@/components/checkout/PaymentPreparingNotice";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
-import { FulfillmentMethodSelector } from "@/components/pricing/FulfillmentMethodSelector";
 import {
   clearBuyNowCheckoutItems,
   getBuyNowCheckoutItems,
@@ -235,7 +234,13 @@ export function CheckoutOrderPage() {
   const [eligibleAutomaticTitles, setEligibleAutomaticTitles] = useState<string[]>([]);
 
   const usedBatteryFromCart = useMemo(() => initialUsedBatteryFromCart(items), [items]);
-  const needsUsedBatteryPick = usedBatteryFromCart == null;
+  const optionsComplete = useMemo(
+    () =>
+      items.length > 0 &&
+      usedBatteryFromCart != null &&
+      items.every((i) => i.fulfillment.method !== "undecided"),
+    [items, usedBatteryFromCart],
+  );
 
   useEffect(() => {
     if (!hydrated || items.length === 0) return;
@@ -340,28 +345,11 @@ export function CheckoutOrderPage() {
     }
   };
 
-  const onUsedBatteryChange = (next: "return" | "no_return") => {
-    setUsedBattery(next);
-    const synced = items.map((item) => ({
-      ...item,
-      usedBatteryReturn: {
-        ...item.usedBatteryReturn,
-        option: next as BatteryCartItem["usedBatteryReturn"]["option"],
-        priceImpact: next === "no_return" ? 25_000 : 0,
-      },
-    }));
-    setCheckoutItems(synced);
-    if (!isBuyNow) {
-      synced.forEach((item) => {
-        updateItem(item.id, { usedBatteryReturn: item.usedBatteryReturn });
-      });
-    }
-  };
-
   const totals = computeCheckoutTotal(items, fulfillment.method, usedBattery ?? undefined);
   const displayTotal = promotionFinalTotal ?? totals.finalAmount;
 
   const canConfirm =
+    optionsComplete &&
     checkoutContactValid(fulfillment, customer) &&
     isUsedBatterySelected(usedBattery) &&
     fulfillment.method !== "undecided" &&
@@ -372,7 +360,9 @@ export function CheckoutOrderPage() {
     setValidationError(null);
     if (!canConfirm) {
       setValidationError(
-        "이름, 연락처, 폐배터리 반납, 수령/장착 방식, 주소·지점, 확인 항목을 점검해 주세요.",
+        optionsComplete
+          ? "이름, 연락처, 주소·지점, 확인 항목을 점검해 주세요."
+          : "이전 단계에서 수령 방식과 폐배터리 반납을 선택한 뒤 다시 진행해 주세요.",
       );
       return;
     }
@@ -481,61 +471,41 @@ export function CheckoutOrderPage() {
   );
 
   return (
-    <div className="checkout-order pb-28 lg:pb-10" data-page="checkout">
+    <div className="checkout-order pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-10" data-page="checkout">
       <div className="checkout-order__grid grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,400px)] lg:items-start">
-        <form className="checkout-order__main space-y-5" onSubmit={(e) => e.preventDefault()}>
-          <section className="checkout-card" data-checkout-section="intro">
-            <h1 className="text-xl font-black text-[#0F172A] lg:text-2xl">{CHECKOUT_PAGE_COPY.title}</h1>
-            <p className="mt-2 text-sm font-semibold text-[#475569]">{CHECKOUT_PAGE_COPY.description}</p>
-            <div className="mt-3 space-y-2">
-              <span className="inline-flex rounded-lg bg-[#0F1B33] px-3 py-1.5 text-xs font-bold text-white">
-                {isLoggedIn ? "회원 주문 · 결제" : "비회원 주문 · 결제"}
+        <form className="checkout-order__main space-y-4 lg:space-y-5" onSubmit={(e) => e.preventDefault()}>
+          <section className="checkout-card checkout-card--intro" data-checkout-section="intro">
+            <h1 className="text-lg font-black text-[#0F172A] lg:text-2xl">{CHECKOUT_PAGE_COPY.title}</h1>
+            <p className="mt-1 hidden text-sm font-semibold text-[#475569] sm:block">
+              {CHECKOUT_PAGE_COPY.description}
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className="inline-flex rounded-lg bg-[#0F1B33] px-2.5 py-1 text-[11px] font-bold text-white">
+                {isLoggedIn ? "회원 주문" : "비회원 주문"}
               </span>
               {!isLoggedIn ? (
-                <>
-                  <p className="text-sm font-semibold text-slate-800">{CHECKOUT_PAGE_COPY.guestLead}</p>
-                  <p className="text-xs font-medium text-slate-500">
-                    이름·연락처·주소를 입력한 뒤 주문을 진행해 주세요.{" "}
-                    <Link
-                      href={`${CUSTOMER_LOGIN_PAGE}?redirect=${encodeURIComponent(
-                        searchParams.toString() ? `/checkout?${searchParams.toString()}` : "/checkout",
-                      )}`}
-                      className="font-bold text-blue-700 hover:underline"
-                    >
-                      로그인 후 회원정보 불러오기
-                    </Link>
-                  </p>
-                  <p className="text-[11px] font-medium text-slate-500">
-                    {CHECKOUT_PAGE_COPY.guestLoginHint}
-                  </p>
-                </>
+                <Link
+                  href={`${CUSTOMER_LOGIN_PAGE}?redirect=${encodeURIComponent(
+                    searchParams.toString() ? `/checkout?${searchParams.toString()}` : "/checkout",
+                  )}`}
+                  className="text-[11px] font-bold text-blue-700 hover:underline"
+                >
+                  로그인 후 정보 불러오기
+                </Link>
               ) : null}
             </div>
           </section>
 
           <PaymentPreparingNotice />
 
-          <section className="checkout-card space-y-3" data-checkout-section="product-summary">
-            <CheckoutProductSummary items={items} fulfillmentMethod={fulfillment.method} />
-            {needsUsedBatteryPick ? (
-              <CheckoutBatteryReturnSummary
-                value={usedBattery}
-                allowChange
-                onChange={onUsedBatteryChange}
-              />
-            ) : (
-              <CheckoutBatteryReturnSummary value={usedBattery} />
-            )}
-          </section>
-
-          <FulfillmentMethodSelector
-            values={fulfillment}
-            onChange={onFulfillmentChange}
-            idPrefix="checkout-fulfillment"
-            methodsOnly
+          <CheckoutOrderSummary
+            items={items}
+            fulfillment={fulfillment}
+            usedBattery={usedBattery}
+            totalAmount={displayTotal}
+            optionsComplete={optionsComplete}
+            isBuyNow={isBuyNow}
           />
-
-          <div className="lg:hidden">{pricePanelInline}</div>
 
           {fulfillment.method === "delivery" ? (
             <CheckoutDeliveryAddressSection
@@ -582,7 +552,11 @@ export function CheckoutOrderPage() {
             </div>
           ) : null}
 
+          <CheckoutProductSummary items={items} fulfillmentMethod={fulfillment.method} />
+
           <CheckoutVehicleSection values={vehicle} onChange={(p) => setVehicle((v) => ({ ...v, ...p }))} />
+
+          <div className="lg:hidden">{pricePanelInline}</div>
 
           <CheckoutPromotionSection
             items={items}

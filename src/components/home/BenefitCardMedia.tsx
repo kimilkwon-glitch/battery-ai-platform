@@ -58,34 +58,40 @@ export function BenefitCardMedia({
         </picture>
       ) : null}
 
-      <div
-        className={clsx(
-          "absolute inset-0 flex items-center justify-center bg-gradient-to-br",
-          gradient,
-          hasImage ? "pointer-events-none opacity-0" : "opacity-100",
-          isDetail ? "flex-col gap-3 px-5 py-6 text-center" : "px-4 py-4",
-        )}
-        aria-hidden={hasImage}
-      >
-        <span
+      {!hasImage ? (
+        <div
           className={clsx(
-            "flex size-12 items-center justify-center rounded-2xl shadow-md ring-1 ring-white/30",
-            active ? "bg-white/95 text-[var(--bm-primary)]" : "bg-white/80 text-slate-500",
+            "absolute inset-0 flex flex-col justify-end bg-gradient-to-br from-slate-50 to-white p-4",
+            isDetail ? "items-center justify-center gap-3 text-center" : "gap-2",
           )}
         >
-          <Icon className="size-6" strokeWidth={2} />
-        </span>
-        {isDetail ? (
-          <>
-            <p className="max-w-[14rem] text-xs font-black leading-snug text-white drop-shadow-sm">
-              {card.title}
+          <span
+            className={clsx(
+              "flex size-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-slate-200",
+              active ? "text-[var(--bm-primary)]" : "text-slate-500",
+            )}
+          >
+            <Icon className="size-5" strokeWidth={2} />
+          </span>
+          <div className="min-w-0 space-y-1">
+            <p className="text-xs font-black leading-snug text-slate-900">{card.title}</p>
+            <p className="text-[11px] font-semibold leading-relaxed text-slate-600">
+              {card.description}
             </p>
-            <p className="max-w-[16rem] text-[10px] font-semibold leading-relaxed text-white/90">
-              {card.label}
-            </p>
-          </>
-        ) : null}
-      </div>
+            {card.label ? (
+              <p className="text-[10px] font-bold text-amber-800">{card.label}</p>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <div
+          className={clsx(
+            "pointer-events-none absolute inset-0 flex items-center justify-center bg-gradient-to-br opacity-0",
+            gradient,
+          )}
+          aria-hidden
+        />
+      )}
     </div>
   );
 }

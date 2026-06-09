@@ -1,16 +1,43 @@
 /**
- * 상담 문의 임시 저장 — localStorage 전용 (실제 회원/DB 아님).
- * Production 운영에는 Supabase/Firebase 등 DB·인증 연동 필요.
+ * 고객 문의 클라이언트 API — 서버 JSON 저장소 연동.
+ * localStorage는 dev-only fallback (API 실패 시에만).
  */
 
-export type InquiryStatus = "new" | "reviewed" | "done";
+import {
+  normalizeInquiryCategory,
+  type CustomerInquiryRecord,
+  type InquiryCategory,
+  type InquirySource,
+  type InquiryStatus,
+} from "@/types/customer-inquiry";
 
-export type InquirySource = "chat" | "support" | "product_detail";
+export type {
+  CustomerInquiryRecord as InquiryRecord,
+  InquiryStatus,
+  InquirySource,
+  InquiryCategory,
+};
 
-export type InquiryRecord = {
-  id: string;
-  createdAt: string;
-  status: InquiryStatus;
+const STORAGE_KEY = "bm-inquiries-v1-dev-fallback";
+
+function readLocalFallback(): CustomerInquiryRecord[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as CustomerInquiryRecord[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalFallback(rows: CustomerInquiryRecord[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+}
+
+export type SubmitInquiryInput = {
   name: string;
   contact: string;
   vehicle?: string;
@@ -20,48 +47,71 @@ export type InquiryRecord = {
   pageUrl?: string;
   source?: InquirySource;
   inquiryType?: string;
+  category?: InquiryCategory;
   couponCode?: string;
 };
 
-const STORAGE_KEY = "bm-inquiries-v1";
+/** @deprecated 관리자는 /api/admin/inquiries 사용 */
+export function listInquiries(): CustomerInquiryRecord[] {
+  return readLocalFallback().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
 
-function readAll(): InquiryRecord[] {
-  if (typeof window === "undefined") return [];
+export async function submitInquiry(
+  input: SubmitInquiryInput,
+): Promise<{ ok: boolean; id?: string }> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as InquiryRecord[];
-    return Array.isArray(parsed) ? parsed : [];
+    const res = await fetch("/api/support/inquiries", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as { ok?: boolean; id?: string };
+    if (res.ok && data.ok) {
+      return { ok: true, id: data.id };
+    }
   } catch {
-    return [];
+    /* fallback below */
   }
+
+  if (process.env.NODE_ENV === "development") {
+    const now = new Date().toISOString();
+    const row: CustomerInquiryRecord = {
+      id: `inq_local_${Date.now()}`,
+      createdAt: now,
+      updatedAt: now,
+      status: "new",
+      category: input.category ?? normalizeInquiryCategory(input.inquiryType),
+      name: input.name.trim() || "고객",
+      contact: input.contact.trim(),
+      vehicle: input.vehicle?.trim(),
+      message: input.message.trim(),
+      batteryCode: input.batteryCode?.trim(),
+      returnOption: input.returnOption?.trim(),
+      pageUrl: input.pageUrl?.trim(),
+      source: input.source,
+      inquiryType: input.inquiryType,
+      couponCode: input.couponCode?.trim(),
+      adminMemo: "",
+    };
+    writeLocalFallback([row, ...readLocalFallback()]);
+    return { ok: true, id: row.id };
+  }
+
+  return { ok: false };
 }
 
-function writeAll(rows: InquiryRecord[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+/** @deprecated submitInquiry 사용 */
+export function addInquiry(input: Omit<CustomerInquiryRecord, "id" | "createdAt" | "updatedAt" | "status" | "category" | "adminMemo"> & { inquiryType?: string }) {
+  void submitInquiry(input);
+  return { id: "pending", createdAt: new Date().toISOString(), status: "new" as const, ...input, category: normalizeInquiryCategory(input.inquiryType), updatedAt: new Date().toISOString(), adminMemo: "" };
 }
 
-export function listInquiries(): InquiryRecord[] {
-  return readAll().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+/** @deprecated 관리자 API 사용 */
+export function updateInquiryStatus(_id: string, _status: InquiryStatus) {
+  /* no-op — admin uses API */
 }
 
-export function addInquiry(
-  input: Omit<InquiryRecord, "id" | "createdAt" | "status">,
-): InquiryRecord {
-  const row: InquiryRecord = {
-    ...input,
-    id: `inq_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-    createdAt: new Date().toISOString(),
-    status: "new",
-  };
-  writeAll([row, ...readAll()]);
-  return row;
-}
-
-export function updateInquiryStatus(id: string, status: InquiryStatus) {
-  writeAll(readAll().map((r) => (r.id === id ? { ...r, status } : r)));
-}
-
-export function deleteInquiry(id: string) {
-  writeAll(readAll().filter((r) => r.id !== id));
+/** @deprecated 관리자 API 사용 */
+export function deleteInquiry(_id: string) {
+  /* no-op */
 }

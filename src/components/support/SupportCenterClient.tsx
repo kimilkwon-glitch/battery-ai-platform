@@ -5,7 +5,7 @@ import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import clsx from "clsx";
-import { addInquiry } from "@/lib/inquiry-storage";
+import { submitInquiry } from "@/lib/inquiry-storage";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { SUPPORT_NOTICES } from "@/lib/support-notices-data";
 import { CustomerFaqAccordion } from "@/components/support/CustomerFaqAccordion";
@@ -53,9 +53,9 @@ export function SupportCenterClient() {
     );
   }, [q]);
 
-  const submitGeneral = (e: React.FormEvent) => {
+  const submitGeneral = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInquiry({
+    const result = await submitInquiry({
       name: generalForm.name.trim() || "고객",
       contact: generalForm.contact.trim(),
       vehicle: generalForm.vehicle.trim() || undefined,
@@ -63,15 +63,16 @@ export function SupportCenterClient() {
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
       source: "support",
       inquiryType: "일반문의",
+      category: "other",
     });
-    setInquirySubmitted(true);
+    if (result.ok) setInquirySubmitted(true);
   };
 
-  const submitReturn = (e: React.FormEvent) => {
+  const submitReturn = async (e: React.FormEvent) => {
     e.preventDefault();
     const region = returnForm.region.trim();
     const body = returnForm.message.trim();
-    addInquiry({
+    const result = await submitInquiry({
       name: returnForm.name.trim() || "고객",
       contact: returnForm.contact.trim(),
       message: [region ? `회수 지역: ${region}` : null, body || "폐배터리 회수 신청"]
@@ -80,8 +81,9 @@ export function SupportCenterClient() {
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
       source: "support",
       inquiryType: "폐배터리회수",
+      category: "return",
     });
-    setInquirySubmitted(true);
+    if (result.ok) setInquirySubmitted(true);
   };
 
   return (

@@ -74,10 +74,10 @@ export function CartAddedModal({
       />
       <div className={`${bm.card} relative z-10 w-full max-w-md overflow-hidden p-5 shadow-2xl sm:p-6`}>
         <h2 id="cart-added-title" className="text-lg font-black text-slate-950">
-          장바구니에 담았습니다
+          {item.batterySpec}이 장바구니에 담겼습니다.
         </h2>
         <p className="mt-1 text-sm font-medium text-slate-600">
-          선택하신 배터리가 장바구니에 추가되었습니다.
+          수량·수령 방식은 장바구니에서 확인할 수 있습니다.
         </p>
 
         <div className="mt-4 flex gap-3 rounded-xl border border-slate-100 bg-slate-50/80 p-3">
@@ -106,14 +106,14 @@ export function CartAddedModal({
 
         <div className="mt-5 grid gap-2 sm:grid-cols-2">
           <button type="button" className={`${bm.btnSecondary} min-h-[3rem] w-full text-sm font-black`} onClick={onClose}>
-            계속 쇼핑하기
+            계속 둘러보기
           </button>
           <Link
             href={CART_PAGE}
             className={`${bm.btnPrimary} min-h-[3rem] w-full justify-center text-sm font-black`}
             onClick={onClose}
           >
-            장바구니 이동하기
+            장바구니 보기
           </Link>
         </div>
       </div>

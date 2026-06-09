@@ -76,6 +76,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/admin")) {
+    if (pathname === "/admin/coupons") {
+      const dest = request.nextUrl.clone();
+      dest.pathname = "/admin/promotions";
+      return applyHeaders(NextResponse.redirect(dest, 308), { ...NO_STORE, ...ADMIN_NOINDEX });
+    }
+
     if (pathname === "/admin/login") {
       return applyHeaders(NextResponse.next(), { ...NO_STORE, ...ADMIN_NOINDEX });
     }

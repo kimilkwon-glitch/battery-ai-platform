@@ -46,6 +46,11 @@ tools/ux-audit/reports/screenshots/
 tools/ux-audit/playwright-report/
 tools/ux-audit/test-results/
 
+# design / journey audit captures (large PNG output)
+design-audit/journey-runs/
+design-audit/runs/
+design-audit/screenshots/
+
 # AI audit — regenerated on every `npm run build`
 src/lib/ai-audit/audit-snapshot.json
 

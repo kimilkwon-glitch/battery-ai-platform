@@ -126,6 +126,140 @@
     flex: 0 0 auto;
   }
 
+  /* 메뉴 버튼 — 컬러풀 포인트 (장바구니와 구분) */
+  .portal-header-menu-btn--accent {
+    color: #fff;
+    border: none;
+    background: linear-gradient(
+      135deg,
+      #2563eb 0%,
+      #06b6d4 48%,
+      #7c3aed 100%
+    );
+    box-shadow:
+      0 2px 8px rgba(37, 99, 235, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      filter 0.15s ease;
+  }
+
+  .portal-header-menu-btn--accent:hover {
+    filter: brightness(1.05);
+    box-shadow:
+      0 4px 12px rgba(37, 99, 235, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  }
+
+  .portal-header-menu-btn--accent:active {
+    transform: scale(0.96);
+    box-shadow:
+      0 1px 4px rgba(37, 99, 235, 0.3),
+      inset 0 2px 4px rgba(15, 23, 42, 0.12);
+  }
+
+  /* ── 상품 상세 모바일 ── */
+  .battery-product-spec-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .battery-product-spec-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5625rem;
+    border-radius: 999px;
+    border: 1px solid #dbe3ee;
+    background: #f8fafc;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #475569;
+    line-height: 1.3;
+  }
+
+  .battery-product-spec-size {
+    margin: 0;
+  }
+
+  .battery-product-detail__order-card {
+    padding: 1rem !important;
+  }
+
+  .battery-detail-sticky-bar {
+    padding-bottom: calc(0.625rem + env(safe-area-inset-bottom, 0px));
+    transition: transform 0.22s ease, opacity 0.22s ease, visibility 0.22s ease;
+  }
+
+  .battery-detail-sticky-bar--hidden {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  [data-battery-detail-hub][data-sticky-visible="false"] .battery-detail-consult-fab {
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  body:has([data-battery-detail-hub][data-sticky-visible="false"]) .bm-floating-dock {
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .battery-detail-sticky-bar__inner {
+    align-items: stretch;
+  }
+
+  .battery-detail-sticky-bar__btn {
+    min-height: 2.75rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1.25 !important;
+    white-space: nowrap;
+    padding-top: 0.625rem !important;
+    padding-bottom: 0.625rem !important;
+    font-size: 0.8125rem !important;
+  }
+
+  .battery-detail-consult-fab {
+    position: fixed;
+    right: 0.875rem;
+    bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+    z-index: 45;
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid #bfdbfe;
+    background: linear-gradient(165deg, #fff 0%, #eff6ff 100%);
+    color: #2563eb;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.22);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .battery-detail-consult-fab:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.18);
+  }
+
+  body:has([data-battery-detail-hub]) .bm-floating-dock {
+    bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .product-fulfillment-panel__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .product-fulfillment-card {
+    min-height: 4.125rem;
+    padding: 0.625rem 0.75rem;
+  }
+
   /* ── 홈 ── */
   .home-main-content,
   .home-main-brand-region {
@@ -271,6 +405,165 @@
     max-width: 100%;
   }
 
+  .brand-section-anchor {
+    scroll-margin-top: 140px;
+  }
+
+  .brand-hub-advantage-mobile {
+    min-height: 0 !important;
+    padding: 0.875rem 1rem !important;
+    overflow: hidden;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  .brand-hub-advantage-mobile__heading {
+    margin: 0;
+    font-size: 0.9375rem !important;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+
+  .brand-hub-advantage-mobile__list {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .brand-hub-advantage-mobile__item {
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+    padding-top: 0.625rem;
+  }
+
+  .brand-hub-advantage-mobile__item:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .brand-hub-advantage-mobile__item-title {
+    margin: 0;
+    font-size: 0.8125rem !important;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+
+  .brand-hub-advantage-mobile__item-desc {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem !important;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .brand-hub-insight-desktop {
+    display: none !important;
+  }
+
+  /* ── 메인 배너 ── */
+  .home-hero-carousel__nav--prev {
+    display: none !important;
+  }
+
+  .home-hero-carousel__nav--next-mobile {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-top: -0.875rem;
+    right: 0.25rem;
+    opacity: 0.92;
+  }
+
+  /* ── 브랜드 라인업 카드 ── */
+  .home-brand-lineup__header-inner {
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+
+  .home-brand-lineup__title-row {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .home-brand-lineup__title {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
+    text-align: left;
+  }
+
+  .home-brand-lineup__label {
+    flex-shrink: 0;
+    font-size: 0.625rem !important;
+    padding: 0.2rem 0.5rem !important;
+  }
+
+  .home-brand-lineup__desc {
+    margin-top: 0.375rem !important;
+    text-align: left;
+    font-size: 0.8125rem !important;
+    line-height: 1.45 !important;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  .home-brand-lineup__more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    margin-top: 0.5rem;
+    min-height: 44px;
+    padding: 0.25rem 0;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .home-brand-lineup--rocket .home-brand-lineup__more-link {
+    color: #b42318;
+  }
+
+  .home-brand-lineup--solite .home-brand-lineup__more-link {
+    color: #1d4ed8;
+  }
+
+  .home-brand-lineup__more-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .home-brand-lineup__footer--desktop {
+    display: none;
+  }
+
+  .home-brand-lineup .home-spec-card-image {
+    height: 7.25rem !important;
+    min-height: 7.25rem !important;
+    max-height: 7.25rem !important;
+    padding: 0.5rem 0.625rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .home-brand-lineup .home-spec-card-image img,
+  .home-brand-lineup .home-spec-card-image picture,
+  .home-brand-lineup .battery-image-stage img {
+    max-width: 88% !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    margin-inline: auto;
+  }
+
   /* ── 매장·출장 안내 ── */
   .busan-service-hub {
     width: 100%;
@@ -298,8 +591,175 @@
     overflow: hidden;
   }
 
+  .busan-map-canvas {
+    height: 220px;
+  }
+
+  .busan-map-legend-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .busan-map-legend-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .busan-map-legend-chip--deokcheon {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .busan-map-legend-chip--hakjang {
+    background: #d1fae5;
+    color: #047857;
+  }
+
+  .busan-map-legend-chip--neutral {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .busan-map-selection-bar {
+    min-height: 0;
+    font-size: 0.8125rem;
+  }
+
+  .bm-store-card__photo {
+    display: none;
+  }
+
+  .bm-store-card__title {
+    font-size: 1.125rem !important;
+  }
+
+  .bm-store-badge {
+    padding: 0.25rem 0.625rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .bm-store-field-label {
+    font-size: 0.6875rem;
+  }
+
+  .bm-store-field-label--phone {
+    display: none;
+  }
+
+  .bm-store-region-text {
+    margin-top: 0.25rem !important;
+    min-height: 0 !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    line-height: 1.45 !important;
+  }
+
+  .bm-store-phone-link {
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+  }
+
+  .bm-store-actions {
+    gap: 0.5rem;
+    padding-top: 1rem;
+  }
+
+  .bm-store-actions-row--primary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .bm-store-btn {
+    min-height: 44px !important;
+    font-size: 0.8125rem !important;
+    padding: 0 0.75rem !important;
+  }
+
+  .bm-store-btn--aux {
+    width: 100%;
+    min-height: 44px !important;
+    font-weight: 700 !important;
+  }
+
+  .bm-store-cards-grid {
+    gap: 1rem;
+  }
+
   .busan-service-contact {
     padding: 1rem;
+  }
+
+  .busan-branch-summary {
+    margin-top: 0;
+  }
+
+  .vehicle-fuel-tab-bar__hint {
+    font-size: 0.6875rem;
+    line-height: 1.45;
+  }
+
+  .busan-region-map__map-panel .busan-map-legend {
+    display: none;
+  }
+
+  /* ── 메인 검색창 compact (돋보기 아이콘) ── */
+  .home-main-search-aura {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  .home-main-search-shell {
+    padding: 0.375rem 0.5rem !important;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium.home-hero-search-compound--icon-submit {
+    min-height: 3.5rem;
+    max-height: 3.75rem;
+    border-radius: 1rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--icon-submit .home-search-type-trigger {
+    width: 5.5rem;
+    min-width: 5.5rem;
+    max-width: 6rem;
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    padding-inline: 0.5rem;
+    gap: 0.125rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--icon-submit .home-search-type-trigger .truncate {
+    font-size: 0.8125rem;
+    font-weight: 800;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--icon-submit .home-main-search-input {
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    padding-inline: 0.625rem;
+    font-size: 0.9375rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--icon-submit .home-main-search-input::placeholder {
+    font-size: 0.875rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--icon-submit .home-hero-search-submit,
+  .home-main-search-shell .home-hero-search-compound--icon-submit button[type="submit"].home-hero-search-submit {
+    display: none !important;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--icon-submit .bm-search-icon-submit {
+    right: 0.375rem;
+    width: 2.25rem;
+    height: 2.25rem;
   }
 
   /* ── 고객센터 ── */
@@ -319,14 +779,27 @@
     box-sizing: border-box;
   }
 
+  .support-hub-v2__hero--compact {
+    padding-bottom: 0;
+  }
+
   .support-hub-v2__hero-title {
-    font-size: 1.625rem;
+    font-size: 1.5rem;
     line-height: 1.2;
   }
 
   .support-hub-v2__hero-desc {
-    font-size: 0.875rem;
-    line-height: 1.55;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin-top: 0.375rem;
+  }
+
+  .support-hub-v2__cta-row--compact .support-hub-v2__cta {
+    flex: 1 1 0;
+    width: auto !important;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8125rem;
   }
 
   .support-hub-v2__section-title {
@@ -358,9 +831,119 @@
     padding: 0.5rem 0.875rem;
   }
 
+  .support-hub-v2__faq-item {
+    border-radius: 0.625rem;
+  }
+
+  .support-hub-v2__faq-trigger {
+    padding: 0.75rem 0.875rem !important;
+  }
+
   .support-hub-v2__faq-question {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .support-hub-v2__faq-more--compact {
+    width: auto;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .support-hub-v2__quick-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .support-hub-v2__quick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.625rem;
+    border: 1px solid #d8e1ec;
+    background: #fff;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+    text-decoration: none;
+    line-height: 1.35;
+    word-break: keep-all;
+  }
+
+  .support-hub-v2__quick-btn:hover {
+    border-color: #93c5fd;
+    background: #f8fafc;
+    color: #2563eb;
+  }
+
+  .support-hub-v2__notice-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.8125rem;
+  }
+
+  .support-hub-v2__notice-badge {
+    font-size: 0.625rem !important;
+    padding: 0.125rem 0.375rem !important;
+  }
+
+  .support-hub-v2__notice-list--compact .support-hub-v2__notice-row {
+    padding: 0.5625rem 0.75rem;
+  }
+
+  .support-hub-v2__inquiry-open {
+    min-height: 2.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .support-hub-v2__contact-mini {
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #d8e1ec;
+    background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+  }
+
+  .support-hub-v2__contact-mini-title {
+    margin: 0;
     font-size: 0.875rem;
-    line-height: 1.45;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .support-hub-v2__contact-mini-title a {
+    color: #2563eb;
+    font-weight: 800;
+  }
+
+  .support-hub-v2__contact-mini-desc {
+    margin: 0.375rem 0 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #64748b;
+  }
+
+  .support-hub-v2__contact-mini-cta {
+    min-height: 2.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .support-hub-v2__search--compact {
+    padding: 0.75rem !important;
+  }
+
+  .support-hub-v2__search--compact .support-hub-v2__section-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
   }
 
   .support-hub-v2__layout,
@@ -404,10 +987,71 @@
     max-width: 100%;
     left: 0;
     right: 0;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
   }
 
   .checkout-input {
     max-width: 100%;
     min-width: 0;
+  }
+
+  .checkout-card--intro {
+    padding: 0.875rem 1rem;
+  }
+
+  .checkout-order-summary__row dd {
+    word-break: break-word;
+  }
+
+  .checkout-summary-card dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .checkout-summary-card dd {
+    text-align: right;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .brand-hub-mobile-explorer {
+    margin-bottom: 0.5rem;
+  }
+
+  .brand-hub-spec-chip {
+    min-width: 3.25rem;
+  }
+
+  body:has([data-page="checkout"]) .bm-floating-dock {
+    bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 768px) {
+  .brand-section-anchor {
+    scroll-margin-top: 120px;
+  }
+
+  .brand-hub-insight-desktop {
+    display: flex !important;
+  }
+
+  .home-hero-carousel__nav--prev {
+    display: flex !important;
+  }
+
+  .home-brand-lineup__more-link {
+    display: none;
+  }
+
+  .home-brand-lineup__footer--desktop {
+    display: flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .busan-region-map__map-panel .busan-map-canvas {
+    height: 560px;
   }
 }

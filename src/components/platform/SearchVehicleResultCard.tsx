@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
@@ -13,6 +13,7 @@ import {
   slugFromSearchVehicleRow,
 } from "@/lib/search/search-vehicle-card-nav";
 import type { VehicleSearchRow } from "@/components/platform/SearchVehicleResults";
+import { isSignupVehicleSelectActive } from "@/lib/signup-vehicle-draft";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -22,6 +23,9 @@ type Props = {
 /** 검색 결과·세대 선택 — 카드 클릭·규격·등록 CTA */
 export function SearchVehicleResultCard({ row }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const signupVehicleSelect =
+    searchParams.get("mode") === "signup_vehicle_select" || isSignupVehicleSelectActive();
   const { title, brand, yearRange, imageSrc } = searchVehicleCardLabels(row);
   const detailHref = resolveSearchVehicleCardDetailHref(row);
   const specHref = resolveSearchVehicleCardSpecHref(row);
@@ -110,8 +114,9 @@ export function SearchVehicleResultCard({ row }: Props) {
               fuelHint={row.fuel}
               recommendedBattery={row.recommend}
               className={`${bm.btnPrimary} bm-search-vehicle-card__action-btn`}
-              label="내 차량으로 등록"
+              label={signupVehicleSelect ? "이 차량 선택" : "내 차량으로 등록"}
               source="vehicleSearch"
+              signupVehicleSelect={signupVehicleSelect}
             />
           </div>
         ) : (

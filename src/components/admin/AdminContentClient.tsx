@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { bm } from "@/lib/design-tokens";
 import {
@@ -101,10 +101,14 @@ function parseCsv(value: string): string[] {
 type Props = {
   initialItems: AdminContentItem[];
   dataSource?: string;
+  /** AdminPageFrame 상단 제목 사용 시 중복 헤더 숨김 */
+  embedded?: boolean;
 };
 
-export function AdminContentClient({ initialItems, dataSource }: Props) {
+export function AdminContentClient({ initialItems, dataSource, embedded }: Props) {
   const [items, setItems] = useState<AdminContentItem[]>(initialItems);
+  const [persistSource, setPersistSource] = useState(dataSource ?? "static");
+  const [persistError, setPersistError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<AdminContentType | "all">("all");
   const [statusFilter, setStatusFilter] = useState<AdminContentStatus | "all">("all");
@@ -135,6 +139,35 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
 
   const selected = draft ?? items.find((i) => i.id === selectedId) ?? null;
 
+  const persistItems = useCallback(async (nextItems: AdminContentItem[]) => {
+    setPersistError(null);
+    const res = await fetch("/api/admin/content/workbench", {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: nextItems }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      setPersistError(data.message ?? "저장에 실패했습니다.");
+      return false;
+    }
+    setPersistSource("persisted");
+    return true;
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      const res = await fetch("/api/admin/content/workbench", { credentials: "include" });
+      const data = await res.json();
+      if (res.ok && data.ok && Array.isArray(data.items) && data.items.length > 0) {
+        setItems(data.items);
+        setPersistSource(data.source ?? "persisted");
+        setSelectedId((id) => id ?? data.items[0]?.id ?? null);
+      }
+    })();
+  }, []);
+
   const selectItem = useCallback(
     (item: AdminContentItem) => {
       setSelectedId(item.id);
@@ -164,17 +197,15 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
       };
       setItems((prev) => {
         const idx = prev.findIndex((i) => i.id === next.id);
-        if (idx >= 0) {
-          const copy = [...prev];
-          copy[idx] = next;
-          return copy;
-        }
-        return [next, ...prev];
+        const copy = idx >= 0 ? [...prev] : [next, ...prev];
+        if (idx >= 0) copy[idx] = next;
+        void persistItems(copy);
+        return copy;
       });
       setDraft(next);
       setSelectedId(next.id);
     },
-    [draft],
+    [draft, persistItems],
   );
 
   const createNew = useCallback(() => {
@@ -184,10 +215,14 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
       thumbnailType: "guide",
       status: "draft",
     });
-    setItems((prev) => [item, ...prev]);
+    setItems((prev) => {
+      const copy = [item, ...prev];
+      void persistItems(copy);
+      return copy;
+    });
     setSelectedId(item.id);
     setDraft({ ...item });
-  }, []);
+  }, [persistItems]);
 
   const duplicateItem = useCallback(
     (item: AdminContentItem) => {
@@ -199,24 +234,30 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
         createdAt: new Date().toISOString().slice(0, 10),
         updatedAt: new Date().toISOString().slice(0, 10),
       });
-      setItems((prev) => [copy, ...prev]);
+      setItems((prev) => {
+        const next = [copy, ...prev];
+        void persistItems(next);
+        return next;
+      });
       selectItem(copy);
     },
-    [selectItem],
+    [selectItem, persistItems],
   );
 
   const hideItem = useCallback(
     (id: string) => {
-      setItems((prev) =>
-        prev.map((i) =>
+      setItems((prev) => {
+        const next = prev.map((i) =>
           i.id === id ? { ...i, status: "hidden" as const, updatedAt: new Date().toISOString().slice(0, 10) } : i,
-        ),
-      );
+        );
+        void persistItems(next);
+        return next;
+      });
       if (draft?.id === id) {
         setDraft((d) => (d ? { ...d, status: "hidden" } : d));
       }
     },
-    [draft?.id],
+    [draft?.id, persistItems],
   );
 
   const previewItem = draft ?? selected;
@@ -232,13 +273,14 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
   }, [items]);
 
   return (
-    <main className={bm.pageBg}>
-      <div className={`${bm.pageContainerWide} pb-10`}>
+    <main className={embedded ? "" : bm.pageBg}>
+      <div className={embedded ? "pb-2" : `${bm.pageContainerWide} pb-10`}>
+        {!embedded ? (
         <header className={`${bm.card} mb-4 ${bm.cardPad}`}>
           <SectionHeader
             label="Battery Manager · 운영"
             title="관리자 콘텐츠 센터"
-            description="사이트에 표시되는 가이드, Q&A, 증상 안내, 사진분석 안내 콘텐츠를 한곳에서 관리합니다."
+            description={`가이드·Q&A·증상 안내 — 저장: ${persistSource}`}
             action={
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={bm.btnSecondary} onClick={exportWorkbench}>
@@ -247,9 +289,12 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
               </div>
             }
           />
-          {dataSource ? (
-            <p className="mt-2 text-[11px] font-semibold text-slate-400">
-              데이터 소스: {dataSource === "workbench" ? "contentWorkbench.json" : dataSource}
+          <p className="mt-2 text-[11px] font-semibold text-slate-400">
+            데이터 소스: {persistSource === "workbench" ? "contentWorkbench.json" : persistSource}
+          </p>
+          {persistError ? (
+            <p className="mt-2 rounded-lg bg-rose-50 px-3 py-2 text-[11px] font-semibold text-rose-800">
+              {persistError}
             </p>
           ) : null}
           {!validation.valid ? (
@@ -258,7 +303,16 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
             </p>
           ) : null}
         </header>
+        ) : (
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-[11px] font-semibold text-slate-500">저장: {persistSource}</p>
+            <button type="button" className="admin-btn admin-btn--secondary admin-btn--sm" onClick={exportWorkbench}>
+             보내기
+            </button>
+          </div>
+        )}
 
+        {!embedded ? (
         <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           <StatCard label="전체 콘텐츠" value={stats.total} />
           <StatCard label="게시중" value={stats.published} tone="text-emerald-700" />
@@ -267,6 +321,7 @@ export function AdminContentClient({ initialItems, dataSource }: Props) {
           <StatCard label="연결 누락" value={stats.missingLinks} tone="text-rose-600" />
           <StatCard label="전용 이미지 제작" value={needsDedicatedImage.length} tone="text-violet-700" />
         </div>
+        ) : null}
 
         <div className={`${bm.card} mb-4 ${bm.cardPad}`}>
           <div className="grid gap-3 lg:grid-cols-[1fr,auto,auto,auto]">

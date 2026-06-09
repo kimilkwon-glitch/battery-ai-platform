@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { AdminDataTableClient } from "@/components/admin/AdminDataTableClient";
+import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import type { AdminAssetRow } from "@/types/admin";
 
 type Props = { rows: AdminAssetRow[] };
@@ -35,18 +36,25 @@ export function AdminAssetsTable({ rows }: Props) {
           match: (row, v) => String((row as AdminAssetRow).missing) === v,
         },
       ]}
+      mobileCardRender={(r) => (
+        <AdminMobileCard
+          title={r.fileName}
+          badges={[
+            { label: r.exists ? "있음" : "누락", tone: r.exists ? "success" : "danger" },
+            { label: r.category, tone: "muted" },
+          ]}
+          lines={[r.targetLabel, r.device]}
+        />
+      )}
       columns={[
-        { key: "category", label: "분류", render: (r) => r.category },
-        { key: "fileName", label: "파일", render: (r) => <span className="font-mono text-[10px]">{r.fileName}</span> },
+        { key: "category", label: "분류", render: (r) => <span className="admin-cell-muted">{r.category}</span> },
+        { key: "fileName", label: "파일", render: (r) => <span className="admin-cell-primary font-mono text-[10px]">{r.fileName}</span> },
         { key: "targetLabel", label: "연결 대상", render: (r) => r.targetLabel },
-        { key: "device", label: "기기", render: (r) => r.device },
         {
           key: "exists",
-          label: "존재",
+          label: "상태",
           render: (r) => (
-            <Badge variant={r.exists ? "success" : "danger"}>
-              {r.exists ? "있음" : "없음"}
-            </Badge>
+            <Badge variant={r.exists ? "success" : "danger"}>{r.exists ? "있음" : "누락"}</Badge>
           ),
         },
         {
@@ -57,13 +65,8 @@ export function AdminAssetsTable({ rows }: Props) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={r.previewPath} alt="" className="h-8 w-12 rounded object-cover" />
             ) : (
-              "—"
+              <span className="admin-cell-muted">—</span>
             ),
-        },
-        {
-          key: "aspectIssue",
-          label: "비율/CSS",
-          render: (r) => r.aspectIssue ?? "—",
         },
       ]}
     />

@@ -45,7 +45,18 @@ export const BUSAN_STORES = [
   },
 ] as const;
 
+/** 모바일 — 지점별 대표 권역 한 줄 요약 */
+export const BUSAN_MOBILE_REGION_LINES = {
+  deokcheon: "북구 · 금정구 · 연제구 · 동래구 · 강서 일부",
+  hakjang: "사상구 · 사하구 · 부산진구 · 서구 · 중구",
+} as const;
 
+export const BUSAN_MOBILE_SERVICE_COPY = {
+  title: "부산 출장 가능 지역",
+  lead: "동네명을 입력하면 가까운 덕천점·학장점을 안내합니다.",
+  branchHint: "지점을 선택하면 대표 권역과 연락처를 확인할 수 있습니다.",
+  visitNote: "실제 방문·출장 가능 여부는 일정과 위치에 따라 달라질 수 있습니다.",
+} as const;
 
 export const BUSAN_CAPABILITIES = [
 

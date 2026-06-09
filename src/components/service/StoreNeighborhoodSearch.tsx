@@ -94,9 +94,6 @@ export function StoreNeighborhoodSearch({
                 <p className="mt-1 text-sm font-semibold text-slate-700">
                   {BUSAN_REGION_DISPLAY[result.storeId].blurb}
                 </p>
-                <p className="mt-2 text-[11px] font-medium text-slate-500">
-                  입력: &quot;{submitted}&quot; → {result.keyword} 매칭
-                </p>
               </>
             ) : (
               <>
@@ -109,9 +106,9 @@ export function StoreNeighborhoodSearch({
       </AnimatePresence>
 
       {activeStore ? (
-        <p className="mt-3 text-[11px] font-semibold text-slate-500">
-          지도에서 <span className="font-black text-slate-800">{BUSAN_REGION_DISPLAY[activeStore].label}</span> 권역이
-          강조되어 있습니다.
+        <p className="mt-3 hidden text-[11px] font-semibold text-slate-500 lg:block">
+          <span className="font-black text-slate-800">{BUSAN_REGION_DISPLAY[activeStore].label}</span> 권역이
+          선택되었습니다.
         </p>
       ) : null}
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import {
   AdminDataTableClient,
   type AdminTableColumn,
@@ -35,70 +36,33 @@ const REVIEW_OPTIONS = [
 
 export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
   const columns: AdminTableColumn<AdminProductRow>[] = [
-    { key: "brand", label: "브랜드", render: (r) => r.brandLabel },
-    { key: "batteryCode", label: "규격", render: (r) => <span className="font-mono text-xs">{r.batteryCode}</span> },
-    { key: "adminName", label: "상품명", render: (r) => r.adminName },
-    { key: "displayName", label: "표시 상품명", render: (r) => r.displayName },
+    {
+      key: "product",
+      label: "상품",
+      render: (r) => (
+        <div>
+          <p className="admin-cell-primary font-mono">{r.batteryCode}</p>
+          <p className="admin-cell-muted admin-cell-clamp">{r.displayName}</p>
+        </div>
+      ),
+    },
+    { key: "brand", label: "브랜드", render: (r) => <span className="admin-cell-muted">{r.brandLabel}</span> },
     {
       key: "internetPrice",
       label: "인터넷가",
       className: "text-right tabular-nums",
-      render: (r) => priceCell(r.internetPrice),
+      render: (r) => <span className="admin-cell-primary">{priceCell(r.internetPrice)}</span>,
     },
     {
       key: "onsitePrice",
       label: "출장가",
       className: "text-right tabular-nums",
-      render: (r) => priceCell(r.onsitePrice),
-    },
-    {
-      key: "delivery",
-      label: "택배 발송",
-      className: "text-right tabular-nums text-xs",
-      render: (r) => priceCell(r.fulfillmentPrices.delivery),
-    },
-    {
-      key: "onsiteInstall",
-      label: "출장교체",
-      className: "text-right tabular-nums text-xs",
-      render: (r) => priceCell(r.fulfillmentPrices.onsiteInstall),
-    },
-    {
-      key: "storeInstall",
-      label: "내방교체",
-      className: "text-right tabular-nums text-xs",
-      render: (r) => priceCell(r.fulfillmentPrices.storeInstall),
-    },
-    {
-      key: "storePickup",
-      label: "내방수령",
-      className: "text-right tabular-nums text-xs",
-      render: (r) => priceCell(r.fulfillmentPrices.storePickupSelf),
+      render: (r) => <span className="admin-cell-muted">{priceCell(r.onsitePrice)}</span>,
     },
     {
       key: "saleStatus",
-      label: "판매 상태",
+      label: "판매",
       render: (r) => <AdminProductSaleBadge status={r.saleStatus} />,
-    },
-    {
-      key: "visible",
-      label: "노출",
-      render: (r) => (r.visible ? "노출" : "숨김"),
-    },
-    {
-      key: "sellable",
-      label: "판매 가능",
-      render: (r) => (r.sellable ? "가능" : "불가"),
-    },
-    {
-      key: "image",
-      label: "이미지",
-      render: (r) => (r.hasHeroImage ? "있음" : "없음"),
-    },
-    {
-      key: "detail",
-      label: "상세",
-      render: (r) => (r.hasDetailPage ? "연결" : "없음"),
     },
     {
       key: "review",
@@ -106,17 +70,13 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
       render: (r) => <AdminProductReviewBadge status={r.reviewStatus} />,
     },
     {
-      key: "updatedAt",
-      label: "수정일",
-      render: (r) => (r.updatedAt ? r.updatedAt.slice(0, 10) : "—"),
-    },
-    {
       key: "manage",
-      label: "관리",
+      label: "",
+      className: "admin-cell-actions",
       render: (r) => (
         <Link
           href={`/admin/products/${productIdToPathSegment(r.productId)}`}
-          className="text-xs font-bold text-blue-700 hover:underline"
+          className="admin-btn admin-btn--secondary admin-btn--sm"
         >
           편집
         </Link>
@@ -236,6 +196,23 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
       filters={filters}
       getRowId={(r) => r.productId}
       emptyMessage="등록된 제품이 없습니다."
+      mobileCardRender={(r) => (
+        <AdminMobileCard
+          title={`${r.batteryCode} · ${r.displayName}`}
+          lines={[
+            `${r.brandLabel} · 인터넷 ${priceCell(r.internetPrice)}`,
+            `${r.saleStatus} · ${r.visible ? "노출" : "숨김"}`,
+          ]}
+          actions={
+            <Link
+              href={`/admin/products/${productIdToPathSegment(r.productId)}`}
+              className="admin-btn admin-btn--secondary admin-btn--sm"
+            >
+              편집
+            </Link>
+          }
+        />
+      )}
     />
   );
 }

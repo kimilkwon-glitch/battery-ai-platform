@@ -30,7 +30,7 @@ export function ServiceCenterClient({
         <p className="cp-hero__kicker">Busan Direct Stores</p>
         <h2 className="busan-service-hero__title">부산 직영점 · 출장 교체 안내</h2>
         <p className="busan-service-hero__desc">
-          동네명을 입력하면 가까운 덕천점·학장점을 안내해 드립니다. 지도에서 권역을 확인하고 지점을 선택하세요.
+          동네명을 입력하면 가까운 직영점을 안내합니다. 지점을 선택하면 권역과 연락처를 바로 확인할 수 있습니다.
         </p>
         <span className="cp-hero__accent" aria-hidden />
       </header>
@@ -56,10 +56,6 @@ export function ServiceCenterClient({
           onSelectBranch={setSelectedBranch}
         />
       </section>
-
-      <p className="text-center text-xs font-medium text-slate-500">
-        지도가 보이지 않으면 가까운 지점으로 전화 상담해 주세요.
-      </p>
 
       <StoreHubCompactCards
         selectedBranch={selectedBranch}

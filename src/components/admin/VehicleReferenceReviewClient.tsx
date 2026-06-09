@@ -9,7 +9,7 @@ import {
 
 type Props = {
   referenceEntries: VehicleReferenceCandidateEntry[];
-  inventoryBySlug: Map<string, VehicleImageInventoryEntry>;
+  inventoryBySlug: Record<string, VehicleImageInventoryEntry>;
 };
 
 export function VehicleReferenceReviewClient({ referenceEntries, inventoryBySlug }: Props) {
@@ -46,7 +46,7 @@ export function VehicleReferenceReviewClient({ referenceEntries, inventoryBySlug
       </div>
 
       {filtered.map((ref) => (
-        <ReferenceReviewCard key={ref.slug} refEntry={ref} inv={inventoryBySlug.get(ref.slug)} />
+        <ReferenceReviewCard key={ref.slug} refEntry={ref} inv={inventoryBySlug[ref.slug]} />
       ))}
     </div>
   );

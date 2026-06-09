@@ -5,6 +5,11 @@ import { getHomeCatalogCardDisplay } from "@/lib/home-catalog-card-display";
 import type { HomeCatalogBrandId, HomeCatalogProduct } from "@/lib/home-main-catalog-data";
 import { HOME_CATALOG_BRAND_KEY } from "@/lib/home-main-catalog-data";
 
+const HOME_BRAND_LABEL: Record<HomeCatalogBrandId, string> = {
+  rocket: "로케트",
+  solite: "쏠라이트",
+};
+
 type Props = {
   product: HomeCatalogProduct;
   brand: HomeCatalogBrandId;
@@ -17,7 +22,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
 
   return (
     <article
-      className="home-spec-card bm-card-unified group flex flex-col bg-white motion-safe:hover:-translate-y-0.5"
+      className="home-spec-card bm-card-unified group flex h-full flex-col bg-white motion-safe:hover:-translate-y-0.5"
       data-home-spec-card={displayName}
       data-home-spec-search-code={searchCode}
       data-home-spec-brand={brand}
@@ -34,7 +39,8 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
         />
       </div>
 
-      <div className="home-spec-card-body flex flex-col">
+      <div className="home-spec-card-body flex flex-1 flex-col">
+        <p className="home-spec-card-brand">{HOME_BRAND_LABEL[brand]}</p>
         <div className="home-spec-card-title-row" role="group" aria-label={`${displayName} 규격`}>
           <h3 className="home-spec-code-title">{displayName}</h3>
           <span className="home-spec-card-badge">{typeTag}</span>

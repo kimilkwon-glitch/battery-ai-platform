@@ -11,9 +11,11 @@ const SCROLL_STEP = 300;
 export function ManufacturerVehicleRail({
   label,
   items,
+  signupVehicleSelect = false,
 }: {
   label: string;
   items: VehiclesBrowseItem[];
+  signupVehicleSelect?: boolean;
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -84,7 +86,7 @@ export function ManufacturerVehicleRail({
         <div className="vehicle-search-rail__track">
           {items.map((item) => (
             <div key={item.key} className="vehicle-search-rail__slide">
-              <VehicleSearchRailCard item={item} />
+              <VehicleSearchRailCard item={item} signupVehicleSelect={signupVehicleSelect} />
             </div>
           ))}
         </div>

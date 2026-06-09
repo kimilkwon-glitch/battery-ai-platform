@@ -345,6 +345,8 @@ export function SearchBatteryFocusBlock({
             ctas={ctas}
             secondaryLinks={secondaryLinks}
             primary
+            showPricing={embedMode}
+            brandName="로케트"
           />
           {hasBrandSpecData(code!) ? <BatterySpecMiniCard code={code!} compact /> : null}
         </>

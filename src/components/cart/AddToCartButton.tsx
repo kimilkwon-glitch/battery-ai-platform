@@ -7,7 +7,7 @@ import {
   createCartItemFromVehicleBattery,
   type CreateCartItemInput,
 } from "@/lib/cart/cart-item-factory";
-import { cartItemMergeKey, getCartItems } from "@/lib/cart/cart-storage";
+import { addCartItem, cartItemMergeKey, getCartItems } from "@/lib/cart/cart-storage";
 import { CART_PAGE } from "@/lib/customer-center-routes";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
 import { bm } from "@/lib/design-tokens";
@@ -69,9 +69,10 @@ export function AddToCartButton({
             ...props.input,
             fulfillmentMethod: props.input.fulfillmentMethod ?? fulfillmentMethod,
           });
+    addCartItem(item);
     addItem(item);
     setModalItem(resolveAddedLine(item));
-  }, [addItem, props]);
+  }, [addItem, props, fulfillmentMethod]);
 
   const btnClass =
     variant === "primary"

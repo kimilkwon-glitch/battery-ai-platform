@@ -5,9 +5,17 @@ import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { vehicleAssets } from "@/lib/car-assets";
 import { carImageForPlatformVehicleId } from "@/lib/car-data";
 import { getVehicleBodyType } from "@/lib/platform-data";
+import { appendSignupVehicleMode } from "@/lib/signup-vehicle-draft";
 import type { VehiclesBrowseItem } from "@/lib/vehicles-browse-data";
 
-export function VehicleSearchRailCard({ item }: { item: VehiclesBrowseItem }) {
+export function VehicleSearchRailCard({
+  item,
+  signupVehicleSelect = false,
+}: {
+  item: VehiclesBrowseItem;
+  signupVehicleSelect?: boolean;
+}) {
+  const href = signupVehicleSelect ? appendSignupVehicleMode(item.href) : item.href;
   const imageSrc = carImageForPlatformVehicleId(item.vehicleId);
   const bodyType = getVehicleBodyType(item.vehicleId);
   const isCommercial =
@@ -18,7 +26,7 @@ export function VehicleSearchRailCard({ item }: { item: VehiclesBrowseItem }) {
   const subtitle = asset?.yearRange || asset?.generationName;
 
   return (
-    <Link href={item.href} className="vehicle-search-rail-card group">
+    <Link href={href} className="vehicle-search-rail-card group">
       <div className="vehicle-search-rail-card__media">
         <VehicleCardMedia
           alt={item.title}

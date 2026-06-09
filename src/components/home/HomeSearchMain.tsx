@@ -15,7 +15,9 @@ export function HomeSearchMain() {
       <HomePremiumHero />
 
       <div className="home-main-content mx-auto w-full max-w-[1240px] px-4 sm:px-6">
-        <HomeBenefitsCarousel />
+        <div className="home-main-section home-main-section--benefits" data-home-section="benefits">
+          <HomeBenefitsCarousel />
+        </div>
         <HomeQuickIconMenu />
       </div>
 

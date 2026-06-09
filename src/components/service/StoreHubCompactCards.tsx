@@ -95,7 +95,7 @@ export function StoreHubCompactCards({
               selectedBranch == null && !isHover && "bm-store-card--branch-default",
             )}
           >
-            <div className="relative aspect-[16/10] w-full shrink-0 bg-slate-100 sm:aspect-[16/9]">
+            <div className="bm-store-card__photo relative aspect-[16/10] w-full shrink-0 bg-slate-100 sm:aspect-[16/9]">
               <Image
                 src={store.imageSrc}
                 alt={store.imageAlt}
@@ -106,9 +106,9 @@ export function StoreHubCompactCards({
               />
             </div>
 
-            <div className="bm-store-card-info flex min-h-0 flex-1 flex-col p-6 sm:p-8">
+            <div className="bm-store-card-info flex min-h-0 flex-1 flex-col p-4 sm:p-8">
               <header className="shrink-0">
-                <h3 className="text-3xl font-black tracking-tight text-slate-950 sm:text-[2rem]">
+                <h3 className="bm-store-card__title text-3xl font-black tracking-tight text-slate-950 sm:text-[2rem]">
                   <span
                     className={clsx(
                       "bm-store-badge mr-2 inline-flex rounded-full px-3.5 py-1.5 text-sm",
@@ -121,14 +121,14 @@ export function StoreHubCompactCards({
                 </h3>
               </header>
 
-              <div className="mt-6 shrink-0">
+              <div className="mt-4 shrink-0 sm:mt-6">
                 <p className="bm-store-field-label">대표 권역</p>
                 <p className="bm-store-region-text">{store.displayRegions}</p>
               </div>
 
-              <div className="mt-6 shrink-0">
-                <p className="bm-store-field-label">전화번호</p>
-                <p className="mt-2 min-h-[2rem]">
+              <div className="mt-4 shrink-0 sm:mt-6">
+                <p className="bm-store-field-label bm-store-field-label--phone">전화번호</p>
+                <p className="mt-1.5 min-h-[2rem] sm:mt-2">
                   <a
                     href={store.phoneTel}
                     onClick={(e) => e.stopPropagation()}
@@ -140,7 +140,7 @@ export function StoreHubCompactCards({
               </div>
 
               <div className="bm-store-actions">
-                <div className="bm-store-actions-row">
+                <div className="bm-store-actions-row bm-store-actions-row--primary">
                   <a
                     className="bm-store-btn bm-store-btn--call"
                     href={store.phoneTel}
@@ -159,17 +159,18 @@ export function StoreHubCompactCards({
                     <Navigation {...STORE_ICON_PROPS} />
                     길찾기
                   </a>
-                  <a
-                    className="bm-store-btn bm-store-btn--secondary bm-store-btn--wide-sm w-full sm:w-auto"
-                    href={naverPlaceHref}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MapPin {...STORE_ICON_PROPS} />
-                    네이버 플레이스
-                  </a>
                 </div>
+
+                <a
+                  className="bm-store-btn bm-store-btn--secondary bm-store-btn--aux"
+                  href={naverPlaceHref}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MapPin {...STORE_ICON_PROPS} />
+                  네이버 플레이스
+                </a>
 
                 <a
                   href={blogHref}
@@ -177,12 +178,12 @@ export function StoreHubCompactCards({
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   className={clsx(
-                    "bm-store-btn bm-store-btn--blog",
+                    "bm-store-btn bm-store-btn--blog bm-store-btn--aux",
                     isDeokcheon ? "bm-store-btn--blog-deokcheon" : "bm-store-btn--blog-hakjang",
                   )}
                 >
                   <BookOpen {...STORE_ICON_PROPS} />
-                  작업 사례 보기 (블로그)
+                  작업 사례 보기
                 </a>
               </div>
             </div>

@@ -15,6 +15,7 @@ import {
   getCartSummary,
   removeCartItem as storageRemove,
   updateCartItem as storageUpdate,
+  CART_STORAGE_KEY,
   CART_UPDATED_EVENT,
 } from "@/lib/cart/cart-storage";
 import type { BatteryCartItem, BatteryCartSummary } from "@/types/cart";
@@ -44,8 +45,18 @@ export function BatteryCartProvider({ children }: { children: React.ReactNode })
     refresh();
     setHydrated(true);
     const onUpdate = () => refresh();
+    const onFocus = () => refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === null || e.key === CART_STORAGE_KEY) refresh();
+    };
     window.addEventListener(CART_UPDATED_EVENT, onUpdate);
-    return () => window.removeEventListener(CART_UPDATED_EVENT, onUpdate);
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener(CART_UPDATED_EVENT, onUpdate);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("storage", onStorage);
+    };
   }, [refresh]);
 
   const addItem = useCallback(

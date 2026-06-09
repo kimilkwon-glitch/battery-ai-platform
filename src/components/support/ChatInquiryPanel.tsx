@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { addInquiry } from "@/lib/inquiry-storage";
+import { submitInquiry } from "@/lib/inquiry-storage";
 import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import type { ChatInquiryOpenDetail } from "@/lib/chat-inquiry-events";
 import { bm } from "@/lib/design-tokens";
@@ -34,9 +34,9 @@ export function ChatInquiryPanel({
     setVehicle(preset?.vehicle ?? "");
   }, [open, preset?.vehicle]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInquiry({
+    const result = await submitInquiry({
       name: name.trim() || "고객",
       contact: contact.trim(),
       vehicle: vehicle.trim() || undefined,
@@ -45,8 +45,9 @@ export function ChatInquiryPanel({
       pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
       source: productMode ? "product_detail" : "chat",
       inquiryType: productMode ? "제품문의" : "채팅상담",
+      category: productMode ? "battery" : "other",
     });
-    setSubmitted(true);
+    if (result.ok) setSubmitted(true);
   };
 
   const title = productMode ? "제품 문의" : "채팅상담 문의";

@@ -3,11 +3,10 @@ import { AppIcon } from "@/components/common/AppIcon";
 import { Breadcrumb, PortalHeader } from "@/components/portal";
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 import { VehicleActivityTracker } from "@/components/vehicle/VehicleActivityTracker";
-import { SearchConditionChips } from "@/components/platform/search-ux/SearchConditionChips";
-import { VehicleCustomerBatteryShop } from "@/components/vehicle/VehicleCustomerBatteryShop";
+import { VehicleFuelBatterySection } from "@/components/vehicle/VehicleFuelBatterySection";
 import { VehicleSearchCatalogFooter } from "@/components/vehicle/VehicleSearchCatalogFooter";
 import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
-import { buildVehicleFuelChips } from "@/lib/vehicle-fuel-chips";
+import { resolveDefaultSelectedFuel } from "@/lib/vehicle-fuel-selection";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 import { bm } from "@/lib/design-tokens";
 import { getVehicleAsset } from "@/lib/car-assets";
@@ -60,6 +59,7 @@ export default async function VehicleDetailPage({
   const displayTitle = batteryPage.profile?.title ?? asset?.displayName ?? vehicle.model;
   const highlightFuel = sp.fuel?.trim() || null;
   const yearChipId = sp.year?.trim() || null;
+  const selectedFuel = resolveDefaultSelectedFuel(slug, batteryPage.fuelGroups, highlightFuel);
   const repBattery = customerFacingRepresentativeBattery(slug, batteryPage.fuelGroups);
   const batteryOptions = [
     ...new Set(
@@ -72,7 +72,6 @@ export default async function VehicleDetailPage({
   const manufacturer =
     batteryPage.profile?.brand ?? vehicle.manufacturer ?? (asset ? "확인" : "");
   const yearRange = batteryPage.profile?.yearRange ?? vehicle.year ?? asset?.yearRange ?? "";
-  const fuelChips = buildVehicleFuelChips(slug, batteryPage.fuelGroups, highlightFuel, yearChipId);
 
   return (
     <main
@@ -136,12 +135,12 @@ export default async function VehicleDetailPage({
                     </div>
                   ))}
               </dl>
-              {highlightFuel || repBattery ? (
+              {selectedFuel || repBattery ? (
                 <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                  {highlightFuel ? (
+                  {selectedFuel ? (
                     <div className="flex gap-1.5">
                       <dt className="font-bold text-slate-500">선택 연료</dt>
-                      <dd className="font-black text-blue-800">{highlightFuel}</dd>
+                      <dd className="font-black text-blue-800">{selectedFuel}</dd>
                     </div>
                   ) : null}
                   {repBattery ? (
@@ -157,7 +156,7 @@ export default async function VehicleDetailPage({
                   slug={slug}
                   displayName={displayTitle}
                   yearRange={yearRange}
-                  fuelHint={highlightFuel}
+                  fuelHint={selectedFuel}
                   recommendedBattery={repBattery}
                   batteryOptions={batteryOptions}
                   autoSaveOnMount={autoSaveOnMount}
@@ -167,15 +166,14 @@ export default async function VehicleDetailPage({
           </div>
         </div>
 
-        {fuelChips.length > 0 ? <SearchConditionChips chips={fuelChips} /> : null}
-
         <div className="space-y-4" id="fuel-batteries">
-          <VehicleCustomerBatteryShop
+          <VehicleFuelBatterySection
             slug={slug}
             vehicleTitle={displayTitle}
             fuelGroups={batteryPage.fuelGroups}
-            highlightFuel={highlightFuel}
+            initialFuel={selectedFuel}
             yearRange={yearRange}
+            yearChipId={yearChipId}
           />
           <VehicleSearchCatalogFooter />
         </div>

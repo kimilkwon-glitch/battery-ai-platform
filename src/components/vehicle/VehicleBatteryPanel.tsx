@@ -11,6 +11,12 @@ import {
   normalizeVehicleFuelParam,
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
+import {
+  FUEL_FILTER_HINT,
+  FUEL_MISMATCH_HINT,
+  resolveDefaultSelectedFuel,
+  resolveVehicleFuelOptions,
+} from "@/lib/vehicle-fuel-selection";
 import { getDefaultVehicleFuelKnowledgeBlurb, getVehicleFuelKnowledgeBlurb } from "@/lib/battery-knowledge";
 import {
   getRecordFuelLabel,
@@ -32,7 +38,6 @@ type Props = {
   embedded?: boolean;
 };
 
-const FUEL_TABS = ["전체", "가솔린", "디젤", "LPG", "하이브리드", "전기"] as const;
 
 
 function AlternativeBatteryChips({ alternatives }: { alternatives: BatteryAlternative[] }) {
@@ -81,15 +86,18 @@ export function VehicleBatteryPanel({
   const searchParams = useSearchParams();
   const highlightFuel = normalizeVehicleFuelParam(searchParams.get("fuel"));
   const highlightYear = searchParams.get("year");
-  const initialFuel = highlightFuel ?? "전체";
-  const [fuelTab, setFuelTab] = useState<string>(initialFuel);
+  const fuelOptions = useMemo(
+    () => resolveVehicleFuelOptions(slug, fuelGroups),
+    [slug, fuelGroups],
+  );
+  const defaultFuel = resolveDefaultSelectedFuel(slug, fuelGroups, highlightFuel);
+  const [fuelTab, setFuelTab] = useState<string>(defaultFuel ?? fuelOptions[0] ?? "");
   const [yearChip, setYearChip] = useState<string | null>(null);
   const [tableOpen, setTableOpen] = useState(false);
 
   useEffect(() => {
-    if (highlightFuel) {
-      setFuelTab(highlightFuel);
-    }
+    const next = resolveDefaultSelectedFuel(slug, fuelGroups, highlightFuel);
+    if (next) setFuelTab(next);
     if (highlightYear && yearChips.some((c) => c.id === highlightYear)) {
       setYearChip(highlightYear);
     }
@@ -97,7 +105,7 @@ export function VehicleBatteryPanel({
       const el = document.getElementById("fuel-card-focus");
       el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
-  }, [highlightFuel, highlightYear, yearChips]);
+  }, [highlightFuel, highlightYear, yearChips, slug, fuelGroups]);
 
   const fuelCards = useMemo(() => {
     const seen = new Set<string>();
@@ -116,7 +124,7 @@ export function VehicleBatteryPanel({
       return true;
     });
 
-    if (fuelTab !== "전체") {
+    if (fuelTab) {
       recs = recs.filter((r) => getRecordFuelLabel(r) === fuelTab);
     }
 
@@ -138,8 +146,7 @@ export function VehicleBatteryPanel({
     return groupRecordsByFuel(recs);
   }, [fuelGroups, fuelTab, yearChip, yearChips]);
 
-  const activeFuel =
-    highlightFuel ?? (fuelTab !== "전체" ? fuelTab : null);
+  const activeFuel = highlightFuel ?? fuelTab ?? null;
   const unifiedPrimaryForFuel = activeFuel
     ? resolveVehicleFuelPrimaryBattery(slug, activeFuel, { yearChipId: yearChip })
     : null;
@@ -172,7 +179,7 @@ export function VehicleBatteryPanel({
         {fuelCards.length > 1 ? (
           <>
             <div className="mt-4 flex gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {FUEL_TABS.filter((t) => t === "전체" || fuelGroups.some((g) => g.fuelLabel === t)).map((tab) => (
+              {fuelOptions.map((tab) => (
                 <button
                   className={`${bm.filterChip} shrink-0 whitespace-nowrap ${
                     fuelTab === tab ? bm.filterChipOn : bm.filterChipOff
@@ -185,6 +192,9 @@ export function VehicleBatteryPanel({
                 </button>
               ))}
             </div>
+            <p className="mt-2 text-xs font-medium leading-relaxed text-slate-500">
+              {FUEL_MISMATCH_HINT} {FUEL_FILTER_HINT}
+            </p>
             {yearChips.length > 0 ? (
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {yearChips.map((chip) => (
@@ -202,7 +212,7 @@ export function VehicleBatteryPanel({
               </div>
             ) : null}
             <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
-              {getVehicleFuelKnowledgeBlurb(fuelTab !== "전체" ? fuelTab : fuelCards[0]?.fuelLabel) ??
+              {getVehicleFuelKnowledgeBlurb(fuelTab || fuelCards[0]?.fuelLabel) ??
                 getDefaultVehicleFuelKnowledgeBlurb()}
             </p>
           </>
@@ -213,7 +223,7 @@ export function VehicleBatteryPanel({
         )}
       </div>
 
-      {fuelCards.length > 1 && filteredGroups.length > 0 && fuelTab !== "전체" ? (
+      {fuelCards.length > 1 && filteredGroups.length > 0 && fuelTab ? (
         <div className="grid gap-3 md:grid-cols-2">
           {filteredGroups.map((group) => (
             <article key={`detail-${group.fuelLabel}`} className={`${bm.card} ${bm.cardPad}`}>

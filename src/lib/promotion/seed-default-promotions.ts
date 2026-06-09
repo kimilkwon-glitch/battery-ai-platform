@@ -37,8 +37,8 @@ export async function seedDefaultPromotions(): Promise<void> {
       ${true},
       ${true},
       ${"첫 주문 3%"},
-      ${"/assets/benefits/first-order-3-card.png"},
-      ${"/assets/benefits/first-order-3-banner.png"},
+      ${"/assets/benefits/benefit-first-order-3-percent-mobile.png"},
+      ${"/assets/benefits/benefit-first-order-3-percent-pc.png"},
       ${now}::timestamptz,
       ${now}::timestamptz
     )

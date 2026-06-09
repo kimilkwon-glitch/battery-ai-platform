@@ -1,0 +1,250 @@
+/**
+ * 차량 상세 추천 배터리 카드 전용 스타일
+ * [data-vehicle-recommended-card] — 홈 상품 카드·검색 카드와 분리
+ */
+
+.vehicle-recommended-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  background: #fff;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card {
+    grid-template-columns: minmax(0, 30%) minmax(0, 42%) minmax(0, 28%);
+    align-items: stretch;
+  }
+}
+
+/* ── 이미지 ── */
+
+.vehicle-recommended-card__media {
+  order: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  max-height: 5rem;
+  padding: 0.375rem 0.75rem 0.5rem;
+  background: #fff;
+  border-top: 1px solid #f1f5f9;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__media {
+    order: unset;
+    max-height: none;
+    min-height: 7rem;
+    padding: 0.5rem 0.625rem;
+    border-top: none;
+    border-right: 1px solid #f1f5f9;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+}
+
+.vehicle-recommended-card__media .battery-image-stage,
+.vehicle-recommended-card__media .battery-stage-photo,
+.vehicle-recommended-card__media img {
+  max-height: 4.25rem !important;
+  width: auto !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__media .battery-image-stage,
+  .vehicle-recommended-card__media .battery-stage-photo,
+  .vehicle-recommended-card__media img {
+    max-height: 6rem !important;
+  }
+}
+
+.vehicle-recommended-card__media > * {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 상품 정보 ── */
+
+.vehicle-recommended-card__info {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.6875rem 0.875rem 0.375rem;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__info {
+    order: unset;
+    padding: 0.6875rem 0.875rem;
+    border-right: 1px solid #f1f5f9;
+  }
+}
+
+.vehicle-recommended-card__brand {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.vehicle-recommended-card__spec {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__spec {
+    font-size: 1.125rem;
+  }
+}
+
+.vehicle-recommended-card__context {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #64748b;
+}
+
+.vehicle-recommended-card__meta {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #64748b;
+}
+
+.vehicle-recommended-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.125rem;
+}
+
+.vehicle-recommended-card__chips > * {
+  font-size: 0.625rem !important;
+}
+
+/* ── 가격 · CTA ── */
+
+.vehicle-recommended-card__commerce {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0 0.875rem 0.6875rem;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__commerce {
+    order: unset;
+    padding: 0.6875rem 0.75rem;
+    background: #f8fafc;
+  }
+}
+
+.vehicle-recommended-card__prices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.375rem;
+  margin: 0;
+}
+
+.vehicle-recommended-card__price {
+  border-radius: 0.5rem;
+  padding: 0.3125rem 0.4375rem;
+  text-align: center;
+  min-width: 0;
+}
+
+.vehicle-recommended-card__price--internet {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+}
+
+.vehicle-recommended-card__price--onsite {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.vehicle-recommended-card__price dt {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vehicle-recommended-card__price--internet dt {
+  color: #3b82f6;
+}
+
+.vehicle-recommended-card__price dd {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__price dd {
+    font-size: 0.8125rem;
+  }
+}
+
+.vehicle-recommended-card__price--internet dd {
+  color: #1d4ed8;
+}
+
+.vehicle-recommended-card__actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.375rem;
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__actions {
+    flex-direction: column;
+    gap: 0.4375rem;
+  }
+}
+
+.vehicle-recommended-card__btn-order {
+  min-height: 2.375rem;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.22);
+}
+
+@media (min-width: 768px) {
+  .vehicle-recommended-card__btn-order {
+    min-height: 2.5rem;
+  }
+}
+
+.vehicle-recommended-card__btn-detail {
+  min-height: 2.25rem;
+}

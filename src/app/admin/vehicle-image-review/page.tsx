@@ -1,26 +1,42 @@
 import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
+import { VehicleImageReviewClient } from "@/components/admin/VehicleImageReviewClient";
+import { buildVehicleImageInventory } from "@/lib/vehicle-image-inventory";
+import { listVehicleImageReviews } from "@/lib/vehicle-image-review-store";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "차량 이미지 검수 | Battery Manager",
   robots: { index: false, follow: false },
 };
 
-/** Vercel 서버리스 용량 제한 — 로컬 `npm run audit:vehicle-images` 사용 */
-export default function AdminVehicleImageReviewPage() {
+export default async function AdminVehicleImageReviewPage() {
+  const { entries, orphans, summary, restoreBuckets } = buildVehicleImageInventory();
+  const reviewRecords = await listVehicleImageReviews();
+  const reviewsBySlug = Object.fromEntries(reviewRecords.map((r) => [r.slug, r]));
+
+  const pending = entries.filter((e) => !e.primaryExists || e.visualRiskStatus !== "OK").length;
+  const damaged = summary.visualRiskCounts.DAMAGED_FILE;
+  const approved = reviewRecords.filter((r) => r.status === "approved").length;
+
   return (
     <AdminShellLayout
-      title="차량 이미지 검수 (Before / After)"
-      description="Production 배포 환경에서는 비활성화되어 있습니다."
+      title="차량 이미지 검수"
+      description="이미지 상태를 검수합니다. 승인/보류는 기록만 저장합니다."
+      summary={[
+        { label: "전체", value: entries.length },
+        { label: "검수 대기", value: pending, tone: pending > 0 ? "warning" : "default" },
+        { label: "손상 의심", value: damaged, tone: damaged > 0 ? "danger" : "default" },
+        { label: "승인 기록", value: approved, tone: "info" },
+      ]}
     >
-      <div className="admin-panel" style={{ padding: "1.25rem", maxWidth: 640 }}>
-        <p style={{ margin: 0, lineHeight: 1.6 }}>
-          차량 PNG 전수 검수 UI는 서버리스 함수 용량 제한으로 Vercel Production에서는 제공하지 않습니다.
-        </p>
-        <p style={{ margin: "0.75rem 0 0", lineHeight: 1.6, color: "var(--muted, #666)" }}>
-          로컬 개발 환경에서 <code>npm run audit:vehicle-images</code> 또는{" "}
-          <code>reports/vehicle-image-audit.json</code>을 확인해 주세요.
-        </p>
-      </div>
+      <VehicleImageReviewClient
+        entries={entries}
+        orphans={orphans}
+        summary={summary}
+        restoreBuckets={restoreBuckets}
+        initialReviewsBySlug={reviewsBySlug}
+      />
     </AdminShellLayout>
   );
 }

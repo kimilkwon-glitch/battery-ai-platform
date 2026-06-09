@@ -1,13 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
+import { Badge } from "@/components/ui/badge";
+import { VEHICLE_REVIEW_STATUS_BADGE } from "@/lib/admin/admin-status-tokens";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   OrphanVehicleImageFile,
   VehicleImageInventoryEntry,
   VehicleImageInventorySummary,
 } from "@/lib/vehicle-image-inventory";
 import type { VisualRiskStatus } from "@/lib/vehicle-image-analysis";
-
+import {
+  VEHICLE_IMAGE_REVIEW_STATUS_LABELS,
+  type VehicleImageReviewRecord,
+  type VehicleImageReviewStatus,
+} from "@/lib/vehicle-image-review-shared";
 type Props = {
   entries: VehicleImageInventoryEntry[];
   orphans: OrphanVehicleImageFile[];
@@ -17,6 +24,7 @@ type Props = {
     manualRestore: string[];
     regeneration: string[];
   };
+  initialReviewsBySlug?: Record<string, VehicleImageReviewRecord>;
 };
 
 const VISUAL_LABEL: Record<VisualRiskStatus, string> = {
@@ -51,10 +59,44 @@ type FilterKey =
   | "has_flux_dev"
   | "has_flux_pro";
 
-export function VehicleImageReviewClient({ entries, orphans, summary, restoreBuckets }: Props) {
+type ReviewFilterKey = VehicleImageReviewStatus | "all" | "no_image";
+
+export function VehicleImageReviewClient({
+  entries,
+  orphans,
+  restoreBuckets,
+  initialReviewsBySlug = {},
+}: Props) {
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState("all");
   const [filter, setFilter] = useState<FilterKey>("all");
+  const [reviewFilter, setReviewFilter] = useState<ReviewFilterKey>("all");
+  const [reviewsBySlug, setReviewsBySlug] = useState(initialReviewsBySlug);
+  const [savingSlug, setSavingSlug] = useState<string | null>(null);
+
+  const patchReview = useCallback(
+    async (slug: string, patch: Partial<VehicleImageReviewRecord>) => {
+      setSavingSlug(slug);
+      const prev = reviewsBySlug[slug];
+      const res = await fetch(`/api/admin/vehicle-image-reviews/${encodeURIComponent(slug)}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: patch.status ?? prev?.status ?? "reviewing",
+          adminMemo: patch.adminMemo ?? prev?.adminMemo ?? "",
+          selectedReferenceUrl: patch.selectedReferenceUrl,
+          candidateImageUrl: patch.candidateImageUrl,
+        }),
+      });
+      const data = await res.json();
+      setSavingSlug(null);
+      if (res.ok && data.ok) {
+        setReviewsBySlug((m) => ({ ...m, [slug]: data.item }));
+      }
+    },
+    [reviewsBySlug],
+  );
 
   const brands = useMemo(() => [...new Set(entries.map((e) => e.brand))].sort(), [entries]);
 
@@ -62,6 +104,12 @@ export function VehicleImageReviewClient({ entries, orphans, summary, restoreBuc
     const q = query.trim().toLowerCase();
     return entries.filter((e) => {
       if (brand !== "all" && e.brand !== brand) return false;
+      const reviewStatus = reviewsBySlug[e.slug]?.status ?? "pending";
+      if (reviewFilter === "no_image") {
+        if (e.primaryExists) return false;
+      } else if (reviewFilter !== "all" && reviewStatus !== reviewFilter) {
+        return false;
+      }
       switch (filter) {
         case "DAMAGED_FILE":
         case "NEEDS_CHECK":
@@ -101,19 +149,10 @@ export function VehicleImageReviewClient({ entries, orphans, summary, restoreBuc
         e.modelGroup.toLowerCase().includes(q)
       );
     });
-  }, [entries, query, brand, filter]);
+  }, [entries, query, brand, filter, reviewFilter, reviewsBySlug]);
 
   return (
     <div className="space-y-6">
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
-        <StatCard label="레지스트리" value={summary.registryAssetCount} />
-        <StatCard label="손상(DAMAGED)" value={summary.visualRiskCounts.DAMAGED_FILE} />
-        <StatCard label="밝은차체(BRIGHT)" value={summary.brightReviewCount} />
-        <StatCard label="복구후보" value={summary.restoreCandidateCount} />
-        <StatCard label="자동OK+육안검수" value={summary.manualBrightOkCount} />
-        <StatCard label="생성" value={new Date(summary.generatedAt).toLocaleString("ko-KR")} small />
-      </section>
-
       {restoreBuckets ? (
         <section className="grid gap-3 md:grid-cols-3">
           <BucketCard title="A. 즉시 복구 권장" slugs={restoreBuckets.immediateRestore} tone="violet" />
@@ -149,7 +188,25 @@ export function VehicleImageReviewClient({ entries, orphans, summary, restoreBuc
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs font-bold text-slate-600">
-            필터
+            검수 상태
+            <select
+              className="h-10 min-w-[8rem] rounded-lg border border-slate-200 px-3 text-sm font-semibold"
+              value={reviewFilter}
+              onChange={(e) => setReviewFilter(e.target.value as ReviewFilterKey)}
+            >
+              <option value="all">전체</option>
+              {(Object.keys(VEHICLE_IMAGE_REVIEW_STATUS_LABELS) as VehicleImageReviewStatus[]).map(
+                (s) => (
+                  <option key={s} value={s}>
+                    {VEHICLE_IMAGE_REVIEW_STATUS_LABELS[s]}
+                  </option>
+                ),
+              )}
+              <option value="no_image">이미지 없음</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-bold text-slate-600">
+            위험 필터
             <select
               className="h-10 min-w-[10rem] rounded-lg border border-slate-200 px-3 text-sm font-semibold"
               value={filter}
@@ -175,9 +232,18 @@ export function VehicleImageReviewClient({ entries, orphans, summary, restoreBuc
         </p>
       </section>
 
-      <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
         {filtered.map((entry) => (
-          <ReviewCard key={entry.slug} entry={entry} />
+          <ReviewCard
+            key={entry.slug}
+            entry={entry}
+            review={reviewsBySlug[entry.slug]}
+            saving={savingSlug === entry.slug}
+            onApprove={() => void patchReview(entry.slug, { status: "approved" })}
+            onHold={() => void patchReview(entry.slug, { status: "on_hold" })}
+            onRegenerate={() => void patchReview(entry.slug, { status: "regeneration_needed" })}
+            onMemoSave={(memo) => void patchReview(entry.slug, { adminMemo: memo, status: reviewsBySlug[entry.slug]?.status ?? "reviewing" })}
+          />
         ))}
       </div>
 
@@ -191,15 +257,6 @@ export function VehicleImageReviewClient({ entries, orphans, summary, restoreBuc
           </ul>
         </section>
       ) : null}
-    </div>
-  );
-}
-
-function StatCard({ label, value, small }: { label: string; value: number | string; small?: boolean }) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-      <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className={`mt-1 font-black text-slate-900 ${small ? "text-xs" : "text-2xl"}`}>{value}</p>
     </div>
   );
 }
@@ -227,7 +284,29 @@ function BucketCard({
   );
 }
 
-function ReviewCard({ entry }: { entry: VehicleImageInventoryEntry }) {
+function ReviewCard({
+  entry,
+  review,
+  saving,
+  onApprove,
+  onHold,
+  onRegenerate,
+  onMemoSave,
+}: {
+  entry: VehicleImageInventoryEntry;
+  review?: VehicleImageReviewRecord;
+  saving?: boolean;
+  onApprove: () => void;
+  onHold: () => void;
+  onRegenerate: () => void;
+  onMemoSave: (memo: string) => void;
+}) {
+  const [memo, setMemo] = useState(review?.adminMemo ?? "");
+  const reviewStatus = review?.status ?? "pending";
+
+  useEffect(() => {
+    setMemo(review?.adminMemo ?? "");
+  }, [review?.adminMemo, entry.slug]);
   const compareCols =
     2 +
     (entry.generatedFluxDevExists ? 1 : 0) +
@@ -239,35 +318,31 @@ function ReviewCard({ entry }: { entry: VehicleImageInventoryEntry }) {
         ? " vehicle-image-review-compare--triple"
         : "";
 
+  const reviewTone = VEHICLE_REVIEW_STATUS_BADGE[reviewStatus];
+
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
-      <div className="border-b border-slate-200 px-3 py-2">
+    <article className="admin-mobile-card vehicle-image-review-card overflow-hidden">
+      <div className="vehicle-image-review-card__head border-b border-slate-200 px-3 py-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="truncate text-sm font-black text-slate-900">{entry.displayName}</p>
+            <p className="admin-mobile-card__title truncate">{entry.displayName}</p>
             <p className="truncate text-[11px] font-semibold text-slate-500">
-              {entry.slug} · {entry.brand}
+              {entry.brand} · {entry.slug}
             </p>
           </div>
           <div className="flex flex-wrap gap-1">
-            <Badge label={VISUAL_LABEL[entry.visualRiskStatus]} className={VISUAL_CLASS[entry.visualRiskStatus]} />
+            <Badge variant={reviewTone}>
+              {VEHICLE_IMAGE_REVIEW_STATUS_LABELS[reviewStatus]}
+            </Badge>
+            <RiskBadge label={VISUAL_LABEL[entry.visualRiskStatus]} className={VISUAL_CLASS[entry.visualRiskStatus]} />
             {entry.restoreCandidate ? (
-              <Badge label="복구후보" className="bg-violet-100 text-violet-900 ring-violet-200" />
-            ) : null}
-            {entry.manualBrightOkReview ? (
-              <Badge label="OK+육안" className="bg-orange-50 text-orange-900 ring-orange-200" />
-            ) : null}
-            {entry.generatedFluxDevExists ? (
-              <Badge label="flux-dev" className="bg-sky-50 text-sky-900 ring-sky-200" />
-            ) : null}
-            {entry.generatedFlux11ProExists ? (
-              <Badge label="flux-1.1-pro" className="bg-emerald-50 text-emerald-900 ring-emerald-200" />
+              <RiskBadge label="복구후보" className="bg-violet-100 text-violet-900 ring-violet-200" />
             ) : null}
           </div>
         </div>
       </div>
 
-      <div className="p-3">
+      <div className="vehicle-image-review-card__body p-3">
         <div className={`vehicle-image-review-compare${compareClass}`}>
           <ComparePane
             label="CURRENT"
@@ -291,35 +366,72 @@ function ReviewCard({ entry }: { entry: VehicleImageInventoryEntry }) {
           />
         </div>
 
-        <dl className="mt-3 grid gap-1 text-[10px] font-semibold text-slate-600 sm:grid-cols-2">
-          <Metric label="legacy" value={entry.status} />
-          <Metric label="visual" value={entry.visualRiskStatus} />
-          <Metric label="smear" value={`${entry.graySmearScore.toFixed(3)} / ${entry.backupGraySmearScore?.toFixed(3) ?? "—"}`} />
-          <Metric label="erosion" value={`${entry.whiteBodyErosionScore.toFixed(4)} / ${entry.backupWhiteBodyErosionScore?.toFixed(4) ?? "—"}`} />
-          <Metric label="diff" value={entry.currentVsBackupDiff?.toFixed(4) ?? "—"} />
-          <Metric label="edgeFlood" value={entry.edgeFloodRiskScore.toFixed(4)} />
-          <Metric label="밝은차체" value={entry.lightBodyHint ? "Y" : "N"} />
-          <Metric label="우선순위" value={entry.restorePriority} />
-        </dl>
-        <p className="mt-2 text-[10px] leading-snug text-slate-500">{entry.visualRiskReason}</p>
-        <p className="mt-1 truncate text-[9px] text-slate-400" title={entry.primaryDiskPath ?? ""}>
-          현재: {entry.primaryDiskPath ?? "—"}
-        </p>
-        <p className="truncate text-[9px] text-slate-400" title={entry.backupDiskPath ?? ""}>
-          백업: {entry.backupDiskPath ?? "—"}
-        </p>
-        {entry.generatedFluxDevDiskPath ? (
-          <p className="truncate text-[9px] text-slate-400" title={entry.generatedFluxDevDiskPath}>
-            flux-dev: {entry.generatedFluxDevDiskPath}
-            {entry.generatedFluxDevExists ? "" : " (없음)"}
-          </p>
-        ) : null}
-        {entry.generatedFlux11ProDiskPath ? (
-          <p className="truncate text-[9px] text-slate-400" title={entry.generatedFlux11ProDiskPath}>
-            flux-1.1-pro: {entry.generatedFlux11ProDiskPath}
-            {entry.generatedFlux11ProExists ? "" : " (없음)"}
-          </p>
-        ) : null}
+        <ul className="admin-mobile-card__lines mt-2">
+          <li>
+            <span className="admin-cell-muted">위험</span>{" "}
+            <span className="admin-cell-primary">{VISUAL_LABEL[entry.visualRiskStatus]}</span>
+          </li>
+          <li>
+            <span className="admin-cell-muted">우선순위</span>{" "}
+            <span className="admin-cell-primary">{entry.restorePriority}</span>
+          </li>
+          <li className="line-clamp-2">{entry.visualRiskReason}</li>
+        </ul>
+        <details className="vehicle-image-review-card__details mt-2 text-[10px] text-slate-500">
+          <summary className="cursor-pointer font-bold text-slate-600">상세 지표</summary>
+          <dl className="mt-2 grid gap-1 font-semibold sm:grid-cols-2">
+            <Metric label="legacy" value={entry.status} />
+            <Metric label="visual" value={entry.visualRiskStatus} />
+            <Metric label="smear" value={`${entry.graySmearScore.toFixed(3)}`} />
+            <Metric label="diff" value={entry.currentVsBackupDiff?.toFixed(4) ?? "—"} />
+            <Metric label="밝은차체" value={entry.lightBodyHint ? "Y" : "N"} />
+          </dl>
+        </details>
+
+        <div className="admin-mobile-card__actions mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="admin-btn admin-btn--primary admin-btn--sm"
+            disabled={saving}
+            onClick={onApprove}
+          >
+            승인
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--secondary admin-btn--sm"
+            disabled={saving}
+            onClick={onHold}
+          >
+            보류
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--danger admin-btn--sm"
+            disabled={saving}
+            onClick={onRegenerate}
+          >
+            재생성 필요
+          </button>
+          <AdminCustomerPreviewLink href={`/vehicles/${entry.slug}`} />
+        </div>
+        <label className="mt-2 block text-[10px] font-bold text-slate-500">
+          관리자 메모
+          <textarea
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+            rows={2}
+            className="mt-1 w-full rounded border border-slate-200 px-2 py-1 text-xs font-normal"
+          />
+        </label>
+        <button
+          type="button"
+          className="admin-btn admin-btn--secondary admin-btn--sm mt-1"
+          disabled={saving}
+          onClick={() => onMemoSave(memo)}
+        >
+          메모 저장
+        </button>
       </div>
     </article>
   );
@@ -343,7 +455,7 @@ function ComparePane({ label, src, alt }: { label: string; src: string | null; a
   );
 }
 
-function Badge({ label, className }: { label: string; className: string }) {
+function RiskBadge({ label, className }: { label: string; className: string }) {
   return (
     <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ring-1 ${className}`}>{label}</span>
   );

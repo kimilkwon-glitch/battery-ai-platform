@@ -36,6 +36,8 @@ type Props = {
   autocompleteHostEl?: HTMLDivElement | null;
   /** 자동완성 패널 열림 상태 (추천 칩 숨김 등) */
   onAutocompleteOpenChange?: (open: boolean) => void;
+  /** 모바일 compact — 큰 검색 버튼 대신 입력칸 우측 돋보기 아이콘 */
+  iconSubmit?: boolean;
 };
 
 export function VehicleSearchBox({
@@ -51,6 +53,7 @@ export function VehicleSearchBox({
   autocompleteLayout = "default",
   autocompleteHostEl,
   onAutocompleteOpenChange,
+  iconSubmit = false,
 }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState(defaultQuery);
@@ -198,14 +201,14 @@ export function VehicleSearchBox({
     setOpen(false);
   }
 
-  function renderClearButton(inputTall: boolean) {
+  function renderClearButton(inputTall: boolean, iconSubmitMode: boolean) {
     if (!hasQuery) return null;
     return (
       <button
         type="button"
         className={cn(
           "bm-search-input-clear absolute top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60",
-          inputTall ? "right-3 size-9" : "right-2 size-8",
+          iconSubmitMode ? "right-10 size-8" : inputTall ? "right-3 size-9" : "right-2 size-8",
         )}
         aria-label="검색어 지우기"
         onMouseDown={(e) => e.preventDefault()}
@@ -244,7 +247,8 @@ export function VehicleSearchBox({
               className={cn(
                 inputClassName ||
                   "h-11 w-full rounded-lg bg-slate-50 px-4 text-sm font-bold outline-none ring-1 ring-slate-200 focus:bg-white focus:ring-2 focus:ring-blue-300",
-                hasQuery && (compoundBar ? "pr-12 sm:pr-14" : "pr-10"),
+                hasQuery && (iconSubmit ? "pr-[4.25rem]" : compoundBar ? "pr-12 sm:pr-14" : "pr-10"),
+                iconSubmit && !hasQuery && "pr-11",
               )}
               name="q"
               onChange={(e) => {
@@ -257,9 +261,18 @@ export function VehicleSearchBox({
               type="search"
               value={query}
             />
-            {renderClearButton(compoundBar)}
+            {renderClearButton(compoundBar, iconSubmit)}
+            {iconSubmit ? (
+              <button
+                type="submit"
+                className="bm-search-icon-submit absolute right-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
+                aria-label="검색"
+              >
+                <AppIcon iconKey="search" size="sm" />
+              </button>
+            ) : null}
           </div>
-          {shimmerSubmit ? (
+          {!iconSubmit && shimmerSubmit ? (
             <ShimmerButton
               type="submit"
               background="rgb(37, 99, 235)"
@@ -275,11 +288,11 @@ export function VehicleSearchBox({
               <AppIcon iconKey="search" size="sm" className="!text-white" />
               {buttonLabel}
             </ShimmerButton>
-          ) : (
+          ) : !iconSubmit ? (
             <button className={submitBtnClass} type="submit">
               {buttonLabel}
             </button>
-          )}
+          ) : null}
         </form>
         {autocompletePanelRendered}
       </div>
@@ -308,7 +321,7 @@ export function VehicleSearchBox({
           type="search"
           value={query}
         />
-        {renderClearButton(false)}
+        {renderClearButton(false, false)}
       </form>
       {autocompletePanelRendered}
     </div>

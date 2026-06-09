@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
 import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
+import { appendSignupVehicleMode } from "@/lib/signup-vehicle-draft";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
 import {
   CardInfoActions,
@@ -23,12 +24,15 @@ export function ExploreVehicleCard({
   title,
   href,
   registerMode = false,
+  signupVehicleSelect = false,
 }: {
   vehicleId: string;
   title: string;
   href: string;
   registerMode?: boolean;
+  signupVehicleSelect?: boolean;
 }) {
+  const detailHref = signupVehicleSelect ? appendSignupVehicleMode(href) : href;
   const copy = getVehicleCardCompactCopy(vehicleId, title);
   const imageSrc =
     vehicleId === "rexton-sports-search" ? null : carImageForPlatformVehicleId(vehicleId);
@@ -63,18 +67,19 @@ export function ExploreVehicleCard({
         ) : null}
       </CardInfoStack>
       <CardInfoActions className="vehicle-browse-card__cta-row">
-        {registerMode && !isSearchPick ? (
+        {(registerMode || signupVehicleSelect) && !isSearchPick ? (
           <SaveVehicleRegisterButton
             slug={vehicleId}
             displayName={title}
             yearRange={copy.specLine}
             className={`${bm.btnPrimary} min-h-[2.75rem] flex-1 text-sm font-black`}
-            label="내 차량으로 등록"
+            label={signupVehicleSelect ? "이 차량 선택" : "내 차량으로 등록"}
             source="vehicleBrowse"
+            signupVehicleSelect={signupVehicleSelect}
           />
         ) : null}
         <Link
-          href={href}
+          href={detailHref}
           onClick={(e) => e.stopPropagation()}
           className={`${registerMode ? bm.btnSecondary : bm.btnNavy} min-h-[2.75rem] flex-1 items-center justify-center text-sm font-black`}
         >
@@ -84,7 +89,7 @@ export function ExploreVehicleCard({
     </>
   );
 
-  if (registerMode && !isSearchPick) {
+  if ((registerMode || signupVehicleSelect) && !isSearchPick) {
     return (
       <CardHorizontalLayout
         className={`${bm.cardVehicleMatch} vehicle-browse-card group h-full min-w-0`}

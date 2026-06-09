@@ -12,11 +12,20 @@ export default async function AdminCommerceOrdersPage() {
   const records = dbReady ? await storeCommerceOrderList(500) : [];
   const orders = records.map(commerceOrderToListItem);
   const testMode = isTossTestModeFlag();
+  const paid = orders.filter((o) => o.paymentStatus === "completed").length;
+  const failed = orders.filter((o) => o.paymentStatus === "failed").length;
+  const canceled = orders.filter((o) => o.paymentStatus === "canceled").length;
 
   return (
     <AdminShellLayout
       title="자사몰 결제 주문"
-      description="토스페이먼츠 연동 주문 — 결제완료·결제실패·결제취소 상태가 함께 표시됩니다."
+      description="토스페이먼츠 연동 결제 주문을 확인합니다."
+      summary={[
+        { label: "전체", value: orders.length },
+        { label: "결제완료", value: paid, tone: "info" },
+        { label: "결제실패", value: failed, tone: failed > 0 ? "danger" : "default" },
+        { label: "결제취소", value: canceled, tone: canceled > 0 ? "warning" : "default" },
+      ]}
     >
       {!dbReady ? (
         <p className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-bold text-red-900">

@@ -3,8 +3,6 @@
 import { useRouter } from "next/navigation";
 import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
 import { setBuyNowCheckoutItems } from "@/lib/cart/checkout-flow";
-import { buildLoginRedirectUrl } from "@/lib/customer-auth-redirect";
-import { isCustomerLoggedIn } from "@/lib/customer-auth-session";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
 import type { FulfillmentMethod } from "@/types/cart";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
@@ -44,12 +42,7 @@ export function BuyNowButton({
           quantity: 1,
         });
         setBuyNowCheckoutItems([item]);
-        const checkoutUrl = `${CHECKOUT_PAGE}?flow=buy_now`;
-        if (!isCustomerLoggedIn()) {
-          router.push(buildLoginRedirectUrl(checkoutUrl));
-          return;
-        }
-        router.push(checkoutUrl);
+        router.push(`${CHECKOUT_PAGE}?flow=buy_now`);
       }}
     >
       바로 주문하기

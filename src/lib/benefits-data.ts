@@ -112,6 +112,39 @@ export const BENEFIT_CARDS: BenefitCardConfig[] = [
   },
 ];
 
+/** CMS 응답 지연·실패 시 혜택 페이지 fallback — 고객 화면 무한 로딩 방지 */
+export const BENEFITS_PAGE_FALLBACK_CARDS: BenefitCardConfig[] = [
+  {
+    id: "first-order-3-fallback",
+    title: "첫 주문 3% 자동 적용",
+    label: "자동 적용",
+    description: "회원가입 후 첫 주문 조건을 만족하면 주문 단계에서 자동 적용됩니다.",
+    image: BENEFIT_FIRST_ORDER_3_PERCENT_PC_SRC,
+    imageMobile: BENEFIT_FIRST_ORDER_3_PERCENT_MOBILE_SRC,
+    fallbackIcon: "percent",
+    status: "active",
+    href: HUB_BENEFIT_FIRST_ORDER_3,
+  },
+  {
+    id: "fulfillment-choice-fallback",
+    title: "택배·내방·출장 선택 가능",
+    label: "수령 방식",
+    description: "상황에 맞게 택배 발송, 매장 수령, 내방교체, 출장교체를 선택할 수 있습니다.",
+    fallbackIcon: "service",
+    status: "active",
+    href: HUB_BENEFITS,
+  },
+  {
+    id: "battery-return-guide-fallback",
+    title: "폐배터리 반납 기준 안내",
+    label: "반납 안내",
+    description: "반납 여부에 따라 금액이 달라질 수 있어 주문 전 확인할 수 있습니다.",
+    fallbackIcon: "store",
+    status: "active",
+    href: HUB_BENEFITS,
+  },
+];
+
 export const BENEFITS_HUB_BADGE = "BENEFIT";
 export const BENEFITS_HUB_TITLE = "배터리매니저 혜택";
 export const BENEFITS_HUB_SUBTITLE = "혜택을 한눈에 확인하세요.";

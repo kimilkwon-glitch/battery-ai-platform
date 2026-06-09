@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { OAuthHandoffHandler } from "@/components/auth/OAuthHandoffHandler";
 import { SignupAddressFields } from "@/components/auth/SignupAddressFields";
 import { SocialLoginButtons } from "@/components/auth/SocialLoginButtons";
@@ -17,6 +17,16 @@ import {
   CUSTOMER_LOGIN_PAGE,
   CUSTOMER_MYPAGE,
 } from "@/lib/customer-auth-routes";
+import {
+  buildSignupVehicleBrowseUrl,
+  clearSignupFormDraft,
+  clearSignupVehicleSelectActive,
+  clearSignupVehicleSelection,
+  loadSignupFormDraft,
+  loadSignupVehicleSelection,
+  markSignupVehicleSelectActive,
+  saveSignupFormDraft,
+} from "@/lib/signup-vehicle-draft";
 
 const FUEL_OPTIONS = ["가솔린", "디젤", "LPG", "하이브리드", "전기"] as const;
 const MANUFACTURER_OPTIONS = [
@@ -39,6 +49,7 @@ function formatPhoneInput(value: string): string {
 
 function SignupFormInner({ redirect }: { redirect?: string | null }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { refresh } = useCustomerAuth();
   const [loginId, setLoginId] = useState("");
   const [idChecked, setIdChecked] = useState(false);
@@ -60,6 +71,64 @@ function SignupFormInner({ redirect }: { redirect?: string | null }) {
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [vehicleSelectedNotice, setVehicleSelectedNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const draft = loadSignupFormDraft();
+    if (draft) {
+      if (draft.loginId != null) setLoginId(draft.loginId);
+      if (draft.name != null) setName(draft.name);
+      if (draft.phone != null) setPhone(draft.phone);
+      if (draft.email != null) setEmail(draft.email);
+      if (draft.postalCode != null) setPostalCode(draft.postalCode);
+      if (draft.address1 != null) setAddress1(draft.address1);
+      if (draft.address2 != null) setAddress2(draft.address2);
+      if (draft.vehicleManufacturer != null) setVehicleManufacturer(draft.vehicleManufacturer);
+      if (draft.vehicleName != null) setVehicleName(draft.vehicleName);
+      if (draft.vehicleYear != null) setVehicleYear(draft.vehicleYear);
+      if (draft.vehicleFuel != null) setVehicleFuel(draft.vehicleFuel);
+      if (draft.batterySpec != null) setBatterySpec(draft.batterySpec);
+      if (draft.agreeTerms != null) setAgreeTerms(draft.agreeTerms);
+      if (draft.agreePrivacy != null) setAgreePrivacy(draft.agreePrivacy);
+    }
+
+    if (searchParams.get("vehicle_selected") === "1") {
+      const selection = loadSignupVehicleSelection();
+      if (selection) {
+        if (selection.manufacturer) setVehicleManufacturer(selection.manufacturer);
+        if (selection.vehicleName) setVehicleName(selection.vehicleName);
+        if (selection.vehicleYear) setVehicleYear(selection.vehicleYear);
+        if (selection.vehicleFuel) setVehicleFuel(selection.vehicleFuel);
+        if (selection.batterySpec) setBatterySpec(selection.batterySpec);
+        setVehicleSelectedNotice(
+          `${selection.vehicleName || selection.displayName} 차량이 선택되었습니다. 가입 시 함께 저장됩니다.`,
+        );
+        clearSignupVehicleSelectActive();
+        clearSignupVehicleSelection();
+        router.replace(redirect ? `/signup?redirect=${encodeURIComponent(redirect)}` : "/signup");
+      }
+    }
+  }, [searchParams, redirect, router]);
+
+  const persistDraft = () => {
+    saveSignupFormDraft({
+      loginId,
+      name,
+      phone,
+      email,
+      postalCode,
+      address1,
+      address2,
+      vehicleManufacturer,
+      vehicleName,
+      vehicleYear,
+      vehicleFuel,
+      batterySpec,
+      agreeTerms,
+      agreePrivacy,
+    });
+    markSignupVehicleSelectActive();
+  };
 
   const loginHref = redirect
     ? `${CUSTOMER_LOGIN_PAGE}?redirect=${encodeURIComponent(redirect)}`
@@ -178,6 +247,8 @@ function SignupFormInner({ redirect }: { redirect?: string | null }) {
         return;
       }
 
+      clearSignupFormDraft();
+      clearSignupVehicleSelectActive();
       await refresh();
       router.push(redirect?.trim() || CUSTOMER_MYPAGE);
     } catch {
@@ -194,13 +265,12 @@ function SignupFormInner({ redirect }: { redirect?: string | null }) {
       <h1 className="bm-auth-form__title">회원가입</h1>
       <p className="bm-auth-form__lead">배송지와 차량정보를 저장하면 다음 주문이 더 빠릅니다.</p>
 
-      <div className="bm-auth-divider mt-5">
-        <span>간편 가입</span>
+      <div className="bm-auth-social-block">
+        <SocialLoginButtons redirect={redirect} variant="signup" />
       </div>
-      <SocialLoginButtons redirect={redirect} variant="signup" />
 
-      <div className="bm-auth-divider">
-        <span>일반 회원가입</span>
+      <div className="bm-auth-divider bm-auth-divider--signup">
+        <span>아이디 회원가입</span>
       </div>
 
       {error ? (
@@ -337,12 +407,24 @@ function SignupFormInner({ redirect }: { redirect?: string | null }) {
           }}
         />
 
-        <details className="bm-auth-vehicle-details">
-          <summary className="bm-auth-vehicle-details__summary">차량정보 선택 입력</summary>
-          <div className="bm-auth-vehicle-details__body space-y-3">
-            <p className="bm-auth-field__hint">
-              입력하시면 주문서에 자동으로 불러올 수 있습니다.
+        <fieldset className="bm-auth-fieldset bm-auth-fieldset--vehicle">
+          <legend className="bm-auth-section__title">차량 정보 (선택)</legend>
+          <p className="bm-auth-field__hint">
+            입력하시면 주문서에 자동으로 불러올 수 있습니다. 선택하지 않아도 가입할 수 있습니다.
+          </p>
+          <Link
+            href={buildSignupVehicleBrowseUrl()}
+            onClick={persistDraft}
+            className="bm-auth-vehicle-select-btn"
+          >
+            내 차량 선택하기
+          </Link>
+          {vehicleSelectedNotice ? (
+            <p className="bm-auth-field__ok" role="status">
+              {vehicleSelectedNotice}
             </p>
+          ) : null}
+          <div className="bm-auth-vehicle-fields">
             <label className="bm-auth-field">
               <span className="bm-auth-field__label">제조사</span>
               <select
@@ -411,9 +493,9 @@ function SignupFormInner({ redirect }: { redirect?: string | null }) {
               />
             </label>
           </div>
-        </details>
+        </fieldset>
 
-        <div className="bm-auth-agreements space-y-2">
+        <div className="bm-auth-agreements">
           <label className="bm-auth-check">
             <input
               type="checkbox"

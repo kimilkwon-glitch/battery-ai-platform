@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
+import { AdminTodayTasks } from "@/components/admin/AdminTodayTasks";
 import { AdminReviewBadge } from "@/components/admin/AdminReviewBadge";
 import { OrderRequestWorkflowBadge } from "@/components/admin/order-requests/OrderRequestWorkflowBadge";
 import { Badge } from "@/components/ui/badge";
@@ -38,9 +39,11 @@ export default async function AdminDashboardPage() {
   return (
     <AdminShellLayout
       title="대시보드"
-      description="주문·DB·에셋·CTA 운영 현황을 한눈에 확인합니다."
+      description="오늘 처리할 일과 운영 현황을 확인합니다."
     >
       <div className="space-y-6">
+        <AdminTodayTasks tasks={stats.todayTasks} />
+
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <AdminStatCard
             label="오늘 주문"

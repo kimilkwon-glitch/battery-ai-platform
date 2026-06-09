@@ -4,10 +4,7 @@ import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import {
-  MobileHorizontalScrollNav,
-  MobileScrollHint,
-} from "@/components/common/MobileHorizontalScrollNav";
+import { MobileHorizontalScrollNav } from "@/components/common/MobileHorizontalScrollNav";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
 import {
   filterCatalogProducts,
@@ -18,6 +15,16 @@ import {
 } from "@/lib/home-main-catalog-data";
 
 const BRAND_TYPE_TABS: HomeProductTypeTag[] = ["AGM", "DIN", "일반형"];
+/** 기본 탭 우선순위 — 상품 있는 탭을 먼저 노출 */
+const DEFAULT_TAB_PRIORITY: HomeProductTypeTag[] = ["일반형", "DIN", "AGM"];
+
+function pickDefaultTypeTab(brand: HomeCatalogBrandId): HomeProductTypeTag {
+  const lineup = getCurrentLineup(brand);
+  for (const tab of DEFAULT_TAB_PRIORITY) {
+    if (filterCatalogProducts(lineup, tab).length > 0) return tab;
+  }
+  return "일반형";
+}
 
 type Props = {
   brand: HomeCatalogBrandId;
@@ -40,7 +47,7 @@ export function HomeBrandLineupSection({
   shopHref,
   shopLinkLabel,
 }: Props) {
-  const [typeTab, setTypeTab] = useState<HomeProductTypeTag>("AGM");
+  const [typeTab, setTypeTab] = useState<HomeProductTypeTag>(() => pickDefaultTypeTab(brand));
 
   const products = useMemo(() => {
     const filtered = filterCatalogProducts(getCurrentLineup(brand), typeTab);
@@ -62,12 +69,15 @@ export function HomeBrandLineupSection({
           <div className="home-brand-lineup__title-row">
             <h2 className="home-brand-lineup__title">{title}</h2>
             <span className="home-brand-lineup__label">{label}</span>
-            <MobileScrollHint />
           </div>
           <p className="home-brand-lineup__desc">
             <span className="home-brand-lineup__desc-long">{description}</span>
             <span className="home-brand-lineup__desc-short">{descriptionMobile ?? description}</span>
           </p>
+          <Link href={shopHref} className="home-brand-lineup__more-link">
+            <span>{shopLinkLabel}</span>
+            <ChevronRight className="home-brand-lineup__more-icon" strokeWidth={2.5} aria-hidden />
+          </Link>
         </div>
       </header>
 
@@ -117,7 +127,7 @@ export function HomeBrandLineupSection({
           )}
         </div>
 
-        <div className="home-brand-lineup__footer">
+        <div className="home-brand-lineup__footer home-brand-lineup__footer--desktop">
           <Link href={shopHref} className="home-brand-lineup__cta">
             <span>{shopLinkLabel}</span>
             <ChevronRight className="home-brand-lineup__cta-icon" strokeWidth={2.5} aria-hidden />

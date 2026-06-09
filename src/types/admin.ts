@@ -126,9 +126,16 @@ export type AdminErrorReportItem = {
   samples?: string[];
 };
 
+export type AdminTodayTaskItem = {
+  label: string;
+  count: number;
+  href: string;
+};
+
 export type AdminDashboardStats = {
   todayOrders: number;
   todayInquiries: number;
+  newInquiries: number;
   guestOrders: number;
   pendingOrders: number;
   photoCheckRequests: number;
@@ -136,10 +143,13 @@ export type AdminDashboardStats = {
   batteryDbReview: number;
   missingVehicleImages: number;
   missingBatteryImages: number;
+  vehicleImageReviewPending: number;
+  publishedNotices: number;
   ctaLinkErrors: number;
   productPriceMissing: number;
   productImageMissing: number;
   productDetailMissing: number;
+  todayTasks: AdminTodayTaskItem[];
   recentOrders: AdminOrderRequestSummary[];
   recentVehicles: AdminRecentDbItem[];
   recentBatteries: AdminRecentDbItem[];

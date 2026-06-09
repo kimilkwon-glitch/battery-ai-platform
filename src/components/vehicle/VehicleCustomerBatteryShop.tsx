@@ -3,10 +3,8 @@ import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { RecommendedBatteryCard } from "@/components/platform/RecommendedBatteryCard";
 import { getBatteryImageFit } from "@/lib/battery-image-presentation";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
-import { BATTERY_SPEC_DETAIL_VIEW_LABEL } from "@/lib/battery-card-cta";
 import {
   batteryProductDetailHref,
-  batteryReviewHref,
   batterySpecGuideHref,
 } from "@/lib/battery-product-routes";
 import {
@@ -15,8 +13,9 @@ import {
   hasStrictBrandProductImage,
 } from "@/lib/battery-alias-map";
 import { productBatteryCode } from "@/lib/batteryNormalize";
-import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
-import { hasBrandSpecData } from "@/lib/battery-knowledge";
+import { getBatteryInternetPriceWon, getBatteryOnsitePriceWon } from "@/lib/battery-prices";
+import { formatPriceWon } from "@/lib/pricing/order-price";
+import { CUSTOMER_DETAIL_PRICE_LABELS } from "@/lib/pricing/customer-price-labels";
 import { PRIMARY_BATTERY_CTAS } from "@/lib/search/battery-recommendation-copy";
 import { buildFuelHeroCardGroups } from "@/lib/vehicle-fuel-primary-battery";
 import type { BatteryBrandKey } from "@/lib/battery-alias-map";
@@ -42,8 +41,13 @@ import {
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 import {
+  HYBRID_BATTERY_CHECK_MESSAGE,
+  HYBRID_SPEC_PENDING_MESSAGE,
+} from "@/lib/vehicle-fuel-selection";
+import {
   BATTERY_MATCH_PENDING_MESSAGE,
   hasCatalogBatteryMatch,
+  isValidBatterySpecCode,
   resolveCustomerCatalogPrimaryBattery,
 } from "@/lib/vehicle-battery-match";
 
@@ -60,6 +64,36 @@ function brandOffersForVehicleSpec(vehicleSpecCode: string) {
     if (!productCode || !hasStrictBrandProductImage(vehicleSpecCode, b.id)) return [];
     return [{ ...b, productCode }];
   });
+}
+
+type SelectedFuelBattery = {
+  batteryCode: string;
+  fuelLabel: string;
+};
+
+/** 선택 연료 기준 단일 추천 규격 — 연료별 merge 금지 */
+function buildSelectedFuelBattery(
+  slug: string,
+  fuelCards: ReturnType<typeof buildFuelHeroCardGroups>,
+  selectedFuel: string | null,
+): SelectedFuelBattery | null {
+  if (!selectedFuel) return null;
+
+  const group = fuelCards.find((g) => g.fuelLabel === selectedFuel);
+  if (!group) return null;
+
+  if (
+    shouldShowEvLowVoltageCard(slug, group.fuelLabel) ||
+    isEvLowVoltageBatteryStatus(group.primaryBattery)
+  ) {
+    return null;
+  }
+
+  const batteryCode = resolveCustomerCatalogPrimaryBattery(slug, group.fuelLabel);
+  const presentation = resolveCustomerBatteryPresentation(slug, group.fuelLabel);
+  if (!batteryCode || presentation.kind !== "ice_product") return null;
+
+  return { batteryCode, fuelLabel: group.fuelLabel };
 }
 
 function BrandProductCard({
@@ -83,47 +117,56 @@ function BrandProductCard({
   const orderHref =
     batteryProductDetailHref(brandId, vehicleSpecCode) ??
     batterySpecGuideHref(vehicleSpecCode);
-  const reviewHref = batteryReviewHref({ batteryCode: vehicleSpecCode, brandId });
+  const internetPrice = getBatteryInternetPriceWon(brandId, productCode);
+  const onsitePrice = getBatteryOnsitePriceWon(brandId, productCode);
+
+  const metaLine = [display.typeLabel, display.capacity, display.terminalLabel].filter(Boolean).join(" · ");
 
   return (
-    <article className="vehicle-brand-product">
-      <div className="vehicle-brand-product__media">
+    <article className="vehicle-recommended-card" data-vehicle-recommended-card>
+      <div className="vehicle-recommended-card__media">
         <BatteryThumbnail
           code={productCode}
           imageSet={hasImageSet ? imageSet : undefined}
           role="main"
           fit={getBatteryImageFit(productCode, brandId)}
-          tall
           overlayLabel={false}
           surface="transparent"
-          className="h-full"
+          className="h-full w-full"
         />
       </div>
-      <div className="vehicle-brand-product__body">
-        <p className="text-sm font-black text-slate-900">
-          {brandLabel} {displayLabel}
-        </p>
-        <p className="mt-1 text-sm font-semibold text-slate-600">
-          {[display.typeLabel, display.capacity, display.terminalLabel].filter(Boolean).join(" · ")}
-        </p>
-        {hasBrandSpecData(productCode) ? (
-          <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-            {getHomeCardCopy(productCode) ?? "상세 페이지에서 제원을 확인할 수 있습니다."}
-          </p>
+      <div className="vehicle-recommended-card__info">
+        <p className="vehicle-recommended-card__brand">{brandLabel}</p>
+        <p className="vehicle-recommended-card__spec">{displayLabel}</p>
+        {metaLine ? <p className="vehicle-recommended-card__meta">{metaLine}</p> : null}
+      </div>
+      <div className="vehicle-recommended-card__commerce">
+        {internetPrice != null || onsitePrice != null ? (
+          <dl className="vehicle-recommended-card__prices" aria-label="가격 안내">
+            {internetPrice != null ? (
+              <div className="vehicle-recommended-card__price vehicle-recommended-card__price--internet">
+                <dt>{CUSTOMER_DETAIL_PRICE_LABELS.productPurchase}</dt>
+                <dd>{formatPriceWon(internetPrice)}</dd>
+              </div>
+            ) : null}
+            {onsitePrice != null ? (
+              <div className="vehicle-recommended-card__price vehicle-recommended-card__price--onsite">
+                <dt>{CUSTOMER_DETAIL_PRICE_LABELS.mobileInstall}</dt>
+                <dd>{formatPriceWon(onsitePrice)}</dd>
+              </div>
+            ) : null}
+          </dl>
         ) : null}
-        <div className="vehicle-brand-product__actions flex flex-col gap-2">
+        <div className="vehicle-recommended-card__actions">
           <Link
-            href={reviewHref}
-            className="inline-flex w-full items-center justify-center rounded-full bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-100"
+            href={specHref}
+            className={`vehicle-recommended-card__btn-detail ${bm.btnSecondary} justify-center px-3 text-xs font-black`}
           >
-            리뷰 보기
-          </Link>
-          <Link href={specHref} className={`${bm.btnSecondary} w-full text-sm font-black`}>
-            {BATTERY_SPEC_DETAIL_VIEW_LABEL}
+            상세보기
           </Link>
           <Link
             href={orderHref}
-            className={`${bm.btnPrimary} w-full text-sm font-black shadow-sm`}
+            className={`vehicle-recommended-card__btn-order ${bm.btnPrimary} justify-center px-3 text-xs font-black`}
             data-vehicle-slug={vehicleSlug}
             data-battery-spec={vehicleSpecCode}
             data-brand={brandId}
@@ -184,7 +227,7 @@ type Props = {
   slug: string;
   vehicleTitle: string;
   fuelGroups: FuelBatteryGroup[];
-  highlightFuel?: string | null;
+  selectedFuel?: string | null;
   yearRange?: string;
 };
 
@@ -192,14 +235,16 @@ export function VehicleCustomerBatteryShop({
   slug,
   vehicleTitle,
   fuelGroups,
-  highlightFuel,
+  selectedFuel,
   yearRange,
 }: Props) {
+  const normalizedSelectedFuel = selectedFuel ?? null;
   const salesExcludedNotice = getVehicleSalesExcludedNotice(slug);
   const fixedNotice = getVehicleFixedBatteryNotice(slug);
-  const fuelCards = buildFuelHeroCardGroups(slug, fuelGroups, highlightFuel).filter((g) =>
+  const fuelCards = buildFuelHeroCardGroups(slug, fuelGroups, selectedFuel).filter((g) =>
     shouldRenderFuelGroupInShop(slug, g.fuelLabel),
   );
+  const selectedBattery = buildSelectedFuelBattery(slug, fuelCards, normalizedSelectedFuel);
   const excludedFuelGroups = fuelGroups.filter((g) =>
     isVehicleFuelSalesExcluded(slug, g.fuelLabel),
   );
@@ -243,88 +288,114 @@ export function VehicleCustomerBatteryShop({
           </p>
         </section>
       ))}
-      {fuelCards.map((group) => {
-        const highlighted = highlightFuel === group.fuelLabel;
-        const isEvCard =
-          shouldShowEvLowVoltageCard(slug, group.fuelLabel) ||
-          isEvLowVoltageBatteryStatus(group.primaryBattery);
+      {selectedFuel
+        ? fuelCards
+            .filter((group) => group.fuelLabel === selectedFuel)
+            .map((group) => {
+              const isEvCard =
+                shouldShowEvLowVoltageCard(slug, group.fuelLabel) ||
+                isEvLowVoltageBatteryStatus(group.primaryBattery);
 
-        if (isEvCard) {
+              if (!isEvCard) return null;
+
+              return (
+                <EvLowVoltageBatteryCard
+                  key={group.fuelLabel}
+                  fuelLabel={group.fuelLabel}
+                  vehicleTitle={vehicleTitle}
+                  yearRange={yearRange}
+                  highlighted
+                />
+              );
+            })
+        : null}
+
+      {selectedBattery ? (
+        (() => {
+          const entry = selectedBattery;
+          const brandOffers = brandOffersForVehicleSpec(entry.batteryCode);
+          const isHybridFuel = entry.fuelLabel === "하이브리드";
+          const hasRenderableProducts = brandOffers.length > 0;
+          const showHybridPending =
+            isHybridFuel && !hasRenderableProducts && isValidBatterySpecCode(entry.batteryCode);
+
           return (
-            <EvLowVoltageBatteryCard
-              key={group.fuelLabel}
-              fuelLabel={group.fuelLabel}
-              vehicleTitle={vehicleTitle}
-              yearRange={yearRange}
-              highlighted={highlighted}
-            />
-          );
-        }
-
-        const batteryCode = resolveCustomerCatalogPrimaryBattery(slug, group.fuelLabel);
-        const brandOffers = batteryCode ? brandOffersForVehicleSpec(batteryCode) : [];
-        const presentation = resolveCustomerBatteryPresentation(slug, group.fuelLabel);
-
-        if (!batteryCode || presentation.kind !== "ice_product") return null;
-
-        return (
-          <section
-            key={group.fuelLabel}
-            className={`${bm.card} ${bm.cardPad} ${highlighted ? "ring-2 ring-blue-500" : ""}`}
-            id={highlighted ? "fuel-card-focus" : undefined}
-          >
-            <div className="flex flex-wrap items-start justify-between gap-2">
-              <div>
-                <p className="text-sm font-black text-blue-700">{group.fuelLabel}</p>
-                <p className="vehicle-customer-battery__spec-title mt-1">{batteryCode}</p>
-                <p className="mt-1 text-sm font-semibold text-slate-600">
-                  {vehicleTitle} 기본 추천 규격
-                  {yearRange ? ` · ${yearRange}` : ""}
-                </p>
+            <section
+              key={`${entry.fuelLabel}-${entry.batteryCode}`}
+              className={`${bm.card} ${bm.cardPad} ring-2 ring-blue-500`}
+              id="fuel-card-focus"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <p className="vehicle-customer-battery__spec-title">{entry.batteryCode}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-600">
+                    {vehicleTitle} {entry.fuelLabel} 추천 규격
+                    {yearRange ? ` · ${yearRange}` : ""}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 ring-1 ring-blue-100">
+                      {entry.fuelLabel}
+                    </span>
+                  </div>
+                </div>
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-800 ring-1 ring-blue-100">
+                  대표 규격
+                </span>
               </div>
-              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-800 ring-1 ring-blue-100">
-                대표 규격
-              </span>
-            </div>
 
-            {brandOffers.length > 0 ? (
-              <>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+              {showHybridPending ? (
+                <div className="mt-3 rounded-xl border border-amber-100 bg-amber-50/60 px-4 py-3">
+                  <p className="text-sm font-black text-slate-900">{HYBRID_SPEC_PENDING_MESSAGE}</p>
+                  <p className="mt-1 text-sm font-medium text-slate-600">
+                    {HYBRID_BATTERY_CHECK_MESSAGE}
+                  </p>
+                </div>
+              ) : hasRenderableProducts ? (
+                <div className="mt-3 space-y-2">
                   {brandOffers.map((b) => (
                     <BrandProductCard
-                      key={`${group.fuelLabel}-${b.id}`}
+                      key={`${entry.batteryCode}-${b.id}`}
                       brandId={b.id}
                       brandLabel={b.label}
-                      vehicleSpecCode={batteryCode}
+                      vehicleSpecCode={entry.batteryCode}
                       productCode={b.productCode}
                       vehicleSlug={slug}
                     />
                   ))}
                 </div>
-              </>
-            ) : (
-              <div className="mt-4">
-                <p className="mb-3 text-sm font-medium text-slate-600">
-                  브랜드별 전용 이미지가 없어도 아래 규격 기준으로 주문·상담이 가능합니다.
-                </p>
-                <RecommendedBatteryCard
-                  code={batteryCode}
-                  fieldLabel="추천 규격"
-                  vehicleLabel={vehicleTitle}
-                  ctas={PRIMARY_BATTERY_CTAS(batteryCode)}
-                  primary
-                />
-              </div>
-            )}
+              ) : (
+                <div className="mt-3">
+                  <RecommendedBatteryCard
+                    code={entry.batteryCode}
+                    fieldLabel="추천 규격"
+                    vehicleLabel={vehicleTitle}
+                    ctas={PRIMARY_BATTERY_CTAS(entry.batteryCode)}
+                    primary
+                    compact
+                    showPricing
+                    vehicleDetail
+                    brandName="로케트"
+                  />
+                </div>
+              )}
 
-            {showTrimCaution ? (
-              <p className="mt-4 rounded-lg bg-amber-50/80 px-3 py-2 text-sm font-medium text-amber-950">
-                {VEHICLE_TRIM_CAUTION_COPY}
-              </p>
-            ) : null}
-          </section>
-        );
-      })}
+              {showTrimCaution ? (
+                <p className="mt-3 rounded-lg bg-amber-50/80 px-3 py-2 text-sm font-medium text-amber-950">
+                  {VEHICLE_TRIM_CAUTION_COPY}
+                </p>
+              ) : null}
+            </section>
+          );
+        })()
+      ) : selectedFuel ? (
+        <section className={`${bm.card} ${bm.cardPad}`}>
+          <p className="text-sm font-medium text-slate-600">
+            {selectedFuel === "하이브리드"
+              ? HYBRID_BATTERY_CHECK_MESSAGE
+              : BATTERY_MATCH_PENDING_MESSAGE}
+          </p>
+        </section>
+      ) : null}
 
     </div>
   );

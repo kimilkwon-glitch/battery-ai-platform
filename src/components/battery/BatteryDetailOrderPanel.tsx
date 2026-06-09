@@ -14,11 +14,16 @@ import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import { CONTACT } from "@/lib/contact-info";
 import { openProductInquiry } from "@/lib/chat-inquiry-events";
 import { getBattery, getBrand } from "@/lib/platform-data";
-import { BATTERY_RETURN_POLICY_COPY } from "@/lib/pricing/customer-price-labels";
-import {
-  BATTERY_RETURN_OPTIONS,
-  type BatteryReturnOption,
-} from "@/lib/shop-order-types";
+import type { BatteryReturnOption } from "@/lib/shop-order-types";
+
+const RETURN_TOGGLE_OPTIONS: {
+  id: BatteryReturnOption;
+  shortLabel: string;
+  description: string;
+}[] = [
+  { id: "return", shortLabel: "반납", description: "폐배터리 반납 조건 가격입니다." },
+  { id: "no-return", shortLabel: "미반납", description: "폐배터리 미반납 조건 가격입니다." },
+];
 import { BatteryDetailPriceBlock } from "@/components/battery/BatteryDetailPriceBlock";
 import type { FulfillmentMethod } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
@@ -56,6 +61,11 @@ export function BatteryDetailOrderPanel({
     .filter(Boolean)
     .join(" · ");
   const sizeMm = formatDimensions(summary?.dimensionsMm ?? null);
+  const typeChip =
+    /^CMF|^GB/i.test(code) ? "일반형" : spec.typeLabel && spec.typeLabel !== "배터리" ? spec.typeLabel : null;
+  const specChips = [typeChip, spec.capacity, spec.cca, spec.terminalLabel].filter(
+    (chip): chip is string => Boolean(chip),
+  );
 
   return (
     <section
@@ -78,21 +88,43 @@ export function BatteryDetailOrderPanel({
             <BatteryWishlistButton code={code} />
           </div>
 
-          <h1 className={`${bm.specTitle} pr-14 text-2xl sm:text-3xl`} data-spec-code>
-            {code}
-          </h1>
-          <p className="mt-2 text-base font-semibold text-slate-600">{specLine}</p>
+          <div className="battery-product-hero-mobile pr-14 lg:hidden">
+            <h1 className={`${bm.specTitle} text-2xl`} data-spec-code>
+              {code}
+            </h1>
+            <p className="mt-1 text-sm font-bold text-slate-600">{brandName}</p>
+            {specChips.length > 0 ? (
+              <div className="battery-product-spec-chips mt-2.5" aria-label="상품 정보">
+                {specChips.map((chip) => (
+                  <span key={chip} className="battery-product-spec-chip">
+                    {chip}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            {sizeMm ? (
+              <p className="battery-product-spec-size mt-2 text-xs font-medium text-slate-500">
+                사이즈 {sizeMm}
+              </p>
+            ) : null}
+          </div>
 
-          {sizeMm ? (
-            <p className="mt-2 text-sm font-medium text-slate-500">사이즈 {sizeMm}</p>
-          ) : null}
+          <div className="battery-product-hero-desktop hidden pr-14 lg:block">
+            <h1 className={`${bm.specTitle} text-2xl sm:text-3xl`} data-spec-code>
+              {code}
+            </h1>
+            <p className="mt-2 text-base font-semibold text-slate-600">{specLine}</p>
+            {sizeMm ? (
+              <p className="mt-2 text-sm font-medium text-slate-500">사이즈 {sizeMm}</p>
+            ) : null}
+          </div>
 
           <BatteryDetailPriceBlock code={code} brandId={bat.brandId} />
 
           <div className="mt-4 min-w-0">
             <p className="text-sm font-black text-slate-700">폐배터리 반납</p>
             <div className="battery-order-panel__return mt-2" role="group" aria-label="폐배터리 반납 선택">
-              {BATTERY_RETURN_OPTIONS.map((opt) => {
+              {RETURN_TOGGLE_OPTIONS.map((opt) => {
                 const selected = returnOption === opt.id;
                 return (
                   <button
@@ -104,15 +136,13 @@ export function BatteryDetailOrderPanel({
                       selected ? " battery-order-panel__return-btn--active" : ""
                     }`}
                   >
-                    {opt.label}
+                    {opt.shortLabel}
                   </button>
                 );
               })}
             </div>
-            <p className="mt-2 text-[11px] font-bold leading-relaxed text-slate-600">
-              {returnOption === "no-return"
-                ? BATTERY_RETURN_POLICY_COPY.noReturn
-                : BATTERY_RETURN_POLICY_COPY.return}
+            <p className="battery-order-panel__return-desc mt-2 text-xs font-medium leading-relaxed text-slate-600">
+              {RETURN_TOGGLE_OPTIONS.find((opt) => opt.id === returnOption)?.description}
             </p>
           </div>
 
@@ -124,7 +154,7 @@ export function BatteryDetailOrderPanel({
             onFulfillmentChange={onFulfillmentChange}
           />
 
-          <div className="battery-order-panel__cta-row mt-5">
+          <div className="battery-order-panel__cta-row mt-5" data-battery-order-panel-cta>
             <BuyNowButton
               batteryCode={code}
               brandName={brandName}

@@ -1,29 +1,26 @@
-import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { AdminCtaLinksTable } from "@/components/admin/AdminCtaLinksTable";
-import { buildCtaLinkAuditRows } from "@/lib/admin/data/cta-links-audit";
+import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
+import { buildCtaLinkAuditRows, countCtaLinkErrors } from "@/lib/admin/data/cta-links-audit";
 import { storeLinks } from "@/lib/external-links";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AdminCtaLinksPage() {
   const rows = buildCtaLinkAuditRows();
+  const errors = countCtaLinkErrors(rows);
+  const ok = rows.filter((r) => r.status === "ok").length;
 
   return (
-    <AdminShellLayout title="CTA/링크 점검" description="메인·상세·지점·외부 채널 연결을 점검합니다.">
-      <Card className="mb-4">
-        <CardHeader>
-          <CardTitle>지점 정보 기준</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-2 text-xs text-slate-600 sm:grid-cols-2">
-          <div>
-            <p className="font-bold">덕천점</p>
-            <p>부산 북구 의성로 122 / {storeLinks.deokcheon.phone}</p>
-          </div>
-          <div>
-            <p className="font-bold">학장점</p>
-            <p>부산 사상구 학감대로 171 / {storeLinks.hakjang.phone}</p>
-          </div>
-        </CardContent>
-      </Card>
+    <AdminShellLayout
+      title="CTA/링크 점검"
+      description="메인·상세·지점 링크 연결 상태를 점검합니다."
+      summary={[
+        { label: "전체", value: rows.length },
+        { label: "정상", value: ok, tone: "info" },
+        { label: "오류/의심", value: errors, tone: errors > 0 ? "danger" : "default" },
+      ]}
+    >
+      <p className="mb-3 text-xs text-slate-500">
+        덕천점 {storeLinks.deokcheon.phone} · 학장점 {storeLinks.hakjang.phone}
+      </p>
       <AdminCtaLinksTable rows={rows} />
     </AdminShellLayout>
   );

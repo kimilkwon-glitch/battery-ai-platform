@@ -123,20 +123,62 @@ export function SearchResultsView({ data }: Props) {
 
   if (!data.query) {
     return (
-      <div className={`${bm.card} p-5`}>
-        <p className="text-sm font-bold text-slate-700">차종·규격·증상을 입력하면 맞는 후보를 보여드립니다.</p>
-        <p className="mt-2 text-xs font-medium text-slate-500">예시 검색어</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {data.emptySuggestions.map((s) => (
-            <Link
-              className="rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
-              href={getSearchHref(s)}
-              key={s}
-            >
-              {s}
-            </Link>
-          ))}
-        </div>
+      <div className="space-y-4">
+        <section className={`${bm.card} p-5`}>
+          <h2 className="text-base font-black text-slate-950">어떤 방식으로 찾으시나요?</h2>
+          <p className="mt-1 text-sm font-medium text-slate-600">
+            차량명·배터리 규격·사진 확인 중 편한 방법을 선택하세요.
+          </p>
+        </section>
+
+        <section className={`${bm.card} p-5`}>
+          <h3 className="text-sm font-black text-slate-900">차량명으로 찾기</h3>
+          <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
+            차량명을 알고 있다면: &ldquo;싼타페, 포터2, 그랜저&rdquo;처럼 차량명으로 검색하세요.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["싼타페", "포터2", "그랜저"].map((s) => (
+              <Link
+                className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-800 ring-1 ring-blue-100 hover:bg-blue-100"
+                href={getSearchHref(s)}
+                key={s}
+              >
+                {s}
+              </Link>
+            ))}
+          </div>
+          <Link href="/vehicles" className="mt-3 inline-flex text-xs font-black text-blue-700 hover:underline">
+            차종검색 페이지로 이동 →
+          </Link>
+        </section>
+
+        <section className={`${bm.card} p-5`}>
+          <h3 className="text-sm font-black text-slate-900">배터리 규격명으로 찾기</h3>
+          <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
+            배터리 규격을 알고 있다면: &ldquo;AGM70L, DIN74L, 100R&rdquo;처럼 규격명으로 바로 찾을 수 있습니다.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["AGM70L", "DIN74L", "100R"].map((s) => (
+              <Link
+                className="rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                href={getSearchHref(s)}
+                key={s}
+              >
+                {s}
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className={`${bm.card} border-amber-100 bg-amber-50/40 p-5`}>
+          <h3 className="text-sm font-black text-slate-900">잘 모르겠다면</h3>
+          <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
+            기존 배터리 사진을 보내주시면 규격 확인을 도와드립니다.
+          </p>
+          <Link href={HUB_PHOTO} className={`${bm.btnNavy} mt-3 inline-flex text-xs`}>
+            사진으로 확인
+          </Link>
+        </section>
       </div>
     );
   }

@@ -40,20 +40,29 @@ export function faqCategoryToHub(cat: Exclude<FaqCategory, "전체">): SupportHu
   return "other";
 }
 
-export const SUPPORT_HUB_PRIMARY_CTAS = [
+export type SupportHubCtaVariant = "primary" | "secondary";
+
+export type SupportHubPrimaryCta = {
+  id: "consult" | "lookup";
+  label: string;
+  href: string;
+  variant: SupportHubCtaVariant;
+};
+
+export const SUPPORT_HUB_PRIMARY_CTAS: readonly SupportHubPrimaryCta[] = [
   {
     id: "consult",
     label: "상담 문의하기",
     href: "#support-inquiry",
-    variant: "primary" as const,
+    variant: "primary",
   },
   {
     id: "lookup",
     label: "주문 조회하기",
     href: COMMERCE_ORDER_LOOKUP_PAGE,
-    variant: "secondary" as const,
+    variant: "secondary",
   },
-] as const;
+];
 
 export const SUPPORT_HUB_BOTTOM_LINKS = [
   { label: "주문/배송 안내", href: CUSTOMER_CENTER_ORDER_GUIDE, desc: "주문·출고·교체 절차" },
@@ -62,6 +71,28 @@ export const SUPPORT_HUB_BOTTOM_LINKS = [
 ] as const;
 
 export const SUPPORT_HUB_FAQ_INITIAL_LIMIT = { mobile: 6, desktop: 9 } as const;
+
+export const SUPPORT_HUB_NOTICE_INITIAL_LIMIT = { mobile: 3, desktop: 4 } as const;
+
+/** 모바일 기본 FAQ 노출 우선순위 (검색·카테고리 필터 없을 때) */
+export const SUPPORT_HUB_MOBILE_FAQ_PRIORITY = [
+  "faq-spec-check",
+  "faq-agm",
+  "faq-din",
+  "faq-lr",
+  "faq-return",
+  "cs-faq-delivery-time",
+] as const;
+
+/** 모바일 빠른 안내 — 2열 compact 버튼 */
+export const SUPPORT_HUB_MOBILE_QUICK_LINKS = [
+  { label: "배송 안내", href: CUSTOMER_CENTER_DELIVERY },
+  { label: "반품·보증", href: CUSTOMER_CENTER_RETURN_EXCHANGE },
+  { label: "배터리 규격 가이드", href: HUB_GUIDE },
+  { label: "매장·출장 안내", href: HUB_STORE_DETAIL },
+  { label: "주문 조회", href: COMMERCE_ORDER_LOOKUP_PAGE },
+  { label: "FAQ 전체", href: CUSTOMER_CENTER_FAQ },
+] as const;
 
 /** FAQ 영역 하단 빠른 링크 (메인 컬럼) */
 export const SUPPORT_HUB_FAQ_QUICK_LINKS = [

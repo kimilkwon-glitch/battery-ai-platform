@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { Package, Car, Wrench, ShoppingBag } from "lucide-react";
 import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
 import {
   computeLineAmountWithReturnFee,
@@ -19,11 +20,35 @@ import {
 const METHODS: {
   value: FulfillmentMethod;
   priceType: Exclude<FulfillmentPriceType, "undecided">;
+  icon: typeof Package;
+  cardClass: string;
+  recommended?: boolean;
 }[] = [
-  { value: "delivery", priceType: "delivery" },
-  { value: "visit_install", priceType: "onsite_install" },
-  { value: "store_install", priceType: "store_install" },
-  { value: "store_pickup_self", priceType: "store_pickup_self" },
+  {
+    value: "delivery",
+    priceType: "delivery",
+    icon: Package,
+    cardClass: "product-fulfillment-card--delivery",
+    recommended: true,
+  },
+  {
+    value: "visit_install",
+    priceType: "onsite_install",
+    icon: Car,
+    cardClass: "product-fulfillment-card--visit",
+  },
+  {
+    value: "store_install",
+    priceType: "store_install",
+    icon: Wrench,
+    cardClass: "product-fulfillment-card--store-install",
+  },
+  {
+    value: "store_pickup_self",
+    priceType: "store_pickup_self",
+    icon: ShoppingBag,
+    cardClass: "product-fulfillment-card--pickup",
+  },
 ];
 
 type Props = {
@@ -85,40 +110,35 @@ export function ProductFulfillmentPricePanel({
           선택에 따라 결제 예정금액이 즉시 반영됩니다.
         </p>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="product-fulfillment-panel__grid grid gap-2 sm:grid-cols-2">
         {METHODS.map((m) => {
           const active = method === m.value;
           const label = FULFILLMENT_PRICE_LABELS[m.priceType];
           const desc = FULFILLMENT_PRICE_DESCRIPTIONS[m.priceType];
           const priceLabel = formatMethodPrice(m.value);
+          const Icon = m.icon;
           return (
             <button
               key={m.value}
               type="button"
               onClick={() => selectMethod(m.value)}
-              className={`min-h-[3.25rem] rounded-xl px-3 py-2.5 text-left transition-colors ${
-                active
-                  ? "bg-[#0F1B33] text-white ring-2 ring-blue-400 shadow-sm"
-                  : "bg-white text-[#0F172A] ring-1 ring-[#D8E1EC] hover:ring-slate-300"
+              className={`product-fulfillment-card ${m.cardClass}${
+                active ? " product-fulfillment-card--active" : ""
               }`}
             >
-              <span className="flex items-baseline justify-between gap-2">
-                <span className="text-xs font-black">{label}</span>
-                <span
-                  className={`shrink-0 text-xs font-black tabular-nums ${
-                    active ? "text-blue-100" : "text-[#1E3A8A]"
-                  }`}
-                >
-                  {priceLabel}
+              <span className="product-fulfillment-card__head">
+                <span className="product-fulfillment-card__title-row">
+                  <span className="product-fulfillment-card__icon" aria-hidden>
+                    <Icon className="size-4" />
+                  </span>
+                  <span className="product-fulfillment-card__label">{label}</span>
+                  {m.recommended ? (
+                    <span className="product-fulfillment-card__badge">추천</span>
+                  ) : null}
                 </span>
+                <span className="product-fulfillment-card__price">{priceLabel}</span>
               </span>
-              <span
-                className={`mt-0.5 block text-[10px] font-medium leading-snug ${
-                  active ? "text-blue-50" : "text-slate-500"
-                }`}
-              >
-                {desc}
-              </span>
+              <span className="product-fulfillment-card__desc">{desc}</span>
             </button>
           );
         })}

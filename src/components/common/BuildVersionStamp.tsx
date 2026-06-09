@@ -3,12 +3,16 @@
 import { usePathname } from "next/navigation";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 
-/** 모든 페이지 하단·DOM에서 배포 버전 확인 */
+/** 내부 audit·관리 화면에서만 DOM에 빌드 버전 노출 (고객 화면 비노출) */
 export function BuildVersionStamp() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/__ai-audit") || pathname === "/ai-audit") {
-    return null;
-  }
+  const internalOnly =
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/__ai-audit") ||
+    pathname === "/ai-audit" ||
+    pathname === "/qa";
+
+  if (!internalOnly) return null;
 
   return (
     <div

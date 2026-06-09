@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { AdminDataTableClient } from "@/components/admin/AdminDataTableClient";
 import type { AdminCtaLinkRow } from "@/types/admin";
 
@@ -35,27 +35,23 @@ export function AdminCtaLinksTable({ rows }: Props) {
         },
       ]}
       columns={[
-        { key: "context", label: "영역", render: (r) => r.context },
-        { key: "label", label: "라벨", render: (r) => r.label },
+        { key: "context", label: "영역", render: (r) => <span className="admin-cell-muted">{r.context}</span> },
+        { key: "label", label: "라벨", render: (r) => <span className="admin-cell-primary">{r.label}</span> },
         {
           key: "href",
           label: "링크",
-          render: (r) => (
-            <Link
-              href={r.href}
-              className="max-w-[180px] truncate text-[10px] text-blue-600 hover:underline"
-              target={r.href.startsWith("http") ? "_blank" : undefined}
-            >
-              {r.href}
-            </Link>
-          ),
+          render: (r) => <AdminCustomerPreviewLink href={r.href} showUrl />,
         },
         {
           key: "status",
           label: "상태",
           render: (r) => <Badge variant={STATUS_VARIANT[r.status]}>{r.status}</Badge>,
         },
-        { key: "note", label: "메모", render: (r) => r.note ?? "—" },
+        {
+          key: "note",
+          label: "메모",
+          render: (r) => <span className="admin-cell-muted admin-cell-clamp">{r.note ?? "—"}</span>,
+        },
       ]}
     />
   );

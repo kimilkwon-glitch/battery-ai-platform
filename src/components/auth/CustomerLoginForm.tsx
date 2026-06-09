@@ -214,26 +214,6 @@ function CustomerLoginFormInner({ redirect }: Props) {
 
 
 
-      {socialCount === 0 ? (
-
-        <p className="mt-4 text-center text-sm font-medium text-slate-600">
-
-          간편 로그인을 이용할 수 없습니다.{" "}
-
-          <Link href={HUB_SUPPORT} className="font-bold text-blue-700 hover:underline">
-
-            고객센터
-
-          </Link>
-
-          로 문의해 주세요.
-
-        </p>
-
-      ) : null}
-
-
-
       <div className="bm-auth-divider mt-6">
 
         <span>또는 일반 로그인</span>

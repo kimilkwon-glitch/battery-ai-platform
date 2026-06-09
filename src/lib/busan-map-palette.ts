@@ -24,7 +24,7 @@ export const BUSAN_MAP_PALETTE = {
 } as const;
 
 export const BUSAN_MAP_SOURCE_ATTRIBUTION =
-  "행정동 경계: Local_HangJeongDong (vuski/admdongkor 기반)";
+  "행정 경계 안내용 참고 지도이며, 실제 거리·경계와 다를 수 있습니다.";
 
 export const BUSAN_MAP_DISCLAIMER =
   "안내용 권역 지도이며 실제 행정 경계·거리와 다를 수 있습니다. 가까운 직영점 기준으로 우선 안내하며, 일정과 현장 상황에 따라 조정될 수 있습니다.";
