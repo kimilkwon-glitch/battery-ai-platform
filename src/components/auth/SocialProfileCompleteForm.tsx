@@ -12,10 +12,6 @@ import {
 } from "@/lib/auth/member-preferred-store";
 import type { PreferredStoreId } from "@/lib/customer-profile-storage";
 import { CUSTOMER_MYPAGE } from "@/lib/customer-auth-routes";
-import { getCustomerProfile } from "@/lib/customer-profile-storage";
-import { syncSignupVehicleToProfile } from "@/lib/customer-signup-sync";
-
-const FUEL_OPTIONS = ["가솔린", "디젤", "LPG", "하이브리드", "전기"] as const;
 
 const STORE_OPTIONS: { id: PreferredStoreId; label: string }[] = [
   { id: "deokcheon", label: "덕천점" },
@@ -41,9 +37,6 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
   const [postalCode, setPostalCode] = useState("");
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
-  const [vehicleName, setVehicleName] = useState("");
-  const [vehicleYear, setVehicleYear] = useState("");
-  const [vehicleFuel, setVehicleFuel] = useState("");
   const [preferredStore, setPreferredStore] = useState<PreferredStoreId>("undecided");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -54,9 +47,6 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
     setPostalCode(member.zonecode ?? "");
     setAddress1(member.address ?? "");
     setAddress2(member.detailAddress ?? "");
-    setVehicleName(member.vehicleInfo?.name ?? "");
-    setVehicleYear(member.vehicleInfo?.year ?? "");
-    setVehicleFuel(member.vehicleInfo?.fuel ?? "");
     setPreferredStore(memberPreferredStoreToUi(member.preferredStore));
   }, [member]);
 
@@ -89,21 +79,11 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
     }
 
     setSubmitting(true);
-    const vehicleInfo =
-      vehicleName.trim() || vehicleYear.trim() || vehicleFuel.trim()
-        ? {
-            name: vehicleName.trim() || undefined,
-            year: vehicleYear.trim() || undefined,
-            fuel: vehicleFuel.trim() || undefined,
-          }
-        : undefined;
-
     const result = await patchCustomerProfile({
       phone: phone.trim(),
       zonecode: postalCode.trim(),
       address: address1.trim(),
       detailAddress: address2.trim(),
-      vehicleInfo,
       preferredStore: uiPreferredStoreToMember(preferredStore),
     });
     setSubmitting(false);
@@ -115,12 +95,9 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
 
     await refresh();
 
-    const cached = getCustomerProfile();
-    if (cached && vehicleName.trim()) {
-      syncSignupVehicleToProfile(cached);
-    }
-
-    const target = redirect?.trim() || CUSTOMER_MYPAGE;
+    const target = redirect?.trim()
+      ? redirect.trim()
+      : `${CUSTOMER_MYPAGE}?welcome=1`;
     router.push(target);
   };
 
@@ -129,6 +106,9 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
       <h1 className="text-lg font-black text-[#0F172A]">추가 정보 입력</h1>
       <p className="mt-2 text-sm font-medium text-slate-600">
         주문을 계속하려면 연락처와 기본 배송지를 입력해 주세요.
+      </p>
+      <p className="mt-2 text-xs font-semibold text-slate-500">
+        내 차량은 가입 후 마이페이지에서 등록할 수 있습니다.
       </p>
 
       {error ? (
@@ -139,9 +119,7 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
 
       <form className="bm-auth-form__fields mt-4" onSubmit={handleSubmit}>
         <label className="bm-auth-field">
-          <span className="bm-auth-field__label">
-            이름
-          </span>
+          <span className="bm-auth-field__label">이름</span>
           <input
             type="text"
             readOnly
@@ -192,49 +170,8 @@ export function SocialProfileCompleteForm({ redirect }: Props) {
           </span>
         </label>
 
-        <fieldset className="bm-auth-optional">
-          <legend className="bm-auth-optional__title">선택 차량정보</legend>
-          <label className="bm-auth-field">
-            <span className="bm-auth-field__label">차량명</span>
-            <input
-              type="text"
-              className="bm-auth-field__input"
-              value={vehicleName}
-              onChange={(e) => setVehicleName(e.target.value)}
-              placeholder="예: 싼타페, 그랜저"
-            />
-          </label>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="bm-auth-field">
-              <span className="bm-auth-field__label">연식</span>
-              <input
-                type="text"
-                className="bm-auth-field__input"
-                value={vehicleYear}
-                onChange={(e) => setVehicleYear(e.target.value)}
-                placeholder="2021"
-              />
-            </label>
-            <label className="bm-auth-field">
-              <span className="bm-auth-field__label">연료</span>
-              <select
-                className="bm-auth-field__input"
-                value={vehicleFuel}
-                onChange={(e) => setVehicleFuel(e.target.value)}
-              >
-                <option value="">선택</option>
-                {FUEL_OPTIONS.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        </fieldset>
-
         <button type="submit" disabled={submitting} className="bm-auth-submit">
-          {submitting ? "저장 중…" : "저장하고 주문 계속하기"}
+          {submitting ? "저장 중…" : "저장하고 계속하기"}
         </button>
       </form>
     </div>

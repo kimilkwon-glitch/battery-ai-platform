@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import {
   Battery,
-  Camera,
   Car,
+  Camera,
+  ClipboardList,
   Gift,
   MapPin,
   Package,
   ShoppingCart,
   UserCog,
-  Wrench,
 } from "lucide-react";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { getCustomerProfile } from "@/lib/customer-profile-storage";
@@ -22,10 +22,11 @@ import {
   CUSTOMER_PROFILE_PAGE,
   CUSTOMER_SIGNUP_PAGE,
 } from "@/lib/customer-auth-routes";
-import { CART_PAGE } from "@/lib/customer-center-routes";
+import { CART_PAGE, ORDER_REQUEST_LOOKUP_PAGE } from "@/lib/customer-center-routes";
 import { MyPageOrdersSection } from "@/components/mypage/MyPageOrdersSection";
-import { MYPAGE_ORDER_CTAS } from "@/lib/mypage/mypage-orders-section";
 import { HUB_BENEFITS, HUB_PHOTO, HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+
+const VEHICLE_REGISTER_HREF = "/vehicles?register=1";
 
 const MENU_ITEMS = [
   {
@@ -35,30 +36,43 @@ const MENU_ITEMS = [
     icon: Package,
     accent: "#2563eb",
     iconBg: "#eff6ff",
+    cardBg: "linear-gradient(135deg, #eff6ff 0%, #fff 72%)",
   },
   {
     title: "내 차량정보",
     desc: "등록 차량으로 규격 확인을 빠르게 합니다.",
-    href: "/vehicles?register=1",
+    href: VEHICLE_REGISTER_HREF,
     icon: Car,
     accent: "#059669",
     iconBg: "#ecfdf5",
+    cardBg: "linear-gradient(135deg, #ecfdf5 0%, #fff 72%)",
   },
   {
-    title: "사진 확인 요청 내역",
+    title: "상담 접수 내역",
+    desc: "문의·상담 접수 현황을 확인합니다.",
+    href: ORDER_REQUEST_LOOKUP_PAGE,
+    icon: ClipboardList,
+    accent: "#7c3aed",
+    iconBg: "#f5f3ff",
+    cardBg: "linear-gradient(135deg, #f5f3ff 0%, #fff 72%)",
+  },
+  {
+    title: "혜택/쿠폰",
+    desc: "회원 혜택과 쿠폰 안내를 확인합니다.",
+    href: HUB_BENEFITS,
+    icon: Gift,
+    accent: "#d97706",
+    iconBg: "#fffbeb",
+    cardBg: "linear-gradient(135deg, #fffbeb 0%, #fff 72%)",
+  },
+  {
+    title: "사진 확인 요청",
     desc: "사진으로 규격 확인을 요청한 내역입니다.",
     href: HUB_PHOTO,
     icon: Camera,
-    accent: "#d97706",
-    iconBg: "#fffbeb",
-  },
-  {
-    title: "배터리 교체 이력",
-    desc: "완료된 교체·주문 이력을 확인합니다.",
-    href: "/mypage#replacements",
-    icon: Wrench,
-    accent: "#7c3aed",
-    iconBg: "#f5f3ff",
+    accent: "#0891b2",
+    iconBg: "#ecfeff",
+    cardBg: "linear-gradient(135deg, #ecfeff 0%, #fff 72%)",
   },
   {
     title: "회원정보 수정",
@@ -67,6 +81,7 @@ const MENU_ITEMS = [
     icon: UserCog,
     accent: "#0f172a",
     iconBg: "#f1f5f9",
+    cardBg: "linear-gradient(135deg, #f8fafc 0%, #fff 72%)",
   },
   {
     title: "자주 이용하는 지점",
@@ -75,6 +90,7 @@ const MENU_ITEMS = [
     icon: MapPin,
     accent: "#dc2626",
     iconBg: "#fef2f2",
+    cardBg: "linear-gradient(135deg, #fef2f2 0%, #fff 72%)",
   },
 ] as const;
 
@@ -84,19 +100,27 @@ const STORE_LABELS = {
   undecided: "아직 선택하지 않음",
 } as const;
 
-export function MyPageClient() {
+function MyPageClientInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isLoggedIn, displayName, logout, member, ready } = useCustomerAuth();
   const [vehicles, setVehicles] = useState<ReturnType<typeof getCustomerVehicles>>([]);
   const [preferredStore, setPreferredStore] = useState<string | null>(null);
+  const showWelcome = searchParams.get("welcome") === "1";
 
   useEffect(() => {
     setVehicles(getCustomerVehicles());
     const fromMember = member?.preferredStore ?? null;
-    setPreferredStore(
-      fromMember ?? getCustomerProfile()?.preferredStore ?? null,
-    );
+    setPreferredStore(fromMember ?? getCustomerProfile()?.preferredStore ?? null);
   }, [member?.id, member?.preferredStore]);
+
+  useEffect(() => {
+    if (!showWelcome) return;
+    const timer = window.setTimeout(() => {
+      router.replace("/mypage", { scroll: false });
+    }, 12000);
+    return () => window.clearTimeout(timer);
+  }, [showWelcome, router]);
 
   return (
     <div className="mypage-hub space-y-6" data-page="mypage">
@@ -111,19 +135,17 @@ export function MyPageClient() {
           {ready && isLoggedIn ? (
             <div className="bm-mypage-welcome">
               <div>
-                <p className="text-sm font-bold text-white">
+                <p className="bm-mypage-welcome__name">
                   {displayName ? `${displayName}님, ` : ""}안녕하세요
                 </p>
-                <p className="mt-1 text-xs font-semibold text-blue-100">
-                  첫 주문 3% 혜택이 자동 적용됩니다.
-                </p>
+                <p className="bm-mypage-welcome__hint">첫 주문 3% 혜택이 자동 적용됩니다.</p>
               </div>
               <button
                 type="button"
                 onClick={() => {
                   void logout().then(() => router.refresh());
                 }}
-                className="rounded-lg border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-white/20"
+                className="bm-mypage-welcome__logout"
               >
                 로그아웃
               </button>
@@ -146,74 +168,114 @@ export function MyPageClient() {
         </div>
       </section>
 
+      {showWelcome && isLoggedIn ? (
+        <section className="bm-mypage-welcome-banner" role="status">
+          <p className="bm-mypage-welcome-banner__title">가입이 완료되었습니다.</p>
+          <p className="bm-mypage-welcome-banner__desc">
+            마이페이지에서 내 차량을 등록하면 배터리 규격을 더 쉽게 확인할 수 있습니다.
+          </p>
+          <Link href={VEHICLE_REGISTER_HREF} className="bm-mypage-welcome-banner__cta">
+            마이페이지에서 차량 등록하기
+          </Link>
+        </section>
+      ) : null}
+
       {preferredStore && preferredStore !== "undecided" ? (
-        <section className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3">
-          <h2 className="text-xs font-black uppercase tracking-wide text-blue-800">자주 이용하는 지점</h2>
-          <p className="mt-1 text-sm font-bold text-slate-800">
+        <section className="bm-mypage-store-pill">
+          <h2 className="bm-mypage-store-pill__label">자주 이용하는 지점</h2>
+          <p className="bm-mypage-store-pill__value">
             {STORE_LABELS[preferredStore as keyof typeof STORE_LABELS] ?? preferredStore}
           </p>
           <Link
             href={`${HUB_STORE_DETAIL}#store-${preferredStore}`}
-            className="mt-2 inline-block text-xs font-bold text-blue-700 hover:underline"
+            className="bm-mypage-store-pill__link"
           >
             지점 상세 보기 →
           </Link>
         </section>
       ) : null}
 
-      {vehicles.length > 0 ? (
-        <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h2 className="text-sm font-black text-slate-900">등록한 차량</h2>
-          <ul className="mt-3 space-y-2">
-            {vehicles.map((v) => (
-              <li key={v.id}>
-                <Link
-                  href={v.href}
-                  className="flex flex-col gap-1 rounded-xl border border-slate-100 bg-slate-50/60 px-4 py-3 text-sm font-bold text-slate-800 transition hover:border-emerald-200 hover:bg-emerald-50/40 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <span>
-                    {v.displayName}
-                    {v.yearRange || v.year ? (
-                      <span className="ml-2 font-medium text-slate-500">
-                        {v.yearRange ?? v.year}
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="text-xs font-bold text-emerald-700 sm:text-sm">규격 보기 →</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : (
-        <div className="bm-mypage-empty">
-          <Car className="mx-auto size-8 text-slate-300" aria-hidden />
-          <p className="mt-2 text-center text-sm font-semibold text-slate-500">
-            차량 정보를 등록하면 다음 주문이 더 빨라집니다.
-          </p>
-          <div className="mt-3 text-center">
-            <Link
-              href="/vehicles?register=1"
-              className="text-sm font-black text-blue-700 hover:underline"
-            >
-              차량 등록하기 →
+      <section className="bm-mypage-vehicles" aria-labelledby="mypage-vehicles-title">
+        <div className="bm-mypage-section-head">
+          <h2 id="mypage-vehicles-title" className="bm-mypage-section-head__title">
+            {vehicles.length > 0 ? "등록된 차량" : "내 차량 등록"}
+          </h2>
+          {vehicles.length > 0 ? (
+            <Link href={VEHICLE_REGISTER_HREF} className="bm-mypage-section-head__link">
+              차량 추가
+            </Link>
+          ) : null}
+        </div>
+
+        {vehicles.length === 0 ? (
+          <div className="bm-mypage-vehicle-register">
+            <span className="bm-mypage-vehicle-register__icon" aria-hidden>
+              <Car className="size-6" />
+            </span>
+            <p className="bm-mypage-vehicle-register__title">아직 등록된 차량이 없습니다.</p>
+            <p className="bm-mypage-vehicle-register__desc">
+              차량과 연료를 선택하면 배터리 규격을 더 정확하게 확인할 수 있습니다.
+            </p>
+            <Link href={VEHICLE_REGISTER_HREF} className="bm-mypage-vehicle-register__cta">
+              차량 등록하기
             </Link>
           </div>
-        </div>
-      )}
+        ) : (
+          <ul className="bm-mypage-vehicle-list">
+            {vehicles.map((v) => {
+              const metaParts = [
+                v.yearRange ?? v.year,
+                v.fuel ?? v.fuelHint,
+              ].filter(Boolean);
+              return (
+                <li key={v.id}>
+                  <article className="bm-mypage-vehicle-card">
+                    <div className="bm-mypage-vehicle-card__head">
+                      <span className="bm-mypage-vehicle-card__icon" aria-hidden>
+                        <Car className="size-5" />
+                      </span>
+                      <div className="bm-mypage-vehicle-card__info">
+                        <p className="bm-mypage-vehicle-card__name">{v.displayName}</p>
+                        {metaParts.length > 0 ? (
+                          <p className="bm-mypage-vehicle-card__meta">{metaParts.join(" · ")}</p>
+                        ) : null}
+                      </div>
+                    </div>
+                    {v.recommendedBattery ? (
+                      <p className="bm-mypage-vehicle-card__spec">
+                        <span className="bm-mypage-vehicle-card__spec-badge">추천 규격</span>
+                        {v.recommendedBattery}
+                      </p>
+                    ) : null}
+                    <div className="bm-mypage-vehicle-card__actions">
+                      <Link href={v.href} className="bm-mypage-vehicle-card__btn-primary">
+                        규격 보기
+                      </Link>
+                      <Link href={VEHICLE_REGISTER_HREF} className="bm-mypage-vehicle-card__btn-secondary">
+                        차량 정보 수정
+                      </Link>
+                    </div>
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       <MyPageOrdersSection isLoggedIn={isLoggedIn} authReady={ready} />
 
       <section id="replacements" className="bm-mypage-orders scroll-mt-24">
-        <h2 className="text-base font-black text-slate-900">배터리 교체 이력</h2>
-        <p className="mt-1 text-xs font-medium text-slate-500">
+        <h2 className="bm-mypage-section-head__title">배터리 교체 이력</h2>
+        <p className="bm-mypage-section-head__desc">
           완료된 교체·주문은 주문 조회에서 확인할 수 있습니다.
         </p>
-        <div className="bm-mypage-orders__empty">
-          <Battery className="mx-auto size-8 text-slate-300" aria-hidden />
-          <p className="mt-2">교체 완료 후 이력이 여기에 표시됩니다.</p>
+        <div className="bm-mypage-orders__empty bm-mypage-orders__empty--spacious">
+          <Battery className="bm-mypage-orders__empty-icon" aria-hidden />
+          <p className="bm-mypage-orders__empty-title">아직 교체 이력이 없습니다.</p>
+          <p className="bm-mypage-orders__empty-desc">교체 완료 후 이곳에 기록이 표시됩니다.</p>
           <div className="bm-mypage-orders__actions">
-            <Link href={MYPAGE_ORDER_CTAS.consultationLookup} className="bm-auth-inline-btn no-underline">
+            <Link href={ORDER_REQUEST_LOOKUP_PAGE} className="bm-mypage-btn-secondary no-underline">
               상담 접수 조회
             </Link>
           </div>
@@ -233,6 +295,7 @@ export function MyPageClient() {
                   "--item-accent": item.accent,
                   "--item-icon-bg": item.iconBg,
                   "--item-icon-color": item.accent,
+                  "--item-card-bg": item.cardBg,
                 } as React.CSSProperties
               }
             >
@@ -253,9 +316,9 @@ export function MyPageClient() {
         })}
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-sm font-black text-slate-900">바로가기</h2>
-        <div className="bm-mypage-shortcuts mt-3">
+      <section className="bm-mypage-shortcuts-panel">
+        <h2 className="bm-mypage-section-head__title">바로가기</h2>
+        <div className="bm-mypage-shortcuts">
           <Link href={CART_PAGE} className="bm-mypage-shortcut bm-mypage-shortcut--cart">
             <span className="flex items-center gap-2">
               <ShoppingCart className="size-4 text-blue-600" aria-hidden />
@@ -273,5 +336,13 @@ export function MyPageClient() {
         </div>
       </section>
     </div>
+  );
+}
+
+export function MyPageClient() {
+  return (
+    <Suspense fallback={null}>
+      <MyPageClientInner />
+    </Suspense>
   );
 }

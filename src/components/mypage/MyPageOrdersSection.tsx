@@ -55,7 +55,7 @@ function OrderCard({ order }: { order: MallOrderMineListItemExtended }) {
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href={`${HUB_SUPPORT}?tab=inquiry`}
-          className="bm-auth-inline-btn no-underline text-xs"
+          className="bm-mypage-btn-secondary no-underline text-xs"
         >
           주문 문의
         </Link>
@@ -101,36 +101,36 @@ export function MyPageOrdersSection({ isLoggedIn, authReady }: Props) {
 
   return (
     <section id="orders" className="bm-mypage-orders scroll-mt-24">
-      <h2 className="text-base font-black text-slate-900">내 주문내역</h2>
-      <p className="mt-1 text-xs font-medium text-slate-500">
+      <h2 className="bm-mypage-section-head__title">내 주문내역</h2>
+      <p className="bm-mypage-section-head__desc">
         결제·배송·장착 진행 상태를 확인할 수 있습니다.
       </p>
 
       {!authReady || loading ? (
-        <div className="bm-mypage-orders__empty">
+        <div className="bm-mypage-orders__empty bm-mypage-orders__empty--spacious">
           <p className="text-sm font-medium text-slate-500">주문 내역을 불러오는 중…</p>
         </div>
       ) : !isLoggedIn ? (
-        <div className="bm-mypage-orders__empty">
-          <Package className="mx-auto size-8 text-slate-300" aria-hidden />
-          <p className="mt-2">로그인 후 주문 내역을 확인할 수 있습니다.</p>
+        <div className="bm-mypage-orders__empty bm-mypage-orders__empty--spacious">
+          <Package className="bm-mypage-orders__empty-icon" aria-hidden />
+          <p className="bm-mypage-orders__empty-title">로그인 후 주문 내역을 확인할 수 있습니다.</p>
           <div className="bm-mypage-orders__actions">
             <Link
               href={MYPAGE_ORDER_CTAS.guestOrderLookup}
-              className="bm-auth-submit inline-flex w-auto px-5 no-underline"
+              className="bm-mypage-btn-primary no-underline"
             >
               비회원 주문 조회
             </Link>
             <Link
               href={MYPAGE_ORDER_CTAS.consultationLookup}
-              className="bm-auth-inline-btn no-underline"
+              className="bm-mypage-btn-secondary no-underline"
             >
               상담 접수 조회
             </Link>
           </div>
         </div>
       ) : error ? (
-        <div className="bm-mypage-orders__empty">
+        <div className="bm-mypage-orders__empty bm-mypage-orders__empty--spacious">
           <p className="text-sm font-semibold text-red-700" role="alert">
             {error}
           </p>
@@ -144,21 +144,15 @@ export function MyPageOrdersSection({ isLoggedIn, authReady }: Props) {
           ))}
         </ul>
       ) : fetched ? (
-        <div className="bm-mypage-orders__empty">
-          <Package className="mx-auto size-8 text-slate-300" aria-hidden />
-          <p className="mt-2">아직 주문 내역이 없습니다.</p>
+        <div className="bm-mypage-orders__empty bm-mypage-orders__empty--spacious">
+          <Package className="bm-mypage-orders__empty-icon" aria-hidden />
+          <p className="bm-mypage-orders__empty-title">아직 주문 내역이 없습니다.</p>
+          <p className="bm-mypage-orders__empty-desc">
+            배터리를 찾고 주문하면 이곳에서 진행 상태를 확인할 수 있습니다.
+          </p>
           <div className="bm-mypage-orders__actions">
-            <Link
-              href={MYPAGE_ORDER_CTAS.search}
-              className="bm-auth-submit inline-flex w-auto px-5 no-underline"
-            >
+            <Link href={MYPAGE_ORDER_CTAS.search} className="bm-mypage-btn-primary no-underline">
               배터리 찾기
-            </Link>
-            <Link
-              href={MYPAGE_ORDER_CTAS.consultationLookup}
-              className="bm-auth-inline-btn no-underline"
-            >
-              상담 접수 조회
             </Link>
           </div>
           <p className="bm-mypage-orders__guest-link">

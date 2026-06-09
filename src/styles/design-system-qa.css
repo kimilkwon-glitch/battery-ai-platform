@@ -1530,6 +1530,20 @@ main:has(.bm-zone--legal) {
   color: #64748b;
 }
 
+.bm-auth-signup-mypage-hint {
+  border-radius: 0.75rem;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  padding: 0.875rem 1rem;
+}
+
+.bm-auth-signup-mypage-hint__text {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #1e40af;
+}
+
 .bm-auth-fieldset {
   display: grid;
   gap: 0.875rem;

@@ -102,19 +102,19 @@
   position: relative;
   overflow: hidden;
   border-radius: 1.25rem;
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  background: linear-gradient(145deg, #0f172a 0%, #1e3a5f 42%, #1e40af 100%);
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 48%, #f8fafc 100%);
   padding: 1.75rem 1.5rem;
-  color: #fff;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+  color: #0f172a;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
 }
 
 .bm-mypage-hero__pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.08;
-  background-image: radial-gradient(circle at 20% 80%, #fff 1px, transparent 1px);
-  background-size: 24px 24px;
+  opacity: 0.35;
+  background-image: radial-gradient(circle at 20% 80%, #93c5fd 1px, transparent 1px);
+  background-size: 28px 28px;
   pointer-events: none;
 }
 
@@ -125,18 +125,18 @@
 
 .bm-mypage-hero h1,
 .bm-mypage-hero__title {
-  font-size: 1.625rem;
+  font-size: 1.75rem;
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: #0f172a;
 }
 
 .bm-mypage-hero__desc {
   margin-top: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #bfdbfe;
-  line-height: 1.5;
+  color: #475569;
+  line-height: 1.55;
 }
 
 .bm-mypage-welcome {
@@ -147,25 +147,95 @@
   justify-content: space-between;
   gap: 0.75rem;
   border-radius: 0.875rem;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.875rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
+  background: #fff;
+  padding: 1rem 1.125rem;
+  border: 1px solid #bfdbfe;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
+}
+
+.bm-mypage-welcome__name {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.bm-mypage-welcome__hint {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.bm-mypage-welcome__logout {
+  border-radius: 0.625rem;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #475569;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.bm-mypage-welcome__logout:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.bm-mypage-welcome-banner {
+  border-radius: 1rem;
+  border: 1px solid #86efac;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  padding: 1.25rem 1.375rem;
+}
+
+.bm-mypage-welcome-banner__title {
+  font-size: 0.9375rem;
+  font-weight: 900;
+  color: #14532d;
+}
+
+.bm-mypage-welcome-banner__desc {
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #166534;
+}
+
+.bm-mypage-welcome-banner__cta {
+  display: inline-flex;
+  margin-top: 0.875rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: #059669;
+  padding: 0 1.125rem;
+  font-size: 0.8125rem;
+  font-weight: 900;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.bm-mypage-welcome-banner__cta:hover {
+  background: #047857;
+  transform: translateY(-1px);
 }
 
 .bm-mypage-guest-cta {
   margin-top: 1.25rem;
   border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-  padding: 1.25rem;
-  backdrop-filter: blur(6px);
+  border: 1px solid #bfdbfe;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 1.25rem 1.375rem;
 }
 
 .bm-mypage-guest-cta__title {
   font-size: 0.9375rem;
   font-weight: 800;
-  color: #fff;
+  color: #0f172a;
 }
 
 .bm-mypage-guest-cta__actions {
@@ -181,18 +251,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
-  background: #fff;
+  background: #2563eb;
   padding: 0 1.25rem;
   font-size: 0.875rem;
   font-weight: 900;
-  color: #1e3a8a;
+  color: #fff;
   text-decoration: none;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
 .bm-mypage-guest-cta__btn-primary:hover {
+  background: #1d4ed8;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
 }
 
 .bm-mypage-guest-cta__btn-secondary {
@@ -201,18 +272,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: transparent;
+  border: 1px solid #93c5fd;
+  background: #fff;
   padding: 0 1.25rem;
   font-size: 0.875rem;
   font-weight: 800;
-  color: #fff;
+  color: #1d4ed8;
   text-decoration: none;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .bm-mypage-guest-cta__btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: #eff6ff;
+  border-color: #60a5fa;
 }
 
 .bm-mypage-menu {
@@ -232,8 +304,8 @@
   align-items: flex-start;
   border-radius: 1rem;
   border: 1px solid #e2e8f0;
-  background: #fff;
-  padding: 1rem 1.125rem;
+  background: var(--item-card-bg, #fff);
+  padding: 1.125rem 1.25rem;
   text-decoration: none;
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
 }
@@ -338,38 +410,337 @@
   background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
 }
 
-.bm-mypage-orders {
-  border-radius: 1rem;
-  border: 1px solid #e2e8f0;
-  background: #fff;
-  padding: 1.25rem;
+.bm-mypage-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
 }
 
-.bm-mypage-orders__empty {
-  margin-top: 0.75rem;
-  border-radius: 0.75rem;
-  border: 1px dashed #cbd5e1;
-  background: #f8fafc;
-  padding: 1.25rem;
+.bm-mypage-section-head__title {
+  font-size: 1.0625rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.bm-mypage-section-head__desc {
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.bm-mypage-section-head__link {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.bm-mypage-section-head__link:hover {
+  text-decoration: underline;
+}
+
+.bm-mypage-store-pill {
+  border-radius: 1rem;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff 0%, #fff 100%);
+  padding: 1rem 1.25rem;
+}
+
+.bm-mypage-store-pill__label {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
+.bm-mypage-store-pill__value {
+  margin-top: 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.bm-mypage-store-pill__link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.bm-mypage-store-pill__link:hover {
+  text-decoration: underline;
+}
+
+.bm-mypage-vehicle-register {
+  margin-top: 0.875rem;
+  border-radius: 1rem;
+  border: 1px dashed #93c5fd;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+  padding: 1.5rem 1.375rem;
   text-align: center;
 }
 
-.bm-mypage-orders__empty p {
+.bm-mypage-vehicle-register__icon {
+  display: inline-flex;
+  width: 3rem;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.875rem;
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.bm-mypage-vehicle-register__title {
+  margin-top: 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.bm-mypage-vehicle-register__desc {
+  margin-top: 0.5rem;
   font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.bm-mypage-vehicle-register__cta {
+  display: inline-flex;
+  margin-top: 1rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: #059669;
+  padding: 0 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 900;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.bm-mypage-vehicle-register__cta:hover {
+  background: #047857;
+}
+
+.bm-mypage-vehicle-list {
+  margin-top: 0.875rem;
+  display: grid;
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .bm-mypage-vehicle-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bm-mypage-vehicle-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(165deg, #f8fafc 0%, #fff 72%);
+  padding: 1.125rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.bm-mypage-vehicle-card__head {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.bm-mypage-vehicle-card__icon {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.bm-mypage-vehicle-card__name {
+  font-size: 0.9375rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.bm-mypage-vehicle-card__meta {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #64748b;
 }
 
-.bm-mypage-orders__actions {
-  margin-top: 1rem;
+.bm-mypage-vehicle-card__spec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+.bm-mypage-vehicle-card__spec-badge {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.bm-mypage-vehicle-card__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 0.125rem;
+}
+
+.bm-mypage-vehicle-card__btn-primary,
+.bm-mypage-vehicle-card__btn-secondary {
+  display: inline-flex;
+  min-height: 2.375rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  padding: 0 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.bm-mypage-vehicle-card__btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.bm-mypage-vehicle-card__btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.bm-mypage-vehicle-card__btn-secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+
+.bm-mypage-vehicle-card__btn-secondary:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.bm-mypage-btn-primary,
+.bm-mypage-btn-secondary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  padding: 0 1.125rem;
+  font-size: 0.8125rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.bm-mypage-btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.bm-mypage-btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.bm-mypage-btn-secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.bm-mypage-btn-secondary:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.bm-mypage-orders {
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 1.375rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.bm-mypage-orders__empty {
+  margin-top: 1rem;
+  border-radius: 0.875rem;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  padding: 1.375rem 1.25rem;
+  text-align: center;
+}
+
+.bm-mypage-orders__empty--spacious {
+  padding: 1.75rem 1.5rem 1.625rem;
+}
+
+.bm-mypage-orders__empty-icon {
+  margin-inline: auto;
+  width: 2rem;
+  height: 2rem;
+  color: #94a3b8;
+}
+
+.bm-mypage-orders__empty-title {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 900;
+  color: #334155;
+}
+
+.bm-mypage-orders__empty-desc {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.bm-mypage-orders__actions {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
   justify-content: center;
 }
 
 .bm-mypage-orders__guest-link {
-  margin-top: 1rem;
+  margin-top: 1.125rem;
+  padding-top: 0.25rem;
   font-size: 0.75rem;
   font-weight: 500;
   color: #94a3b8;
@@ -383,6 +754,13 @@
 
 .bm-mypage-orders__guest-link a:hover {
   text-decoration: underline;
+}
+
+.bm-mypage-shortcuts-panel {
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 1.25rem 1.375rem;
 }
 
 /* ── 매장·출장 안내 ── */
