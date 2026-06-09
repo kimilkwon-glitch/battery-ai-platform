@@ -41,6 +41,7 @@ import {
 } from "@/lib/brand-hub-customer";
 import { getBrandHubLogoPresentation } from "@/lib/brand-hub-logo-presentation";
 import type { BatteryBrandSpec } from "@/data/battery/types";
+import { getBatteryRepresentativeLabel } from "@/lib/battery-card-representatives";
 import { getBattery } from "@/lib/platform-data";
 import { BrandHubMobileSpecExplorer } from "@/components/platform/BrandHubMobileSpecExplorer";
 import { bm } from "@/lib/design-tokens";
@@ -516,6 +517,11 @@ function BrandProductCard({
       ? hasSoliteBatteryAssets(spec.code)
       : hasRocketBatteryAssets(spec.code);
   const product = getBattery(spec.code, imageBrandKey === "solite" ? "solite" : "rocket");
+  const representativeLabel = getBatteryRepresentativeLabel({
+    brand: brandId,
+    code: spec.code,
+    title: card.manufacturerLine ?? spec.productName ?? product.productCode,
+  });
 
   return (
     <Link
@@ -587,6 +593,14 @@ function BrandProductCard({
             {card.size}
           </p>
         </div>
+        {representativeLabel !== "차종별 확인" ? (
+          <div className={clsx("mt-4 border-t pt-4", dividerBorder)}>
+            <p className={clsx("text-sm font-bold uppercase tracking-wide", labelMuted)}>대표 적용</p>
+            <p className={clsx("mt-1.5 text-sm font-semibold leading-snug", theme.insightBody)}>
+              {representativeLabel}
+            </p>
+          </div>
+        ) : null}
         <span className={clsx("mt-auto pt-5 text-base font-bold", theme.accent)}>상세보기 →</span>
       </div>
     </Link>

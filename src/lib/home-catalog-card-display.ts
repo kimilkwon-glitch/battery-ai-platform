@@ -68,7 +68,7 @@ export function getHomeCatalogCardDisplay(product: HomeCatalogProduct): HomeCata
   const representativeVehicles = resolveBatteryCardRepresentativeVehicles(
     product.searchCode,
     brand,
-    meta.representativeVehicles,
+    product.displayName,
   );
   return {
     ...meta,

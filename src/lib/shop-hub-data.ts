@@ -3,7 +3,7 @@ import {
   type BatteryCardBrandId,
 } from "@/lib/battery-card-representative-display";
 import { brandSpecMatchingTable } from "./brand-hub-data";
-import { compareHref, getBattery, getBrand, getVehicleName, searchHref, shopProducts, type ShopProduct } from "./platform-data";
+import { compareHref, getBattery, getBrand, searchHref, shopProducts, type ShopProduct } from "./platform-data";
 
 export const BRAND_SHOP_LABEL = "BATTERY MANAGER · 배터리 쇼핑";
 
@@ -275,7 +275,7 @@ export function getProductMeta(p: ShopProduct): ShopProductMeta {
   const featuredText = resolveBatteryCardRepresentativeVehicles(
     p.batteryCode,
     shopBrandForCard(p.brandId),
-    custom?.featuredVehicles.join(" · "),
+    p.name,
   );
   const featuredVehicles = featuredText.split(" · ").map((s) => s.trim()).filter(Boolean);
   if (custom) {
@@ -286,11 +286,10 @@ export function getProductMeta(p: ShopProduct): ShopProductMeta {
   }
 
   const b = getBattery(p.batteryCode, p.brandId);
-  const vehicleFallback = p.vehicleIds.slice(0, 3).map(getVehicleName).join(" · ");
   const featuredFromCard = resolveBatteryCardRepresentativeVehicles(
     p.batteryCode,
     shopBrandForCard(p.brandId),
-    vehicleFallback || undefined,
+    p.name,
   );
   const vehicles = featuredFromCard.split(" · ").map((s) => s.trim()).filter(Boolean);
   const badges: ShopProductMeta["badges"] = [];
@@ -307,7 +306,7 @@ export function getProductMeta(p: ShopProduct): ShopProductMeta {
   return {
     usage: b.pros || `${p.type} ${p.capacity}`,
     badges: badges.length ? badges : [{ label: p.type, tone: "blue" }],
-    featuredVehicles: vehicles.length ? vehicles : ["국산 승용 · SUV"],
+    featuredVehicles: vehicles.length ? vehicles : ["차종별 확인"],
   };
 }
 
