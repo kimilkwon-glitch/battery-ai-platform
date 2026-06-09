@@ -12,7 +12,6 @@ import {
   resolveVehicleFuelPrimaryBattery,
 } from "@/lib/vehicle-fuel-primary-battery";
 import {
-  FUEL_FILTER_HINT,
   FUEL_MISMATCH_HINT,
   resolveDefaultSelectedFuel,
   resolveVehicleFuelOptions,
@@ -193,7 +192,7 @@ export function VehicleBatteryPanel({
               ))}
             </div>
             <p className="mt-2 text-xs font-medium leading-relaxed text-slate-500">
-              {FUEL_MISMATCH_HINT} {FUEL_FILTER_HINT}
+              {FUEL_MISMATCH_HINT}
             </p>
             {yearChips.length > 0 ? (
               <div className="mt-2 flex flex-wrap gap-1.5">

@@ -25,7 +25,12 @@ export function FloatingActionDock() {
   const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
 
-  if (pathname?.startsWith("/__ai-audit") || pathname === "/ai-audit") {
+  if (
+    pathname?.startsWith("/__ai-audit") ||
+    pathname === "/ai-audit" ||
+    pathname?.startsWith("/batteries/") ||
+    pathname?.startsWith("/battery-specs/")
+  ) {
     return null;
   }
   const [chatOpen, setChatOpen] = useState(false);

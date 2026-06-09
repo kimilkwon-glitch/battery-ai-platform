@@ -90,8 +90,6 @@ export const SUPPORT_HUB_MOBILE_QUICK_LINKS = [
   { label: "반품·보증", href: CUSTOMER_CENTER_RETURN_EXCHANGE },
   { label: "배터리 규격 가이드", href: HUB_GUIDE },
   { label: "매장·출장 안내", href: HUB_STORE_DETAIL },
-  { label: "주문 조회", href: COMMERCE_ORDER_LOOKUP_PAGE },
-  { label: "FAQ 전체", href: CUSTOMER_CENTER_FAQ },
 ] as const;
 
 /** FAQ 영역 하단 빠른 링크 (메인 컬럼) */

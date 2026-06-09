@@ -96,22 +96,25 @@ export function AddToCartButton({
         ? props.usedBatteryReturnOption
         : undefined);
 
+  const buttonClass = `w-full ${btnClass} cursor-pointer justify-center font-black ${variant === "navy" || variant === "primary" ? "" : "text-sm"} ${showViewCartLink ? "" : (className ?? "")}`.trim();
+  const wrapperClass = showViewCartLink ? (className ?? "flex flex-col gap-2") : undefined;
+
   return (
     <>
-      <div className={className ?? "flex flex-col gap-2"}>
-        <button
-          type="button"
-          className={`${btnClass} cursor-pointer justify-center font-black ${variant === "navy" || variant === "primary" ? "" : "text-sm"}`}
-          onClick={onAdd}
-        >
-          {label}
-        </button>
-        {showViewCartLink ? (
+      {showViewCartLink ? (
+        <div className={wrapperClass}>
+          <button type="button" className={buttonClass} onClick={onAdd}>
+            {label}
+          </button>
           <Link href={CART_PAGE} className="text-center text-[10px] font-bold text-blue-700 hover:underline">
             장바구니 보기 →
           </Link>
-        ) : null}
-      </div>
+        </div>
+      ) : (
+        <button type="button" className={buttonClass} onClick={onAdd}>
+          {label}
+        </button>
+      )}
       <CartAddedModal
         item={modalItem}
         returnOption={modalReturnOption}

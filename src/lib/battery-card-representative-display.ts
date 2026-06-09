@@ -9,6 +9,7 @@ export type BatteryCardBrandId = "rocket" | "solite";
  */
 const BY_BRAND_AND_CODE: Record<string, string> = {
   "rocket:GB80L": "K5 1세대 · YF쏘나타",
+  "rocket:GB57820": "그랜저HG · LF쏘나타 LPG",
   "rocket:GB80R": "렉스턴G4 · 마이티",
   "rocket:GB90R": "포터2 · 투싼ix",
   "rocket:GB100R": "렉스턴G4 · 마이티",
@@ -16,6 +17,7 @@ const BY_BRAND_AND_CODE: Record<string, string> = {
   "rocket:90R": "포터2 · 투싼ix",
   "rocket:DIN50L": "캐스퍼 · 모닝 어반",
   "rocket:GB55066": "캐스퍼 · 모닝 어반",
+  "solite:DIN50L": "베뉴 · 더 넥스트 스파크",
   "solite:CMF80L": "i40 · QM5 · SM5 뉴임프",
   "solite:CMF90R": "스포티지R 디젤 · 렉스턴스포츠",
   "solite:DIN44L": "스파크 · 마티즈 크리에이티브",
