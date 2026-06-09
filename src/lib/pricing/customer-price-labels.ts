@@ -44,6 +44,24 @@ export const CUSTOMER_FULFILLMENT_DESCRIPTIONS: Record<CustomerFulfillmentDispla
   store_pickup_self: "제품 구매가 기준 · 택배비 없음 · 매장 수령",
 };
 
+/** 수령/장착 카드 — 1줄 요약 (모바일 줄바꿈 최소화) */
+export const CUSTOMER_FULFILLMENT_DESC_PRIMARY: Record<CustomerFulfillmentDisplayKey, string> = {
+  delivery: "제품 구매가 + 택배비 15,000원",
+  onsite_install: "출장 교체가 기준",
+  store_install: "출장 교체가 −5,000원",
+  store_pickup_self: "제품 구매가 기준",
+};
+
+export const CUSTOMER_FULFILLMENT_DESC_SECONDARY: Record<
+  CustomerFulfillmentDisplayKey,
+  string | null
+> = {
+  delivery: "직접 교체 가능",
+  onsite_install: "방문 위치에서 교체",
+  store_install: "매장 방문 후 교체 · 출장가에서 5,000원 할인",
+  store_pickup_self: "택배비 없음 · 매장 수령",
+};
+
 /** 상품 상세 상단 — 기본 노출 가격 라벨 */
 export const CUSTOMER_DETAIL_PRICE_LABELS = {
   productPurchase: CUSTOMER_PRICE_LABELS.productPurchase,

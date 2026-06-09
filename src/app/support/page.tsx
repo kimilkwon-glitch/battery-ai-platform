@@ -1,16 +1,6 @@
-import { Suspense } from "react";
-import { PageShell } from "@/components/common/PageShell";
-import { SupportCenterHubV2 } from "@/components/support/SupportCenterHubV2";
-import { getHubSupportNotices } from "@/lib/support-notices-data";
+import { redirect } from "next/navigation";
+import { CUSTOMER_CENTER_HUB } from "@/lib/customer-center-routes";
 
-export default async function SupportPage() {
-  const notices = await getHubSupportNotices();
-
-  return (
-    <PageShell zone="support" plainBg showSearch={false} showPageHeader={false} showFooter>
-      <Suspense fallback={null}>
-        <SupportCenterHubV2 notices={notices} />
-      </Suspense>
-    </PageShell>
-  );
+export default function SupportHubRedirectPage() {
+  redirect(CUSTOMER_CENTER_HUB);
 }

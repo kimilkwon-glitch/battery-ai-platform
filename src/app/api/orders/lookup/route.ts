@@ -44,6 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       lookup: commerceOrderToGuestLookupResult(record),
+      orderId: record.orderId,
     });
   } catch {
     return NextResponse.json(

@@ -508,6 +508,8 @@ export function CheckoutOrderPage() {
           />
 
           <CommercePrePaymentNotice
+            variant="checkout"
+            checkoutStep="order"
             totalAmount={displayTotal}
             fulfillmentMethod={fulfillment.method}
             usedBatteryReturn={usedBattery}

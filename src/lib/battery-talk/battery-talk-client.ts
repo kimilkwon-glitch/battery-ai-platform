@@ -4,6 +4,8 @@ export type SubmitBatteryTalkInput = {
   customerName: string;
   phone: string;
   message: string;
+  userId?: string;
+  isMember?: boolean;
   context?: BatteryTalkContext;
 };
 

@@ -1038,12 +1038,25 @@ textarea.support-hub-v2__field {
   padding: 0.125rem 0.25rem;
 }
 
+.brand-hub-logo-wrap {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  height: 3.5rem;
+}
+
+.brand-hub-logo-image-surface--stacked {
+  width: 100%;
+  padding: 0.1875rem 0.375rem;
+}
+
 .brand-hub-logo-image {
   display: block;
   width: auto;
   max-width: 100%;
   height: auto;
-  max-height: 3.25rem;
   margin-inline: auto;
   object-fit: contain;
   object-position: center;
@@ -1052,140 +1065,101 @@ textarea.support-hub-v2__field {
   mix-blend-mode: normal;
 }
 
+.brand-hub-logo-image--stacked {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+}
+
 .brand-hub .brand-hub-logo-badge,
 .brand-hub .brand-hub-logo-glass {
   color: inherit;
 }
 
+/* 스택형 로고 — 세방전지·하이성능쏠라이트 */
+.brand-hub-logo-badge[data-logo-layout="stacked"] {
+  width: auto;
+  max-width: min(100%, 11.5rem);
+}
+
+.brand-hub-logo-badge[data-logo-layout="stacked"] .brand-hub-logo-glass {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.3125rem 0.4375rem;
+}
+
+.brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
+  max-width: min(100%, 10.5rem);
+}
+
+.brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
+  max-width: min(100%, 13rem);
+}
+
 @media (min-width: 640px) {
-  .brand-hub-logo-badge {
-    width: auto;
-    max-width: min(100%, 24rem);
+  .brand-hub-logo-wrap {
+    height: 4rem;
   }
 
-  .brand-hub-logo-glass {
-    width: auto;
-    min-width: 18rem;
-    padding: 0.4375rem 0.5625rem;
+  .brand-hub-logo-badge[data-logo-layout="stacked"] {
+    max-width: min(100%, 13rem);
   }
 
-  .brand-hub-logo-image {
-    max-height: 4rem;
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 11.5rem);
+  }
+
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
+    max-width: min(100%, 14.5rem);
+  }
+
+  .brand-hub-logo-badge[data-logo-layout="stacked"] .brand-hub-logo-glass {
+    padding: 0.375rem 0.5rem;
   }
 }
 
 @media (min-width: 768px) {
-  .brand-hub-logo-image {
-    max-height: 4.75rem;
+  .brand-hub-logo-wrap {
+    height: 4.5rem;
   }
 }
 
 @media (min-width: 1024px) {
-  .brand-hub-logo-badge {
-    max-width: min(100%, 32rem);
+  .brand-hub-logo-wrap {
+    height: 5rem;
   }
 
-  .brand-hub-logo-glass {
-    min-width: 22rem;
-    padding: 0.5rem 0.75rem;
+  .brand-hub-logo-badge[data-logo-layout="stacked"] {
+    max-width: min(100%, 14.5rem);
   }
 
-  .brand-hub-logo-image {
-    max-height: 5.5rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .brand-hub-logo-badge {
-    max-width: min(100%, 36rem);
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 12.5rem);
   }
 
-  .brand-hub-logo-glass {
-    min-width: 24rem;
-    padding: 0.5625rem 0.875rem;
-  }
-
-  .brand-hub-logo-image {
-    max-height: 6rem;
-  }
-}
-
-/* 쏠라이트 — 긴 가로형 로고 */
-.brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
-.brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
-  max-width: 100%;
-}
-
-@media (min-width: 640px) {
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
-  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 30rem);
-  }
-
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass,
-  .brand-hub-logo-glass--safe {
-    min-width: 20rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
-  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 38rem);
-  }
-
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass,
-  .brand-hub-logo-glass--safe {
-    min-width: 28rem;
-    padding-inline: 0.625rem;
-  }
-
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image,
-  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] .brand-hub-logo-image {
-    width: 100%;
-    min-width: 19rem;
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
+    max-width: min(100%, 16rem);
   }
 }
 
 @media (min-width: 1280px) {
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-badge,
-  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 42rem);
+  .brand-hub-logo-wrap {
+    height: 5.75rem;
   }
 
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-glass,
-  .brand-hub-logo-glass--safe {
-    min-width: 30rem;
+  .brand-hub-logo-badge[data-logo-layout="stacked"] {
+    max-width: min(100%, 15.5rem);
   }
 
-  .brand-hub[data-brand-hub-active="solite"] .brand-hub-logo-image,
-  .brand-hub-logo-badge[data-brand-logo-plaque="solite"] .brand-hub-logo-image {
-    min-width: 22rem;
-  }
-}
-
-/* 로케트 가로폭 */
-@media (min-width: 1024px) {
-  .brand-hub[data-brand-hub-active="rocket"] .brand-hub-logo-badge,
-  .brand-hub-logo-badge[data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 34rem);
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 13.5rem);
   }
 
-  .brand-hub[data-brand-hub-active="rocket"] .brand-hub-logo-glass,
-  .brand-hub-logo-glass--safe {
-    min-width: 23rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .brand-hub[data-brand-hub-active="rocket"] .brand-hub-logo-badge,
-  .brand-hub-logo-badge[data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 38rem);
-  }
-
-  .brand-hub[data-brand-hub-active="rocket"] .brand-hub-logo-glass,
-  .brand-hub-logo-glass--safe {
-    min-width: 26rem;
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
+    max-width: min(100%, 17rem);
   }
 }
 

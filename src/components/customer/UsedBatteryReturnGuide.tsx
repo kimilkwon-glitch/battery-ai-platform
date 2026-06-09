@@ -58,7 +58,7 @@ export function UsedBatteryReturnGuide() {
       <section className={`${bm.card} ${bm.cardPad}`}>
         <h2 className="text-sm font-black text-slate-900">연결된 안내 메시지 예시</h2>
         <p className="mt-1 text-xs font-medium text-slate-500">
-          실제 발송은 준비 중이며, 문구만 미리보기할 수 있습니다.
+          주문·배송 안내 시 아래와 같은 형식으로 연락드립니다.
         </p>
         <ul className="mt-3 flex flex-col gap-2">
           {USED_BATTERY_MESSAGE_LINKS.map((link) => (

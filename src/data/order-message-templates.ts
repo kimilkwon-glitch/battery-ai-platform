@@ -90,7 +90,7 @@ export const ORDER_MESSAGE_GUIDE_COPY = {
   disclaimer:
     "아래 문구는 주문 상태별 안내 메시지 예시입니다. 실제 발송 문구는 주문 조건, 배송 방식, 폐전지 반납 여부에 따라 일부 달라질 수 있습니다.",
   notSendingYet:
-    "실제 문자·알림톡 자동 발송 기능은 준비 중입니다. 현재는 운영 문구 확인 및 수정용 템플릿입니다.",
+    "주문 상태에 따라 아래와 같은 형식의 문자·알림톡으로 안내드립니다. 문구는 주문 조건에 따라 일부 달라질 수 있습니다.",
 } as const;
 
 export const MESSAGE_TEMPLATE_FILTER_GROUPS: MessageTemplateFilterGroup[] = [

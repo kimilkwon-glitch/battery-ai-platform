@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { OrderClaimActions } from "@/components/orders/OrderClaimActions";
 import type { CommerceOrderGuestLookupResult } from "@/lib/orders/commerce-order-mine";
 import {
   COMMERCE_ORDER_LOOKUP_COPY,
@@ -45,8 +46,10 @@ function formatDate(iso: string): string {
 
 export function CommerceOrderLookupResult({
   lookup,
+  verifiedPhone,
 }: {
   lookup: CommerceOrderGuestLookupResult;
+  verifiedPhone?: string;
 }) {
   const badgeClass = statusBadgeClass(lookup.orderStatus, lookup.paymentStatus);
 
@@ -137,6 +140,20 @@ export function CommerceOrderLookupResult({
           </div>
         </dl>
       </section>
+
+      <OrderClaimActions
+        order={{
+          orderId: lookup.orderId,
+          orderNumber: lookup.orderNumber,
+          orderStatus: lookup.orderStatus,
+          customerName: "고객",
+          customerPhone: verifiedPhone ?? "",
+          finalAmount: lookup.finalAmount,
+          deliveryFee: undefined,
+          returnBatteryOption: lookup.batteryReturnType,
+          batteryReturnFee: lookup.batteryReturnFee,
+        }}
+      />
 
       <div className="flex flex-wrap gap-2">
         {["completed", "payment_completed", "shipping"].includes(lookup.orderStatus) ? (

@@ -291,6 +291,91 @@ export const SHIPPING_PAGE: LegalPageData = {
   ],
 };
 
+export const SHIPPING_RETURNS_PAGE: LegalPageData = {
+  slug: "shipping-returns",
+  title: "배송·교환·반품·환불 안내",
+  description:
+    "자동차 배터리 판매 특성을 반영한 배송·장착·교환·반품·환불 기준을 안내합니다.",
+  updatedAt: "2026-06-09",
+  sections: [
+    {
+      heading: "수령/장착 방식별 가격 기준",
+      bullets: [
+        `${COMMERCE_PRICING_POLICY.delivery.label}: ${COMMERCE_PRICING_POLICY.delivery.formula} — ${COMMERCE_PRICING_POLICY.delivery.note}`,
+        `${COMMERCE_PRICING_POLICY.visitInstall.label}: ${COMMERCE_PRICING_POLICY.visitInstall.formula} — 내방(출장) 교체 시 출장가 기준이며, 매장 내방교체는 출장가에서 5,000원 할인이 적용됩니다.`,
+        `${COMMERCE_PRICING_POLICY.storeInstall.label}: ${COMMERCE_PRICING_POLICY.storeInstall.formula}`,
+        `${COMMERCE_PRICING_POLICY.storePickupSelf.label}: ${COMMERCE_PRICING_POLICY.storePickupSelf.formula} — 택배비 15,000원은 부과되지 않습니다.`,
+      ],
+    },
+    {
+      heading: "택배 배송",
+      bullets: [
+        "전국 택배 발송이 가능합니다.",
+        `택배 주문은 ${CUSTOMER_PRICE_LABELS.productPurchase} + 택배비 ${DELIVERY_FEE.toLocaleString("ko-KR")}원 기준입니다.`,
+        "결제 확인 후 순차 발송됩니다.",
+        "배송지는 주소검색을 통해 입력합니다.",
+        "운송장 등록 후 택배사 스캔 반영까지 시간이 걸릴 수 있습니다.",
+        "도서산간·특수지역 추가비가 발생하는 경우 별도 안내드립니다.",
+      ],
+    },
+    {
+      heading: "매장 수령·셀프 교체",
+      bullets: [
+        `${CUSTOMER_PRICE_LABELS.productPurchase} 기준이며 택배비는 부과되지 않습니다.`,
+        "매장에서 제품만 수령해 직접 교체하는 방식입니다.",
+        `매장 위치·연락처는 매장 안내 페이지(${HUB_STORE_DETAIL})에서 확인할 수 있습니다.`,
+      ],
+    },
+    {
+      heading: "출장·매장 교체",
+      bullets: [
+        "출장 교체는 고객 위치 기준 출장 교체가로 계산됩니다.",
+        "매장 방문 교체는 출장 교체가에서 5,000원 할인이 적용됩니다.",
+        "지역·일정·차량 상태에 따라 방문 일정이 조정될 수 있습니다.",
+      ],
+    },
+    {
+      heading: "주문 전 확인 (오주문 방지)",
+      bullets: [
+        "차량 연식, 연료, 배터리 규격, 단자 방향을 반드시 확인해 주세요.",
+        "차량정보·배터리 규격이 맞지 않으면 교환·환불이 어려울 수 있습니다.",
+        "확인이 어려우시면 주문 전 고객센터로 상담해 주세요.",
+        `고객센터: ${CC.phone}`,
+      ],
+    },
+    {
+      heading: "폐전지 반납 조건",
+      bullets: [
+        "주문 시 폐전지 반납/미반납을 선택해야 합니다.",
+        `미반납 선택 시 추가금 ${BATTERY_NO_RETURN_FEE.toLocaleString("ko-KR")}원이 적용될 수 있습니다.`,
+        "반납 조건 상품의 경우 폐전지 미반납 시 추가 비용이 발생할 수 있습니다.",
+        "반납 조건 주문의 경우 회수 절차를 안내드립니다.",
+      ],
+    },
+    {
+      heading: "교환·반품·환불",
+      bullets: [
+        "제품 불량·오배송이 확인되면 교환·환불을 안내드립니다. 장착·사용 전 빠른 연락을 권장합니다.",
+        "배터리는 전기·화학 제품 특성상 개봉·장착·사용 흔적이 있으면 단순 변심 반품이 제한될 수 있습니다.",
+        "단순 변심 반품 시 반품 배송비 또는 왕복 배송비가 차감될 수 있습니다.",
+        "설치·장착이 완료된 경우 상품 상태에 따라 교환·환불이 제한될 수 있습니다.",
+        "결제 취소·환불은 결제수단 및 PG사(토스페이먼츠) 기준에 따라 처리됩니다.",
+      ],
+    },
+    {
+      heading: "주문 변경·취소",
+      bullets: [
+        "배송 준비가 시작된 이후에는 변경·취소가 제한될 수 있습니다.",
+        "변경이 필요하면 고객센터로 빠르게 연락해 주세요.",
+      ],
+    },
+    {
+      heading: "문의",
+      bullets: [`고객센터: ${CC.phone}`, `이메일: ${BIZ.email}`],
+    },
+  ],
+};
+
 export const REFUND_PAGE: LegalPageData = {
   slug: "refund",
   title: "교환/환불 안내",
@@ -360,7 +445,7 @@ export const REFUND_PAGE: LegalPageData = {
 
 export const COMPANY_PAGE: LegalPageData = {
   slug: "company",
-  title: "회사/매장 정보",
+  title: "회사/사업자 정보",
   description: "배터리매니저의 사업자 정보와 매장 운영 정보를 확인하실 수 있습니다.",
   updatedAt: "2026-06-06",
   sections: [

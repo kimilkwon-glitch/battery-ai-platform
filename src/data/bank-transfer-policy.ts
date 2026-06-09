@@ -36,7 +36,7 @@ export const BANK_TRANSFER_POLICY: BankTransferPolicy = {
     "배송은 입금 확인 후 순차적으로 준비됩니다.",
   ],
   cancellationRule:
-    "주문 후 48시간 이내 입금 확인이 되지 않으면 주문이 자동 취소될 수 있습니다. (실제 취소 처리는 주문 시스템 연동 후 적용됩니다.)",
+    "주문 후 48시간 이내 입금 확인이 되지 않으면 주문이 자동 취소될 수 있습니다.",
   customerGuide:
     "입금 전 주문번호·입금금액·입금자명을 확인하고, 기한 내 입금해 주세요. 입금 확인 후 배송 준비 안내가 이어집니다.",
   caution: [
@@ -97,8 +97,8 @@ export const BANK_TRANSFER_STATUS_LABELS: Record<
 /** 주문 완료 화면 정책 안내 예시 (더미) */
 export const ORDER_COMPLETE_DEMO_COPY = {
   banner:
-    "아래 화면은 무통장 입금 주문 시 표시될 정책 안내 예시입니다. 실제 주문·입금 상태는 주문 시스템 연동 후 표시됩니다.",
-  title: "주문 접수 완료 (안내 예시)",
+    "무통장 입금 주문 접수 후 고객님께 안내되는 입금·배송 준비 정보입니다. 주문번호·입금기한·입금금액을 확인해 주세요.",
+  title: "주문 접수 완료",
 } as const;
 
 export const ORDER_COMPLETE_DEMO_ORDER = {

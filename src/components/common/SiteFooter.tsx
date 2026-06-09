@@ -45,7 +45,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
               <dd className="inline">{formatBusinessField(biz.address)}</dd>
             </div>
             <div>
-              <dt className="inline font-bold text-slate-500">개인정보보호책임자 </dt>
+              <dt className="inline font-bold text-slate-500">개인정보관리책임자 </dt>
               <dd className="inline">{formatBusinessField(biz.privacyOfficer)}</dd>
             </div>
           </dl>

@@ -23,7 +23,8 @@ export function CheckoutPolicyNotice() {
         </Link>
       </div>
       <p className="text-[10px] font-medium text-slate-500">
-        실제 입금 확인·자동 취소는 주문 시스템 연동 후 적용됩니다. 현재는 안내용 정책입니다.
+        입금 기한 내 미입금 시 주문이 자동 취소될 수 있습니다. 입금자명이 주문자명과 다르면 확인이 지연될 수
+        있습니다.
       </p>
     </section>
   );

@@ -50,7 +50,7 @@ export function BankTransferPolicySection() {
       <section className={`${bm.card} ${bm.cardPad}`}>
         <h3 className="text-sm font-black text-slate-900">연결된 안내 메시지 예시</h3>
         <p className="mt-1 text-xs font-medium text-slate-500">
-          실제 발송은 준비 중이며, 문구만 미리보기할 수 있습니다.
+          주문·결제 안내 시 아래와 같은 형식으로 연락드립니다.
         </p>
         <ul className="mt-3 flex flex-col gap-2">
           {BANK_TRANSFER_MESSAGE_LINKS.map((link) => (
@@ -68,7 +68,7 @@ export function BankTransferPolicySection() {
 
       <div className="flex flex-wrap gap-2">
         <Link className={`${bm.btnNavy} text-xs`} href={BANK_TRANSFER_POLICY_LINKS.orderCompleteDemo}>
-          주문 완료 화면 예시
+          주문 완료 안내
         </Link>
         <Link className={`${bm.btnSecondary} text-xs`} href={BANK_TRANSFER_POLICY_LINKS.messageGuide}>
           결제 안내 메시지 전체

@@ -153,7 +153,7 @@ export function CommerceOrderLookupClient() {
         </section>
       ) : null}
 
-      {lookup ? <CommerceOrderLookupResult lookup={lookup} /> : null}
+      {lookup ? <CommerceOrderLookupResult lookup={lookup} verifiedPhone={phone.replace(/\D/g, "")} /> : null}
     </div>
   );
 }

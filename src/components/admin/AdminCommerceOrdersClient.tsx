@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AdminCommerceOrdersTable } from "@/components/admin/AdminCommerceOrdersTable";
+import { AdminCommerceOrderClaimsPanel } from "@/components/admin/AdminCommerceOrderClaimsPanel";
 import { CommercePaymentMetaPanel } from "@/components/admin/CommercePaymentMetaPanel";
 import type { AdminCommerceOrderListItem } from "@/lib/payment/commerce-order-admin-mapper";
 import type { AdminCommercePaymentMeta } from "@/types/commerce-payment";
@@ -71,6 +72,7 @@ export function AdminCommerceOrdersClient({ orders }: Props) {
           </p>
         ) : detail ? (
           <>
+            <AdminCommerceOrderClaimsPanel orderId={detail.order.orderId} />
             <CommercePaymentMetaPanel meta={detail.paymentMeta} />
             <section className={`${bm.card} ${bm.cardPad} space-y-2 text-xs`}>
               <h3 className="font-black text-slate-900">주문 요약</h3>

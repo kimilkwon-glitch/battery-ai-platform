@@ -29,9 +29,8 @@ function pickDefaultTypeTab(brand: HomeCatalogBrandId): HomeProductTypeTag {
 type Props = {
   brand: HomeCatalogBrandId;
   title: string;
-  description: string;
-  descriptionMobile?: string;
-  label: string;
+  shortDescription: string;
+  badge: string;
   sectionId: string;
   shopHref: string;
   shopLinkLabel: string;
@@ -40,9 +39,8 @@ type Props = {
 export function HomeBrandLineupSection({
   brand,
   title,
-  description,
-  descriptionMobile,
-  label,
+  shortDescription,
+  badge,
   sectionId,
   shopHref,
   shopLinkLabel,
@@ -68,12 +66,9 @@ export function HomeBrandLineupSection({
         <div className="home-brand-lineup__header-inner">
           <div className="home-brand-lineup__title-row">
             <h2 className="home-brand-lineup__title">{title}</h2>
-            <span className="home-brand-lineup__label">{label}</span>
+            <span className="home-brand-lineup__label">{badge}</span>
           </div>
-          <p className="home-brand-lineup__desc">
-            <span className="home-brand-lineup__desc-long">{description}</span>
-            <span className="home-brand-lineup__desc-short">{descriptionMobile ?? description}</span>
-          </p>
+          <p className="home-brand-lineup__desc">{shortDescription}</p>
           <Link href={shopHref} className="home-brand-lineup__more-link">
             <span>{shopLinkLabel}</span>
             <ChevronRight className="home-brand-lineup__more-icon" strokeWidth={2.5} aria-hidden />
@@ -127,12 +122,6 @@ export function HomeBrandLineupSection({
           )}
         </div>
 
-        <div className="home-brand-lineup__footer home-brand-lineup__footer--desktop">
-          <Link href={shopHref} className="home-brand-lineup__cta">
-            <span>{shopLinkLabel}</span>
-            <ChevronRight className="home-brand-lineup__cta-icon" strokeWidth={2.5} aria-hidden />
-          </Link>
-        </div>
       </div>
     </section>
   );

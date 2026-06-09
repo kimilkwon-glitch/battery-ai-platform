@@ -3,28 +3,16 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Battery, MessageCircle, Phone, Store, X } from "lucide-react";
-import clsx from "clsx";
+import { Battery, Phone, Store, X } from "lucide-react";
+import { SimpleInquiryForm, type SimpleInquiryFormValues } from "@/components/inquiry/SimpleInquiryForm";
 import { submitBatteryTalk } from "@/lib/battery-talk/battery-talk-client";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
-import {
-  BATTERYTALK_TOPIC_LABELS,
-  type BatteryTalkOpenDetail,
-  type BatteryTalkTopic,
-} from "@/lib/batterytalk/batterytalk-constants";
+import { BATTERYTALK_INQUIRY_CHIPS } from "@/lib/inquiry/inquiry-form-shared";
+import type { BatteryTalkOpenDetail } from "@/lib/batterytalk/batterytalk-constants";
 import { CONTACT } from "@/lib/contact-info";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import type { ConsultationChannelSettings } from "@/lib/consultation/consultation-settings";
 import { bm } from "@/lib/design-tokens";
-
-const TOPICS: BatteryTalkTopic[] = [
-  "spec",
-  "visit",
-  "order",
-  "battery_return",
-  "product",
-  "other",
-];
 
 export function BatteryTalkPanel({
   open,
@@ -37,59 +25,41 @@ export function BatteryTalkPanel({
   preset?: BatteryTalkOpenDetail;
   settings?: ConsultationChannelSettings | null;
 }) {
-  const [topic, setTopic] = useState<BatteryTalkTopic>(preset?.topic ?? "spec");
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [vehicle, setVehicle] = useState(preset?.vehicleName ?? "");
-  const [region, setRegion] = useState("");
-  const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [formKey, setFormKey] = useState(0);
 
   useEffect(() => {
     if (!open) return;
     setSubmitted(false);
-    setTopic(preset?.topic ?? "spec");
-    setVehicle(preset?.vehicleName ?? "");
-  }, [open, preset?.topic, preset?.vehicleName]);
+    setFormKey((k) => k + 1);
+  }, [open, preset?.topic, preset?.batteryCode]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const productHint = preset?.productName
+    ? `${preset.productName} · 규격·장착 문의`
+    : undefined;
+
+  const handleSubmit = async (values: SimpleInquiryFormValues) => {
     setSubmitting(true);
-    const contextLines = [
-      preset?.batteryCode ? `규격: ${preset.batteryCode}` : null,
-      preset?.productName ? `상품: ${preset.productName}` : null,
-      preset?.vehicleSlug ? `차량: ${preset.vehicleSlug}` : null,
-      preset?.fuelType ? `연료: ${preset.fuelType}` : null,
-      preset?.orderSummary ? `주문: ${preset.orderSummary}` : null,
-    ].filter(Boolean);
-
-    const body = [
-      `[배터리톡] ${BATTERYTALK_TOPIC_LABELS[topic]}`,
-      ...contextLines,
-      region.trim() ? `지역: ${region.trim()}` : null,
-      message.trim(),
-    ]
-      .filter(Boolean)
-      .join("\n");
-
     const pageUrl = typeof window !== "undefined" ? window.location.href : undefined;
     const result = await submitBatteryTalk({
-      customerName: name.trim() || "고객",
-      phone: contact.trim(),
-      message: body,
+      customerName: values.name?.trim() || "고객",
+      phone: values.contact.trim(),
+      message: values.message.trim(),
+      userId: values.userId,
+      isMember: values.isMember,
       context: {
         pageUrl,
         pageType: inferBatteryTalkPageType(pageUrl),
-        topic: BATTERYTALK_TOPIC_LABELS[topic],
+        topic: values.chipLabel,
         batteryCode: preset?.batteryCode,
         productCode: preset?.productCode ?? preset?.batteryCode,
         productName: preset?.productName,
         vehicleSlug: preset?.vehicleSlug,
-        vehicleName: vehicle.trim() || preset?.vehicleName,
+        vehicleName: values.vehicle?.trim() || preset?.vehicleName,
         selectedFuel: preset?.fuelType,
         cartSummary: preset?.orderSummary,
-        region: region.trim() || undefined,
+        region: values.region?.trim() || undefined,
       },
     });
     setSubmitting(false);
@@ -150,13 +120,8 @@ export function BatteryTalkPanel({
               {submitted ? (
                 <div className="batterytalk-panel__done space-y-4 text-center">
                   <p className="text-lg font-black text-slate-900">상담 접수 완료</p>
-                  <p className="text-sm font-medium text-slate-600">
-                    확인 후 순서대로 연락드립니다.
-                  </p>
-                  <a
-                    href={CONTACT.customerCenter.tel}
-                    className="inline-block text-xl font-black text-blue-700"
-                  >
+                  <p className="text-sm font-medium text-slate-600">확인 후 순서대로 연락드립니다.</p>
+                  <a href={CONTACT.customerCenter.tel} className="inline-block text-xl font-black text-blue-700">
                     {CONTACT.customerCenter.phone}
                   </a>
                   <Link href={HUB_STORE_DETAIL} className={`${bm.btnSecondary} w-full justify-center text-sm`}>
@@ -164,72 +129,19 @@ export function BatteryTalkPanel({
                   </Link>
                 </div>
               ) : (
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <div>
-                    <p className="text-xs font-black text-slate-800">빠른 선택</p>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {TOPICS.map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setTopic(t)}
-                          className={clsx(
-                            "rounded-full px-3 py-1.5 text-[11px] font-black transition",
-                            topic === t
-                              ? "bg-gradient-to-r from-[#0F172A] to-[#2563EB] text-white shadow-md"
-                              : "bg-slate-100 text-slate-600 hover:bg-slate-200",
-                          )}
-                        >
-                          {BATTERYTALK_TOPIC_LABELS[t]}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {preset?.batteryCode ? (
-                    <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800">
-                      {preset.batteryCode}
-                      {preset.productName ? ` · ${preset.productName}` : ""}
-                    </p>
-                  ) : null}
-
-                  <label className="bm-inquiry-field">
-                    이름
-                    <input required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
-                  </label>
-                  <label className="bm-inquiry-field">
-                    연락처
-                    <input
-                      required
-                      type="tel"
-                      autoComplete="tel"
-                      placeholder="010-0000-0000"
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                    />
-                  </label>
-                  <label className="bm-inquiry-field">
-                    차량명
-                    <input value={vehicle} onChange={(e) => setVehicle(e.target.value)} placeholder="예: 쏘렌토 TM" />
-                  </label>
-                  <label className="bm-inquiry-field">
-                    지역
-                    <input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="예: 부산 사상구" />
-                  </label>
-                  <label className="bm-inquiry-field">
-                    문의 내용
-                    <textarea required rows={3} value={message} onChange={(e) => setMessage(e.target.value)} />
-                  </label>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="batterytalk-panel__submit w-full rounded-xl bg-gradient-to-r from-[#0F172A] via-[#2563EB] to-[#06B6D4] px-4 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.01] disabled:opacity-60"
-                  >
-                    {submitting ? "접수 중…" : "상담 접수하기"}
-                  </button>
-
-                  <div className="flex flex-wrap gap-2">
+                <>
+                  <SimpleInquiryForm
+                    key={formKey}
+                    chips={BATTERYTALK_INQUIRY_CHIPS}
+                    defaultChipId={preset?.topic ?? "spec"}
+                    productHint={productHint}
+                    submitLabel="상담 접수하기"
+                    submitting={submitting}
+                    optionalFields={["name", "vehicle", "region"]}
+                    initialVehicle={preset?.vehicleName}
+                    onSubmit={handleSubmit}
+                  />
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <a
                       href={CONTACT.customerCenter.tel}
                       className={`${bm.btnTertiary} flex-1 justify-center gap-1.5 text-xs font-black`}
@@ -245,9 +157,8 @@ export function BatteryTalkPanel({
                       매장 안내
                     </Link>
                   </div>
-
                   {ext && (naverUrl || kakaoUrl) ? (
-                    <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-3">
+                    <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
                       {naverUrl ? (
                         <a
                           href={naverUrl}
@@ -270,7 +181,7 @@ export function BatteryTalkPanel({
                       ) : null}
                     </div>
                   ) : null}
-                </form>
+                </>
               )}
             </div>
           </motion.aside>

@@ -15,8 +15,8 @@ export default function OrderCompleteDemoPage() {
   return (
     <PageShell
       pageLabel="주문 완료"
-      title="주문 완료 안내 (예시)"
-      description="무통장 입금 주문 시 고객에게 표시될 정책·상태 안내 예시입니다."
+      title="주문 완료 안내"
+      description="무통장 입금 주문 접수 후 입금·배송 준비 안내입니다."
       searchPlaceholder="차량·규격 검색"
     >
       <div className="mx-auto max-w-2xl space-y-6" data-page="order-complete-demo">

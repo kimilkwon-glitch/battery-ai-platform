@@ -1,6 +1,6 @@
-/** 고객센터·주문안내 URL — /customer 는 동일 경로로 리다이렉트 */
+/** 고객센터·주문안내 URL — /support·/customer 는 /customer-center 로 리다이렉트 */
 
-export const CUSTOMER_CENTER_HUB = "/support";
+export const CUSTOMER_CENTER_HUB = "/customer-center";
 export const CUSTOMER_CENTER_FAQ = "/support/faq";
 export const CUSTOMER_CENTER_ORDER_GUIDE = "/support/order-guide";
 export const CUSTOMER_CENTER_DELIVERY = "/support/delivery";

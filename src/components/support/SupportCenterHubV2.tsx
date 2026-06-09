@@ -5,9 +5,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronDown, Search } from "lucide-react";
 import clsx from "clsx";
-import { openChatInquiry } from "@/lib/chat-inquiry-events";
+import { SimpleInquiryForm, type SimpleInquiryFormValues } from "@/components/inquiry/SimpleInquiryForm";
+import {
+  SUPPORT_INQUIRY_CHIPS,
+  chipCategory,
+  chipLabel,
+  getInquiryPageUrl,
+} from "@/lib/inquiry/inquiry-form-shared";
 import { submitInquiry } from "@/lib/inquiry-storage";
-import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import { CONTACT } from "@/lib/contact-info";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import {
@@ -100,17 +105,12 @@ export function SupportCenterHubV2({ notices }: Props) {
   const [inquiryExpanded, setInquiryExpanded] = useState(false);
   const [noticesExpanded, setNoticesExpanded] = useState(false);
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
-  const [inquiryForm, setInquiryForm] = useState({
-    name: "",
-    contact: "",
-    vehicle: "",
-    message: "",
-  });
+  const [inquirySubmitting, setInquirySubmitting] = useState(false);
 
   const expandInquiryAndScroll = useCallback(() => {
     setInquiryExpanded(true);
     requestAnimationFrame(() => {
-      document.getElementById("support-inquiry-name")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      document.getElementById("support-inquiry-contact")?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   }, []);
 
@@ -173,23 +173,24 @@ export function SupportCenterHubV2({ notices }: Props) {
     ? [...SUPPORT_HUB_PRIMARY_CTAS].reverse()
     : SUPPORT_HUB_PRIMARY_CTAS;
 
-  const handleInquirySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleInquirySubmit = async (values: SimpleInquiryFormValues) => {
+    setInquirySubmitting(true);
+    const chip = values.chipId ?? SUPPORT_INQUIRY_CHIPS[0]?.id ?? "other";
     const result = await submitInquiry({
-      name: inquiryForm.name.trim() || "고객",
-      contact: inquiryForm.contact.trim(),
-      vehicle: inquiryForm.vehicle.trim() || undefined,
-      message: inquiryForm.message.trim(),
-      pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
+      name: values.name?.trim() || "고객",
+      contact: values.contact.trim(),
+      vehicle: values.vehicle?.trim() || undefined,
+      message: values.message.trim(),
+      pageUrl: getInquiryPageUrl(),
       source: "support",
-      inquiryType: "일반문의",
-      category: "other",
+      inquiryType: chipLabel(chip, SUPPORT_INQUIRY_CHIPS),
+      category: chipCategory(chip, SUPPORT_INQUIRY_CHIPS),
     });
+    setInquirySubmitting(false);
     if (result.ok) setInquirySubmitted(true);
   };
 
   const scrollToInquiry = () => {
-    openChatInquiry();
     if (isMobile) {
       expandInquiryAndScroll();
       return;
@@ -404,23 +405,13 @@ export function SupportCenterHubV2({ notices }: Props) {
             {inquiryExpanded || inquirySubmitted ? (
               <InquiryForm
                 inquirySubmitted={inquirySubmitted}
-                inquiryForm={inquiryForm}
-                setInquiryForm={setInquiryForm}
+                submitting={inquirySubmitting}
                 onSubmit={handleInquirySubmit}
               />
             ) : (
               <div className="support-hub-v2__inquiry-collapsed">
                 <h2 className="support-hub-v2__section-title text-base">상담 문의 접수</h2>
-                <p className="mt-1 text-sm text-slate-600">
-                  차량 정보나 주문 확인이 필요하시면 문의를 남겨주세요.
-                </p>
-                <p className="mt-2 text-xs font-medium text-slate-500">
-                  급하시면{" "}
-                  <a href={CONTACT.customerCenter.tel} className="font-bold text-blue-700 hover:underline">
-                    {CONTACT.customerCenter.phone}
-                  </a>
-                  으로 전화해 주세요.
-                </p>
+                <p className="mt-1 text-sm text-slate-600">연락처와 문의 내용만 남겨 주세요.</p>
                 <button
                   type="button"
                   className="support-hub-v2__cta support-hub-v2__cta--secondary support-hub-v2__inquiry-open mt-4 w-full"
@@ -520,8 +511,7 @@ export function SupportCenterHubV2({ notices }: Props) {
           <section className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--sidebar scroll-mt-24">
             <InquiryForm
               inquirySubmitted={inquirySubmitted}
-              inquiryForm={inquiryForm}
-              setInquiryForm={setInquiryForm}
+              submitting={inquirySubmitting}
               onSubmit={handleInquirySubmit}
             />
           </section>
@@ -557,72 +547,32 @@ function SupportNoticeBadge({ important }: { important?: boolean }) {
 
 function InquiryForm({
   inquirySubmitted,
-  inquiryForm,
-  setInquiryForm,
+  submitting,
   onSubmit,
 }: {
   inquirySubmitted: boolean;
-  inquiryForm: { name: string; contact: string; vehicle: string; message: string };
-  setInquiryForm: React.Dispatch<
-    React.SetStateAction<{ name: string; contact: string; vehicle: string; message: string }>
-  >;
-  onSubmit: (e: React.FormEvent) => void;
+  submitting: boolean;
+  onSubmit: (values: SimpleInquiryFormValues) => void | Promise<void>;
 }) {
   return (
     <>
-      <h2 className="support-hub-v2__section-title text-base">상담 문의 접수</h2>
-      <p className="mt-1 text-sm text-slate-600">
-        문의 내용을 확인한 뒤 순서대로 연락드립니다. 급하시면{" "}
-        <a href={CONTACT.customerCenter.tel} className="font-bold text-blue-700 hover:underline">
-          {CONTACT.customerCenter.phone}
-        </a>
-        로 전화해 주세요.
-      </p>
+      <h2 className="support-hub-v2__section-title text-base">문의 접수</h2>
       {inquirySubmitted ? (
         <p className="mt-4 rounded-xl bg-emerald-50 px-4 py-5 text-center text-sm font-semibold text-emerald-800">
-          문의가 접수되었습니다. 확인 후 연락드리겠습니다.
+          문의가 접수되었습니다.
         </p>
       ) : (
-        <form className="support-hub-v2__inquiry-form" onSubmit={onSubmit}>
-          <input
-            id="support-inquiry-name"
-            required
-            placeholder="이름"
-            className="support-hub-v2__field"
-            value={inquiryForm.name}
-            onChange={(e) => setInquiryForm((f) => ({ ...f, name: e.target.value }))}
+        <div className="support-hub-v2__inquiry-form mt-3">
+          <SimpleInquiryForm
+            contactInputId="support-inquiry-contact"
+            chips={SUPPORT_INQUIRY_CHIPS}
+            submitLabel="문의 접수하기"
+            submitting={submitting}
+            optionalFields={["name", "vehicle"]}
+            onSubmit={onSubmit}
+            submitClassName="support-hub-v2__cta support-hub-v2__cta--primary simple-inquiry-form__submit w-full"
           />
-          <input
-            required
-            type="tel"
-            placeholder="연락처 (010-0000-0000)"
-            className="support-hub-v2__field"
-            value={inquiryForm.contact}
-            onChange={(e) => setInquiryForm((f) => ({ ...f, contact: e.target.value }))}
-          />
-          <select
-            className="support-hub-v2__field"
-            value={inquiryForm.vehicle}
-            onChange={(e) => setInquiryForm((f) => ({ ...f, vehicle: e.target.value }))}
-          >
-            {INQUIRY_VEHICLE_OPTIONS.map((opt) => (
-              <option key={opt.value || "empty"} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <textarea
-            required
-            rows={3}
-            placeholder="문의 내용"
-            className="support-hub-v2__field"
-            value={inquiryForm.message}
-            onChange={(e) => setInquiryForm((f) => ({ ...f, message: e.target.value }))}
-          />
-          <button type="submit" className="support-hub-v2__cta support-hub-v2__cta--primary w-full">
-            문의 접수하기
-          </button>
-        </form>
+        </div>
       )}
     </>
   );

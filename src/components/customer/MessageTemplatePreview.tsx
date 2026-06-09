@@ -72,7 +72,7 @@ function MessageTemplateCard({ template }: { template: OrderMessageTemplate }) {
           {preview}
         </p>
         <span className="text-[11px] font-black text-blue-700">
-          {open ? "미리보기 접기" : "미리보기 펼치기"} →
+          {open ? "안내 문구 접기" : "안내 문구 펼치기"} →
         </span>
       </button>
 

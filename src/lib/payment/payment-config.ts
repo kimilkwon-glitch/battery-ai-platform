@@ -27,6 +27,12 @@ export function isTossTestModeFlag(): boolean {
   return Boolean(secret?.startsWith("test_") || client?.startsWith("test_"));
 }
 
+/** 토스페이먼츠 가맹점 MID — 서버 전용, 클라이언트에 노출하지 않음 */
+export function getTossMid(): string | null {
+  const mid = process.env.TOSS_MID?.trim();
+  return mid || null;
+}
+
 export function isCommerceOrderCreateEnabled(): boolean {
   if (process.env.COMMERCE_ORDERS_DISABLED === "true") return false;
   if (process.env.NEXT_PUBLIC_COMMERCE_PAYMENT_LIVE !== "true") return false;
@@ -43,6 +49,7 @@ export const PAYMENT_ENV_KEYS = [
   "PAYMENT_PROVIDER",
   "NEXT_PUBLIC_TOSS_CLIENT_KEY",
   "TOSS_SECRET_KEY",
+  "TOSS_MID",
   "TOSS_API_BASE_URL",
   "KCP_SITE_CODE",
   "KCP_SITE_KEY",

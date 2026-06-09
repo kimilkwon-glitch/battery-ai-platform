@@ -1,5 +1,6 @@
 export type BatteryTalkTopic =
   | "spec"
+  | "install"
   | "visit"
   | "order"
   | "battery_return"

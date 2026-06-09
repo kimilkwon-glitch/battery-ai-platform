@@ -8,6 +8,7 @@ import {
   createPromotion,
   listPromotions,
 } from "@/lib/promotion/promotion-store.postgres";
+import { seedDefaultPromotions } from "@/lib/promotion/seed-default-promotions";
 import type { PromotionCreateInput } from "@/types/promotion";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export async function GET(request: Request) {
   }
 
   try {
+    await seedDefaultPromotions();
     const items = await listPromotions();
     const withUsage = await Promise.all(
       items.map(async (p) => ({

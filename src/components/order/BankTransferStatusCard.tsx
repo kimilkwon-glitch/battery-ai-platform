@@ -48,7 +48,7 @@ export function BankTransferStatusCard({
     >
       {showDemoNote ? (
         <p className="rounded-lg border border-blue-100 bg-blue-50/60 px-3 py-2 text-[11px] font-bold leading-relaxed text-blue-900">
-          정책 안내 예시 화면입니다. 실제 주문·입금 상태는 주문 시스템 연동 후 표시됩니다.
+          입금 확인 전까지 아래 상태가 표시됩니다. 입금 후 순차적으로 배송 준비가 진행됩니다.
         </p>
       ) : null}
 

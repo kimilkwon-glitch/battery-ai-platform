@@ -83,6 +83,7 @@ export function commerceOrderToMineListItem(
 }
 
 export type CommerceOrderGuestLookupResult = {
+  orderId: string;
   orderNumber: string;
   createdAt: string;
   productName: string;
@@ -114,6 +115,7 @@ export function commerceOrderToGuestLookupResult(
 ): CommerceOrderGuestLookupResult {
   const addressBase = record.address1 ?? record.address;
   return {
+    orderId: record.orderId,
     orderNumber: record.orderNumber,
     createdAt: record.createdAt,
     productName: record.productName,

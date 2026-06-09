@@ -1,4 +1,5 @@
-import { brandIdToBatteryBrandKey } from "@/lib/battery-alias-map";
+import { brandIdToBatteryBrandKey, type BatteryBrandKey } from "@/lib/battery-alias-map";
+import { inferBatteryBrandKeyFromCode } from "@/lib/battery-brand-inference";
 import {
   getBatteryInternetPriceWon,
   getBatteryOnsitePriceWon,
@@ -11,6 +12,8 @@ import type {
 } from "@/types/order-request";
 import {
   CUSTOMER_FULFILLMENT_DESCRIPTIONS,
+  CUSTOMER_FULFILLMENT_DESC_PRIMARY,
+  CUSTOMER_FULFILLMENT_DESC_SECONDARY,
   CUSTOMER_FULFILLMENT_LABELS,
   CUSTOMER_PRICE_LABELS,
   type CustomerFulfillmentDisplayKey,
@@ -62,7 +65,12 @@ export const FULFILLMENT_PRICE_DESCRIPTIONS: Record<
   string
 > = CUSTOMER_FULFILLMENT_DESCRIPTIONS;
 
-export { CUSTOMER_PRICE_LABELS, CUSTOMER_FULFILLMENT_LABELS };
+export {
+  CUSTOMER_PRICE_LABELS,
+  CUSTOMER_FULFILLMENT_LABELS,
+  CUSTOMER_FULFILLMENT_DESC_PRIMARY,
+  CUSTOMER_FULFILLMENT_DESC_SECONDARY,
+};
 
 export function formatPriceWon(amount: number | null | undefined): string {
   if (amount == null || Number.isNaN(amount)) return "가격 문의";
@@ -153,6 +161,19 @@ export function calculateOrderPrice(input: OrderPriceInput): OrderPriceResult {
   };
 }
 
+function resolveCartItemBrandKey(item: BatteryCartItem): BatteryBrandKey | undefined {
+  const name = item.brandName?.trim();
+  if (name) {
+    const fromId = brandIdToBatteryBrandKey(name);
+    if (fromId) return fromId;
+    if (name === "로케트") return "rocket";
+    if (name === "쏠라이트") return "solite";
+  }
+  const code = item.batterySpec?.trim();
+  if (code) return inferBatteryBrandKeyFromCode(code);
+  return undefined;
+}
+
 export function resolveCartItemPrices(item: BatteryCartItem): {
   internetPrice: number | null;
   onsitePrice: number | null;
@@ -160,10 +181,7 @@ export function resolveCartItemPrices(item: BatteryCartItem): {
   const code = item.batterySpec?.trim();
   if (!code) return { internetPrice: null, onsitePrice: null };
 
-  const brandKey = item.brandName
-    ? brandIdToBatteryBrandKey(item.brandName) ?? undefined
-    : undefined;
-
+  const brandKey = resolveCartItemBrandKey(item);
   if (brandKey) {
     const pair = getBatteryPrices(brandKey, code);
     return {

@@ -6,6 +6,7 @@ import {
   listActivePromotions,
 } from "@/lib/promotion/promotion-store.postgres";
 import type { BatteryCartItem } from "@/types/cart";
+import { PRICE_POLICY_PROMO_IDS } from "@/lib/promotion/default-promotions";
 import type {
   AppliedPromotion,
   PromotionDiscountType,
@@ -189,6 +190,7 @@ export async function evaluatePromotions(
   const autoCandidates: Array<{ promo: PromotionRecord; reason: string; amount: number }> = [];
 
   for (const promo of automatic.sort((a, b) => b.priority - a.priority)) {
+    if (PRICE_POLICY_PROMO_IDS.has(promo.id)) continue;
     const check = await checkPromotionEligibility(promo, ctx);
     if (check.ok) {
       const amount = calcDiscountAmount(

@@ -275,6 +275,8 @@ export function CheckoutReviewPage() {
           <PaymentPreparingNotice compact />
 
           <CommercePrePaymentNotice
+            variant="checkout"
+            checkoutStep="review"
             totalAmount={session.estimatedTotal}
             fulfillmentMethod={session.fulfillment.method}
             usedBatteryReturn={session.usedBatteryReturn}

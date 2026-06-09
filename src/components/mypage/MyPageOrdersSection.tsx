@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Package } from "lucide-react";
+import { OrderClaimActions } from "@/components/orders/OrderClaimActions";
+import { useInquiryUserPrefill } from "@/lib/inquiry/use-inquiry-user-prefill";
 import type { MallOrderMineListItemExtended } from "@/lib/orders/commerce-order-mine";
 import {
   fetchMyCommerceOrders,
@@ -17,7 +19,15 @@ type Props = {
   authReady: boolean;
 };
 
-function OrderCard({ order }: { order: MallOrderMineListItemExtended }) {
+function OrderCard({
+  order,
+  memberName,
+  memberPhone,
+}: {
+  order: MallOrderMineListItemExtended;
+  memberName: string;
+  memberPhone: string;
+}) {
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-2">
@@ -52,6 +62,19 @@ function OrderCard({ order }: { order: MallOrderMineListItemExtended }) {
         <p className="text-xs font-semibold text-slate-500">주문 상태: {order.orderStatusLabel}</p>
       </div>
 
+      <OrderClaimActions
+        order={{
+          orderId: order.orderId,
+          orderNumber: order.orderNumber,
+          orderStatus: order.orderStatus,
+          customerName: memberName || "회원",
+          customerPhone: memberPhone,
+          finalAmount: order.finalAmount,
+          returnBatteryOption: order.batteryReturnType,
+          batteryReturnFee: order.batteryReturnFee,
+        }}
+      />
+
       <div className="mt-3 flex flex-wrap gap-2">
         {["completed", "payment_completed", "shipping"].includes(order.orderStatus) ? (
           <Link
@@ -73,6 +96,7 @@ function OrderCard({ order }: { order: MallOrderMineListItemExtended }) {
 }
 
 export function MyPageOrdersSection({ isLoggedIn, authReady }: Props) {
+  const { name: memberName, contact: memberPhone } = useInquiryUserPrefill(isLoggedIn && authReady);
   const [orders, setOrders] = useState<MallOrderMineListItemExtended[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -147,7 +171,7 @@ export function MyPageOrdersSection({ isLoggedIn, authReady }: Props) {
         <ul className="mt-4 space-y-3">
           {orders.map((order) => (
             <li key={order.orderId}>
-              <OrderCard order={order} />
+              <OrderCard order={order} memberName={memberName} memberPhone={memberPhone} />
             </li>
           ))}
         </ul>

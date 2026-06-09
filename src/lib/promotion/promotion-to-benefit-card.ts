@@ -3,7 +3,9 @@ import { HUB_BENEFIT_FIRST_ORDER_3, HUB_BENEFITS } from "@/lib/benefits-data";
 import { resolveBenefitImageUrl } from "@/lib/benefits-image-resolve";
 import type { PublicPromotionCard } from "@/types/promotion";
 
-const FIRST_ORDER_PROMO_ID = "promo_first_order_3pct";
+import { DEFAULT_PROMOTION_IDS } from "@/lib/promotion/default-promotions";
+
+const FIRST_ORDER_PROMO_ID = DEFAULT_PROMOTION_IDS.firstOrder3Pct;
 
 export function publicPromotionToBenefitCard(promo: PublicPromotionCard): BenefitCardConfig {
   const href =

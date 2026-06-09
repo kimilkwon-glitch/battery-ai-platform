@@ -6,7 +6,7 @@ import { MessageSquare } from "lucide-react";
 import { BatteryDetailBodyImages } from "@/components/battery/BatteryDetailBodyImages";
 import { BatteryProductQnaPanel } from "@/components/battery/BatteryProductQnaPanel";
 import { BatteryProductReviewsPanel } from "@/components/battery/BatteryProductReviewsPanel";
-import { getBattery } from "@/lib/platform-data";
+import { brands, getBattery } from "@/lib/platform-data";
 
 const TABS = [
   { id: "detail", label: "상품상세정보", panelId: "battery-detail-info" },
@@ -26,6 +26,8 @@ export function BatteryDetailProductTabs({ code }: Props) {
   const [tab, setTab] = useState<TabId>("detail");
   const reduceMotion = useReducedMotion();
   const catalogBattery = getBattery(code);
+  const brandLabel = brands.find((b) => b.id === catalogBattery.brandId)?.displayName ?? "";
+  const productDisplayName = [brandLabel, catalogBattery.code].filter(Boolean).join(" ");
 
   const scrollToPanel = useCallback((panelId: string) => {
     if (typeof window === "undefined") return;
@@ -138,7 +140,10 @@ export function BatteryDetailProductTabs({ code }: Props) {
               exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
               transition={{ duration: 0.22, ease: panelEase }}
             >
-              <BatteryProductQnaPanel batteryCode={code} />
+              <BatteryProductQnaPanel
+                batteryCode={code}
+                productName={productDisplayName || code}
+              />
               <p className="battery-detail-qna-panel__hint mt-4 flex items-start gap-2 text-xs font-medium text-slate-500">
                 <MessageSquare className="mt-0.5 size-3.5 shrink-0" aria-hidden />
                 일반 상담·주문 문의는 고객센터 또는 하단 상담 버튼을 이용해 주세요.

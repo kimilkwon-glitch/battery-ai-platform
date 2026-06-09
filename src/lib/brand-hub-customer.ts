@@ -15,40 +15,36 @@ import { batterySpecHref } from "@/lib/canonical-battery-code";
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 
 /** 배너 로고 캐시 무효화 */
-export const BRAND_HUB_LOGO_REV = "20260608-logo-original-v1";
+export const BRAND_HUB_LOGO_REV = "20260609-logo-stacked-v1";
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
+export type BrandHubLogoLayout = "stacked";
+
 export type BrandHubLogoAssets = {
-  /** 배너 기본(밝은 배경용) */
   src: string;
-  /** 어두운 배너 배경용 */
-  logoLight?: string;
-  /** 밝은 배너 배경용(진한 로고) */
-  logoDark?: string;
   width: number;
   height: number;
   alt: string;
   fallbackText: string;
+  layout: BrandHubLogoLayout;
 };
 
 export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
   rocket: {
-    src: "/assets/brand/rocket-logo.png",
-    logoLight: "/assets/brand/rocket-logo.png",
-    logoDark: "/assets/brand/rocket-logo.png",
-    width: 574,
-    height: 280,
-    alt: "로케트 배터리 로고",
-    fallbackText: "로케트 배터리",
+    src: "/assets/brand/sebang-logo-stacked.png",
+    width: 235,
+    height: 102,
+    alt: "세방전지 로고",
+    fallbackText: "세방전지",
+    layout: "stacked",
   },
   solite: {
-    src: "/assets/brand/solite-logo.png",
-    logoLight: "/assets/brand/solite-logo.png",
-    logoDark: "/assets/brand/solite-logo.png",
-    width: 472,
-    height: 196,
-    alt: "쏠라이트 배터리 로고",
-    fallbackText: "쏠라이트 배터리",
+    src: "/assets/brand/solite-high-performance-logo-stacked.png",
+    width: 177,
+    height: 167,
+    alt: "하이성능쏠라이트 로고",
+    fallbackText: "하이성능쏠라이트",
+    layout: "stacked",
   },
 };
 

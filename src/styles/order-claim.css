@@ -1,0 +1,91 @@
+.order-claim-actions {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.order-claim-actions__hint {
+  font-size: 11px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.order-claim-actions__note {
+  margin-top: 0.35rem;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.order-claim-actions__btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.order-claim-actions__btn {
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 11px;
+  font-weight: 800;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.order-claim-actions__btn--primary {
+  border-color: #1e40af;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.order-claim-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.order-claim-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.order-claim-form__field input,
+.order-claim-form__field select,
+.order-claim-form__field textarea {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.order-claim-form__field textarea {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.order-claim-form__price-lines {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.order-claim-form__policy {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.order-claim-status-list {
+  margin-top: 0.5rem;
+  font-size: 11px;
+  color: #475569;
+}

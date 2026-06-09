@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { SimpleInquiryForm, type SimpleInquiryFormValues } from "@/components/inquiry/SimpleInquiryForm";
+import { BATTERYTALK_INQUIRY_CHIPS, getInquiryPageUrl } from "@/lib/inquiry/inquiry-form-shared";
 import { submitInquiry } from "@/lib/inquiry-storage";
-import { INQUIRY_VEHICLE_OPTIONS } from "@/lib/inquiry-vehicle-options";
 import type { ChatInquiryOpenDetail } from "@/lib/chat-inquiry-events";
-import { bm } from "@/lib/design-tokens";
 
 function isProductInquiry(preset?: ChatInquiryOpenDetail): boolean {
   return preset?.topic === "product" || Boolean(preset?.batteryCode);
@@ -22,38 +22,34 @@ export function ChatInquiryPanel({
   preset?: ChatInquiryOpenDetail;
 }) {
   const productMode = isProductInquiry(preset);
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [vehicle, setVehicle] = useState(preset?.vehicleName ?? "");
-  const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [formKey, setFormKey] = useState(0);
 
   useEffect(() => {
     if (!open) return;
     setSubmitted(false);
-    setVehicle(preset?.vehicleName ?? "");
-  }, [open, preset?.vehicleName]);
+    setFormKey((k) => k + 1);
+  }, [open, preset?.batteryCode]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: SimpleInquiryFormValues) => {
     const result = await submitInquiry({
-      name: name.trim() || "고객",
-      contact: contact.trim(),
-      vehicle: vehicle.trim() || undefined,
-      message: message.trim(),
+      name: values.name?.trim() || "고객",
+      contact: values.contact.trim(),
+      vehicle: values.vehicle?.trim() || preset?.vehicleName,
+      message: values.message.trim(),
       batteryCode: preset?.batteryCode,
-      pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
+      productCode: preset?.productCode ?? preset?.batteryCode,
+      productName: preset?.productName,
+      pageUrl: getInquiryPageUrl(),
       source: productMode ? "product_detail" : "chat",
-      inquiryType: productMode ? "제품문의" : "채팅상담",
+      inquiryType: values.chipLabel ?? (productMode ? "제품문의" : "채팅상담"),
       category: productMode ? "battery" : "other",
     });
     if (result.ok) setSubmitted(true);
   };
 
-  const title = productMode ? "제품 문의" : "채팅상담 문의";
-  const subtitle = productMode
-    ? "장착 가능 여부, 재고, 배송 문의를 남겨 주세요. 순서대로 연락드립니다."
-    : "문의 내용을 남겨 주시면 순서대로 연락드립니다.";
+  const title = productMode ? "상품 문의" : "문의 접수";
+  const productHint = preset?.productName ? `${preset.productName} 문의` : undefined;
 
   return (
     <AnimatePresence>
@@ -78,14 +74,9 @@ export function ChatInquiryPanel({
             transition={{ duration: 0.22 }}
           >
             <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-slate-100 bg-white px-4 py-3">
-              <div className="min-w-0 pr-2">
-                <h2 id="chat-inquiry-title" className="text-base font-black text-slate-950">
-                  {title}
-                </h2>
-                <p className="mt-0.5 text-[11px] font-semibold leading-snug text-slate-500">
-                  {subtitle}
-                </p>
-              </div>
+              <h2 id="chat-inquiry-title" className="text-base font-black text-slate-950">
+                {title}
+              </h2>
               <button
                 type="button"
                 onClick={onClose}
@@ -99,73 +90,18 @@ export function ChatInquiryPanel({
             <div className="p-4">
               {submitted ? (
                 <p className="rounded-xl bg-emerald-50 px-4 py-6 text-center text-sm font-bold text-emerald-800 ring-1 ring-emerald-100">
-                  문의가 접수되었습니다. 확인 후 연락드리겠습니다.
+                  문의가 접수되었습니다.
                 </p>
               ) : (
-                <form className="space-y-3.5" onSubmit={handleSubmit}>
-                  {preset?.batteryCode ? (
-                    <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800">
-                      문의 규격: {preset.batteryCode}
-                    </p>
-                  ) : null}
-                  <label className="bm-inquiry-field">
-                    이름 또는 닉네임
-                    <input
-                      required
-                      autoComplete="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </label>
-                  <label className="bm-inquiry-field">
-                    연락처
-                    <input
-                      required
-                      type="tel"
-                      autoComplete="tel"
-                      placeholder="010-0000-0000"
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                    />
-                  </label>
-                  {productMode ? (
-                    <label className="bm-inquiry-field">
-                      차량명 (선택)
-                      <select
-                        value={vehicle}
-                        onChange={(e) => setVehicle(e.target.value)}
-                      >
-                        {INQUIRY_VEHICLE_OPTIONS.map((opt) => (
-                          <option key={opt.value || "empty"} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  ) : (
-                    <label className="bm-inquiry-field">
-                      차량명
-                      <input value={vehicle} onChange={(e) => setVehicle(e.target.value)} />
-                    </label>
-                  )}
-                  <label className="bm-inquiry-field">
-                    문의 내용
-                    <textarea
-                      required
-                      rows={4}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder={
-                        productMode
-                          ? "장착 가능 여부, 재고, 배송 일정 등을 적어 주세요."
-                          : undefined
-                      }
-                    />
-                  </label>
-                  <button type="submit" className={`${bm.btnPrimary} min-h-[3.25rem] w-full`}>
-                    문의 접수하기
-                  </button>
-                </form>
+                <SimpleInquiryForm
+                  key={formKey}
+                  chips={BATTERYTALK_INQUIRY_CHIPS}
+                  productHint={productHint}
+                  submitLabel="문의 접수하기"
+                  optionalFields={["name", "vehicle"]}
+                  initialVehicle={preset?.vehicleName}
+                  onSubmit={handleSubmit}
+                />
               )}
             </div>
           </motion.div>

@@ -331,7 +331,7 @@ function BrandHubBannerLogo({
       width={assets.width}
       height={assets.height}
       className={clsx("brand-hub-logo-image", presentation.imageClassName)}
-      sizes="(max-width: 639px) 100vw, (max-width: 1023px) 22rem, 36rem"
+      sizes="(max-width: 639px) 11rem, (max-width: 1023px) 13rem, 15rem"
       loading="lazy"
       onError={() => setImgError(true)}
     />
@@ -342,10 +342,11 @@ function BrandHubBannerLogo({
       className="brand-hub-logo-badge shrink-0"
       data-brand-logo-plaque={brandId}
       data-logo-panel={presentation.panelVariant}
+      data-logo-layout={assets.layout}
     >
       <div className={theme.logoGlass}>
         <div className={clsx("brand-hub-logo-image-surface", presentation.surfaceClassName)}>
-          {logo}
+          <div className="brand-hub-logo-wrap">{logo}</div>
         </div>
       </div>
     </div>
@@ -381,7 +382,7 @@ function BrandHeroBanner({
       />
       <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-0">
         <BrandHubBannerLogo brandId={brandId} theme={theme} fallbackTitle={banner.title} />
-        <p className={clsx("mt-5 text-xl font-bold leading-snug sm:mt-6 sm:text-2xl", theme.bannerText)}>
+        <p className={clsx("mt-4 text-xl font-bold leading-snug sm:mt-5 sm:text-2xl", theme.bannerText)}>
           {banner.headline}
         </p>
         <p className={clsx("mt-4 max-w-xl text-lg font-medium leading-relaxed", theme.bannerMuted)}>

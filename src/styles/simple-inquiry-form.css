@@ -1,0 +1,96 @@
+.simple-inquiry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.simple-inquiry-form__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.simple-inquiry-form__chip {
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.simple-inquiry-form__chip--active {
+  background: linear-gradient(135deg, #0f172a, #2563eb);
+  color: #fff;
+}
+
+.simple-inquiry-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.simple-inquiry-form__field input,
+.simple-inquiry-form__field textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.7rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.simple-inquiry-form__field textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.simple-inquiry-form__product-hint {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #1e40af;
+}
+
+.simple-inquiry-form__secret {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.simple-inquiry-form__secret-hint {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.simple-inquiry-form__more-toggle {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.simple-inquiry-form__more-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding-top: 0.15rem;
+}
+
+.simple-inquiry-form__submit {
+  width: 100%;
+  border-radius: 0.65rem;
+  padding: 0.8rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
+}

@@ -4,12 +4,18 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown, Lock } from "lucide-react";
 import clsx from "clsx";
 import { CustomerActionModal } from "@/components/common/CustomerActionModal";
+import { SimpleInquiryForm, type SimpleInquiryFormValues } from "@/components/inquiry/SimpleInquiryForm";
+import {
+  getInquiryPageUrl,
+  inquiryTitleFromMessage,
+} from "@/lib/inquiry/inquiry-form-shared";
 import { submitInquiry } from "@/lib/inquiry-storage";
 import type { ProductQnaPublicItem } from "@/lib/product-qna-public";
 import { bm } from "@/lib/design-tokens";
 
 type Props = {
   batteryCode: string;
+  productName?: string;
 };
 
 function formatQnaDate(iso: string): string {
@@ -24,20 +30,18 @@ function formatQnaDate(iso: string): string {
   }
 }
 
-export function BatteryProductQnaPanel({ batteryCode }: Props) {
+export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
   const [items, setItems] = useState<ProductQnaPublicItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [writeOpen, setWriteOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [title, setTitle] = useState("");
-  const [vehicle, setVehicle] = useState("");
-  const [message, setMessage] = useState("");
-  const [isSecret, setIsSecret] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitDone, setSubmitDone] = useState(false);
+  const [formKey, setFormKey] = useState(0);
+
+  const displayName = productName?.trim() || batteryCode;
+  const productHint = `${displayName} 문의`;
 
   const loadItems = useCallback(async () => {
     setLoading(true);
@@ -68,38 +72,38 @@ export function BatteryProductQnaPanel({ batteryCode }: Props) {
     return { total: items.length, answered, pending: items.length - answered };
   }, [items]);
 
-  const handleWriteSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleWriteSubmit = async (values: SimpleInquiryFormValues) => {
     setSubmitError(null);
-    if (!name.trim() || !contact.trim() || !title.trim() || !message.trim()) {
-      setSubmitError("필수 항목을 입력해 주세요.");
-      return;
-    }
     setSubmitting(true);
+    const title = values.title?.trim() || inquiryTitleFromMessage(values.message);
     const result = await submitInquiry({
-      name: name.trim(),
-      contact: contact.trim(),
-      vehicle: vehicle.trim() || undefined,
-      title: title.trim(),
-      message: message.trim(),
+      name: values.name?.trim() || "고객",
+      contact: values.contact.trim(),
+      title,
+      message: values.message.trim(),
       batteryCode,
       productCode: batteryCode,
-      productName: batteryCode,
-      pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
+      productName: displayName,
+      pageUrl: getInquiryPageUrl(),
       source: "product_qna",
       inquiryType: "상품문의",
       category: "battery",
-      isSecret,
+      isSecret: values.isSecret === true,
     });
     setSubmitting(false);
     if (result.ok) {
       setSubmitDone(true);
-      setTitle("");
-      setMessage("");
       void loadItems();
     } else {
       setSubmitError("문의 접수에 실패했습니다. 잠시 후 다시 시도해 주세요.");
     }
+  };
+
+  const openWrite = () => {
+    setSubmitDone(false);
+    setSubmitError(null);
+    setFormKey((k) => k + 1);
+    setWriteOpen(true);
   };
 
   const closeWriteModal = () => {
@@ -119,11 +123,7 @@ export function BatteryProductQnaPanel({ batteryCode }: Props) {
             <span className="battery-product-qna__stat">답변대기 {stats.pending}</span>
           </div>
         </div>
-        <button
-          type="button"
-          className={`${bm.btnNavy} text-xs`}
-          onClick={() => setWriteOpen(true)}
-        >
+        <button type="button" className={`${bm.btnNavy} text-xs`} onClick={openWrite}>
           상품 문의하기
         </button>
       </div>
@@ -133,11 +133,7 @@ export function BatteryProductQnaPanel({ batteryCode }: Props) {
       ) : items.length === 0 ? (
         <div className="battery-product-qna__empty mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 p-6 text-center">
           <p className="text-sm font-black text-slate-800">등록된 상품 문의가 없습니다</p>
-          <button
-            type="button"
-            className={`${bm.btnSecondary} mt-3 text-xs`}
-            onClick={() => setWriteOpen(true)}
-          >
+          <button type="button" className={`${bm.btnSecondary} mt-3 text-xs`} onClick={openWrite}>
             첫 문의 남기기
           </button>
         </div>
@@ -212,16 +208,29 @@ export function BatteryProductQnaPanel({ batteryCode }: Props) {
         title="상품 문의하기"
         footer={
           submitDone ? (
-            <button type="button" className={`${bm.btnPrimary} w-full justify-center text-sm font-black`} onClick={closeWriteModal}>
+            <button
+              type="button"
+              className={`${bm.btnPrimary} w-full justify-center text-sm font-black`}
+              onClick={closeWriteModal}
+            >
               확인
             </button>
           ) : (
             <>
-              <button type="button" className={`${bm.btnSecondary} w-full justify-center text-sm font-black sm:flex-1`} onClick={closeWriteModal}>
+              <button
+                type="button"
+                className={`${bm.btnSecondary} w-full justify-center text-sm font-black sm:flex-1`}
+                onClick={closeWriteModal}
+              >
                 취소
               </button>
-              <button type="submit" form="battery-product-qna-write-form" disabled={submitting} className={`${bm.btnPrimary} w-full justify-center text-sm font-black sm:flex-1`}>
-                {submitting ? "접수 중…" : "문의 접수"}
+              <button
+                type="submit"
+                form="battery-product-qna-write-form"
+                disabled={submitting}
+                className={`${bm.btnPrimary} w-full justify-center text-sm font-black sm:flex-1`}
+              >
+                {submitting ? "접수 중…" : "문의 등록"}
               </button>
             </>
           )
@@ -230,36 +239,23 @@ export function BatteryProductQnaPanel({ batteryCode }: Props) {
         {submitDone ? (
           <p className="text-sm font-medium text-slate-600">문의가 접수되었습니다.</p>
         ) : (
-          <form id="battery-product-qna-write-form" className="space-y-3" onSubmit={handleWriteSubmit}>
-            <p className="text-xs font-bold text-slate-500">
-              상품: <span className="text-slate-900">{batteryCode}</span>
-            </p>
-            {submitError ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-800">{submitError}</p> : null}
-            <label className="block text-sm font-bold text-slate-700">
-              제목 <span className="text-red-600">*</span>
-              <input required className={`${bm.input} bm-input-field mt-1 w-full`} value={title} onChange={(e) => setTitle(e.target.value)} />
-            </label>
-            <label className="block text-sm font-bold text-slate-700">
-              문의 내용 <span className="text-red-600">*</span>
-              <textarea required rows={4} className={`${bm.input} bm-input-field mt-1 w-full resize-y`} value={message} onChange={(e) => setMessage(e.target.value)} />
-            </label>
-            <label className="block text-sm font-bold text-slate-700">
-              이름 <span className="text-red-600">*</span>
-              <input required className={`${bm.input} bm-input-field mt-1 w-full`} value={name} onChange={(e) => setName(e.target.value)} />
-            </label>
-            <label className="block text-sm font-bold text-slate-700">
-              연락처 <span className="text-red-600">*</span>
-              <input required type="tel" className={`${bm.input} bm-input-field mt-1 w-full`} value={contact} onChange={(e) => setContact(e.target.value)} />
-            </label>
-            <label className="block text-sm font-bold text-slate-700">
-              차량명 (선택)
-              <input className={`${bm.input} bm-input-field mt-1 w-full`} value={vehicle} onChange={(e) => setVehicle(e.target.value)} />
-            </label>
-            <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
-              <input type="checkbox" checked={isSecret} onChange={(e) => setIsSecret(e.target.checked)} />
-              비밀글
-            </label>
-          </form>
+          <>
+            {submitError ? (
+              <p className="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-800">{submitError}</p>
+            ) : null}
+            <SimpleInquiryForm
+              key={formKey}
+              formId="battery-product-qna-write-form"
+              productHint={productHint}
+              submitLabel="문의 등록"
+              submitting={submitting}
+              showSecret
+              messageFirst
+              optionalFields={["name", "title"]}
+              onSubmit={handleWriteSubmit}
+              submitClassName={`${bm.btnPrimary} simple-inquiry-form__submit`}
+            />
+          </>
         )}
       </CustomerActionModal>
     </div>
