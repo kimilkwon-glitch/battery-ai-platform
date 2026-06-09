@@ -307,10 +307,13 @@
   }
 
   [data-vehicle-recommended-card] .vehicle-recommended-card__media .battery-image-stage,
+  [data-vehicle-recommended-card] .vehicle-recommended-card__media .battery-thumbnail,
   [data-vehicle-recommended-card] .vehicle-recommended-card__media img {
-    max-height: 3.75rem !important;
-    max-width: 78% !important;
+    max-height: 3.5rem !important;
+    height: 3.5rem !important;
+    max-width: 72% !important;
     object-fit: contain !important;
+    transform: none !important;
   }
 
   /* ── 홈 ── */
@@ -639,13 +642,28 @@
 
   .home-brand-lineup .home-spec-card-image .battery-image-stage,
   .home-catalog-products .home-spec-card-image .battery-image-stage,
-  .home-spec-card-image .battery-image-stage {
-    height: auto !important;
-    max-height: 100% !important;
+  .home-spec-card-image .battery-image-stage,
+  .home-spec-card-image [data-battery-image-stage] {
+    height: 2.75rem !important;
+    min-height: 2.75rem !important;
+    max-height: 2.75rem !important;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    box-shadow: none !important;
+  }
+
+  .home-brand-lineup .home-spec-card-image .battery-stage-photo,
+  .home-catalog-products .home-spec-card-image .battery-stage-photo,
+  .home-spec-card-image .battery-stage-photo {
+    height: 2.5rem !important;
+    min-height: 0 !important;
+    max-height: 2.5rem !important;
+    transform: none !important;
+    scale: 1 !important;
   }
 
   .home-brand-lineup .home-spec-card-image img,
@@ -655,10 +673,11 @@
   .home-catalog-products .battery-image-stage img,
   .home-spec-card-image img,
   .home-spec-card-image .battery-stage-photo img {
-    max-width: 76% !important;
+    max-width: 72% !important;
     width: auto !important;
-    height: auto !important;
-    max-height: 3.25rem !important;
+    height: 2.5rem !important;
+    min-height: 0 !important;
+    max-height: 2.5rem !important;
     object-fit: contain !important;
     object-position: center !important;
     margin-inline: auto;

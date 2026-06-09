@@ -33,7 +33,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
           code={imageKey}
           flushTop
           layout="stack"
-          variant="card"
+          variant="cardCompact"
           preferBrand={preferBrand}
           className="home-spec-card-image__stage mx-auto h-full w-full"
         />
