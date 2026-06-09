@@ -26,9 +26,8 @@ export default async function BatterySpecDetailPage({
   return (
     <PageShell
       pageLabel={displayCode}
-      title={`${displayCode} 규격 안내`}
-      description="용량·CCA·사이즈·단자 방향과 대표 적용 차량을 확인하세요."
       searchPlaceholder={`${displayCode} 호환 차종 검색`}
+      showPageHeader={false}
     >
       <BatterySpecDetailView
         code={displayCode}

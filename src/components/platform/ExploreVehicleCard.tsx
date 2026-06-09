@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { VehicleCardMedia } from "@/components/media/VehicleCardMedia";
-import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
+import { VehicleRegisterCard } from "@/components/platform/VehicleRegisterCard";
 import { appendSignupVehicleMode } from "@/lib/signup-vehicle-draft";
 import { CardHorizontalLayout } from "@/components/cards/CardHorizontalLayout";
 import {
@@ -67,21 +67,10 @@ export function ExploreVehicleCard({
         ) : null}
       </CardInfoStack>
       <CardInfoActions className="vehicle-browse-card__cta-row">
-        {(registerMode || signupVehicleSelect) && !isSearchPick ? (
-          <SaveVehicleRegisterButton
-            slug={vehicleId}
-            displayName={title}
-            yearRange={copy.specLine}
-            className={`${bm.btnPrimary} min-h-[2.75rem] flex-1 text-sm font-black`}
-            label={signupVehicleSelect ? "이 차량 선택" : "내 차량으로 등록"}
-            source="vehicleBrowse"
-            signupVehicleSelect={signupVehicleSelect}
-          />
-        ) : null}
         <Link
           href={detailHref}
           onClick={(e) => e.stopPropagation()}
-          className={`${registerMode ? bm.btnSecondary : bm.btnNavy} min-h-[2.75rem] flex-1 items-center justify-center text-sm font-black`}
+          className={`${bm.btnNavy} min-h-[2.75rem] flex-1 items-center justify-center text-sm font-black`}
         >
           규격 보기
         </Link>
@@ -91,21 +80,12 @@ export function ExploreVehicleCard({
 
   if ((registerMode || signupVehicleSelect) && !isSearchPick) {
     return (
-      <CardHorizontalLayout
-        className={`${bm.cardVehicleMatch} vehicle-browse-card group h-full min-w-0`}
-        mediaClassName="!p-0 sm:!w-[42%]"
-        imagePanel={
-          <VehicleCardMedia
-            alt={title}
-            commercial={isCommercial}
-            placeholderTitle={title}
-            slug={vehicleId}
-            src={imageSrc}
-          />
-        }
-      >
-        {inner}
-      </CardHorizontalLayout>
+      <VehicleRegisterCard
+        vehicleId={vehicleId}
+        title={title}
+        href={href}
+        signupVehicleSelect={signupVehicleSelect}
+      />
     );
   }
 

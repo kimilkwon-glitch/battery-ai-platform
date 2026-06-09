@@ -185,7 +185,7 @@ export function RecommendedBatteryCard({
 
       <article className="vehicle-recommended-card" data-vehicle-recommended-card>
 
-        <div className="vehicle-recommended-card__media">
+        <div className="vehicle-recommended-card__media" data-battery-image-role="search-recommend">
 
           <BatteryImageStage
 
@@ -298,9 +298,8 @@ export function RecommendedBatteryCard({
       <div className="flex flex-col md:grid md:grid-cols-[minmax(0,38%)_minmax(0,62%)]">
 
         <div
-
-          className={`${bm.cardHorizontalMedia} order-2 md:order-1 ${compact ? "!min-h-[120px] md:!min-h-[140px]" : "!min-h-[140px] md:!min-h-[180px]"}`}
-
+          data-battery-image-role="search-recommend"
+          className={`${bm.cardHorizontalMedia} order-2 md:order-1 ${compact ? "!min-h-[120px] md:!min-h-[140px]" : "!min-h-[132px] md:!min-h-[180px]"}`}
         >
 
           <BatteryImageStage

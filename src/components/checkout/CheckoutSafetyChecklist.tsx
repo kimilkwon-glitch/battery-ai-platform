@@ -52,14 +52,14 @@ export function CheckoutSafetyChecklist({
       <ul className="mt-3 space-y-2">
         {CHECKOUT_CHECKLIST_ITEMS.map((item) => (
           <li key={item.id}>
-            <label className="flex min-h-[2.75rem] cursor-pointer items-center gap-3 rounded-xl border border-slate-200 px-3 py-2.5 has-[:checked]:border-blue-200 has-[:checked]:bg-blue-50/30">
+            <label className="flex min-h-[2.75rem] cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200 px-3 py-2.5 has-[:checked]:border-blue-200 has-[:checked]:bg-blue-50/30">
               <input
                 type="checkbox"
-                className="size-4 shrink-0 accent-blue-600"
+                className="mt-0.5 size-4 shrink-0 accent-blue-600"
                 checked={!!checked[item.id]}
                 onChange={() => toggle(item.id)}
               />
-              <span className="text-xs font-bold text-slate-800">{item.label}</span>
+              <span className="min-w-0 flex-1 text-xs font-bold leading-snug text-slate-800">{item.label}</span>
             </label>
           </li>
         ))}

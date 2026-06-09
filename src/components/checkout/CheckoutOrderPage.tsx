@@ -475,8 +475,8 @@ export function CheckoutOrderPage() {
       <div className="checkout-order__grid grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,400px)] lg:items-start">
         <form className="checkout-order__main space-y-4 lg:space-y-5" onSubmit={(e) => e.preventDefault()}>
           <section className="checkout-card checkout-card--intro" data-checkout-section="intro">
-            <h1 className="text-lg font-black text-[#0F172A] lg:text-2xl">{CHECKOUT_PAGE_COPY.title}</h1>
-            <p className="mt-1 hidden text-sm font-semibold text-[#475569] sm:block">
+            <h1 className="text-base font-black text-[#0F172A] sm:text-lg lg:text-2xl">{CHECKOUT_PAGE_COPY.title}</h1>
+            <p className="mt-1 hidden text-sm font-semibold text-[#475569] lg:block">
               {CHECKOUT_PAGE_COPY.description}
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-2">

@@ -6,10 +6,10 @@ import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
 import {
   computeLineAmountWithReturnFee,
   formatPriceWon,
-  FULFILLMENT_PRICE_DESCRIPTIONS,
   FULFILLMENT_PRICE_LABELS,
   type FulfillmentPriceType,
 } from "@/lib/pricing/order-price";
+import { computeAllFulfillmentDisplayPrices } from "@/lib/pricing/fulfillment-display-prices";
 import { OrderPriceBreakdown } from "@/components/pricing/OrderPriceBreakdown";
 import type { FulfillmentMethod } from "@/types/cart";
 import {
@@ -91,6 +91,11 @@ export function ProductFulfillmentPricePanel({
     return map;
   }, [previewItem, usedBatteryOption]);
 
+  const displayPrices = useMemo(
+    () => computeAllFulfillmentDisplayPrices(previewItem, METHODS.map((m) => m.value)),
+    [previewItem],
+  );
+
   const selectMethod = (next: FulfillmentMethod) => {
     onFulfillmentChange?.(next);
   };
@@ -104,17 +109,12 @@ export function ProductFulfillmentPricePanel({
 
   return (
     <div className="product-fulfillment-panel mt-4 space-y-3" data-product-fulfillment>
-      <div>
-        <p className="text-sm font-black text-slate-800">수령/장착 방식</p>
-        <p className="mt-0.5 text-xs font-medium text-slate-500">
-          선택에 따라 결제 예정금액이 즉시 반영됩니다.
-        </p>
-      </div>
+      <p className="text-sm font-black text-slate-800">수령/장착 방식</p>
       <div className="product-fulfillment-panel__grid grid gap-2 sm:grid-cols-2">
         {METHODS.map((m) => {
           const active = method === m.value;
           const label = FULFILLMENT_PRICE_LABELS[m.priceType];
-          const desc = FULFILLMENT_PRICE_DESCRIPTIONS[m.priceType];
+          const display = displayPrices.get(m.value);
           const priceLabel = formatMethodPrice(m.value);
           const Icon = m.icon;
           return (
@@ -126,8 +126,9 @@ export function ProductFulfillmentPricePanel({
                 active ? " product-fulfillment-card--active" : ""
               }`}
             >
-              <span className="product-fulfillment-card__head">
-                <span className="product-fulfillment-card__title-row">
+              <span className="product-fulfillment-card__price">{priceLabel}</span>
+              <span className="product-fulfillment-card__top">
+                <span className="product-fulfillment-card__meta">
                   <span className="product-fulfillment-card__icon" aria-hidden>
                     <Icon className="size-4" />
                   </span>
@@ -136,9 +137,12 @@ export function ProductFulfillmentPricePanel({
                     <span className="product-fulfillment-card__badge">추천</span>
                   ) : null}
                 </span>
-                <span className="product-fulfillment-card__price">{priceLabel}</span>
               </span>
-              <span className="product-fulfillment-card__desc">{desc}</span>
+              {display?.priceHint ? (
+                <span className="product-fulfillment-card__hint">{display.priceHint}</span>
+              ) : (
+                <span className="product-fulfillment-card__desc hidden sm:block">{display?.descLine}</span>
+              )}
             </button>
           );
         })}
@@ -148,9 +152,6 @@ export function ProductFulfillmentPricePanel({
         fulfillmentMethod={method}
         includeBatteryReturnFee
       />
-      <p className="text-[10px] font-medium text-slate-500">
-        배송지·방문 지점은 주문서 작성 단계에서 입력합니다.
-      </p>
     </div>
   );
 }

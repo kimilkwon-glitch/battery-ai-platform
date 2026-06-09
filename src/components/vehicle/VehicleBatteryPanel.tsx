@@ -210,7 +210,7 @@ export function VehicleBatteryPanel({
                 ))}
               </div>
             ) : null}
-            <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
+            <p className="vehicle-battery-knowledge-blurb mt-3 hidden text-xs font-medium leading-relaxed text-slate-600 sm:block">
               {getVehicleFuelKnowledgeBlurb(fuelTab || fuelCards[0]?.fuelLabel) ??
                 getDefaultVehicleFuelKnowledgeBlurb()}
             </p>

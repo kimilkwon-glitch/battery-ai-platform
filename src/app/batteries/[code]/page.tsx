@@ -28,6 +28,7 @@ export default async function BatteryDetailPage({ params }: { params: Promise<{ 
       zone="product"
       pageLabel={displayCode}
       searchPlaceholder={`${displayCode} 호환 차종 검색`}
+      showPageHeader={false}
     >
       <div data-battery-route-build-stamp={BUILD_STAMP} className="contents">
       <BatteryActivityTracker code={displayCode} />

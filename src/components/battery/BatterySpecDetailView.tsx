@@ -22,18 +22,12 @@ export function BatterySpecDetailView({ code, vehicles }: Props) {
   const brand = getBrand(bat.brandId);
   const sizeMm = formatDimensions(summary?.dimensionsMm ?? null) ?? "—";
   const terminal = spec.terminalLabel ?? "—";
-  const headlineMeta = [
-    brand.displayName,
-    spec.typeLabel,
-    spec.capacity,
-    spec.cca,
-    spec.terminalLabel,
-  ]
+  const headlineMeta = [brand.displayName, spec.typeLabel, spec.capacity, spec.cca]
     .filter(Boolean)
     .join(" · ");
 
   return (
-    <div className="battery-spec-detail mx-auto max-w-3xl space-y-8 pb-10" data-battery-spec-page={code}>
+    <div className="battery-spec-detail mx-auto max-w-3xl space-y-5 pb-10" data-battery-spec-page={code}>
       <Link
         href="/"
         className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 transition hover:text-blue-700"
@@ -42,29 +36,31 @@ export function BatterySpecDetailView({ code, vehicles }: Props) {
         이전으로
       </Link>
 
-      <header className="space-y-3">
-        <p className="text-xs font-black uppercase tracking-wide text-blue-700">배터리 규격 안내</p>
-        <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{code}</h1>
+      <header className="battery-spec-detail__hero space-y-2">
+        <h1 className="battery-spec-detail__title font-black tracking-tight text-slate-950">{code}</h1>
         {headlineMeta ? (
-          <p className="text-base font-semibold text-slate-600 sm:text-lg">{headlineMeta}</p>
+          <p className="battery-spec-detail__meta font-semibold text-slate-600">{headlineMeta}</p>
+        ) : null}
+        {terminal && terminal !== "—" ? (
+          <p className="text-xs font-bold text-slate-500">단자 {terminal}</p>
         ) : null}
       </header>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-4 sm:p-6">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-3 sm:rounded-2xl sm:p-5">
         <BatteryCardImage
           code={code}
           displayLabel={code}
           variant="card"
           layout="stack"
-          className="mx-auto w-full max-w-lg"
+          className="mx-auto w-full max-w-md"
         />
       </div>
 
       <section className={`${bm.card} ${bm.cardPad}`} aria-labelledby="battery-spec-core">
-        <h2 id="battery-spec-core" className="text-lg font-black text-slate-900">
+        <h2 id="battery-spec-core" className="text-base font-black text-slate-900 sm:text-lg">
           핵심 스펙
         </h2>
-        <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+        <dl className="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
           <SpecItem
             label="용량"
             value={
@@ -81,26 +77,28 @@ export function BatterySpecDetailView({ code, vehicles }: Props) {
       </section>
 
       {vehicles.length > 0 ? (
-        <ApplicableVehiclesStrip vehicles={vehicles} specCode={code} />
+        <section className={`${bm.card} ${bm.cardPad}`}>
+          <h2 className="text-base font-black text-slate-900">대표 적용 차종</h2>
+          <ApplicableVehiclesStrip vehicles={vehicles} specCode={code} className="mt-3" />
+        </section>
       ) : null}
 
-      <section className="mt-2 pt-4 sm:pt-6">
-        <Link
-          href={batteryDetailHref(code)}
-          className={`${bm.btnPrimary} flex min-h-[3.5rem] w-full items-center justify-center rounded-2xl px-8 py-4 text-lg font-black sm:min-h-[3.75rem] sm:text-xl`}
-        >
-          주문하기
-        </Link>
-      </section>
+      {batteryDetailHref(code) ? (
+        <div className="flex flex-wrap gap-2">
+          <Link href={batteryDetailHref(code)!} className={`${bm.btnPrimary} text-sm font-black`}>
+            상품 상세·주문
+          </Link>
+        </div>
+      ) : null}
     </div>
   );
 }
 
 function SpecItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
-      <dt className="text-xs font-bold text-slate-400">{label}</dt>
-      <dd className="mt-1 text-base font-black text-slate-900">{value}</dd>
+    <div className="rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-100">
+      <dt className="text-[11px] font-bold text-slate-400">{label}</dt>
+      <dd className="mt-0.5 text-sm font-black text-slate-900">{value}</dd>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ExploreVehicleCard } from "@/components/platform/ExploreVehicleCard";
@@ -13,6 +14,7 @@ import {
   VEHICLES_BRAND_FILTERS,
   type VehiclesBrandFilter,
 } from "@/lib/vehicles-browse-data";
+import { filterBrowseItemsByQuery } from "@/lib/vehicles-browse-search";
 import { bm } from "@/lib/design-tokens";
 
 export function VehiclesBrowseClient() {
@@ -25,20 +27,19 @@ export function VehiclesBrowseClient() {
   const allItems = useMemo(() => getAllBrowseItems(), []);
   const filtered = useMemo(() => filterBrowseItems(allItems, brand), [allItems, brand]);
 
-  if (registerMode) {
-    return <VehicleRegisterBrowse brand={brand} setBrand={setBrand} filtered={filtered} />;
+  if (registerMode || signupVehicleSelect) {
+    return (
+      <VehicleRegisterBrowse
+        brand={brand}
+        setBrand={setBrand}
+        filtered={filtered}
+        signupVehicleSelect={signupVehicleSelect}
+      />
+    );
   }
 
   return (
     <div className="vehicle-search-hub">
-      {signupVehicleSelect ? (
-        <section className="signup-vehicle-select-banner">
-          <p className="signup-vehicle-select-banner__title">회원가입 중 차량 선택</p>
-          <p className="signup-vehicle-select-banner__desc">
-            차량을 선택하면 회원가입 폼으로 돌아갑니다. 로그인 없이 진행됩니다.
-          </p>
-        </section>
-      ) : null}
       <section className="vehicle-search-hub__hero">
         <div className="vehicle-search-hub__hero-inner">
           <h1 className="vehicle-search-hub__title">차종검색</h1>
@@ -84,22 +85,60 @@ function VehicleRegisterBrowse({
   brand,
   setBrand,
   filtered,
+  signupVehicleSelect,
 }: {
   brand: VehiclesBrandFilter;
   setBrand: (b: VehiclesBrandFilter) => void;
   filtered: ReturnType<typeof filterBrowseItems>;
+  signupVehicleSelect: boolean;
 }) {
+  const [query, setQuery] = useState("");
+  const displayed = useMemo(
+    () => filterBrowseItemsByQuery(filtered, query),
+    [filtered, query],
+  );
+
   return (
     <div className="space-y-4">
+      {signupVehicleSelect ? (
+        <section className="signup-vehicle-select-banner">
+          <p className="signup-vehicle-select-banner__title">회원가입 중 차량 선택</p>
+          <p className="signup-vehicle-select-banner__desc">
+            차량과 연료를 선택하면 회원가입 폼으로 돌아갑니다. 로그인 없이 진행됩니다.
+          </p>
+        </section>
+      ) : null}
+
       <section className="vehicle-register-banner">
-        <h2 className="text-lg font-black text-slate-950 sm:text-xl">차량정보 등록</h2>
+        <h2 className="text-lg font-black text-slate-950 sm:text-xl">
+          {signupVehicleSelect ? "회원가입 차량 선택" : "차량정보 등록"}
+        </h2>
         <p className="mt-2 text-sm font-medium leading-relaxed text-slate-700">
-          브랜드와 차종을 선택한 뒤 「내 차량으로 등록」을 누르면 마이페이지에 저장됩니다. 등록 후
-          규격 보기로 배터리를 확인할 수 있습니다.
+          {signupVehicleSelect
+            ? "차종과 연료를 선택한 뒤 「이 차량 선택」을 누르면 회원가입 폼으로 돌아갑니다. 로그인 없이 진행됩니다."
+            : "차종과 연료를 선택한 뒤 「내 차량으로 등록」을 누르면 마이페이지에 저장됩니다. 연료가 여러 개인 차량은 반드시 연료를 선택해 주세요."}
         </p>
-        <Link href="/mypage" className={`${bm.btnSecondary} mt-3 inline-flex text-sm font-black`}>
-          마이페이지에서 확인
-        </Link>
+        {!signupVehicleSelect ? (
+          <Link href="/mypage" className={`${bm.btnSecondary} mt-3 inline-flex text-sm font-black`}>
+            마이페이지에서 확인
+          </Link>
+        ) : null}
+      </section>
+
+      <section className={`${bm.card} p-4 sm:p-5`}>
+        <p className="text-sm font-black uppercase tracking-wide text-blue-600">검색</p>
+        <label className="vehicle-register-search mt-2 block">
+          <span className="sr-only">차량 검색</span>
+          <Search className="vehicle-register-search__icon" aria-hidden />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="차량명, 연료, 배터리 규격 검색 · 예: 그랜저 HG, LPG, DIN74L"
+            className="vehicle-register-search__input"
+            autoComplete="off"
+          />
+        </label>
       </section>
 
       <section className={`${bm.card} p-4 sm:p-5`}>
@@ -120,18 +159,32 @@ function VehicleRegisterBrowse({
       </section>
 
       <section className={`${bm.card} p-4 sm:p-5`}>
-        <h2 className="text-base font-black text-slate-950 sm:text-lg">등록할 차종 ({filtered.length})</h2>
-        <div className="mt-4 grid gap-4">
-          {filtered.map((item) => (
-            <ExploreVehicleCard
-              href={item.href}
-              key={`reg-${item.key}`}
-              title={item.title}
-              vehicleId={item.vehicleId}
-              registerMode
-            />
-          ))}
-        </div>
+        <h2 className="text-base font-black text-slate-950 sm:text-lg">
+          등록할 차종 ({displayed.length}
+          {query.trim() ? ` / ${filtered.length}` : ""})
+        </h2>
+        {displayed.length > 0 ? (
+          <div className="mt-4 grid gap-4">
+            {displayed.map((item) => (
+              <ExploreVehicleCard
+                href={item.href}
+                key={`reg-${item.key}`}
+                title={item.title}
+                vehicleId={item.vehicleId}
+                registerMode
+                signupVehicleSelect={signupVehicleSelect}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="vehicle-register-empty mt-4">
+            <p className="text-sm font-semibold text-slate-600">
+              {query.trim()
+                ? `「${query.trim()}」에 맞는 차종이 없습니다. 검색어를 바꿔 보세요.`
+                : "표시할 차종이 없습니다."}
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

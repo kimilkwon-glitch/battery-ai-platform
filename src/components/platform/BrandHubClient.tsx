@@ -66,7 +66,7 @@ const panelVariants = {
   },
 };
 
-const PRODUCT_IMAGE_HEIGHT = "h-[9.5rem] sm:h-[10.5rem]";
+const PRODUCT_IMAGE_HEIGHT = "battery-image-role--brand-hub h-[7.25rem] sm:h-[9.5rem] lg:h-[10.5rem]";
 
 const PANEL_INNER =
   "relative px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12";
@@ -533,6 +533,7 @@ function BrandProductCard({
       )}
     >
       <div
+        data-battery-image-role="brand-hub"
         className={clsx(
           "relative flex items-center justify-center overflow-hidden",
           PRODUCT_IMAGE_HEIGHT,
@@ -548,7 +549,7 @@ function BrandProductCard({
             ratio="16/9"
             overlayLabel={false}
             darkOverlay={false}
-            className="h-full w-full px-1.5 [&_img]:mx-auto [&_img]:max-h-[88%] [&_img]:w-auto [&_img]:object-contain"
+            className="h-full w-full px-1 [&_img]:mx-auto [&_img]:min-h-[5rem] [&_img]:max-h-[92%] [&_img]:w-auto [&_img]:object-contain sm:[&_img]:min-h-0"
           />
         ) : (
           <p className={clsx("px-3 text-center text-base font-bold", theme.contentMuted)}>

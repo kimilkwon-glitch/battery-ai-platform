@@ -1,7 +1,8 @@
 "use client";
 
 import {
-  FULFILLMENT_PRICE_DESCRIPTIONS,
+  CUSTOMER_FULFILLMENT_DESC_PRIMARY,
+  CUSTOMER_FULFILLMENT_DESC_SECONDARY,
   FULFILLMENT_PRICE_LABELS,
   type FulfillmentPriceType,
 } from "@/lib/pricing/order-price";
@@ -64,7 +65,8 @@ export function FulfillmentMethodSelector({
       <div className="checkout-fulfillment-grid grid gap-3 sm:grid-cols-2">
         {METHODS.map((m) => {
           const label = FULFILLMENT_PRICE_LABELS[m.priceType];
-          const desc = FULFILLMENT_PRICE_DESCRIPTIONS[m.priceType];
+          const descPrimary = CUSTOMER_FULFILLMENT_DESC_PRIMARY[m.priceType];
+          const descSecondary = CUSTOMER_FULFILLMENT_DESC_SECONDARY[m.priceType];
           const active = values.method === m.value;
           return (
             <button
@@ -85,7 +87,13 @@ export function FulfillmentMethodSelector({
                   active ? "text-blue-50" : "text-slate-500"
                 }`}
               >
-                {desc}
+                {descPrimary}
+                {descSecondary ? (
+                  <>
+                    <br />
+                    {descSecondary}
+                  </>
+                ) : null}
               </span>
             </button>
           );

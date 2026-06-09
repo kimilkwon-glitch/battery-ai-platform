@@ -37,10 +37,10 @@ export default async function BatteryProductDetailPage({
 
   return (
     <PageShell
+      zone="product"
       pageLabel={`${brandLabel} ${displayCode}`}
-      title={`${brandLabel} ${displayCode} 상품 상세`}
-      description="제품 설명·규격·반납 안내·장착·택배 안내를 확인한 뒤 주문 단계로 진행할 수 있습니다."
       searchPlaceholder={`${displayCode} 호환 차종 검색`}
+      showPageHeader={false}
     >
       <div data-product-slug={slug} data-build-stamp={BUILD_STAMP} className="contents">
         <BatteryActivityTracker code={displayCode} />
