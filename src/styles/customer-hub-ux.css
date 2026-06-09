@@ -63,6 +63,250 @@
   padding-top: 0.75rem;
 }
 
+/* 차량정보 등록 카드 — 이미지·정보·버튼 compact 레이아웃 */
+.vehicle-register-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.vehicle-register-card__media {
+  flex-shrink: 0;
+  border-bottom: 1px solid #e2e8f0;
+  background: var(--bm-image-bg, #f8fafc);
+  padding: 0.5rem;
+}
+
+.vehicle-register-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  min-width: 0;
+}
+
+.vehicle-register-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.vehicle-register-card__title {
+  font-size: 1.0625rem;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.vehicle-register-card__meta {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.vehicle-register-card__fuel-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.vehicle-register-card__fuel-required {
+  margin-left: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #dc2626;
+}
+
+.vehicle-register-card__fuel-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+}
+
+.vehicle-register-card__fuel-pill {
+  min-height: 2rem;
+  font-size: 0.8125rem;
+}
+
+.vehicle-register-card__spec {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.vehicle-register-card__spec-code {
+  font-weight: 900;
+  color: #1d4ed8;
+}
+
+.vehicle-register-card__hint {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.vehicle-register-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .vehicle-register-card {
+    display: grid;
+    grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .vehicle-register-card__media {
+    border-bottom: 0;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 0.75rem;
+  }
+
+  .vehicle-register-card__body {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .vehicle-register-card__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .vehicle-register-card__actions {
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 11.5rem;
+    gap: 0.5rem;
+  }
+
+  .vehicle-register-card__actions > * {
+    width: 100%;
+  }
+}
+
+.vehicle-register-search {
+  position: relative;
+}
+
+.vehicle-register-search__icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  width: 1.125rem;
+  height: 1.125rem;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.vehicle-register-search__input {
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.vehicle-register-search__input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.vehicle-register-search__input:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 1px;
+  border-color: #3b82f6;
+}
+
+.vehicle-register-empty {
+  border-radius: 0.75rem;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+/* 검색 결과 카드 — 연료 선택 compact */
+.vehicle-condition-fuel-select--compact {
+  margin-top: 0.625rem;
+}
+
+.vehicle-condition-fuel-select__label {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.vehicle-condition-fuel-select__required {
+  margin-left: 0.3rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: #dc2626;
+}
+
+.vehicle-condition-fuel-select__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+  overflow-x: auto;
+  padding-bottom: 0.1rem;
+}
+
+.vehicle-condition-fuel-select__pill {
+  min-height: 1.75rem;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.625rem;
+}
+
+.vehicle-condition-fuel-select__spec {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #475569;
+}
+
+.vehicle-condition-fuel-select__spec-code {
+  font-weight: 900;
+  color: #1d4ed8;
+}
+
+.vehicle-condition-fuel-select__hint {
+  margin-top: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.bm-search-vehicle-card__fuel-select {
+  margin-top: 0.5rem;
+}
+
+.bm-search-vehicle-card__body {
+  justify-content: flex-start;
+}
+
 .vehicle-customer-battery {
   min-width: 0;
   overflow-wrap: break-word;
@@ -119,4 +363,52 @@
 .vehicle-detail-customer .vehicle-detail-customer__meta {
   font-size: 0.875rem;
   font-weight: 700;
+}
+
+/* 차량 등록 성공/오류 — toast only (모달·blur 없음) */
+.bm-vehicle-register-toast {
+  position: fixed;
+  top: calc(4.5rem + env(safe-area-inset-top, 0px));
+  left: 50%;
+  z-index: 95;
+  width: calc(100% - 2rem);
+  max-width: 22rem;
+  transform: translateX(-50%);
+  border-radius: 0.875rem;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  pointer-events: auto;
+}
+
+.bm-vehicle-register-toast__message {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.bm-vehicle-register-toast__action {
+  display: inline-block;
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bm-vehicle-register-toast--success {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.bm-vehicle-register-toast--success .bm-vehicle-register-toast__action {
+  color: #065f46;
+}
+
+.bm-vehicle-register-toast--error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
 }
