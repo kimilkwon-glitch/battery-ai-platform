@@ -91,6 +91,7 @@ export function AdminMatchingTable({ rows }: Props) {
           <AdminDataTableClient
             rows={displayRows}
             getRowId={(r) => r.slug}
+            selectedRowId={selectedSlug}
             statusTabs={statusTabs}
             filters={[
               {
@@ -227,8 +228,8 @@ export function AdminMatchingTable({ rows }: Props) {
             </div>
           ) : (
             <div className="admin-matching__detail-inner p-4">
-              <h3 className="text-base font-black text-slate-900">{selected.vehicleName}</h3>
-              <p className="text-sm text-slate-500">
+              <h3 className="admin-matching__detail-title">{selected.vehicleName}</h3>
+              <p className="admin-matching__detail-sub">
                 {selected.yearRange} · {selected.fuel}
               </p>
               <dl className="admin-inquiries__dl mt-4">

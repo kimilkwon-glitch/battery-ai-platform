@@ -4,6 +4,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { filterAdminTestInquiries } from "@/lib/admin/admin-test-data-filter";
 import {
   normalizeInquiryCategory,
   type CustomerInquiryRecord,
@@ -154,6 +155,7 @@ export async function inquiryList(
       return hay.includes(q);
     });
   }
+  records = filterAdminTestInquiries(records);
   const limit = filters.limit ?? 500;
   return records.slice(0, limit);
 }

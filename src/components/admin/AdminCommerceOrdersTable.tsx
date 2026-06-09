@@ -31,6 +31,7 @@ export function AdminCommerceOrdersTable({ orders, selectedOrderId }: Props) {
     <AdminDataTableClient
       rows={orders}
       getRowId={(o) => o.orderId}
+      selectedRowId={selectedOrderId}
       emptyMessage="자사몰 결제 대기 주문이 없습니다."
       filters={[
         { key: "orderNumber", label: "주문번호", type: "search", placeholder: "BM-..." },
@@ -49,79 +50,87 @@ export function AdminCommerceOrdersTable({ orders, selectedOrderId }: Props) {
         {
           key: "orderNumber",
           label: "주문번호",
-          render: (o) => <span className="font-mono text-[10px]">{o.orderNumber}</span>,
-        },
-        {
-          key: "createdAt",
-          label: "주문일시",
           render: (o) => (
-            <span className="text-[10px]">{new Date(o.createdAt).toLocaleString("ko-KR")}</span>
-          ),
-        },
-        { key: "customerName", label: "고객명", render: (o) => o.customerName },
-        { key: "customerPhone", label: "연락처", render: (o) => o.customerPhone },
-        {
-          key: "customerType",
-          label: "회원구분",
-          render: (o) => (o.customerType === "guest" ? "비회원" : "회원"),
-        },
-        {
-          key: "vehicleName",
-          label: "차량명",
-          render: (o) => o.vehicleName ?? "—",
-        },
-        { key: "batteryCode", label: "규격", render: (o) => o.batteryCode },
-        { key: "brand", label: "브랜드", render: (o) => o.brand ?? "—" },
-        { key: "productName", label: "상품", render: (o) => o.productName },
-        {
-          key: "fulfillmentType",
-          label: "수령/장착",
-          render: (o) => FULFILLMENT_LABELS[o.fulfillmentType] ?? o.fulfillmentType,
-        },
-        {
-          key: "returnBatteryOption",
-          label: "반납 여부",
-          render: (o) => returnBatteryLabel(o.returnBatteryOption),
-        },
-        {
-          key: "paymentStatus",
-          label: "결제 상태",
-          render: (o) => (
-            <Badge variant={o.paymentStatus === "completed" ? "success" : "muted"}>
-              {COMMERCE_PAYMENT_STATUS_LABELS[o.paymentStatus]}
-            </Badge>
+            <div>
+              <p className="admin-cell-primary font-mono admin-table__mono">{o.orderNumber}</p>
+              <p className="admin-cell-muted">
+                {new Date(o.createdAt).toLocaleString("ko-KR", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
           ),
         },
         {
-          key: "orderStatus",
-          label: "주문 상태",
+          key: "customer",
+          label: "고객",
           render: (o) => (
-            <span className="text-[10px] font-bold text-slate-600">
-              {COMMERCE_LIFECYCLE_LABELS[o.orderStatus]}
-            </span>
+            <div className="admin-cell-product">
+              <p className="admin-cell-primary">{o.customerName}</p>
+              <p className="admin-cell-muted">
+                {o.customerPhone} · {o.customerType === "guest" ? "비회원" : "회원"}
+              </p>
+            </div>
+          ),
+        },
+        {
+          key: "product",
+          label: "상품/차량",
+          render: (o) => (
+            <div className="admin-cell-product">
+              <p className="admin-cell-primary">{o.productName}</p>
+              <p className="admin-cell-muted">
+                {[o.brand, o.batteryCode, o.vehicleName].filter(Boolean).join(" · ") || "—"}
+              </p>
+            </div>
+          ),
+        },
+        {
+          key: "fulfillment",
+          label: "수령/반납",
+          render: (o) => (
+            <div>
+              <p className="admin-cell-muted">{FULFILLMENT_LABELS[o.fulfillmentType] ?? o.fulfillmentType}</p>
+              <p className="admin-cell-muted">{returnBatteryLabel(o.returnBatteryOption)}</p>
+            </div>
+          ),
+        },
+        {
+          key: "status",
+          label: "상태",
+          render: (o) => (
+            <div className="flex flex-col gap-1">
+              <Badge variant={o.paymentStatus === "completed" ? "success" : "muted"}>
+                {COMMERCE_PAYMENT_STATUS_LABELS[o.paymentStatus]}
+              </Badge>
+              <Badge variant="info">{COMMERCE_LIFECYCLE_LABELS[o.orderStatus]}</Badge>
+            </div>
           ),
         },
         {
           key: "finalAmount",
           label: "결제금액",
+          className: "admin-cell-price",
           render: (o) =>
             o.finalAmount != null ? (
-              <span className="font-black tabular-nums">{formatPriceWon(o.finalAmount)}</span>
+              <span className="admin-cell-primary tabular-nums">{formatPriceWon(o.finalAmount)}</span>
             ) : (
-              "—"
+              <span className="admin-cell-muted">—</span>
             ),
         },
         {
           key: "detail",
-          label: "상세",
+          label: "",
+          className: "admin-cell-actions",
           render: (o) => (
             <Link
               href={`${ADMIN_ROUTES.commerceOrders}?orderId=${encodeURIComponent(o.orderId)}`}
-              className={`text-[10px] font-bold hover:underline ${
-                selectedOrderId === o.orderId ? "text-blue-900" : "text-blue-600"
-              }`}
+              className="admin-btn admin-btn--secondary admin-btn--md"
             >
-              보기
+              상세
             </Link>
           ),
         },

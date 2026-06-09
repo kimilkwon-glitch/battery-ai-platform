@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminProductImportPreviewRow } from "@/types/admin-product";
 
@@ -40,50 +39,49 @@ export function AdminProductsToolbar() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
-        <Button type="button" variant="secondary" size="sm" onClick={handleExport}>
-          전체 CSV 다운로드
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            window.location.href = "/api/admin/products/export?filter=price_missing";
-          }}
-        >
-          가격 누락 목록
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            window.location.href = "/api/admin/products/export?filter=image_missing";
-          }}
-        >
-          이미지 누락 목록
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            window.location.href = "/api/admin/products/export?filter=detail_missing";
-          }}
-        >
-          상세 누락 목록
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => fileRef.current?.click()}
-          disabled={importing}
-        >
-          {importing ? "검증 중…" : "CSV 업로드 미리보기"}
-        </Button>
+    <div className="space-y-3">
+      <div className="admin-toolbar">
+        <p className="admin-toolbar__hint">CSV로 가격·이미지·상세 누락 목록을보내거나 업로드 미리보기를 할 수 있습니다.</p>
+        <div className="admin-toolbar__actions">
+          <button type="button" className="admin-btn admin-btn--secondary admin-btn--md" onClick={handleExport}>
+            전체 CSV 다운로드
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--ghost admin-btn--md"
+            onClick={() => {
+              window.location.href = "/api/admin/products/export?filter=price_missing";
+            }}
+          >
+            가격 누락
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--ghost admin-btn--md"
+            onClick={() => {
+              window.location.href = "/api/admin/products/export?filter=image_missing";
+            }}
+          >
+            이미지 누락
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--ghost admin-btn--md"
+            onClick={() => {
+              window.location.href = "/api/admin/products/export?filter=detail_missing";
+            }}
+          >
+            상세 누락
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--primary admin-btn--md"
+            onClick={() => fileRef.current?.click()}
+            disabled={importing}
+          >
+            {importing ? "검증 중…" : "CSV 업로드 미리보기"}
+          </button>
+        </div>
         <input
           ref={fileRef}
           type="file"
@@ -98,7 +96,7 @@ export function AdminProductsToolbar() {
       </div>
 
       {importError ? (
-        <p className="text-xs font-bold text-red-600" role="alert">
+        <p className="text-sm font-bold text-red-600" role="alert">
           {importError}
         </p>
       ) : null}

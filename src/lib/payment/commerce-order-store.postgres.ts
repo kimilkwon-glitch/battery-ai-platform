@@ -10,6 +10,7 @@ import type {
   CommerceOrderRecord,
   CommerceOrderStatusEvent,
 } from "@/types/commerce-payment";
+import { filterAdminTestCommerceOrders } from "@/lib/admin/admin-test-data-filter";
 import type { AppliedPromotion } from "@/types/promotion";
 
 type OrderRow = {
@@ -501,7 +502,7 @@ export async function pgStoreCommerceOrderList(limit = 200): Promise<CommerceOrd
     const record = await pgStoreCommerceOrderGet(id);
     if (record) records.push(record);
   }
-  return records;
+  return filterAdminTestCommerceOrders(records);
 }
 
 export async function pgStoreCommerceOrderListByUserId(

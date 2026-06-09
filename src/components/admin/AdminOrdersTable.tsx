@@ -52,7 +52,7 @@ export function AdminOrdersTable({ orders, guestOnly }: Props) {
         {
           key: "requestNumber",
           label: "주문번호",
-          render: (o) => <span className="admin-cell-primary font-mono text-[11px]">{o.requestNumber}</span>,
+          render: (o) => <span className="admin-cell-primary font-mono admin-table__mono">{o.requestNumber}</span>,
         },
         {
           key: "createdAt",
@@ -82,9 +82,9 @@ export function AdminOrdersTable({ orders, guestOnly }: Props) {
           key: "vehicle",
           label: "차량/규격",
           render: (o) => (
-            <div className="admin-cell-clamp">
-              <p className="admin-cell-primary">{o.vehicleSummary}</p>
-              <p className="admin-cell-muted">{o.batterySpecSummary}</p>
+            <div className="admin-cell-product">
+              <p className="admin-cell-primary">{o.vehicleSummary || "—"}</p>
+              <p className="admin-cell-muted">{o.batterySpecSummary || "—"}</p>
             </div>
           ),
         },

@@ -10,6 +10,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { filterAdminTestOrderRequests } from "@/lib/admin/admin-test-data-filter";
 import type { PersistedOrderRequest } from "@/types/order-request";
 
 const DATA_DIR = path.join(process.cwd(), ".data");
@@ -104,6 +105,7 @@ export async function storeList(
       return hay.includes(q);
     });
   }
+  records = filterAdminTestOrderRequests(records);
   const limit = filters.limit ?? 200;
   return records.slice(0, limit);
 }

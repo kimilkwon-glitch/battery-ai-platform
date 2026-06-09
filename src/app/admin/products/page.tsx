@@ -14,11 +14,13 @@ export default function AdminProductsPage() {
       title="제품 관리"
       description="배터리 상품 가격·이미지·상세·검수 상태를 관리합니다."
     >
+      <div className="mt-3 space-y-3">
       <AdminProductsToolbar />
-      <div className="mt-4">
+      <div>
         <Suspense fallback={<p className="text-sm text-slate-500">제품 목록 불러오는 중…</p>}>
           <AdminProductsTable rows={rows} />
         </Suspense>
+      </div>
       </div>
     </AdminShellLayout>
   );

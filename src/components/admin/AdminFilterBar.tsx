@@ -26,7 +26,10 @@ export function AdminFilterBar({ filters, values, onChange, onReset, resultCount
     <div className="admin-filter-bar">
       <div className="admin-filter-bar__fields">
         {filters.map((f) => (
-          <div key={f.key} className="admin-filter-bar__field">
+          <div
+            key={f.key}
+            className={`admin-filter-bar__field${f.type === "search" ? " admin-filter-bar__field--search" : ""}`}
+          >
             <label className="admin-filter-bar__label">{f.label}</label>
             {f.type === "search" ? (
               <Input

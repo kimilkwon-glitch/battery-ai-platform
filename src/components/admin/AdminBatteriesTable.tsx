@@ -54,10 +54,17 @@ export function AdminBatteriesTable({ rows }: Props) {
         {
           key: "specCode",
           label: "규격",
-          render: (r) => <span className="admin-cell-primary font-mono font-bold">{r.specCode}</span>,
+          render: (r) => (
+            <div className="admin-cell-product">
+              <p className="admin-cell-primary font-mono">{r.specCode}</p>
+              <p className="admin-cell-muted">
+                {r.batteryType}
+                {r.capacityAh ? ` · ${r.capacityAh}Ah` : ""}
+              </p>
+            </div>
+          ),
         },
-        { key: "batteryType", label: "구분", render: (r) => <span className="admin-cell-muted">{r.batteryType}</span> },
-        { key: "capacityAh", label: "Ah", render: (r) => r.capacityAh ?? "—" },
+        { key: "capacityAh", label: "용량", render: (r) => <span className="admin-cell-muted">{r.capacityAh ? `${r.capacityAh}Ah` : "—"}</span> },
         {
           key: "missingSpecs",
           label: "제원",
@@ -78,8 +85,13 @@ export function AdminBatteriesTable({ rows }: Props) {
         },
         {
           key: "detail",
-          label: "미리보기",
-          render: (r) => <AdminCustomerPreviewLink href={r.detailHref} />,
+          label: "관리",
+          className: "admin-cell-actions",
+          render: (r) => (
+            <div className="admin-action-buttons">
+              <AdminCustomerPreviewLink href={r.detailHref} label="고객 화면" />
+            </div>
+          ),
         },
       ]}
     />

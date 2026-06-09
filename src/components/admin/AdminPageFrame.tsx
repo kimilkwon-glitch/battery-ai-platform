@@ -73,14 +73,14 @@ export function AdminTableActionLink({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="admin-btn admin-btn--secondary admin-btn--sm"
+        className="admin-btn admin-btn--secondary admin-btn--md"
       >
         {label}
       </a>
     );
   }
   return (
-    <Link href={href} className="admin-btn admin-btn--secondary admin-btn--sm">
+    <Link href={href} className="admin-btn admin-btn--secondary admin-btn--md">
       {label}
     </Link>
   );

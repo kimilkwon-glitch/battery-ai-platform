@@ -117,7 +117,7 @@ export function AdminVehiclesTable({ rows }: Props) {
               {r.generationName ? (
                 <p className="admin-cell-muted">{r.generationName}</p>
               ) : null}
-              <p className="admin-cell-muted text-xs">
+              <p className="admin-cell-muted">
                 {r.yearRange} · {r.fuel}
               </p>
             </div>
@@ -133,7 +133,7 @@ export function AdminVehiclesTable({ rows }: Props) {
           key: "candidates",
           label: "추천 규격",
           render: (r) => (
-            <span className="admin-cell-muted text-xs">
+            <span className="admin-cell-muted">
               {r.candidateBatteries.slice(0, 2).join(", ") || "—"}
             </span>
           ),
@@ -162,7 +162,7 @@ export function AdminVehiclesTable({ rows }: Props) {
           label: "",
           className: "admin-cell-actions",
           render: (r) => (
-            <div className="flex flex-wrap gap-2">
+            <div className="admin-action-buttons">
               <AdminCustomerPreviewLink href={r.detailHref} label="고객 화면" />
             </div>
           ),

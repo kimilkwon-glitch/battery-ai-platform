@@ -45,6 +45,8 @@ type Props<T> = {
   stickyHeader?: boolean;
   /** 모바일(≤767px) 카드 뷰 — 제공 시 테이블 대신 카드 목록 표시 */
   mobileCardRender?: (row: T) => React.ReactNode;
+  /** 선택 행 강조 (매칭·문의 목록) */
+  selectedRowId?: string | null;
 };
 
 export function AdminDataTableClient<T>({
@@ -58,6 +60,7 @@ export function AdminDataTableClient<T>({
   getRowId,
   stickyHeader = true,
   mobileCardRender,
+  selectedRowId = null,
 }: Props<T>) {
   const [statusTab, setStatusTab] = useState(initialStatusTab);
   const [values, setValues] = useState<Record<string, string>>(initialValues);
@@ -146,7 +149,10 @@ export function AdminDataTableClient<T>({
               </TableRow>
             ) : (
               filtered.map((row) => (
-                <TableRow key={getRowId(row)}>
+                <TableRow
+                  key={getRowId(row)}
+                  className={selectedRowId === getRowId(row) ? "admin-table__row--selected" : undefined}
+                >
                   {columns.map((c) => (
                     <TableCell key={c.key} className={c.className}>
                       {c.render(row)}

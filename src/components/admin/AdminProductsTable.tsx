@@ -103,12 +103,12 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
     },
     {
       key: "internetPrice",
-      label: "구매가",
-      className: "text-right tabular-nums",
+      label: "가격",
+      className: "admin-cell-price",
       render: (r) => (
-        <div>
+        <div className="admin-cell-price">
           <p className="admin-cell-primary">{priceCell(r.internetPrice)}</p>
-          <p className="admin-cell-muted text-xs">출장 {priceCell(r.onsitePrice)}</p>
+          <p className="admin-cell-muted">출장 {priceCell(r.onsitePrice)}</p>
         </div>
       ),
     },
@@ -127,7 +127,7 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
       label: "작업",
       className: "admin-cell-actions",
       render: (r) => (
-        <div className="flex flex-wrap gap-2">
+        <div className="admin-action-buttons">
           <Link
             href={`/admin/products/${productIdToPathSegment(r.productId)}`}
             className="admin-btn admin-btn--primary admin-btn--md"
