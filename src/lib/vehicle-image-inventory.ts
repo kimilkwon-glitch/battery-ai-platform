@@ -10,15 +10,6 @@ import {
   type VehicleImagePixelMetrics,
   type VisualRiskStatus,
 } from "@/lib/vehicle-image-analysis";
-import {
-  resolveBackupDiskPath,
-  resolveLegacyGeneratedDiskPath,
-  resolveModelGeneratedDiskPath,
-  resolvePrimaryDiskPath,
-  resolveV04DiskPath,
-  toPublicAssetPath,
-  VEHICLE_IMAGE_DISK_ROOTS,
-} from "@/lib/vehicle-image-inventory-paths";
 
 export { isLightBodyVehicle };
 
@@ -105,10 +96,38 @@ export type VehicleImageAnalysisRecord = VehicleImagePixelMetrics & {
   channels?: number;
 };
 
+/** 레지스트리 image 필드 → 표시용 normalized URL (fs/path 미사용) */
+function registryPrimaryImageUrl(image: string): string {
+  return image.includes("/assets/vehicles/cars-normalized/")
+    ? image.replace("/assets/vehicles/cars-normalized/", "/assets/cars-normalized/")
+    : image;
+}
+
+function registryV04ImageUrl(image: string): string | null {
+  return image.includes("/assets/vehicles/cars-normalized/") ? image : null;
+}
+
+function registryBackupImageUrl(primaryUrl: string): string | null {
+  if (!primaryUrl.startsWith("/assets/cars-normalized/")) return null;
+  const rel = primaryUrl.slice("/assets/cars-normalized/".length);
+  return `/assets/vehicles-original-backup/cars-normalized/${rel}`;
+}
+
+function registryGeneratedImageUrl(
+  brand: string,
+  imageFile: string,
+  modelFolder: "flux-dev" | "flux-1.1-pro" | "legacy",
+): string | null {
+  if (!imageFile.trim()) return null;
+  if (modelFolder === "legacy") {
+    return `/assets/cars-generated-review/${brand}/${imageFile}`;
+  }
+  return `/assets/cars-generated-review/${modelFolder}/${brand}/${imageFile}`;
+}
+
 /**
  * 레지스트리(vehicleAssets) 기반 lightweight 인벤토리.
- * public/assets 전수 fs 스캔·existsSync 없음 — Vercel 서버리스 번들/trace 방지.
- * 이미지는 public URL 문자열로만 참조한다.
+ * public/assets fs 스캔·path.join·existsSync 없음 — Vercel 서버리스 trace 방지.
  */
 export function buildVehicleImageInventory(
   analysisByPath: Map<string, VehicleImageAnalysisRecord> = new Map(),
@@ -120,37 +139,32 @@ export function buildVehicleImageInventory(
   restoreBuckets: ReturnType<typeof bucketRestoreLists>;
 } {
   const entries: VehicleImageInventoryEntry[] = vehicleAssets.map((asset) => {
-    const primaryDiskPath = resolvePrimaryDiskPath(asset);
-    const v04DiskPath = resolveV04DiskPath(asset);
-    const backupDiskPath = resolveBackupDiskPath(primaryDiskPath);
-    const generatedFluxDevDiskPath = resolveModelGeneratedDiskPath(asset, "flux-dev");
-    const generatedFlux11ProDiskPath = resolveModelGeneratedDiskPath(asset, "flux-1.1-pro");
-    const legacyGeneratedDiskPath = resolveLegacyGeneratedDiskPath(asset);
+    const imageUrl = registryPrimaryImageUrl(asset.image);
+    const v04Url = registryV04ImageUrl(asset.image);
+    const backupUrl = registryBackupImageUrl(imageUrl);
+    const generatedFluxDevUrl =
+      registryGeneratedImageUrl(asset.brand, asset.imageFile, "flux-dev") ??
+      registryGeneratedImageUrl(asset.brand, asset.imageFile, "legacy");
+    const generatedFlux11ProUrl = registryGeneratedImageUrl(
+      asset.brand,
+      asset.imageFile,
+      "flux-1.1-pro",
+    );
 
-    const primaryPublic = primaryDiskPath ? toPublicAssetPath(primaryDiskPath) : null;
-    const backupPublic = backupDiskPath ? toPublicAssetPath(backupDiskPath) : null;
-    const generatedFluxDevPublic =
-      toPublicAssetPath(generatedFluxDevDiskPath) ??
-      toPublicAssetPath(legacyGeneratedDiskPath);
-    const generatedFlux11ProPublic = toPublicAssetPath(generatedFlux11ProDiskPath);
+    const primaryExists = Boolean(imageUrl && asset.imageFile.trim());
+    const v04Exists = Boolean(v04Url);
+    const backupExists = Boolean(backupUrl);
+    const generatedFluxDevExists = Boolean(generatedFluxDevUrl);
+    const generatedFlux11ProExists = Boolean(generatedFlux11ProUrl);
 
-    const primaryExists = Boolean(primaryPublic && asset.imageFile.trim());
-    const v04Exists = Boolean(v04DiskPath);
-    const backupExists = Boolean(backupPublic);
-    const generatedFluxDevExists = Boolean(generatedFluxDevPublic);
-    const generatedFlux11ProExists = Boolean(generatedFlux11ProPublic);
-
-    const currentAnalysis = primaryDiskPath ? analysisByPath.get(primaryDiskPath) : undefined;
-    const backupAnalysis = backupDiskPath ? analysisByPath.get(backupDiskPath) : undefined;
-
-    const current: VehicleImagePixelMetrics = currentAnalysis ?? {
+    const current: VehicleImagePixelMetrics = {
       holeScore: 0,
       whiteBodyErosionScore: 0,
       graySmearScore: 0,
       edgeFloodRiskScore: 0,
       brightBodyRatio: 0,
     };
-    const backup = backupAnalysis ?? null;
+    const backup = null;
     const currentVsBackupDiff = pairDiffBySlug.get(asset.id) ?? null;
 
     const risk = assessVehicleImageRisk(
@@ -158,10 +172,6 @@ export function buildVehicleImageInventory(
       asset,
       { primaryExists, backupExists },
     );
-
-    const imageUrl = asset.image.includes("/assets/vehicles/cars-normalized/")
-      ? asset.image.replace("/assets/vehicles/cars-normalized/", "/assets/cars-normalized/")
-      : asset.image;
 
     return {
       slug: asset.id,
@@ -171,33 +181,33 @@ export function buildVehicleImageInventory(
       modelGroup: asset.modelGroup,
       imageFile: asset.imageFile,
       imageUrl,
-      backupImageUrl: backupPublic,
-      primaryDiskPath: primaryPublic,
+      backupImageUrl: backupUrl,
+      primaryDiskPath: imageUrl,
       primaryExists,
-      v04DiskPath: v04DiskPath ? toPublicAssetPath(v04DiskPath) : null,
+      v04DiskPath: v04Url,
       v04Exists,
-      backupDiskPath: backupPublic,
+      backupDiskPath: backupUrl,
       backupExists,
-      generatedReviewImageUrl: generatedFluxDevPublic,
-      generatedReviewDiskPath: generatedFluxDevPublic,
+      generatedReviewImageUrl: generatedFluxDevUrl,
+      generatedReviewDiskPath: generatedFluxDevUrl,
       generatedReviewExists: generatedFluxDevExists,
-      generatedFluxDevImageUrl: generatedFluxDevPublic,
-      generatedFluxDevDiskPath: generatedFluxDevPublic,
+      generatedFluxDevImageUrl: generatedFluxDevUrl,
+      generatedFluxDevDiskPath: generatedFluxDevUrl,
       generatedFluxDevExists,
-      generatedFlux11ProImageUrl: generatedFlux11ProPublic,
-      generatedFlux11ProDiskPath: generatedFlux11ProPublic,
+      generatedFlux11ProImageUrl: generatedFlux11ProUrl,
+      generatedFlux11ProDiskPath: generatedFlux11ProUrl,
       generatedFlux11ProExists,
-      gitPreNormalizeRecoverable: Boolean(primaryDiskPath),
+      gitPreNormalizeRecoverable: primaryExists,
       status: risk.legacyStatus,
       statusReason: risk.legacyReason,
       visualRiskStatus: risk.visualRiskStatus,
       visualRiskReason: risk.visualRiskReason,
       holeScore: current.holeScore,
-      backupHoleScore: backup?.holeScore ?? null,
+      backupHoleScore: null,
       graySmearScore: current.graySmearScore,
-      backupGraySmearScore: backup?.graySmearScore ?? null,
+      backupGraySmearScore: null,
       whiteBodyErosionScore: current.whiteBodyErosionScore,
-      backupWhiteBodyErosionScore: backup?.whiteBodyErosionScore ?? null,
+      backupWhiteBodyErosionScore: null,
       edgeFloodRiskScore: current.edgeFloodRiskScore,
       currentVsBackupDiff,
       brightBodyRatio: current.brightBodyRatio,
@@ -249,7 +259,7 @@ export function buildVehicleImageInventory(
       restoreCandidateCount: entries.filter((e) => e.restoreCandidate).length,
       brightReviewCount: entries.filter((e) => e.visualRiskStatus === "BRIGHT_REVIEW").length,
       manualBrightOkCount: entries.filter((e) => e.manualBrightOkReview).length,
-      pathRoots: VEHICLE_IMAGE_DISK_ROOTS.map((r) => r.key),
+      pathRoots: ["/assets/cars-normalized", "/assets/vehicles/cars-normalized"],
     },
   };
 }

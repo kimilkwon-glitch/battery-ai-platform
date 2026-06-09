@@ -12,8 +12,10 @@ const vehicleAssetTraceExcludes = [
 const nextConfig: NextConfig = {
   // Admin image-review routes read PNGs at runtime; exclude from serverless bundles.
   outputFileTracingExcludes: {
+    "*": vehicleAssetTraceExcludes,
     "/admin/vehicle-image-review": vehicleAssetTraceExcludes,
     "/admin/vehicle-reference-review": vehicleAssetTraceExcludes,
+    "/admin": vehicleAssetTraceExcludes,
   },
   async redirects() {
     return [
