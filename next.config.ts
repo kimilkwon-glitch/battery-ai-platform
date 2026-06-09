@@ -4,6 +4,7 @@ const vehicleAssetTraceExcludes = [
   "./public/assets/cars-normalized/**/*",
   "./public/assets/vehicles/cars-normalized/**/*",
   "./public/assets/cars-generated-review/**/*",
+  "./public/assets/vehicles-original-backup/**/*",
   "./public/assets/vehicle-damaged-backup-before-restore/**/*",
   "./reports/**/*",
 ];
