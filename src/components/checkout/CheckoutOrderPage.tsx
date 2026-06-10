@@ -479,7 +479,7 @@ export function CheckoutOrderPage() {
   );
 
   return (
-    <div className="checkout-order pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-10" data-page="checkout">
+    <div className="checkout-order pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] lg:pb-10" data-page="checkout">
       <div className="checkout-order__grid grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,400px)] lg:items-start">
         <form className="checkout-order__main space-y-4 lg:space-y-5" onSubmit={(e) => e.preventDefault()}>
           <section className="checkout-card checkout-card--intro" data-checkout-section="intro">
@@ -520,7 +520,6 @@ export function CheckoutOrderPage() {
             fulfillmentMethod={fulfillment.method}
             usedBattery={usedBattery}
             totalAmount={displayTotal}
-            vehicle={vehicle}
             optionsComplete={optionsComplete}
             isBuyNow={isBuyNow}
           />

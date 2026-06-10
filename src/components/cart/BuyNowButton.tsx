@@ -14,6 +14,7 @@ import { bm } from "@/lib/design-tokens";
 
 type Props = {
   batteryCode: string;
+  brandId?: string;
   brandName?: string;
   returnOption?: BatteryReturnOption;
   fulfillmentMethod?: FulfillmentMethod;
@@ -24,6 +25,7 @@ type Props = {
 
 export function BuyNowButton({
   batteryCode,
+  brandId,
   brandName,
   returnOption = "return",
   fulfillmentMethod = "delivery",
@@ -42,6 +44,7 @@ export function BuyNowButton({
         const item = createCartItemWithVehicleContext(
           {
             batteryCode,
+            brandId,
             brandName,
             usedBatteryReturnOption: returnOption,
             fulfillmentMethod,

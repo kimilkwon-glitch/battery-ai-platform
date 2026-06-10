@@ -353,27 +353,14 @@ export function BatteryTalkPanel({
               <p className="shrink-0 px-3 pb-1 text-xs font-semibold text-red-600">{sendError}</p>
             ) : null}
 
-            {onResumeOrder ? (
+            {onResumeOrder && showProductOrderCta && productCode ? (
               <div className="batterytalk-panel__resume shrink-0 border-t border-slate-100 px-3 py-2.5">
-                {showProductOrderCta && productCode ? (
-                  <button
-                    type="button"
-                    className="batterytalk-panel__resume-btn batterytalk-panel__resume-btn--primary"
-                    onClick={handleResumeOrder}
-                  >
-                    이 규격으로 주문하기
-                  </button>
-                ) : null}
                 <button
                   type="button"
-                  className={`batterytalk-panel__resume-btn${
-                    showProductOrderCta && productCode
-                      ? " batterytalk-panel__resume-btn--secondary"
-                      : " batterytalk-panel__resume-btn--primary"
-                  }`}
+                  className="batterytalk-panel__resume-btn batterytalk-panel__resume-btn--primary"
                   onClick={handleResumeOrder}
                 >
-                  상담 닫고 주문 계속하기
+                  이 규격으로 주문하기
                 </button>
               </div>
             ) : null}

@@ -128,10 +128,10 @@ export function CheckoutPromotionSection({
         </div>
       ) : null}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="checkout-promotion-section__coupon-row flex flex-wrap gap-2">
         <input
           type="text"
-          className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold uppercase"
+          className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold uppercase sm:min-w-[12rem]"
           placeholder="쿠폰코드를 입력하세요"
           value={couponCode}
           onChange={(e) => onCouponCodeChange(e.target.value.toUpperCase())}

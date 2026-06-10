@@ -31,19 +31,22 @@ function vehicleChoiceLabel(vehicle: CheckoutVehicleChoice): string {
   return parts.join(" · ");
 }
 
+function vehicleSummary(values: OrderRequestVehicle): string | null {
+  const parts = [values.name?.trim(), values.year?.trim(), values.fuelType?.trim()].filter(Boolean);
+  return parts.length > 0 ? parts.join(" · ") : null;
+}
+
 export function CheckoutVehicleSection({
   values,
   onChange,
   needsVehicleConfirm = false,
   vehicleConfirmHref = HUB_SEARCH,
 }: Props) {
-  const [open, setOpen] = useState(
-    needsVehicleConfirm ||
-      Boolean(values.name || values.year || values.fuelType || values.plateSuffix),
-  );
+  const [open, setOpen] = useState(false);
   const loggedIn = isCustomerLoggedIn();
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
   const [defaultApplied, setDefaultApplied] = useState(false);
+  const summary = vehicleSummary(values);
 
   const vehicleChoices = useMemo(() => {
     if (!loggedIn || typeof window === "undefined") return [];
@@ -58,7 +61,6 @@ export function CheckoutVehicleSection({
       currentBatterySpec: vehicle.recommendedBattery,
     });
     setSelectedVehicleId(vehicle.id);
-    setOpen(true);
   };
 
   useEffect(() => {
@@ -84,35 +86,38 @@ export function CheckoutVehicleSection({
 
   return (
     <section className="checkout-card space-y-3" id="checkout-vehicle">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-start justify-between gap-3 text-left"
-      >
-        <div>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
           <h2 className="checkout-card__title">차량 정보 (선택)</h2>
+          {summary ? (
+            <p className="checkout-card__hint mt-1">{summary}</p>
+          ) : needsVehicleConfirm ? (
+            <p className="checkout-card__hint mt-1 text-amber-900">
+              차량 정보를 입력하면 호환 확인에 도움이 됩니다.
+            </p>
+          ) : (
+            <p className="checkout-card__hint mt-1">필요할 때만 입력해 주세요.</p>
+          )}
         </div>
-        <span className="shrink-0 text-xs font-black text-blue-700">
-          {open ? "접기" : "펼치기"}
-        </span>
-      </button>
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className="checkout-vehicle-section__toggle shrink-0 text-xs font-black text-blue-700"
+        >
+          {open ? "접기" : summary ? "수정" : "입력"}
+        </button>
+      </div>
 
-      {needsVehicleConfirm && !values.name?.trim() ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50/80 px-3 py-3">
-          <p className="text-xs font-black text-amber-950">차량 기준 확인 필요</p>
-          <p className="mt-1 text-[11px] font-medium leading-relaxed text-amber-900/90">
-            선택한 배터리 규격이 내 차에 맞는지 확인하려면 차량 정보를 입력하거나 차종을 선택해 주세요.
-          </p>
-          <Link
-            href={vehicleConfirmHref}
-            className="checkout-btn-secondary mt-2 inline-flex px-3 py-2 text-xs font-black"
-          >
-            차량 확인하기
-          </Link>
-        </div>
+      {!open && needsVehicleConfirm && !summary ? (
+        <Link
+          href={vehicleConfirmHref}
+          className="checkout-btn-secondary inline-flex px-3 py-2 text-xs font-black"
+        >
+          차종 검색으로 확인
+        </Link>
       ) : null}
 
-      {loggedIn && vehicleChoices.length > 0 ? (
+      {loggedIn && vehicleChoices.length > 0 && open ? (
         <div className="flex flex-wrap items-center gap-2">
           {vehicleChoices.length === 1 ? (
             <button
@@ -123,10 +128,10 @@ export function CheckoutVehicleSection({
               내 차량 정보 불러오기
             </button>
           ) : (
-            <label className="flex flex-1 items-center gap-2 text-xs font-bold text-slate-700">
+            <label className="flex w-full flex-col gap-1 text-xs font-bold text-slate-700 sm:flex-row sm:items-center sm:gap-2">
               <span className="shrink-0">내 차량</span>
               <select
-                className="checkout-input min-h-[2.5rem] flex-1 rounded-xl px-2 py-2 text-xs font-bold"
+                className="checkout-input min-h-[2.5rem] w-full min-w-0 rounded-xl px-2 py-2 text-xs font-bold"
                 value={selectedVehicleId}
                 onChange={(e) => {
                   const row = findCheckoutVehicleById(vehicleChoices, e.target.value);
@@ -145,7 +150,7 @@ export function CheckoutVehicleSection({
             </label>
           )}
         </div>
-      ) : loggedIn ? (
+      ) : loggedIn && open ? (
         <p className="text-[11px] font-medium text-slate-500">등록된 차량정보 없음</p>
       ) : null}
 

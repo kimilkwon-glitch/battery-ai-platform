@@ -332,7 +332,7 @@ function BrandHubBannerLogo({
       width={assets.width}
       height={assets.height}
       className={clsx("brand-hub-logo-image", presentation.imageClassName)}
-      sizes="(max-width: 639px) 14rem, (max-width: 1023px) 17rem, 22rem"
+      sizes="(max-width: 639px) 18rem, (max-width: 1023px) 20rem, 24rem"
       loading="lazy"
       onError={() => setImgError(true)}
     />
@@ -370,7 +370,7 @@ function BrandHeroBanner({
   return (
     <section
       className={clsx(
-        "brand-hub-hero-banner relative flex flex-col overflow-hidden rounded-2xl p-7 sm:flex-row sm:items-stretch sm:gap-10 sm:p-10 lg:gap-14 lg:p-12 xl:gap-16 xl:p-14",
+        "brand-hub-hero-banner relative flex flex-col overflow-hidden rounded-2xl p-5 sm:flex-row sm:items-stretch sm:gap-8 sm:p-8 lg:gap-12 lg:p-10",
         theme.bannerBg,
       )}
     >
@@ -381,7 +381,7 @@ function BrandHeroBanner({
           theme.id === "rocket" ? "bg-[#E53935]/20" : "bg-blue-400/20",
         )}
       />
-      <div className="brand-hub-hero-banner__content relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-4 sm:gap-5 lg:gap-6">
+      <div className="brand-hub-hero-banner__content relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-3 sm:gap-4">
         <BrandHubBannerLogo brandId={brandId} theme={theme} fallbackTitle={banner.title} />
         <p
           className={clsx(
@@ -390,14 +390,6 @@ function BrandHeroBanner({
           )}
         >
           {banner.headline}
-        </p>
-        <p
-          className={clsx(
-            "brand-hub-hero-banner__desc max-w-2xl text-base font-medium leading-relaxed sm:text-lg lg:max-w-3xl lg:text-xl lg:leading-relaxed",
-            theme.bannerMuted,
-          )}
-        >
-          {banner.description}
         </p>
       </div>
       <div

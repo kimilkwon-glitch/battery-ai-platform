@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { resolveCartItemBrandKey, resolveCartItemImageSrc } from "@/lib/cart/cart-item-brand";
+import { batteryImageSetForCode } from "@/lib/battery-image";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { CartItemFulfillmentControls } from "@/components/cart/CartItemFulfillmentControls";
 import { OrderPriceBreakdown } from "@/components/pricing/OrderPriceBreakdown";
@@ -50,6 +52,12 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
       : FULFILLMENT_METHOD_LABELS[item.fulfillment.method];
   const detailHref = batteryDetailHref(item.batterySpec);
   const returnMessage = USED_BATTERY_RETURN_CARD_MESSAGES[item.usedBatteryReturn.option];
+  const brandKey = resolveCartItemBrandKey({
+    brandName: item.brandName,
+    batteryCode: item.batterySpec,
+  });
+  const imageSrc = resolveCartItemImageSrc(item);
+  const imageSet = batteryImageSetForCode(item.batterySpec, brandKey);
 
   const setVehicleInfo = (text: string) => {
     const trimmed = text.trim();
@@ -94,15 +102,16 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
     <article className={`cart-item-card ${bm.card} ${bm.cardPad}`} data-cart-item={item.id}>
       <div className="cart-item-card__top grid gap-3 sm:grid-cols-[100px_1fr]">
         <div className="cart-item-card__media mx-auto w-full max-w-[100px] sm:mx-0">
-          {item.imageSrc ? (
+          {imageSrc ? (
             <img
-              src={item.imageSrc}
+              src={imageSrc}
               alt=""
               className="aspect-[4/3] w-full rounded-xl bg-slate-50 object-contain"
             />
           ) : (
             <BatteryThumbnail
               code={item.batterySpec}
+              imageSet={imageSet}
               role="main"
               ratio="4/3"
               className="rounded-xl"

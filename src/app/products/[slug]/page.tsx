@@ -47,6 +47,7 @@ export default async function BatteryProductDetailPage({
         <Suspense fallback={null}>
           <BatteryDetailHub
             code={displayCode}
+            brandId={parsed.brandId}
             vehicles={data.vehicles}
             relatedCodes={data.relatedCodes}
           />

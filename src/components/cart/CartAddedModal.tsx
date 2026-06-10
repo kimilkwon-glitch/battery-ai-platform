@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
+import { resolveCartItemBrandKey, resolveCartItemImageSrc } from "@/lib/cart/cart-item-brand";
+import { batteryImageSetForCode } from "@/lib/battery-image";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { BATTERY_RETURN_OPTIONS, type BatteryReturnOption } from "@/lib/shop-order-types";
 import { CART_PAGE } from "@/lib/customer-center-routes";
@@ -58,6 +60,11 @@ export function CartAddedModal({
   ]
     .filter(Boolean)
     .join(" · ");
+  const imageSrc = resolveCartItemImageSrc(item);
+  const imageSet = batteryImageSetForCode(
+    item.batterySpec,
+    resolveCartItemBrandKey({ brandName: item.brandName, batteryCode: item.batterySpec }),
+  );
 
   return (
     <div
@@ -82,16 +89,22 @@ export function CartAddedModal({
 
         <div className="mt-4 flex gap-3 rounded-xl border border-slate-100 bg-slate-50/80 p-3">
           <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-white ring-1 ring-slate-100">
-            {item.imageSrc ? (
+            {imageSrc ? (
               <Image
-                src={item.imageSrc}
+                src={imageSrc}
                 alt=""
                 width={64}
                 height={64}
                 className="size-full object-contain"
               />
             ) : (
-              <BatteryThumbnail code={item.batterySpec} role="main" ratio="1/1" className="size-full" />
+              <BatteryThumbnail
+                code={item.batterySpec}
+                imageSet={imageSet}
+                role="main"
+                ratio="1/1"
+                className="size-full"
+              />
             )}
           </div>
           <div className="min-w-0 flex-1 text-sm">

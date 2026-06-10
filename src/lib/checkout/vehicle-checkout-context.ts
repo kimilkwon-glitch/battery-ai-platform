@@ -100,6 +100,7 @@ export function createCartItemWithVehicleContext(
     return {
       ...item,
       brandName: input.brandName ?? item.brandName,
+      imageSrc: input.imageSrc ?? item.imageSrc,
       fulfillment: input.fulfillmentMethod
         ? { method: input.fulfillmentMethod }
         : item.fulfillment,

@@ -3,19 +3,18 @@
 import Link from "next/link";
 import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
+import { resolveCartItemBrandKey, resolveCartItemImageSrc } from "@/lib/cart/cart-item-brand";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { CART_PAGE } from "@/lib/customer-center-routes";
-import { HUB_SEARCH } from "@/lib/customer-hub-routes";
 import {
   appendVehicleCheckoutQuery,
-  formatCheckoutVehicleDisplay,
   vehicleContextFromCartItem,
 } from "@/lib/checkout/vehicle-checkout-context";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { UsedBatteryFormSelection } from "@/lib/order-request/order-request-form-helpers";
 import type { BatteryCartItem } from "@/types/cart";
-import type { OrderRequestFulfillmentMethod, OrderRequestVehicle } from "@/types/order-request";
+import type { OrderRequestFulfillmentMethod } from "@/types/order-request";
 import { bm } from "@/lib/design-tokens";
 
 function itemBatteryCode(item: BatteryCartItem): string | null {
@@ -43,18 +42,11 @@ function usedBatteryLabel(value: UsedBatteryFormSelection): string | null {
   return null;
 }
 
-function vehicleConfirmHref(item: BatteryCartItem): string {
-  const slug = item.vehicle?.vehicleId?.trim();
-  if (slug) return `/vehicle/${encodeURIComponent(slug)}`;
-  return HUB_SEARCH;
-}
-
 type Props = {
   items: BatteryCartItem[];
   fulfillmentMethod?: OrderRequestFulfillmentMethod;
   usedBattery?: UsedBatteryFormSelection;
   totalAmount?: number | null;
-  vehicle?: OrderRequestVehicle;
   optionsComplete?: boolean;
   isBuyNow?: boolean;
 };
@@ -64,7 +56,6 @@ export function CheckoutProductSummary({
   fulfillmentMethod,
   usedBattery,
   totalAmount,
-  vehicle,
   optionsComplete = true,
   isBuyNow = false,
 }: Props) {
@@ -77,11 +68,13 @@ export function CheckoutProductSummary({
       : null;
   const returnLabel = usedBatteryLabel(usedBattery ?? null);
   const changeHref = resolveChangeOptionsHref(items, isBuyNow);
-  const imageSet = code ? batteryImageSetForCode(code) : undefined;
+  const brandKey =
+    primary && code
+      ? resolveCartItemBrandKey({ brandName: primary.brandName, batteryCode: code })
+      : "rocket";
+  const imageSet = code ? batteryImageSetForCode(code, brandKey) : undefined;
+  const imageSrc = primary ? resolveCartItemImageSrc(primary) : null;
   const specLabel = code ? `${code} 배터리` : primary?.productName?.trim() || "배터리";
-  const vehicleDisplay = primary
-    ? formatCheckoutVehicleDisplay(vehicle, primary)
-    : { label: "차량 기준 확인 필요", needsVehicleConfirm: true };
 
   return (
     <section
@@ -89,11 +82,11 @@ export function CheckoutProductSummary({
       id="checkout-product-summary"
       data-checkout-section="order-product"
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="checkout-product-summary__header flex flex-wrap items-start justify-between gap-2">
         <h2 className="text-sm font-black text-slate-900">주문 상품</h2>
         <Link
           href={changeHref}
-          className="shrink-0 text-xs font-black text-blue-700 underline underline-offset-2"
+          className="checkout-product-summary__change-link text-xs font-black text-blue-700 underline underline-offset-2"
         >
           옵션 변경하기
         </Link>
@@ -106,29 +99,33 @@ export function CheckoutProductSummary({
       ) : null}
 
       {primary ? (
-        <div className="checkout-product-summary__body mt-3 flex gap-3">
-          {code && imageSet?.main ? (
+        <div className="checkout-product-summary__body mt-3 flex flex-col gap-3 sm:flex-row sm:items-start">
+          {code && (imageSrc || imageSet?.main) ? (
             <div className="checkout-product-summary__thumb h-[4rem] w-[4rem] shrink-0 overflow-hidden rounded-lg bg-slate-50 ring-1 ring-slate-100 sm:h-[4.5rem] sm:w-[4.5rem]">
-              <BatteryThumbnail
-                code={code}
-                imageSet={imageSet}
-                role="main"
-                fit="contain"
-                overlayLabel={false}
-                surface="transparent"
-                className="h-full w-full"
-              />
+              {imageSrc ? (
+                <img src={imageSrc} alt="" className="size-full object-contain" />
+              ) : (
+                <BatteryThumbnail
+                  code={code}
+                  imageSet={imageSet}
+                  role="main"
+                  fit="contain"
+                  overlayLabel={false}
+                  surface="transparent"
+                  className="h-full w-full"
+                />
+              )}
             </div>
           ) : null}
 
-          <div className="min-w-0 flex-1">
+          <div className="checkout-product-summary__details min-w-0 flex-1">
             <p className="text-sm font-black text-slate-950">
               {primary.brandName ? `${primary.brandName} ` : ""}
               {primary.batterySpec || primary.productName || "배터리"}
             </p>
             <p className="text-xs font-semibold text-slate-600">{specLabel}</p>
 
-            <dl className="checkout-product-summary__meta mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-slate-600 sm:text-xs">
+            <dl className="checkout-product-summary__meta mt-2 grid grid-cols-1 gap-y-1 text-[11px] text-slate-600 sm:grid-cols-2 sm:gap-x-3 sm:text-xs">
               <div>
                 <dt className="font-bold text-slate-500">수량</dt>
                 <dd className="font-black text-slate-800">{primary.quantity}</dd>
@@ -145,26 +142,6 @@ export function CheckoutProductSummary({
                   <dd className="font-black text-slate-800">{returnLabel}</dd>
                 </div>
               ) : null}
-              <div className="col-span-2">
-                <dt className="font-bold text-slate-500">차량</dt>
-                <dd
-                  className={
-                    vehicleDisplay.needsVehicleConfirm
-                      ? "font-semibold text-amber-900"
-                      : "font-semibold text-slate-800"
-                  }
-                >
-                  {vehicleDisplay.label}
-                </dd>
-                {vehicleDisplay.needsVehicleConfirm ? (
-                  <Link
-                    href={vehicleConfirmHref(primary)}
-                    className="mt-1 inline-flex text-[11px] font-black text-blue-700 underline underline-offset-2"
-                  >
-                    차량 확인하기
-                  </Link>
-                ) : null}
-              </div>
             </dl>
 
             {totalAmount != null ? (

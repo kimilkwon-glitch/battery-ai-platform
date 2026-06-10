@@ -7,7 +7,7 @@ import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { BuyNowButton } from "@/components/cart/BuyNowButton";
 import { ProductFulfillmentPricePanel } from "@/components/pricing/ProductFulfillmentPricePanel";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
-import { inferBrandIdFromCode } from "@/lib/battery-brand-inference";
+import { resolveCartItemBrandKey } from "@/lib/cart/cart-item-brand";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
 import { getBattery, getBrand } from "@/lib/platform-data";
@@ -29,6 +29,7 @@ import { bm } from "@/lib/design-tokens";
 
 type Props = {
   code: string;
+  brandId?: string;
   returnOption: BatteryReturnOption;
   onReturnOptionChange: (value: BatteryReturnOption) => void;
   fulfillmentMethod: FulfillmentMethod;
@@ -38,6 +39,7 @@ type Props = {
 
 export function BatteryDetailOrderPanel({
   code,
+  brandId: brandIdProp,
   returnOption,
   onReturnOptionChange,
   fulfillmentMethod,
@@ -46,8 +48,12 @@ export function BatteryDetailOrderPanel({
 }: Props) {
   const spec = parseBatterySpecDisplay(code);
   const summary = getNormalizedBatterySummary(code);
-  const brandId = inferBrandIdFromCode(code);
-  const imageSet = batteryImageSetForCode(code);
+  const brandKey = resolveCartItemBrandKey({
+    brandId: brandIdProp,
+    batteryCode: code,
+  });
+  const brandId = brandIdProp ?? brandKey;
+  const imageSet = batteryImageSetForCode(code, brandKey);
   const bat = getBattery(code, brandId);
   const brand = getBrand(bat.brandId);
   const brandName =
@@ -73,6 +79,7 @@ export function BatteryDetailOrderPanel({
       createCartItemWithVehicleContext(
         {
           batteryCode: code,
+          brandId,
           brandName,
           usedBatteryReturnOption: returnOption,
           fulfillmentMethod,
@@ -199,6 +206,7 @@ export function BatteryDetailOrderPanel({
           <div className="battery-order-panel__cta-row mt-5" data-battery-order-panel-cta>
             <BuyNowButton
               batteryCode={code}
+              brandId={brandId}
               brandName={brandName}
               returnOption={returnOption}
               fulfillmentMethod={fulfillmentMethod}
@@ -225,6 +233,7 @@ export function BatteryDetailOrderPanel({
                 className="w-full min-h-[3.25rem]"
                 input={{
                   batteryCode: code,
+                  brandId,
                   brandName,
                   usedBatteryReturnOption: returnOption,
                   fulfillmentMethod,

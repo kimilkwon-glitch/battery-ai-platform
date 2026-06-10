@@ -3,6 +3,10 @@ import { resolveBatteryTerminalLabel } from "@/lib/battery-spec-display";
 import { terminalFromCode } from "@/lib/batteryNormalize";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import { brandIdToBatteryBrandKey } from "@/lib/battery-alias-map";
+import {
+  formatCartBrandDisplayName,
+  resolveCartItemBrandKey,
+} from "@/lib/cart/cart-item-brand";
 import { getBatteryInternetPriceWon } from "@/lib/battery-prices";
 import { getBattery, shopProducts } from "@/lib/platform-data";
 import { applyPricingToCartItem } from "@/lib/pricing/order-price";
@@ -41,35 +45,49 @@ function mapReturnOption(
   return "undecided";
 }
 
-function findShopPrice(batteryCode: string): { productId: string; basePrice?: number; brandName?: string } {
-  const code = canonicalBatteryCode(batteryCode) || batteryCode;
-  const product = shopProducts.find(
-    (p) =>
-      p.batteryCode === code ||
-      p.batteryCode.toUpperCase() === code.toUpperCase(),
+function matchesBatteryCode(productCode: string, code: string): boolean {
+  return (
+    productCode === code ||
+    productCode.toUpperCase() === code.toUpperCase()
   );
+}
+
+function findShopPrice(
+  batteryCode: string,
+  brandKey: import("@/lib/battery-alias-map").BatteryBrandKey,
+): { productId: string; basePrice?: number; brandName?: string } {
+  const code = canonicalBatteryCode(batteryCode) || batteryCode;
+  const product =
+    shopProducts.find(
+      (p) =>
+        matchesBatteryCode(p.batteryCode, code) &&
+        brandIdToBatteryBrandKey(p.brandId) === brandKey,
+    ) ??
+    shopProducts.find((p) => matchesBatteryCode(p.batteryCode, code));
+
   if (product) {
-    const brandKey = brandIdToBatteryBrandKey(product.brandId) ?? "rocket";
+    const productBrandKey = brandIdToBatteryBrandKey(product.brandId) ?? brandKey;
     const internetPrice =
-      product.price ?? getBatteryInternetPriceWon(brandKey, code);
+      product.price ?? getBatteryInternetPriceWon(productBrandKey, code);
     return {
       productId: product.id,
       basePrice: internetPrice ?? undefined,
-      brandName: product.brandId === "rocket" ? "로케트" : product.brandId,
+      brandName: formatCartBrandDisplayName(productBrandKey),
     };
   }
-  const bat = getBattery(code);
-  const brandKey = brandIdToBatteryBrandKey(bat.brandId) ?? "rocket";
+
+  const bat = getBattery(code, brandKey);
   const internetPrice = getBatteryInternetPriceWon(brandKey, code);
   return {
-    productId: `spec-${code.replace(/\s+/g, "-").toLowerCase()}`,
+    productId: `spec-${brandKey}-${code.replace(/\s+/g, "-").toLowerCase()}`,
     basePrice: internetPrice ?? undefined,
-    brandName: bat.brandId === "rocket" ? "로케트" : bat.brandId,
+    brandName: formatCartBrandDisplayName(brandKey),
   };
 }
 
 export type CreateCartItemInput = {
   batteryCode: string;
+  brandId?: string;
   brandName?: string;
   productName?: string;
   basePrice?: number;
@@ -84,9 +102,14 @@ export type CreateCartItemInput = {
 
 export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCartItem {
   const code = canonicalBatteryCode(input.batteryCode) || input.batteryCode.trim().toUpperCase();
-  const bat = getBattery(code);
-  const shop = findShopPrice(code);
-  const imageSet = getBatteryImageSet(code, "rocket");
+  const brandKey = resolveCartItemBrandKey({
+    brandId: input.brandId,
+    brandName: input.brandName,
+    batteryCode: code,
+  });
+  const bat = getBattery(code, brandKey);
+  const shop = findShopPrice(code, brandKey);
+  const imageSet = getBatteryImageSet(code, brandKey, { strictBrand: true });
   const imageSrc = input.imageSrc ?? imageSet?.main ?? null;
 
   const fitmentStatus: FitmentStatus =
@@ -114,7 +137,7 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
     id: newCartItemId(),
     productId: shop.productId,
     productName: input.productName ?? `${code} 배터리`,
-    brandName: input.brandName ?? shop.brandName ?? bat.brandId,
+    brandName: input.brandName ?? shop.brandName ?? formatCartBrandDisplayName(brandKey),
     batterySpec: code,
     terminalDirection,
     quantity: input.quantity ?? 1,

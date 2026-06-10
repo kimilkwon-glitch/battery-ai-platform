@@ -285,7 +285,6 @@ export function CheckoutReviewPage() {
             fulfillmentMethod={session.fulfillment.method}
             usedBattery={usedBattery}
             totalAmount={session.estimatedTotal}
-            vehicle={session.vehicle}
             optionsComplete
             isBuyNow={session.flow === "buy_now"}
           />

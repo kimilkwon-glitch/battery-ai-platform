@@ -16,12 +16,14 @@ import { bm } from "@/lib/design-tokens";
 
 type Props = {
   code: string;
+  brandId?: string;
   vehicles?: { slug: string; title: string; brand: string; fuel: string }[];
   relatedCodes?: string[];
 };
 
 function BatteryDetailMobileSticky({
   code,
+  brandId,
   brandName,
   returnOption,
   fulfillmentMethod,
@@ -29,6 +31,7 @@ function BatteryDetailMobileSticky({
   vehicleContext,
 }: {
   code: string;
+  brandId?: string;
   brandName?: string;
   returnOption: BatteryReturnOption;
   fulfillmentMethod: FulfillmentMethod;
@@ -45,6 +48,7 @@ function BatteryDetailMobileSticky({
         <div className="battery-detail-sticky-bar__inner mx-auto flex max-w-[1280px] items-stretch gap-2">
           <BuyNowButton
             batteryCode={code}
+            brandId={brandId}
             brandName={brandName}
             returnOption={returnOption}
             fulfillmentMethod={fulfillmentMethod}
@@ -71,6 +75,7 @@ function BatteryDetailMobileSticky({
               fulfillmentMethod={fulfillmentMethod}
               input={{
                 batteryCode: code,
+                brandId,
                 brandName,
                 usedBatteryReturnOption: returnOption,
                 fulfillmentMethod,
@@ -84,7 +89,7 @@ function BatteryDetailMobileSticky({
   );
 }
 
-export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
+export function BatteryDetailHub({ code, brandId, relatedCodes = [] }: Props) {
   const searchParams = useSearchParams();
   const vehicleContext = useMemo(
     () => parseVehicleCheckoutContext(searchParams),
@@ -92,7 +97,7 @@ export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
   );
   const hub = resolveBatteryDetailHubContent(code, relatedCodes);
   const displayCode = hub.code;
-  const bat = getBattery(displayCode);
+  const bat = getBattery(displayCode, brandId);
   const brand = getBrand(bat.brandId);
   const brandName =
     bat.brandId === "rocket" ? "로케트" : bat.brandId === "solite" ? "쏠라이트" : brand.displayName;
@@ -139,6 +144,7 @@ export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
     >
       <BatteryDetailOrderPanel
         code={displayCode}
+        brandId={brandId ?? bat.brandId}
         returnOption={returnOption}
         onReturnOptionChange={setReturnOption}
         fulfillmentMethod={fulfillmentMethod}
@@ -150,6 +156,7 @@ export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
 
       <BatteryDetailMobileSticky
         code={displayCode}
+        brandId={brandId ?? bat.brandId}
         brandName={brandName}
         returnOption={returnOption}
         fulfillmentMethod={fulfillmentMethod}
