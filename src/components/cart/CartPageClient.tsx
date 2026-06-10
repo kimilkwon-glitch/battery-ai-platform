@@ -7,10 +7,10 @@ import { CartItemCard } from "@/components/cart/CartItemCard";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
 import { getCartItems, getCartSummary } from "@/lib/cart/cart-storage";
 import { CART_EMPTY_COPY, CART_PAGE_COPY } from "@/data/checkout-checklist";
-import { CART_NEEDS_REVIEW_COPY } from "@/data/cart-flow-guide";
 import { clearBuyNowCheckoutItems } from "@/lib/cart/checkout-flow";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import { CHECKOUT_PAGE } from "@/lib/customer-center-routes";
+import { HUB_SEARCH } from "@/lib/customer-hub-routes";
 import { bm } from "@/lib/design-tokens";
 
 export function CartPageClient() {
@@ -46,12 +46,9 @@ export function CartPageClient() {
       <div className={`${bm.card} ${bm.cardPad} space-y-4 text-center`} data-page="cart" data-cart-empty>
         <h2 className="text-lg font-black text-slate-950">{CART_EMPTY_COPY.title}</h2>
         <p className="text-sm font-medium leading-relaxed text-slate-600">{CART_EMPTY_COPY.body}</p>
-        <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <Link href="/" className={`${bm.btnNavy} inline-flex justify-center text-sm`}>
+        <div className="flex justify-center">
+          <Link href={HUB_SEARCH} className={`${bm.btnNavy} inline-flex justify-center text-sm`}>
             {CART_EMPTY_COPY.vehicleCta}
-          </Link>
-          <Link href="/search" className={`${bm.btnSecondary} inline-flex justify-center text-sm`}>
-            {CART_EMPTY_COPY.specCta}
           </Link>
         </div>
       </div>
@@ -91,11 +88,6 @@ export function CartPageClient() {
           </p>
         ) : null}
 
-        {displaySummary.hasNeedsReviewItem ? (
-          <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-950 ring-1 ring-amber-200">
-            확인이 필요한 항목이 있습니다. 주문서에서 다시 확인할 수 있습니다.
-          </p>
-        ) : null}
       </section>
 
       <div className="space-y-4" data-cart-section="items">
@@ -103,12 +95,6 @@ export function CartPageClient() {
           <CartItemCard key={item.id} item={item} />
         ))}
       </div>
-
-      {displaySummary.hasNeedsReviewItem ? (
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-950 ring-1 ring-amber-200">
-          {CART_NEEDS_REVIEW_COPY.body}
-        </p>
-      ) : null}
 
       <section className={`${bm.card} ${bm.cardPad} hidden space-y-3 lg:block`}>
         <div className="flex flex-wrap gap-2">

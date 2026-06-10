@@ -70,9 +70,13 @@ export function CheckoutProductSummary({
   const changeHref = resolveChangeOptionsHref(items, isBuyNow);
   const brandKey =
     primary && code
-      ? resolveCartItemBrandKey({ brandName: primary.brandName, batteryCode: code })
-      : "rocket";
-  const imageSet = code ? batteryImageSetForCode(code, brandKey) : undefined;
+      ? resolveCartItemBrandKey({
+          brandId: primary.brandId,
+          brandName: primary.brandName,
+          batteryCode: code,
+        })
+      : null;
+  const imageSet = code && brandKey ? batteryImageSetForCode(code, brandKey) : undefined;
   const imageSrc = primary ? resolveCartItemImageSrc(primary) : null;
   const specLabel = code ? `${code} 배터리` : primary?.productName?.trim() || "배터리";
 

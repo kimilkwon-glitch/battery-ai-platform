@@ -1,3 +1,4 @@
+import { resolveCartItemImageSrc } from "@/lib/cart/cart-item-brand";
 import { sumCartItemsPrice } from "@/lib/pricing/order-price";
 import type { BatteryCartItem, BatteryCartSummary } from "@/types/cart";
 import { CART_STORAGE_KEY } from "@/types/cart";
@@ -21,13 +22,19 @@ function normalizeItem(raw: Partial<BatteryCartItem> & { id: string }): BatteryC
     id: raw.id,
     productId: raw.productId ?? raw.batterySpec ?? "unknown",
     productName: raw.productName?.trim() || "배터리 상품",
+    brandId: raw.brandId,
     brandName: raw.brandName,
     batterySpec: raw.batterySpec?.trim() || "규격 확인 필요",
     terminalDirection: raw.terminalDirection,
     quantity: Math.max(1, raw.quantity ?? 1),
     basePrice: raw.basePrice,
     finalPrice: raw.finalPrice,
-    imageSrc: raw.imageSrc ?? null,
+    imageSrc: resolveCartItemImageSrc({
+      imageSrc: raw.imageSrc ?? null,
+      brandId: raw.brandId,
+      brandName: raw.brandName,
+      batterySpec: raw.batterySpec?.trim() || "규격 확인 필요",
+    }),
     vehicle: raw.vehicle,
     recommendationStatus: raw.recommendationStatus,
     fitmentStatus: raw.fitmentStatus ?? "unknown",

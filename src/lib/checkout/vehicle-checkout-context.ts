@@ -91,6 +91,9 @@ export function createCartItemWithVehicleContext(
   if (ctx?.vehicleSlug && ctx.vehicleTitle) {
     const item = createCartItemFromVehicleBattery({
       batteryCode: input.batteryCode,
+      brandId: input.brandId,
+      brandName: input.brandName,
+      imageSrc: input.imageSrc,
       vehicleSlug: ctx.vehicleSlug,
       vehicleTitle: ctx.vehicleTitle,
       fuelLabel: ctx.fuel,
@@ -99,6 +102,7 @@ export function createCartItemWithVehicleContext(
     });
     return {
       ...item,
+      brandId: input.brandId ?? item.brandId,
       brandName: input.brandName ?? item.brandName,
       imageSrc: input.imageSrc ?? item.imageSrc,
       fulfillment: input.fulfillmentMethod

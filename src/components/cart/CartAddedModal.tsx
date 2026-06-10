@@ -63,7 +63,11 @@ export function CartAddedModal({
   const imageSrc = resolveCartItemImageSrc(item);
   const imageSet = batteryImageSetForCode(
     item.batterySpec,
-    resolveCartItemBrandKey({ brandName: item.brandName, batteryCode: item.batterySpec }),
+    resolveCartItemBrandKey({
+      brandId: item.brandId,
+      brandName: item.brandName,
+      batteryCode: item.batterySpec,
+    }),
   );
 
   return (

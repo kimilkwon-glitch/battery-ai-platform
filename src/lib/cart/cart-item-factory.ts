@@ -137,6 +137,7 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
     id: newCartItemId(),
     productId: shop.productId,
     productName: input.productName ?? `${code} 배터리`,
+    brandId: input.brandId ?? brandKey,
     brandName: input.brandName ?? shop.brandName ?? formatCartBrandDisplayName(brandKey),
     batterySpec: code,
     terminalDirection,
@@ -170,6 +171,9 @@ export function createCartItemFromBattery(input: CreateCartItemInput): BatteryCa
 
 export function createCartItemFromVehicleBattery(params: {
   batteryCode: string;
+  brandId?: string;
+  brandName?: string;
+  imageSrc?: string | null;
   vehicleSlug: string;
   vehicleTitle: string;
   fuelLabel?: string;
@@ -178,6 +182,9 @@ export function createCartItemFromVehicleBattery(params: {
 }): BatteryCartItem {
   return createCartItemFromBattery({
     batteryCode: params.batteryCode,
+    brandId: params.brandId,
+    brandName: params.brandName,
+    imageSrc: params.imageSrc,
     vehicle: {
       vehicleId: params.vehicleSlug,
       displayName: params.vehicleTitle,

@@ -30,9 +30,8 @@ export const CART_PAGE_COPY = {
 
 export const CART_EMPTY_COPY = {
   title: "장바구니에 담긴 배터리가 없습니다.",
-  body: "차량명이나 배터리 규격으로 상품을 찾아보세요.",
+  body: "차량명으로 맞는 배터리를 찾아보세요.",
   vehicleCta: "차량으로 배터리 찾기",
-  specCta: "배터리 규격으로 찾기",
 } as const;
 
 export const CHECKOUT_PRICE_POLICY_HINTS = {

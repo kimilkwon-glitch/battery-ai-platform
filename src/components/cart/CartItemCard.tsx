@@ -7,7 +7,6 @@ import { BatteryThumbnail } from "@/components/BatteryThumbnail";
 import { CartItemFulfillmentControls } from "@/components/cart/CartItemFulfillmentControls";
 import { OrderPriceBreakdown } from "@/components/pricing/OrderPriceBreakdown";
 import {
-  FITMENT_STATUS_LABELS,
   FULFILLMENT_METHOD_LABELS,
   USED_BATTERY_RETURN_CARD_MESSAGES,
 } from "@/data/cart-flow-guide";
@@ -16,13 +15,6 @@ import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import type { BatteryCartItem, FulfillmentMethod, UsedBatteryReturnOption } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
 import { useBatteryCart } from "@/components/cart/BatteryCartProvider";
-
-function fitmentTone(status: BatteryCartItem["fitmentStatus"]): string {
-  if (status === "confirmed") return "bg-emerald-50 text-emerald-900 ring-emerald-200";
-  if (status === "needs_photo_check") return "bg-amber-50 text-amber-950 ring-amber-200";
-  if (status === "needs_customer_confirm") return "bg-blue-50 text-blue-900 ring-blue-200";
-  return "bg-slate-100 text-slate-800 ring-slate-200";
-}
 
 function terminalLabel(dir?: BatteryCartItem["terminalDirection"]): string {
   if (dir === "L") return "L (좌)";
@@ -43,7 +35,6 @@ function returnPriceImpact(option: UsedBatteryReturnOption): number | undefined 
 
 export function CartItemCard({ item }: { item: BatteryCartItem }) {
   const { updateItem, removeItem } = useBatteryCart();
-  const fit = FITMENT_STATUS_LABELS[item.fitmentStatus];
   const vehicleText = vehicleInfoValue(item);
   const prices = resolveCartItemPrices(item);
   const fulfillmentLabel =
@@ -53,6 +44,7 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
   const detailHref = batteryDetailHref(item.batterySpec);
   const returnMessage = USED_BATTERY_RETURN_CARD_MESSAGES[item.usedBatteryReturn.option];
   const brandKey = resolveCartItemBrandKey({
+    brandId: item.brandId,
     brandName: item.brandName,
     batteryCode: item.batterySpec,
   });
@@ -128,11 +120,6 @@ export function CartItemCard({ item }: { item: BatteryCartItem }) {
                 {item.batterySpec} · 단자 {terminalLabel(item.terminalDirection)}
               </p>
             </div>
-            <span
-              className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black ring-1 ${fitmentTone(item.fitmentStatus)}`}
-            >
-              {fit.badge}
-            </span>
           </div>
 
           <dl className="cart-item-card__prices grid grid-cols-2 gap-x-3 gap-y-1 rounded-lg bg-slate-50 px-2.5 py-2 text-[11px] font-bold text-slate-600">

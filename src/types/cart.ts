@@ -44,6 +44,8 @@ export type BatteryCartItem = {
   id: string;
   productId: string;
   productName: string;
+  /** solite | rocket 등 — 이미지·브랜드 표시 fallback */
+  brandId?: string;
   brandName?: string;
   batterySpec: string;
   terminalDirection?: TerminalDirection;

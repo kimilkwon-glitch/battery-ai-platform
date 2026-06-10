@@ -33,13 +33,37 @@ export function formatCartBrandDisplayName(brandKey: BatteryBrandKey): string {
   return brandKey === "solite" ? "쏠라이트" : "로케트";
 }
 
+function imageUrlConflictsWithBrand(src: string, brandKey: BatteryBrandKey): boolean {
+  const lower = src.toLowerCase();
+  if (brandKey === "solite") {
+    return (
+      lower.includes("/rocket/") ||
+      lower.includes("rocket-battery") ||
+      (lower.includes("/gb") && !lower.includes("/cmf"))
+    );
+  }
+  if (brandKey === "rocket") {
+    return lower.includes("/solite/") || lower.includes("/cmf80") || lower.includes("/cmf90");
+  }
+  return false;
+}
+
 export function resolveCartItemImageSrc(
-  item: Pick<BatteryCartItem, "imageSrc" | "brandName" | "batterySpec">,
+  item: Pick<BatteryCartItem, "imageSrc" | "brandName" | "brandId" | "batterySpec">,
 ): string | null {
-  if (item.imageSrc?.trim()) return item.imageSrc;
   const brandKey = resolveCartItemBrandKey({
+    brandId: item.brandId,
     brandName: item.brandName,
     batteryCode: item.batterySpec,
   });
-  return batteryImageSetForCode(item.batterySpec, brandKey).main ?? null;
+  const fromBrand = batteryImageSetForCode(item.batterySpec, brandKey).main ?? null;
+  const stored = item.imageSrc?.trim();
+
+  if (stored) {
+    if (fromBrand && stored !== fromBrand && imageUrlConflictsWithBrand(stored, brandKey)) {
+      return fromBrand;
+    }
+    return stored;
+  }
+  return fromBrand;
 }
