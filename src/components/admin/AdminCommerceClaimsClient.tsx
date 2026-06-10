@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { fulfillmentTypeLabel, orderStatusLabel, paymentStatusLabel } from "@/lib/orders/commerce-order-mine";
 import { claimRefundPolicyLines } from "@/lib/claims/claim-refund-estimate";
@@ -100,6 +101,20 @@ export function AdminCommerceClaimsClient() {
   const [assignedTo, setAssignedTo] = useState("");
   const [needsNotice, setNeedsNotice] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [dataScope, setDataScope] = useState<"production" | "test" | "all">("production");
+
+  const scopedItems = useMemo(() => {
+    if (dataScope === "all") return items;
+    const isTest = (row: CommerceClaimSummary) =>
+      isAdminTestCommerceOrder({
+        customerName: row.customerName,
+        customerPhone: row.customerPhone,
+        orderNumber: row.orderNumber,
+        productName: row.productName,
+      });
+    if (dataScope === "test") return items.filter(isTest);
+    return items.filter((row) => !isTest(row));
+  }, [items, dataScope]);
 
   const loadList = useCallback(async () => {
     setLoading(true);
@@ -181,14 +196,26 @@ export function AdminCommerceClaimsClient() {
   };
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
-      <p className="lg:col-span-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold leading-relaxed text-amber-950">
+    <div className={`admin-claims-layout ${selectedId ? "has-detail" : "no-detail"}`}>
+      <p className="admin-claims-layout__notice rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold leading-relaxed text-amber-950">
         <strong className="font-black">PG 환불 미연동 안내:</strong> &quot;환불완료 상태로 변경&quot;은
         클레임·주문 <span className="font-black">내부 상태</span>만 바꿉니다. 실제 결제 취소/환불은
         토스페이먼츠 PG 관리자 또는 API 연동 후 별도로 처리해야 합니다. 결제상태는 PG 환불 성공 시에만
         자동으로 환불완료로 바뀝니다.
       </p>
-      <div className="space-y-3">
+      <div className="admin-claims-layout__main space-y-3">
+        <label className="inline-flex items-center gap-2 text-sm font-bold text-slate-600">
+          데이터 범위
+          <select
+            value={dataScope}
+            onChange={(e) => setDataScope(e.target.value as "production" | "test" | "all")}
+            className="rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+          >
+            <option value="production">실제 클레임</option>
+            <option value="test">테스트/UX2</option>
+            <option value="all">전체</option>
+          </select>
+        </label>
         <div className="flex flex-wrap gap-2">
           {TYPE_FILTERS.map((f) => (
             <button
@@ -228,12 +255,12 @@ export function AdminCommerceClaimsClient() {
         <div className={`${bm.card} overflow-hidden`}>
           {loading ? (
             <p className="p-4 text-xs text-slate-500">목록 불러오는 중…</p>
-          ) : items.length === 0 ? (
-            <p className="p-4 text-xs text-slate-500">접수된 클레임이 없습니다.</p>
+          ) : scopedItems.length === 0 ? (
+            <p className="p-4 text-sm text-slate-500">접수된 클레임이 없습니다.</p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[900px] text-left text-xs">
-                <thead className="bg-slate-50 text-[10px] font-black uppercase text-slate-500">
+            <div className="admin-data-table__wrap overflow-x-auto">
+              <table className="admin-table admin-claims-table w-full min-w-[1040px] text-left">
+                <thead>
                   <tr>
                     <th className="px-3 py-2">요청일</th>
                     <th className="px-3 py-2">주문번호</th>
@@ -251,7 +278,7 @@ export function AdminCommerceClaimsClient() {
                   </tr>
                 </thead>
                 <tbody>
-                  {items.map((row) => (
+                  {scopedItems.map((row) => (
                     <tr
                       key={row.id}
                       className={`cursor-pointer border-t border-slate-100 hover:bg-slate-50 ${
@@ -259,15 +286,17 @@ export function AdminCommerceClaimsClient() {
                       }`}
                       onClick={() => setSelectedId(row.id)}
                     >
-                      <td className="px-3 py-2 whitespace-nowrap">{formatDt(row.requestedAt)}</td>
-                      <td className="px-3 py-2 font-mono">{row.orderNumber}</td>
-                      <td className="px-3 py-2 font-bold">{CLAIM_TYPE_LABELS[row.claimType]}</td>
-                      <td className="px-3 py-2">{ADMIN_CLAIM_STATUS_LABELS[row.claimStatus]}</td>
-                      <td className="px-3 py-2">{orderStatusLabel(row.orderStatus)}</td>
-                      <td className="px-3 py-2">{paymentStatusLabel(row.paymentStatus)}</td>
-                      <td className="px-3 py-2">{row.customerName}</td>
-                      <td className="px-3 py-2">{row.customerPhone}</td>
-                      <td className="px-3 py-2 max-w-[120px] truncate">{row.productName}</td>
+                      <td className="whitespace-nowrap">{formatDt(row.requestedAt)}</td>
+                      <td className="admin-table__mono">{row.orderNumber}</td>
+                      <td className="font-bold">{CLAIM_TYPE_LABELS[row.claimType]}</td>
+                      <td>
+                        <span className="admin-order-status-badge">{ADMIN_CLAIM_STATUS_LABELS[row.claimStatus]}</span>
+                      </td>
+                      <td>{orderStatusLabel(row.orderStatus)}</td>
+                      <td>{paymentStatusLabel(row.paymentStatus)}</td>
+                      <td className="admin-table__customer-name">{row.customerName}</td>
+                      <td className="admin-table__customer-phone">{row.customerPhone}</td>
+                      <td className="admin-table__product-name max-w-[14rem]">{row.productName}</td>
                       <td className="px-3 py-2">{fulfillmentTypeLabel(row.fulfillmentType)}</td>
                       <td className="px-3 py-2">{CLAIM_REASON_LABELS[row.reasonCode]}</td>
                       <td className="px-3 py-2">{row.assignedTo ?? "—"}</td>
@@ -281,12 +310,9 @@ export function AdminCommerceClaimsClient() {
         </div>
       </div>
 
-      <aside className="space-y-3 lg:sticky lg:top-4">
-        {!selectedId ? (
-          <p className={`${bm.card} ${bm.cardPad} text-xs text-slate-500`}>
-            목록에서 요청을 선택하면 상세 처리 화면이 표시됩니다.
-          </p>
-        ) : detailLoading ? (
+      {selectedId ? (
+      <aside className="admin-claims-layout__detail space-y-3 lg:sticky lg:top-4">
+        {detailLoading ? (
           <p className={`${bm.card} ${bm.cardPad} text-xs text-slate-500`}>상세 불러오는 중…</p>
         ) : detail ? (
           <>
@@ -438,6 +464,7 @@ export function AdminCommerceClaimsClient() {
           </>
         ) : null}
       </aside>
+      ) : null}
     </div>
   );
 }

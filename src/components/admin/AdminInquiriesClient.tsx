@@ -254,7 +254,7 @@ export function AdminInquiriesClient() {
         </div>
       ) : null}
 
-      <div className="admin-inquiries__layout">
+      <div className={`admin-inquiries__layout ${selected ? "has-detail" : "no-detail"}`}>
         <section className="admin-inquiries__list admin-panel p-0">
           {loading ? (
             <p className="admin-inquiries__empty">불러오는 중…</p>

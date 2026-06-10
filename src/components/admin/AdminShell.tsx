@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
 import { ADMIN_NAV_ITEMS } from "@/lib/admin/admin-nav";
 import type { AdminNavBadges } from "@/lib/admin/data/nav-badges";
@@ -33,15 +33,17 @@ export function AdminShell({ children, navBadges }: Props) {
   return (
     <div className="min-h-screen bg-slate-100" data-admin-console data-build-version={BUILD_STAMP}>
       <div className="flex min-h-screen">
-        <aside className="hidden w-60 shrink-0 border-r border-slate-800 bg-slate-950 text-slate-100 lg:block">
-          <div className="border-b border-slate-800 px-4 py-4">
+        <aside className="admin-sidebar hidden w-[13.5rem] shrink-0 border-r border-slate-800 bg-slate-950 text-slate-100 lg:block">
+          <div className="border-b border-slate-800 px-3 py-3">
             <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
               Battery Manager
             </p>
             <p className="admin-sidebar__brand-title">운영 콘솔</p>
           </div>
           <div className="max-h-[calc(100vh-5.5rem)] overflow-y-auto p-2">
-            <AdminSidebarNav navBadges={navBadges} />
+            <Suspense fallback={null}>
+              <AdminSidebarNav navBadges={navBadges} />
+            </Suspense>
           </div>
           <div className="border-t border-slate-800 p-3">
             <p className="font-mono text-[9px] text-slate-500">{BUILD_STAMP}</p>
@@ -66,7 +68,7 @@ export function AdminShell({ children, navBadges }: Props) {
             </Button>
           </header>
 
-          <main className="flex-1 p-4 lg:p-6">{children}</main>
+          <main className="admin-main flex-1 p-3 sm:p-4 lg:p-5 xl:p-6">{children}</main>
         </div>
       </div>
 
@@ -91,11 +93,13 @@ export function AdminShell({ children, navBadges }: Props) {
               </button>
             </div>
             <div className="max-h-[calc(100vh-3.5rem)] overflow-y-auto p-2">
-              <AdminSidebarNav
-                navBadges={navBadges}
-                onNavigate={() => setMobileOpen(false)}
-                className={cn(mobileOpen && "admin-sidebar-nav--drawer")}
-              />
+              <Suspense fallback={null}>
+                <AdminSidebarNav
+                  navBadges={navBadges}
+                  onNavigate={() => setMobileOpen(false)}
+                  className={cn(mobileOpen && "admin-sidebar-nav--drawer")}
+                />
+              </Suspense>
             </div>
           </div>
         </div>

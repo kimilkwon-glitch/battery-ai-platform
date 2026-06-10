@@ -293,15 +293,34 @@ export function visitStartStatus(row: UnifiedAdminOrderRow): CommerceOrderRecord
   return row.fulfillmentType === "visit_install" ? "visit_scheduled" : "store_visit_scheduled";
 }
 
-/** 배송/출장중 탭 — 완료처리 액션 */
+/** 배송/출장중 탭 — 완료처리 액션 (택배는 택배사 추적 연동 전 수동 배송완료 미노출) */
 export function completeActionForRow(row: UnifiedAdminOrderRow): OrderBulkAction | null {
   if (row.channel !== "commerce" || !IN_PROGRESS.has(row.orderStatus)) return null;
-  if (isDeliveryOrder(row) && canBulkAction(row, "mark_delivered") === null) return "mark_delivered";
   if (isVisitOrStoreInstall(row) && canBulkAction(row, "mark_work_completed") === null) {
     return "mark_work_completed";
   }
   if (isStorePickup(row) && canBulkAction(row, "mark_pickup_completed") === null) {
     return "mark_pickup_completed";
+  }
+  return null;
+}
+
+/** 택배 주문 배송조회 URL (송장 등록 후) */
+export function deliveryTrackingUrl(
+  carrier: string | undefined | null,
+  trackingNumber: string | undefined | null,
+): string | null {
+  const no = (trackingNumber ?? "").trim();
+  if (!no) return null;
+  const c = (carrier ?? "").trim();
+  if (/CJ|대한통운/i.test(c)) {
+    return `https://trace.cjlogistics.com/web/detail.jsp?slipno=${encodeURIComponent(no)}`;
+  }
+  if (/롯데/i.test(c)) {
+    return `https://www.lotteglogis.com/home/reservation/tracking/linkView?InvNo=${encodeURIComponent(no)}`;
+  }
+  if (/한진/i.test(c)) {
+    return `https://www.hanjin.com/kor/CMS/DeliveryMgr/WaybillResult.do?mCode=MN038&schLang=KR&wblnumText2=${encodeURIComponent(no)}`;
   }
   return null;
 }

@@ -15,7 +15,9 @@ import {
   canBulkAction,
   canStartVisit,
   completeActionForRow,
+  deliveryTrackingUrl,
   isDeliveryOrder,
+  isStorePickup,
   isVisitOrStoreInstall,
   rowNeedsOperatorAction,
   SHIPPING_CARRIERS,
@@ -297,13 +299,11 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
     count: countWorkbenchView(rows, s.id, dataScope, claimContext),
   }));
 
+  const actionBtnClass = "admin-row-action-btn";
+
   const renderRowActions = (row: UnifiedAdminOrderRow) => {
     const detailBtn = (
-      <button
-        type="button"
-        className={`${bm.btnSecondary} text-[11px]`}
-        onClick={() => selectRow(row)}
-      >
+      <button type="button" className={`${actionBtnClass} ${actionBtnClass}--secondary`} onClick={() => selectRow(row)}>
         상세
       </button>
     );
@@ -315,8 +315,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
             <button
               type="button"
               disabled={busy}
-              className={bm.btnNavy}
-              style={{ fontSize: "11px", padding: "4px 8px" }}
+              className={`${actionBtnClass} ${actionBtnClass}--primary`}
               onClick={() => void runSingleAction(row, "confirm_order")}
             >
               발주확인
@@ -326,8 +325,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
             <button
               type="button"
               disabled={busy}
-              className={bm.btnSecondary}
-              style={{ fontSize: "11px", padding: "4px 8px" }}
+              className={`${actionBtnClass} ${actionBtnClass}--secondary`}
               onClick={() => void runSingleAction(row, "cancel_order")}
             >
               취소처리
@@ -345,22 +343,29 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
             <button
               type="button"
               disabled={busy}
-              className={bm.btnNavy}
-              style={{ fontSize: "11px", padding: "4px 8px" }}
+              className={`${actionBtnClass} ${actionBtnClass}--primary`}
               onClick={() => openShipModal(row)}
             >
-              배송처리
+              송장등록
             </button>
           ) : null}
           {row.channel === "commerce" && isVisitOrStoreInstall(row) && canStartVisit(row) === null ? (
             <button
               type="button"
               disabled={busy}
-              className={bm.btnNavy}
-              style={{ fontSize: "11px", padding: "4px 8px" }}
+              className={`${actionBtnClass} ${actionBtnClass}--primary`}
               onClick={() => void runVisitStart(row)}
             >
               출장시작
+            </button>
+          ) : null}
+          {row.channel === "commerce" && isStorePickup(row) ? (
+            <button
+              type="button"
+              className={`${actionBtnClass} ${actionBtnClass}--secondary`}
+              onClick={() => selectRow(row)}
+            >
+              수령대기
             </button>
           ) : null}
           {detailBtn}
@@ -370,17 +375,36 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
 
     if (view === "in_progress") {
       const completeAction = completeActionForRow(row);
+      const trackingHref =
+        row.channel === "commerce" && isDeliveryOrder(row)
+          ? deliveryTrackingUrl(row.shippingCarrier, row.shippingTrackingNumber)
+          : null;
+      const completeLabel =
+        completeAction === "mark_work_completed"
+          ? "작업완료"
+          : completeAction === "mark_pickup_completed"
+            ? "수령완료"
+            : "완료처리";
       return (
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
+          {trackingHref ? (
+            <a
+              href={trackingHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${actionBtnClass} ${actionBtnClass}--secondary`}
+            >
+              배송조회
+            </a>
+          ) : null}
           {completeAction ? (
             <button
               type="button"
               disabled={busy}
-              className={bm.btnNavy}
-              style={{ fontSize: "11px", padding: "4px 8px" }}
+              className={`${actionBtnClass} ${actionBtnClass}--primary`}
               onClick={() => void runSingleAction(row, completeAction)}
             >
-              완료처리
+              {completeLabel}
             </button>
           ) : null}
           {detailBtn}
@@ -391,10 +415,10 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
     if (view === "cancel_request") {
       return (
         <div className="flex flex-wrap gap-1">
-          <Link href={claimHref(row, "CANCEL")} className={`${bm.btnNavy} text-[11px]`}>
+          <Link href={claimHref(row, "CANCEL")} className={`${actionBtnClass} ${actionBtnClass}--primary`}>
             취소승인
           </Link>
-          <Link href={claimHref(row, "CANCEL")} className={`${bm.btnSecondary} text-[11px]`}>
+          <Link href={claimHref(row, "CANCEL")} className={`${actionBtnClass} ${actionBtnClass}--secondary`}>
             취소거부
           </Link>
           {detailBtn}
@@ -405,10 +429,10 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
     if (view === "return_exchange") {
       return (
         <div className="flex flex-wrap gap-1">
-          <Link href={claimHref(row, "RETURN")} className={`${bm.btnNavy} text-[11px]`}>
+          <Link href={claimHref(row, "RETURN")} className={`${actionBtnClass} ${actionBtnClass}--primary`}>
             승인
           </Link>
-          <Link href={claimHref(row, "RETURN")} className={`${bm.btnSecondary} text-[11px]`}>
+          <Link href={claimHref(row, "RETURN")} className={`${actionBtnClass} ${actionBtnClass}--secondary`}>
             거부
           </Link>
           {detailBtn}
@@ -564,7 +588,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
 
       <div className={`admin-order-workbench__layout ${hasSelection ? "has-detail" : "no-detail"}`}>
         <div className="admin-data-table__wrap overflow-x-auto rounded-xl border border-slate-200 bg-white">
-          <table className="admin-table admin-order-workbench__table w-full min-w-[880px] text-sm">
+          <table className="admin-table admin-order-workbench__table w-full min-w-[1040px] text-sm">
             <thead>
               <tr>
                 <th>주문일</th>
@@ -599,7 +623,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                       key={`${row.channel}:${row.id}`}
                       className={`admin-order-workbench__row ${selected ? "is-selected" : ""} ${needsAction ? "needs-action" : ""}`}
                     >
-                      <td className="whitespace-nowrap text-xs text-slate-600">
+                      <td className="admin-table__date whitespace-nowrap">
                         {new Date(row.createdAt).toLocaleString("ko-KR", {
                           year: "2-digit",
                           month: "2-digit",
@@ -608,7 +632,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                           minute: "2-digit",
                         })}
                       </td>
-                      <td className="font-mono text-xs font-bold">
+                      <td className="admin-table__mono font-mono">
                         <button
                           type="button"
                           className="text-left text-blue-800 hover:underline"
@@ -622,16 +646,16 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                           </span>
                         ) : null}
                       </td>
-                      <td>
-                        <p className="font-bold text-slate-900">{row.customerName}</p>
-                        <p className="text-xs text-slate-500">{row.customerPhone}</p>
+                      <td className="admin-table__customer">
+                        <p className="admin-table__customer-name">{row.customerName}</p>
+                        <p className="admin-table__customer-phone">{row.customerPhone}</p>
                       </td>
-                      <td className="min-w-[140px]">
-                        <p className="text-xs font-bold leading-snug text-slate-900">{productPrimary}</p>
-                        <p className="text-[11px] leading-snug text-slate-500">{row.productName}</p>
+                      <td className="admin-table__product min-w-[11rem]">
+                        <p className="admin-table__product-spec">{productPrimary}</p>
+                        <p className="admin-table__product-name">{row.productName}</p>
                       </td>
-                      <td className="text-xs">{row.fulfillmentLabel}</td>
-                      <td className="tabular-nums font-bold">
+                      <td>{row.fulfillmentLabel}</td>
+                      <td className="admin-table__amount tabular-nums">
                         {row.finalAmount != null ? formatPriceWon(row.finalAmount) : "—"}
                       </td>
                       <td>

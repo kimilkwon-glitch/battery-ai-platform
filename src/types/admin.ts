@@ -128,13 +128,27 @@ export type AdminErrorReportItem = {
 
 export type AdminDashboardCardTone = "urgent" | "progress" | "done" | "info" | "warn" | "zero";
 
+export type AdminDashboardWorkbenchView =
+  | "new_order"
+  | "preparing"
+  | "in_progress"
+  | "cancel_request"
+  | "return_exchange";
+
 export type AdminTodayTaskItem = {
   label: string;
   count: number;
-  href: string;
+  view: AdminDashboardWorkbenchView;
+  /** 주문관리로 이동 시 사용 (대시보드 카드는 view 필터 우선) */
+  href?: string;
   /** 카드 하단 보조 설명 */
   description?: string;
   tone?: AdminDashboardCardTone;
+};
+
+export type AdminConsultationSummary = {
+  pendingInquiries: number;
+  pendingBatteryTalk: number;
 };
 
 export type AdminDashboardSection = {

@@ -17,8 +17,11 @@ export function AdminTodayTasks({ tasks }: Props) {
           <li className="admin-today-tasks__empty">지금 확인할 긴급 항목이 없습니다.</li>
         ) : (
           tasks.map((task) => (
-            <li key={task.href + task.label}>
-              <Link href={task.href} className="admin-today-tasks__item">
+            <li key={`${task.view}-${task.label}`}>
+              <Link
+                href={task.href ?? `/admin/orders?view=${task.view}`}
+                className="admin-today-tasks__item"
+              >
                 <span className="admin-today-tasks__label">{task.label}</span>
                 <span className="admin-today-tasks__count">{task.count}건</span>
                 <span className="admin-today-tasks__arrow" aria-hidden>

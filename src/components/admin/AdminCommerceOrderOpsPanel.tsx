@@ -20,39 +20,43 @@ type Props = {
   onUpdated?: () => void;
 };
 
-function statusActions(order: CommerceOrderRecord): { status: CommerceOrderStatus; label: string }[] {
+function statusActions(order: CommerceOrderRecord): {
+  primary: { status: CommerceOrderStatus; label: string }[];
+  adminCorrection: { status: CommerceOrderStatus; label: string }[];
+} {
   const s = order.orderStatus;
   const f = order.fulfillmentType;
-  const actions: { status: CommerceOrderStatus; label: string }[] = [];
+  const primary: { status: CommerceOrderStatus; label: string }[] = [];
+  const adminCorrection: { status: CommerceOrderStatus; label: string }[] = [];
 
   if (s === "payment_completed" || s === "payment_pending") {
-    actions.push({ status: "order_confirmed", label: "발주확인" });
+    primary.push({ status: "order_confirmed", label: "발주확인" });
   }
   if (s === "order_confirmed") {
-    actions.push({ status: "preparing", label: "상품준비중" });
+    primary.push({ status: "preparing", label: "상품준비중" });
   }
   if (s === "preparing" && f === "delivery") {
-    actions.push({ status: "shipping_prep", label: "배송준비" });
+    primary.push({ status: "shipping_prep", label: "배송준비" });
   }
   if (f === "delivery" && ["shipping", "shipped", "in_transit"].includes(s)) {
-    actions.push({ status: "delivered", label: "배송완료" });
+    adminCorrection.push({ status: "delivered", label: "배송완료(관리자 보정)" });
   }
   if (f === "visit_install" || f === "store_install") {
     if (["order_confirmed", "preparing", "shipping_prep", "visit_scheduled", "store_visit_scheduled"].includes(s)) {
-      actions.push({
+      primary.push({
         status: f === "visit_install" ? "visit_scheduled" : "store_visit_scheduled",
         label: "작업 예정",
       });
-      actions.push({ status: "work_completed", label: "장착 완료" });
+      primary.push({ status: "work_completed", label: "장착 완료" });
     }
   }
   if (f === "store_pickup_self" && ["order_confirmed", "preparing", "shipping_prep"].includes(s)) {
-    actions.push({ status: "picked_up", label: "수령 완료" });
+    primary.push({ status: "picked_up", label: "수령 완료" });
   }
   if (!["canceled", "refunded", "work_completed", "delivered", "picked_up", "payment_failed"].includes(s)) {
-    actions.push({ status: "canceled", label: "주문 취소(내부)" });
+    primary.push({ status: "canceled", label: "주문 취소(내부)" });
   }
-  return actions;
+  return { primary, adminCorrection };
 }
 
 export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
@@ -65,6 +69,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
   const [memo, setMemo] = useState("");
   const [carrier, setCarrier] = useState("");
   const [tracking, setTracking] = useState("");
+  const [showAdminCorrection, setShowAdminCorrection] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -140,7 +145,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
 
   if (!order) return null;
 
-  const actions = statusActions(order);
+  const { primary: actions, adminCorrection } = statusActions(order);
   const address =
     order.address1 || order.address
       ? [order.postalCode, order.address1, order.address2].filter(Boolean).join(" ")
@@ -222,8 +227,8 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
       </section>
 
       <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-        <h3 className="text-xs font-black text-slate-900">처리</h3>
-        <div className="flex flex-wrap gap-1.5">
+        <h3 className="text-sm font-black text-slate-900">처리</h3>
+        <div className="flex flex-wrap gap-2">
           {actions.map((a) => (
             <button
               key={`${a.status}-${a.label}`}
@@ -235,12 +240,43 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
                   statusNote: `관리자: ${a.label}`,
                 })
               }
-              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-slate-800 hover:bg-slate-50 disabled:opacity-40"
+              className="admin-row-action-btn admin-row-action-btn--primary"
             >
               {a.label}
             </button>
           ))}
         </div>
+        {adminCorrection.length > 0 ? (
+          <div className="border-t border-slate-100 pt-2">
+            <button
+              type="button"
+              className="text-xs font-bold text-slate-500 hover:text-slate-800"
+              onClick={() => setShowAdminCorrection((v) => !v)}
+            >
+              {showAdminCorrection ? "관리자 상태 보정 닫기" : "관리자 상태 보정"}
+            </button>
+            {showAdminCorrection ? (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {adminCorrection.map((a) => (
+                  <button
+                    key={`${a.status}-${a.label}`}
+                    type="button"
+                    disabled={saving || order.orderStatus === a.status}
+                    onClick={() =>
+                      void patch({
+                        orderStatus: a.status,
+                        statusNote: `관리자 보정: ${a.label}`,
+                      })
+                    }
+                    className="admin-row-action-btn admin-row-action-btn--secondary"
+                  >
+                    {a.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <Link
           href={`${ADMIN_ROUTES.commerceClaims}?orderId=${encodeURIComponent(order.orderId)}`}
           className="inline-block text-[11px] font-bold text-blue-700 hover:underline"
@@ -251,7 +287,10 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
 
       {order.fulfillmentType === "delivery" ? (
         <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-          <h3 className="text-xs font-black text-slate-900">송장 입력</h3>
+          <h3 className="text-sm font-black text-slate-900">송장 등록 / 발송처리</h3>
+          <p className="text-xs font-medium text-slate-500">
+            택배 배송완료는 택배사 스캔·추적 연동 후 자동 반영됩니다. 운영자는 송장 등록 중심으로 처리하세요.
+          </p>
           <label className="block text-[11px] font-bold text-slate-600">
             택배사
             <input
@@ -283,7 +322,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
             }
             className={`${bm.btnNavy} w-full justify-center text-xs`}
           >
-            송장 저장
+            발송처리
           </button>
         </section>
       ) : null}

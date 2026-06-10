@@ -9,11 +9,11 @@ import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import "@/styles/admin-battery-talk.css";
 
 const TABS = [
-  { id: "all", label: "전체" },
-  { id: "product", label: "상품 문의" },
-  { id: "order", label: "주문 문의" },
-  { id: "photo", label: "사진 확인" },
-  { id: "consultation", label: "상담 문의" },
+  { id: "all", label: "전체 문의" },
+  { id: "consultation", label: "배터리톡" },
+  { id: "product", label: "상품문의" },
+  { id: "order", label: "주문문의" },
+  { id: "photo", label: "사진확인" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -31,15 +31,13 @@ function HubInner() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
+      <div className="admin-inquiries-hub__tabs">
         {TABS.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-bold ${
-              tab === t.id ? "bg-slate-900 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200"
-            }`}
+            className={`admin-inquiries-hub__tab ${tab === t.id ? "is-active" : ""}`}
           >
             {t.label}
           </button>

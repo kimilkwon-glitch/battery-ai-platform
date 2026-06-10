@@ -14,7 +14,7 @@ export function parseAdminOrderDataScope(raw: string | null | undefined): AdminO
 
 /**
  * 테스트/UX/더미 주문 판별 (목록·집계 공통)
- * - order_number: BM-UX, BM-UX2, TEST, DEMO, SEED
+ * - order_number: BM-UX, BM-UX2, BM-LOCAL, TEST, DEMO, SEED
  * - customer_name: UX, 테스트, 운영검수, [UX2-운영검수]
  */
 export function isAdminTestUnifiedOrder(row: UnifiedAdminOrderRow): boolean {

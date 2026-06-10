@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
   ADMIN_NAV_GROUPS,
@@ -19,8 +19,21 @@ function badgeTone(count: number, active: boolean): string {
   return "admin-sidebar__badge admin-sidebar__badge--idle";
 }
 
-function isActive(pathname: string, href: string): boolean {
-  return pathname === href || (href !== ADMIN_ROUTES.hub && pathname.startsWith(href));
+function isActive(pathname: string, href: string, search: string): boolean {
+  const [path, query = ""] = href.split("?");
+  if (pathname !== path && !(path !== ADMIN_ROUTES.hub && pathname.startsWith(path))) {
+    return false;
+  }
+  if (!query) {
+    if (path === ADMIN_ROUTES.inquiries && search.includes("type=")) return false;
+    return pathname === path || (path !== ADMIN_ROUTES.hub && pathname.startsWith(path));
+  }
+  const expected = new URLSearchParams(query);
+  const actual = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  for (const [key, value] of expected.entries()) {
+    if (actual.get(key) !== value) return false;
+  }
+  return true;
 }
 
 type Props = {
@@ -31,6 +44,8 @@ type Props = {
 
 export function AdminSidebarNav({ navBadges, onNavigate, className }: Props) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const search = searchParams.toString();
   const activeGroup = adminNavGroupForPath(pathname);
 
   const defaultOpen = useMemo(() => {
@@ -63,7 +78,7 @@ export function AdminSidebarNav({ navBadges, onNavigate, className }: Props) {
         const items = ADMIN_NAV_ITEMS.filter((i) => i.group === group);
         if (!items.length) return null;
         const expanded = openGroups[group];
-        const groupActive = items.some((i) => isActive(pathname, i.href));
+        const groupActive = items.some((i) => isActive(pathname, i.href, search));
 
         return (
           <div key={group} className="admin-sidebar-nav__group">
@@ -84,7 +99,7 @@ export function AdminSidebarNav({ navBadges, onNavigate, className }: Props) {
             {expanded ? (
               <ul className="admin-sidebar-nav__list">
                 {items.map((item) => {
-                  const active = isActive(pathname, item.href);
+                  const active = isActive(pathname, item.href, search);
                   const badge = navBadges?.[item.href];
                   return (
                     <li key={item.href}>

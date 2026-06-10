@@ -4,13 +4,14 @@
   --admin-surface: #ffffff;
   --admin-muted: #64748b;
   --admin-border: #e2e8f0;
-  --admin-text-title: 1.5rem;
-  --admin-text-desc: 0.875rem;
-  --admin-text-table-head: 0.875rem;
-  --admin-text-table-body: 0.875rem;
-  --admin-text-muted: 0.8125rem;
-  --admin-text-badge: 0.8125rem;
-  --admin-btn-height: 2.5rem;
+  --admin-text-title: 1.625rem;
+  --admin-text-desc: 0.9375rem;
+  --admin-text-table-head: 0.9375rem;
+  --admin-text-table-body: 0.9375rem;
+  --admin-text-muted: 0.875rem;
+  --admin-text-badge: 0.875rem;
+  --admin-btn-height: 2.625rem;
+  --admin-sidebar-width: 13.5rem;
 }
 
 [data-admin-console] .admin-page-title {
@@ -2247,4 +2248,219 @@
     font-size: 0.6875rem;
     padding: 0.25rem 0.5rem;
   }
+}
+
+/* ── 관리자 콘솔 가독성 개선 (스마트스토어식 작업대) ── */
+
+[data-admin-console] .admin-sidebar {
+  width: var(--admin-sidebar-width);
+}
+
+[data-admin-console] .admin-sidebar__link {
+  font-size: 0.875rem;
+  padding: 0.5rem 0.625rem;
+}
+
+[data-admin-console] .admin-sidebar-nav__group-btn {
+  font-size: 0.75rem;
+}
+
+[data-admin-console] .admin-main {
+  width: 100%;
+  max-width: none;
+}
+
+[data-admin-console] .admin-stat-card--active {
+  border-color: #1d4ed8;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 100%);
+  box-shadow: 0 0 0 2px rgb(37 99 235 / 18%);
+}
+
+[data-admin-console] .admin-consultation-summary__link {
+  display: inline-flex;
+  min-width: 10rem;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+}
+
+[data-admin-console] .admin-consultation-summary__label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+[data-admin-console] .admin-consultation-summary__count {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #1d4ed8;
+}
+
+[data-admin-console] .admin-table__customer-name {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: left;
+}
+
+[data-admin-console] .admin-table__customer-phone {
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-table__product-spec {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+[data-admin-console] .admin-table__product-name {
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #64748b;
+  word-break: break-word;
+}
+
+[data-admin-console] .admin-table__amount {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+[data-admin-console] .admin-table__date {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-table__mono {
+  font-size: 0.8125rem;
+}
+
+[data-admin-console] .admin-row-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.4375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+[data-admin-console] .admin-row-action-btn--primary {
+  border: 1px solid #1e3a8a;
+  background: #1e3a8a;
+  color: #fff;
+}
+
+[data-admin-console] .admin-row-action-btn--primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+[data-admin-console] .admin-row-action-btn--secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+[data-admin-console] .admin-row-action-btn--secondary:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+[data-admin-console] .admin-row-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+[data-admin-console] .admin-order-workbench__table th,
+[data-admin-console] .admin-order-workbench__table td {
+  padding: 0.75rem 0.875rem;
+}
+
+[data-admin-console] .admin-order-workbench__table tbody tr {
+  min-height: 3.75rem;
+}
+
+[data-admin-console] .admin-claims-layout {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+[data-admin-console] .admin-claims-layout__notice {
+  grid-column: 1 / -1;
+}
+
+[data-admin-console] .admin-claims-layout.no-detail .admin-claims-layout__main {
+  grid-column: 1 / -1;
+}
+
+[data-admin-console] .admin-claims-layout.has-detail {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 1280px) {
+  [data-admin-console] .admin-claims-layout.has-detail {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  }
+}
+
+[data-admin-console] .admin-inquiries-hub__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+[data-admin-console] .admin-inquiries-hub__tab {
+  border-radius: 0.625rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+[data-admin-console] .admin-inquiries-hub__tab.is-active {
+  border-color: #1e3a8a;
+  background: #1e3a8a;
+  color: #fff;
+}
+
+[data-admin-console] .admin-inquiries__list-name {
+  font-size: 0.9375rem;
+}
+
+[data-admin-console] .admin-inquiries__list-message {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+[data-admin-console] .admin-inquiries__layout.no-detail .admin-inquiries__detail {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  [data-admin-console] .admin-inquiries__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-admin-console] .admin-inquiries__layout.has-detail {
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  }
+}
+
+[data-admin-console] .admin-mobile-drawer__panel {
+  width: min(16.5rem, 88vw);
 }

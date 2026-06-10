@@ -32,7 +32,8 @@ const TEST_PHONE_DIGITS = new Set([
   "01012345678",
 ]);
 
-const TEST_ORDER_NUMBER_RE = /BM-UX2?-|TEST|DEMO|SEED/i;
+const TEST_ORDER_NUMBER_RE = /BM-UX2?-|BM-LOCAL-|TEST|DEMO|SEED/i;
+const LOCAL_SAMPLE_MEMO_RE = /로컬\s*관리자\s*검수\s*샘플/i;
 
 function normalizePhone(phone: string | undefined | null): string {
   return (phone ?? "").replace(/\D/g, "");
@@ -184,7 +185,14 @@ export function isAdminTestCommerceOrder(record: {
   if (isPlaceholderGuest(name, record.customerPhone)) return true;
   if (hasTestPhone(record.customerPhone)) return true;
   if (hasTestOrderNumber(record.orderNumber)) return true;
+  if (LOCAL_SAMPLE_MEMO_RE.test(record.requestMemo ?? "")) return true;
   return hasTestMarkerText(name, record.requestMemo, record.productName, record.orderNumber);
+}
+
+/** 로컬 시드 샘플 (BM-LOCAL) — 운영 목록 기본 제외용 */
+export function isAdminLocalSampleOrder(orderNumber: string | undefined | null): boolean {
+  const n = (orderNumber ?? "").trim();
+  return /BM-LOCAL-/i.test(n);
 }
 
 /** @deprecated store 레벨 일괄 제외 — UI `order-data-scope` 사용 권장 */
