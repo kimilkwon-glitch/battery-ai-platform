@@ -56,7 +56,7 @@ export function AdminDataTableClient<T>({
   statusTabs,
   initialStatusTab = "all",
   initialValues = {},
-  emptyMessage = "데이터가 없습니다.",
+  emptyMessage = "아직 등록된 내용이 없습니다.",
   getRowId,
   stickyHeader = true,
   mobileCardRender,

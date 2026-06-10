@@ -74,7 +74,7 @@ export type BatteryTalkThreadSummary = {
 export const BATTERY_TALK_STATUS_LABELS: Record<BatteryTalkThreadStatus, string> = {
   waiting: "대기",
   active: "진행중",
-  done: "완료",
+  done: "처리완료",
   hold: "보류",
 };
 

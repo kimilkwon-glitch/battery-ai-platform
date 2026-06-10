@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import {
   AdminDataTableClient,
@@ -11,10 +11,12 @@ import {
   type AdminTableStatusTab,
 } from "@/components/admin/AdminDataTableClient";
 import {
-  AdminProductReviewBadge,
-  AdminProductSaleBadge,
-} from "@/components/admin/AdminProductReviewBadge";
+  AdminProductInlineEdit,
+  AdminProductReviewSelect,
+  AdminProductSaleSelect,
+} from "@/components/admin/AdminProductInlineEdit";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
+import { ADMIN_EMPTY_LIST_MESSAGE } from "@/lib/admin/admin-display-labels";
 import { productIdToPathSegment } from "@/lib/admin/products/product-id";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { AdminProductRow } from "@/types/admin-product";
@@ -45,10 +47,15 @@ const REVIEW_TO_TAB: Record<string, string> = {
   needs_review: "needs_review",
 };
 
-export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
+export function AdminProductsTable({ rows: initialRows }: { rows: AdminProductRow[] }) {
   const searchParams = useSearchParams();
   const reviewParam = searchParams.get("review");
   const initialStatusTab = reviewParam && REVIEW_TO_TAB[reviewParam] ? REVIEW_TO_TAB[reviewParam] : "all";
+  const [rows, setRows] = useState(initialRows);
+
+  const updateRow = (updated: AdminProductRow) => {
+    setRows((prev) => prev.map((r) => (r.productId === updated.productId ? updated : r)));
+  };
 
   const initialValues = useMemo((): Record<string, string> => {
     if (reviewParam === "price_missing") return { missingPrice: "yes" };
@@ -97,6 +104,15 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
           <p className="admin-cell-primary admin-cell-primary--title">{r.displayName}</p>
           <p className="admin-cell-muted">
             {r.brandLabel} · <span className="font-mono font-semibold">{r.batteryCode}</span>
+            {!r.visible ? (
+              <span className="admin-order-ops-badge admin-order-ops-badge--violet ml-1">숨김</span>
+            ) : null}
+            {!r.hasHeroImage ? (
+              <span className="admin-order-ops-badge admin-order-ops-badge--amber ml-1">이미지 없음</span>
+            ) : null}
+            {!r.hasDetailPage ? (
+              <span className="admin-order-ops-badge admin-order-ops-badge--amber ml-1">상세 없음</span>
+            ) : null}
           </p>
         </div>
       ),
@@ -105,37 +121,44 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
       key: "internetPrice",
       label: "가격",
       className: "admin-cell-price",
-      render: (r) => (
-        <div className="admin-cell-price">
-          <p className="admin-cell-primary">{priceCell(r.internetPrice)}</p>
-          <p className="admin-cell-muted">출장 {priceCell(r.onsitePrice)}</p>
-        </div>
-      ),
+      render: (r) => <AdminProductInlineEdit row={r} onUpdated={updateRow} />,
     },
     {
       key: "saleStatus",
       label: "판매",
-      render: (r) => <AdminProductSaleBadge status={r.saleStatus} />,
+      render: (r) => <AdminProductSaleSelect row={r} onUpdated={updateRow} />,
     },
     {
       key: "review",
       label: "검수",
-      render: (r) => <AdminProductReviewBadge status={r.reviewStatus} />,
+      render: (r) => <AdminProductReviewSelect row={r} onUpdated={updateRow} />,
     },
     {
       key: "manage",
       label: "작업",
       className: "admin-cell-actions",
       render: (r) => (
-        <div className="admin-action-buttons">
+        <div className="admin-action-buttons admin-action-buttons--wrap">
           <Link
             href={`/admin/products/${productIdToPathSegment(r.productId)}`}
-            className="admin-btn admin-btn--primary admin-btn--md"
+            className="admin-btn admin-btn--secondary admin-btn--sm"
           >
-            수정
+            상세
+          </Link>
+          <Link
+            href={`/admin/products/${productIdToPathSegment(r.productId)}#image`}
+            className="admin-btn admin-btn--ghost admin-btn--sm"
+          >
+            이미지
+          </Link>
+          <Link
+            href={`/admin/products/${productIdToPathSegment(r.productId)}#detail`}
+            className="admin-btn admin-btn--ghost admin-btn--sm"
+          >
+            상세수정
           </Link>
           {r.hasDetailPage ? (
-            <AdminCustomerPreviewLink href={`/battery/${r.batteryCode.toLowerCase()}`} label="고객 화면" />
+            <AdminCustomerPreviewLink href={`/battery/${r.batteryCode.toLowerCase()}`} label="고객화면" />
           ) : null}
         </div>
       ),
@@ -235,12 +258,12 @@ export function AdminProductsTable({ rows }: { rows: AdminProductRow[] }) {
       initialStatusTab={initialStatusTab}
       initialValues={initialValues}
       getRowId={(r) => r.productId}
-      emptyMessage="등록된 제품이 없습니다."
+      emptyMessage={ADMIN_EMPTY_LIST_MESSAGE}
       mobileCardRender={(r) => (
         <AdminMobileCard
           title={`${r.batteryCode} · ${r.displayName}`}
           lines={[
-            `${r.brandLabel} · 구매 ${priceCell(r.internetPrice)}`,
+            `${r.brandLabel} · 택배 ${priceCell(r.internetPrice)} · 출장 ${priceCell(r.onsitePrice)}`,
             `${r.saleStatus} · ${r.visible ? "노출" : "숨김"}`,
           ]}
           actions={

@@ -5,6 +5,10 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
+import {
+  formatAdminCustomerName,
+  formatAdminInquiryMessage,
+} from "@/lib/admin/admin-display-labels";
 import { Badge } from "@/components/ui/badge";
 import type { BatteryTalkThreadDetail } from "@/lib/battery-talk/battery-talk-enrichment";
 import { BatteryTalkSseStatusBanner } from "@/components/batterytalk/BatteryTalkSseStatusBanner";
@@ -49,6 +53,12 @@ function formatTime(iso: string): string {
   } catch {
     return iso;
   }
+}
+
+function extractBatteryCode(productName?: string): string | null {
+  if (!productName) return null;
+  const m = productName.match(/\b(CMF|GB|AGM|DIN)?\d{2,3}[LR]\b/i);
+  return m ? m[0].toUpperCase() : null;
 }
 
 function formatAmount(amount: number | null | undefined): string {
@@ -279,7 +289,7 @@ export function AdminBatteryTalkClient() {
           <div className="admin-battery-talk__list-head">
             <input
               className="admin-toolbar__search w-full"
-              placeholder="고객명·연락처·차량·상품·주문·내용 검색"
+              placeholder="고객명, 연락처, 문의내용 검색"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -300,7 +310,7 @@ export function AdminBatteryTalkClient() {
             {loading ? (
               <p className="p-3 text-sm text-slate-500">불러오는 중…</p>
             ) : items.length === 0 ? (
-              <p className="p-3 text-sm text-slate-500">상담 내역이 없습니다.</p>
+              <p className="p-3 text-sm font-semibold text-slate-500">아직 등록된 내용이 없습니다.</p>
             ) : (
               items.map((row) => (
                 <button
@@ -311,18 +321,31 @@ export function AdminBatteryTalkClient() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="admin-battery-talk__card-title">
-                      {row.customerName || "비회원"}
+                      {formatAdminCustomerName(row.customerName) || "비회원"}
                     </span>
                     <Badge className={STATUS_BADGE[row.status]}>
                       {BATTERY_TALK_STATUS_LABELS[row.status]}
                     </Badge>
                   </div>
-                  <p className="admin-battery-talk__card-preview">{row.lastMessagePreview}</p>
+                  {(row.productName || row.vehicleName) && (
+                    <p className="admin-battery-talk__card-sub">
+                      {row.vehicleName ? `${row.vehicleName}` : ""}
+                      {row.productName && row.vehicleName ? " · " : ""}
+                      {row.productName ?? ""}
+                    </p>
+                  )}
+                  {extractBatteryCode(row.productName) ? (
+                    <span className="admin-battery-talk__card-code">
+                      {extractBatteryCode(row.productName)}
+                    </span>
+                  ) : null}
+                  <p className="admin-battery-talk__card-preview">
+                    {formatAdminInquiryMessage(row.lastMessagePreview)}
+                  </p>
                   <div className="admin-battery-talk__card-meta">
                     <span>
-                      {row.hasProduct ? "📦" : ""}
-                      {row.hasOrder ? " 🧾" : ""}
-                      {row.productName ? ` ${row.productName}` : ""}
+                      {row.hasProduct ? "상품" : ""}
+                      {row.hasOrder ? " · 주문" : ""}
                     </span>
                     <span>{formatTime(row.lastMessageAt)}</span>
                   </div>
@@ -348,7 +371,7 @@ export function AdminBatteryTalkClient() {
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h3 className="text-base font-black text-slate-900">
-                      {thread.customerName} · {thread.phone}
+                      {formatAdminCustomerName(thread.customerName)} · {thread.phone}
                     </h3>
                     <p className="text-xs font-semibold text-slate-500">
                       접수: {pageType ? BATTERY_TALK_PAGE_TYPE_LABELS[pageType] : "배터리톡"}
@@ -367,7 +390,7 @@ export function AdminBatteryTalkClient() {
                     key={msg.id}
                     className={`admin-battery-talk__bubble admin-battery-talk__bubble--${msg.sender}`}
                   >
-                    <p>{msg.body}</p>
+                    <p>{formatAdminInquiryMessage(msg.body)}</p>
                     {msg.sender !== "system" ? (
                       <p className="admin-battery-talk__bubble-time">
                         {msg.sender === "admin" ? "관리자 · " : "고객 · "}
@@ -453,7 +476,7 @@ export function AdminBatteryTalkClient() {
                 <h4>고객 정보</h4>
                 <div className="admin-battery-talk__info-row">
                   <span>이름</span>
-                  <strong>{thread.customerName}</strong>
+                  <strong>{formatAdminCustomerName(thread.customerName)}</strong>
                 </div>
                 <div className="admin-battery-talk__info-row">
                   <span>연락처</span>

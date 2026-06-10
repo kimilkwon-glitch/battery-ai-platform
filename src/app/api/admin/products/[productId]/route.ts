@@ -11,7 +11,11 @@ import {
   loadProductPriceHistory,
   saveProductOverride,
 } from "@/lib/admin/products/product-overrides-store";
-import type { AdminProductOverride, AdminProductSaleStatus } from "@/types/admin-product";
+import type {
+  AdminProductOverride,
+  AdminProductReviewStatus,
+  AdminProductSaleStatus,
+} from "@/types/admin-product";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -41,6 +45,20 @@ function parsePatchBody(body: unknown): AdminProductOverride & { reason?: string
   const sale = b.saleStatus;
   if (sale === "selling" || sale === "hidden" || sale === "stopped") {
     patch.saleStatus = sale as AdminProductSaleStatus;
+  }
+
+  const review = b.reviewStatusOverride;
+  const reviewStatuses: AdminProductReviewStatus[] = [
+    "ok",
+    "needs_review",
+    "price_missing",
+    "image_missing",
+    "detail_missing",
+    "notation_check",
+    "sales_excluded",
+  ];
+  if (typeof review === "string" && reviewStatuses.includes(review as AdminProductReviewStatus)) {
+    patch.reviewStatusOverride = review as AdminProductReviewStatus;
   }
 
   if (typeof b.reason === "string") patch.reason = b.reason;

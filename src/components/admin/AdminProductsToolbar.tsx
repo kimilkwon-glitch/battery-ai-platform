@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { AdminProductRegisterDrawer } from "@/components/admin/AdminProductRegisterDrawer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminProductImportPreviewRow } from "@/types/admin-product";
 
 export function AdminProductsToolbar() {
+  const [registerOpen, setRegisterOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
   const [preview, setPreview] = useState<AdminProductImportPreviewRow[] | null>(null);
@@ -43,6 +45,13 @@ export function AdminProductsToolbar() {
       <div className="admin-toolbar">
         <p className="admin-toolbar__hint">CSV로 가격·이미지·상세 누락 목록을보내거나 업로드 미리보기를 할 수 있습니다.</p>
         <div className="admin-toolbar__actions">
+          <button
+            type="button"
+            className="admin-btn admin-btn--primary admin-btn--md"
+            onClick={() => setRegisterOpen(true)}
+          >
+            제품 등록
+          </button>
           <button type="button" className="admin-btn admin-btn--secondary admin-btn--md" onClick={handleExport}>
             전체 CSV 다운로드
           </button>
@@ -132,6 +141,7 @@ export function AdminProductsToolbar() {
           </CardContent>
         </Card>
       ) : null}
+      <AdminProductRegisterDrawer open={registerOpen} onClose={() => setRegisterOpen(false)} />
     </div>
   );
 }

@@ -7,6 +7,11 @@ import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
 import { AdminStatusTabs } from "@/components/admin/AdminStatusTabs";
 import { Badge } from "@/components/ui/badge";
+import {
+  formatAdminContact,
+  formatAdminCustomerName,
+  formatAdminInquiryMessage,
+} from "@/lib/admin/admin-display-labels";
 import { INQUIRY_STATUS_BADGE } from "@/lib/admin/admin-status-tokens";
 import {
   INQUIRY_CATEGORY_LABELS,
@@ -200,7 +205,7 @@ export function AdminInquiriesClient() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="이름, 연락처, 차량명, 문의 내용"
+              placeholder="고객명, 연락처, 문의내용 검색"
               className="admin-filter-bar__input h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
             />
           </div>
@@ -260,10 +265,8 @@ export function AdminInquiriesClient() {
             <p className="admin-inquiries__empty">불러오는 중…</p>
           ) : filtered.length === 0 ? (
             <div className="admin-inquiries__empty">
-              <p className="font-bold text-slate-700">조건에 맞는 문의가 없습니다</p>
-              <p className="mt-1 text-slate-500">
-                필터를 초기화하거나 고객센터 문의폼에서 테스트 접수 후 새로고침하세요.
-              </p>
+              <p className="font-bold text-slate-700">아직 등록된 내용이 없습니다.</p>
+              <p className="mt-1 text-slate-500">필터를 바꾸거나 새로고침해 보세요.</p>
             </div>
           ) : (
             <>
@@ -282,13 +285,15 @@ export function AdminInquiriesClient() {
                         <Badge variant="muted">{INQUIRY_CATEGORY_LABELS[row.category]}</Badge>
                       </div>
                       <p className="admin-inquiries__list-name">
-                        {row.name}
-                        <span className="admin-inquiries__list-contact">{maskContact(row.contact)}</span>
+                        {formatAdminCustomerName(row.name)}
+                        <span className="admin-inquiries__list-contact">
+                          {formatAdminContact(row.contact, maskContact(row.contact))}
+                        </span>
                       </p>
                       {row.vehicle ? (
                         <p className="admin-inquiries__list-vehicle">{row.vehicle}</p>
                       ) : null}
-                      <p className="admin-inquiries__list-message">{row.message}</p>
+                      <p className="admin-inquiries__list-message">{formatAdminInquiryMessage(row.message)}</p>
                       <p className="admin-inquiries__list-date">{formatDate(row.createdAt)}</p>
                     </button>
                   </li>
@@ -298,7 +303,7 @@ export function AdminInquiriesClient() {
                 {filtered.map((row) => (
                   <AdminMobileCard
                     key={row.id}
-                    title={row.name}
+                    title={formatAdminCustomerName(row.name)}
                     badges={[
                       { label: INQUIRY_STATUS_LABELS[row.status], tone: INQUIRY_STATUS_BADGE[row.status] },
                       { label: INQUIRY_CATEGORY_LABELS[row.category], tone: "muted" },
@@ -348,8 +353,11 @@ export function AdminInquiriesClient() {
                 <section className="admin-inquiries__section">
                   <h3 className="admin-inquiries__section-title">고객 정보</h3>
                   <dl className="admin-inquiries__dl">
-                    <DetailRow label="이름" value={selected.name} />
-                    <DetailRow label="연락처" value={maskContact(selected.contact, false)} />
+                    <DetailRow label="이름" value={formatAdminCustomerName(selected.name)} />
+                    <DetailRow
+                      label="연락처"
+                      value={formatAdminContact(selected.contact, maskContact(selected.contact, false))}
+                    />
                     <DetailRow label="유형" value={INQUIRY_CATEGORY_LABELS[selected.category]} />
                     <DetailRow label="접수일" value={formatDate(selected.createdAt)} />
                     {selected.source ? (
@@ -382,7 +390,7 @@ export function AdminInquiriesClient() {
 
                 <section className="admin-inquiries__section">
                   <h3 className="admin-inquiries__section-title">문의 내용</h3>
-                  <p className="admin-inquiries__message">{selected.message}</p>
+                  <p className="admin-inquiries__message">{formatAdminInquiryMessage(selected.message)}</p>
                 </section>
 
                 <section className="admin-inquiries__section">

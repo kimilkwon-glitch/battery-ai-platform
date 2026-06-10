@@ -33,7 +33,7 @@ export function AdminShell({ children, navBadges }: Props) {
   return (
     <div className="min-h-screen bg-slate-100" data-admin-console data-build-version={BUILD_STAMP}>
       <div className="flex min-h-screen">
-        <aside className="admin-sidebar hidden w-[13.5rem] shrink-0 border-r border-slate-800 bg-slate-950 text-slate-100 lg:block">
+        <aside className="admin-sidebar hidden w-[12rem] shrink-0 border-r border-slate-800 bg-slate-950 text-slate-100 lg:block">
           <div className="border-b border-slate-800 px-3 py-3">
             <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
               Battery Manager

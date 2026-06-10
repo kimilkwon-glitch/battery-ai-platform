@@ -33,6 +33,8 @@ export const ADMIN_ROUTES = {
   banners: "/admin/banners",
   notices: "/admin/notices",
   reviews: "/admin/reviews",
+  settlement: "/admin/settlement",
+  shipping: "/admin/shipping",
 } as const;
 
 export type AdminNavItem = {
@@ -51,7 +53,9 @@ export type AdminNavGroup =
 export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: ADMIN_ROUTES.hub, label: "대시보드", group: "운영 현황" },
   { href: ADMIN_ROUTES.orders, label: "주문관리", group: "주문/고객" },
+  { href: ADMIN_ROUTES.shipping, label: "배송관리", group: "주문/고객" },
   { href: ADMIN_ROUTES.commerceClaims, label: "클레임관리", group: "주문/고객" },
+  { href: ADMIN_ROUTES.settlement, label: "정산관리", group: "주문/고객" },
   { href: `${ADMIN_ROUTES.inquiries}?type=consultation`, label: "배터리톡 상담", group: "주문/고객" },
   { href: ADMIN_ROUTES.inquiries, label: "상담관리", group: "주문/고객" },
   { href: ADMIN_ROUTES.products, label: "상품목록", group: "상품/DB" },

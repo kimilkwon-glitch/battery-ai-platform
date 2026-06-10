@@ -70,6 +70,7 @@ export type AdminProductOverride = {
   internetPrice?: number | null;
   onsitePrice?: number | null;
   saleStatus?: AdminProductSaleStatus;
+  reviewStatusOverride?: AdminProductReviewStatus;
   visible?: boolean;
   sellable?: boolean;
   memo?: string;

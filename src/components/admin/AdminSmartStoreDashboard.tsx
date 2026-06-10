@@ -9,6 +9,7 @@ import {
 } from "@/lib/admin/order-workbench";
 import type { UnifiedAdminOrderRow } from "@/lib/admin/unified-orders";
 import { formatPriceWon } from "@/lib/pricing/order-price";
+import { ADMIN_EMPTY_ORDER_VIEW_MESSAGES } from "@/lib/admin/admin-display-labels";
 import type {
   AdminConsultationSummary,
   AdminDashboardWorkbenchView,
@@ -71,8 +72,8 @@ export function AdminSmartStoreDashboard({
       <section className="admin-panel border-blue-100 bg-gradient-to-br from-slate-50 to-white">
         <div className="admin-panel__header border-b border-slate-100">
           <div>
-            <h2 className="admin-panel__title text-lg">주문 처리 현황</h2>
-            <p className="mt-1 text-sm font-medium text-slate-500">
+            <h2 className="admin-panel__title text-xl">주문 처리 현황</h2>
+            <p className="mt-1 text-base font-medium text-slate-500">
               카드를 클릭하면 아래 목록이 해당 상태로 바뀝니다. 기본 집계는 실제 주문만 포함합니다.
             </p>
           </div>
@@ -90,7 +91,7 @@ export function AdminSmartStoreDashboard({
                   className="group block w-full text-left"
                   aria-pressed={active}
                 >
-                  <div className={`admin-stat-card admin-stat-card--${tone} h-full`}>
+                  <div className={`admin-stat-card admin-stat-card--${tone}${active ? " admin-stat-card--active" : ""} h-full`}>
                     <p className="admin-stat-card__label flex items-center justify-between gap-2">
                       <span>{item.label}</span>
                       {active ? (
@@ -116,13 +117,14 @@ export function AdminSmartStoreDashboard({
       {(consultationSummary.pendingInquiries > 0 || consultationSummary.pendingBatteryTalk > 0) && (
         <section className="admin-panel admin-consultation-summary">
           <div className="admin-panel__header">
-            <h2 className="admin-panel__title">상담 확인</h2>
+            <h2 className="admin-panel__title text-lg">상담 확인</h2>
+            <p className="text-sm font-semibold text-slate-500">처리 대기 상담을 바로 확인하세요</p>
           </div>
-          <div className="flex flex-wrap gap-3 p-4">
+          <div className="flex flex-wrap gap-4 p-4">
             {consultationSummary.pendingBatteryTalk > 0 ? (
               <Link
                 href={`${ADMIN_ROUTES.inquiries}?type=consultation`}
-                className="admin-consultation-summary__link"
+                className="admin-consultation-summary__link admin-consultation-summary__link--highlight"
               >
                 <span className="admin-consultation-summary__label">배터리톡 상담</span>
                 <span className="admin-consultation-summary__count">
@@ -176,8 +178,9 @@ export function AdminSmartStoreDashboard({
                 <tr>
                   <td colSpan={8}>
                     <div className="admin-table__empty py-10 text-center">
-                      <p className="text-sm font-bold text-slate-700">
-                        {activeLabel} 상태의 주문이 없습니다.
+                      <p className="text-base font-bold text-slate-700">
+                        {ADMIN_EMPTY_ORDER_VIEW_MESSAGES[activeView] ??
+                          `현재 처리할 ${activeLabel}이 없습니다.`}
                       </p>
                     </div>
                   </td>

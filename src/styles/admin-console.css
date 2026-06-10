@@ -4,14 +4,15 @@
   --admin-surface: #ffffff;
   --admin-muted: #64748b;
   --admin-border: #e2e8f0;
-  --admin-text-title: 1.625rem;
-  --admin-text-desc: 0.9375rem;
+  --admin-text-title: 1.75rem;
+  --admin-text-desc: 1rem;
   --admin-text-table-head: 0.9375rem;
   --admin-text-table-body: 0.9375rem;
-  --admin-text-muted: 0.875rem;
+  --admin-text-muted: 0.9375rem;
   --admin-text-badge: 0.875rem;
-  --admin-btn-height: 2.625rem;
-  --admin-sidebar-width: 13.5rem;
+  --admin-btn-height: 2.75rem;
+  --admin-sidebar-width: 12rem;
+  font-size: 15px;
 }
 
 [data-admin-console] .admin-page-title {
@@ -36,11 +37,18 @@
 
 [data-admin-console] .admin-stat-card {
   border: 1px solid var(--admin-border);
-  border-radius: 0.75rem;
+  border-radius: 0.85rem;
   background: var(--admin-surface);
-  padding: 1rem 1.125rem 1.125rem;
+  padding: 1.125rem 1.25rem 1.25rem;
   box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+[data-admin-console] .admin-stat-card--active,
+[data-admin-console] button[aria-pressed="true"] .admin-stat-card {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  transform: translateY(-1px);
 }
 
 [data-admin-console] a:hover .admin-stat-card {
@@ -49,14 +57,14 @@
 }
 
 [data-admin-console] .admin-stat-card__label {
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: var(--admin-muted);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #334155;
 }
 
 [data-admin-console] .admin-stat-card__value {
-  margin-top: 0.375rem;
-  font-size: 2.125rem;
+  margin-top: 0.5rem;
+  font-size: 2.5rem;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -2295,9 +2303,131 @@
 }
 
 [data-admin-console] .admin-consultation-summary__count {
-  font-size: 1.25rem;
+  font-size: 2rem;
   font-weight: 900;
   color: #1d4ed8;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-admin-console] .admin-consultation-summary__link--highlight {
+  min-width: 12rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-color: #93c5fd;
+}
+
+[data-admin-console] .admin-consultation-summary__link--highlight .admin-consultation-summary__count {
+  font-size: 2.25rem;
+  color: #1e40af;
+}
+
+[data-admin-console] .admin-table tbody tr.admin-table__row--clickable:hover,
+[data-admin-console] .admin-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+[data-admin-console] .admin-table tbody tr.admin-table__row--selected,
+[data-admin-console] .admin-order-workbench__row:hover {
+  background: #eff6ff;
+}
+
+[data-admin-console] .admin-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+}
+
+[data-admin-console] .admin-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(15 23 42 / 45%);
+}
+
+[data-admin-console] .admin-drawer__panel {
+  position: relative;
+  margin-left: auto;
+  width: min(28rem, 100%);
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 24px rgb(15 23 42 / 12%);
+}
+
+[data-admin-console] .admin-drawer__header,
+[data-admin-console] .admin-drawer__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-admin-console] .admin-drawer__footer {
+  border-bottom: none;
+  border-top: 1px solid #e2e8f0;
+  margin-top: auto;
+}
+
+[data-admin-console] .admin-drawer__title {
+  font-size: 1.125rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+[data-admin-console] .admin-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+}
+
+[data-admin-console] .admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+[data-admin-console] .admin-field input,
+[data-admin-console] .admin-field select,
+[data-admin-console] .admin-field textarea {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+[data-admin-console] .admin-product-inline__form {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+[data-admin-console] .admin-product-inline__input,
+[data-admin-console] .admin-product-inline__select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  max-width: 8rem;
+}
+
+[data-admin-console] .admin-action-buttons--wrap {
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+[data-admin-console] .admin-btn--sm {
+  min-height: 2rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.8125rem;
 }
 
 [data-admin-console] .admin-table__customer-name {

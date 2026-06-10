@@ -143,7 +143,8 @@ function buildRow(
   };
 
   const review = resolveReview(base);
-  return { ...base, reviewStatus: review.status, reviewLabels: review.labels };
+  const reviewStatus = override?.reviewStatusOverride ?? review.status;
+  return { ...base, reviewStatus, reviewLabels: review.labels };
 }
 
 /** 카탈로그 키 + 브랜드별 규격 기준 제품 목록 */
