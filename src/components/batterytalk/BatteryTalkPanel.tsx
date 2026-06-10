@@ -5,10 +5,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Send, Store, X } from "lucide-react";
 import { BatteryTalkCarIcon } from "@/components/batterytalk/BatteryTalkCarIcon";
+import { BATTERY_TALK_QUICK_CHIPS } from "@/lib/battery-talk/battery-talk-chat-copy";
+import { BatteryTalkSseStatusBanner } from "@/components/batterytalk/BatteryTalkSseStatusBanner";
 import {
-  BATTERY_TALK_POLL_MS,
-  BATTERY_TALK_QUICK_CHIPS,
-} from "@/lib/battery-talk/battery-talk-chat-copy";
+  appendUniqueMessage,
+  useBatteryTalkSessionStream,
+} from "@/lib/battery-talk/battery-talk-realtime-client";
 import {
   fetchBatteryTalkThread,
   getStoredBatteryTalkThreadId,
@@ -51,7 +53,8 @@ export function BatteryTalkPanel({
   const [showPhonePrompt, setShowPhonePrompt] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [initError, setInitError] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pendingBodyRef = useRef<string | null>(null);
 
@@ -85,7 +88,7 @@ export function BatteryTalkPanel({
 
   const initThread = useCallback(async () => {
     setLoading(true);
-    setError(null);
+    setInitError(null);
     const scope = threadScope();
     const stored = getStoredBatteryTalkThreadId(scope);
     if (stored) {
@@ -106,30 +109,34 @@ export function BatteryTalkPanel({
       setMessages(created.messages);
       setPhone(created.phone ?? "");
     } else {
-      setError("채팅을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      setInitError("채팅을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     }
   }, [buildContext, threadScope]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setInitError(null);
+      setSendError(null);
+      setLoading(false);
+      return;
+    }
     setDraft("");
     setShowPhonePrompt(false);
     pendingBodyRef.current = null;
     void initThread();
   }, [open, initThread, preset?.batteryCode, preset?.productCode]);
 
-  useEffect(() => {
-    if (!open || !threadId) return;
-    const poll = async () => {
-      const data = await fetchBatteryTalkThread(threadId);
-      if (data.ok && data.messages) {
-        setMessages(data.messages);
-        if (data.phone) setPhone(data.phone);
-      }
-    };
-    const id = setInterval(() => void poll(), BATTERY_TALK_POLL_MS);
-    return () => clearInterval(id);
-  }, [open, threadId]);
+  const streamDisconnected = useBatteryTalkSessionStream(
+    threadId,
+    (message) => {
+      setMessages((prev) => {
+        const base =
+          message.sender === "customer" ? prev.filter((m) => !m.id.startsWith("opt-")) : prev;
+        return appendUniqueMessage(base, message);
+      });
+    },
+    open && Boolean(threadId),
+  );
 
   useEffect(() => {
     if (open && messages.length) scrollToBottom();
@@ -138,7 +145,7 @@ export function BatteryTalkPanel({
   const doSend = async (body: string, contactPhone?: string) => {
     if (!threadId || !body.trim()) return;
     setSending(true);
-    setError(null);
+    setSendError(null);
 
     const optimistic: BatteryTalkMessage = {
       id: `opt-${Date.now()}`,
@@ -156,14 +163,16 @@ export function BatteryTalkPanel({
     });
     setSending(false);
 
-    if (result.ok && result.messages) {
-      setMessages(result.messages);
+    if (result.ok) {
+      if (result.messages) {
+        setMessages(result.messages);
+      }
       if (result.phone) setPhone(result.phone);
       setShowPhonePrompt(false);
       pendingBodyRef.current = null;
     } else {
       setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
-      setError("메시지 전송에 실패했습니다.");
+      setSendError("메시지 전송에 실패했습니다.");
       setDraft(body);
     }
   };
@@ -182,7 +191,7 @@ export function BatteryTalkPanel({
   const handlePhoneConfirm = async () => {
     const contact = phoneDraft.trim();
     if (!contact) {
-      setError("연락처를 입력해 주세요.");
+      setSendError("연락처를 입력해 주세요.");
       return;
     }
     setPhone(contact);
@@ -227,25 +236,29 @@ export function BatteryTalkPanel({
                   <BatteryTalkCarIcon className="size-5" />
                 </span>
                 <div className="min-w-0">
-                  <h2 id="batterytalk-title" className="text-sm font-black">
+                  <h2 id="batterytalk-title" className="text-sm font-black text-white">
                     배터리톡
                   </h2>
-                  <p className="text-[10px] font-semibold text-white/75">실시간 규격·장착 상담</p>
+                  <p className="text-[10px] font-semibold text-white/80">실시간 규격·장착 상담</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg p-2 text-white/80 hover:bg-white/10"
+                className="rounded-lg p-2 text-white hover:bg-white/10"
                 aria-label="닫기"
               >
                 <X className="size-5" />
               </button>
             </header>
 
+            <BatteryTalkSseStatusBanner show={streamDisconnected} variant="customer" />
+
             <div className="batterytalk-chat__messages flex-1 overflow-y-auto px-3 py-3">
               {loading ? (
                 <p className="py-8 text-center text-sm font-medium text-slate-500">채팅 연결 중…</p>
+              ) : initError && messages.length === 0 ? (
+                <p className="py-6 text-center text-xs font-semibold text-red-600">{initError}</p>
               ) : (
                 <>
                   {messages.map((msg) => (
@@ -302,8 +315,8 @@ export function BatteryTalkPanel({
               </div>
             ) : null}
 
-            {error ? (
-              <p className="shrink-0 px-3 pb-1 text-xs font-bold text-red-600">{error}</p>
+            {sendError ? (
+              <p className="shrink-0 px-3 pb-1 text-xs font-semibold text-red-600">{sendError}</p>
             ) : null}
 
             <footer className="batterytalk-chat__composer shrink-0 border-t border-slate-100 p-3">

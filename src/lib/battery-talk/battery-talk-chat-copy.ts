@@ -14,4 +14,5 @@ export const BATTERY_TALK_QUICK_CHIPS = [
   { id: "battery_return", label: "폐배터리", message: "폐배터리 반납 관련 문의드립니다." },
 ] as const;
 
+/** @deprecated SSE 실시간 구독으로 대체 */
 export const BATTERY_TALK_POLL_MS = 4000;

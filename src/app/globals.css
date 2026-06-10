@@ -10,6 +10,7 @@
 @import "../styles/vehicle-recommended-card.css";
 @import "../styles/mobile-customer-roles.css";
 @import "../styles/battery-image-variants.css";
+@import "../styles/search-battery-card-mobile.css";
 @import "../styles/mobile-layout-fix.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";

@@ -225,7 +225,10 @@ export function HomeSearchTypeDropdown({ value, onChange }: Props) {
         </span>
         <span className="min-w-0 flex-1 truncate text-sm font-bold text-slate-800">{selected.label}</span>
         <ChevronDown
-          className={clsx("size-3.5 shrink-0 text-slate-400 transition", open && "rotate-180 text-blue-600")}
+          className={clsx(
+            "size-3.5 shrink-0 text-slate-400 transition max-sm:size-3",
+            open && "rotate-180 text-blue-600",
+          )}
           aria-hidden
         />
       </button>

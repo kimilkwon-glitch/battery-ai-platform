@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
 import { claimCreate, claimListByOrderId } from "@/lib/claims/claim-store";
+import { operationalErrorResponse } from "@/lib/db/operational-api-errors";
 import { estimateClaimRefundAmount } from "@/lib/claims/claim-refund-estimate";
 import { normalizePhoneDigits } from "@/lib/order-request/order-request-lookup";
 import {
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
       estimatedRefundAmount: estimateClaimRefundAmount(order),
     });
     return NextResponse.json({ ok: true, claimId: claim.id });
-  } catch {
-    return NextResponse.json({ ok: false, message: "요청 접수에 실패했습니다." }, { status: 500 });
+  } catch (err) {
+    return operationalErrorResponse(err, "요청 접수에 실패했습니다.", "claims");
   }
 }

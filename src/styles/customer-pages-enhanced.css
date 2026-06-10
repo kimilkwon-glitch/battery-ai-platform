@@ -1177,19 +1177,14 @@
   background: linear-gradient(90deg, #2563eb, #10b981);
 }
 
-.support-hub-v2__side-card--consult {
-  border-color: #86efac !important;
-  background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%) !important;
+.support-hub-v2__side-card--quick {
+  border-color: #dbeafe;
+  background: linear-gradient(180deg, #f8fbff 0%, #fff 72%);
 }
 
-.support-hub-v2__side-card--lookup {
-  border-color: #fde68a !important;
-  background: linear-gradient(180deg, #fffbeb 0%, #fff 100%) !important;
-}
-
-.support-hub-v2__side-card--store {
-  border-color: #bfdbfe !important;
-  background: linear-gradient(180deg, #eff6ff 0%, #fff 100%) !important;
+.support-hub-v2__side-card--notices {
+  border-color: #e2e8f0;
+  background: #fff;
 }
 
 .support-hub-v2__faq-item--open {

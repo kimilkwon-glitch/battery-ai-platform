@@ -6,6 +6,11 @@ import { useCallback, useEffect, useState } from "react";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { Badge } from "@/components/ui/badge";
 import type { BatteryTalkThreadDetail } from "@/lib/battery-talk/battery-talk-enrichment";
+import { BatteryTalkSseStatusBanner } from "@/components/batterytalk/BatteryTalkSseStatusBanner";
+import {
+  appendUniqueMessage,
+  useBatteryTalkAdminStream,
+} from "@/lib/battery-talk/battery-talk-realtime-client";
 import {
   BATTERY_TALK_PAGE_TYPE_LABELS,
   BATTERY_TALK_REPLY_TEMPLATES,
@@ -62,6 +67,7 @@ export function AdminBatteryTalkClient() {
   const [memoDraft, setMemoDraft] = useState("");
   const [saving, setSaving] = useState(false);
   const [mobileView, setMobileView] = useState<MobileView>("list");
+  const [storeWarning, setStoreWarning] = useState<string | null>(null);
 
   const loadList = useCallback(async () => {
     setLoading(true);
@@ -71,6 +77,18 @@ export function AdminBatteryTalkClient() {
     const res = await fetch(`/api/admin/battery-talk?${params}`, { credentials: "include" });
     const data = await res.json();
     setLoading(false);
+    if (res.status === 503 || data.error === "OPERATIONAL_DB_UNAVAILABLE") {
+      setStoreWarning(
+        data.message ?? "배터리톡 DB 미연결 — DATABASE_URL 설정 후 db:migrate:battery-talk 필요",
+      );
+      setItems([]);
+      return;
+    }
+    setStoreWarning(
+      data.storeMode === "json-dev"
+        ? "개발용 JSON 저장 모드 — production 배포 전 DATABASE_URL 연결 필요"
+        : null,
+    );
     if (res.ok && data.ok) setItems(data.items ?? []);
   }, [statusTab, query]);
 
@@ -100,11 +118,55 @@ export function AdminBatteryTalkClient() {
     else setDetail(null);
   }, [selectedId, loadDetail]);
 
-  useEffect(() => {
-    if (!selectedId) return;
-    const id = setInterval(() => void loadDetail(selectedId), 4000);
-    return () => clearInterval(id);
-  }, [selectedId, loadDetail]);
+  const streamDisconnected = useBatteryTalkAdminStream((event) => {
+    if (event.type === "session") {
+      setItems((prev) => {
+        const idx = prev.findIndex((i) => i.threadId === event.session.threadId);
+        if (idx < 0) return [event.session, ...prev];
+        const next = [...prev];
+        next[idx] = { ...next[idx]!, ...event.session };
+        return next.sort(
+          (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime(),
+        );
+      });
+      return;
+    }
+    if (event.type === "message") {
+      setItems((prev) => {
+        const idx = prev.findIndex((i) => i.threadId === event.sessionId);
+        if (idx < 0) {
+          void loadList();
+          return prev;
+        }
+        const next = [...prev];
+        const row = next[idx]!;
+        next[idx] = {
+          ...row,
+          lastMessagePreview: event.message.body.slice(0, 80),
+          lastMessageAt: event.message.createdAt,
+          unreadByAdmin: event.message.sender === "customer" ? true : row.unreadByAdmin,
+        };
+        return next.sort(
+          (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime(),
+        );
+      });
+      if (selectedId === event.sessionId) {
+        setDetail((prev) => {
+          if (!prev?.thread || prev.thread.threadId !== event.sessionId) return prev;
+          const messages = appendUniqueMessage(prev.thread.messages, event.message);
+          return {
+            ...prev,
+            thread: {
+              ...prev.thread,
+              messages,
+              lastMessageAt: event.message.createdAt,
+              unreadByAdmin: false,
+            },
+          };
+        });
+      }
+    }
+  });
 
   const selectThread = (threadId: string) => {
     setSelectedId(threadId);
@@ -183,6 +245,12 @@ export function AdminBatteryTalkClient() {
 
   return (
     <div className="admin-battery-talk">
+      {storeWarning ? (
+        <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+          {storeWarning}
+        </p>
+      ) : null}
+      <BatteryTalkSseStatusBanner show={streamDisconnected} variant="admin" />
       <div className="admin-battery-talk__mobile-tabs lg:hidden">
         {(
           [

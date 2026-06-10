@@ -1,59 +1,38 @@
-import { readFile, writeFile, mkdir } from "fs/promises";
-import path from "path";
+/**
+ * 결제 주문 관리자 메타 파사드 — DATABASE_URL 시 Postgres, dev만 JSON fallback
+ */
 
-export type CommerceOrderAdminMeta = {
-  orderId: string;
-  adminMemo?: string;
-  shippingCarrier?: string;
-  shippingTrackingNumber?: string;
-  updatedAt: string;
-};
+import path from "node:path";
+import {
+  assertOperationalStoreAvailable,
+  isOperationalDbMode,
+} from "@/lib/db/operational-store-config";
 
-type Payload = { metas: CommerceOrderAdminMeta[] };
+export type { CommerceOrderAdminMeta } from "@/lib/admin/commerce-order-admin-meta-store.postgres";
 
-const DATA_PATH = path.join(process.cwd(), ".data", "commerce-order-admin-meta.json");
-
-async function loadPayload(): Promise<Payload> {
-  try {
-    const raw = await readFile(DATA_PATH, "utf8");
-    return JSON.parse(raw) as Payload;
-  } catch {
-    return { metas: [] };
-  }
+async function getStore() {
+  assertOperationalStoreAvailable("order_admin_meta");
+  if (isOperationalDbMode()) return import("@/lib/admin/commerce-order-admin-meta-store.postgres");
+  return import("@/lib/admin/commerce-order-admin-meta-store.json");
 }
 
-async function savePayload(payload: Payload): Promise<void> {
-  await mkdir(path.dirname(DATA_PATH), { recursive: true });
-  await writeFile(DATA_PATH, JSON.stringify(payload, null, 2), "utf8");
+export async function commerceOrderAdminMetaGet(orderId: string) {
+  return (await getStore()).commerceOrderAdminMetaGet(orderId);
 }
 
-export async function commerceOrderAdminMetaGet(
-  orderId: string,
-): Promise<CommerceOrderAdminMeta | null> {
-  const payload = await loadPayload();
-  return payload.metas.find((m) => m.orderId === orderId) ?? null;
-}
-
-export async function commerceOrderAdminMetaListAll(): Promise<CommerceOrderAdminMeta[]> {
-  const payload = await loadPayload();
-  return payload.metas;
+export async function commerceOrderAdminMetaListAll() {
+  return (await getStore()).commerceOrderAdminMetaListAll();
 }
 
 export async function commerceOrderAdminMetaUpsert(
   orderId: string,
-  patch: Partial<Omit<CommerceOrderAdminMeta, "orderId" | "updatedAt">>,
-): Promise<CommerceOrderAdminMeta> {
-  const payload = await loadPayload();
-  const now = new Date().toISOString();
-  const idx = payload.metas.findIndex((m) => m.orderId === orderId);
-  const next: CommerceOrderAdminMeta = {
-    orderId,
-    ...(idx >= 0 ? payload.metas[idx] : {}),
-    ...patch,
-    updatedAt: now,
-  };
-  if (idx >= 0) payload.metas[idx] = next;
-  else payload.metas.push(next);
-  await savePayload(payload);
-  return next;
+  patch: Partial<
+    Omit<import("@/lib/admin/commerce-order-admin-meta-store.postgres").CommerceOrderAdminMeta, "orderId" | "updatedAt">
+  >,
+) {
+  return (await getStore()).commerceOrderAdminMetaUpsert(orderId, patch);
 }
+
+export const COMMERCE_ORDER_ADMIN_META_PATH = isOperationalDbMode()
+  ? null
+  : path.join(process.cwd(), ".data", "commerce-order-admin-meta.json");

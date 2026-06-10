@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { batteryTalkGetById } from "@/lib/battery-talk/battery-talk-store";
+import { batteryTalkGetByIdPeek } from "@/lib/battery-talk/battery-talk-store";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +8,7 @@ type RouteCtx = { params: Promise<{ threadId: string }> };
 export async function GET(_request: Request, ctx: RouteCtx) {
   const { threadId } = await ctx.params;
   try {
-    const thread = await batteryTalkGetById(threadId);
+    const thread = await batteryTalkGetByIdPeek(threadId);
     if (!thread) {
       return NextResponse.json({ ok: false, message: "상담을 찾을 수 없습니다." }, { status: 404 });
     }

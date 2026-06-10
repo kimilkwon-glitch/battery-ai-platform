@@ -13,9 +13,11 @@ export function getBatteryTalkThreadStorageKey(scope?: {
 export type BatteryTalkThreadResponse = {
   ok: boolean;
   threadId?: string;
+  sessionId?: string;
   messages?: BatteryTalkMessage[];
   phone?: string;
   status?: string;
+  message?: string;
 };
 
 export async function openBatteryTalkThread(input: {
@@ -26,14 +28,17 @@ export async function openBatteryTalkThread(input: {
   context?: BatteryTalkContext;
 }): Promise<BatteryTalkThreadResponse> {
   try {
-    const res = await fetch("/api/battery-talk/threads", {
+    const res = await fetch("/api/battery-talk/sessions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
     });
     const data = (await res.json()) as BatteryTalkThreadResponse;
-    if (res.ok && data.ok && data.threadId) {
-      return data;
+    if (res.ok && data.ok && (data.sessionId || data.threadId)) {
+      return {
+        ...data,
+        threadId: data.sessionId ?? data.threadId,
+      };
     }
   } catch {
     /* ignore */
@@ -45,9 +50,13 @@ export async function fetchBatteryTalkThread(
   threadId: string,
 ): Promise<BatteryTalkThreadResponse> {
   try {
-    const res = await fetch(`/api/battery-talk/threads/${threadId}`, { cache: "no-store" });
+    const res = await fetch(`/api/battery-talk/sessions/${encodeURIComponent(threadId)}`, {
+      cache: "no-store",
+    });
     const data = (await res.json()) as BatteryTalkThreadResponse;
-    if (res.ok && data.ok) return data;
+    if (res.ok && data.ok) {
+      return { ...data, threadId: data.sessionId ?? data.threadId ?? threadId };
+    }
   } catch {
     /* ignore */
   }
@@ -61,17 +70,22 @@ export async function sendBatteryTalkMessage(input: {
   customerName?: string;
 }): Promise<BatteryTalkThreadResponse> {
   try {
-    const res = await fetch(`/api/battery-talk/threads/${input.threadId}/messages`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        body: input.body,
-        phone: input.phone,
-        customerName: input.customerName,
-      }),
-    });
+    const res = await fetch(
+      `/api/battery-talk/sessions/${encodeURIComponent(input.threadId)}/messages`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          body: input.body,
+          phone: input.phone,
+          customerName: input.customerName,
+        }),
+      },
+    );
     const data = (await res.json()) as BatteryTalkThreadResponse;
-    if (res.ok && data.ok) return data;
+    if (res.ok && data.ok) {
+      return { ...data, threadId: data.sessionId ?? data.threadId ?? input.threadId };
+    }
   } catch {
     /* ignore */
   }

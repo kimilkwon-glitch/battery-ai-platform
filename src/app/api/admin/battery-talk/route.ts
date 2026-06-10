@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminUnauthorizedResponse, verifyAdminApiRequest } from "@/lib/admin/adminApiAuth";
+import { batteryTalkErrorResponse, batteryTalkStoreStatusPayload } from "@/lib/battery-talk/battery-talk-api-errors";
 import { batteryTalkList } from "@/lib/battery-talk/battery-talk-store";
 import type { BatteryTalkThreadStatus } from "@/types/battery-talk";
 
@@ -16,8 +17,8 @@ export async function GET(request: Request) {
 
   try {
     const items = await batteryTalkList({ status, q, limit: 500 });
-    return NextResponse.json({ ok: true, items });
-  } catch {
-    return NextResponse.json({ ok: false, message: "상담 목록을 불러오지 못했습니다." }, { status: 500 });
+    return NextResponse.json({ ok: true, items, ...batteryTalkStoreStatusPayload() });
+  } catch (err) {
+    return batteryTalkErrorResponse(err, "상담 목록을 불러오지 못했습니다.");
   }
 }

@@ -5,18 +5,19 @@ import {
   computeBatteryReturnFee,
   computeLineAmountWithReturnFee,
   formatPriceWon,
-  FULFILLMENT_PRICE_DESCRIPTIONS,
   normalizeFulfillmentPriceType,
   type FulfillmentPriceType,
 } from "@/lib/pricing/order-price";
-import {
-  BATTERY_RETURN_POLICY_COPY,
-  CUSTOMER_FULFILLMENT_LABELS,
-  CUSTOMER_PRICE_LABELS,
-  type CustomerFulfillmentDisplayKey,
-} from "@/lib/pricing/customer-price-labels";
+import { CUSTOMER_PRICE_LABELS } from "@/lib/pricing/customer-price-labels";
 import type { BatteryCartItem } from "@/types/cart";
 import type { OrderRequestFulfillmentMethod, OrderRequestUsedBatteryOption } from "@/types/order-request";
+
+type PriceRow = {
+  label: string;
+  value: string;
+  emphasis?: boolean;
+  highlight?: boolean;
+};
 
 type Props = {
   item: BatteryCartItem;
@@ -29,11 +30,6 @@ type Props = {
   /** true: 주문서 — 다건 합산 미반납 fee */
   showOrderFees?: boolean;
 };
-
-function fulfillmentBadge(type: FulfillmentPriceType): string | null {
-  if (type === "undecided") return null;
-  return CUSTOMER_FULFILLMENT_LABELS[type as CustomerFulfillmentDisplayKey];
-}
 
 function resolveReturnOption(
   item: BatteryCartItem,
@@ -56,70 +52,84 @@ function breakdownRows(
     includeBatteryReturnFee?: boolean;
     showOrderFees?: boolean;
     allItems?: BatteryCartItem[];
-    returnBatteryOption?: OrderRequestUsedBatteryOption | null;
   },
-): { label: string; value: string; emphasis?: boolean; highlight?: boolean }[] {
+): PriceRow[] {
   if (type === "undecided" || result.finalPrice == null) {
-    return [{ label: CUSTOMER_PRICE_LABELS.total, value: "수령 방식 선택 후 표시", emphasis: true }];
+    return [{ label: CUSTOMER_PRICE_LABELS.finalAmount, value: "수령 방식 선택 후 표시", emphasis: true }];
   }
 
-  const rows: { label: string; value: string; emphasis?: boolean; highlight?: boolean }[] = [];
+  const rows: PriceRow[] = [];
+  const productPrice = result.internetPrice ?? result.basePrice;
 
   switch (type) {
     case "delivery":
-      rows.push({ label: CUSTOMER_PRICE_LABELS.productPurchase, value: formatPriceWon(result.basePrice) });
+      rows.push({
+        label: CUSTOMER_PRICE_LABELS.productPurchase,
+        value: formatPriceWon(result.basePrice),
+      });
       rows.push({
         label: CUSTOMER_PRICE_LABELS.deliveryFee,
         value: `+${formatPriceWon(result.deliveryFee)}`,
       });
       break;
-    case "onsite_install":
-      rows.push({ label: CUSTOMER_PRICE_LABELS.mobileInstall, value: formatPriceWon(result.basePrice) });
-      break;
-    case "store_install":
-      rows.push({ label: CUSTOMER_PRICE_LABELS.mobileInstall, value: formatPriceWon(result.basePrice) });
+    case "onsite_install": {
+      const installFee =
+        result.basePrice != null && productPrice != null
+          ? Math.max(0, result.basePrice - productPrice)
+          : result.basePrice;
       rows.push({
-        label: CUSTOMER_PRICE_LABELS.storeVisitDiscount,
-        value: `-${formatPriceWon(result.storeInstallDiscount)}`,
+        label: CUSTOMER_PRICE_LABELS.productPurchase,
+        value: formatPriceWon(productPrice),
+      });
+      rows.push({
+        label: CUSTOMER_PRICE_LABELS.onsiteInstallFee,
+        value: `+${formatPriceWon(installFee)}`,
       });
       break;
+    }
+    case "store_install": {
+      const storeFee =
+        result.basePrice != null && productPrice != null
+          ? Math.max(0, result.basePrice - productPrice - result.storeInstallDiscount)
+          : result.finalPrice;
+      rows.push({
+        label: CUSTOMER_PRICE_LABELS.productPurchase,
+        value: formatPriceWon(productPrice),
+      });
+      rows.push({
+        label: CUSTOMER_PRICE_LABELS.storeInstallFee,
+        value: `+${formatPriceWon(storeFee)}`,
+      });
+      break;
+    }
     case "store_pickup_self":
-      rows.push({ label: CUSTOMER_PRICE_LABELS.productPurchase, value: formatPriceWon(result.basePrice) });
-      rows.push({ label: CUSTOMER_PRICE_LABELS.deliveryFee, value: CUSTOMER_PRICE_LABELS.noDeliveryFee });
+      rows.push({
+        label: CUSTOMER_PRICE_LABELS.productPurchase,
+        value: formatPriceWon(result.basePrice),
+      });
+      rows.push({
+        label: CUSTOMER_PRICE_LABELS.pickupFee,
+        value: "+0원",
+      });
       break;
   }
 
   const showReturnLines = options.includeBatteryReturnFee || options.showOrderFees;
-  const returnOpt = options.returnOption;
-
-  if (showReturnLines && returnOpt === "no_return" && lineAmount.usedBatteryReturnSurcharge > 0) {
+  if (
+    showReturnLines &&
+    options.returnOption === "no_return" &&
+    lineAmount.usedBatteryReturnSurcharge > 0
+  ) {
     rows.push({
-      label: CUSTOMER_PRICE_LABELS.baseSelectionPrice,
-      value: formatPriceWon(lineAmount.fulfillmentSubtotal),
-    });
-    rows.push({
-      label: CUSTOMER_PRICE_LABELS.noReturnFee,
+      label: CUSTOMER_PRICE_LABELS.noReturnSurcharge,
       value: `+${formatPriceWon(lineAmount.usedBatteryReturnSurcharge)}`,
       highlight: true,
     });
-    rows.push({
-      label: CUSTOMER_PRICE_LABELS.finalAmount,
-      value: formatPriceWon(lineAmount.finalAmount),
-      emphasis: true,
-    });
-    return rows;
   }
 
-  if (showReturnLines && returnOpt === "return") {
-    rows.push({
-      label: CUSTOMER_PRICE_LABELS.batteryReturn,
-      value: CUSTOMER_PRICE_LABELS.batteryReturnFree,
-    });
-  }
-
-  if (options.showOrderFees && returnOpt && options.allItems?.length) {
-    const fee = computeBatteryReturnFee(returnOpt, options.allItems);
-    if (returnOpt === "no_return" && fee > 0) {
+  if (options.showOrderFees && options.returnOption && options.allItems?.length) {
+    const fee = computeBatteryReturnFee(options.returnOption, options.allItems);
+    if (options.returnOption === "no_return" && fee > 0) {
       rows.push({
         label: CUSTOMER_PRICE_LABELS.noReturnFeeIfSelected,
         value: `+${formatPriceWon(fee)}`,
@@ -128,12 +138,13 @@ function breakdownRows(
     }
   }
 
-  const totalLabel = showReturnLines && returnOpt ? CUSTOMER_PRICE_LABELS.finalAmount : CUSTOMER_PRICE_LABELS.subtotal;
-  const totalValue = showReturnLines && returnOpt ? lineAmount.finalAmount : lineAmount.fulfillmentSubtotal;
-
   rows.push({
-    label: options.showOrderFees ? CUSTOMER_PRICE_LABELS.total : totalLabel,
-    value: formatPriceWon(totalValue),
+    label: options.showOrderFees ? CUSTOMER_PRICE_LABELS.total : CUSTOMER_PRICE_LABELS.finalAmount,
+    value: formatPriceWon(
+      showReturnLines && options.returnOption
+        ? lineAmount.finalAmount
+        : lineAmount.fulfillmentSubtotal ?? lineAmount.finalAmount,
+    ),
     emphasis: true,
   });
 
@@ -163,65 +174,41 @@ export function OrderPriceBreakdown({
     includeBatteryReturnFee,
     showOrderFees,
     allItems: allItems ?? [item],
-    returnBatteryOption,
   });
-  const desc = type !== "undecided" ? FULFILLMENT_PRICE_DESCRIPTIONS[type] : null;
-  const badge = fulfillmentBadge(type);
-
-  const policyHint =
-    includeBatteryReturnFee && returnOption === "return"
-      ? BATTERY_RETURN_POLICY_COPY.return
-      : includeBatteryReturnFee && returnOption === "no_return"
-        ? BATTERY_RETURN_POLICY_COPY.noReturn
-        : null;
 
   return (
     <div
-      className={`order-price-breakdown rounded-xl border border-[#D8E1EC] bg-white shadow-sm ${compact ? "p-2.5" : "p-3"} space-y-2`}
+      className={`order-price-breakdown rounded-xl border border-[#D8E1EC] bg-white shadow-sm ${
+        compact ? "order-price-breakdown--compact" : ""
+      }`}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-        <span className="font-bold text-[#64748B]">{CUSTOMER_PRICE_LABELS.priceBasis}</span>
-        {badge ? (
-          <span className="rounded-full bg-[#0F1B33] px-2.5 py-0.5 text-[10px] font-black text-white">
-            {badge}
-          </span>
-        ) : (
-          <span className="font-black text-slate-800">{result.priceBasisLabel}</span>
-        )}
-      </div>
-      {policyHint ? (
-        <p className="text-[11px] font-bold leading-relaxed text-slate-600">{policyHint}</p>
-      ) : null}
-      {desc && !compact ? (
-        <p className="text-[11px] font-medium leading-relaxed text-[#475569]">{desc}</p>
-      ) : null}
-      <dl className="space-y-1">
-        {rows.map((row) => (
+      <dl className="order-price-breakdown__rows">
+        {rows.map((row, index) => (
           <div
-            key={row.label}
-            className={`flex items-center justify-between gap-2 text-xs ${
-              row.emphasis ? "border-t border-slate-100 pt-2 font-black" : "font-medium"
-            }`}
+            key={`${row.label}-${index}`}
+            className={
+              row.emphasis ? "order-price-breakdown__total" : "order-price-breakdown__row"
+            }
           >
             <dt
               className={
                 row.emphasis
-                  ? "text-[#0F172A]"
+                  ? "order-price-breakdown__total-label"
                   : row.highlight
-                    ? "checkout-summary-fee--highlight"
-                    : "text-[#64748B]"
+                    ? "order-price-breakdown__row-label order-price-breakdown__row-label--highlight"
+                    : "order-price-breakdown__row-label"
               }
             >
               {row.label}
             </dt>
             <dd
-              className={`tabular-nums ${
+              className={
                 row.emphasis
-                  ? "text-base font-black text-[#0F172A] sm:text-lg"
+                  ? "order-price-breakdown__total-value"
                   : row.highlight
-                    ? "checkout-summary-fee--highlight"
-                    : "font-bold text-[#0F172A]"
-              }`}
+                    ? "order-price-breakdown__row-value order-price-breakdown__row-value--highlight"
+                    : "order-price-breakdown__row-value"
+              }
             >
               {row.value}
             </dd>

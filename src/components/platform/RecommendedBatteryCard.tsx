@@ -197,7 +197,7 @@ export function RecommendedBatteryCard({
 
             className="h-full w-full"
 
-            layout="row"
+            layout="stack"
 
             flushTop
 
@@ -235,6 +235,16 @@ export function RecommendedBatteryCard({
 
           <div className="vehicle-recommended-card__actions">
 
+            <BuyNowButton
+
+              batteryCode={code}
+
+              brandName={brandName}
+
+              className="vehicle-recommended-card__btn-order min-h-[2.375rem] w-full text-sm"
+
+            />
+
             {detailHref ? (
 
               <Link
@@ -250,16 +260,6 @@ export function RecommendedBatteryCard({
               </Link>
 
             ) : null}
-
-            <BuyNowButton
-
-              batteryCode={code}
-
-              brandName={brandName}
-
-              className="vehicle-recommended-card__btn-order min-h-[2.375rem] w-full text-sm"
-
-            />
 
           </div>
 
@@ -295,11 +295,11 @@ export function RecommendedBatteryCard({
 
       ) : null}
 
-      <div className="flex flex-col md:grid md:grid-cols-[minmax(0,38%)_minmax(0,62%)]">
+      <div className="search-battery-card__layout flex flex-col md:grid md:grid-cols-[minmax(0,38%)_minmax(0,62%)]">
 
         <div
           data-battery-image-role="search-recommend"
-          className={`${bm.cardHorizontalMedia} order-2 md:order-1 ${compact ? "!min-h-[120px] md:!min-h-[140px]" : "!min-h-[132px] md:!min-h-[180px]"}`}
+          className={`search-battery-card__media ${bm.cardHorizontalMedia} ${compact ? "md:!min-h-[140px]" : "md:!min-h-[180px]"}`}
         >
 
           <BatteryImageStage
@@ -312,7 +312,7 @@ export function RecommendedBatteryCard({
 
             className="h-full w-full"
 
-            layout="row"
+            layout="stack"
 
             flushTop
 
@@ -320,37 +320,41 @@ export function RecommendedBatteryCard({
 
         </div>
 
-        <div className={`${bm.cardHorizontalBody} order-1 md:order-2`}>
+        <div className={`search-battery-card__body ${bm.cardHorizontalBody}`}>
 
           <CardInfoStack>
 
-            <CardInfoTitleRow
-
-              iconKey="batterySpec"
-
-              title={
-
-                <>
-
-                  <span className="spec-code text-lg sm:text-xl">{display.code}</span>
-
-                  <span className="ml-1 text-xs font-bold text-[var(--bm-muted)] sm:text-sm">배터리</span>
-
-                </>
-
-              }
-
-            />
-
             {showPricing ? (
 
-              <p className="text-[0.6875rem] font-extrabold uppercase tracking-wide text-slate-500">
+              <>
 
-                {brandName}
+                <p className="search-battery-card__brand">{brandName}</p>
 
-              </p>
+                <p className="search-battery-card__spec spec-code">{display.code}</p>
 
-            ) : null}
+              </>
+
+            ) : (
+
+              <CardInfoTitleRow
+
+                iconKey="batterySpec"
+
+                title={
+
+                  <>
+
+                    <span className="spec-code text-lg sm:text-xl">{display.code}</span>
+
+                    <span className="ml-1 text-xs font-bold text-[var(--bm-muted)] sm:text-sm">배터리</span>
+
+                  </>
+
+                }
+
+              />
+
+            )}
 
             {showPricing && (internetPrice != null || onsitePrice != null) ? (
 
@@ -384,37 +388,9 @@ export function RecommendedBatteryCard({
 
             ) : null}
 
-            {showPricing ? (
-
-              <div className="battery-card-prices-actions flex flex-col gap-2 sm:hidden">
-
-                <BuyNowButton
-
-                  batteryCode={code}
-
-                  brandName={brandName}
-
-                  className="min-h-[2.75rem] w-full text-sm shadow-md"
-
-                />
-
-                {detailHref ? (
-
-                  <Link href={detailHref} className={`${bm.btnSecondary} justify-center text-sm font-black`}>
-
-                    상세보기
-
-                  </Link>
-
-                ) : null}
-
-              </div>
-
-            ) : null}
-
             {context && !compact ? (
 
-              <p className="text-[11px] font-semibold text-slate-600">{context}</p>
+              <p className="search-battery-card__context text-[11px] font-semibold text-slate-600 md:text-[11px]">{context}</p>
 
             ) : null}
 
@@ -444,17 +420,45 @@ export function RecommendedBatteryCard({
 
             {exceptionNote ? <CardInfoMeta className="sm:text-[11px]">{exceptionNote}</CardInfoMeta> : null}
 
+            {showPricing ? (
+
+              <div className="search-battery-card__actions md:hidden">
+
+                <BuyNowButton
+
+                  batteryCode={code}
+
+                  brandName={brandName}
+
+                  className="min-h-[2.75rem] w-full text-sm shadow-md"
+
+                />
+
+                {detailHref ? (
+
+                  <Link href={detailHref} className={`${bm.btnSecondary} justify-center text-sm font-black`}>
+
+                    상세보기
+
+                  </Link>
+
+                ) : null}
+
+              </div>
+
+            ) : null}
+
           </CardInfoStack>
 
         </div>
 
       </div>
 
-      <div className="border-t border-[var(--bm-border)] bg-[var(--bm-surface-muted)] px-2.5 py-2">
+      <div className={`search-battery-card__footer border-t border-[var(--bm-border)] bg-[var(--bm-surface-muted)] px-2.5 py-2 ${showPricing ? "search-battery-card__footer--desktop-only" : ""}`}>
 
         {showPricing ? (
 
-          <div className="hidden items-center gap-2 sm:flex">
+          <div className="hidden items-center gap-2 md:flex">
 
             {detailHref ? (
 

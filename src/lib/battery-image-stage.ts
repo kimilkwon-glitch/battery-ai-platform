@@ -78,8 +78,8 @@ export const batteryImageStageImgHeight: Record<BatteryImageStageVariant, string
   search: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
   compare: "h-[116px] min-h-[116px] md:h-[138px] md:min-h-[138px]",
   compareRow: "h-[116px] min-h-[116px] md:h-[140px] md:min-h-[140px]",
-  homeLineup: "h-full max-h-full min-h-0",
-  vehicleResult: "h-[118px] min-h-[118px] md:h-[142px] md:min-h-[142px]",
+  homeLineup: "h-[5.75rem] min-h-[5.75rem] max-h-full md:h-full md:min-h-0",
+  vehicleResult: "h-[7rem] min-h-[7rem] md:h-[142px] md:min-h-[142px]",
   productDetail: "h-[128px] min-h-[128px] md:h-[152px] md:min-h-[152px]",
   compact: "h-[88px] min-h-[88px] md:h-[110px] md:min-h-[110px]",
 };
@@ -103,15 +103,15 @@ export const batteryImageStageImgMaxWidthByVariant: Record<BatteryImageStageVari
 
 /** asset 여백 보정 — stage 높이 확보 후 center scale (잘림 시 scale 낮출 것) */
 export const batteryImageStagePhotoScale: Record<BatteryImageStageVariant, string> = {
-  card: "inline-flex origin-center scale-[1.2] md:scale-[1.24]",
-  cardRow: "inline-flex origin-center scale-[1.2] md:scale-[1.26]",
+  card: "inline-flex origin-center scale-[1.06] md:scale-[1.24]",
+  cardRow: "inline-flex origin-center scale-[1.06] md:scale-[1.26]",
   cardCompact: "inline-flex origin-center scale-[1.14] md:scale-[1.18]",
   hero: "inline-flex origin-center scale-[1.06] sm:scale-[1.1] md:scale-[1.12]",
   search: "inline-flex origin-center scale-[1.2] md:scale-[1.24]",
   compare: "inline-flex origin-center scale-[1.12] md:scale-[1.16]",
   compareRow: "inline-flex origin-center scale-[1.14] md:scale-[1.2]",
-  homeLineup: "inline-flex h-full w-full origin-center items-center justify-center scale-[1.34] md:scale-[1.22]",
-  vehicleResult: "inline-flex origin-center scale-[1.22] md:scale-[1.24]",
+  homeLineup: "inline-flex h-full w-full origin-center items-center justify-center scale-100 md:scale-[1.12]",
+  vehicleResult: "inline-flex origin-center scale-100 md:scale-[1.24]",
   productDetail: "inline-flex origin-center scale-[1.18] md:scale-[1.2]",
   compact: "inline-flex origin-center scale-[1.1] md:scale-[1.14]",
 };

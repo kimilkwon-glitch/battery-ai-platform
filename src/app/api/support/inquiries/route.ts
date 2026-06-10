@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { operationalErrorResponse } from "@/lib/db/operational-api-errors";
 import { inquiryCreate, inquiryList, type InquiryCreateInput } from "@/lib/inquiry/inquiry-store";
 import { toProductQnaPublicItem } from "@/lib/product-qna-public";
 
@@ -21,8 +22,8 @@ export async function GET(request: Request) {
     });
     const items = records.map(toProductQnaPublicItem);
     return NextResponse.json({ ok: true, items });
-  } catch {
-    return NextResponse.json({ ok: false, message: "문의 목록을 불러오지 못했습니다." }, { status: 500 });
+  } catch (err) {
+    return operationalErrorResponse(err, "문의 목록을 불러오지 못했습니다.", "inquiries");
   }
 }
 
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
   try {
     const item = await inquiryCreate(body);
     return NextResponse.json({ ok: true, id: item.id });
-  } catch {
-    return NextResponse.json({ ok: false, message: "문의 접수에 실패했습니다." }, { status: 500 });
+  } catch (err) {
+    return operationalErrorResponse(err, "문의 접수에 실패했습니다.", "inquiries");
   }
 }

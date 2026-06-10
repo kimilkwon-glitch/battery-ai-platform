@@ -1616,57 +1616,57 @@
   }
 }
 
-/* 메인 검색 — 히어로 compound 높이·타이포 확대 */
-.home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
-  min-height: 4rem;
-  gap: 0.625rem;
-  padding-inline: 1rem;
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-}
-
-.home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger > span:first-of-type {
-  width: 2rem;
-  height: 2rem;
-}
-
-.home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger .truncate {
-  font-size: 0.9375rem;
-  font-weight: 800;
-}
-
-.home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
-  min-height: 4rem;
-  padding-inline: 1.125rem;
-  font-size: 1.1875rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.home-main-search-shell .home-hero-search-compound--premium .home-main-search-input::placeholder {
-  font-size: 1.0625rem;
-  font-weight: 500;
-  color: #94a3b8;
-}
-
-.home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
-  min-height: 4rem;
-  min-width: 5.75rem;
-  padding-inline: 1.25rem;
-  font-size: 1.0625rem;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  color: #ffffff;
-  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 52%, #1d4ed8 100%);
-  border: none;
-  border-left: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  transition:
-    background 200ms ease,
-    box-shadow 200ms ease,
-    filter 200ms ease;
-}
-
+/* 메인 검색 — 히어로 compound 높이·타이포 확대 (640px 이상만 — 모바일 icon-submit은 mobile-customer-roles.css) */
 @media (min-width: 640px) {
+  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
+    min-height: 4rem;
+    gap: 0.625rem;
+    padding-inline: 1rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger > span:first-of-type {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger .truncate {
+    font-size: 0.9375rem;
+    font-weight: 800;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
+    min-height: 4rem;
+    padding-inline: 1.125rem;
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input::placeholder {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: #94a3b8;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium button[type="submit"] {
+    min-height: 4rem;
+    min-width: 5.75rem;
+    padding-inline: 1.25rem;
+    font-size: 1.0625rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 52%, #1d4ed8 100%);
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    transition:
+      background 200ms ease,
+      box-shadow 200ms ease,
+      filter 200ms ease;
+  }
+
   .home-main-search-shell .home-hero-search-compound--premium .home-search-type-trigger {
     min-height: 4.5rem;
     padding-inline: 1.125rem;

@@ -1,4 +1,5 @@
 import { AdminConsultationSettingsCard } from "@/components/admin/AdminConsultationSettingsCard";
+import { AdminOperationalDataStatus } from "@/components/admin/AdminOperationalDataStatus";
 import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,11 +37,13 @@ export default function AdminSettingsPage() {
         <AdminConsultationSettingsCard />
         <Card>
           <CardHeader>
-            <CardTitle>데이터 저장</CardTitle>
+            <CardTitle>데이터 저장 (Neon Postgres)</CardTitle>
           </CardHeader>
-          <CardContent className="text-xs text-slate-600">
-            <p>주문 요청: .data/order-requests.json (개발용)</p>
-            <p className="mt-2 text-slate-500">영구 DB(Supabase/Postgres) 연동은 추후 적용 예정</p>
+          <CardContent>
+            <AdminOperationalDataStatus />
+            <p className="mt-3 text-xs text-slate-500">
+              마이그레이션: npm run db:migrate:operational-data
+            </p>
           </CardContent>
         </Card>
       </div>

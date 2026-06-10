@@ -13,7 +13,6 @@ import {
   getInquiryPageUrl,
 } from "@/lib/inquiry/inquiry-form-shared";
 import { submitInquiry } from "@/lib/inquiry-storage";
-import { CONTACT } from "@/lib/contact-info";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import {
   COMMERCE_ORDER_LOOKUP_PAGE,
@@ -25,15 +24,12 @@ import {
   type FaqCategory,
 } from "@/lib/support-faq-data";
 import {
-  SUPPORT_HUB_BOTTOM_LINKS,
   SUPPORT_HUB_CATEGORIES,
   SUPPORT_HUB_FAQ_INITIAL_LIMIT,
   SUPPORT_HUB_FAQ_QUICK_LINKS,
   SUPPORT_HUB_MOBILE_FAQ_PRIORITY,
-  SUPPORT_HUB_MOBILE_QUICK_LINKS,
   SUPPORT_HUB_NOTICE_INITIAL_LIMIT,
   SUPPORT_HUB_PRIMARY_CTAS,
-  SUPPORT_HUB_SECONDARY_CTAS,
   faqCategoryToHub,
   type SupportHubCategoryId,
   type SupportHubCtaVariant,
@@ -102,27 +98,19 @@ export function SupportCenterHubV2({ notices }: Props) {
   const [category, setCategory] = useState<SupportHubCategoryId>("all");
   const [openFaqId, setOpenFaqId] = useState<string | null>(null);
   const [faqExpanded, setFaqExpanded] = useState(false);
-  const [inquiryExpanded, setInquiryExpanded] = useState(false);
   const [noticesExpanded, setNoticesExpanded] = useState(false);
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
   const [inquirySubmitting, setInquirySubmitting] = useState(false);
 
-  const expandInquiryAndScroll = useCallback(() => {
-    setInquiryExpanded(true);
-    requestAnimationFrame(() => {
-      document.getElementById("support-inquiry-contact")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
+  const scrollToInquiry = useCallback(() => {
+    document.getElementById("support-inquiry")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   useEffect(() => {
     if (searchParams.get("tab") === "inquiry") {
-      if (isMobile) {
-        expandInquiryAndScroll();
-      } else {
-        document.getElementById("support-inquiry")?.scrollIntoView({ behavior: "smooth" });
-      }
+      scrollToInquiry();
     }
-  }, [searchParams, isMobile, expandInquiryAndScroll]);
+  }, [searchParams, scrollToInquiry]);
 
   const q = query.trim().toLowerCase();
 
@@ -188,14 +176,6 @@ export function SupportCenterHubV2({ notices }: Props) {
     });
     setInquirySubmitting(false);
     if (result.ok) setInquirySubmitted(true);
-  };
-
-  const scrollToInquiry = () => {
-    if (isMobile) {
-      expandInquiryAndScroll();
-      return;
-    }
-    document.querySelector(".support-hub-v2__inquiry--sidebar")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -360,153 +340,32 @@ export function SupportCenterHubV2({ notices }: Props) {
             </div>
           </section>
 
-          <section className="support-hub-v2__quick-menu lg:hidden" aria-label="빠른 안내">
-            <h2 className="support-hub-v2__section-title">빠른 안내</h2>
-            <div className="support-hub-v2__quick-grid">
-              {SUPPORT_HUB_MOBILE_QUICK_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className="support-hub-v2__quick-btn">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </section>
+          <QuickActionsCard className="lg:hidden" />
 
-          <section id="support-notices-mobile" className="support-hub-v2__notices-mobile lg:hidden">
-            <div className="flex items-center justify-between gap-2">
-              <h2 className="support-hub-v2__section-title">최근 안내</h2>
-            </div>
-            <ol className="support-hub-v2__notice-list support-hub-v2__notice-list--compact">
-              {mobileNotices.map((notice) => (
-                <li key={notice.id}>
-                  <Link href={`/support/notices/${notice.id}`} className="support-hub-v2__notice-row">
-                    <span className="support-hub-v2__notice-row-inner">
-                      <SupportNoticeBadge important={notice.important} />
-                      <span className="support-hub-v2__notice-title">{notice.title}</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-            {!noticesExpanded && hiddenNoticeCount > 0 ? (
-              <button
-                type="button"
-                className="support-hub-v2__faq-more support-hub-v2__faq-more--compact mt-2"
-                onClick={() => setNoticesExpanded(true)}
-              >
-                최근 안내 더보기 (+{hiddenNoticeCount})
-              </button>
-            ) : null}
-          </section>
+          <RecentNoticesCard
+            className="lg:hidden"
+            notices={mobileNotices}
+            hiddenCount={hiddenNoticeCount}
+            expanded={noticesExpanded}
+            onExpand={() => setNoticesExpanded(true)}
+          />
 
           <section
             id="support-inquiry"
             className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--main scroll-mt-24 lg:hidden"
           >
-            {inquiryExpanded || inquirySubmitted ? (
-              <InquiryForm
-                inquirySubmitted={inquirySubmitted}
-                submitting={inquirySubmitting}
-                onSubmit={handleInquirySubmit}
-              />
-            ) : (
-              <div className="support-hub-v2__inquiry-collapsed">
-                <h2 className="support-hub-v2__section-title text-base">상담 문의 접수</h2>
-                <p className="mt-1 text-sm text-slate-600">연락처와 문의 내용만 남겨 주세요.</p>
-                <button
-                  type="button"
-                  className="support-hub-v2__cta support-hub-v2__cta--secondary support-hub-v2__inquiry-open mt-4 w-full"
-                  onClick={expandInquiryAndScroll}
-                >
-                  상담 문의하기
-                </button>
-              </div>
-            )}
+            <InquiryForm
+              inquirySubmitted={inquirySubmitted}
+              submitting={inquirySubmitting}
+              onSubmit={handleInquirySubmit}
+            />
           </section>
         </div>
 
-        <aside className="support-hub-v2__sidebar hidden space-y-3 lg:block">
-          <div className="support-hub-v2__side-card support-hub-v2__side-card--consult">
-            <h3 className="support-hub-v2__side-title">상담이 필요하신가요?</h3>
-            <p className="support-hub-v2__side-desc">
-              차량 정보나 주문 확인이 필요하시면 고객센터로 문의해 주세요.
-            </p>
-            <div className="support-hub-v2__phone-list">
-              <div className="support-hub-v2__phone-list-item">
-                <span className="font-bold text-slate-700">{CONTACT.customerCenter.label}</span>
-                <a href={CONTACT.customerCenter.tel} className="support-hub-v2__phone-number hover:underline">
-                  {CONTACT.customerCenter.phone}
-                </a>
-              </div>
-            </div>
-            <button
-              type="button"
-              className="support-hub-v2__cta support-hub-v2__cta--primary mt-3 w-full"
-              onClick={scrollToInquiry}
-            >
-              상담 문의하기
-            </button>
-            <p className="mt-3 text-[11px] font-medium text-slate-500">
-              가까운 매장 정보는{" "}
-              <Link href={HUB_STORE_DETAIL} className="font-bold text-blue-700 hover:underline">
-                매장 안내
-              </Link>
-              에서 확인하실 수 있습니다.
-            </p>
-          </div>
+        <aside className="support-hub-v2__sidebar hidden space-y-4 lg:block">
+          <QuickActionsCard />
 
-          <div className="support-hub-v2__side-card support-hub-v2__side-card--store">
-            <h3 className="support-hub-v2__side-title">매장·출장 안내</h3>
-            <p className="support-hub-v2__side-desc">
-              부산 덕천점·학장점 위치와 출장 가능 권역을 확인하세요.
-            </p>
-            <Link
-              href={HUB_STORE_DETAIL}
-              className="support-hub-v2__cta support-hub-v2__cta--secondary mt-3 w-full"
-            >
-              매장 안내 보기
-            </Link>
-          </div>
-
-          <div className="support-hub-v2__side-card support-hub-v2__side-card--lookup">
-            <h3 className="support-hub-v2__side-title">주문 조회</h3>
-            <p className="support-hub-v2__side-desc">
-              주문번호와 연락처로 결제·주문 내역을 확인할 수 있습니다.
-            </p>
-            <Link
-              href={COMMERCE_ORDER_LOOKUP_PAGE}
-              className="support-hub-v2__cta support-hub-v2__cta--secondary mt-3 w-full"
-            >
-              주문 조회하기
-            </Link>
-            <Link
-              href={ORDER_REQUEST_LOOKUP_PAGE}
-              className="mt-2 block text-center text-xs font-bold text-slate-600 underline"
-            >
-              상담 접수 조회
-            </Link>
-          </div>
-
-          <div id="support-notices" className="support-hub-v2__side-card">
-            <div className="flex items-center justify-between gap-2">
-              <h3 className="support-hub-v2__side-title">최근 안내</h3>
-              <span className="text-[11px] font-bold text-slate-500">배송·운영 안내</span>
-            </div>
-            <p className="support-hub-v2__side-desc">
-              배송, 운영시간, 이벤트 안내를 확인하세요.
-            </p>
-            <ol className="support-hub-v2__notice-list support-hub-v2__notice-list--compact">
-              {recentNotices.map((notice) => (
-                <li key={notice.id}>
-                  <Link href={`/support/notices/${notice.id}`} className="support-hub-v2__notice-row">
-                    <span className="support-hub-v2__notice-row-inner">
-                      <SupportNoticeBadge important={notice.important} />
-                      <span className="support-hub-v2__notice-title">{notice.title}</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </div>
+          <RecentNoticesCard notices={recentNotices} />
 
           <section className="support-hub-v2__side-card support-hub-v2__inquiry support-hub-v2__inquiry--sidebar scroll-mt-24">
             <InquiryForm
@@ -516,23 +375,6 @@ export function SupportCenterHubV2({ notices }: Props) {
             />
           </section>
         </aside>
-      </div>
-
-      <section className="support-hub-v2__bottom-grid hidden lg:grid" aria-label="안내 바로가기">
-        {SUPPORT_HUB_BOTTOM_LINKS.map((link) => (
-          <Link key={link.href} href={link.href} className="support-hub-v2__bottom-card">
-            <span>{link.label}</span>
-            <span>{link.desc}</span>
-          </Link>
-        ))}
-      </section>
-
-      <div className="hidden flex-wrap justify-center gap-2 lg:flex lg:justify-start">
-        {SUPPORT_HUB_SECONDARY_CTAS.map((cta) => (
-          <Link key={cta.href} href={cta.href} className="support-hub-v2__chip support-hub-v2__chip--link">
-            {cta.label}
-          </Link>
-        ))}
       </div>
     </div>
   );
@@ -545,6 +387,76 @@ function SupportNoticeBadge({ important }: { important?: boolean }) {
   return <span className="support-hub-v2__notice-badge support-hub-v2__notice-badge--info">안내</span>;
 }
 
+function QuickActionsCard({ className }: { className?: string }) {
+  return (
+    <section
+      className={clsx("support-hub-v2__side-card support-hub-v2__side-card--quick", className)}
+      aria-label="자주 찾는 기능"
+    >
+      <h3 className="support-hub-v2__side-title">자주 찾는 기능</h3>
+      <p className="support-hub-v2__side-desc">주문 확인과 매장 안내를 빠르게 이용하세요.</p>
+      <div className="support-hub-v2__quick-actions">
+        <Link href={COMMERCE_ORDER_LOOKUP_PAGE} className="support-hub-v2__quick-action">
+          주문 조회
+        </Link>
+        <Link href={ORDER_REQUEST_LOOKUP_PAGE} className="support-hub-v2__quick-action">
+          상담 접수 조회
+        </Link>
+        <Link href={HUB_STORE_DETAIL} className="support-hub-v2__quick-action">
+          매장·출장 안내
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function RecentNoticesCard({
+  notices,
+  hiddenCount = 0,
+  expanded = true,
+  onExpand,
+  className,
+}: {
+  notices: SupportNotice[];
+  hiddenCount?: number;
+  expanded?: boolean;
+  onExpand?: () => void;
+  className?: string;
+}) {
+  return (
+    <section
+      id="support-notices"
+      className={clsx("support-hub-v2__side-card support-hub-v2__side-card--notices", className)}
+      aria-label="최근 안내"
+    >
+      <h3 className="support-hub-v2__side-title">최근 안내</h3>
+      <p className="support-hub-v2__side-desc">배송·운영·이벤트 공지를 확인하세요.</p>
+      <ol className="support-hub-v2__notice-list support-hub-v2__notice-list--airy">
+        {notices.map((notice) => (
+          <li key={notice.id}>
+            <Link href={`/support/notices/${notice.id}`} className="support-hub-v2__notice-row">
+              <SupportNoticeBadge important={notice.important} />
+              <span className="support-hub-v2__notice-body">
+                <span className="support-hub-v2__notice-title">{notice.title}</span>
+                <span className="support-hub-v2__notice-date">{notice.date}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+      {!expanded && hiddenCount > 0 && onExpand ? (
+        <button
+          type="button"
+          className="support-hub-v2__faq-more support-hub-v2__faq-more--compact mt-3 w-full"
+          onClick={onExpand}
+        >
+          최근 안내 더보기 (+{hiddenCount})
+        </button>
+      ) : null}
+    </section>
+  );
+}
+
 function InquiryForm({
   inquirySubmitted,
   submitting,
@@ -555,14 +467,17 @@ function InquiryForm({
   onSubmit: (values: SimpleInquiryFormValues) => void | Promise<void>;
 }) {
   return (
-    <>
-      <h2 className="support-hub-v2__section-title text-base">문의 접수</h2>
+    <div className="support-hub-v2__inquiry-card">
+      <h2 className="support-hub-v2__inquiry-title">문의 접수</h2>
+      <p className="support-hub-v2__inquiry-lead">
+        문의 유형을 선택하고 연락처와 내용을 남겨주세요.
+      </p>
       {inquirySubmitted ? (
-        <p className="mt-4 rounded-xl bg-emerald-50 px-4 py-5 text-center text-sm font-semibold text-emerald-800">
-          문의가 접수되었습니다.
+        <p className="support-hub-v2__inquiry-success">
+          문의가 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.
         </p>
       ) : (
-        <div className="support-hub-v2__inquiry-form mt-3">
+        <div className="support-hub-v2__inquiry-form">
           <SimpleInquiryForm
             contactInputId="support-inquiry-contact"
             chips={SUPPORT_INQUIRY_CHIPS}
@@ -574,6 +489,6 @@ function InquiryForm({
           />
         </div>
       )}
-    </>
+    </div>
   );
 }

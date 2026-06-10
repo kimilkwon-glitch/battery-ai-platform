@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
 import { BatteryGallery } from "@/components/BatteryGallery";
 import { BatteryWishlistButton } from "@/components/battery/BatteryWishlistButton";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
@@ -11,8 +10,6 @@ import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { inferBrandIdFromCode } from "@/lib/battery-brand-inference";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { getNormalizedBatterySummary, formatDimensions } from "@/lib/battery-knowledge";
-import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
-import { CONTACT } from "@/lib/contact-info";
 import { getBattery, getBrand } from "@/lib/platform-data";
 import type { BatteryReturnOption } from "@/lib/shop-order-types";
 
@@ -208,34 +205,6 @@ export function BatteryDetailOrderPanel({
                 source: "battery_detail",
               }}
             />
-          </div>
-
-          <div className="battery-product-detail__consult mt-4 border-t border-slate-100 pt-4">
-            <p className="text-sm font-black text-slate-900">규격이 맞는지 확인이 필요하신가요?</p>
-            <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
-              이 상품 문의는 하단 상품문의 탭에서 남겨 주세요. 급한 상담은 고객센터로 연락해 주세요.
-            </p>
-            <a
-              href={CONTACT.customerCenter.tel}
-              className="mt-2 inline-block text-base font-black text-[#0F1B33] hover:text-blue-700"
-            >
-              {CONTACT.customerCenter.phone}
-            </a>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <button
-                type="button"
-                className={`${bm.btnSecondary} text-xs font-black`}
-                onClick={() => {
-                  document.getElementById("battery-tab-qna")?.click();
-                  document.getElementById("battery-qna")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-              >
-                상품 문의 보기
-              </button>
-              <Link href={HUB_STORE_DETAIL} className={`${bm.btnTertiary} text-xs font-black`}>
-                매장 안내
-              </Link>
-            </div>
           </div>
         </div>
       </div>

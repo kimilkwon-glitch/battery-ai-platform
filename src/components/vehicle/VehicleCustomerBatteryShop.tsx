@@ -159,12 +159,6 @@ function BrandProductCard({
         ) : null}
         <div className="vehicle-recommended-card__actions">
           <Link
-            href={specHref}
-            className={`vehicle-recommended-card__btn-detail ${bm.btnSecondary} justify-center px-3 text-xs font-black`}
-          >
-            상세보기
-          </Link>
-          <Link
             href={orderHref}
             className={`vehicle-recommended-card__btn-order ${bm.btnPrimary} justify-center px-3 text-xs font-black`}
             data-vehicle-slug={vehicleSlug}
@@ -172,6 +166,12 @@ function BrandProductCard({
             data-brand={brandId}
           >
             주문하기
+          </Link>
+          <Link
+            href={specHref}
+            className={`vehicle-recommended-card__btn-detail ${bm.btnSecondary} justify-center px-3 text-xs font-black`}
+          >
+            상세보기
           </Link>
         </div>
       </div>

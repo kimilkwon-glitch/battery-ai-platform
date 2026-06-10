@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { operationalErrorResponse } from "@/lib/db/operational-api-errors";
 import { validateCreateOrderRequestInput } from "@/lib/order-request/order-request-validation";
 import { createOrderRequest } from "@/lib/order-request/order-request-service";
 
@@ -7,7 +8,7 @@ export const revalidate = 0;
 
 /**
  * POST — 상담 주문 요청 생성 (11차)
- * 저장: .data/order-requests.json (개발용, 운영 전 DB 교체 필요)
+ * 저장: Postgres (DATABASE_URL) · dev만 JSON fallback
  */
 export async function POST(request: Request) {
   let body: unknown;
@@ -33,10 +34,11 @@ export async function POST(request: Request) {
         createdAt: record.createdAt,
       },
     });
-  } catch {
-    return NextResponse.json(
-      { ok: false, errors: ["접수 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."] },
-      { status: 500 },
+  } catch (err) {
+    return operationalErrorResponse(
+      err,
+      "접수 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      "order_requests",
     );
   }
 }

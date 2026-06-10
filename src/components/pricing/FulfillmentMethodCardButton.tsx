@@ -31,15 +31,17 @@ export function FulfillmentMethodCardButton({
         active ? " product-fulfillment-card--active checkout-fulfillment-card--active" : ""
       }`}
     >
-      <span className="product-fulfillment-card__row">
-        <span className="product-fulfillment-card__icon" aria-hidden>
-          <Icon className="size-4" />
-        </span>
-        <span className="product-fulfillment-card__label-wrap">
-          <span className="product-fulfillment-card__label">{label}</span>
-          {meta.recommended ? (
-            <span className="product-fulfillment-card__badge">추천</span>
-          ) : null}
+      <span className="product-fulfillment-card__inner">
+        <span className="product-fulfillment-card__row product-fulfillment-card__row--top">
+          <span className="product-fulfillment-card__icon" aria-hidden>
+            <Icon className="size-4" />
+          </span>
+          <span className="product-fulfillment-card__label-wrap">
+            <span className="product-fulfillment-card__label">{label}</span>
+            {meta.recommended ? (
+              <span className="product-fulfillment-card__badge">추천</span>
+            ) : null}
+          </span>
         </span>
         {priceLabel ? (
           <span className="product-fulfillment-card__price">{priceLabel}</span>
