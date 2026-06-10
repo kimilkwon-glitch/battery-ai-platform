@@ -18,7 +18,11 @@ export type BatteryTalkMessage = {
   sender: BatteryTalkMessageSender;
   body: string;
   createdAt: string;
+  /** 관리자 회수 처리 시각 — 내부 상담 기록용 */
+  recalledAt?: string | null;
 };
+
+export const BATTERY_TALK_RECALLED_MESSAGE_LABEL = "관리자가 회수한 메시지입니다.";
 
 export type BatteryTalkContext = {
   pageUrl?: string;

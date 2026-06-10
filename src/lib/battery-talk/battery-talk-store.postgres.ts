@@ -16,6 +16,7 @@ import {
   batteryTalkToSummary,
   buildSystemMessages,
   contextMatchesReuse,
+  filterBatteryTalkSummariesForAdmin,
   filterBatteryTalkThreadsForAdmin,
   lastNonSystemPreview,
   newBatteryTalkId,
@@ -62,6 +63,7 @@ type MessageRow = {
   sender_name: string | null;
   message: string;
   created_at: string;
+  recalled_at?: string | null;
 };
 
 function rowToMessage(row: MessageRow): BatteryTalkMessage {
@@ -70,6 +72,7 @@ function rowToMessage(row: MessageRow): BatteryTalkMessage {
     sender: row.sender_type as BatteryTalkMessageSender,
     body: row.message,
     createdAt: row.created_at,
+    recalledAt: row.recalled_at ?? null,
   };
 }
 
@@ -110,7 +113,7 @@ async function loadMessagesForSession(sessionId: string): Promise<BatteryTalkMes
   await ensureOperationalSchema();
   const sql = getSql();
   const rows = (await sql`
-    SELECT id, session_id, sender_type, sender_name, message, created_at
+    SELECT id, session_id, sender_type, sender_name, message, created_at, recalled_at
     FROM battery_talk_messages
     WHERE session_id = ${sessionId}
     ORDER BY created_at ASC
@@ -358,7 +361,36 @@ export async function batteryTalkList(
     });
   }
 
-  return threads.map(batteryTalkToSummary);
+  let summaries = threads.map(batteryTalkToSummary);
+  if (!filters.includeTestData) {
+    summaries = filterBatteryTalkSummariesForAdmin(summaries);
+  }
+  return summaries;
+}
+
+export async function batteryTalkRecallAdminMessage(
+  threadId: string,
+  messageId: string,
+): Promise<BatteryTalkThread | null> {
+  await ensureOperationalSchema();
+  const sql = getSql();
+  const prev = await loadThreadById(threadId);
+  if (!prev) return null;
+  const target = prev.messages.find((m) => m.id === messageId);
+  if (!target || target.sender !== "admin" || target.recalledAt) return null;
+
+  await sql`
+    UPDATE battery_talk_messages
+    SET recalled_at = NOW()
+    WHERE id = ${messageId}
+      AND session_id = ${threadId}
+      AND sender_type = 'admin'
+      AND recalled_at IS NULL
+  `;
+
+  const thread = (await loadThreadById(threadId))!;
+  await publishBatteryTalkRealtime(sql, sessionRealtimeEvent(batteryTalkToSummary(thread)));
+  return thread;
 }
 
 export async function batteryTalkGetByIdPeek(threadId: string): Promise<BatteryTalkThread | null> {

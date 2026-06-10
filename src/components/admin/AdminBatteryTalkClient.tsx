@@ -2,14 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { AdminBatteryTalkTemplateManager } from "@/components/admin/AdminBatteryTalkTemplateManager";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
+import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import {
   formatAdminCustomerName,
   formatAdminInquiryMessage,
+  formatBatteryTalkCardPreview,
 } from "@/lib/admin/admin-display-labels";
-import { Badge } from "@/components/ui/badge";
 import type { BatteryTalkThreadDetail } from "@/lib/battery-talk/battery-talk-enrichment";
 import { BatteryTalkSseStatusBanner } from "@/components/batterytalk/BatteryTalkSseStatusBanner";
 import {
@@ -18,11 +20,12 @@ import {
 } from "@/lib/battery-talk/battery-talk-realtime-client";
 import {
   BATTERY_TALK_PAGE_TYPE_LABELS,
-  BATTERY_TALK_REPLY_TEMPLATES,
+  BATTERY_TALK_RECALLED_MESSAGE_LABEL,
   BATTERY_TALK_STATUS_LABELS,
   type BatteryTalkThreadStatus,
   type BatteryTalkThreadSummary,
 } from "@/types/battery-talk";
+import type { BatteryTalkReplyTemplate } from "@/types/battery-talk-reply-template";
 
 const STATUS_TABS: { id: BatteryTalkThreadStatus | "all"; label: string }[] = [
   { id: "all", label: "전체" },
@@ -33,18 +36,17 @@ const STATUS_TABS: { id: BatteryTalkThreadStatus | "all"; label: string }[] = [
 ];
 
 const STATUS_BADGE: Record<BatteryTalkThreadStatus, string> = {
-  waiting: "bg-amber-100 text-amber-800",
-  active: "bg-blue-100 text-blue-800",
-  done: "bg-emerald-100 text-emerald-800",
-  hold: "bg-slate-200 text-slate-700",
+  waiting: "admin-bt-badge admin-bt-badge--waiting",
+  active: "admin-bt-badge admin-bt-badge--active",
+  done: "admin-bt-badge admin-bt-badge--done",
+  hold: "admin-bt-badge admin-bt-badge--hold",
 };
 
 type MobileView = "list" | "chat" | "info";
 
 function formatTime(iso: string): string {
   try {
-    const d = new Date(iso);
-    return d.toLocaleString("ko-KR", {
+    return new Date(iso).toLocaleString("ko-KR", {
       month: "short",
       day: "numeric",
       hour: "2-digit",
@@ -55,7 +57,8 @@ function formatTime(iso: string): string {
   }
 }
 
-function extractBatteryCode(productName?: string): string | null {
+function extractBatteryCode(productName?: string, batteryCode?: string): string | null {
+  if (batteryCode?.trim()) return batteryCode.trim().toUpperCase();
   if (!productName) return null;
   const m = productName.match(/\b(CMF|GB|AGM|DIN)?\d{2,3}[LR]\b/i);
   return m ? m[0].toUpperCase() : null;
@@ -66,21 +69,44 @@ function formatAmount(amount: number | null | undefined): string {
   return `${amount.toLocaleString("ko-KR")}원`;
 }
 
+function vehicleLine(row: BatteryTalkThreadSummary): string | null {
+  const parts = [row.vehicleName, row.productName].filter(Boolean);
+  return parts.length ? parts.join(" · ") : null;
+}
+
 export function AdminBatteryTalkClient() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
+  const initialThreadId = searchParams.get("threadId")?.trim() || null;
+
   const [items, setItems] = useState<BatteryTalkThreadSummary[]>([]);
   const [detail, setDetail] = useState<BatteryTalkThreadDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [statusTab, setStatusTab] = useState<BatteryTalkThreadStatus | "all">("all");
   const [query, setQuery] = useState(initialQuery);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(initialThreadId);
   const [replyDraft, setReplyDraft] = useState("");
   const [memoDraft, setMemoDraft] = useState("");
   const [saving, setSaving] = useState(false);
   const [mobileView, setMobileView] = useState<MobileView>("list");
   const [storeWarning, setStoreWarning] = useState<string | null>(null);
+  const [templates, setTemplates] = useState<BatteryTalkReplyTemplate[]>([]);
+  const [showAllTemplates, setShowAllTemplates] = useState(false);
+  const [templateManagerOpen, setTemplateManagerOpen] = useState(false);
+  const [orderModalId, setOrderModalId] = useState<string | null>(null);
+
+  const enabledTemplates = useMemo(
+    () => templates.filter((t) => t.enabled).sort((a, b) => a.sortOrder - b.sortOrder),
+    [templates],
+  );
+  const visibleTemplates = showAllTemplates ? enabledTemplates : enabledTemplates.slice(0, 6);
+
+  const loadTemplates = useCallback(async () => {
+    const res = await fetch("/api/admin/battery-talk/reply-templates", { credentials: "include" });
+    const data = await res.json();
+    if (res.ok && data.ok) setTemplates(data.templates ?? []);
+  }, []);
 
   const loadList = useCallback(async () => {
     setLoading(true);
@@ -124,7 +150,8 @@ export function AdminBatteryTalkClient() {
 
   useEffect(() => {
     void loadList();
-  }, [loadList]);
+    void loadTemplates();
+  }, [loadList, loadTemplates]);
 
   useEffect(() => {
     if (selectedId) void loadDetail(selectedId);
@@ -186,6 +213,11 @@ export function AdminBatteryTalkClient() {
     setMobileView("chat");
   };
 
+  const applyDetail = (data: BatteryTalkThreadDetail) => {
+    setDetail(data);
+    setMemoDraft(data.thread?.adminMemo ?? "");
+  };
+
   const sendReply = async () => {
     if (!selectedId || !replyDraft.trim()) return;
     setSaving(true);
@@ -199,7 +231,7 @@ export function AdminBatteryTalkClient() {
     setSaving(false);
     if (res.ok && data.ok) {
       setReplyDraft("");
-      setDetail({
+      applyDetail({
         thread: data.thread,
         inquiryCount: data.inquiryCount,
         order: data.order,
@@ -207,6 +239,31 @@ export function AdminBatteryTalkClient() {
         vehicle: data.vehicle,
       });
       void loadList();
+    }
+  };
+
+  const recallMessage = async (messageId: string) => {
+    if (!selectedId || !confirm("이 메시지를 회수하시겠습니까?")) return;
+    setSaving(true);
+    const res = await fetch(
+      `/api/admin/battery-talk/${selectedId}/messages/${messageId}`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "recall" }),
+      },
+    );
+    const data = await res.json();
+    setSaving(false);
+    if (res.ok && data.ok) {
+      applyDetail({
+        thread: data.thread,
+        inquiryCount: data.inquiryCount,
+        order: data.order,
+        product: data.product,
+        vehicle: data.vehicle,
+      });
     }
   };
 
@@ -222,7 +279,7 @@ export function AdminBatteryTalkClient() {
     const data = await res.json();
     setSaving(false);
     if (res.ok && data.ok) {
-      setDetail({
+      applyDetail({
         thread: data.thread,
         inquiryCount: data.inquiryCount,
         order: data.order,
@@ -245,16 +302,20 @@ export function AdminBatteryTalkClient() {
     setSaving(false);
   };
 
+  const handleReplyKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      void sendReply();
+    }
+  };
+
   const thread = detail?.thread;
   const ctx = thread?.context;
   const pageType = ctx?.pageType;
 
-  const listPanelClass =
-    mobileView !== "list" ? "admin-battery-talk__panel--hidden-mobile" : "";
-  const chatPanelClass =
-    mobileView !== "chat" ? "admin-battery-talk__panel--hidden-mobile" : "";
-  const infoPanelClass =
-    mobileView !== "info" ? "admin-battery-talk__panel--hidden-mobile" : "";
+  const listPanelClass = mobileView !== "list" ? "admin-battery-talk__panel--hidden-mobile" : "";
+  const chatPanelClass = mobileView !== "chat" ? "admin-battery-talk__panel--hidden-mobile" : "";
+  const infoPanelClass = mobileView !== "info" ? "admin-battery-talk__panel--hidden-mobile" : "";
 
   return (
     <div className="admin-battery-talk">
@@ -264,6 +325,7 @@ export function AdminBatteryTalkClient() {
         </p>
       ) : null}
       <BatteryTalkSseStatusBanner show={streamDisconnected} variant="admin" />
+
       <div className="admin-battery-talk__mobile-tabs lg:hidden">
         {(
           [
@@ -284,7 +346,6 @@ export function AdminBatteryTalkClient() {
       </div>
 
       <div className="admin-battery-talk__layout">
-        {/* 왼쪽: 상담 목록 */}
         <aside className={`admin-battery-talk__list ${listPanelClass}`}>
           <div className="admin-battery-talk__list-head">
             <input
@@ -308,152 +369,193 @@ export function AdminBatteryTalkClient() {
           </div>
           <div className="admin-battery-talk__cards">
             {loading ? (
-              <p className="p-3 text-sm text-slate-500">불러오는 중…</p>
+              <p className="admin-battery-talk__list-empty">불러오는 중…</p>
             ) : items.length === 0 ? (
-              <p className="p-3 text-sm font-semibold text-slate-500">아직 등록된 내용이 없습니다.</p>
+              <div className="admin-battery-talk__list-empty-wrap">
+                <p className="admin-battery-talk__list-empty-title">확인할 상담이 없습니다</p>
+                <p className="admin-battery-talk__list-empty-desc">
+                  새 상담이 접수되면 이곳에 표시됩니다.
+                </p>
+              </div>
             ) : (
-              items.map((row) => (
-                <button
-                  key={row.threadId}
-                  type="button"
-                  className={`admin-battery-talk__card ${row.threadId === selectedId ? "admin-battery-talk__card--selected" : ""} ${row.unreadByAdmin ? "admin-battery-talk__card--unread" : ""}`}
-                  onClick={() => selectThread(row.threadId)}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="admin-battery-talk__card-title">
-                      {formatAdminCustomerName(row.customerName) || "비회원"}
-                    </span>
-                    <Badge className={STATUS_BADGE[row.status]}>
-                      {BATTERY_TALK_STATUS_LABELS[row.status]}
-                    </Badge>
-                  </div>
-                  {(row.productName || row.vehicleName) && (
-                    <p className="admin-battery-talk__card-sub">
-                      {row.vehicleName ? `${row.vehicleName}` : ""}
-                      {row.productName && row.vehicleName ? " · " : ""}
-                      {row.productName ?? ""}
-                    </p>
-                  )}
-                  {extractBatteryCode(row.productName) ? (
-                    <span className="admin-battery-talk__card-code">
-                      {extractBatteryCode(row.productName)}
-                    </span>
-                  ) : null}
-                  <p className="admin-battery-talk__card-preview">
-                    {formatAdminInquiryMessage(row.lastMessagePreview)}
-                  </p>
-                  <div className="admin-battery-talk__card-meta">
-                    <span>
-                      {row.hasProduct ? "상품" : ""}
-                      {row.hasOrder ? " · 주문" : ""}
-                    </span>
-                    <span>{formatTime(row.lastMessageAt)}</span>
-                  </div>
-                </button>
-              ))
+              items.map((row) => {
+                const preview = formatBatteryTalkCardPreview(row.lastMessagePreview);
+                const spec = extractBatteryCode(row.productName, undefined);
+                const vehicle = vehicleLine(row);
+                return (
+                  <button
+                    key={row.threadId}
+                    type="button"
+                    className={`admin-battery-talk__card ${row.threadId === selectedId ? "admin-battery-talk__card--selected" : ""} ${row.unreadByAdmin ? "admin-battery-talk__card--unread" : ""}`}
+                    onClick={() => selectThread(row.threadId)}
+                  >
+                    <div className="admin-battery-talk__card-top">
+                      <span className="admin-battery-talk__card-title">
+                        {formatAdminCustomerName(row.customerName)}
+                      </span>
+                      <span className={STATUS_BADGE[row.status]}>
+                        {BATTERY_TALK_STATUS_LABELS[row.status]}
+                      </span>
+                    </div>
+                    {vehicle ? (
+                      <p className="admin-battery-talk__card-vehicle">{vehicle}</p>
+                    ) : null}
+                    {spec ? <span className="admin-battery-talk__spec-pill">{spec}</span> : null}
+                    {preview ? (
+                      <p className="admin-battery-talk__card-preview">{preview}</p>
+                    ) : null}
+                    <p className="admin-battery-talk__card-time">{formatTime(row.lastMessageAt)}</p>
+                  </button>
+                );
+              })
             )}
           </div>
         </aside>
 
-        {/* 가운데: 대화창 */}
         <section className={`admin-battery-talk__chat ${chatPanelClass}`}>
           {!selectedId ? (
-            <div className="flex flex-1 items-center justify-center p-8 text-sm font-semibold text-slate-500">
-              왼쪽에서 상담을 선택하세요.
+            <div className="admin-battery-talk__chat-empty">
+              <p className="admin-battery-talk__chat-empty-title">상담을 선택하세요</p>
+              <p className="admin-battery-talk__chat-empty-desc">
+                왼쪽 목록에서 상담을 선택하면 대화와 답변창이 표시됩니다.
+              </p>
             </div>
           ) : detailLoading && !thread ? (
-            <div className="flex flex-1 items-center justify-center p-8 text-sm text-slate-500">
-              불러오는 중…
-            </div>
+            <div className="admin-battery-talk__chat-empty">불러오는 중…</div>
           ) : thread ? (
             <>
               <header className="admin-battery-talk__chat-head">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <h3 className="text-base font-black text-slate-900">
-                      {formatAdminCustomerName(thread.customerName)} · {thread.phone}
-                    </h3>
-                    <p className="text-xs font-semibold text-slate-500">
-                      접수: {pageType ? BATTERY_TALK_PAGE_TYPE_LABELS[pageType] : "배터리톡"}
-                      {ctx?.topic ? ` · ${ctx.topic}` : ""}
-                    </p>
-                  </div>
-                  <Badge className={STATUS_BADGE[thread.status]}>
-                    {BATTERY_TALK_STATUS_LABELS[thread.status]}
-                  </Badge>
+                <div className="admin-battery-talk__chat-head-main">
+                  <h3 className="admin-battery-talk__chat-title">
+                    {formatAdminCustomerName(thread.customerName)}
+                  </h3>
+                  <p className="admin-battery-talk__chat-sub">
+                    {pageType ? BATTERY_TALK_PAGE_TYPE_LABELS[pageType] : "배터리톡 상담"}
+                    {ctx?.topic ? ` · ${ctx.topic}` : ""}
+                  </p>
                 </div>
+                <span className={STATUS_BADGE[thread.status]}>
+                  {BATTERY_TALK_STATUS_LABELS[thread.status]}
+                </span>
               </header>
 
               <div className="admin-battery-talk__messages">
-                {thread.messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`admin-battery-talk__bubble admin-battery-talk__bubble--${msg.sender}`}
-                  >
-                    <p>{formatAdminInquiryMessage(msg.body)}</p>
-                    {msg.sender !== "system" ? (
-                      <p className="admin-battery-talk__bubble-time">
-                        {msg.sender === "admin" ? "관리자 · " : "고객 · "}
-                        {formatTime(msg.createdAt)}
-                      </p>
-                    ) : null}
+                {thread.messages.length === 0 ? (
+                  <div className="admin-battery-talk__chat-empty">
+                    <p>아직 대화가 없습니다.</p>
                   </div>
-                ))}
+                ) : (
+                  thread.messages.map((msg) => {
+                    const recalled = Boolean(msg.recalledAt);
+                    const isAdmin = msg.sender === "admin";
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`admin-battery-talk__bubble-wrap admin-battery-talk__bubble-wrap--${msg.sender}`}
+                      >
+                        <div
+                          className={`admin-battery-talk__bubble admin-battery-talk__bubble--${msg.sender}${recalled ? " admin-battery-talk__bubble--recalled" : ""}`}
+                        >
+                          <p>
+                            {recalled
+                              ? BATTERY_TALK_RECALLED_MESSAGE_LABEL
+                              : formatAdminInquiryMessage(msg.body)}
+                          </p>
+                          {msg.sender !== "system" ? (
+                            <p className="admin-battery-talk__bubble-time">
+                              {isAdmin ? "관리자" : "고객"} · {formatTime(msg.createdAt)}
+                            </p>
+                          ) : null}
+                        </div>
+                        {isAdmin && !recalled ? (
+                          <button
+                            type="button"
+                            className="admin-battery-talk__recall-btn"
+                            disabled={saving}
+                            onClick={() => void recallMessage(msg.id)}
+                          >
+                            회수
+                          </button>
+                        ) : null}
+                      </div>
+                    );
+                  })
+                )}
               </div>
 
               <footer className="admin-battery-talk__composer">
-                <div className="admin-battery-talk__templates">
-                  {BATTERY_TALK_REPLY_TEMPLATES.map((tpl) => (
+                <div className="admin-battery-talk__quick-reply">
+                  <div className="admin-battery-talk__quick-reply-head">
+                    <span className="admin-battery-talk__quick-reply-label">빠른답변</span>
                     <button
-                      key={tpl.id}
                       type="button"
-                      className="admin-battery-talk__template-btn"
-                      onClick={() =>
-                        setReplyDraft((prev) => (prev ? `${prev}\n\n${tpl.body}` : tpl.body))
-                      }
+                      className="admin-battery-talk__quick-reply-manage"
+                      onClick={() => setTemplateManagerOpen(true)}
                     >
-                      {tpl.label}
+                      템플릿 관리
                     </button>
-                  ))}
+                  </div>
+                  <div className="admin-battery-talk__quick-reply-pills">
+                    {visibleTemplates.map((tpl) => (
+                      <button
+                        key={tpl.id}
+                        type="button"
+                        className="admin-battery-talk__quick-pill"
+                        onClick={() => setReplyDraft(tpl.body)}
+                      >
+                        {tpl.name}
+                      </button>
+                    ))}
+                    {enabledTemplates.length > 6 ? (
+                      <button
+                        type="button"
+                        className="admin-battery-talk__quick-pill admin-battery-talk__quick-pill--more"
+                        onClick={() => setShowAllTemplates((v) => !v)}
+                      >
+                        {showAllTemplates ? "접기" : "더보기"}
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
                 <textarea
                   className="admin-battery-talk__reply-input"
-                  placeholder="관리자 답변을 입력하세요. (저장 후 대화창에 표시됩니다)"
+                  placeholder="관리자 답변을 입력하세요. Enter로 발송됩니다."
                   value={replyDraft}
                   onChange={(e) => setReplyDraft(e.target.value)}
+                  onKeyDown={handleReplyKeyDown}
                   rows={3}
                 />
                 <div className="admin-battery-talk__composer-actions">
                   <button
                     type="button"
-                    className="admin-btn admin-btn--primary"
+                    className="admin-btn admin-btn--primary admin-btn--md"
                     disabled={saving || !replyDraft.trim()}
                     onClick={() => void sendReply()}
                   >
-                    {saving ? "저장 중…" : "답변 저장"}
+                    {saving ? "발송 중…" : "발송"}
                   </button>
                   <button
                     type="button"
-                    className="admin-btn admin-btn--secondary"
+                    className="admin-btn admin-btn--secondary admin-btn--md"
                     disabled={saving || thread.status === "done"}
                     onClick={() => void patchStatus("done")}
                   >
-                    완료 처리
+                    상담완료
                   </button>
-                  {thread.status === "waiting" ? (
+                  {thread.status !== "active" ? (
                     <button
                       type="button"
-                      className="admin-btn admin-btn--ghost"
+                      className="admin-btn admin-btn--ghost admin-btn--md"
                       disabled={saving}
                       onClick={() => void patchStatus("active")}
                     >
-                      진행중으로
+                      진행중
                     </button>
                   ) : null}
                   {thread.status !== "hold" ? (
                     <button
                       type="button"
-                      className="admin-btn admin-btn--ghost"
+                      className="admin-btn admin-btn--ghost admin-btn--md"
                       disabled={saving}
                       onClick={() => void patchStatus("hold")}
                     >
@@ -466,12 +568,11 @@ export function AdminBatteryTalkClient() {
           ) : null}
         </section>
 
-        {/* 오른쪽: 고객/주문/상품 정보 */}
         <aside className={`admin-battery-talk__info ${infoPanelClass}`}>
           {!thread ? (
-            <p className="p-4 text-sm text-slate-500">상담을 선택하면 정보가 표시됩니다.</p>
+            <p className="admin-battery-talk__info-placeholder">상담을 선택하면 정보가 표시됩니다.</p>
           ) : (
-            <>
+            <div className="admin-battery-talk__info-scroll">
               <div className="admin-battery-talk__info-card">
                 <h4>고객 정보</h4>
                 <div className="admin-battery-talk__info-row">
@@ -483,11 +584,11 @@ export function AdminBatteryTalkClient() {
                   <strong>{thread.phone}</strong>
                 </div>
                 <div className="admin-battery-talk__info-row">
-                  <span>회원 여부</span>
+                  <span>회원</span>
                   <strong>{thread.isMember ? "회원" : "비회원"}</strong>
                 </div>
                 <div className="admin-battery-talk__info-row">
-                  <span>배터리톡 문의 수</span>
+                  <span>상담 건수</span>
                   <strong>{detail?.inquiryCount ?? 1}건</strong>
                 </div>
               </div>
@@ -497,7 +598,7 @@ export function AdminBatteryTalkClient() {
                 {detail?.vehicle || ctx?.vehicleName ? (
                   <>
                     <div className="admin-battery-talk__info-row">
-                      <span>차량명</span>
+                      <span>차량</span>
                       <strong>{detail?.vehicle?.vehicleName ?? ctx?.vehicleName}</strong>
                     </div>
                     {ctx?.selectedFuel ? (
@@ -511,7 +612,7 @@ export function AdminBatteryTalkClient() {
                     ) : null}
                   </>
                 ) : (
-                  <p className="admin-battery-talk__empty-info">차량 정보 없음</p>
+                  <p className="admin-battery-talk__muted">정보 없음</p>
                 )}
               </div>
 
@@ -542,7 +643,7 @@ export function AdminBatteryTalkClient() {
                     ) : null}
                   </>
                 ) : (
-                  <p className="admin-battery-talk__empty-info">연결된 상품 없음</p>
+                  <p className="admin-battery-talk__muted">연결된 상품 없음</p>
                 )}
               </div>
 
@@ -552,7 +653,13 @@ export function AdminBatteryTalkClient() {
                   <>
                     <div className="admin-battery-talk__info-row">
                       <span>주문번호</span>
-                      <strong>{detail.order.orderNumber}</strong>
+                      <strong>
+                        <AdminOrderNumberButton
+                          orderId={detail.order.orderId}
+                          orderNumber={detail.order.orderNumber}
+                          onOpen={setOrderModalId}
+                        />
+                      </strong>
                     </div>
                     <div className="admin-battery-talk__info-row">
                       <span>주문일</span>
@@ -567,35 +674,25 @@ export function AdminBatteryTalkClient() {
                       <strong>{formatAmount(detail.order.finalAmount)}</strong>
                     </div>
                     <div className="admin-battery-talk__info-row">
-                      <span>수령/장착</span>
+                      <span>수령</span>
                       <strong>{detail.order.fulfillmentLabel}</strong>
-                    </div>
-                    <div className="admin-battery-talk__info-row">
-                      <span>폐배터리 반납</span>
-                      <strong>{detail.order.returnBatteryOption}</strong>
-                    </div>
-                    <div className="admin-battery-talk__info-row">
-                      <span>주문 상태</span>
-                      <strong>{detail.order.orderStatus}</strong>
                     </div>
                     <Link
                       href={`/admin/orders?channel=commerce&orderId=${encodeURIComponent(detail.order.orderId)}`}
-                      className="mt-2 inline-block text-xs font-bold text-blue-700 hover:underline"
+                      className="admin-battery-talk__info-link"
                     >
-                      관리자 주문 상세
+                      주문관리에서 열기
                     </Link>
                   </>
                 ) : ctx?.cartSummary ? (
                   <>
-                    <p className="mb-2 text-xs font-bold text-slate-600">주문 전 · 장바구니/결제 요약</p>
-                    <p className="whitespace-pre-wrap text-sm text-slate-700">{ctx.cartSummary}</p>
+                    <p className="admin-battery-talk__info-note">주문 전 · 장바구니 요약</p>
+                    <p className="admin-battery-talk__cart-summary">{ctx.cartSummary}</p>
                   </>
                 ) : (
                   <>
-                    <p className="admin-battery-talk__empty-info">연결된 주문 없음</p>
-                    <p className="mt-1 text-xs font-semibold text-slate-500">
-                      상품 상담만 접수된 문의입니다.
-                    </p>
+                    <p className="admin-battery-talk__muted">연결된 주문 없음</p>
+                    <p className="admin-battery-talk__info-note">상품 상담 접수된 문의입니다.</p>
                   </>
                 )}
               </div>
@@ -610,17 +707,24 @@ export function AdminBatteryTalkClient() {
                 />
                 <button
                   type="button"
-                  className="admin-btn admin-btn--secondary mt-2"
+                  className="admin-btn admin-btn--secondary admin-btn--md mt-2"
                   disabled={saving}
                   onClick={() => void saveMemo()}
                 >
                   메모 저장
                 </button>
               </div>
-            </>
+            </div>
           )}
         </aside>
       </div>
+
+      <AdminBatteryTalkTemplateManager
+        open={templateManagerOpen}
+        onClose={() => setTemplateManagerOpen(false)}
+        onUpdated={setTemplates}
+      />
+      <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
     </div>
   );
 }

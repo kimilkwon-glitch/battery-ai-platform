@@ -131,7 +131,9 @@ export type AdminDashboardCardTone = "urgent" | "progress" | "done" | "info" | "
 export type AdminDashboardWorkbenchView =
   | "new_order"
   | "preparing"
+  | "needs_invoice"
   | "in_progress"
+  | "completed"
   | "cancel_request"
   | "return_exchange";
 

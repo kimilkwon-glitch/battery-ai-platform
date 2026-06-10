@@ -14,7 +14,10 @@ export function AdminSettlementClient({ summary }: Props) {
     <div className="space-y-5">
       <div className="admin-panel border-amber-100 bg-amber-50/60 p-4">
         <p className="text-sm font-semibold text-amber-900">
-          토스 결제 연동 후 실제 정산 데이터와 연결됩니다. 현재는 주문·결제 데이터 기준 요약만 표시합니다.
+          토스 결제 연동 후 실제 정산 데이터와 연결됩니다.
+        </p>
+        <p className="mt-1 text-sm font-medium text-amber-800">
+          현재는 주문/결제 기록 기준으로 확인 가능한 금액만 표시합니다.
         </p>
       </div>
 
@@ -27,16 +30,29 @@ export function AdminSettlementClient({ summary }: Props) {
           <div className="admin-dashboard-section__grid admin-dashboard-section__grid--5">
             <StatCard label="오늘 결제금액" value={formatPriceWon(summary.todayPaidAmount)} tone="info" />
             <StatCard label="이번 달 결제금액" value={formatPriceWon(summary.monthPaidAmount)} tone="info" />
-            <StatCard label="누적 결제 완료" value={formatPriceWon(summary.paidAmount)} tone="default" />
-            <StatCard label="취소 금액" value={formatPriceWon(summary.canceledAmount)} tone="warn" />
-            <StatCard label="환불 금액" value={formatPriceWon(summary.refundedAmount)} tone="warn" />
-          </div>
-          <div className="admin-dashboard-section__grid">
-            <StatCard label="주문 건수(실제)" value={summary.orderCount.toLocaleString("ko-KR")} />
+            <StatCard
+              label="취소/환불 금액"
+              value={formatPriceWon(summary.canceledAmount + summary.refundedAmount)}
+              tone="warn"
+            />
             <StatCard
               label="예상 정산금"
               value={formatPriceWon(summary.estimatedSettlement)}
               tone="primary"
+            />
+            <StatCard label="누적 결제 완료" value={formatPriceWon(summary.paidAmount)} tone="default" />
+          </div>
+
+          <div className="admin-dashboard-section__grid admin-dashboard-section__grid--4">
+            <PlaceholderCard
+              label="결제수단별 내역"
+              note="토스 연동 후 표시"
+            />
+            <PlaceholderCard label="부가세 자료" note="토스 연동 후 표시" />
+            <PlaceholderCard label="엑셀 다운로드" note="연동 후 제공" />
+            <StatCard
+              label="주문 건수(실제)"
+              value={summary.orderCount.toLocaleString("ko-KR")}
             />
           </div>
 
@@ -80,6 +96,16 @@ function StatCard({
     <div className="admin-stat-card">
       <p className="admin-stat-card__label">{label}</p>
       <p className={`admin-stat-card__value ${toneClass}`}>{value}</p>
+    </div>
+  );
+}
+
+function PlaceholderCard({ label, note }: { label: string; note: string }) {
+  return (
+    <div className="admin-stat-card border-dashed border-slate-300 bg-slate-50/80">
+      <p className="admin-stat-card__label">{label}</p>
+      <p className="admin-stat-card__value admin-stat-card__value--default text-lg">준비중</p>
+      <p className="admin-stat-card__desc">{note}</p>
     </div>
   );
 }

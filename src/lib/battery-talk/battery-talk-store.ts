@@ -120,6 +120,14 @@ export async function batteryTalkCountByPhone(phone: string): Promise<number> {
   return store.batteryTalkCountByPhone(phone);
 }
 
+export async function batteryTalkRecallAdminMessage(
+  threadId: string,
+  messageId: string,
+): Promise<BatteryTalkThread | null> {
+  const store = await getStoreImpl();
+  return store.batteryTalkRecallAdminMessage(threadId, messageId);
+}
+
 /** dev JSON 경로 — postgres 모드에서는 null */
 export const BATTERY_TALK_STORE_PATH = isBatteryTalkDbMode()
   ? null

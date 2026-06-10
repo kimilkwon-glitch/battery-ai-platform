@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { fulfillmentTypeLabel, orderStatusLabel, paymentStatusLabel } from "@/lib/orders/commerce-order-mine";
@@ -102,6 +103,7 @@ export function AdminCommerceClaimsClient() {
   const [needsNotice, setNeedsNotice] = useState(false);
   const [saving, setSaving] = useState(false);
   const [dataScope, setDataScope] = useState<"production" | "test" | "all">("production");
+  const [orderModalId, setOrderModalId] = useState<string | null>(null);
 
   const scopedItems = useMemo(() => {
     if (dataScope === "all") return items;
@@ -287,7 +289,13 @@ export function AdminCommerceClaimsClient() {
                       onClick={() => setSelectedId(row.id)}
                     >
                       <td className="whitespace-nowrap">{formatDt(row.requestedAt)}</td>
-                      <td className="admin-table__mono">{row.orderNumber}</td>
+                      <td className="admin-table__mono" onClick={(e) => e.stopPropagation()}>
+                        <AdminOrderNumberButton
+                          orderId={row.orderId}
+                          orderNumber={row.orderNumber}
+                          onOpen={setOrderModalId}
+                        />
+                      </td>
                       <td className="font-bold">{CLAIM_TYPE_LABELS[row.claimType]}</td>
                       <td>
                         <span className="admin-order-status-badge">{ADMIN_CLAIM_STATUS_LABELS[row.claimStatus]}</span>
@@ -341,12 +349,20 @@ export function AdminCommerceClaimsClient() {
                   ))}
                 </ul>
               ) : null}
-              <Link
-                href={`${ADMIN_ROUTES.orders}?channel=commerce&orderId=${encodeURIComponent(detail.claim.orderId)}`}
-                className="font-bold text-blue-700 hover:underline"
-              >
-                주문 {detail.claim.orderNumber} 보기
-              </Link>
+              <p>
+                <span className="font-bold text-slate-500">주문번호 </span>
+                <AdminOrderNumberButton
+                  orderId={detail.claim.orderId}
+                  orderNumber={detail.claim.orderNumber}
+                  onOpen={setOrderModalId}
+                />
+                <Link
+                  href={`${ADMIN_ROUTES.orders}?channel=commerce&orderId=${encodeURIComponent(detail.claim.orderId)}`}
+                  className="ml-2 text-[11px] font-bold text-slate-500 hover:text-blue-700 hover:underline"
+                >
+                  주문 작업대에서 열기
+                </Link>
+              </p>
             </section>
 
             {detail.order ? (
@@ -465,6 +481,8 @@ export function AdminCommerceClaimsClient() {
         ) : null}
       </aside>
       ) : null}
+
+      <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
     </div>
   );
 }

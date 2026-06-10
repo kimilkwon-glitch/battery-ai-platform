@@ -3,12 +3,12 @@ import "server-only";
 import { cache } from "react";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { buildClaimWorkbenchContext } from "@/lib/admin/claim-dashboard-counts";
+import { buildOrderFlowCards } from "@/lib/admin/dashboard-panel";
 import { filterUnifiedRowsByDataScope } from "@/lib/admin/order-data-scope";
 import { rowNeedsOperatorAction } from "@/lib/admin/order-workbench";
 import {
   commerceToUnifiedRow,
   consultationToUnifiedRow,
-  countWorkbenchView,
   type UnifiedAdminOrderRow,
 } from "@/lib/admin/unified-orders";
 import { claimList } from "@/lib/claims/claim-store";
@@ -39,54 +39,17 @@ export type AdminWorkbenchSnapshot = {
 };
 
 function buildActionCards(
-  unifiedRows: UnifiedAdminOrderRow[],
+  productionRows: UnifiedAdminOrderRow[],
   claimContext: OrderWorkbenchClaimContext,
 ): AdminTodayTaskItem[] {
-  const count = (view: Parameters<typeof countWorkbenchView>[1]) =>
-    countWorkbenchView(unifiedRows, view, "production", claimContext);
-
-  return [
-    {
-      label: "신규주문",
-      description: "결제 완료·발주확인 전 주문입니다.",
-      count: count("new_order"),
-      view: "new_order",
-      href: `${ADMIN_ROUTES.orders}?view=new_order`,
-      tone: "urgent",
-    },
-    {
-      label: "상품준비",
-      description: "발주확인 후 포장·출고 준비 단계입니다.",
-      count: count("preparing"),
-      view: "preparing",
-      href: `${ADMIN_ROUTES.orders}?view=preparing`,
-      tone: "progress",
-    },
-    {
-      label: "배송/출장중",
-      description: "배송·출장·매장 방문이 진행 중입니다.",
-      count: count("in_progress"),
-      view: "in_progress",
-      href: `${ADMIN_ROUTES.orders}?view=in_progress`,
-      tone: "progress",
-    },
-    {
-      label: "취소요청",
-      description: "고객 취소 접수·처리 전입니다.",
-      count: count("cancel_request"),
-      view: "cancel_request",
-      href: `${ADMIN_ROUTES.orders}?view=cancel_request`,
-      tone: "urgent",
-    },
-    {
-      label: "반품/교환요청",
-      description: "반품·교환 접수·처리 전입니다.",
-      count: count("return_exchange"),
-      view: "return_exchange",
-      href: `${ADMIN_ROUTES.orders}?view=return_exchange`,
-      tone: "urgent",
-    },
-  ];
+  return buildOrderFlowCards(productionRows, claimContext).map((card) => ({
+    label: card.label,
+    description: card.description,
+    count: card.count,
+    view: card.panel as AdminTodayTaskItem["view"],
+    href: `${ADMIN_ROUTES.orders}?view=${card.panel}`,
+    tone: card.tone,
+  }));
 }
 
 function buildRecentUnifiedOrders(rows: UnifiedAdminOrderRow[]): AdminRecentUnifiedOrder[] {
@@ -147,7 +110,7 @@ async function loadAdminWorkbenchSnapshotImpl(): Promise<AdminWorkbenchSnapshot>
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const productionRows = filterUnifiedRowsByDataScope(unifiedRows, "production");
-  const actionCards = buildActionCards(unifiedRows, claimContext);
+  const actionCards = buildActionCards(productionRows, claimContext);
 
   return {
     unifiedRows,

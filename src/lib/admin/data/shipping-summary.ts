@@ -9,8 +9,11 @@ export type AdminShippingQueueItem = {
   id: string;
   orderNumber: string;
   customerName: string;
+  customerPhone: string;
   productName: string;
   batteryCode: string;
+  fulfillmentLabel: string;
+  deliveryAddressSummary: string;
   orderStatus: string;
   orderStatusLabel: string;
   shippingCarrier?: string;
@@ -57,8 +60,11 @@ export async function loadAdminShippingSummary(): Promise<AdminShippingSummary> 
           id: row.id,
           orderNumber: row.orderNumber,
           customerName: row.customerName,
+          customerPhone: row.customerPhone,
           productName: row.productName,
           batteryCode: row.batteryCode,
+          fulfillmentLabel: row.fulfillmentLabel,
+          deliveryAddressSummary: "택배 배송",
           orderStatus: row.orderStatus,
           orderStatusLabel: row.orderStatusLabel,
           shippingCarrier: carrier,
@@ -71,8 +77,11 @@ export async function loadAdminShippingSummary(): Promise<AdminShippingSummary> 
           id: row.id,
           orderNumber: row.orderNumber,
           customerName: row.customerName,
+          customerPhone: row.customerPhone,
           productName: row.productName,
           batteryCode: row.batteryCode,
+          fulfillmentLabel: row.fulfillmentLabel,
+          deliveryAddressSummary: "택배 배송",
           orderStatus: row.orderStatus,
           orderStatusLabel: row.orderStatusLabel,
           shippingCarrier: carrier,

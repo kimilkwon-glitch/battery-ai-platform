@@ -1,4 +1,4 @@
-import { filterAdminTestInquiries } from "@/lib/admin/admin-test-data-filter";
+import { filterAdminTestInquiries, isAdminTestInquiry } from "@/lib/admin/admin-test-data-filter";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import {
   BATTERY_TALK_SYSTEM_WELCOME,
@@ -98,11 +98,64 @@ export function threadToInquiryShape(t: BatteryTalkThread): CustomerInquiryRecor
   };
 }
 
+export function isAdminNoiseBatteryTalkSummary(summary: BatteryTalkThreadSummary): boolean {
+  const shape = {
+    id: summary.threadId,
+    name: summary.customerName,
+    contact: summary.phone,
+    message: summary.lastMessagePreview,
+    vehicle: summary.vehicleName,
+    inquiryType: summary.pageType,
+  };
+  if (isAdminTestInquiry(shape)) return true;
+
+  const name = (summary.customerName ?? "").trim();
+  const preview = (summary.lastMessagePreview ?? "").trim();
+  const isGenericName = name === "고객" || name === "비회원" || name === "고객님";
+  const isSystemOnlyPreview =
+    !preview ||
+    preview === BATTERY_TALK_SYSTEM_WELCOME ||
+    preview.startsWith("배터리매니저입니다.") ||
+    preview.startsWith("현재 보고 계신 상품");
+
+  if (isGenericName && isSystemOnlyPreview && !summary.hasOrder && !summary.unreadByAdmin) {
+    return true;
+  }
+  return false;
+}
+
+export function isAdminNoiseBatteryTalkThread(thread: BatteryTalkThread): boolean {
+  const summary = batteryTalkToSummary(thread);
+  const customerMsgs = thread.messages.filter((m) => m.sender === "customer");
+  if (customerMsgs.length === 0 && isAdminNoiseBatteryTalkSummary(summary)) {
+    return true;
+  }
+  return isAdminNoiseBatteryTalkSummary(summary);
+}
+
 export function filterBatteryTalkThreadsForAdmin(threads: BatteryTalkThread[]): BatteryTalkThread[] {
   const allowed = new Set(
     filterAdminTestInquiries(threads.map(threadToInquiryShape)).map((r) => r.id),
   );
-  return threads.filter((t) => allowed.has(t.threadId));
+  return threads.filter((t) => allowed.has(t.threadId) && !isAdminNoiseBatteryTalkThread(t));
+}
+
+export function filterBatteryTalkSummariesForAdmin(
+  summaries: BatteryTalkThreadSummary[],
+): BatteryTalkThreadSummary[] {
+  const allowed = new Set(
+    filterAdminTestInquiries(
+      summaries.map((s) => ({
+        id: s.threadId,
+        name: s.customerName,
+        contact: s.phone,
+        message: s.lastMessagePreview,
+        vehicle: s.vehicleName,
+        inquiryType: s.pageType,
+      })),
+    ).map((r) => r.id),
+  );
+  return summaries.filter((s) => allowed.has(s.threadId) && !isAdminNoiseBatteryTalkSummary(s));
 }
 
 export function contextMatchesReuse(

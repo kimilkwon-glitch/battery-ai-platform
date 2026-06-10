@@ -190,6 +190,10 @@ async function runMigration(): Promise<void> {
       ON battery_talk_messages (session_id, created_at)
   `;
   await sql`
+    ALTER TABLE battery_talk_messages
+      ADD COLUMN IF NOT EXISTS recalled_at TIMESTAMPTZ
+  `;
+  await sql`
     CREATE INDEX IF NOT EXISTS idx_battery_talk_sessions_status_updated
       ON battery_talk_sessions (status, updated_at DESC)
   `;

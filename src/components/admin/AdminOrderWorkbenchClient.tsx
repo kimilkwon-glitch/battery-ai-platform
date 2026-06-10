@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AdminCommerceOrderOpsPanel } from "@/components/admin/AdminCommerceOrderOpsPanel";
+import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import { OrderRequestDetailPanel } from "@/components/admin/order-requests/OrderRequestDetailPanel";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import {
@@ -104,6 +105,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [consultDetail, setConsultDetail] = useState<OrderRequestRecord | null>(null);
   const [consultLoading, setConsultLoading] = useState(false);
+  const [orderModalId, setOrderModalId] = useState<string | null>(null);
 
   useEffect(() => {
     if (dataScope === "production") {
@@ -647,13 +649,21 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                         })}
                       </td>
                       <td className="admin-table__mono font-mono">
-                        <button
-                          type="button"
-                          className="text-left text-blue-800 hover:underline"
-                          onClick={() => selectRow(row)}
-                        >
-                          {row.orderNumber}
-                        </button>
+                        {row.channel === "commerce" ? (
+                          <AdminOrderNumberButton
+                            orderId={row.id}
+                            orderNumber={row.orderNumber}
+                            onOpen={setOrderModalId}
+                          />
+                        ) : (
+                          <button
+                            type="button"
+                            className="text-left text-blue-800 hover:underline"
+                            onClick={() => selectRow(row)}
+                          >
+                            {row.orderNumber}
+                          </button>
+                        )}
                         {row.isTestOrder ? (
                           <span className="ml-1 rounded bg-violet-100 px-1 py-0.5 text-[10px] font-bold text-violet-800">
                             테스트
@@ -767,6 +777,8 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
           </div>
         </div>
       ) : null}
+
+      <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
     </div>
   );
 }

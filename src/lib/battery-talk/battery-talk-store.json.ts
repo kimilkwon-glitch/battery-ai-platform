@@ -19,6 +19,7 @@ import {
   batteryTalkToSummary,
   buildSystemMessages,
   contextMatchesReuse,
+  filterBatteryTalkSummariesForAdmin,
   filterBatteryTalkThreadsForAdmin,
   newBatteryTalkId,
   normalizeOpenContext,
@@ -278,7 +279,11 @@ export async function batteryTalkList(
   }
 
   const limit = filters.limit ?? 500;
-  return threads.slice(0, limit).map(batteryTalkToSummary);
+  let summaries = threads.slice(0, limit).map(batteryTalkToSummary);
+  if (!filters.includeTestData) {
+    summaries = filterBatteryTalkSummariesForAdmin(summaries);
+  }
+  return summaries;
 }
 
 export async function batteryTalkGetByIdPeek(threadId: string): Promise<BatteryTalkThread | null> {
@@ -389,6 +394,29 @@ export async function batteryTalkCountUnread(): Promise<number> {
   await ensureLegacyMigration();
   const threads = await loadThreads();
   return threads.filter((t) => t.unreadByAdmin).length;
+}
+
+export async function batteryTalkRecallAdminMessage(
+  threadId: string,
+  messageId: string,
+): Promise<BatteryTalkThread | null> {
+  const threads = await loadThreads();
+  const idx = threads.findIndex((t) => t.threadId === threadId);
+  if (idx < 0) return null;
+  const prev = threads[idx]!;
+  const msgIdx = prev.messages.findIndex((m) => m.id === messageId);
+  if (msgIdx < 0) return null;
+  const msg = prev.messages[msgIdx]!;
+  if (msg.sender !== "admin" || msg.recalledAt) return null;
+
+  const now = new Date().toISOString();
+  const nextMessages = [...prev.messages];
+  nextMessages[msgIdx] = { ...msg, recalledAt: now };
+  const next: BatteryTalkThread = { ...prev, messages: nextMessages, updatedAt: now };
+  threads[idx] = next;
+  await saveThreads(threads);
+  emitBatteryTalkSessionUpdate(batteryTalkToSummary(next));
+  return next;
 }
 
 export async function batteryTalkCountByPhone(phone: string): Promise<number> {

@@ -2321,6 +2321,161 @@
   color: #1e40af;
 }
 
+[data-admin-console] .admin-dashboard__top-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1200px) {
+  [data-admin-console] .admin-dashboard__top-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
+    align-items: start;
+  }
+}
+
+[data-admin-console] .admin-dashboard__settlement {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+}
+
+[data-admin-console] .admin-dashboard-section__grid--4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  [data-admin-console] .admin-dashboard-section__grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+[data-admin-console] .admin-consultation-summary--alert {
+  border-color: #93c5fd;
+  background: linear-gradient(135deg, #eff6ff 0%, #fff 70%);
+  box-shadow: 0 0 0 1px rgb(147 197 253 / 40%);
+}
+
+[data-admin-console] .admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+[data-admin-console] .admin-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(15 23 42 / 45%);
+  border: none;
+}
+
+[data-admin-console] .admin-modal__panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  max-height: min(90vh, 720px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.85rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow: 0 20px 50px rgb(15 23 42 / 18%);
+  overflow: hidden;
+}
+
+[data-admin-console] .admin-modal__panel--wide {
+  width: min(100%, 720px);
+}
+
+[data-admin-console] .admin-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-admin-console] .admin-modal__title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+[data-admin-console] .admin-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+[data-admin-console] .admin-modal__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-admin-console] .admin-order-detail-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  [data-admin-console] .admin-order-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+[data-admin-console] .admin-order-detail-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  background: #f8fafc;
+}
+
+[data-admin-console] .admin-order-detail-card h4 {
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+[data-admin-console] .admin-order-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+  font-size: 0.8125rem;
+}
+
+[data-admin-console] .admin-order-detail-row__label {
+  color: #64748b;
+  font-weight: 600;
+}
+
+[data-admin-console] .admin-order-detail-row__value {
+  color: #0f172a;
+  font-weight: 700;
+  text-align: right;
+}
+
+[data-admin-console] .admin-shipping-bulk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
 [data-admin-console] .admin-table tbody tr.admin-table__row--clickable:hover,
 [data-admin-console] .admin-table tbody tr:hover {
   background: #f8fafc;

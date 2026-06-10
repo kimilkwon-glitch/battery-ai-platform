@@ -42,15 +42,24 @@ export function AdminProductsToolbar() {
 
   return (
     <div className="space-y-3">
+      <div className="admin-panel border-slate-200 bg-slate-50/60 p-4">
+        <p className="text-sm font-bold text-slate-800">상품 정보 등록·보완</p>
+        <p className="mt-1 text-sm font-medium text-slate-600">
+          기존 카탈로그 상품의 가격/상태/이미지/상세 정보를 보완합니다. 신규 카탈로그 SKU 생성은
+          별도 과제입니다.
+        </p>
+      </div>
       <div className="admin-toolbar">
-        <p className="admin-toolbar__hint">CSV로 가격·이미지·상세 누락 목록을보내거나 업로드 미리보기를 할 수 있습니다.</p>
+        <p className="admin-toolbar__hint">
+          CSV로 가격·이미지·상세 누락 목록을보내거나 업로드 미리보기를 할 수 있습니다.
+        </p>
         <div className="admin-toolbar__actions">
           <button
             type="button"
             className="admin-btn admin-btn--primary admin-btn--md"
             onClick={() => setRegisterOpen(true)}
           >
-            상품 정보 등록
+            상품 정보 등록·보완
           </button>
           <button type="button" className="admin-btn admin-btn--secondary admin-btn--md" onClick={handleExport}>
             전체 CSV 다운로드
