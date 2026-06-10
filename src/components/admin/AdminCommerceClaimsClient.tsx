@@ -77,6 +77,7 @@ function parseClaimStatus(raw: string | null): ClaimStatus | "all" {
 export function AdminCommerceClaimsClient() {
   const searchParams = useSearchParams();
   const initialClaimId = searchParams.get("claimId")?.trim() ?? "";
+  const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
 
   const [items, setItems] = useState<CommerceClaimSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,7 +87,7 @@ export function AdminCommerceClaimsClient() {
   const [statusFilter, setStatusFilter] = useState<ClaimStatus | "all">(
     parseClaimStatus(searchParams.get("status")),
   );
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [selectedId, setSelectedId] = useState<string | null>(initialClaimId || null);
   const [detail, setDetail] = useState<{
     claim: CommerceClaimRecord;

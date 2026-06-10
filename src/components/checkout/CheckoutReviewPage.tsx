@@ -295,7 +295,9 @@ export function CheckoutReviewPage() {
             <dl className="grid gap-2 text-xs sm:grid-cols-2">
               <div>
                 <dt className="font-bold text-slate-500">차량명</dt>
-                <dd className="font-black text-slate-900">{session.vehicle.name ?? "미입력"}</dd>
+                <dd className="font-black text-slate-900">
+                  {session.vehicle.name?.trim() || "차량 기준 확인 필요"}
+                </dd>
               </div>
               <div>
                 <dt className="font-bold text-slate-500">연식</dt>

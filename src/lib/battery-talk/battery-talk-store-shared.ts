@@ -27,6 +27,8 @@ export type BatteryTalkOpenThreadInput = {
 
 export type BatteryTalkListFilters = {
   status?: BatteryTalkThreadStatus | "all" | null;
+  /** false(기본): 관리자 목록용 테스트 데이터 제외. true: 주문 상세 related-activity 등 매칭 전용 */
+  includeTestData?: boolean;
   q?: string | null;
   limit?: number;
 };
@@ -92,6 +94,7 @@ export function threadToInquiryShape(t: BatteryTalkThread): CustomerInquiryRecor
     contact: t.phone,
     message: t.messages[0]?.body ?? "",
     source: "batterytalk",
+    adminMemo: t.adminMemo,
   };
 }
 

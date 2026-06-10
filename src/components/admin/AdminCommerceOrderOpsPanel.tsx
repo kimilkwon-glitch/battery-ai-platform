@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AdminCommerceOrderClaimsPanel } from "@/components/admin/AdminCommerceOrderClaimsPanel";
+import { AdminOrderRelatedActivityPanel } from "@/components/admin/AdminOrderRelatedActivityPanel";
 import { CommercePaymentMetaPanel } from "@/components/admin/CommercePaymentMetaPanel";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { fulfillmentTypeLabel, paymentStatusLabel } from "@/lib/orders/commerce-order-mine";
@@ -286,6 +287,8 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
           </button>
         </section>
       ) : null}
+
+      <AdminOrderRelatedActivityPanel order={order} adminMeta={adminMeta} />
 
       <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
         <h3 className="text-xs font-black text-slate-900">관리자 메모</h3>

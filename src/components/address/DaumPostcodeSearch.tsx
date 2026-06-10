@@ -58,16 +58,19 @@ type Props = {
   onSelect: (result: DaumPostcodeResult) => void;
   className?: string;
   label?: string;
+  dialogTitle?: string;
 };
 
 export function DaumPostcodeSearchButton({
   onSelect,
   className = "",
-  label = "주소 검색",
+  label = "주소 검색하기",
+  dialogTitle = "주소 검색",
 }: Props) {
   const [loading, setLoading] = useState(false);
   const layerRef = useRef<HTMLDivElement>(null);
   const [layerOpen, setLayerOpen] = useState(false);
+  const [pendingMobileEmbed, setPendingMobileEmbed] = useState(false);
 
   const handleComplete = useCallback(
     (data: DaumPostcodeData) => {
@@ -81,24 +84,31 @@ export function DaumPostcodeSearchButton({
     [onSelect],
   );
 
+  const embedMobileLayer = useCallback(async () => {
+    if (!layerRef.current) return;
+    await loadDaumPostcodeScript();
+    const Postcode = window.daum?.Postcode;
+    if (!Postcode) throw new Error("Postcode unavailable");
+    layerRef.current.innerHTML = "";
+    new Postcode({
+      oncomplete: handleComplete,
+      width: "100%",
+      height: "100%",
+    }).embed(layerRef.current);
+  }, [handleComplete]);
+
   const openSearch = useCallback(async () => {
     setLoading(true);
     try {
-      await loadDaumPostcodeScript();
-      const Postcode = window.daum?.Postcode;
-      if (!Postcode) throw new Error("Postcode unavailable");
-
-      if (window.innerWidth < 640 && layerRef.current) {
+      if (window.innerWidth < 640) {
         setLayerOpen(true);
-        layerRef.current.innerHTML = "";
-        new Postcode({
-          oncomplete: handleComplete,
-          width: "100%",
-          height: "100%",
-        }).embed(layerRef.current);
+        setPendingMobileEmbed(true);
         return;
       }
 
+      await loadDaumPostcodeScript();
+      const Postcode = window.daum?.Postcode;
+      if (!Postcode) throw new Error("Postcode unavailable");
       new Postcode({ oncomplete: handleComplete }).open();
     } catch {
       window.alert("주소 검색을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
@@ -106,6 +116,29 @@ export function DaumPostcodeSearchButton({
       setLoading(false);
     }
   }, [handleComplete]);
+
+  useEffect(() => {
+    if (!layerOpen || !pendingMobileEmbed) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        await embedMobileLayer();
+      } catch {
+        if (!cancelled) {
+          window.alert("주소 검색을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+          setLayerOpen(false);
+        }
+      } finally {
+        if (!cancelled) {
+          setPendingMobileEmbed(false);
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [layerOpen, pendingMobileEmbed, embedMobileLayer]);
 
   useEffect(() => {
     if (!layerOpen) return;
@@ -128,24 +161,32 @@ export function DaumPostcodeSearchButton({
       </button>
 
       {layerOpen ? (
-        <div
-          className="checkout-postcode-layer fixed inset-0 z-[100] flex flex-col bg-white"
-          role="dialog"
-          aria-modal="true"
-          aria-label="주소 검색"
-        >
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <p className="text-sm font-black text-slate-900">주소 검색</p>
-            <button
-              type="button"
-              onClick={() => setLayerOpen(false)}
-              className="rounded-lg px-3 py-1.5 text-xs font-black text-slate-700 ring-1 ring-slate-200"
-            >
-              닫기
-            </button>
+        <>
+          <button
+            type="button"
+            className="checkout-postcode-layer__backdrop fixed inset-0 z-[99] bg-slate-900/40"
+            aria-label="주소 검색 닫기"
+            onClick={() => setLayerOpen(false)}
+          />
+          <div
+            className="checkout-postcode-layer fixed inset-x-0 bottom-0 z-[100] mx-auto flex max-h-[min(85vh,640px)] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label={dialogTitle}
+          >
+            <div className="checkout-postcode-layer__head flex shrink-0 items-center justify-between border-b border-slate-200 px-4 py-3">
+              <p className="text-sm font-black text-slate-900">{dialogTitle}</p>
+              <button
+                type="button"
+                onClick={() => setLayerOpen(false)}
+                className="rounded-lg px-3 py-1.5 text-xs font-black text-slate-700 ring-1 ring-slate-200"
+              >
+                닫기
+              </button>
+            </div>
+            <div ref={layerRef} className="checkout-postcode-layer__embed min-h-0 flex-1" />
           </div>
-          <div ref={layerRef} className="min-h-0 flex-1" />
-        </div>
+        </>
       ) : null}
     </>
   );

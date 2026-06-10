@@ -328,6 +328,39 @@
   }
 }
 
+/* 상품상세 — 현재 선택 기준 최종가 요약 */
+.product-detail-price-summary__hero {
+  min-width: 0;
+}
+
+.product-detail-price-summary__amount {
+  line-height: 1.15;
+  word-break: keep-all;
+}
+
+.product-detail-price-summary .order-price-breakdown__total-value {
+  font-size: 1.125rem;
+}
+
+@media (max-width: 390px) {
+  .product-detail-price-summary__amount {
+    font-size: 1.375rem;
+  }
+
+  .product-fulfillment-panel__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-fulfillment-card {
+    min-height: 2.5rem;
+    padding: 0.375rem 0.4375rem;
+  }
+
+  .product-fulfillment-card__label {
+    font-size: 0.6875rem;
+  }
+}
+
 /* 부산 지도 — 페이지 세로 스크롤 유지 */
 .busan-map-canvas {
   overscroll-behavior: contain;

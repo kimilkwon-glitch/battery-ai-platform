@@ -11,7 +11,7 @@ export const BATTERY_TALK_QUICK_CHIPS = [
   { id: "spec", label: "규격 문의", message: "배터리 규격이 맞는지 확인 부탁드립니다." },
   { id: "install", label: "장착 가능", message: "제 차량에 장착 가능한지 알려주세요." },
   { id: "order", label: "주문/배송", message: "주문·배송 관련해서 문의드립니다." },
-  { id: "battery_return", label: "폐배터리", message: "폐배터리 반납 관련 문의드립니다." },
+  { id: "battery_return", label: "회수신청", message: "교체완료 회수신청드립니다." },
 ] as const;
 
 /** @deprecated SSE 실시간 구독으로 대체 */

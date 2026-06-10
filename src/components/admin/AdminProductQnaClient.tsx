@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
 import { INQUIRY_STATUS_LABELS, type CustomerInquiryRecord, type InquiryStatus } from "@/types/customer-inquiry";
@@ -12,10 +13,12 @@ const STATUS_CHIPS = [
 ] as const;
 
 export function AdminProductQnaClient() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
   const [items, setItems] = useState<CustomerInquiryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusChip, setStatusChip] = useState<string>("all");
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [memoDraft, setMemoDraft] = useState("");
   const [saving, setSaving] = useState(false);

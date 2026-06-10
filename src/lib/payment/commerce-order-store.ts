@@ -1,4 +1,5 @@
 import { isPostgresConfigured } from "@/lib/db/postgres";
+import type { AdminCommerceOrderListItem } from "@/lib/payment/commerce-order-admin-mapper";
 import type { CommerceOrderRecord } from "@/types/commerce-payment";
 
 export function isCommerceOrderStoreReady(): boolean {
@@ -48,6 +49,14 @@ export async function storeCommerceOrderList(limit = 200): Promise<CommerceOrder
   if (!isPostgresConfigured()) return [];
   const pg = await getPostgresStore();
   return pg.pgStoreCommerceOrderList(limit);
+}
+
+export async function storeCommerceOrderListItems(
+  limit = 150,
+): Promise<AdminCommerceOrderListItem[]> {
+  if (!isPostgresConfigured()) return [];
+  const pg = await getPostgresStore();
+  return pg.pgStoreCommerceOrderListItems(limit);
 }
 
 export async function storeCommerceOrderListByUserId(

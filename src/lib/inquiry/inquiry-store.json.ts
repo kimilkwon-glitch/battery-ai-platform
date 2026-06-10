@@ -96,6 +96,8 @@ export type InquiryListFilters = {
   source?: InquirySource | null;
   /** true: 상품 Q&A만, false: 상품 Q&A 제외(기본 전체 문의) */
   productQnaOnly?: boolean;
+  /** false(기본): 관리자 목록용 테스트 데이터 제외. true: 주문 상세 related-activity 등 매칭 전용 */
+  includeTestData?: boolean;
   q?: string | null;
   limit?: number;
 };
@@ -176,7 +178,9 @@ export async function inquiryList(
       return hay.includes(q);
     });
   }
-  records = filterAdminTestInquiries(records);
+  if (!filters.includeTestData) {
+    records = filterAdminTestInquiries(records);
+  }
   const limit = filters.limit ?? 500;
   return records.slice(0, limit);
 }

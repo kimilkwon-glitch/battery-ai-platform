@@ -36,13 +36,12 @@ export function formatCheckoutPrice(
 
 export function formatCheckoutVehicle(item: BatteryCartItem): string {
   const memo = item.customerMemo?.trim();
-  if (!item.vehicle?.displayName) {
-    return memo || "차량 정보 미입력";
-  }
+  const name = item.vehicle?.displayName?.trim() || memo;
+  if (!name) return "차량 기준 확인 필요";
   const parts = [
-    item.vehicle.displayName,
-    item.vehicle.generationName,
-    item.vehicle.year,
+    name,
+    item.vehicle?.year,
+    item.vehicle?.fuelType ?? item.vehicle?.generationName,
   ].filter(Boolean);
   return parts.join(" · ");
 }

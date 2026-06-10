@@ -41,7 +41,7 @@ export async function seedDefaultPromotions(): Promise<void> {
         ${seed.badgeText},
         ${seed.imageUrl},
         ${seed.bannerImageUrl},
-        ${seed.allowedFulfillmentTypes},
+        ${JSON.stringify(seed.allowedFulfillmentTypes ?? [])}::jsonb,
         ${now}::timestamptz,
         ${now}::timestamptz
       )

@@ -93,6 +93,8 @@ export type InquiryListFilters = {
   batteryCode?: string | null;
   source?: InquirySource | null;
   productQnaOnly?: boolean;
+  /** false(기본): 관리자 목록용 테스트 데이터 제외. true: 주문 상세 related-activity 등 매칭 전용 */
+  includeTestData?: boolean;
   q?: string | null;
   limit?: number;
 };
@@ -155,7 +157,9 @@ export async function inquiryList(
   `) as InquiryRow[];
 
   let records = rows.map(rowToRecord);
-  records = filterAdminTestInquiries(records);
+  if (!filters.includeTestData) {
+    records = filterAdminTestInquiries(records);
+  }
 
   const status = filters.status?.trim();
   if (status && status !== "all") records = records.filter((r) => r.status === status);

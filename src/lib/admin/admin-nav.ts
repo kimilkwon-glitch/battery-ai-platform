@@ -50,10 +50,10 @@ export type AdminNavGroup =
 
 export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: ADMIN_ROUTES.hub, label: "대시보드", group: "운영 현황" },
-  { href: ADMIN_ROUTES.orders, label: "주문 관리", group: "주문/고객" },
-  { href: ADMIN_ROUTES.commerceClaims, label: "취소/반품/환불", group: "주문/고객" },
+  { href: ADMIN_ROUTES.orders, label: "주문관리", group: "주문/고객" },
+  { href: ADMIN_ROUTES.commerceClaims, label: "클레임관리", group: "주문/고객" },
   { href: ADMIN_ROUTES.inquiries, label: "문의 관리", group: "주문/고객" },
-  { href: ADMIN_ROUTES.products, label: "제품 관리", group: "상품/DB" },
+  { href: ADMIN_ROUTES.products, label: "상품목록", group: "상품/DB" },
   { href: ADMIN_ROUTES.batteries, label: "배터리 DB", group: "상품/DB" },
   { href: ADMIN_ROUTES.vehicles, label: "차량 DB", group: "상품/DB" },
   { href: ADMIN_ROUTES.photoRequests, label: "사진 확인 요청", group: "상품/DB" },

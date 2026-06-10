@@ -1,59 +1,127 @@
-import { Suspense } from "react";
-import { AdminOrderWorkbenchClient } from "@/components/admin/AdminOrderWorkbenchClient";
-import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
-import { commerceOrderAdminMetaListAll } from "@/lib/admin/commerce-order-admin-meta-store";
-import {
-  commerceToUnifiedRow,
-  consultationToUnifiedRow,
-  countWorkbenchView,
-} from "@/lib/admin/unified-orders";
-import { listOrderRequests } from "@/lib/order-request/order-request-service";
-import { commerceOrderToListItem } from "@/lib/payment/commerce-order-admin-mapper";
-import { isCommerceOrderStoreEnabled } from "@/lib/payment/payment-config";
-import { storeCommerceOrderList } from "@/lib/payment/commerce-order-store";
-
-export const dynamic = "force-dynamic";
-
-export default async function AdminOrdersPage() {
-  const dbReady = isCommerceOrderStoreEnabled();
-  const metaList = await commerceOrderAdminMetaListAll();
-  const metaByOrderId = new Map(metaList.map((m) => [m.orderId, m]));
-
-  let commerceOrders: ReturnType<typeof commerceOrderToListItem>[] = [];
-  if (dbReady) {
-    try {
-      const records = await storeCommerceOrderList(500);
-      commerceOrders = records.map(commerceOrderToListItem);
-    } catch {
-      commerceOrders = [];
-    }
-  }
-
-  const consultations = await listOrderRequests({ limit: 500 });
-  const rows = [
-    ...commerceOrders.map((o) => commerceToUnifiedRow(o, metaByOrderId.get(o.orderId))),
-    ...consultations.map(consultationToUnifiedRow),
-  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-  return (
-    <AdminShellLayout
-      title="주문 관리"
-      description="발주확인·발송처리·배송완료를 목록에서 바로 처리하는 주문 작업대입니다."
-      summary={[
-        { label: "전체", value: rows.length },
-        {
-          label: "발주확인 대기",
-          value: countWorkbenchView(rows, "confirm_pending"),
-          tone: "warning",
-        },
-        { label: "배송준비", value: countWorkbenchView(rows, "shipping_prep") },
-        { label: "배송중", value: countWorkbenchView(rows, "in_progress"), tone: "info" },
-        { label: "비회원", value: rows.filter((r) => r.customerType === "guest").length },
-      ]}
-    >
-      <Suspense fallback={<p className="text-xs text-slate-500">주문 작업대 불러오는 중…</p>}>
-        <AdminOrderWorkbenchClient rows={rows} dbReady={dbReady} />
-      </Suspense>
-    </AdminShellLayout>
-  );
-}
+import { Suspense } from "react";
+
+import { AdminOrderWorkbenchClient } from "@/components/admin/AdminOrderWorkbenchClient";
+
+import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
+
+import { buildClaimWorkbenchContext } from "@/lib/admin/claim-dashboard-counts";
+
+import {
+
+  commerceToUnifiedRow,
+
+  consultationToUnifiedRow,
+
+  countWorkbenchView,
+
+} from "@/lib/admin/unified-orders";
+
+import { claimList } from "@/lib/claims/claim-store";
+
+import { listOrderRequests } from "@/lib/order-request/order-request-service";
+
+import { isCommerceOrderStoreEnabled } from "@/lib/payment/payment-config";
+
+import { storeCommerceOrderListItems } from "@/lib/payment/commerce-order-store";
+
+
+
+export const dynamic = "force-dynamic";
+
+
+
+export default async function AdminOrdersPage() {
+
+  const dbReady = isCommerceOrderStoreEnabled();
+
+  let commerceOrders: Awaited<ReturnType<typeof storeCommerceOrderListItems>> = [];
+
+  if (dbReady) {
+
+    try {
+
+      commerceOrders = await storeCommerceOrderListItems(200);
+
+    } catch {
+
+      commerceOrders = [];
+
+    }
+
+  }
+
+
+
+  const [consultations, claims] = await Promise.all([
+    listOrderRequests({ limit: 120 }),
+    claimList({ limit: 120 }),
+  ]);
+
+  const claimContext = buildClaimWorkbenchContext(claims);
+
+
+
+  const rows = [
+
+    ...commerceOrders.map((o) => commerceToUnifiedRow(o)),
+
+    ...consultations.map(consultationToUnifiedRow),
+
+  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+
+
+  const count = (view: Parameters<typeof countWorkbenchView>[1]) =>
+
+    countWorkbenchView(rows, view, "production", claimContext);
+
+
+
+  return (
+
+    <AdminShellLayout
+
+      title="주문관리"
+
+      description="신규주문부터 발주확인, 상품준비, 배송/출장 처리까지 관리합니다."
+
+      summary={[
+
+        { label: "신규주문", value: count("new_order"), tone: "warning" },
+
+        { label: "상품준비", value: count("preparing"), tone: "info" },
+
+        { label: "배송/출장중", value: count("in_progress"), tone: "info" },
+
+        { label: "취소요청", value: count("cancel_request"), tone: "warning" },
+
+      ]}
+
+    >
+
+      <Suspense fallback={<p className="text-xs text-slate-500">주문 작업대 불러오는 중…</p>}>
+
+        <AdminOrderWorkbenchClient
+
+          rows={rows}
+
+          dbReady={dbReady}
+
+          claimContext={{
+
+            cancelRequestOrderIds: [...claimContext.cancelRequestOrderIds],
+
+            returnExchangeOrderIds: [...claimContext.returnExchangeOrderIds],
+
+          }}
+
+        />
+
+      </Suspense>
+
+    </AdminShellLayout>
+
+  );
+
+}
+

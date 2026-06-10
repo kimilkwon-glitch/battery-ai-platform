@@ -249,7 +249,9 @@ export async function batteryTalkList(
 ): Promise<BatteryTalkThreadSummary[]> {
   await ensureLegacyMigration();
   let threads = await loadThreads();
-  threads = filterBatteryTalkThreadsForAdmin(threads);
+  if (!filters.includeTestData) {
+    threads = filterBatteryTalkThreadsForAdmin(threads);
+  }
 
   const status = filters.status?.trim();
   if (status && status !== "all") {

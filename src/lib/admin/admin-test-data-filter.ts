@@ -1,13 +1,17 @@
 /**
- * 운영 관리자 목록에서 개발·검수용 fixture를 숨깁니다.
- * 실제 고객 데이터는 삭제하지 않고 목록 API에서만 제외합니다.
+ * 운영 관리자 목록에서 개발·검수·UX 테스트 fixture를 식별합니다.
+ * 기본 목록/대시보드는 `order-data-scope`에서 production만 표시합니다.
  */
+
+import { isUx2AdminReviewRecord } from "@/lib/admin/ux2-admin-review-marker";
 
 const TEXT_MARKERS: RegExp[] = [
   /\[AUDIT\]/i,
+  /\[UX2-운영검수\]/i,
   /API테스트/,
   /김테스트/,
   /테스트/,
+  /운영검수/,
   /개발검수/,
   /기능검수/,
   /검수용/,
@@ -16,6 +20,7 @@ const TEXT_MARKERS: RegExp[] = [
   /\bdummy\b/i,
   /\btest\b/i,
   /\bsample\b/i,
+  /\bUX\b/i,
 ];
 
 const TEST_NAME_EXACT = new Set(["API테스트", "김테스트", "테스트고객", "테스트 사용자"]);
@@ -26,6 +31,8 @@ const TEST_PHONE_DIGITS = new Set([
   "01000000000",
   "01012345678",
 ]);
+
+const TEST_ORDER_NUMBER_RE = /BM-UX2?-|TEST|DEMO|SEED/i;
 
 function normalizePhone(phone: string | undefined | null): string {
   return (phone ?? "").replace(/\D/g, "");
@@ -48,6 +55,27 @@ function isPlaceholderGuest(name: string | undefined | null, phone: string | und
   return n === "홍길동" && (digits === "01000000000" || (phone ?? "").includes("0000-0000"));
 }
 
+function hasTestOrderNumber(orderNumber: string | undefined | null): boolean {
+  const n = (orderNumber ?? "").trim();
+  if (!n) return false;
+  return TEST_ORDER_NUMBER_RE.test(n);
+}
+
+function isUx2OrSeedRecord(fields: {
+  name?: string | null;
+  phone?: string | null;
+  memo?: string | null;
+  orderNumber?: string | null;
+  requestMemo?: string | null;
+}): boolean {
+  return isUx2AdminReviewRecord({
+    name: fields.name,
+    phone: fields.phone,
+    memo: fields.memo ?? fields.requestMemo,
+    orderNumber: fields.orderNumber,
+  });
+}
+
 export function isAdminTestOrderRequest(record: {
   id?: string | null;
   customerName?: string | null;
@@ -56,11 +84,23 @@ export function isAdminTestOrderRequest(record: {
   memo?: string | null;
   vehicleName?: string | null;
   batterySpecSummary?: string | null;
+  productName?: string | null;
 }): boolean {
+  if (
+    isUx2OrSeedRecord({
+      name: record.customerName,
+      phone: record.customerPhone,
+      memo: record.memo,
+      orderNumber: record.requestNumber,
+    })
+  ) {
+    return true;
+  }
   const name = record.customerName?.trim() ?? "";
   if (TEST_NAME_EXACT.has(name)) return true;
   if (isPlaceholderGuest(name, record.customerPhone)) return true;
   if (hasTestPhone(record.customerPhone)) return true;
+  if (hasTestOrderNumber(record.requestNumber)) return true;
   if (
     hasTestMarkerText(
       name,
@@ -68,17 +108,13 @@ export function isAdminTestOrderRequest(record: {
       record.vehicleName,
       record.batterySpecSummary,
       record.requestNumber,
+      record.productName,
     )
   ) {
     return true;
   }
-  const requestNumber = record.requestNumber ?? "";
-  if (/BM-20260609/i.test(requestNumber)) {
-    return true;
-  }
-  if (/or_178096/i.test(record.id ?? "")) {
-    return true;
-  }
+  if (/BM-20260609/i.test(record.requestNumber ?? "")) return true;
+  if (/or_178096/i.test(record.id ?? "")) return true;
   return false;
 }
 
@@ -108,12 +144,22 @@ export function isAdminTestInquiry(record: {
   message?: string | null;
   vehicle?: string | null;
   inquiryType?: string | null;
+  adminMemo?: string | null;
 }): boolean {
+  if (
+    isUx2OrSeedRecord({
+      name: record.name,
+      phone: record.contact,
+      memo: record.message ?? record.adminMemo,
+    })
+  ) {
+    return true;
+  }
   const name = record.name?.trim() ?? "";
   if (TEST_NAME_EXACT.has(name)) return true;
   if (isPlaceholderGuest(name, record.contact)) return true;
   if (hasTestPhone(record.contact)) return true;
-  return hasTestMarkerText(name, record.message, record.vehicle, record.inquiryType);
+  return hasTestMarkerText(name, record.message, record.vehicle, record.inquiryType, record.adminMemo);
 }
 
 export function isAdminTestCommerceOrder(record: {
@@ -123,25 +169,39 @@ export function isAdminTestCommerceOrder(record: {
   requestMemo?: string | null;
   productName?: string | null;
 }): boolean {
+  if (
+    isUx2OrSeedRecord({
+      name: record.customerName,
+      phone: record.customerPhone,
+      requestMemo: record.requestMemo,
+      orderNumber: record.orderNumber,
+    })
+  ) {
+    return true;
+  }
   const name = record.customerName?.trim() ?? "";
   if (TEST_NAME_EXACT.has(name)) return true;
   if (isPlaceholderGuest(name, record.customerPhone)) return true;
   if (hasTestPhone(record.customerPhone)) return true;
+  if (hasTestOrderNumber(record.orderNumber)) return true;
   return hasTestMarkerText(name, record.requestMemo, record.productName, record.orderNumber);
 }
 
+/** @deprecated store 레벨 일괄 제외 — UI `order-data-scope` 사용 권장 */
 export function filterAdminTestOrderRequests<T extends Parameters<typeof isAdminTestOrderRequest>[0]>(
   records: T[],
 ): T[] {
   return records.filter((r) => !isAdminTestOrderRequest(r));
 }
 
+/** @deprecated store 레벨 일괄 제외 — UI `order-data-scope` 사용 권장 */
 export function filterAdminTestInquiries<T extends Parameters<typeof isAdminTestInquiry>[0]>(
   records: T[],
 ): T[] {
   return records.filter((r) => !isAdminTestInquiry(r));
 }
 
+/** @deprecated store 레벨 일괄 제외 — UI `order-data-scope` 사용 권장 */
 export function filterAdminTestCommerceOrders<T extends Parameters<typeof isAdminTestCommerceOrder>[0]>(
   records: T[],
 ): T[] {

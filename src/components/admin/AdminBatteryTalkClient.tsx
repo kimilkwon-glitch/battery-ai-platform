@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { Badge } from "@/components/ui/badge";
 import type { BatteryTalkThreadDetail } from "@/lib/battery-talk/battery-talk-enrichment";
@@ -56,12 +57,14 @@ function formatAmount(amount: number | null | undefined): string {
 }
 
 export function AdminBatteryTalkClient() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
   const [items, setItems] = useState<BatteryTalkThreadSummary[]>([]);
   const [detail, setDetail] = useState<BatteryTalkThreadDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [statusTab, setStatusTab] = useState<BatteryTalkThreadStatus | "all">("all");
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [replyDraft, setReplyDraft] = useState("");
   const [memoDraft, setMemoDraft] = useState("");

@@ -1,3 +1,5 @@
+import { RETENTION_CUSTOMER_NOTICE } from "@/lib/retention/operational-data-retention";
+
 /** 고객센터 FAQ — 주문·배송·반품·폐전지·결제 (규격/증상 FAQ는 support-faq-data 유지) */
 
 export type CustomerServiceFaqCategory =
@@ -6,7 +8,8 @@ export type CustomerServiceFaqCategory =
   | "배송"
   | "교환·반품"
   | "폐전지"
-  | "결제";
+  | "결제"
+  | "문의";
 
 export type CustomerServiceFaqItem = {
   id: string;
@@ -22,6 +25,7 @@ export const CUSTOMER_SERVICE_FAQ_CATEGORIES: CustomerServiceFaqCategory[] = [
   "교환·반품",
   "폐전지",
   "결제",
+  "문의",
 ];
 
 export const CUSTOMER_SERVICE_FAQ_ITEMS: CustomerServiceFaqItem[] = [
@@ -192,5 +196,11 @@ export const CUSTOMER_SERVICE_FAQ_ITEMS: CustomerServiceFaqItem[] = [
     question: "입금했는데 주문이 입금 대기로 보여요.",
     answer:
       "입금 확인은 순차적으로 처리됩니다. 입금자명, 금액, 주문번호가 다르거나 확인 시간이 지난 경우 고객센터로 문의해 주세요.",
+  },
+  {
+    id: "cs-faq-inquiry-retention",
+    category: "문의",
+    question: "문의·상담 내용은 얼마나 보관되나요?",
+    answer: RETENTION_CUSTOMER_NOTICE,
   },
 ];

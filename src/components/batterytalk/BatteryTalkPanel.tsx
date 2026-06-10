@@ -37,18 +37,30 @@ function formatChatTime(iso: string): string {
 export function BatteryTalkPanel({
   open,
   onClose,
+  onResumeOrder,
   preset,
   settings,
+  draft: controlledDraft,
+  onDraftChange,
+  showProductOrderCta = false,
+  onThreadIdChange,
 }: {
   open: boolean;
   onClose: () => void;
+  onResumeOrder?: () => void;
   preset?: BatteryTalkOpenDetail;
   settings?: ConsultationChannelSettings | null;
+  draft?: string;
+  onDraftChange?: (value: string) => void;
+  showProductOrderCta?: boolean;
+  onThreadIdChange?: (threadId: string) => void;
 }) {
   const [threadId, setThreadId] = useState<string | null>(null);
   const [messages, setMessages] = useState<BatteryTalkMessage[]>([]);
   const [phone, setPhone] = useState("");
-  const [draft, setDraft] = useState("");
+  const [internalDraft, setInternalDraft] = useState("");
+  const draft = controlledDraft ?? internalDraft;
+  const setDraft = onDraftChange ?? setInternalDraft;
   const [phoneDraft, setPhoneDraft] = useState("");
   const [showPhonePrompt, setShowPhonePrompt] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -120,7 +132,6 @@ export function BatteryTalkPanel({
       setLoading(false);
       return;
     }
-    setDraft("");
     setShowPhonePrompt(false);
     pendingBodyRef.current = null;
     void initThread();
@@ -141,6 +152,10 @@ export function BatteryTalkPanel({
   useEffect(() => {
     if (open && messages.length) scrollToBottom();
   }, [open, messages, scrollToBottom]);
+
+  useEffect(() => {
+    if (threadId) onThreadIdChange?.(threadId);
+  }, [threadId, onThreadIdChange]);
 
   const doSend = async (body: string, contactPhone?: string) => {
     if (!threadId || !body.trim()) return;
@@ -204,6 +219,12 @@ export function BatteryTalkPanel({
     setDraft(message);
   };
 
+  const handleResumeOrder = () => {
+    if (onResumeOrder) onResumeOrder();
+    else onClose();
+  };
+
+  const productCode = preset?.batteryCode ?? preset?.productCode;
   const ext = settings?.externalChannelsEnabled;
   const naverUrl = settings?.naverTalkUrl?.trim();
   const kakaoUrl = settings?.kakaoChannelUrl?.trim();
@@ -224,7 +245,7 @@ export function BatteryTalkPanel({
           <motion.aside
             role="dialog"
             aria-labelledby="batterytalk-title"
-            className="batterytalk-panel fixed bottom-0 left-0 right-0 z-[91] mx-auto flex max-h-[min(88vh,720px)] w-full max-w-md flex-col overflow-hidden rounded-t-2xl border border-slate-200/80 bg-white shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:rounded-2xl"
+            className="batterytalk-panel fixed bottom-0 left-0 right-0 z-[91] mx-auto flex max-h-[min(88vh,720px)] w-full max-w-md flex-col overflow-hidden rounded-t-2xl border border-slate-200/80 bg-white shadow-2xl max-sm:pb-[env(safe-area-inset-bottom,0px)] sm:bottom-6 sm:left-auto sm:right-6 sm:rounded-2xl"
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
@@ -293,30 +314,68 @@ export function BatteryTalkPanel({
             ) : null}
 
             {showPhonePrompt ? (
-              <div className="batterytalk-chat__phone-prompt shrink-0 border-t border-amber-100 bg-amber-50 px-3 py-2.5">
-                <p className="text-xs font-bold text-amber-900">답변을 위해 연락처를 남겨주세요.</p>
-                <div className="mt-2 flex gap-2">
+              <div className="batterytalk-chat__phone-prompt shrink-0 border-t border-amber-100 bg-amber-50">
+                <p className="batterytalk-chat__phone-label">답변을 위해 연락처를 남겨주세요.</p>
+                <div className="batterytalk-chat__phone-form">
                   <input
                     type="tel"
-                    className="batterytalk-chat__input flex-1"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    className="batterytalk-chat__input batterytalk-chat__phone-input"
                     placeholder="010-0000-0000"
                     value={phoneDraft}
                     onChange={(e) => setPhoneDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        void handlePhoneConfirm();
+                      }
+                    }}
                   />
                   <button
                     type="button"
-                    className="batterytalk-chat__send-btn shrink-0"
+                    className="batterytalk-chat__phone-submit"
                     disabled={sending}
                     onClick={() => void handlePhoneConfirm()}
                   >
-                    확인
+                    등록
                   </button>
                 </div>
+                {sendError ? (
+                  <p className="batterytalk-chat__phone-error" role="alert">
+                    {sendError}
+                  </p>
+                ) : null}
               </div>
             ) : null}
 
-            {sendError ? (
+            {sendError && !showPhonePrompt ? (
               <p className="shrink-0 px-3 pb-1 text-xs font-semibold text-red-600">{sendError}</p>
+            ) : null}
+
+            {onResumeOrder ? (
+              <div className="batterytalk-panel__resume shrink-0 border-t border-slate-100 px-3 py-2.5">
+                {showProductOrderCta && productCode ? (
+                  <button
+                    type="button"
+                    className="batterytalk-panel__resume-btn batterytalk-panel__resume-btn--primary"
+                    onClick={handleResumeOrder}
+                  >
+                    이 규격으로 주문하기
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  className={`batterytalk-panel__resume-btn${
+                    showProductOrderCta && productCode
+                      ? " batterytalk-panel__resume-btn--secondary"
+                      : " batterytalk-panel__resume-btn--primary"
+                  }`}
+                  onClick={handleResumeOrder}
+                >
+                  상담 닫고 주문 계속하기
+                </button>
+              </div>
             ) : null}
 
             <footer className="batterytalk-chat__composer shrink-0 border-t border-slate-100 p-3">

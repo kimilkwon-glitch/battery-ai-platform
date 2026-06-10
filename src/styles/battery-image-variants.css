@@ -47,13 +47,20 @@
 
   .home-spec-card-image [data-battery-image-stage="homeLineup"] img {
     height: auto !important;
-    max-height: 5.75rem !important;
-    min-height: 4.75rem !important;
+    max-height: 8.25rem !important;
+    min-height: 6.5rem !important;
     width: auto !important;
-    max-width: 94% !important;
+    max-width: 96% !important;
     object-fit: contain !important;
     object-position: center !important;
     margin-inline: auto;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .home-spec-card-image [data-battery-image-stage="homeLineup"] [class*="scale-"] {
+    transform: none !important;
   }
 }
 

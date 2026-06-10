@@ -39,6 +39,10 @@ import {
   shouldRenderFuelGroupInShop,
 } from "@/lib/vehicle-battery-customer-policy";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import {
+  appendVehicleCheckoutQuery,
+  type VehicleCheckoutContext,
+} from "@/lib/checkout/vehicle-checkout-context";
 import { bm } from "@/lib/design-tokens";
 import {
   HYBRID_BATTERY_CHECK_MESSAGE,
@@ -101,22 +105,23 @@ function BrandProductCard({
   brandLabel,
   vehicleSpecCode,
   productCode,
-  vehicleSlug,
+  vehicleContext,
 }: {
   brandId: BatteryBrandKey;
   brandLabel: string;
   vehicleSpecCode: string;
   productCode: string;
-  vehicleSlug: string;
+  vehicleContext: VehicleCheckoutContext;
 }) {
   const imageSet = getBatteryImageSet(productCode, brandId, { strictBrand: true });
   const hasImageSet = Boolean(imageSet?.main?.trim());
   const displayLabel = productBatteryCode(productCode) || productCode;
   const display = parseBatterySpecDisplay(displayLabel);
   const specHref = batterySpecGuideHref(vehicleSpecCode);
-  const orderHref =
-    batteryProductDetailHref(brandId, vehicleSpecCode) ??
-    batterySpecGuideHref(vehicleSpecCode);
+  const orderHref = appendVehicleCheckoutQuery(
+    batteryProductDetailHref(brandId, vehicleSpecCode) ?? batterySpecGuideHref(vehicleSpecCode),
+    vehicleContext,
+  );
   const internetPrice = getBatteryInternetPriceWon(brandId, productCode);
   const onsitePrice = getBatteryOnsitePriceWon(brandId, productCode);
 
@@ -161,7 +166,7 @@ function BrandProductCard({
           <Link
             href={orderHref}
             className={`vehicle-recommended-card__btn-order ${bm.btnPrimary} justify-center px-3 text-xs font-black`}
-            data-vehicle-slug={vehicleSlug}
+            data-vehicle-slug={vehicleContext.vehicleSlug}
             data-battery-spec={vehicleSpecCode}
             data-brand={brandId}
           >
@@ -325,22 +330,18 @@ export function VehicleCustomerBatteryShop({
               className={`${bm.card} ${bm.cardPad} ring-2 ring-blue-500`}
               id="fuel-card-focus"
             >
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div>
-                  <p className="vehicle-customer-battery__spec-title">{entry.batteryCode}</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
-                    {vehicleTitle} {entry.fuelLabel} 추천 규격
-                    {yearRange ? ` · ${yearRange}` : ""}
-                  </p>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-800 ring-1 ring-blue-100">
-                      {entry.fuelLabel}
-                    </span>
-                  </div>
+              <div>
+                <p className="vehicle-customer-battery__spec-title">{entry.batteryCode}</p>
+                <p className="mt-0.5 text-sm font-semibold text-slate-600">
+                  {vehicleTitle} {entry.fuelLabel} 추천 규격
+                  {yearRange ? ` · ${yearRange}` : ""}
+                </p>
+                <div className="vehicle-customer-battery__badge-row mt-1.5 flex flex-wrap items-center gap-1.5">
+                  <span className="vehicle-customer-battery__badge">{entry.fuelLabel}</span>
+                  <span className="vehicle-customer-battery__badge vehicle-customer-battery__badge--rep">
+                    대표 규격
+                  </span>
                 </div>
-                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-800 ring-1 ring-blue-100">
-                  대표 규격
-                </span>
               </div>
 
               {showHybridPending ? (
@@ -359,7 +360,12 @@ export function VehicleCustomerBatteryShop({
                       brandLabel={b.label}
                       vehicleSpecCode={entry.batteryCode}
                       productCode={b.productCode}
-                      vehicleSlug={slug}
+                      vehicleContext={{
+                        vehicleSlug: slug,
+                        vehicleTitle,
+                        fuel: entry.fuelLabel,
+                        year: yearRange || undefined,
+                      }}
                     />
                   ))}
                 </div>
@@ -375,6 +381,12 @@ export function VehicleCustomerBatteryShop({
                     showPricing
                     vehicleDetail
                     brandName="로케트"
+                    vehicleContext={{
+                      vehicleSlug: slug,
+                      vehicleTitle,
+                      fuel: entry.fuelLabel,
+                      year: yearRange || undefined,
+                    }}
                   />
                 </div>
               )}

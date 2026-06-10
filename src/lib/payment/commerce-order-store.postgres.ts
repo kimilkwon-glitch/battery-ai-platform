@@ -10,8 +10,8 @@ import type {
   CommerceOrderRecord,
   CommerceOrderStatusEvent,
 } from "@/types/commerce-payment";
-import { filterAdminTestCommerceOrders } from "@/lib/admin/admin-test-data-filter";
 import type { AppliedPromotion } from "@/types/promotion";
+import type { AdminCommerceOrderListItem } from "@/lib/payment/commerce-order-admin-mapper";
 
 type OrderRow = {
   id: string;
@@ -308,6 +308,11 @@ async function ensureDb(): Promise<void> {
   await ensurePromotionSchema();
 }
 
+/** 목록·집계 조회 — promotion 스키마/시드 생략 */
+async function ensureCommerceDb(): Promise<void> {
+  await ensureCommerceSchema();
+}
+
 export async function pgStoreCommerceOrderCreate(
   record: CommerceOrderRecord,
 ): Promise<CommerceOrderRecord> {
@@ -478,7 +483,7 @@ export async function pgStoreCommerceOrderUpdate(
 }
 
 export async function pgStoreCommerceOrderCountByPrefix(prefix: string): Promise<number> {
-  await ensureDb();
+  await ensureCommerceDb();
   const sql = getSql();
   const rows = (await sql`
     SELECT COUNT(*)::int AS count
@@ -488,28 +493,140 @@ export async function pgStoreCommerceOrderCountByPrefix(prefix: string): Promise
   return rows[0]?.count ?? 0;
 }
 
+async function fetchOrderRowsByIds(orderIds: string[]): Promise<OrderRow[]> {
+  if (orderIds.length === 0) return [];
+  const sql = getSql();
+  return (await sql`
+    SELECT
+      o.*,
+      p.provider AS payment_provider,
+      p.payment_key,
+      p.toss_order_id,
+      p.amount AS paid_amount,
+      p.method AS payment_method,
+      p.approved_at,
+      p.receipt_url,
+      p.fail_code,
+      p.fail_message,
+      p.status AS toss_payment_status
+    FROM commerce_orders o
+    LEFT JOIN LATERAL (
+      SELECT *
+      FROM commerce_payments
+      WHERE order_id = o.id
+      ORDER BY created_at DESC
+      LIMIT 1
+    ) p ON TRUE
+    WHERE o.id = ANY(${orderIds})
+    ORDER BY o.created_at DESC
+  `) as OrderRow[];
+}
+
+async function fetchStatusLogsByOrderIds(orderIds: string[]): Promise<Map<string, StatusLogRow[]>> {
+  const map = new Map<string, StatusLogRow[]>();
+  if (orderIds.length === 0) return map;
+  const sql = getSql();
+  const logs = (await sql`
+    SELECT order_id, previous_order_status, previous_payment_status, next_order_status, next_payment_status, memo, created_at
+    FROM commerce_order_status_logs
+    WHERE order_id = ANY(${orderIds})
+    ORDER BY created_at ASC
+  `) as (StatusLogRow & { order_id: string })[];
+  for (const log of logs) {
+    const bucket = map.get(log.order_id) ?? [];
+    bucket.push(log);
+    map.set(log.order_id, bucket);
+  }
+  return map;
+}
+
 export async function pgStoreCommerceOrderList(limit = 200): Promise<CommerceOrderRecord[]> {
-  await ensureDb();
+  await ensureCommerceDb();
   const sql = getSql();
   const ids = (await sql`
     SELECT id FROM commerce_orders
     ORDER BY created_at DESC
     LIMIT ${limit}
   `) as { id: string }[];
+  const orderIds = ids.map((r) => r.id);
+  const [rows, logsByOrder] = await Promise.all([
+    fetchOrderRowsByIds(orderIds),
+    fetchStatusLogsByOrderIds(orderIds),
+  ]);
+  return rows.map((row) => rowToRecord(row, logsByOrder.get(row.id) ?? []));
+}
 
-  const records: CommerceOrderRecord[] = [];
-  for (const { id } of ids) {
-    const record = await pgStoreCommerceOrderGet(id);
-    if (record) records.push(record);
-  }
-  return filterAdminTestCommerceOrders(records);
+/** 관리자 목록·대시보드 — 상태 로그·N+1 없이 경량 조회 */
+export async function pgStoreCommerceOrderListItems(
+  limit = 150,
+): Promise<AdminCommerceOrderListItem[]> {
+  await ensureCommerceDb();
+  const sql = getSql();
+  const rows = (await sql`
+    SELECT
+      id,
+      order_number,
+      created_at,
+      user_id,
+      customer_name,
+      customer_phone,
+      customer_type,
+      vehicle_name,
+      product_name,
+      brand,
+      battery_code,
+      fulfillment_type,
+      return_battery_option,
+      order_status,
+      payment_status,
+      final_amount
+    FROM commerce_orders
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `) as {
+    id: string;
+    order_number: string;
+    created_at: string;
+    user_id: string | null;
+    customer_name: string;
+    customer_phone: string;
+    customer_type: string;
+    vehicle_name: string | null;
+    product_name: string;
+    brand: string | null;
+    battery_code: string;
+    fulfillment_type: string;
+    return_battery_option: string;
+    order_status: string;
+    payment_status: string;
+    final_amount: number | null;
+  }[];
+
+  return rows.map((row) => ({
+    orderId: row.id,
+    orderNumber: row.order_number,
+    createdAt: new Date(row.created_at).toISOString(),
+    userId: row.user_id ?? undefined,
+    customerName: row.customer_name,
+    customerPhone: row.customer_phone,
+    customerType: row.customer_type as CommerceOrderRecord["customerType"],
+    vehicleName: row.vehicle_name ?? undefined,
+    productName: row.product_name,
+    brand: row.brand ?? undefined,
+    batteryCode: row.battery_code,
+    fulfillmentType: row.fulfillment_type as CommerceOrderRecord["fulfillmentType"],
+    returnBatteryOption: row.return_battery_option as CommerceOrderRecord["returnBatteryOption"],
+    orderStatus: row.order_status as CommerceOrderRecord["orderStatus"],
+    paymentStatus: row.payment_status as CommerceOrderRecord["paymentStatus"],
+    finalAmount: row.final_amount,
+  }));
 }
 
 export async function pgStoreCommerceOrderListByUserId(
   userId: string,
   limit = 50,
 ): Promise<CommerceOrderRecord[]> {
-  await ensureDb();
+  await ensureCommerceDb();
   const sql = getSql();
   const ids = (await sql`
     SELECT id FROM commerce_orders
@@ -517,13 +634,12 @@ export async function pgStoreCommerceOrderListByUserId(
     ORDER BY created_at DESC
     LIMIT ${limit}
   `) as { id: string }[];
-
-  const records: CommerceOrderRecord[] = [];
-  for (const { id } of ids) {
-    const record = await pgStoreCommerceOrderGet(id);
-    if (record) records.push(record);
-  }
-  return records;
+  const orderIds = ids.map((r) => r.id);
+  const [rows, logsByOrder] = await Promise.all([
+    fetchOrderRowsByIds(orderIds),
+    fetchStatusLogsByOrderIds(orderIds),
+  ]);
+  return rows.map((row) => rowToRecord(row, logsByOrder.get(row.id) ?? []));
 }
 
 export async function pgStoreCommerceOrderLookupByRef(

@@ -260,7 +260,58 @@
   padding-bottom: 0.5rem;
 }
 
+.checkout-address-purpose-banner {
+  border-radius: 0.75rem;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+  padding: 0.875rem 1rem;
+}
+
+.checkout-address-purpose-banner__title {
+  font-size: 0.8125rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.checkout-address-purpose-banner__desc {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.checkout-postcode-layer__backdrop {
+  touch-action: none;
+}
+
+.checkout-postcode-layer__embed {
+  min-height: 12rem;
+}
+
 @media (max-width: 390px) {
+  .checkout-address-purpose-banner {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .checkout-address-purpose-banner__title {
+    font-size: 0.75rem;
+  }
+
+  .checkout-address-purpose-banner__desc {
+    font-size: 0.6875rem;
+  }
+
+  .checkout-postcode-layer {
+    max-height: min(82vh, 560px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .checkout-postcode-layer__head {
+    padding: 0.625rem 0.875rem;
+  }
+
   .commerce-pre-payment-notice__toggle {
     padding: 0.5rem 0.625rem;
   }

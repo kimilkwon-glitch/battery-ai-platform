@@ -2,7 +2,11 @@
 
 import { useMemo } from "react";
 import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
-import { computeLineAmountWithReturnFee, formatPriceWon } from "@/lib/pricing/order-price";
+import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
+import {
+  computeLineAmountWithReturnFee,
+  formatPriceWon,
+} from "@/lib/pricing/order-price";
 import { FULFILLMENT_METHOD_CARD_META } from "@/lib/pricing/fulfillment-method-card-meta";
 import { FulfillmentMethodCardButton } from "@/components/pricing/FulfillmentMethodCardButton";
 import { OrderPriceBreakdown } from "@/components/pricing/OrderPriceBreakdown";
@@ -44,26 +48,20 @@ export function ProductFulfillmentPricePanel({
 
   const usedBatteryOption = mapShopReturnOptionToUsedBattery(returnOption);
 
-  const methodPrices = useMemo(() => {
-    const map = new Map<FulfillmentMethod, ReturnType<typeof computeLineAmountWithReturnFee>>();
-    for (const m of FULFILLMENT_METHOD_CARD_META) {
-      map.set(
-        m.value as FulfillmentMethod,
-        computeLineAmountWithReturnFee(previewItem, m.value as FulfillmentMethod, usedBatteryOption),
-      );
-    }
-    return map;
-  }, [previewItem, usedBatteryOption]);
+  const selectedLine = useMemo(
+    () => computeLineAmountWithReturnFee(previewItem, method, usedBatteryOption),
+    [previewItem, method, usedBatteryOption],
+  );
+
+  const selectedFinalAmount =
+    selectedLine.finalAmount ?? selectedLine.fulfillmentSubtotal ?? null;
+  const methodLabel =
+    method !== "undecided"
+      ? FULFILLMENT_METHOD_LABELS[method]
+      : "수령 방식 선택";
 
   const selectMethod = (next: FulfillmentMethod) => {
     onFulfillmentChange?.(next);
-  };
-
-  const formatMethodPrice = (fulfillmentMethod: FulfillmentMethod): string => {
-    const line = methodPrices.get(fulfillmentMethod);
-    if (line?.fulfillmentSubtotal == null && line?.finalAmount == null) return "가격 문의";
-    const amount = line?.finalAmount ?? line?.fulfillmentSubtotal;
-    return formatPriceWon(amount ?? null);
   };
 
   return (
@@ -78,17 +76,26 @@ export function ProductFulfillmentPricePanel({
               key={m.value}
               meta={m}
               active={active}
-              priceLabel={formatMethodPrice(value)}
               onSelect={() => selectMethod(value)}
             />
           );
         })}
       </div>
-      <OrderPriceBreakdown
-        item={previewItem}
-        fulfillmentMethod={method}
-        includeBatteryReturnFee
-      />
+
+      <div className="product-detail-price-summary space-y-2">
+        <div className="product-detail-price-summary__hero rounded-xl border border-blue-100 bg-gradient-to-br from-slate-50 to-blue-50/40 px-4 py-3">
+          <p className="text-[11px] font-bold text-slate-500">현재 선택 기준 최종가</p>
+          <p className="product-detail-price-summary__amount mt-0.5 text-2xl font-black tabular-nums text-slate-950 sm:text-[1.625rem]">
+            {selectedFinalAmount != null ? formatPriceWon(selectedFinalAmount) : "수령 방식 선택 후 표시"}
+          </p>
+          <p className="mt-1 text-xs font-bold text-blue-800">{methodLabel}</p>
+        </div>
+        <OrderPriceBreakdown
+          item={previewItem}
+          fulfillmentMethod={method}
+          includeBatteryReturnFee
+        />
+      </div>
     </div>
   );
 }

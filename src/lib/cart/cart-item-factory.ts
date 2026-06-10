@@ -150,6 +150,7 @@ export function createCartItemFromVehicleBattery(params: {
   vehicleSlug: string;
   vehicleTitle: string;
   fuelLabel?: string;
+  year?: string;
   usedBatteryReturnOption?: BatteryReturnOption;
 }): BatteryCartItem {
   return createCartItemFromBattery({
@@ -158,6 +159,8 @@ export function createCartItemFromVehicleBattery(params: {
       vehicleId: params.vehicleSlug,
       displayName: params.vehicleTitle,
       generationName: params.fuelLabel,
+      year: params.year,
+      fuelType: params.fuelLabel,
     },
     fitmentStatus: "confirmed",
     usedBatteryReturnOption: params.usedBatteryReturnOption ?? "undecided",

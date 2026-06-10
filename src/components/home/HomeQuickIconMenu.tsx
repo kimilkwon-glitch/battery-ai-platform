@@ -21,7 +21,7 @@ function QuickIconTitle({ label, mobileLines }: { label: string; mobileLines?: [
   );
 }
 
-/** 혜택 아래 — 퀵 카테고리 아이콘 (8개, 별도 섹션 제목 없음) */
+/** 혜택 아래 — 퀵 카테고리 아이콘 (8개) */
 export function HomeQuickIconMenu() {
   return (
     <nav
@@ -29,6 +29,7 @@ export function HomeQuickIconMenu() {
       data-home-section="quick-icons"
       aria-label="주요 안내 바로가기"
     >
+      <h2 className="home-quick-icons__heading">빠른메뉴</h2>
       <ul className="home-quick-icons__grid">
         {HOME_QUICK_ICON_ITEMS.map((item) => {
           const isVehicle = item.iconVariant === "vehicle";
@@ -52,13 +53,18 @@ export function HomeQuickIconMenu() {
                       width={isVehicle ? 50 : 42}
                       height={isVehicle ? 50 : 42}
                       className="home-quick-icon-card__image"
-                      sizes={isVehicle ? "(max-width: 639px) 46px, 50px" : "(max-width: 639px) 40px, 42px"}
+                      sizes={isVehicle ? "(max-width: 639px) 32px, 50px" : "(max-width: 639px) 32px, 42px"}
                     />
                   </span>
                 </span>
                 <span className="home-quick-icon-card__text">
-                  <span className="home-quick-icon-card__title-wrap">
+                  <span className="home-quick-icon-card__title-wrap home-quick-icon-card__title-wrap--desktop">
                     <QuickIconTitle label={item.label} mobileLines={item.titleMobileLines} />
+                  </span>
+                  <span className="home-quick-icon-card__title-wrap home-quick-icon-card__title-wrap--mobile">
+                    <span className="home-quick-icon-card__title home-quick-icon-card__title--compact">
+                      {item.mobileLabel}
+                    </span>
                   </span>
                   <span className="home-quick-icon-card__title-accent" aria-hidden />
                   <span className="home-quick-icon-card__desc-wrap">

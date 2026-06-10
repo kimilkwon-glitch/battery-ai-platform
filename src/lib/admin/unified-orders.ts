@@ -1,3 +1,4 @@
+import { isAdminTestUnifiedOrder } from "@/lib/admin/order-data-scope";
 import type { CommerceOrderAdminMeta } from "@/lib/admin/commerce-order-admin-meta-store";
 import {
   matchesWorkbenchView,
@@ -35,12 +36,14 @@ export type UnifiedAdminOrderRow = {
   orderStatusLabel: string;
   shippingCarrier?: string;
   shippingTrackingNumber?: string;
+  isTestOrder: boolean;
 };
 
 /** @deprecated — `view` 파라미터 사용 */
 export type OrderListStatusFilter =
   | "all"
   | "new"
+  | "unpaid_intake"
   | "payment_completed"
   | "order_created"
   | "preparing"
@@ -54,7 +57,7 @@ export function commerceToUnifiedRow(
   o: AdminCommerceOrderListItem,
   meta?: CommerceOrderAdminMeta | null,
 ): UnifiedAdminOrderRow {
-  return {
+  const row: UnifiedAdminOrderRow = {
     id: o.orderId,
     channel: "commerce",
     orderNumber: o.orderNumber,
@@ -79,12 +82,15 @@ export function commerceToUnifiedRow(
       orderStatusLabel(o.orderStatus),
     shippingCarrier: meta?.shippingCarrier,
     shippingTrackingNumber: meta?.shippingTrackingNumber,
+    isTestOrder: false,
   };
+  row.isTestOrder = isAdminTestUnifiedOrder(row);
+  return row;
 }
 
 export function consultationToUnifiedRow(o: AdminOrderRequestListItem): UnifiedAdminOrderRow {
   const wf = WORKFLOW_STATUS_LABELS[o.status];
-  return {
+  const row: UnifiedAdminOrderRow = {
     id: o.id,
     channel: "consultation",
     orderNumber: o.requestNumber,
@@ -103,20 +109,24 @@ export function consultationToUnifiedRow(o: AdminOrderRequestListItem): UnifiedA
     paymentStatusLabel: wf?.label ?? o.status,
     orderStatus: o.status,
     orderStatusLabel: wf?.label ?? o.status,
+    isTestOrder: false,
   };
+  row.isTestOrder = isAdminTestUnifiedOrder(row);
+  return row;
 }
 
 /** @deprecated — matchesWorkbenchView 사용 */
 export function matchesOrderStatusFilter(row: UnifiedAdminOrderRow, filter: OrderListStatusFilter): boolean {
   const viewMap: Record<OrderListStatusFilter, OrderWorkbenchView> = {
-    all: "all",
-    new: "new",
-    payment_completed: "paid",
-    order_created: "confirm_pending",
+    all: "new_order",
+    new: "new_order",
+    unpaid_intake: "new_order",
+    payment_completed: "new_order",
+    order_created: "new_order",
     preparing: "preparing",
     in_progress: "in_progress",
     completed: "completed",
-    canceled: "canceled",
+    canceled: "completed",
   };
   return matchesWorkbenchView(row, viewMap[filter]);
 }
@@ -127,14 +137,15 @@ export function countOrdersByStatusFilter(
   filter: OrderListStatusFilter,
 ): number {
   const viewMap: Record<OrderListStatusFilter, OrderWorkbenchView> = {
-    all: "all",
-    new: "new",
-    payment_completed: "paid",
-    order_created: "confirm_pending",
+    all: "new_order",
+    new: "new_order",
+    unpaid_intake: "new_order",
+    payment_completed: "new_order",
+    order_created: "new_order",
     preparing: "preparing",
     in_progress: "in_progress",
     completed: "completed",
-    canceled: "canceled",
+    canceled: "completed",
   };
   return countWorkbenchView(rows, viewMap[filter]);
 }

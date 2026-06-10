@@ -334,7 +334,9 @@ export async function batteryTalkList(
   }
 
   let threads = rows.map((row) => rowToThread(row, []));
-  threads = filterBatteryTalkThreadsForAdmin(threads);
+  if (!filters.includeTestData) {
+    threads = filterBatteryTalkThreadsForAdmin(threads);
+  }
 
   const q = filters.q?.trim().toLowerCase();
   if (q) {

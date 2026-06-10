@@ -42,7 +42,8 @@ export default function AdminSettingsPage() {
           <CardContent>
             <AdminOperationalDataStatus />
             <p className="mt-3 text-xs text-slate-500">
-              마이그레이션: npm run db:migrate:operational-data
+              마이그레이션: npm run db:migrate:operational-data · 보관 정리: npm run retention:cleanup
+              -- --dry-run
             </p>
           </CardContent>
         </Card>

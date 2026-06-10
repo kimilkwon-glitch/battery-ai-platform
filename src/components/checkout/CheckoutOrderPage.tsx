@@ -23,15 +23,20 @@ import {
   resolveCheckoutFlowMode,
   setBuyNowCheckoutItems,
 } from "@/lib/cart/checkout-flow";
+import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
 import {
-  createCartItemFromBattery,
-  createCartItemFromVehicleBattery,
-} from "@/lib/cart/cart-item-factory";
+  createCartItemWithVehicleContext,
+  enrichCartItemWithVehicleContext,
+  formatCheckoutVehicleDisplay,
+  orderVehicleFromCartItem,
+  parseVehicleCheckoutContext,
+} from "@/lib/checkout/vehicle-checkout-context";
 import { canonicalBatteryCode } from "@/lib/canonical-battery-code";
 import {
   OrderRequestCustomerFields,
   type CustomerFormValues,
 } from "@/components/order-request/OrderRequestCustomerFields";
+import { checkoutSubmitLabel } from "@/data/checkout-address-copy";
 import { CHECKOUT_PAGE_COPY } from "@/data/checkout-checklist";
 import { saveCheckoutSession } from "@/lib/payment/checkout-session-storage";
 import { isCommercePaymentLive } from "@/lib/payment/commerce-checkout-mode";
@@ -100,15 +105,7 @@ function checkoutProfileFields(source: MemberPublic | CustomerProfile) {
 function initialVehicleFromCart(items: BatteryCartItem[]): OrderRequestVehicle {
   const line = items.find((i) => i.vehicle?.displayName || i.customerMemo?.trim());
   if (!line) return {};
-  const v = line.vehicle;
-  const name = v?.displayName?.trim() || line.customerMemo?.trim();
-  if (!name) return {};
-  return {
-    name,
-    year: v?.year,
-    fuelType: v?.fuelType ?? v?.generationName,
-    currentBatterySpec: line.batterySpec ?? items[0]?.batterySpec,
-  };
+  return orderVehicleFromCartItem(line);
 }
 
 function initialFulfillmentFromCart(items: BatteryCartItem[]): OrderRequestFulfillment {
@@ -169,33 +166,33 @@ export function CheckoutOrderPage() {
   useEffect(() => {
     if (!checkoutReady) return;
     if (isBuyNow) {
+      const vehicleCtx = parseVehicleCheckoutContext(searchParams);
       const fromSession = getBuyNowCheckoutItems();
       if (fromSession?.length) {
-        setBuyNowItems(fromSession);
-        setCheckoutItems(fromSession);
+        const enriched = fromSession.map((item) =>
+          enrichCartItemWithVehicleContext(item, vehicleCtx),
+        );
+        setBuyNowCheckoutItems(enriched);
+        setBuyNowItems(enriched);
+        setCheckoutItems(enriched);
         return;
       }
       const batteryRaw = searchParams.get("battery")?.trim();
       const batteryCode = batteryRaw ? canonicalBatteryCode(batteryRaw) || batteryRaw : "";
       if (batteryCode) {
-        const vehicleSlug = searchParams.get("vehicle")?.trim() || "";
         const brand = searchParams.get("brand")?.trim();
         const brandName =
           brand === "rocket" ? "로케트" : brand === "solite" ? "쏠라이트" : undefined;
-        const seeded =
-          vehicleSlug.length > 0
-            ? createCartItemFromVehicleBattery({
-                batteryCode,
-                vehicleSlug,
-                vehicleTitle: searchParams.get("vehicleTitle")?.trim() || vehicleSlug,
-                fuelLabel: searchParams.get("fuel")?.trim() || undefined,
-              })
-            : createCartItemFromBattery({
-                batteryCode,
-                brandName,
-                fulfillmentMethod: "delivery",
-                source: "vehicle_detail",
-              });
+        const seeded = createCartItemWithVehicleContext(
+          {
+            batteryCode,
+            brandName,
+            fulfillmentMethod: "delivery",
+            source: vehicleCtx ? "vehicle_detail" : "battery_detail",
+            fitmentStatus: vehicleCtx ? "confirmed" : "needs_customer_confirm",
+          },
+          vehicleCtx,
+        );
         setBuyNowCheckoutItems([seeded]);
         setBuyNowItems([seeded]);
         setCheckoutItems([seeded]);
@@ -348,6 +345,15 @@ export function CheckoutOrderPage() {
   const totals = computeCheckoutTotal(items, fulfillment.method, usedBattery ?? undefined);
   const displayTotal = promotionFinalTotal ?? totals.finalAmount;
 
+  const vehicleConfirmState = useMemo(() => {
+    const primary = items[0];
+    const display = formatCheckoutVehicleDisplay(vehicle, primary);
+    const confirmHref = display.vehicleSlug
+      ? `/vehicle/${encodeURIComponent(display.vehicleSlug)}`
+      : HUB_SEARCH;
+    return { needsVehicleConfirm: display.needsVehicleConfirm, confirmHref };
+  }, [items, vehicle]);
+
   const canConfirm =
     optionsComplete &&
     checkoutContactValid(fulfillment, customer) &&
@@ -451,6 +457,8 @@ export function CheckoutOrderPage() {
       </div>
     );
   }
+
+  const submitLabel = checkoutSubmitLabel(fulfillment.method, paymentLive);
 
   const pricePanelAside = (
     <CheckoutPriceSummaryPanel
@@ -562,7 +570,12 @@ export function CheckoutOrderPage() {
             </div>
           ) : null}
 
-          <CheckoutVehicleSection values={vehicle} onChange={(p) => setVehicle((v) => ({ ...v, ...p }))} />
+          <CheckoutVehicleSection
+            values={vehicle}
+            onChange={(p) => setVehicle((v) => ({ ...v, ...p }))}
+            needsVehicleConfirm={vehicleConfirmState.needsVehicleConfirm}
+            vehicleConfirmHref={vehicleConfirmState.confirmHref}
+          />
 
           <div className="lg:hidden">{pricePanelInline}</div>
 
@@ -600,7 +613,7 @@ export function CheckoutOrderPage() {
             <PaymentPreparingButton
               disabled={!canConfirm}
               loading={navigating}
-              label={paymentLive ? CHECKOUT_PAGE_COPY.submitLabel : "결제금액 확인"}
+              label={submitLabel}
               onClick={handleGoToReview}
             />
           </div>
@@ -626,7 +639,7 @@ export function CheckoutOrderPage() {
           <PaymentPreparingButton
             disabled={!canConfirm}
             loading={navigating}
-            label={paymentLive ? "주문 확인 및 결제" : "금액 확인"}
+            label={submitLabel}
             onClick={handleGoToReview}
             className="flex-[2]"
           />

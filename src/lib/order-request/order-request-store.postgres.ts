@@ -1,6 +1,5 @@
 import "server-only";
 
-import { filterAdminTestOrderRequests } from "@/lib/admin/admin-test-data-filter";
 import { ensureOperationalSchema } from "@/lib/db/ensure-operational-schema";
 import { getSql } from "@/lib/db/postgres";
 import type { BatteryCartItem } from "@/types/cart";
@@ -149,7 +148,7 @@ export async function storeList(
       return hay.includes(q);
     });
   }
-  return filterAdminTestOrderRequests(records).slice(0, limit);
+  return records.slice(0, limit);
 }
 
 export async function storeGetById(id: string): Promise<PersistedOrderRequest | null> {

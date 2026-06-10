@@ -28,6 +28,10 @@ import { getBatteryInternetPriceWon, getBatteryOnsitePriceWon } from "@/lib/batt
 import { getSpecCardCopy } from "@/lib/battery-knowledge";
 
 import { batteryProductDetailHref } from "@/lib/battery-product-routes";
+import {
+  appendVehicleCheckoutQuery,
+  type VehicleCheckoutContext,
+} from "@/lib/checkout/vehicle-checkout-context";
 
 import { formatPriceWon } from "@/lib/pricing/order-price";
 
@@ -68,6 +72,8 @@ export type RecommendedBatteryCardProps = {
   /** 차량 상세 전용 3열 가로 카드 레이아웃 */
 
   vehicleDetail?: boolean;
+
+  vehicleContext?: VehicleCheckoutContext | null;
 
 };
 
@@ -151,6 +157,8 @@ export function RecommendedBatteryCard({
 
   vehicleDetail = false,
 
+  vehicleContext = null,
+
 }: RecommendedBatteryCardProps) {
 
   const display = parseBatterySpecDisplay(code);
@@ -173,9 +181,11 @@ export function RecommendedBatteryCard({
 
   const onsitePrice = showPricing ? getBatteryOnsitePriceWon(brandKey, code) : null;
 
-  const detailHref =
-
+  const rawDetailHref =
     batteryProductDetailHref(brandId, code) ?? ctas.find((c) => /상세|규격/.test(c.label))?.href;
+  const detailHref = rawDetailHref
+    ? appendVehicleCheckoutQuery(rawDetailHref, vehicleContext)
+    : undefined;
 
 
 
@@ -240,6 +250,8 @@ export function RecommendedBatteryCard({
               batteryCode={code}
 
               brandName={brandName}
+
+              vehicleContext={vehicleContext}
 
               className="vehicle-recommended-card__btn-order min-h-[2.375rem] w-full text-sm"
 
@@ -430,6 +442,8 @@ export function RecommendedBatteryCard({
 
                   brandName={brandName}
 
+                  vehicleContext={vehicleContext}
+
                   className="min-h-[2.75rem] w-full text-sm shadow-md"
 
                 />
@@ -475,6 +489,8 @@ export function RecommendedBatteryCard({
               batteryCode={code}
 
               brandName={brandName}
+
+              vehicleContext={vehicleContext}
 
               className="min-h-[2.75rem] flex-[2] text-sm"
 

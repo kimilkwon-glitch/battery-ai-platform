@@ -19,8 +19,10 @@ const RETURN_TOGGLE_OPTIONS: { id: BatteryReturnOption; shortLabel: string }[] =
 ];
 import { BatteryTalkInlineCard } from "@/components/batterytalk/BatteryTalkInlineCard";
 import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
-import { BatteryDetailPriceBlock } from "@/components/battery/BatteryDetailPriceBlock";
-import { createCartItemFromBattery } from "@/lib/cart/cart-item-factory";
+import {
+  createCartItemWithVehicleContext,
+  type VehicleCheckoutContext,
+} from "@/lib/checkout/vehicle-checkout-context";
 import { mapShopReturnOptionToUsedBattery } from "@/lib/shop-order-types";
 import type { FulfillmentMethod } from "@/types/cart";
 import { bm } from "@/lib/design-tokens";
@@ -31,6 +33,7 @@ type Props = {
   onReturnOptionChange: (value: BatteryReturnOption) => void;
   fulfillmentMethod: FulfillmentMethod;
   onFulfillmentChange: (value: FulfillmentMethod) => void;
+  vehicleContext?: VehicleCheckoutContext | null;
 };
 
 export function BatteryDetailOrderPanel({
@@ -39,6 +42,7 @@ export function BatteryDetailOrderPanel({
   onReturnOptionChange,
   fulfillmentMethod,
   onFulfillmentChange,
+  vehicleContext = null,
 }: Props) {
   const spec = parseBatterySpecDisplay(code);
   const summary = getNormalizedBatterySummary(code);
@@ -66,15 +70,19 @@ export function BatteryDetailOrderPanel({
 
   const previewItem = useMemo(
     () =>
-      createCartItemFromBattery({
-        batteryCode: code,
-        brandName,
-        usedBatteryReturnOption: returnOption,
-        fulfillmentMethod: fulfillmentMethod,
-        source: "battery_detail",
-        quantity: 1,
-      }),
-    [code, brandName, returnOption, fulfillmentMethod],
+      createCartItemWithVehicleContext(
+        {
+          batteryCode: code,
+          brandName,
+          usedBatteryReturnOption: returnOption,
+          fulfillmentMethod,
+          fitmentStatus: vehicleContext ? "confirmed" : "needs_customer_confirm",
+          source: vehicleContext ? "vehicle_detail" : "battery_detail",
+          quantity: 1,
+        },
+        vehicleContext,
+      ),
+    [code, brandName, returnOption, fulfillmentMethod, vehicleContext],
   );
   const usedBatteryOption = mapShopReturnOptionToUsedBattery(returnOption);
 
@@ -130,7 +138,13 @@ export function BatteryDetailOrderPanel({
             ) : null}
           </div>
 
-          <BatteryDetailPriceBlock code={code} brandId={bat.brandId} />
+          {vehicleContext ? (
+            <p className="mt-3 rounded-lg bg-blue-50/80 px-3 py-2 text-xs font-semibold text-blue-950 ring-1 ring-blue-100">
+              {vehicleContext.vehicleTitle}
+              {vehicleContext.year ? ` · ${vehicleContext.year}` : ""}
+              {vehicleContext.fuel ? ` · ${vehicleContext.fuel}` : ""} 기준 주문
+            </p>
+          ) : null}
 
           <div className="mt-3 min-w-0">
             <p className="text-sm font-black text-slate-700">폐배터리 반납</p>
@@ -188,23 +202,37 @@ export function BatteryDetailOrderPanel({
               brandName={brandName}
               returnOption={returnOption}
               fulfillmentMethod={fulfillmentMethod}
+              vehicleContext={vehicleContext}
               className="min-h-[3.25rem] w-full py-4 text-base sm:text-lg"
             />
-            <AddToCartButton
-              mode="battery"
-              variant="navy"
-              returnOption={returnOption}
-              fulfillmentMethod={fulfillmentMethod}
-              className="w-full min-h-[3.25rem]"
-              input={{
-                batteryCode: code,
-                brandName,
-                usedBatteryReturnOption: returnOption,
-                fulfillmentMethod,
-                fitmentStatus: "needs_customer_confirm",
-                source: "battery_detail",
-              }}
-            />
+            {vehicleContext ? (
+              <AddToCartButton
+                mode="vehicle"
+                variant="navy"
+                className="w-full min-h-[3.25rem]"
+                batteryCode={code}
+                vehicleSlug={vehicleContext.vehicleSlug}
+                vehicleTitle={vehicleContext.vehicleTitle}
+                fuelLabel={vehicleContext.fuel}
+                usedBatteryReturnOption={returnOption}
+              />
+            ) : (
+              <AddToCartButton
+                mode="battery"
+                variant="navy"
+                returnOption={returnOption}
+                fulfillmentMethod={fulfillmentMethod}
+                className="w-full min-h-[3.25rem]"
+                input={{
+                  batteryCode: code,
+                  brandName,
+                  usedBatteryReturnOption: returnOption,
+                  fulfillmentMethod,
+                  fitmentStatus: "needs_customer_confirm",
+                  source: "battery_detail",
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

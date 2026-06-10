@@ -6,6 +6,12 @@ import { FULFILLMENT_METHOD_LABELS } from "@/data/cart-flow-guide";
 import { batteryImageSetForCode } from "@/lib/battery-image";
 import { batteryDetailHref } from "@/lib/canonical-battery-code";
 import { CART_PAGE } from "@/lib/customer-center-routes";
+import { HUB_SEARCH } from "@/lib/customer-hub-routes";
+import {
+  appendVehicleCheckoutQuery,
+  formatCheckoutVehicleDisplay,
+  vehicleContextFromCartItem,
+} from "@/lib/checkout/vehicle-checkout-context";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { UsedBatteryFormSelection } from "@/lib/order-request/order-request-form-helpers";
 import type { BatteryCartItem } from "@/types/cart";
@@ -25,23 +31,22 @@ function resolveChangeOptionsHref(items: BatteryCartItem[], isBuyNow: boolean): 
   const code = primary.batterySpec?.trim();
   if (code) {
     const href = batteryDetailHref(code);
-    if (href) return href;
-    return `/batteries/${encodeURIComponent(code)}`;
+    const base = href || `/batteries/${encodeURIComponent(code)}`;
+    return appendVehicleCheckoutQuery(base, vehicleContextFromCartItem(primary));
   }
   return isBuyNow ? "/" : CART_PAGE;
-}
-
-function formatVehicleLabel(vehicle: OrderRequestVehicle | undefined, item: BatteryCartItem): string {
-  const name = vehicle?.name?.trim() || item.vehicle?.displayName?.trim();
-  if (!name) return "미입력";
-  const parts = [name, vehicle?.year || item.vehicle?.year].filter(Boolean);
-  return parts.join(" · ");
 }
 
 function usedBatteryLabel(value: UsedBatteryFormSelection): string | null {
   if (value === "return") return "반납";
   if (value === "no_return") return "미반납";
   return null;
+}
+
+function vehicleConfirmHref(item: BatteryCartItem): string {
+  const slug = item.vehicle?.vehicleId?.trim();
+  if (slug) return `/vehicle/${encodeURIComponent(slug)}`;
+  return HUB_SEARCH;
 }
 
 type Props = {
@@ -74,6 +79,9 @@ export function CheckoutProductSummary({
   const changeHref = resolveChangeOptionsHref(items, isBuyNow);
   const imageSet = code ? batteryImageSetForCode(code) : undefined;
   const specLabel = code ? `${code} 배터리` : primary?.productName?.trim() || "배터리";
+  const vehicleDisplay = primary
+    ? formatCheckoutVehicleDisplay(vehicle, primary)
+    : { label: "차량 기준 확인 필요", needsVehicleConfirm: true };
 
   return (
     <section
@@ -137,9 +145,25 @@ export function CheckoutProductSummary({
                   <dd className="font-black text-slate-800">{returnLabel}</dd>
                 </div>
               ) : null}
-              <div>
+              <div className="col-span-2">
                 <dt className="font-bold text-slate-500">차량</dt>
-                <dd className="font-semibold text-slate-800">{formatVehicleLabel(vehicle, primary)}</dd>
+                <dd
+                  className={
+                    vehicleDisplay.needsVehicleConfirm
+                      ? "font-semibold text-amber-900"
+                      : "font-semibold text-slate-800"
+                  }
+                >
+                  {vehicleDisplay.label}
+                </dd>
+                {vehicleDisplay.needsVehicleConfirm ? (
+                  <Link
+                    href={vehicleConfirmHref(primary)}
+                    className="mt-1 inline-flex text-[11px] font-black text-blue-700 underline underline-offset-2"
+                  >
+                    차량 확인하기
+                  </Link>
+                ) : null}
               </div>
             </dl>
 

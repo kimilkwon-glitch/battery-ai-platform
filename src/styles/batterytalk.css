@@ -13,12 +13,55 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
+.batterytalk-floating__btn-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .batterytalk-floating__btn {
   position: relative;
 }
 
 .batterytalk-floating__dot {
   animation: batterytalk-pulse 2.4s ease-in-out infinite;
+}
+
+.batterytalk-floating__unread {
+  position: absolute;
+  right: 0.125rem;
+  top: 0.125rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: #ef4444;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.batterytalk-floating__toast {
+  margin-bottom: 0.375rem;
+  max-width: 10rem;
+  border-radius: 0.625rem;
+  border: 1px solid #bfdbfe;
+  background: #fff;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #1d4ed8;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+  white-space: nowrap;
+  animation: batterytalk-toast-in 0.2s ease-out;
+}
+
+.batterytalk-floating__btn--shake {
+  animation: batterytalk-shake 0.65s ease-in-out 1;
+}
+
+.batterytalk-floating__btn--unread-pulse {
+  box-shadow:
+    0 6px 22px rgba(37, 99, 235, 0.4),
+    0 0 0 3px rgba(239, 68, 68, 0.35);
 }
 
 /* 인라인 CTA */
@@ -136,11 +179,139 @@
   transform: scale(1.04);
 }
 
-.batterytalk-chat__phone-prompt .batterytalk-chat__send-btn {
-  width: auto;
-  padding: 0 0.875rem;
+.batterytalk-chat__phone-prompt {
+  padding: 0.625rem 0.75rem;
+  min-width: 0;
+}
+
+.batterytalk-chat__phone-label {
   font-size: 0.75rem;
   font-weight: 800;
+  color: #78350f;
+  line-height: 1.35;
+}
+
+.batterytalk-chat__phone-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  min-width: 0;
+}
+
+.batterytalk-chat__phone-input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.batterytalk-chat__phone-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.5rem;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 55%, #06b6d4 100%);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.batterytalk-chat__phone-submit:disabled {
+  opacity: 0.45;
+}
+
+.batterytalk-chat__phone-submit:not(:disabled):hover {
+  transform: scale(1.01);
+}
+
+.batterytalk-chat__phone-error {
+  margin-top: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #dc2626;
+  line-height: 1.35;
+}
+
+@media (min-width: 391px) {
+  .batterytalk-chat__phone-prompt {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .batterytalk-chat__phone-form {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .batterytalk-chat__phone-input {
+    flex: 1 1 0%;
+    width: auto;
+    min-width: 0;
+  }
+
+  .batterytalk-chat__phone-submit {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 3.5rem;
+    padding: 0 0.875rem;
+  }
+}
+
+.batterytalk-panel__resume {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #f8fafc;
+}
+
+.batterytalk-panel__resume-btn {
+  width: 100%;
+  min-height: 2.5rem;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+  line-height: 1.35;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.batterytalk-panel__resume-btn--primary {
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 55%, #06b6d4 100%);
+  color: #fff;
+}
+
+.batterytalk-panel__resume-btn--secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #0f172a;
+}
+
+.batterytalk-panel__resume-btn:hover {
+  transform: scale(1.01);
+}
+
+@media (max-width: 390px) {
+  .batterytalk-chat__composer {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .batterytalk-chat__phone-prompt {
+    padding: 0.5rem 0.625rem;
+  }
+
+  .batterytalk-panel__resume {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .batterytalk-panel__resume-btn {
+    min-height: 2.75rem;
+    font-size: 0.8125rem;
+  }
 }
 
 @keyframes batterytalk-pulse {
@@ -152,6 +323,63 @@
   50% {
     opacity: 0.65;
     transform: scale(0.85);
+  }
+}
+
+@keyframes batterytalk-shake {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  12% {
+    transform: rotate(-7deg) scale(1.03);
+  }
+  24% {
+    transform: rotate(7deg) scale(1.03);
+  }
+  36% {
+    transform: rotate(-5deg) scale(1.02);
+  }
+  48% {
+    transform: rotate(5deg) scale(1.02);
+  }
+  60% {
+    transform: rotate(-3deg) scale(1.01);
+  }
+  72% {
+    transform: rotate(3deg) scale(1.01);
+  }
+}
+
+@keyframes batterytalk-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .batterytalk-floating__btn--shake {
+    animation: none;
+  }
+
+  .batterytalk-floating__toast {
+    animation: none;
+  }
+
+  .batterytalk-floating__dot {
+    animation: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .batterytalk-floating__toast {
+    margin-bottom: 0.25rem;
+    font-size: 0.625rem;
   }
 }
 

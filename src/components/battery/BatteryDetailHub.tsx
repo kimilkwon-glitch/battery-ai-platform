@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { parseVehicleCheckoutContext } from "@/lib/checkout/vehicle-checkout-context";
 import { BatteryDetailOrderPanel } from "@/components/battery/BatteryDetailOrderPanel";
 import { BatteryDetailProductTabs } from "@/components/battery/BatteryDetailProductTabs";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
@@ -24,12 +26,14 @@ function BatteryDetailMobileSticky({
   returnOption,
   fulfillmentMethod,
   visible,
+  vehicleContext,
 }: {
   code: string;
   brandName?: string;
   returnOption: BatteryReturnOption;
   fulfillmentMethod: FulfillmentMethod;
   visible: boolean;
+  vehicleContext: ReturnType<typeof parseVehicleCheckoutContext>;
 }) {
   return (
     <div
@@ -44,29 +48,48 @@ function BatteryDetailMobileSticky({
             brandName={brandName}
             returnOption={returnOption}
             fulfillmentMethod={fulfillmentMethod}
+            vehicleContext={vehicleContext}
             className="battery-detail-sticky-bar__btn min-h-[2.75rem] flex-1 py-2.5 text-sm font-black"
           />
-          <AddToCartButton
-            mode="battery"
-            variant="navy"
-            className="battery-detail-sticky-bar__btn min-h-[2.75rem] flex-1"
-            returnOption={returnOption}
-            fulfillmentMethod={fulfillmentMethod}
-            input={{
-              batteryCode: code,
-              brandName,
-              usedBatteryReturnOption: returnOption,
-              fulfillmentMethod,
-              fitmentStatus: "needs_customer_confirm",
-              source: "battery_detail",
-            }}
-          />
+          {vehicleContext ? (
+            <AddToCartButton
+              mode="vehicle"
+              variant="navy"
+              className="battery-detail-sticky-bar__btn min-h-[2.75rem] flex-1"
+              batteryCode={code}
+              vehicleSlug={vehicleContext.vehicleSlug}
+              vehicleTitle={vehicleContext.vehicleTitle}
+              fuelLabel={vehicleContext.fuel}
+              usedBatteryReturnOption={returnOption}
+            />
+          ) : (
+            <AddToCartButton
+              mode="battery"
+              variant="navy"
+              className="battery-detail-sticky-bar__btn min-h-[2.75rem] flex-1"
+              returnOption={returnOption}
+              fulfillmentMethod={fulfillmentMethod}
+              input={{
+                batteryCode: code,
+                brandName,
+                usedBatteryReturnOption: returnOption,
+                fulfillmentMethod,
+                fitmentStatus: "needs_customer_confirm",
+                source: "battery_detail",
+              }}
+            />
+          )}
         </div>
       </div>
   );
 }
 
 export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
+  const searchParams = useSearchParams();
+  const vehicleContext = useMemo(
+    () => parseVehicleCheckoutContext(searchParams),
+    [searchParams],
+  );
   const hub = resolveBatteryDetailHubContent(code, relatedCodes);
   const displayCode = hub.code;
   const bat = getBattery(displayCode);
@@ -120,6 +143,7 @@ export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
         onReturnOptionChange={setReturnOption}
         fulfillmentMethod={fulfillmentMethod}
         onFulfillmentChange={setFulfillmentMethod}
+        vehicleContext={vehicleContext}
       />
 
       <BatteryDetailProductTabs code={displayCode} />
@@ -130,6 +154,7 @@ export function BatteryDetailHub({ code, relatedCodes = [] }: Props) {
         returnOption={returnOption}
         fulfillmentMethod={fulfillmentMethod}
         visible={stickyBarVisible}
+        vehicleContext={vehicleContext}
       />
     </div>
   );

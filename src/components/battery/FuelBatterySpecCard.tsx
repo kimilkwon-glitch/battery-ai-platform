@@ -11,6 +11,7 @@ import { bm } from "@/lib/design-tokens";
 
 import { BATTERY_SPEC_DETAIL_VIEW_LABEL } from "@/lib/battery-card-cta";
 import { batteryProductDetailHref, batterySpecGuideHref } from "@/lib/battery-product-routes";
+import { appendVehicleCheckoutQuery } from "@/lib/checkout/vehicle-checkout-context";
 import { parseBatterySpecDisplay } from "@/lib/battery-spec-display";
 import { getHomeCardCopy } from "@/data/battery/batterySpecIndex";
 import { hasBrandSpecData } from "@/lib/battery-knowledge";
@@ -29,6 +30,7 @@ type Props = {
   /** 차량 상세에서 담기 시 전달 */
   vehicleSlug?: string;
   vehicleTitle?: string;
+  vehicleYear?: string;
 };
 
 
@@ -42,7 +44,20 @@ export function FuelBatterySpecCard({
   compact = false,
   vehicleSlug,
   vehicleTitle,
+  vehicleYear,
 }: Props) {
+  const vehicleOrderHref =
+    vehicleSlug && vehicleTitle
+      ? appendVehicleCheckoutQuery(
+          batteryProductDetailHref("rocket", batteryCode) ?? batterySpecGuideHref(batteryCode),
+          {
+            vehicleSlug,
+            vehicleTitle,
+            fuel: fuelLabel,
+            year: vehicleYear,
+          },
+        )
+      : null;
 
   const display = parseBatterySpecDisplay(batteryCode);
 
@@ -144,10 +159,10 @@ export function FuelBatterySpecCard({
         ) : null}
 
         <div className="mt-auto flex flex-col gap-2 pt-3">
-          {vehicleSlug ? (
+          {vehicleOrderHref ? (
             <Link
               className={`${bm.btnPrimary} inline-flex w-full items-center justify-center gap-1.5 text-xs font-black`}
-              href={batteryProductDetailHref("rocket", batteryCode) ?? batterySpecGuideHref(batteryCode)}
+              href={vehicleOrderHref}
             >
               주문하기
             </Link>

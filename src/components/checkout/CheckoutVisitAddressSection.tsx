@@ -1,7 +1,11 @@
 "use client";
 
 import { DaumPostcodeSearchButton } from "@/components/address/DaumPostcodeSearch";
+import { CheckoutAddressPurposeBanner } from "@/components/checkout/CheckoutAddressPurposeBanner";
+import { CHECKOUT_ADDRESS_PURPOSE } from "@/data/checkout-address-copy";
 import type { OrderRequestFulfillment } from "@/types/order-request";
+
+const copy = CHECKOUT_ADDRESS_PURPOSE.visit_install;
 
 type Props = {
   values: OrderRequestFulfillment;
@@ -25,6 +29,8 @@ export function CheckoutVisitAddressSection({
       id="checkout-visit-address"
       data-checkout-info-section="visit_install"
     >
+      <CheckoutAddressPurposeBanner title={copy.title} description={copy.description} />
+
       <div>
         <h2 className="checkout-card__title">방문 정보</h2>
         <p className="checkout-card__hint">출장 교체 받을 위치와 연락처를 입력해 주세요.</p>
@@ -73,6 +79,7 @@ export function CheckoutVisitAddressSection({
         <span className="checkout-label">
           방문 주소 <span className="text-red-600">*</span>
         </span>
+        <p className="text-[11px] font-semibold leading-relaxed text-slate-600">{copy.readonlyHint}</p>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <label className="block flex-1">
             <span className="text-[11px] font-bold text-slate-600">우편번호</span>
@@ -92,6 +99,8 @@ export function CheckoutVisitAddressSection({
                 region: `${postalCode} ${address1}`.trim(),
               })
             }
+            label={copy.searchLabel}
+            dialogTitle={copy.searchDialogTitle}
             className="checkout-btn-primary min-h-[2.75rem] w-full px-5 text-sm font-black sm:w-auto"
           />
         </div>

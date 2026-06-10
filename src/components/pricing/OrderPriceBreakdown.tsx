@@ -107,10 +107,6 @@ function breakdownRows(
         label: CUSTOMER_PRICE_LABELS.productPurchase,
         value: formatPriceWon(result.basePrice),
       });
-      rows.push({
-        label: CUSTOMER_PRICE_LABELS.pickupFee,
-        value: "+0원",
-      });
       break;
   }
 

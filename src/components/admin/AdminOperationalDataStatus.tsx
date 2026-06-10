@@ -1,8 +1,11 @@
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   getOperationalStoreMode,
   getOperationalStoreStatus,
   isOperationalStoreReady,
 } from "@/lib/db/operational-store-config";
+import { RETENTION_POLICY_SUMMARY } from "@/lib/retention/operational-data-retention";
 
 const DOMAIN_LABELS: Record<string, string> = {
   claims: "클레임 (취소/반품/환불)",
@@ -28,10 +31,26 @@ function modeBadge(mode: string): { text: string; className: string } {
   return { text: "미연결", className: "text-red-700 font-semibold" };
 }
 
+function readRetentionLastRun(): { finishedAt: string; mode: string } | null {
+  const path = join(process.cwd(), ".data", "retention-cleanup-last-run.json");
+  if (!existsSync(path)) return null;
+  try {
+    const raw = JSON.parse(readFileSync(path, "utf8")) as {
+      finishedAt?: string;
+      mode?: string;
+    };
+    if (!raw.finishedAt) return null;
+    return { finishedAt: raw.finishedAt, mode: raw.mode ?? "anonymize" };
+  } catch {
+    return null;
+  }
+}
+
 export function AdminOperationalDataStatus() {
   const status = getOperationalStoreStatus();
   const mode = getOperationalStoreMode();
   const ready = isOperationalStoreReady();
+  const lastRetentionRun = readRetentionLastRun();
 
   return (
     <div className="space-y-3 text-xs text-slate-600">
@@ -85,6 +104,26 @@ export function AdminOperationalDataStatus() {
           실패합니다.
         </p>
       ) : null}
+
+      <div className="rounded border border-slate-200 bg-slate-50 px-2.5 py-2">
+        <p className="mb-1 font-semibold text-slate-600">문의·상담 보관 정책</p>
+        <ul className="space-y-0.5 text-slate-600">
+          <li>{RETENTION_POLICY_SUMMARY.productQna}</li>
+          <li>{RETENTION_POLICY_SUMMARY.generalInquiry}</li>
+          <li>{RETENTION_POLICY_SUMMARY.batteryTalk}</li>
+          <li>{RETENTION_POLICY_SUMMARY.defaultMode}</li>
+        </ul>
+        <p className="mt-2 text-slate-500">
+          정리 스크립트:{" "}
+          <span className="font-mono">npm run retention:cleanup -- --dry-run</span>
+        </p>
+        {lastRetentionRun ? (
+          <p className="mt-1 text-slate-500">
+            마지막 정리 실행: {new Date(lastRetentionRun.finishedAt).toLocaleString("ko-KR")} (
+            {lastRetentionRun.mode})
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

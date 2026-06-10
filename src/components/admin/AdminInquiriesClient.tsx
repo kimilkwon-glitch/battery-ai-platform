@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
@@ -40,13 +41,15 @@ const STATUS_TABS: { id: InquiryStatus | "all"; label: string }[] = [
 ];
 
 export function AdminInquiriesClient() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
   const [items, setItems] = useState<CustomerInquiryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [statusTab, setStatusTab] = useState<InquiryStatus | "all">("all");
   const [categoryChip, setCategoryChip] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [memoDraft, setMemoDraft] = useState("");

@@ -110,10 +110,12 @@ export function BatteryImageStage({
           />
         </div>
       )}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-3 bg-gradient-to-t from-[var(--bm-image-bg)]/90 to-transparent"
-        aria-hidden
-      />
+      {variant !== "homeLineup" ? (
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-3 bg-gradient-to-t from-[var(--bm-image-bg)]/90 to-transparent"
+          aria-hidden
+        />
+      ) : null}
     </div>
   );
 }

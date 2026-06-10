@@ -230,15 +230,6 @@
     min-width: 0;
   }
 
-  .home-quick-icon-card {
-    min-height: 8.25rem;
-    padding: 0.75rem 0.5rem 0.625rem;
-  }
-
-  .home-quick-icon-card__title {
-    font-size: 0.8125rem;
-  }
-
   .home-brand-lineup__title {
     font-size: 1.1875rem;
   }

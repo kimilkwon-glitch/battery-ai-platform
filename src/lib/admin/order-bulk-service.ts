@@ -10,6 +10,7 @@ import {
   nextStatusForAction,
   type OrderBulkAction,
 } from "@/lib/admin/order-workbench";
+import { commerceToUnifiedRow } from "@/lib/admin/unified-orders";
 import { commerceOrderToListItem } from "@/lib/payment/commerce-order-admin-mapper";
 import { storeCommerceOrderGet, storeCommerceOrderUpdate } from "@/lib/payment/commerce-order-store";
 import type { CommerceOrderRecord } from "@/types/commerce-payment";
@@ -53,28 +54,7 @@ export async function executeBulkOrderAction(input: {
     }
 
     const listItem = commerceOrderToListItem(current);
-    const rowLike = {
-      id: listItem.orderId,
-      channel: "commerce" as const,
-      orderStatus: listItem.orderStatus,
-      paymentStatus: listItem.paymentStatus,
-      fulfillmentType: listItem.fulfillmentType,
-      orderNumber: listItem.orderNumber,
-      createdAt: listItem.createdAt,
-      customerName: listItem.customerName,
-      customerPhone: listItem.customerPhone,
-      customerType: listItem.customerType === "guest" ? ("guest" as const) : ("member" as const),
-      orderTypeLabel: "자사몰",
-      productName: listItem.productName,
-      batteryCode: listItem.batteryCode,
-      fulfillmentLabel: "",
-      finalAmount: listItem.finalAmount,
-      paymentStatusLabel: "",
-      orderStatusLabel: "",
-      shippingCarrier: undefined,
-      shippingTrackingNumber: undefined,
-      updatedAt: listItem.createdAt,
-    };
+    const rowLike = commerceToUnifiedRow(listItem);
 
     const block = canBulkAction(rowLike, input.action);
     if (block) {

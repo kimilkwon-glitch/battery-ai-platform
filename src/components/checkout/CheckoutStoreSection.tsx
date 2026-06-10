@@ -1,5 +1,7 @@
 "use client";
 
+import { CheckoutAddressPurposeBanner } from "@/components/checkout/CheckoutAddressPurposeBanner";
+import { CHECKOUT_ADDRESS_PURPOSE } from "@/data/checkout-address-copy";
 import type { OrderRequestFulfillment } from "@/types/order-request";
 
 const STORES = [
@@ -17,6 +19,9 @@ type Props = {
 
 export function CheckoutStoreSection({ values, onChange }: Props) {
   const isPickup = values.method === "store_pickup_self";
+  const copy = isPickup
+    ? CHECKOUT_ADDRESS_PURPOSE.store_pickup_self
+    : CHECKOUT_ADDRESS_PURPOSE.store_install;
 
   return (
     <section
@@ -24,6 +29,8 @@ export function CheckoutStoreSection({ values, onChange }: Props) {
       id="checkout-store"
       data-checkout-info-section={isPickup ? "store_pickup_self" : "store_install"}
     >
+      <CheckoutAddressPurposeBanner title={copy.title} description={copy.description} />
+
       <div>
         <h2 className="checkout-card__title">방문 지점</h2>
         <p className="checkout-card__hint">

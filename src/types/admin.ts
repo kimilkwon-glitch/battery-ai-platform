@@ -126,10 +126,15 @@ export type AdminErrorReportItem = {
   samples?: string[];
 };
 
+export type AdminDashboardCardTone = "urgent" | "progress" | "done" | "info" | "warn" | "zero";
+
 export type AdminTodayTaskItem = {
   label: string;
   count: number;
   href: string;
+  /** 카드 하단 보조 설명 */
+  description?: string;
+  tone?: AdminDashboardCardTone;
 };
 
 export type AdminDashboardSection = {
@@ -143,10 +148,13 @@ export type AdminRecentUnifiedOrder = {
   orderNumber: string;
   customerName: string;
   productName: string;
+  batteryCode: string;
   fulfillmentLabel: string;
   finalAmount: number | null;
   orderStatusLabel: string;
   createdAt: string;
+  isTestOrder: boolean;
+  needsAction: boolean;
 };
 
 export type AdminDashboardStats = {
@@ -167,10 +175,18 @@ export type AdminDashboardStats = {
   productImageMissing: number;
   productDetailMissing: number;
   todayTasks: AdminTodayTaskItem[];
-  orderSections: AdminTodayTaskItem[];
+  /** 오늘 처리할 일 */
+  todayActionSections: AdminTodayTaskItem[];
+  /** 주문 현황 */
+  orderOverviewSections: AdminTodayTaskItem[];
+  /** 클레임 요청/완료 */
   claimSections: AdminTodayTaskItem[];
+  /** 문의 (기존) */
   inquirySections: AdminTodayTaskItem[];
+  /** 상품 관리 */
   productSections: AdminTodayTaskItem[];
+  /** @deprecated — todayActionSections + orderOverviewSections 사용 */
+  orderSections: AdminTodayTaskItem[];
   recentUnifiedOrders: AdminRecentUnifiedOrder[];
   recentOrders: AdminOrderRequestSummary[];
   recentVehicles: AdminRecentDbItem[];
