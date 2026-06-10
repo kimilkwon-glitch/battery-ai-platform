@@ -81,12 +81,15 @@ export function AdminProductRegisterDrawer({ open, onClose }: Props) {
       <button type="button" className="admin-drawer__backdrop" aria-label="닫기" onClick={onClose} />
       <div className="admin-drawer__panel">
         <div className="admin-drawer__header">
-          <h2 className="admin-drawer__title">제품 등록</h2>
+          <h2 className="admin-drawer__title">상품 정보 등록·보완</h2>
           <button type="button" className="admin-drawer__close" onClick={onClose}>
             닫기
           </button>
         </div>
         <div className="admin-drawer__body space-y-4">
+          <p className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-900">
+            카탈로그에 있는 브랜드·규격의 가격·판매 정보를 저장합니다. 신규 규격 추가가 아닌 운영 정보 보완입니다.
+          </p>
           <label className="admin-field">
             <span>브랜드 *</span>
             <select value={brand} onChange={(e) => setBrand(e.target.value as AdminProductBrand)}>
@@ -174,7 +177,7 @@ export function AdminProductRegisterDrawer({ open, onClose }: Props) {
             disabled={saving}
             onClick={() => void handleSubmit()}
           >
-            {saving ? "등록 중…" : "제품 등록"}
+            {saving ? "저장 중…" : "정보 저장"}
           </button>
         </div>
       </div>

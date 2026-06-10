@@ -4,76 +4,16 @@ import { AdminOrderWorkbenchClient } from "@/components/admin/AdminOrderWorkbenc
 
 import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 
-import { buildClaimWorkbenchContext } from "@/lib/admin/claim-dashboard-counts";
-
-import {
-
-  commerceToUnifiedRow,
-
-  consultationToUnifiedRow,
-
-  countWorkbenchView,
-
-} from "@/lib/admin/unified-orders";
-
-import { claimList } from "@/lib/claims/claim-store";
-
-import { listOrderRequests } from "@/lib/order-request/order-request-service";
-
-import { isCommerceOrderStoreEnabled } from "@/lib/payment/payment-config";
-
-import { storeCommerceOrderListItems } from "@/lib/payment/commerce-order-store";
-
-
+import { loadAdminWorkbenchRows } from "@/lib/admin/data/load-workbench-rows";
+import { countWorkbenchView } from "@/lib/admin/unified-orders";
 
 export const dynamic = "force-dynamic";
 
-
-
 export default async function AdminOrdersPage() {
-
-  const dbReady = isCommerceOrderStoreEnabled();
-
-  let commerceOrders: Awaited<ReturnType<typeof storeCommerceOrderListItems>> = [];
-
-  if (dbReady) {
-
-    try {
-
-      commerceOrders = await storeCommerceOrderListItems(200);
-
-    } catch {
-
-      commerceOrders = [];
-
-    }
-
-  }
-
-
-
-  const [consultations, claims] = await Promise.all([
-    listOrderRequests({ limit: 120 }),
-    claimList({ limit: 120 }),
-  ]);
-
-  const claimContext = buildClaimWorkbenchContext(claims);
-
-
-
-  const rows = [
-
-    ...commerceOrders.map((o) => commerceToUnifiedRow(o)),
-
-    ...consultations.map(consultationToUnifiedRow),
-
-  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-
+  const { productionRows, claimContext, dbReady } = await loadAdminWorkbenchRows();
 
   const count = (view: Parameters<typeof countWorkbenchView>[1]) =>
-
-    countWorkbenchView(rows, view, "production", claimContext);
+    countWorkbenchView(productionRows, view, "production", claimContext);
 
 
 
@@ -103,7 +43,7 @@ export default async function AdminOrdersPage() {
 
         <AdminOrderWorkbenchClient
 
-          rows={rows}
+          rows={productionRows}
 
           dbReady={dbReady}
 

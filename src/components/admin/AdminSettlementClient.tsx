@@ -25,10 +25,14 @@ export function AdminSettlementClient({ summary }: Props) {
       ) : (
         <>
           <div className="admin-dashboard-section__grid admin-dashboard-section__grid--5">
-            <StatCard label="주문 건수" value={summary.orderCount.toLocaleString("ko-KR")} />
-            <StatCard label="결제 완료 금액" value={formatPriceWon(summary.paidAmount)} tone="info" />
+            <StatCard label="오늘 결제금액" value={formatPriceWon(summary.todayPaidAmount)} tone="info" />
+            <StatCard label="이번 달 결제금액" value={formatPriceWon(summary.monthPaidAmount)} tone="info" />
+            <StatCard label="누적 결제 완료" value={formatPriceWon(summary.paidAmount)} tone="default" />
             <StatCard label="취소 금액" value={formatPriceWon(summary.canceledAmount)} tone="warn" />
             <StatCard label="환불 금액" value={formatPriceWon(summary.refundedAmount)} tone="warn" />
+          </div>
+          <div className="admin-dashboard-section__grid">
+            <StatCard label="주문 건수(실제)" value={summary.orderCount.toLocaleString("ko-KR")} />
             <StatCard
               label="예상 정산금"
               value={formatPriceWon(summary.estimatedSettlement)}

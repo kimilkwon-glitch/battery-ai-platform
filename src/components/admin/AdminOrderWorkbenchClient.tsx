@@ -106,8 +106,22 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
   const [consultLoading, setConsultLoading] = useState(false);
 
   useEffect(() => {
-    setRows(initialRows);
-  }, [initialRows]);
+    if (dataScope === "production") {
+      setRows(initialRows);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      const res = await fetch(`/api/admin/workbench-rows?dataScope=${dataScope}`, {
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!cancelled && res.ok && data.ok) setRows(data.items ?? []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [initialRows, dataScope]);
 
   const setParams = (patch: Record<string, string | null>) => {
     const p = new URLSearchParams(searchParams.toString());

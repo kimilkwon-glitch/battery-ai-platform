@@ -35,10 +35,12 @@ export function formatAdminContact(contact: string | null | undefined, masked?: 
 
 export const ADMIN_EMPTY_LIST_MESSAGE = "아직 등록된 내용이 없습니다.";
 
+export const ADMIN_EMPTY_ORDER_MESSAGE = "현재 처리할 주문이 없습니다.";
+
 export const ADMIN_EMPTY_ORDER_VIEW_MESSAGES: Record<string, string> = {
   new_order: "현재 처리할 신규주문이 없습니다.",
-  preparing: "현재 상품준비 중인 주문이 없습니다.",
-  in_progress: "현재 배송·출장 진행 중인 주문이 없습니다.",
-  cancel_request: "현재 취소요청이 없습니다.",
-  return_exchange: "현재 반품·교환요청이 없습니다.",
+  preparing: "현재 처리할 상품준비 주문이 없습니다.",
+  in_progress: "현재 처리할 배송·출장 주문이 없습니다.",
+  cancel_request: "현재 처리할 취소요청이 없습니다.",
+  return_exchange: "현재 처리할 반품·교환요청이 없습니다.",
 };

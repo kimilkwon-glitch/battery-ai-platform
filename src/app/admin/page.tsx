@@ -1,11 +1,22 @@
 import { AdminShellLayout } from "@/components/admin/AdminShellLayout";
 import { AdminSmartStoreDashboard } from "@/components/admin/AdminSmartStoreDashboard";
 import { loadAdminWorkbenchSnapshot } from "@/lib/admin/data/admin-workbench-snapshot";
+import { loadAdminSettlementSummary } from "@/lib/admin/data/settlement-summary";
+import { loadAdminShippingSummary } from "@/lib/admin/data/shipping-summary";
+import {
+  buildAdminProductRows,
+  countProductsByReview,
+} from "@/lib/admin/products/products-admin-service";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const snapshot = await loadAdminWorkbenchSnapshot();
+  const [snapshot, settlement, shipping, productCounts] = await Promise.all([
+    loadAdminWorkbenchSnapshot(),
+    loadAdminSettlementSummary(),
+    loadAdminShippingSummary(),
+    Promise.resolve(countProductsByReview(buildAdminProductRows())),
+  ]);
 
   return (
     <AdminShellLayout
@@ -20,6 +31,14 @@ export default async function AdminDashboardPage() {
           returnExchangeOrderIds: [...snapshot.claimContext.returnExchangeOrderIds],
         }}
         consultationSummary={snapshot.consultationSummary}
+        opsOverview={{
+          todayPaidAmount: settlement.todayPaidAmount,
+          monthPaidAmount: settlement.monthPaidAmount,
+          needsInvoice: shipping.needsInvoice,
+          readyToShip: shipping.readyToShip,
+          priceMissing: productCounts.price_missing ?? 0,
+          imageMissing: productCounts.image_missing ?? 0,
+        }}
       />
     </AdminShellLayout>
   );

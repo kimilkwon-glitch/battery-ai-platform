@@ -50,7 +50,7 @@ export function AdminProductsToolbar() {
             className="admin-btn admin-btn--primary admin-btn--md"
             onClick={() => setRegisterOpen(true)}
           >
-            제품 등록
+            상품 정보 등록
           </button>
           <button type="button" className="admin-btn admin-btn--secondary admin-btn--md" onClick={handleExport}>
             전체 CSV 다운로드

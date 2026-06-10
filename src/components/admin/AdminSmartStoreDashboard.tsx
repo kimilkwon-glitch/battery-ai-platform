@@ -16,6 +16,15 @@ import type {
   AdminTodayTaskItem,
 } from "@/types/admin";
 
+type OpsOverview = {
+  todayPaidAmount: number;
+  monthPaidAmount: number;
+  needsInvoice: number;
+  readyToShip: number;
+  priceMissing: number;
+  imageMissing: number;
+};
+
 type Props = {
   actionCards: AdminTodayTaskItem[];
   productionRows: UnifiedAdminOrderRow[];
@@ -24,6 +33,7 @@ type Props = {
     returnExchangeOrderIds: string[];
   };
   consultationSummary: AdminConsultationSummary;
+  opsOverview?: OpsOverview;
 };
 
 function toneClass(tone: AdminTodayTaskItem["tone"], count: number, active: boolean): string {
@@ -55,6 +65,7 @@ export function AdminSmartStoreDashboard({
   productionRows,
   claimContext: claimContextProp,
   consultationSummary,
+  opsOverview,
 }: Props) {
   const [activeView, setActiveView] = useState<AdminDashboardWorkbenchView>("new_order");
   const claimContext = useMemo(() => toClaimContext(claimContextProp), [claimContextProp]);
@@ -114,35 +125,71 @@ export function AdminSmartStoreDashboard({
         </div>
       </section>
 
-      {(consultationSummary.pendingInquiries > 0 || consultationSummary.pendingBatteryTalk > 0) && (
-        <section className="admin-panel admin-consultation-summary">
+      {opsOverview ? (
+        <section className="admin-panel">
           <div className="admin-panel__header">
-            <h2 className="admin-panel__title text-lg">상담 확인</h2>
-            <p className="text-sm font-semibold text-slate-500">처리 대기 상담을 바로 확인하세요</p>
+            <h2 className="admin-panel__title text-lg">운영 한눈에 보기</h2>
           </div>
-          <div className="flex flex-wrap gap-4 p-4">
-            {consultationSummary.pendingBatteryTalk > 0 ? (
-              <Link
-                href={`${ADMIN_ROUTES.inquiries}?type=consultation`}
-                className="admin-consultation-summary__link admin-consultation-summary__link--highlight"
-              >
-                <span className="admin-consultation-summary__label">배터리톡 상담</span>
-                <span className="admin-consultation-summary__count">
-                  {consultationSummary.pendingBatteryTalk}건
-                </span>
-              </Link>
-            ) : null}
-            {consultationSummary.pendingInquiries > 0 ? (
-              <Link href={ADMIN_ROUTES.inquiries} className="admin-consultation-summary__link">
-                <span className="admin-consultation-summary__label">문의 미확인</span>
-                <span className="admin-consultation-summary__count">
-                  {consultationSummary.pendingInquiries}건
-                </span>
-              </Link>
-            ) : null}
+          <div className="admin-dashboard-section__grid admin-dashboard-section__grid--5 p-4 pt-0">
+            <Link href={ADMIN_ROUTES.settlement} className="admin-stat-card block hover:border-blue-300">
+              <p className="admin-stat-card__label">오늘 결제</p>
+              <p className="admin-stat-card__value admin-stat-card__value--info">
+                {formatPriceWon(opsOverview.todayPaidAmount)}
+              </p>
+            </Link>
+            <Link href={ADMIN_ROUTES.settlement} className="admin-stat-card block hover:border-blue-300">
+              <p className="admin-stat-card__label">이번 달 결제</p>
+              <p className="admin-stat-card__value admin-stat-card__value--info">
+                {formatPriceWon(opsOverview.monthPaidAmount)}
+              </p>
+            </Link>
+            <Link href={ADMIN_ROUTES.shipping} className="admin-stat-card block hover:border-blue-300">
+              <p className="admin-stat-card__label">송장등록 필요</p>
+              <p className="admin-stat-card__value admin-stat-card__value--warning">
+                {opsOverview.needsInvoice}
+              </p>
+            </Link>
+            <Link href={`${ADMIN_ROUTES.products}?review=price_missing`} className="admin-stat-card block hover:border-blue-300">
+              <p className="admin-stat-card__label">가격 누락</p>
+              <p className="admin-stat-card__value admin-stat-card__value--warning">
+                {opsOverview.priceMissing}
+              </p>
+            </Link>
+            <Link href={`${ADMIN_ROUTES.products}?review=image_missing`} className="admin-stat-card block hover:border-blue-300">
+              <p className="admin-stat-card__label">이미지 누락</p>
+              <p className="admin-stat-card__value admin-stat-card__value--warning">
+                {opsOverview.imageMissing}
+              </p>
+            </Link>
           </div>
         </section>
-      )}
+      ) : null}
+
+      <section className="admin-panel admin-consultation-summary">
+        <div className="admin-panel__header">
+          <h2 className="admin-panel__title text-lg">상담 확인</h2>
+          <Link href={`${ADMIN_ROUTES.inquiries}?type=consultation`} className="admin-panel__link">
+            배터리톡 상담관리
+          </Link>
+        </div>
+        <div className="flex flex-wrap gap-4 p-4">
+          <Link
+            href={`${ADMIN_ROUTES.inquiries}?type=consultation`}
+            className={`admin-consultation-summary__link ${consultationSummary.pendingBatteryTalk > 0 ? "admin-consultation-summary__link--highlight" : ""}`}
+          >
+            <span className="admin-consultation-summary__label">배터리톡 상담</span>
+            <span className="admin-consultation-summary__count">
+              {consultationSummary.pendingBatteryTalk}건
+            </span>
+          </Link>
+          <Link href={ADMIN_ROUTES.inquiries} className="admin-consultation-summary__link">
+            <span className="admin-consultation-summary__label">문의 미확인</span>
+            <span className="admin-consultation-summary__count">
+              {consultationSummary.pendingInquiries}건
+            </span>
+          </Link>
+        </div>
+      </section>
 
       <section className="admin-panel">
         <div className="admin-panel__header">
