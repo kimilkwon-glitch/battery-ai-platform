@@ -17,6 +17,13 @@ import {
 import { REVIEWS_MOCK, type ReviewBadgeId, type ReviewItem } from "@/lib/reviews-mock-data";
 import { bm } from "@/lib/design-tokens";
 
+/** 모바일·PC 공통 노출 — 핵심 후기 키워드만 */
+const REVIEW_MOOD_FILTER_DISPLAY = REVIEW_MOOD_FILTER_OPTIONS.filter((opt) =>
+  (["affordable", "kind", "fast_fix", "spec_easy", "accurate_consult"] as ReviewBadgeId[]).includes(
+    opt.id,
+  ),
+);
+
 export function ReviewsPageClient({ initialBattery }: { initialBattery?: string }) {
   const searchParams = useSearchParams();
   const pageFromUrl = Math.max(1, Number(searchParams.get("page")) || 1);
@@ -74,7 +81,7 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
   }, [mainFilter, moodFilter, initialBattery, items]);
 
   return (
-    <div className="reviews-page bm-zone bm-zone--review space-y-5">
+    <div className="reviews-page bm-zone bm-zone--review space-y-4 pb-8 lg:space-y-5 lg:pb-8">
       {initialBattery ? (
         <p className="text-sm font-bold text-[var(--color-accent-review)]">
           필터: {initialBattery}{" "}
@@ -84,16 +91,12 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         </p>
       ) : null}
 
-      <section className={`${bm.card} ${bm.cardPad}`}>
-        <p className={bm.intentBadge}>고객 후기</p>
-        <h2 className={`${bm.sectionTitle} mt-2`}>배터리 교체 후기</h2>
-        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600">
-          실제 작업 후기를 기준으로 정리한 배터리 교체 사례입니다. 지점별 작업 후기와 고객 문의가
-          많은 차량을 함께 확인할 수 있습니다.
-        </p>
-      </section>
+      <header className="reviews-page__header">
+        <h2 className="reviews-page__title">배터리 교체 후기</h2>
+        <p className="reviews-page__subtitle">실제 방문·출장 작업 후기입니다.</p>
+      </header>
 
-      <div className="space-y-2.5">
+      <div className="reviews-page__filters space-y-2.5">
         <div
           className="bm-tab-rail bm-tab-rail--review reviews-filter-main overflow-x-auto flex-nowrap"
           role="tablist"
@@ -120,11 +123,11 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
         </div>
 
         <div
-          className="reviews-filter-topic flex flex-wrap items-center gap-1.5"
+          className="reviews-filter-topic reviews-filter-topic--compact"
           role="group"
-          aria-label="후기 성격 보조 필터"
+          aria-label="후기 키워드 필터"
         >
-          {REVIEW_MOOD_FILTER_OPTIONS.map((opt) => (
+          {REVIEW_MOOD_FILTER_DISPLAY.map((opt) => (
             <button
               key={opt.id}
               type="button"
@@ -143,7 +146,7 @@ export function ReviewsPageClient({ initialBattery }: { initialBattery?: string 
       {loading ? (
         <p className="text-center text-sm font-medium text-slate-500">후기를 불러오는 중…</p>
       ) : (
-        <div className="reviews-grid-wrap rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-5">
+        <div className="reviews-grid-wrap rounded-2xl border border-slate-200/90 bg-white p-3 shadow-sm sm:p-5">
           {filtered.length === 0 ? (
             <p className="py-10 text-center text-sm font-medium text-slate-500">
               해당 조건의 후기가 없습니다.

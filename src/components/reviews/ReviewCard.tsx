@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MessageCircle, Star } from "lucide-react";
+import { MessageCircle, Star, X } from "lucide-react";
 import clsx from "clsx";
 import { ReviewCardMedia } from "@/components/reviews/ReviewCardMedia";
 import {
@@ -77,8 +77,19 @@ function ReviewOperatorReply({ item }: { item: ReviewItem }) {
   );
 }
 
-function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean }) {
+function ReviewCardBody({
+  item,
+  compact,
+  expanded,
+  onToggleExpand,
+}: {
+  item: ReviewItem;
+  compact?: boolean;
+  expanded?: boolean;
+  onToggleExpand?: () => void;
+}) {
   const displayBadges = reviewCardDisplayBadgeIds(item.badges);
+  const contentLong = item.content.length > 120;
 
   return (
     <div className="review-card__body flex min-w-0 flex-1 flex-col">
@@ -111,16 +122,33 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
         </p>
       ) : null}
 
+      {(item.branchName || item.serviceType) ? (
+        <p className="mt-1.5 min-w-0 text-xs font-semibold text-slate-500 sm:text-sm">
+          {[item.branchName, item.serviceType].filter(Boolean).join(" · ")}
+        </p>
+      ) : null}
+
       <p
         className={clsx(
           "review-card__content mt-2.5 text-sm font-medium leading-relaxed text-slate-700 sm:text-[15px]",
-          compact ? "line-clamp-3" : "line-clamp-3 sm:line-clamp-none",
+          compact && !expanded && "line-clamp-3",
+          !compact && !expanded && "line-clamp-3 sm:line-clamp-none",
         )}
       >
         {item.content}
       </p>
 
-      <ReviewOperatorReply item={item} />
+      {(compact || contentLong) && onToggleExpand ? (
+        <button
+          type="button"
+          className="review-card__expand mt-2 text-xs font-black text-teal-800 hover:underline"
+          onClick={onToggleExpand}
+        >
+          {expanded ? "접기" : "자세히 보기"}
+        </button>
+      ) : null}
+
+      {expanded ? <ReviewOperatorReply item={item} /> : null}
 
       <div className="review-card__actions mt-auto flex min-w-0 flex-wrap gap-2 pt-4">
         <Link
@@ -146,29 +174,81 @@ function ReviewCardBody({ item, compact }: { item: ReviewItem; compact?: boolean
 
 export function ReviewCard({ item }: { item: ReviewItem }) {
   const withPhoto = reviewHasImages(item);
+  const [expanded, setExpanded] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  useEffect(() => {
+    if (!detailOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [detailOpen]);
+
+  const handleToggleExpand = () => {
+    if (withPhoto) {
+      setDetailOpen(true);
+    } else {
+      setExpanded((v) => !v);
+    }
+  };
 
   if (!withPhoto) {
     return (
       <article
         className={clsx(
-          "review-card review-card--text flex h-full min-h-[280px] min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5",
+          "review-card review-card--text flex h-full min-h-[240px] min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:min-h-[280px] sm:p-5",
         )}
       >
-        <ReviewCardBody item={item} compact />
+        <ReviewCardBody item={item} compact expanded={expanded} onToggleExpand={handleToggleExpand} />
       </article>
     );
   }
 
   return (
-    <article
-      className={clsx(
-        "review-card review-card--photo flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
-      )}
-    >
-      <ReviewCardMedia item={item} className="review-card-media w-full shrink-0" />
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col p-4 sm:p-5">
-        <ReviewCardBody item={item} />
-      </div>
-    </article>
+    <>
+      <article
+        className={clsx(
+          "review-card review-card--photo flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm",
+        )}
+      >
+        <ReviewCardMedia item={item} className="review-card-media w-full shrink-0" />
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col p-4 sm:p-5">
+          <ReviewCardBody item={item} compact expanded={false} onToggleExpand={handleToggleExpand} />
+        </div>
+      </article>
+
+      {detailOpen ? (
+        <div
+          className="review-detail-overlay fixed inset-0 z-[90] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="후기 상세"
+          onClick={() => setDetailOpen(false)}
+        >
+          <div
+            className="review-detail-panel max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white shadow-xl sm:rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3">
+              <p className="text-sm font-black text-slate-900">후기 상세</p>
+              <button
+                type="button"
+                className="flex size-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
+                aria-label="닫기"
+                onClick={() => setDetailOpen(false)}
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+            <ReviewCardMedia item={item} className="review-card-media w-full shrink-0" />
+            <div className="p-4 sm:p-5">
+              <ReviewCardBody item={item} expanded />
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

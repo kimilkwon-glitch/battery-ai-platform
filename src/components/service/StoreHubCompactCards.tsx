@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { BookOpen, MapPin, Navigation, Phone } from "lucide-react";
@@ -10,6 +10,25 @@ import type { BusanStoreId } from "@/lib/busan-store-matcher";
 import { bm } from "@/lib/design-tokens";
 
 const STORE_ICON_PROPS = { className: "bm-store-action-icon", "aria-hidden": true as const, strokeWidth: 2.75 };
+
+function StoreCardPhoto({ src, alt }: { src: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed || !src) return null;
+
+  return (
+    <div className="bm-store-card__photo relative aspect-[16/10] w-full shrink-0 bg-slate-100 sm:aspect-[16/9]">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover"
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        loading="lazy"
+        onError={() => setFailed(true)}
+      />
+    </div>
+  );
+}
 
 export function StoreHubCompactCards({
   selectedBranch,
@@ -95,16 +114,7 @@ export function StoreHubCompactCards({
               selectedBranch == null && !isHover && "bm-store-card--branch-default",
             )}
           >
-            <div className="bm-store-card__photo relative aspect-[16/10] w-full shrink-0 bg-slate-100 sm:aspect-[16/9]">
-              <Image
-                src={store.imageSrc}
-                alt={store.imageAlt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                loading="lazy"
-              />
-            </div>
+            <StoreCardPhoto src={store.imageSrc} alt={store.imageAlt} />
 
             <div className="bm-store-card-info flex min-h-0 flex-1 flex-col p-4 sm:p-8">
               <header className="shrink-0">

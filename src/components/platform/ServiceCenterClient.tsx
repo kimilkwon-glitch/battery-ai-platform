@@ -25,14 +25,14 @@ export function ServiceCenterClient({
   const [mapSearchQuery, setMapSearchQuery] = useState<string | null>(null);
 
   return (
-    <div className="busan-service-hub space-y-6 pb-8">
-      <header className="busan-service-hero">
-        <p className="cp-hero__kicker">Busan Direct Stores</p>
-        <h2 className="busan-service-hero__title">부산 직영점 · 출장 교체 안내</h2>
-        <p className="busan-service-hero__desc">
-          동네명을 입력하면 가까운 직영점을 안내합니다. 지점을 선택하면 권역과 연락처를 바로 확인할 수 있습니다.
+    <div className="busan-service-hub space-y-5 pb-8 lg:space-y-6 lg:pb-8">
+      <header className="busan-service-hero max-lg:!mb-2 max-lg:!rounded-xl max-lg:!border-0 max-lg:!bg-transparent max-lg:!p-0">
+        <p className="cp-hero__kicker max-lg:hidden">Busan Direct Stores</p>
+        <h2 className="busan-service-hero__title">부산 직영점 · 출장 교체</h2>
+        <p className="busan-service-hero__desc max-lg:hidden">
+          덕천점·학장점 권역과 연락처를 바로 확인할 수 있습니다.
         </p>
-        <span className="cp-hero__accent" aria-hidden />
+        <span className="cp-hero__accent max-lg:hidden" aria-hidden />
       </header>
 
       {context.length > 0 ? (
@@ -41,6 +41,13 @@ export function ServiceCenterClient({
         </p>
       ) : null}
 
+      <StoreHubCompactCards
+        selectedBranch={selectedBranch}
+        hoveredBranch={hoveredBranch}
+        onSelectBranch={setSelectedBranch}
+        onHoverBranch={setHoveredBranch}
+      />
+
       <StoreNeighborhoodSearch
         activeStore={selectedBranch ?? hoveredBranch}
         onMatch={setSelectedBranch}
@@ -48,7 +55,7 @@ export function ServiceCenterClient({
         enhanced
       />
 
-      <section id="regions" className="scroll-mt-24">
+      <section id="regions" className="scroll-mt-24 hidden lg:block">
         <BusanRegionMap
           selectedBranch={selectedBranch}
           searchQuery={mapSearchQuery}
@@ -56,13 +63,6 @@ export function ServiceCenterClient({
           onSelectBranch={setSelectedBranch}
         />
       </section>
-
-      <StoreHubCompactCards
-        selectedBranch={selectedBranch}
-        hoveredBranch={hoveredBranch}
-        onSelectBranch={setSelectedBranch}
-        onHoverBranch={setHoveredBranch}
-      />
 
       <section
         className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm sm:p-7"
