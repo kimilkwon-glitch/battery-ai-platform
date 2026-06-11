@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { AdminDeliverySyncButton } from "@/components/admin/AdminDeliverySyncButton";
 import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import type { AdminShippingSummary } from "@/lib/admin/data/shipping-summary";
@@ -41,6 +42,7 @@ export function AdminShippingClient({ summary }: Props) {
   const [shipping, setShipping] = useState(false);
   const [orderModalId, setOrderModalId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [transitSelected, setTransitSelected] = useState<Set<string>>(new Set());
 
   const filtered = useMemo(() => {
     if (tab === "auto_complete") return [];
@@ -67,6 +69,15 @@ export function AdminShippingClient({ summary }: Props) {
     } else {
       setSelected(new Set(needsInvoiceRows.map((r) => r.id)));
     }
+  };
+
+  const toggleTransitSelect = (id: string) => {
+    setTransitSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   const shipOrders = async (targets: { orderId: string; tracking: string }[]) => {
@@ -130,9 +141,9 @@ export function AdminShippingClient({ summary }: Props) {
   return (
     <div className="admin-shipping-workspace">
       <div className="admin-workspace-notice admin-workspace-notice--shipping">
-        <p className="admin-workspace-notice__title">경동택배 단일 사용 · 내부 상태만 변경</p>
+        <p className="admin-workspace-notice__title">경동택배 단일 사용 · 수동 배송상태 반영</p>
         <p className="admin-workspace-notice__text">
-          스윗트래커 연동 전에는 API를 호출하지 않습니다.
+          배송중 주문만 확인합니다. 조회 건수가 사용될 수 있습니다. 한 번에 최대 20건.
         </p>
       </div>
 
@@ -173,9 +184,21 @@ export function AdminShippingClient({ summary }: Props) {
           <section className="admin-panel admin-workspace-panel">
             <div className="admin-panel__header">
               <h2 className="admin-panel__title">{TAB_LABELS[tab]} 목록</h2>
-              <Link href={`${ADMIN_ROUTES.orders}?view=needs_invoice`} className="admin-panel__link">
-                주문관리에서 처리
-              </Link>
+              <div className="admin-panel__header-actions">
+                {tab === "in_transit" ? (
+                  <AdminDeliverySyncButton
+                    mode={transitSelected.size > 0 ? "selected" : "inTransit"}
+                    orderIds={transitSelected.size > 0 ? [...transitSelected] : undefined}
+                    limit={20}
+                    label={transitSelected.size > 0 ? "선택 재조회" : "배송중 재조회"}
+                    hint="배송중 주문만 · 최대 20건 · 조회 건수 사용"
+                    variant="secondary"
+                  />
+                ) : null}
+                <Link href={`${ADMIN_ROUTES.orders}?view=needs_invoice`} className="admin-panel__link">
+                  주문관리에서 처리
+                </Link>
+              </div>
             </div>
 
             {tab === "needs_invoice" && filtered.length > 0 ? (
@@ -196,10 +219,18 @@ export function AdminShippingClient({ summary }: Props) {
 
             {tab === "auto_complete" ? (
               <div className="admin-table__empty admin-table__empty--panel">
-                <p className="admin-table__empty-title">배송완료 자동 반영은 스윗트래커 연동 후 제공됩니다.</p>
+                <p className="admin-table__empty-title">배송완료는 재조회 버튼으로 수동 반영합니다.</p>
                 <p className="admin-table__empty-sub">
-                  수동 보정이 필요하면 주문 상세의 관리자 보정에서 처리하세요.
+                  배송조회 준비중 탭에서 「배송중 재조회」를 사용하세요.
                 </p>
+                <AdminDeliverySyncButton
+                  mode="inTransit"
+                  limit={20}
+                  label="배송중 재조회"
+                  hint="배송중 주문만 · 최대 20건 · 조회 건수 사용"
+                  className="mt-3"
+                  variant="primary"
+                />
               </div>
             ) : (
               <div className="admin-data-table__wrap overflow-x-auto">
@@ -218,6 +249,8 @@ export function AdminShippingClient({ summary }: Props) {
                             aria-label="전체 선택"
                           />
                         </th>
+                      ) : tab === "in_transit" ? (
+                        <th aria-label="재조회 선택" />
                       ) : null}
                       <th>주문번호</th>
                       <th>고객</th>
@@ -231,7 +264,7 @@ export function AdminShippingClient({ summary }: Props) {
                   <tbody>
                     {filtered.length === 0 ? (
                       <tr>
-                        <td colSpan={tab === "needs_invoice" ? 8 : 7}>
+                        <td colSpan={tab === "needs_invoice" ? 8 : tab === "in_transit" ? 8 : 7}>
                           <div className="admin-table__empty py-8 text-center">
                             <p className="admin-table__empty-title">
                               {tab === "needs_invoice"
@@ -251,6 +284,15 @@ export function AdminShippingClient({ summary }: Props) {
                                 checked={selected.has(row.id)}
                                 onChange={() => toggleSelect(row.id)}
                                 aria-label={`${row.orderNumber} 선택`}
+                              />
+                            </td>
+                          ) : tab === "in_transit" ? (
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={transitSelected.has(row.id)}
+                                onChange={() => toggleTransitSelect(row.id)}
+                                aria-label={`${row.orderNumber} 재조회 선택`}
                               />
                             </td>
                           ) : null}

@@ -8,6 +8,9 @@ export type CommerceOrderAdminMeta = {
   shippingTrackingNumber?: string;
   courierCode?: string;
   shippedAt?: string;
+  lastDeliveryCheckedAt?: string;
+  lastDeliveryStatus?: string | null;
+  lastDeliveryMessage?: string | null;
   updatedAt: string;
 };
 

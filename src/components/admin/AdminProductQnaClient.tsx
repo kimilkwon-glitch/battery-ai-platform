@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { AdminReplyTemplateBar } from "@/components/admin/AdminReplyTemplateBar";
 import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
 import { INQUIRY_STATUS_LABELS, type CustomerInquiryRecord, type InquiryStatus } from "@/types/customer-inquiry";
@@ -71,7 +72,7 @@ export function AdminProductQnaClient() {
   };
 
   return (
-    <div className="admin-product-qna grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]">
+    <div className="admin-product-qna admin-inquiry-reply-layout">
       <div className="space-y-3">
         <AdminQuickFilterChips
           chips={STATUS_CHIPS.map((c) => ({ id: c.id, label: c.label }))}
@@ -124,6 +125,11 @@ export function AdminProductQnaClient() {
             {selected.batteryCode} · {selected.name} · {selected.contact}
           </p>
           <p className="whitespace-pre-wrap text-sm text-slate-700">{selected.message}</p>
+          <AdminReplyTemplateBar
+            currentValue={memoDraft}
+            onInsert={setMemoDraft}
+            label="자주 쓰는 답변"
+          />
           <textarea
             className="admin-memo-input w-full"
             rows={5}

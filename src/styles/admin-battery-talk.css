@@ -566,6 +566,106 @@
   color: #64748b;
 }
 
+/* 공통 답변 템플릿 (배터리톡·상품문의·상담문의) */
+[data-admin-console] .admin-reply-template {
+  margin-bottom: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.625rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-admin-console] .admin-reply-template__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+[data-admin-console] .admin-reply-template__label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+[data-admin-console] .admin-reply-template__manage {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+[data-admin-console] .admin-reply-template__manage:hover {
+  text-decoration: underline;
+}
+
+[data-admin-console] .admin-reply-template__loading,
+[data-admin-console] .admin-reply-template__empty {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+[data-admin-console] .admin-reply-template__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+[data-admin-console] .admin-reply-template__pill {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  line-height: 1.25;
+}
+
+[data-admin-console] .admin-reply-template__pill:hover,
+[data-admin-console] .admin-reply-template__pill--picked {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+[data-admin-console] .admin-reply-template__pill--more {
+  background: #fff;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-reply-template__preview {
+  margin-top: 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-reply-template__select-wrap {
+  display: block;
+  margin-top: 0.45rem;
+}
+
+[data-admin-console] .admin-reply-template__select {
+  width: 100%;
+  min-height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #334155;
+  background: #fff;
+}
+
+@media (max-width: 767px) {
+  [data-admin-console] .admin-reply-template__select-wrap {
+    margin-top: 0.625rem;
+  }
+}
+
 [data-admin-console] .admin-battery-talk__info-link {
   display: inline-block;
   margin-top: 0.5rem;

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { AdminReplyTemplateBar } from "@/components/admin/AdminReplyTemplateBar";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
@@ -414,13 +415,19 @@ export function AdminInquiriesClient() {
                     </select>
                   </label>
                   <label className="admin-inquiries__field-label mt-3">
-                    관리자 메모
+                    답변 / 관리자 메모
+                    <AdminReplyTemplateBar
+                      className="mt-2"
+                      currentValue={memoDraft}
+                      onInsert={setMemoDraft}
+                      label="자주 쓰는 답변"
+                    />
                     <textarea
                       value={memoDraft}
                       onChange={(e) => setMemoDraft(e.target.value)}
-                      rows={3}
-                      className="admin-inquiries__textarea"
-                      placeholder="내부 메모 (고객에게 노출되지 않음)"
+                      rows={4}
+                      className="admin-inquiries__textarea mt-2"
+                      placeholder="고객 답변 또는 내부 메모"
                     />
                   </label>
                 </section>

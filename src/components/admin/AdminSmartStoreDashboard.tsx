@@ -38,6 +38,7 @@ import type { BatteryTalkThreadSummary } from "@/types/battery-talk";
 import { BATTERY_TALK_STATUS_LABELS } from "@/types/battery-talk";
 import type { AdminDashboardCardTone } from "@/types/admin";
 import type { CustomerReviewRecord } from "@/types/customer-review";
+import { AdminDeliverySyncButton } from "@/components/admin/AdminDeliverySyncButton";
 
 type Props = {
   orderFlowCards: AdminDashboardCard[];
@@ -202,14 +203,16 @@ function SummaryBox({
   href,
   hrefLabel,
   children,
+  secondary = false,
 }: {
   title: string;
   href?: string;
   hrefLabel?: string;
   children: ReactNode;
+  secondary?: boolean;
 }) {
   return (
-    <div className="admin-dash-summary-box">
+    <div className={`admin-dash-summary-box${secondary ? " admin-dash-summary-box--secondary" : ""}`}>
       <div className="admin-dash-summary-box__head">
         <h3 className="admin-dash-summary-box__title">{title}</h3>
         {href && hrefLabel ? (
@@ -291,9 +294,9 @@ function InquiryReviewPanels({
   ];
 
   return (
-    <section className="admin-dash-inquiry-review">
+    <section className="admin-dash-inquiry-review admin-dash-inquiry-review--secondary">
       <div className="admin-dash-inquiry-review__grid">
-        <div className="admin-dash-list-panel">
+        <div className="admin-dash-list-panel admin-dash-list-panel--secondary">
           <div className="admin-dash-list-panel__head">
             <h3 className="admin-dash-list-panel__title">확인 필요한 문의</h3>
             <Link href={`${ADMIN_ROUTES.inquiries}?type=consultation`} className="admin-dash-list-panel__link">
@@ -370,7 +373,7 @@ function InquiryReviewPanels({
           ) : null}
         </div>
 
-        <div className="admin-dash-list-panel">
+        <div className="admin-dash-list-panel admin-dash-list-panel--secondary">
           <div className="admin-dash-list-panel__head">
             <h3 className="admin-dash-list-panel__title">확인 필요한 리뷰</h3>
             <Link href={ADMIN_ROUTES.reviews} className="admin-dash-list-panel__link">
@@ -569,46 +572,59 @@ export function AdminSmartStoreDashboard({
 
   return (
     <div className="admin-dashboard admin-dashboard--dense">
-      <div className="admin-dashboard__top-grid">
-        <section className="admin-panel admin-dashboard__sales">
-          <div className="admin-panel__header admin-panel__header--compact">
-            <div>
-              <h2 className="admin-panel__title">판매관리</h2>
-              <p className="admin-panel__subtitle">클릭하면 아래 업무 목록이 바뀝니다</p>
+      <div className="admin-dashboard__primary">
+        <div className="admin-dashboard__top-grid">
+          <section className="admin-panel admin-dashboard__sales">
+            <div className="admin-panel__header admin-panel__header--dash">
+              <div className="admin-panel__header-main">
+                <h2 className="admin-panel__title">판매관리</h2>
+                <p className="admin-panel__subtitle">클릭하면 아래 업무 목록이 바뀝니다</p>
+              </div>
+              <div className="admin-panel__header-actions">
+                <AdminDeliverySyncButton
+                  mode="inTransit"
+                  limit={20}
+                  label="배송상태 재조회"
+                  hint="배송중 주문만 확인 · 최대 20건 · 조회 건수 사용"
+                  variant="secondary"
+                />
+                <Link href={ADMIN_ROUTES.orders} className="admin-panel__link">
+                  주문관리
+                </Link>
+              </div>
             </div>
-            <Link href={ADMIN_ROUTES.orders} className="admin-panel__link">
-              주문관리
-            </Link>
-          </div>
-          <div className="admin-panel__body-compact">
-            <OrderFlowStrip cards={orderFlowCards} activePanel={activePanel} onSelect={setActivePanel} />
-          </div>
-        </section>
+            <div className="admin-panel__body-compact">
+              <OrderFlowStrip cards={orderFlowCards} activePanel={activePanel} onSelect={setActivePanel} />
+            </div>
+          </section>
 
-        <aside className="admin-panel admin-dashboard__settlement-compact">
-          <div className="admin-panel__header admin-panel__header--compact">
-            <h2 className="admin-panel__title">정산관리</h2>
-            <Link href={ADMIN_ROUTES.settlement} className="admin-panel__link">
-              정산관리
-            </Link>
-          </div>
-          <div className="admin-panel__body-compact">
-            <SettlementCompactPanel settlement={settlement} />
-          </div>
-        </aside>
-      </div>
+          <aside className="admin-panel admin-dashboard__settlement-compact">
+            <div className="admin-panel__header admin-panel__header--dash">
+              <div className="admin-panel__header-main">
+                <h2 className="admin-panel__title">정산관리</h2>
+                <p className="admin-panel__subtitle">오늘 · 이번 달 요약</p>
+              </div>
+              <Link href={ADMIN_ROUTES.settlement} className="admin-panel__link">
+                정산관리
+              </Link>
+            </div>
+            <div className="admin-panel__body-compact">
+              <SettlementCompactPanel settlement={settlement} />
+            </div>
+          </aside>
+        </div>
 
-      <section className="admin-panel admin-dashboard__work-list">
-        <div className="admin-panel__header">
-          <div>
-            <h2 className="admin-panel__title">{listTitle}</h2>
-            <p className="admin-panel__subtitle">
-              {listCount.toLocaleString("ko-KR")}건 · 카드 숫자와 동일 기준
-              {activeCardCount !== listCount && listKind === "consultation" && activePanel === "delay_consultation"
-                ? " (문의+배터리톡 합산)"
-                : ""}
-            </p>
-          </div>
+        <section className="admin-panel admin-dashboard__work-list">
+          <div className="admin-panel__header admin-panel__header--dash">
+            <div className="admin-panel__header-main">
+              <h2 className="admin-panel__title">{listTitle}</h2>
+              <p className="admin-panel__subtitle">
+                {listCount.toLocaleString("ko-KR")}건 · 카드 숫자와 동일 기준
+                {activeCardCount !== listCount && listKind === "consultation" && activePanel === "delay_consultation"
+                  ? " (문의+배터리톡 합산)"
+                  : ""}
+              </p>
+            </div>
           {listKind === "order" ? (
             <Link
               href={`${ADMIN_ROUTES.orders}?view=${activePanel}`}
@@ -676,12 +692,14 @@ export function AdminSmartStoreDashboard({
               </Link>
             ) : null}
           </div>
-        ) : null}
-      </section>
+          ) : null}
+        </section>
+      </div>
 
       <div className="admin-dashboard__secondary">
-      <div className="admin-dashboard__mid-grid">
-        <SummaryBox title="취소·반품·교환" href={ADMIN_ROUTES.commerceClaims} hrefLabel="클레임관리">
+        <p className="admin-dashboard__secondary-label">보조 현황</p>
+        <div className="admin-dashboard__mid-grid">
+        <SummaryBox title="취소·반품·교환" href={ADMIN_ROUTES.commerceClaims} hrefLabel="클레임관리" secondary>
           {claimCards
             .filter((c) => c.panel !== "claim_done")
             .map((c) => (
@@ -697,7 +715,7 @@ export function AdminSmartStoreDashboard({
             ))}
         </SummaryBox>
 
-        <SummaryBox title="처리 지연">
+        <SummaryBox title="처리 지연" secondary>
           <p className="admin-dash-summary-box__hint">24시간 이상 미처리</p>
           {delayCards.map((c) => (
             <SummaryMetricRow
@@ -712,7 +730,7 @@ export function AdminSmartStoreDashboard({
           ))}
         </SummaryBox>
 
-        <SummaryBox title="상품관리" href={ADMIN_ROUTES.products} hrefLabel="상품관리">
+        <SummaryBox title="상품관리" href={ADMIN_ROUTES.products} hrefLabel="상품관리" secondary>
           <SummaryMetricRow
             label="판매중"
             count={findCardCount(productCards, "product_selling")}
@@ -744,7 +762,7 @@ export function AdminSmartStoreDashboard({
           </div>
         </SummaryBox>
 
-        <SummaryBox title="리뷰 현황" href={ADMIN_ROUTES.reviews} hrefLabel="리뷰관리">
+        <SummaryBox title="리뷰 현황" href={ADMIN_ROUTES.reviews} hrefLabel="리뷰관리" secondary>
           {reviewCards.map((c) => (
             <SummaryMetricRow
               key={c.panel}
@@ -785,8 +803,8 @@ function OrderListTable({
   emptyMessage: string;
 }) {
   return (
-    <div className="admin-data-table__wrap admin-data-table__wrap--sticky overflow-x-auto">
-      <table className="admin-table admin-order-workbench__table w-full min-w-[960px]">
+    <div className="admin-data-table__wrap admin-data-table__wrap--sticky admin-dashboard__table-wrap overflow-x-auto">
+      <table className="admin-table admin-dashboard__table w-full min-w-[960px]">
         <thead>
           <tr>
             <th>주문일</th>
@@ -803,8 +821,9 @@ function OrderListTable({
           {rows.length === 0 ? (
             <tr>
               <td colSpan={8}>
-                <div className="admin-table__empty py-10 text-center">
-                  <p className="text-base font-bold text-slate-700">{emptyMessage}</p>
+                <div className="admin-table__empty admin-table__empty--panel">
+                  <p className="admin-table__empty-title">{emptyMessage}</p>
+                  <p className="admin-table__empty-sub">다른 상태 카드를 선택하거나 주문관리에서 확인하세요.</p>
                 </div>
               </td>
             </tr>

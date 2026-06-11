@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AdminBatteryTalkTemplateManager } from "@/components/admin/AdminBatteryTalkTemplateManager";
+import { AdminReplyTemplateBar } from "@/components/admin/AdminReplyTemplateBar";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import {
@@ -27,7 +27,6 @@ import {
   type BatteryTalkThreadStatus,
   type BatteryTalkThreadSummary,
 } from "@/types/battery-talk";
-import type { BatteryTalkReplyTemplate } from "@/types/battery-talk-reply-template";
 
 const STATUS_TABS: { id: BatteryTalkThreadStatus | "all"; label: string }[] = [
   { id: "all", label: "전체" },
@@ -93,22 +92,7 @@ export function AdminBatteryTalkClient() {
   const [saving, setSaving] = useState(false);
   const [mobileView, setMobileView] = useState<MobileView>("list");
   const [storeWarning, setStoreWarning] = useState<string | null>(null);
-  const [templates, setTemplates] = useState<BatteryTalkReplyTemplate[]>([]);
-  const [showAllTemplates, setShowAllTemplates] = useState(false);
-  const [templateManagerOpen, setTemplateManagerOpen] = useState(false);
   const [orderModalId, setOrderModalId] = useState<string | null>(null);
-
-  const enabledTemplates = useMemo(
-    () => templates.filter((t) => t.enabled).sort((a, b) => a.sortOrder - b.sortOrder),
-    [templates],
-  );
-  const visibleTemplates = showAllTemplates ? enabledTemplates : enabledTemplates.slice(0, 6);
-
-  const loadTemplates = useCallback(async () => {
-    const res = await fetch("/api/admin/battery-talk/reply-templates", { credentials: "include" });
-    const data = await res.json();
-    if (res.ok && data.ok) setTemplates(data.templates ?? []);
-  }, []);
 
   const loadList = useCallback(async () => {
     setLoading(true);
@@ -152,8 +136,7 @@ export function AdminBatteryTalkClient() {
 
   useEffect(() => {
     void loadList();
-    void loadTemplates();
-  }, [loadList, loadTemplates]);
+  }, [loadList]);
 
   useEffect(() => {
     if (selectedId) void loadDetail(selectedId);
@@ -492,39 +475,12 @@ export function AdminBatteryTalkClient() {
               </div>
 
               <footer className="admin-battery-talk__composer">
-                <div className="admin-battery-talk__quick-reply">
-                  <div className="admin-battery-talk__quick-reply-head">
-                    <span className="admin-battery-talk__quick-reply-label">빠른답변</span>
-                    <button
-                      type="button"
-                      className="admin-battery-talk__quick-reply-manage"
-                      onClick={() => setTemplateManagerOpen(true)}
-                    >
-                      템플릿 관리
-                    </button>
-                  </div>
-                  <div className="admin-battery-talk__quick-reply-pills">
-                    {visibleTemplates.map((tpl) => (
-                      <button
-                        key={tpl.id}
-                        type="button"
-                        className="admin-battery-talk__quick-pill"
-                        onClick={() => setReplyDraft(tpl.body)}
-                      >
-                        {tpl.name}
-                      </button>
-                    ))}
-                    {enabledTemplates.length > 6 ? (
-                      <button
-                        type="button"
-                        className="admin-battery-talk__quick-pill admin-battery-talk__quick-pill--more"
-                        onClick={() => setShowAllTemplates((v) => !v)}
-                      >
-                        {showAllTemplates ? "접기" : "더보기"}
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
+                <AdminReplyTemplateBar
+                  currentValue={replyDraft}
+                  onInsert={setReplyDraft}
+                  label="자주 쓰는 답변"
+                  className="admin-battery-talk__quick-reply"
+                />
                 <textarea
                   className="admin-battery-talk__reply-input"
                   placeholder="관리자 답변을 입력하세요. Enter로 발송됩니다."
@@ -727,11 +683,6 @@ export function AdminBatteryTalkClient() {
         </aside>
       </div>
 
-      <AdminBatteryTalkTemplateManager
-        open={templateManagerOpen}
-        onClose={() => setTemplateManagerOpen(false)}
-        onUpdated={setTemplates}
-      />
       <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
     </div>
   );

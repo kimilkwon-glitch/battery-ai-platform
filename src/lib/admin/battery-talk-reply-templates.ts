@@ -1,4 +1,5 @@
 import { BATTERY_TALK_REPLY_TEMPLATES } from "@/types/battery-talk";
+import { inquiryReplyTemplateSeedsToRecords } from "@/lib/admin/inquiry-reply-template-seeds";
 import type {
   BatteryTalkReplyTemplate,
   BatteryTalkReplyTemplateCategory,
@@ -15,7 +16,7 @@ const CATEGORY_MAP: Record<string, BatteryTalkReplyTemplateCategory> = {
 
 export function defaultBatteryTalkReplyTemplates(): BatteryTalkReplyTemplate[] {
   const now = new Date().toISOString();
-  return BATTERY_TALK_REPLY_TEMPLATES.map((tpl, index) => ({
+  const batteryTalk = BATTERY_TALK_REPLY_TEMPLATES.map((tpl, index) => ({
     id: `bt_tpl_${tpl.id}`,
     name: tpl.label,
     body: tpl.body,
@@ -24,6 +25,7 @@ export function defaultBatteryTalkReplyTemplates(): BatteryTalkReplyTemplate[] {
     sortOrder: index,
     updatedAt: now,
   }));
+  return [...batteryTalk, ...inquiryReplyTemplateSeedsToRecords(batteryTalk.length, now)];
 }
 
 export function normalizeBatteryTalkReplyTemplates(

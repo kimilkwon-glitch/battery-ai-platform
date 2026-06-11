@@ -11,7 +11,7 @@ export default async function AdminDashboardPage() {
     <AdminShellLayout
       title="대시보드"
       description="판매 · 주문 · 정산 · 클레임 · 상담 현황"
-      frameClassName="admin-page-frame--workspace admin-page-frame--dashboard"
+      frameClassName="admin-page-frame--dashboard"
     >
       <AdminSmartStoreDashboard
         orderFlowCards={snapshot.orderFlowCards}

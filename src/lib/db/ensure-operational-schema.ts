@@ -217,6 +217,18 @@ async function runMigration(): Promise<void> {
     ALTER TABLE commerce_order_admin_meta
       ADD COLUMN IF NOT EXISTS shipped_at TIMESTAMPTZ
   `;
+  await sql`
+    ALTER TABLE commerce_order_admin_meta
+      ADD COLUMN IF NOT EXISTS last_delivery_checked_at TIMESTAMPTZ
+  `;
+  await sql`
+    ALTER TABLE commerce_order_admin_meta
+      ADD COLUMN IF NOT EXISTS last_delivery_status TEXT
+  `;
+  await sql`
+    ALTER TABLE commerce_order_admin_meta
+      ADD COLUMN IF NOT EXISTS last_delivery_message TEXT
+  `;
 
   await sql`
     CREATE TABLE IF NOT EXISTS support_notices (

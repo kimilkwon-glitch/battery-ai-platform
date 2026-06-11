@@ -14,6 +14,7 @@ import type { CommerceOrderAdminMeta } from "@/lib/admin/commerce-order-admin-me
 import type { AdminCommercePaymentMeta } from "@/types/commerce-payment";
 import type { CommerceOrderRecord, CommerceOrderStatus } from "@/types/commerce-payment";
 import { DeliveryTrackingPanel } from "@/components/delivery/DeliveryTrackingPanel";
+import { AdminDeliverySyncButton } from "@/components/admin/AdminDeliverySyncButton";
 import { DELIVERY_CARRIERS, deliveryCarrierName } from "@/lib/delivery/delivery-carriers";
 
 type Props = {
@@ -428,12 +429,39 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
           </button>
           <div className="admin-ops-track-test">
             <p className="admin-ops-track-test__label">배송조회 테스트</p>
+            <p className="admin-ops-track-test__sublabel">화면 확인용 · DB 반영 없음</p>
             <DeliveryTrackingPanel
               courierCode={courierCode}
               courierName={carrier || deliveryCarrierName(courierCode) || ""}
               invoiceNumber={tracking}
               trackButtonLabel="배송조회 테스트"
               variant="admin"
+            />
+          </div>
+          <div className="admin-ops-track-sync">
+            <p className="admin-ops-track-sync__label">스윗트래커 조회 → DB 반영</p>
+            {adminMeta?.lastDeliveryCheckedAt ? (
+              <p className="admin-ops-track-meta">
+                마지막 재조회:{" "}
+                {new Date(adminMeta.lastDeliveryCheckedAt).toLocaleString("ko-KR", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+                {adminMeta.lastDeliveryStatus ? ` · ${adminMeta.lastDeliveryStatus}` : ""}
+              </p>
+            ) : null}
+            <AdminDeliverySyncButton
+              mode="selected"
+              orderIds={[order.orderId]}
+              label="조회 후 상태 반영"
+              confirmMessage="이 주문을 조회합니다. 조회 건수가 사용될 수 있습니다."
+              hint="배송완료일 때만 DB 반영 · 조회 건수 사용"
+              variant="primary"
+              onReload={true}
+              onComplete={() => onUpdated?.()}
             />
           </div>
         </OpsCard>

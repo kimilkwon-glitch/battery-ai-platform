@@ -8,6 +8,10 @@ import {
   storeCommerceOrderLookupByRef,
 } from "@/lib/payment/commerce-order-store";
 import { batterySpecHref } from "@/lib/canonical-battery-code";
+import {
+  normalizeReviewImages,
+  reviewPrimaryImageUrl,
+} from "@/lib/reviews/review-image-policy";
 
 export const dynamic = "force-dynamic";
 
@@ -91,6 +95,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "이미 작성한 후기가 있습니다." }, { status: 409 });
   }
 
+  const images = normalizeReviewImages(body.images);
   const batteryCode = body.batteryCode?.trim() || order.batteryCode;
   const review = await createCustomerReview({
     authorName,
@@ -100,7 +105,8 @@ export async function POST(request: Request) {
     rating,
     content: body.body.trim(),
     summary: body.title.trim(),
-    images: body.images ?? [],
+    images,
+    imageUrl: reviewPrimaryImageUrl(images),
     status: "pending",
     reviewSource: "own_store",
     orderId: order.orderId,
