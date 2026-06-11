@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { AdminCommerceOrderClaimsPanel } from "@/components/admin/AdminCommerceOrderClaimsPanel";
 import { AdminOrderRelatedActivityPanel } from "@/components/admin/AdminOrderRelatedActivityPanel";
 import { CommercePaymentMetaPanel } from "@/components/admin/CommercePaymentMetaPanel";
@@ -13,7 +13,8 @@ import { COMMERCE_LIFECYCLE_LABELS } from "@/types/commerce-order";
 import type { CommerceOrderAdminMeta } from "@/lib/admin/commerce-order-admin-meta-store";
 import type { AdminCommercePaymentMeta } from "@/types/commerce-payment";
 import type { CommerceOrderRecord, CommerceOrderStatus } from "@/types/commerce-payment";
-import { bm } from "@/lib/design-tokens";
+import { DeliveryTrackingPanel } from "@/components/delivery/DeliveryTrackingPanel";
+import { DELIVERY_CARRIERS, deliveryCarrierName } from "@/lib/delivery/delivery-carriers";
 
 type Props = {
   orderId: string;
@@ -59,6 +60,97 @@ function statusActions(order: CommerceOrderRecord): {
   return { primary, adminCorrection };
 }
 
+function orderStatusBadgeClass(status: string): string {
+  if (["canceled", "refunded", "payment_failed"].includes(status)) {
+    return "admin-ops-status-badge admin-ops-status-badge--danger";
+  }
+  if (["work_completed", "delivered", "picked_up"].includes(status)) {
+    return "admin-ops-status-badge admin-ops-status-badge--success";
+  }
+  if (["shipping", "shipped", "in_transit", "visit_scheduled", "store_visit_scheduled"].includes(status)) {
+    return "admin-ops-status-badge admin-ops-status-badge--info";
+  }
+  if (["order_confirmed", "preparing", "shipping_prep", "payment_completed"].includes(status)) {
+    return "admin-ops-status-badge admin-ops-status-badge--warning";
+  }
+  return "admin-ops-status-badge admin-ops-status-badge--neutral";
+}
+
+function paymentStatusBadgeClass(status: string): string {
+  if (["failed", "canceled"].includes(status)) {
+    return "admin-ops-status-badge admin-ops-status-badge--danger";
+  }
+  if (["refunded"].includes(status)) {
+    return "admin-ops-status-badge admin-ops-status-badge--neutral";
+  }
+  if (["completed"].includes(status)) {
+    return "admin-ops-status-badge admin-ops-status-badge--success";
+  }
+  return "admin-ops-status-badge admin-ops-status-badge--warning";
+}
+
+function vehicleSummary(order: CommerceOrderRecord): string | null {
+  const parts = [order.vehicleName, order.vehicleYear, order.vehicleFuel].filter(Boolean);
+  return parts.length > 0 ? parts.join(" · ") : null;
+}
+
+function OpsCard({
+  title,
+  children,
+  variant = "default",
+}: {
+  title?: string;
+  children: ReactNode;
+  variant?: "default" | "hero" | "actions" | "shipping";
+}) {
+  return (
+    <section className={`admin-ops-card admin-ops-card--${variant}`}>
+      {title ? <h3 className="admin-ops-card__title">{title}</h3> : null}
+      {children}
+    </section>
+  );
+}
+
+function OpsField({
+  label,
+  value,
+  highlight,
+  mono,
+}: {
+  label: string;
+  value: ReactNode;
+  highlight?: boolean;
+  mono?: boolean;
+}) {
+  return (
+    <div className="admin-ops-field">
+      <span className="admin-ops-field__label">{label}</span>
+      <span
+        className={`admin-ops-field__value${highlight ? " admin-ops-field__value--highlight" : ""}${mono ? " admin-ops-field__value--mono" : ""}`}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function OpsCollapsible({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <details className="admin-ops-collapsible" open={defaultOpen ? true : undefined}>
+      <summary className="admin-ops-collapsible__summary">{title}</summary>
+      <div className="admin-ops-collapsible__body">{children}</div>
+    </details>
+  );
+}
+
 export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
   const [order, setOrder] = useState<CommerceOrderRecord | null>(null);
   const [paymentMeta, setPaymentMeta] = useState<AdminCommercePaymentMeta | null>(null);
@@ -67,6 +159,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [memo, setMemo] = useState("");
+  const [courierCode, setCourierCode] = useState("");
   const [carrier, setCarrier] = useState("");
   const [tracking, setTracking] = useState("");
   const [showAdminCorrection, setShowAdminCorrection] = useState(false);
@@ -88,6 +181,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
       setPaymentMeta(data.paymentMeta);
       setAdminMeta(data.adminMeta ?? null);
       setMemo(data.adminMeta?.adminMemo ?? "");
+      setCourierCode(data.adminMeta?.courierCode ?? "");
       setCarrier(data.adminMeta?.shippingCarrier ?? "");
       setTracking(data.adminMeta?.shippingTrackingNumber ?? "");
     } catch {
@@ -128,16 +222,12 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
   };
 
   if (loading) {
-    return (
-      <p className={`${bm.card} ${bm.cardPad} text-xs font-medium text-slate-500`}>
-        주문 상세 불러오는 중…
-      </p>
-    );
+    return <p className="admin-ops-loading">주문 상세 불러오는 중…</p>;
   }
 
   if (error && !order) {
     return (
-      <p className={`${bm.card} ${bm.cardPad} text-xs font-bold text-red-700`} role="alert">
+      <p className="admin-ops-error" role="alert">
         {error}
       </p>
     );
@@ -149,86 +239,59 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
   const address =
     order.address1 || order.address
       ? [order.postalCode, order.address1, order.address2].filter(Boolean).join(" ")
-      : order.address ?? "—";
+      : (order.address ?? "—");
+  const vehicle = vehicleSummary(order);
+  const orderDate = new Date(order.createdAt).toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const phoneDigits = order.customerPhone.replace(/\D/g, "");
 
   return (
-    <div className="space-y-3">
-      {error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-800">{error}</p>
-      ) : null}
+    <div className="admin-order-ops-panel">
+      {error ? <p className="admin-ops-inline-error">{error}</p> : null}
 
-      <section className={`${bm.card} ${bm.cardPad} space-y-2 text-xs`}>
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-black text-slate-900">{order.orderNumber}</h3>
-          <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-700">
+      <OpsCard variant="hero">
+        <p className="admin-ops-hero__order">{order.orderNumber}</p>
+        <div className="admin-ops-hero__badges">
+          <span className={orderStatusBadgeClass(order.orderStatus)}>
+            {COMMERCE_LIFECYCLE_LABELS[order.orderStatus] ?? order.orderStatus}
+          </span>
+          <span className={paymentStatusBadgeClass(order.paymentStatus)}>
+            {paymentStatusLabel(order.paymentStatus)}
+          </span>
+          <span className="admin-ops-status-badge admin-ops-status-badge--neutral">
             {order.customerType === "guest" ? "비회원" : "회원"}
           </span>
-          <span className="rounded-full bg-blue-100 px-2 py-0.5 font-bold text-blue-800">
-            자사몰 결제
-          </span>
         </div>
-        <p>
-          <span className="font-bold text-slate-500">고객 </span>
-          {order.customerName} · {order.customerPhone}
-        </p>
-        <p>
-          <span className="font-bold text-slate-500">상품 </span>
-          {order.productName} ({order.batteryCode})
-          {order.brand ? ` · ${order.brand}` : ""}
-        </p>
-        <p>
-          <span className="font-bold text-slate-500">수령/장착 </span>
-          {fulfillmentTypeLabel(order.fulfillmentType)}
-        </p>
-        <p>
-          <span className="font-bold text-slate-500">폐배터리 </span>
-          {returnBatteryLabel(order.returnBatteryOption)}
-        </p>
-        <p>
-          <span className="font-bold text-slate-500">주소/지역 </span>
-          {address}
-        </p>
-        {order.requestMemo ? (
-          <p>
-            <span className="font-bold text-slate-500">고객 요청 </span>
-            {order.requestMemo}
-          </p>
-        ) : null}
-        <dl className="grid grid-cols-2 gap-1 border-t border-slate-100 pt-2">
-          <dt className="text-slate-500">제품 구매가</dt>
-          <dd className="text-right font-bold">{formatPriceWon(order.internetPrice)}</dd>
-          <dt className="text-slate-500">택배/장착비</dt>
-          <dd className="text-right font-bold">
-            {order.deliveryFee > 0 ? `+${formatPriceWon(order.deliveryFee)}` : "—"}
-          </dd>
-          {(order.batteryReturnFee ?? 0) > 0 ? (
-            <>
-              <dt className="text-slate-500">미반납 추가금</dt>
-              <dd className="text-right font-bold text-amber-800">
-                +{formatPriceWon(order.batteryReturnFee)}
-              </dd>
-            </>
-          ) : null}
-          <dt className="font-black text-slate-800">최종 결제금액</dt>
-          <dd className="text-right font-black">{formatPriceWon(order.finalAmount)}</dd>
-        </dl>
-        <p className="pt-1">
-          <span className="font-bold text-slate-500">결제 </span>
-          {paymentStatusLabel(order.paymentStatus)} ·{" "}
-          <span className="font-bold text-slate-500">주문 </span>
-          {COMMERCE_LIFECYCLE_LABELS[order.orderStatus] ?? order.orderStatus}
-        </p>
-        {adminMeta?.shippingCarrier || adminMeta?.shippingTrackingNumber ? (
-          <p>
-            <span className="font-bold text-slate-500">송장 </span>
-            {adminMeta.shippingCarrier ?? "—"} · {adminMeta.shippingTrackingNumber ?? "—"}
-          </p>
-        ) : null}
-      </section>
+        <div className="admin-ops-hero__meta">
+          <OpsField label="주문일시" value={orderDate} />
+          <OpsField
+            label="고객"
+            value={
+              <>
+                {order.customerName}
+                {phoneDigits ? (
+                  <>
+                    {" · "}
+                    <a href={`tel:${phoneDigits}`} className="admin-ops-phone-link">
+                      {order.customerPhone}
+                    </a>
+                  </>
+                ) : (
+                  order.customerPhone
+                )}
+              </>
+            }
+          />
+        </div>
+      </OpsCard>
 
-      <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-        <h3 className="text-sm font-black text-slate-900">처리</h3>
-        <div className="flex flex-wrap gap-2">
+      <OpsCard variant="actions" title="상태 처리">
+        <div className="admin-ops-action-row">
           {actions.map((a) => (
             <button
               key={`${a.status}-${a.label}`}
@@ -240,23 +303,23 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
                   statusNote: `관리자: ${a.label}`,
                 })
               }
-              className="admin-row-action-btn admin-row-action-btn--primary"
+              className="admin-ops-action-btn admin-ops-action-btn--primary"
             >
               {a.label}
             </button>
           ))}
         </div>
         {adminCorrection.length > 0 ? (
-          <div className="border-t border-slate-100 pt-2">
+          <div className="admin-ops-correction">
             <button
               type="button"
-              className="text-xs font-bold text-slate-500 hover:text-slate-800"
+              className="admin-ops-correction__toggle"
               onClick={() => setShowAdminCorrection((v) => !v)}
             >
-              {showAdminCorrection ? "관리자 상태 보정 닫기" : "관리자 상태 보정"}
+              {showAdminCorrection ? "관리자 보정 닫기" : "관리자 상태 보정"}
             </button>
             {showAdminCorrection ? (
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="admin-ops-action-row admin-ops-action-row--secondary">
                 {adminCorrection.map((a) => (
                   <button
                     key={`${a.status}-${a.label}`}
@@ -268,7 +331,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
                         statusNote: `관리자 보정: ${a.label}`,
                       })
                     }
-                    className="admin-row-action-btn admin-row-action-btn--secondary"
+                    className="admin-ops-action-btn admin-ops-action-btn--secondary"
                   >
                     {a.label}
                   </button>
@@ -277,78 +340,166 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
             ) : null}
           </div>
         ) : null}
-        <Link
-          href={`${ADMIN_ROUTES.commerceClaims}?orderId=${encodeURIComponent(order.orderId)}`}
-          className="inline-block text-[11px] font-bold text-blue-700 hover:underline"
-        >
-          취소/반품/환불 관리 →
-        </Link>
-      </section>
+      </OpsCard>
+
+      <OpsCard title="주문 정보">
+        <div className="admin-ops-fields">
+          <OpsField label="상품" value={order.productName} />
+          <OpsField label="배터리 규격" value={order.batteryCode} mono highlight />
+          {order.brand ? <OpsField label="브랜드" value={order.brand} /> : null}
+          {vehicle ? <OpsField label="차량" value={vehicle} /> : null}
+          <OpsField label="수령방식" value={fulfillmentTypeLabel(order.fulfillmentType)} />
+          <OpsField label="폐배터리" value={returnBatteryLabel(order.returnBatteryOption)} />
+          <OpsField label="결제금액" value={formatPriceWon(order.finalAmount)} highlight />
+        </div>
+        <details className="admin-ops-price-detail">
+          <summary>금액 상세</summary>
+          <div className="admin-ops-fields admin-ops-fields--compact">
+            <OpsField label="제품 구매가" value={formatPriceWon(order.internetPrice)} />
+            <OpsField
+              label="택배/장착비"
+              value={order.deliveryFee > 0 ? `+${formatPriceWon(order.deliveryFee)}` : "—"}
+            />
+            {(order.batteryReturnFee ?? 0) > 0 ? (
+              <OpsField label="미반납 추가금" value={`+${formatPriceWon(order.batteryReturnFee)}`} />
+            ) : null}
+          </div>
+        </details>
+      </OpsCard>
 
       {order.fulfillmentType === "delivery" ? (
-        <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-          <h3 className="text-sm font-black text-slate-900">송장 등록 / 발송처리</h3>
-          <p className="text-xs font-medium text-slate-500">
-            택배 배송완료는 택배사 스캔·추적 연동 후 자동 반영됩니다. 운영자는 송장 등록 중심으로 처리하세요.
-          </p>
-          <label className="block text-[11px] font-bold text-slate-600">
+        <OpsCard variant="shipping" title="배송 · 발송">
+          {adminMeta?.shippingTrackingNumber ? (
+            <p className="admin-ops-shipping-current">
+              {adminMeta.shippingCarrier ?? deliveryCarrierName(adminMeta.courierCode ?? "") ?? "택배"} ·{" "}
+              <span className="admin-ops-field__value--mono">{adminMeta.shippingTrackingNumber}</span>
+              {adminMeta.shippedAt
+                ? ` · ${new Date(adminMeta.shippedAt).toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}`
+                : ""}
+            </p>
+          ) : null}
+          <label className="admin-ops-input-label">
             택배사
-            <input
-              value={carrier}
-              onChange={(e) => setCarrier(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
-              placeholder="예: CJ대한통운"
-            />
+            <select
+              value={courierCode}
+              onChange={(e) => {
+                const code = e.target.value;
+                setCourierCode(code);
+                setCarrier(code ? (deliveryCarrierName(code) ?? "") : "");
+              }}
+              className="admin-ops-input admin-ops-input--select"
+            >
+              <option value="">택배사 선택</option>
+              {DELIVERY_CARRIERS.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </label>
-          <label className="block text-[11px] font-bold text-slate-600">
+          <label className="admin-ops-input-label">
             송장번호
             <input
               value={tracking}
               onChange={(e) => setTracking(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm font-mono"
+              className="admin-ops-input admin-ops-input--mono"
+              placeholder="숫자·하이픈"
+              inputMode="text"
+              autoComplete="off"
             />
           </label>
           <button
             type="button"
-            disabled={saving}
+            disabled={saving || !courierCode.trim() || !tracking.trim()}
             onClick={() =>
               void patch({
                 adminMemo: memo,
-                shippingCarrier: carrier,
-                shippingTrackingNumber: tracking,
-                orderStatus: tracking.trim() ? "shipping" : undefined,
-                statusNote: tracking.trim() ? `송장 등록: ${carrier} ${tracking}` : undefined,
+                courierCode: courierCode.trim(),
+                shippingCarrier: carrier.trim() || deliveryCarrierName(courierCode.trim()),
+                shippingTrackingNumber: tracking.trim(),
+                shippedAt: new Date().toISOString(),
+                orderStatus: "shipping",
+                statusNote: `송장 등록: ${carrier || deliveryCarrierName(courierCode)} ${tracking.trim()}`,
               })
             }
-            className={`${bm.btnNavy} w-full justify-center text-xs`}
+            className="admin-ops-action-btn admin-ops-action-btn--ship"
           >
-            발송처리
+            저장 / 발송처리
           </button>
-        </section>
+          <div className="admin-ops-track-test">
+            <p className="admin-ops-track-test__label">배송조회 테스트</p>
+            <DeliveryTrackingPanel
+              courierCode={courierCode}
+              courierName={carrier || deliveryCarrierName(courierCode) || ""}
+              invoiceNumber={tracking}
+              trackButtonLabel="배송조회 테스트"
+              variant="admin"
+            />
+          </div>
+        </OpsCard>
       ) : null}
 
-      <AdminOrderRelatedActivityPanel order={order} adminMeta={adminMeta} />
+      <OpsCard title="고객 · 배송지">
+        <div className="admin-ops-fields">
+          <OpsField label="수령인" value={order.customerName} />
+          <OpsField
+            label="연락처"
+            value={
+              phoneDigits ? (
+                <a href={`tel:${phoneDigits}`} className="admin-ops-phone-link">
+                  {order.customerPhone}
+                </a>
+              ) : (
+                order.customerPhone
+              )
+            }
+          />
+          <OpsField label="주소" value={address} />
+          {order.requestMemo ? <OpsField label="배송메모" value={order.requestMemo} /> : null}
+        </div>
+      </OpsCard>
 
-      <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-        <h3 className="text-xs font-black text-slate-900">관리자 메모</h3>
+      <OpsCard title="관리자 메모">
         <textarea
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
           rows={3}
-          className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+          className="admin-ops-textarea"
+          placeholder="내부 참고 메모"
         />
         <button
           type="button"
           disabled={saving}
-          onClick={() => void patch({ adminMemo: memo, shippingCarrier: carrier, shippingTrackingNumber: tracking })}
-          className={`${bm.btnSecondary} w-full justify-center text-xs`}
+          onClick={() =>
+            void patch({
+              adminMemo: memo,
+              courierCode: courierCode.trim() || undefined,
+              shippingCarrier: carrier,
+              shippingTrackingNumber: tracking,
+            })
+          }
+          className="admin-ops-action-btn admin-ops-action-btn--secondary admin-ops-action-btn--block"
         >
           메모 저장
         </button>
-      </section>
+      </OpsCard>
 
-      <AdminCommerceOrderClaimsPanel orderId={order.orderId} />
-      {paymentMeta ? <CommercePaymentMetaPanel meta={paymentMeta} /> : null}
+      <OpsCollapsible title="관련 고객 활동">
+        <AdminOrderRelatedActivityPanel order={order} adminMeta={adminMeta} embedded defaultOpen={false} />
+      </OpsCollapsible>
+
+      <OpsCollapsible title="취소 · 반품 · 환불">
+        <AdminCommerceOrderClaimsPanel orderId={order.orderId} />
+        <Link href={`${ADMIN_ROUTES.commerceClaims}?orderId=${encodeURIComponent(order.orderId)}`} className="admin-ops-link">
+          클레임 관리 화면 →
+        </Link>
+      </OpsCollapsible>
+
+      {paymentMeta ? (
+        <OpsCollapsible title="결제 상세">
+          <CommercePaymentMetaPanel meta={paymentMeta} />
+        </OpsCollapsible>
+      ) : null}
     </div>
   );
 }

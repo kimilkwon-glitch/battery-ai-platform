@@ -4,6 +4,7 @@ import {
   commerceOrderAdminMetaUpsert,
   type CommerceOrderAdminMeta,
 } from "@/lib/admin/commerce-order-admin-meta-store";
+import { deliveryCarrierCodeByName } from "@/lib/delivery/delivery-carriers";
 import {
   actionStatusNote,
   canBulkAction,
@@ -110,6 +111,8 @@ export async function executeBulkOrderAction(input: {
       const adminMeta = await commerceOrderAdminMetaUpsert(target.orderId, {
         shippingCarrier: carrier,
         shippingTrackingNumber: tracking,
+        courierCode: deliveryCarrierCodeByName(carrier),
+        shippedAt: now,
         adminMemo: input.adminMemo,
       });
       results.push({

@@ -3,11 +3,13 @@ import {
   maskCustomerName,
   maskCustomerPhone,
 } from "@/lib/orders/commerce-order-lookup-privacy";
+import { resolveDeliveryCarrier } from "@/lib/delivery/delivery-carriers";
 import { returnBatteryLabel } from "@/lib/payment/commerce-order-admin-mapper";
 import { CUSTOMER_FULFILLMENT_LABELS } from "@/lib/pricing/customer-price-labels";
 import type { MallOrderMineListItem } from "@/lib/orders/mall-order-api-contract";
 import type { CommerceOrderRecord } from "@/types/commerce-payment";
 import type { OrderRequestFulfillmentMethod } from "@/types/order-request";
+import type { CommerceOrderAdminMeta } from "@/lib/admin/commerce-order-admin-meta-store";
 
 const FULFILLMENT_LABELS: Record<string, string> = {
   delivery: CUSTOMER_FULFILLMENT_LABELS.delivery,
@@ -83,6 +85,13 @@ export function commerceOrderToMineListItem(
   };
 }
 
+export type CommerceOrderGuestLookupShipping = {
+  courierCode: string;
+  courierName: string;
+  invoiceNumber: string;
+  shippedAt?: string;
+};
+
 export type CommerceOrderGuestLookupResult = {
   orderId: string;
   orderNumber: string;
@@ -104,6 +113,7 @@ export type CommerceOrderGuestLookupResult = {
   customerPhoneMasked: string;
   addressSummary: string;
   selectedStoreLabel?: string;
+  shipping?: CommerceOrderGuestLookupShipping;
 };
 
 const STORE_LABELS: Record<string, string> = {
@@ -113,8 +123,24 @@ const STORE_LABELS: Record<string, string> = {
 
 export function commerceOrderToGuestLookupResult(
   record: CommerceOrderRecord,
+  adminMeta?: CommerceOrderAdminMeta | null,
 ): CommerceOrderGuestLookupResult {
   const addressBase = record.address1 ?? record.address;
+  const invoiceNumber = adminMeta?.shippingTrackingNumber?.trim();
+  const resolved = resolveDeliveryCarrier({
+    courierCode: adminMeta?.courierCode,
+    courierName: adminMeta?.shippingCarrier,
+  });
+  const shipping =
+    invoiceNumber && resolved
+      ? {
+          courierCode: resolved.code,
+          courierName: resolved.name,
+          invoiceNumber,
+          shippedAt: adminMeta?.shippedAt,
+        }
+      : undefined;
+
   return {
     orderId: record.orderId,
     orderNumber: record.orderNumber,
@@ -138,5 +164,6 @@ export function commerceOrderToGuestLookupResult(
     selectedStoreLabel: record.selectedStore
       ? STORE_LABELS[record.selectedStore] ?? record.selectedStore
       : undefined,
+    shipping,
   };
 }

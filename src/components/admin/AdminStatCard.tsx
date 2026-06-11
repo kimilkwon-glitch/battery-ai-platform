@@ -16,12 +16,19 @@ const valueToneClass: Record<NonNullable<Props["tone"]>, string> = {
   info: "admin-stat-card__value--info",
 };
 
+const surfaceToneClass: Record<NonNullable<Props["tone"]>, string> = {
+  default: "admin-stat-card--surface-default",
+  warning: "admin-stat-card--surface-warning",
+  danger: "admin-stat-card--surface-danger",
+  info: "admin-stat-card--surface-info",
+};
+
 export function AdminStatCard({ label, value, href, tone = "default", sublabel }: Props) {
   const num = typeof value === "number" ? value : Number(value);
   const isZero = !Number.isNaN(num) && num === 0;
 
   const inner = (
-    <div className="admin-stat-card h-full">
+    <div className={cn("admin-stat-card h-full", surfaceToneClass[tone])}>
       <p className="admin-stat-card__label">{label}</p>
       <p
         className={cn(

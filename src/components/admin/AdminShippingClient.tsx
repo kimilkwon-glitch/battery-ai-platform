@@ -27,6 +27,13 @@ const QUEUE_BADGE: Record<string, string> = {
 
 const DEFAULT_CARRIER = "경동택배";
 
+const KPI_TONES: Record<Tab, "warning" | "info" | "default" | "muted"> = {
+  needs_invoice: "warning",
+  ready_to_ship: "info",
+  in_transit: "default",
+  auto_complete: "muted",
+};
+
 export function AdminShippingClient({ summary }: Props) {
   const [tab, setTab] = useState<Tab>("needs_invoice");
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -113,84 +120,57 @@ export function AdminShippingClient({ summary }: Props) {
     void shipOrders([{ orderId, tracking: trackingById[orderId] ?? "" }]);
   };
 
+  const kpiItems: { id: Tab; label: string; value: string | number }[] = [
+    { id: "needs_invoice", label: "송장등록 필요", value: summary.needsInvoice },
+    { id: "ready_to_ship", label: "발송처리 완료", value: summary.readyToShip },
+    { id: "in_transit", label: "배송조회 준비중", value: summary.inTransit },
+    { id: "auto_complete", label: "배송완료 자동화 예정", value: "—" },
+  ];
+
   return (
-    <div className="space-y-5">
-      <div className="admin-panel border-blue-100 bg-blue-50/50 p-4">
-        <p className="text-sm font-semibold text-blue-900">
-          택배사: <strong>경동택배</strong> 단일 사용 기준입니다.
-        </p>
-        <p className="mt-1 text-sm font-medium text-blue-800">
-          스윗트래커 연동 전에는 API를 호출하지 않습니다. 발송처리는 내부 주문 상태만 변경합니다.
+    <div className="admin-shipping-workspace">
+      <div className="admin-workspace-notice admin-workspace-notice--shipping">
+        <p className="admin-workspace-notice__title">경동택배 단일 사용 · 내부 상태만 변경</p>
+        <p className="admin-workspace-notice__text">
+          스윗트래커 연동 전에는 API를 호출하지 않습니다.
         </p>
       </div>
 
-      {message ? (
-        <p className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700">
-          {message}
-        </p>
-      ) : null}
+      {message ? <p className="admin-workspace-flash">{message}</p> : null}
 
       {!summary.dbReady ? (
-        <p className="rounded-lg border border-slate-200 bg-white px-4 py-6 text-sm font-semibold text-slate-600">
-          주문 DB가 연결되지 않았습니다.
-        </p>
+        <p className="admin-workspace-empty">주문 DB가 연결되지 않았습니다.</p>
       ) : (
         <>
-          <div className="admin-dashboard-section__grid admin-dashboard-section__grid--4">
-            <button type="button" className="text-left" onClick={() => setTab("needs_invoice")}>
-              <div
-                className={`admin-stat-card${tab === "needs_invoice" ? " admin-stat-card--active" : ""}`}
+          <div className="admin-kpi-grid admin-kpi-grid--4">
+            {kpiItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`admin-kpi-card admin-kpi-card--${KPI_TONES[item.id]}${tab === item.id ? " admin-kpi-card--active" : ""}`}
+                onClick={() => setTab(item.id)}
+                aria-pressed={tab === item.id}
               >
-                <p className="admin-stat-card__label">송장등록 필요</p>
-                <p className="admin-stat-card__value admin-stat-card__value--warning">
-                  {summary.needsInvoice}
-                </p>
-              </div>
-            </button>
-            <button type="button" className="text-left" onClick={() => setTab("ready_to_ship")}>
-              <div
-                className={`admin-stat-card${tab === "ready_to_ship" ? " admin-stat-card--active" : ""}`}
-              >
-                <p className="admin-stat-card__label">발송처리 완료</p>
-                <p className="admin-stat-card__value admin-stat-card__value--info">
-                  {summary.readyToShip}
-                </p>
-              </div>
-            </button>
-            <button type="button" className="text-left" onClick={() => setTab("in_transit")}>
-              <div
-                className={`admin-stat-card${tab === "in_transit" ? " admin-stat-card--active" : ""}`}
-              >
-                <p className="admin-stat-card__label">배송조회 준비중</p>
-                <p className="admin-stat-card__value admin-stat-card__value--default">
-                  {summary.inTransit}
-                </p>
-              </div>
-            </button>
-            <button type="button" className="text-left" onClick={() => setTab("auto_complete")}>
-              <div
-                className={`admin-stat-card${tab === "auto_complete" ? " admin-stat-card--active" : ""}`}
-              >
-                <p className="admin-stat-card__label">배송완료 자동화 예정</p>
-                <p className="admin-stat-card__value admin-stat-card__value--default">—</p>
-              </div>
-            </button>
+                <span className="admin-kpi-card__label">{item.label}</span>
+                <span className="admin-kpi-card__value">{item.value}</span>
+              </button>
+            ))}
           </div>
 
-          <div className="admin-order-workbench__tabs">
+          <nav className="admin-workbench-tabs" aria-label="배송 상태">
             {(Object.keys(TAB_LABELS) as Tab[]).map((id) => (
               <button
                 key={id}
                 type="button"
-                className={`admin-order-workbench__tab ${tab === id ? "is-active" : ""}`}
+                className={`admin-workbench-tabs__tab${tab === id ? " is-active" : ""}`}
                 onClick={() => setTab(id)}
               >
                 {TAB_LABELS[id]}
               </button>
             ))}
-          </div>
+          </nav>
 
-          <section className="admin-panel">
+          <section className="admin-panel admin-workspace-panel">
             <div className="admin-panel__header">
               <h2 className="admin-panel__title">{TAB_LABELS[tab]} 목록</h2>
               <Link href={`${ADMIN_ROUTES.orders}?view=needs_invoice`} className="admin-panel__link">
@@ -200,7 +180,7 @@ export function AdminShippingClient({ summary }: Props) {
 
             {tab === "needs_invoice" && filtered.length > 0 ? (
               <div className="admin-shipping-bulk-bar">
-                <span className="text-sm font-bold text-slate-700">
+                <span className="admin-shipping-bulk-bar__label">
                   선택 {selected.size}건 · 택배사 {DEFAULT_CARRIER}
                 </span>
                 <button
@@ -215,15 +195,15 @@ export function AdminShippingClient({ summary }: Props) {
             ) : null}
 
             {tab === "auto_complete" ? (
-              <div className="p-6 text-center text-sm font-semibold text-slate-600">
-                <p>스윗트래커 배송추적 API 연동 후 배송완료가 자동 반영됩니다.</p>
-                <p className="mt-2 text-slate-500">
-                  수동 배송완료 보정이 필요하면 주문 상세의 관리자 보정 영역에서만 처리합니다.
+              <div className="admin-table__empty admin-table__empty--panel">
+                <p className="admin-table__empty-title">배송완료 자동 반영은 스윗트래커 연동 후 제공됩니다.</p>
+                <p className="admin-table__empty-sub">
+                  수동 보정이 필요하면 주문 상세의 관리자 보정에서 처리하세요.
                 </p>
               </div>
             ) : (
               <div className="admin-data-table__wrap overflow-x-auto">
-                <table className="admin-table w-full min-w-[1100px]">
+                <table className="admin-table admin-order-workbench__table w-full min-w-[980px]">
                   <thead>
                     <tr>
                       {tab === "needs_invoice" ? (
@@ -239,12 +219,11 @@ export function AdminShippingClient({ summary }: Props) {
                           />
                         </th>
                       ) : null}
-                      <th>주문일</th>
                       <th>주문번호</th>
-                      <th>고객명/연락처</th>
+                      <th>고객</th>
                       <th>상품/규격</th>
-                      <th>배송지 요약</th>
-                      <th>수령방식</th>
+                      <th>배송지</th>
+                      <th>수령</th>
                       <th>송장번호</th>
                       <th className="text-right">처리</th>
                     </tr>
@@ -252,12 +231,14 @@ export function AdminShippingClient({ summary }: Props) {
                   <tbody>
                     {filtered.length === 0 ? (
                       <tr>
-                        <td colSpan={tab === "needs_invoice" ? 9 : 8}>
-                          <p className="admin-table__empty py-8 text-center text-sm font-semibold text-slate-600">
-                            {tab === "needs_invoice"
-                              ? "송장등록이 필요한 주문이 없습니다."
-                              : `현재 ${TAB_LABELS[tab]} 항목이 없습니다.`}
-                          </p>
+                        <td colSpan={tab === "needs_invoice" ? 8 : 7}>
+                          <div className="admin-table__empty py-8 text-center">
+                            <p className="admin-table__empty-title">
+                              {tab === "needs_invoice"
+                                ? "송장등록이 필요한 주문이 없습니다."
+                                : `현재 ${TAB_LABELS[tab]} 항목이 없습니다.`}
+                            </p>
+                          </div>
                         </td>
                       </tr>
                     ) : (
@@ -273,36 +254,36 @@ export function AdminShippingClient({ summary }: Props) {
                               />
                             </td>
                           ) : null}
-                          <td className="whitespace-nowrap text-sm">
-                            {new Date(row.createdAt).toLocaleString("ko-KR", {
-                              month: "2-digit",
-                              day: "2-digit",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </td>
-                          <td className="admin-table__mono">
+                          <td className="admin-table__mono admin-order-workbench__order-cell">
                             <AdminOrderNumberButton
                               orderId={row.id}
                               orderNumber={row.orderNumber}
                               onOpen={setOrderModalId}
                             />
+                            <p className="admin-order-workbench__order-date">
+                              {new Date(row.createdAt).toLocaleString("ko-KR", {
+                                month: "2-digit",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
                           </td>
-                          <td>
-                            <p className="font-semibold">{row.customerName}</p>
-                            <p className="text-sm text-slate-500">{row.customerPhone}</p>
+                          <td className="admin-table__customer">
+                            <p className="admin-table__customer-name">{row.customerName}</p>
+                            <p className="admin-table__customer-phone">{row.customerPhone}</p>
                           </td>
-                          <td>
-                            <p className="font-semibold">{row.batteryCode || row.productName}</p>
-                            <p className="text-sm text-slate-500">{row.productName}</p>
+                          <td className="admin-table__product">
+                            <p className="admin-table__product-spec">{row.batteryCode || row.productName}</p>
+                            <p className="admin-table__product-name">{row.productName}</p>
                           </td>
-                          <td className="text-sm text-slate-600">{row.deliveryAddressSummary}</td>
+                          <td className="admin-table__address">{row.deliveryAddressSummary}</td>
                           <td>{row.fulfillmentLabel}</td>
                           <td>
                             {row.queueStatus === "needs_invoice" ? (
                               <input
                                 type="text"
-                                className="w-full min-w-[8rem] rounded border border-slate-200 px-2 py-1 text-sm"
+                                className="admin-shipping-tracking-input"
                                 placeholder="송장번호"
                                 value={trackingById[row.id] ?? ""}
                                 onChange={(e) =>
@@ -313,11 +294,11 @@ export function AdminShippingClient({ summary }: Props) {
                                 }
                               />
                             ) : row.shippingTrackingNumber ? (
-                              <span className="text-sm">
+                              <span className="admin-table__tracking">
                                 {row.shippingCarrier ?? DEFAULT_CARRIER} · {row.shippingTrackingNumber}
                               </span>
                             ) : (
-                              <span className="text-amber-700 text-sm">미등록</span>
+                              <span className="admin-table__tracking admin-table__tracking--missing">미등록</span>
                             )}
                           </td>
                           <td className="text-right">

@@ -10,24 +10,20 @@ type Props = {
 };
 
 export function AdminSettlementClient({ summary }: Props) {
+  const cancelRefund = summary.canceledAmount + summary.refundedAmount;
+
   return (
-    <div className="admin-settlement space-y-4">
-      <div className="admin-settlement__notice admin-panel">
-        <p className="admin-settlement__notice-text">
-          토스 결제 연동 후 실제 정산 데이터와 연결됩니다.
-        </p>
-        <p className="admin-settlement__notice-sub">
-          현재는 주문/결제 기록 기준으로 확인 가능한 금액만 표시합니다.
-        </p>
+    <div className="admin-settlement">
+      <div className="admin-workspace-notice admin-workspace-notice--settlement">
+        <p className="admin-workspace-notice__title">토스 정산 연동 후 실제 정산 데이터가 반영됩니다.</p>
+        <p className="admin-workspace-notice__text">현재는 주문·결제 기록 기준 확인 가능 금액만 표시합니다.</p>
       </div>
 
       {!summary.dbReady ? (
-        <p className="rounded-lg border border-slate-200 bg-white px-4 py-6 text-sm font-semibold text-slate-600">
-          주문 DB가 연결되지 않았습니다. DATABASE_URL 설정 후 다시 확인하세요.
-        </p>
+        <p className="admin-workspace-empty">주문 DB가 연결되지 않았습니다. DATABASE_URL 설정 후 다시 확인하세요.</p>
       ) : (
         <>
-          <div className="admin-dashboard-section__grid admin-dashboard-section__grid--5">
+          <div className="admin-kpi-grid admin-kpi-grid--5">
             <StatCard
               label="오늘 결제금액"
               value={formatPriceWon(summary.todayPaidAmount)}
@@ -42,9 +38,9 @@ export function AdminSettlementClient({ summary }: Props) {
             />
             <StatCard
               label="취소/환불 금액"
-              value={formatPriceWon(summary.canceledAmount + summary.refundedAmount)}
+              value={formatPriceWon(cancelRefund)}
               tone="warn"
-              numericAmount={summary.canceledAmount + summary.refundedAmount}
+              numericAmount={cancelRefund}
             />
             <StatCard
               label="예상 정산금"
@@ -60,7 +56,7 @@ export function AdminSettlementClient({ summary }: Props) {
             />
           </div>
 
-          <div className="admin-dashboard-section__grid admin-dashboard-section__grid--4">
+          <div className="admin-kpi-grid admin-kpi-grid--4">
             <PlaceholderCard label="결제수단별 내역" note="토스 연동 후 표시" />
             <PlaceholderCard label="부가세 자료" note="토스 연동 후 표시" />
             <PlaceholderCard label="엑셀 다운로드" note="연동 후 제공" />
@@ -71,18 +67,18 @@ export function AdminSettlementClient({ summary }: Props) {
             />
           </div>
 
-          <section className="admin-panel">
+          <section className="admin-panel admin-workspace-panel">
             <div className="admin-panel__header">
               <h2 className="admin-panel__title">정산 안내</h2>
               <Link href={ADMIN_ROUTES.orders} className="admin-panel__link">
                 주문관리에서 확인
               </Link>
             </div>
-            <div className="space-y-2 p-4 text-sm font-medium text-slate-600">
-              <p>· 결제 완료 금액: 결제 완료 상태이며 취소·환불되지 않은 주문 합계</p>
-              <p>· 예상 정산금: 결제 완료 − 환불 (토스 수수료·실정산은 연동 후 반영)</p>
-              <p>· 클레임·부분환불 상세는 클레임관리에서 확인하세요.</p>
-            </div>
+            <ul className="admin-settlement-guide">
+              <li>결제 완료 금액: 결제 완료 상태이며 취소·환불되지 않은 주문 합계</li>
+              <li>예상 정산금: 결제 완료 − 환불 (토스 수수료·실정산은 연동 후 반영)</li>
+              <li>클레임·부분환불 상세는 클레임관리에서 확인하세요.</li>
+            </ul>
           </section>
         </>
       )}
@@ -104,31 +100,23 @@ function StatCard({
   numericAmount?: number;
 }) {
   const isZero = variant === "money" && numericAmount === 0;
-  const toneClass =
-    isZero
-      ? "admin-stat-card__value--zero"
-      : tone === "warn"
-        ? "admin-stat-card__value--warning"
-        : tone === "primary"
-          ? "admin-stat-card__value--primary"
-          : tone === "info"
-            ? "admin-stat-card__value--info"
-            : "admin-stat-card__value--default";
+  const toneKey =
+    isZero ? "muted" : tone === "warn" ? "warn" : tone === "primary" ? "primary" : tone === "info" ? "info" : "default";
 
   return (
-    <div className={variant === "metric" ? "admin-stat-card admin-stat-card--metric" : "admin-stat-card"}>
-      <p className="admin-stat-card__label">{label}</p>
-      <p className={`admin-stat-card__value ${toneClass}`}>{value}</p>
+    <div className={`admin-kpi-card admin-kpi-card--${toneKey}${variant === "metric" ? " admin-kpi-card--metric" : ""}`}>
+      <span className="admin-kpi-card__label">{label}</span>
+      <span className={`admin-kpi-card__value${isZero ? " admin-kpi-card__value--zero" : ""}`}>{value}</span>
     </div>
   );
 }
 
 function PlaceholderCard({ label, note }: { label: string; note: string }) {
   return (
-    <div className="admin-stat-card admin-stat-card--placeholder">
-      <p className="admin-stat-card__label">{label}</p>
-      <p className="admin-settlement__status">연동 예정</p>
-      <p className="admin-stat-card__desc">{note}</p>
+    <div className="admin-kpi-card admin-kpi-card--placeholder">
+      <span className="admin-kpi-card__label">{label}</span>
+      <span className="admin-kpi-card__placeholder">연동 예정</span>
+      <span className="admin-kpi-card__note">{note}</span>
     </div>
   );
 }

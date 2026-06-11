@@ -62,6 +62,7 @@
     "ux2:reset": "npx tsx scripts/cleanup-ux2-admin-review.ts --dry-run && npx tsx scripts/cleanup-ux2-admin-review.ts && npx tsx scripts/seed-ux2-admin-review.ts && npx tsx scripts/generate-ux2-persona-report.ts",
     "retention:cleanup": "npx tsx scripts/retention-cleanup-operational-data.ts",
     "admin:seed-local-samples": "npx tsx scripts/seed-admin-local-sample-orders.ts",
+    "admin:seed-delivery-demo": "npx tsx scripts/seed-delivery-demo-order.ts",
     "audit:admin-ssr-perf": "node scripts/audit-admin-ssr-perf.mjs",
     "audit:journey": "npx tsx scripts/capture-customer-journey-audit.ts",
     "audit:target": "npx tsx scripts/capture-target-audit.ts",

@@ -34,6 +34,12 @@ export function CommerceOrderLookupClient() {
     if (on) setOrderRef(on);
   }, [searchParams]);
 
+  const resetLookup = () => {
+    setLookup(null);
+    setNotFound(false);
+    setFormError(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
@@ -41,7 +47,7 @@ export function CommerceOrderLookupClient() {
     setLookup(null);
 
     if (!orderRef.trim()) {
-      setFormError("주문번호 또는 주문 ID를 입력해 주세요.");
+      setFormError("주문번호를 입력해 주세요.");
       return;
     }
     if (!phone.trim()) {
@@ -66,94 +72,101 @@ export function CommerceOrderLookupClient() {
   };
 
   return (
-    <div className="commerce-order-lookup mx-auto max-w-2xl space-y-5" data-page="commerce-order-lookup">
-      <section className={`${bm.card} ${bm.cardPad} border-slate-200`}>
-        <h1 className="text-xl font-black text-slate-950 sm:text-2xl">
-          {COMMERCE_ORDER_LOOKUP_COPY.pageTitle}
-        </h1>
-        <p className="mt-2 text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
-          {COMMERCE_ORDER_LOOKUP_COPY.pageDescription}
-        </p>
-      </section>
+    <div className="commerce-order-lookup mx-auto max-w-2xl space-y-4" data-page="commerce-order-lookup">
+      {!lookup ? (
+        <>
+          <header className="px-0.5 pt-1">
+            <h1 className="text-xl font-black text-slate-950 sm:text-2xl">
+              {COMMERCE_ORDER_LOOKUP_COPY.pageTitle}
+            </h1>
+            <p className="mt-1 text-sm text-slate-600">{COMMERCE_ORDER_LOOKUP_COPY.pageDescription}</p>
+          </header>
 
-      <form className={`${bm.card} ${bm.cardPad} space-y-4`} onSubmit={(e) => void handleSubmit(e)}>
-        <div>
-          <h2 className="text-base font-black text-slate-900">
-            {COMMERCE_ORDER_LOOKUP_COPY.formTitle}
-          </h2>
-          <p className="mt-1 text-sm font-medium text-slate-600">
-            {COMMERCE_ORDER_LOOKUP_COPY.formDescription}
-          </p>
-        </div>
-        <input
-          type="text"
-          name="website"
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-          tabIndex={-1}
-          autoComplete="off"
-          aria-hidden
-          className="pointer-events-none absolute h-0 w-0 opacity-0"
-        />
-        <div className="space-y-2">
-          <label className="block text-xs font-black text-slate-800">
-            {COMMERCE_ORDER_LOOKUP_COPY.orderRefLabel}
+          <form
+            className={`${bm.card} ${bm.cardPad} space-y-3 !py-4 sm:!py-5`}
+            onSubmit={(e) => void handleSubmit(e)}
+          >
             <input
               type="text"
-              required
+              name="website"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              tabIndex={-1}
               autoComplete="off"
-              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-base font-medium sm:text-sm"
-              placeholder={COMMERCE_ORDER_LOOKUP_COPY.orderRefPlaceholder}
-              value={orderRef}
-              onChange={(e) => setOrderRef(e.target.value)}
+              aria-hidden
+              className="pointer-events-none absolute h-0 w-0 opacity-0"
             />
-          </label>
-          <label className="block text-xs font-black text-slate-800">
-            {COMMERCE_ORDER_LOOKUP_COPY.phoneLabel}
-            <input
-              type="tel"
-              required
-              autoComplete="tel"
-              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-base font-medium sm:text-sm"
-              placeholder={COMMERCE_ORDER_LOOKUP_COPY.phonePlaceholder}
-              value={phone}
-              onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
-            />
-          </label>
-        </div>
-        <p className="text-[11px] font-medium text-slate-500">{COMMERCE_ORDER_LOOKUP_COPY.hint}</p>
-        {formError ? (
-          <p className="text-xs font-bold text-red-700" role="alert">
-            {formError}
-          </p>
-        ) : null}
-        <button
-          type="submit"
-          disabled={loading}
-          className={`${bm.btnNavy} w-full justify-center py-3 text-sm disabled:opacity-50 sm:w-auto`}
-        >
-          {loading ? COMMERCE_ORDER_LOOKUP_COPY.loading : COMMERCE_ORDER_LOOKUP_COPY.submitLabel}
-        </button>
-      </form>
+            <div className="grid gap-3">
+              <label className="block text-sm font-bold text-slate-800">
+                {COMMERCE_ORDER_LOOKUP_COPY.orderRefLabel}
+                <input
+                  type="text"
+                  required
+                  autoComplete="off"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-base font-medium sm:text-sm"
+                  placeholder={COMMERCE_ORDER_LOOKUP_COPY.orderRefPlaceholder}
+                  value={orderRef}
+                  onChange={(e) => setOrderRef(e.target.value)}
+                />
+              </label>
+              <label className="block text-sm font-bold text-slate-800">
+                {COMMERCE_ORDER_LOOKUP_COPY.phoneLabel}
+                <input
+                  type="tel"
+                  required
+                  autoComplete="tel"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-base font-medium sm:text-sm"
+                  placeholder={COMMERCE_ORDER_LOOKUP_COPY.phonePlaceholder}
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
+                />
+              </label>
+            </div>
+            {formError ? (
+              <p className="text-sm font-bold text-red-700" role="alert">
+                {formError}
+              </p>
+            ) : null}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`${bm.btnNavy} w-full justify-center py-2.5 text-sm disabled:opacity-50`}
+            >
+              {loading ? COMMERCE_ORDER_LOOKUP_COPY.loading : COMMERCE_ORDER_LOOKUP_COPY.submitLabel}
+            </button>
+            <p className="text-center text-xs text-slate-500">{COMMERCE_ORDER_LOOKUP_COPY.hint}</p>
+          </form>
 
-      {notFound ? (
-        <section className={`${bm.card} ${bm.cardPad} border-red-100 bg-red-50/40`} role="alert">
-          <h2 className="text-sm font-black text-red-900">
-            {COMMERCE_ORDER_LOOKUP_COPY.notFoundTitle}
-          </h2>
-          <p className="mt-1 text-sm font-medium text-red-800">
-            {COMMERCE_ORDER_LOOKUP_COPY.notFoundBody}
-          </p>
-          <Link
-            href={COMMERCE_ORDER_LOOKUP_CTAS.consultationLookup.href}
-            className="mt-3 inline-block text-xs font-bold text-slate-700 underline"
-          >
-            상담 접수 조회로 이동
-          </Link>
-        </section>
-      ) : null}
-
-      {lookup ? <CommerceOrderLookupResult lookup={lookup} verifiedPhone={phone.replace(/\D/g, "")} /> : null}
+          {notFound ? (
+            <section className={`${bm.card} ${bm.cardPad} border-red-100 bg-red-50/40`} role="alert">
+              <h2 className="text-sm font-black text-red-900">
+                {COMMERCE_ORDER_LOOKUP_COPY.notFoundTitle}
+              </h2>
+              <p className="mt-1 text-sm text-red-800">{COMMERCE_ORDER_LOOKUP_COPY.notFoundBody}</p>
+              <Link
+                href={COMMERCE_ORDER_LOOKUP_CTAS.consultationLookup.href}
+                className="mt-2 inline-block text-xs font-bold text-slate-600 underline"
+              >
+                상담 접수 조회
+              </Link>
+            </section>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <div className="flex items-center justify-between gap-2 px-0.5">
+            <h1 className="text-lg font-black text-slate-950">주문 조회 결과</h1>
+            <button
+              type="button"
+              onClick={resetLookup}
+              className="shrink-0 text-xs font-bold text-blue-700 underline"
+            >
+              {COMMERCE_ORDER_LOOKUP_COPY.anotherLookup}
+            </button>
+          </div>
+          <CommerceOrderLookupResult lookup={lookup} verifiedPhone={phone.replace(/\D/g, "")} />
+        </>
+      )}
     </div>
   );
 }

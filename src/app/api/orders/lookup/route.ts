@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { commerceOrderAdminMetaGet } from "@/lib/admin/commerce-order-admin-meta-store";
 import { commerceOrderToGuestLookupResult } from "@/lib/orders/commerce-order-mine";
 import { normalizePhoneDigits } from "@/lib/order-request/order-request-lookup";
 import { storeCommerceOrderLookupByRef } from "@/lib/payment/commerce-order-store";
@@ -41,9 +42,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 404 });
     }
 
+    const adminMeta = await commerceOrderAdminMetaGet(record.orderId);
+
     return NextResponse.json({
       ok: true,
-      lookup: commerceOrderToGuestLookupResult(record),
+      lookup: commerceOrderToGuestLookupResult(record, adminMeta),
       orderId: record.orderId,
     });
   } catch {

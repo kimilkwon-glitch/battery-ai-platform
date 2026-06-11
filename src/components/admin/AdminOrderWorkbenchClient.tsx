@@ -467,41 +467,41 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
         </p>
       ) : null}
 
-      <nav className="admin-order-workbench__tabs" aria-label="주문 상태">
+      <nav className="admin-workbench-tabs" aria-label="주문 상태">
         {tabCounts.map((item) => (
           <button
             key={item.id}
             type="button"
             onClick={() => setParams({ view: item.id === "new_order" ? null : item.id })}
-            className={`admin-order-workbench__tab ${view === item.id ? "is-active" : ""}`}
+            className={`admin-workbench-tabs__tab ${view === item.id ? "is-active" : ""}`}
           >
             <span>{item.label}</span>
-            <span className="admin-order-workbench__tab-count">{item.count}</span>
+            <span className="admin-workbench-tabs__count">{item.count}</span>
           </button>
         ))}
       </nav>
 
-      <div className="admin-order-workbench__filters">
+      <div className="admin-order-workbench__filters admin-workspace-filters">
         <div className="flex flex-wrap items-end gap-3">
-          <label className="text-[11px] font-bold text-slate-500">
+          <label className="admin-order-workbench__filter-label">
             기간
             <div className="mt-1 flex gap-1">
               <input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setParams({ from: e.target.value || null })}
-                className="rounded border border-slate-200 px-2 py-1 text-xs"
+                className="admin-order-workbench__filter-input"
               />
               <span className="self-center text-slate-400">~</span>
               <input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setParams({ to: e.target.value || null })}
-                className="rounded border border-slate-200 px-2 py-1 text-xs"
+                className="admin-order-workbench__filter-input"
               />
             </div>
           </label>
-          <label className="text-[11px] font-bold text-slate-500">
+          <label className="admin-order-workbench__filter-label">
             주문 구분
             <select
               value={dataScope}
@@ -510,7 +510,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                   dataScope: (e.target.value as AdminOrderDataScope) === "production" ? null : e.target.value,
                 })
               }
-              className="mt-1 block rounded border border-slate-200 px-2 py-1 text-xs"
+              className="admin-order-workbench__filter-input"
             >
               <option value="production">실제 주문</option>
               <option value="test">테스트 주문</option>
@@ -519,22 +519,22 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
           </label>
           <button
             type="button"
-            className="rounded border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-50"
+            className="admin-order-workbench__filter-toggle"
             onClick={() => setAdvancedOpen((v) => !v)}
           >
             {advancedOpen ? "상세필터 닫기" : "상세필터"}
           </button>
         </div>
         {advancedOpen ? (
-          <div className="mt-2 flex flex-wrap gap-2 rounded-lg border border-slate-100 bg-slate-50 p-3">
-            <label className="text-[11px] font-bold text-slate-500">
+          <div className="admin-order-workbench__advanced-filters">
+            <label className="admin-order-workbench__filter-label">
               결제상태
               <select
                 value={paymentFilter}
                 onChange={(e) =>
                   setParams({ paymentStatus: e.target.value === "all" ? null : e.target.value })
                 }
-                className="mt-1 block rounded border border-slate-200 px-2 py-1 text-xs"
+                className="admin-order-workbench__filter-input"
               >
                 <option value="all">전체</option>
                 <option value="completed">결제됨</option>
@@ -544,14 +544,14 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                 <option value="refunded">환불</option>
               </select>
             </label>
-            <label className="text-[11px] font-bold text-slate-500">
+            <label className="admin-order-workbench__filter-label">
               수령방식
               <select
                 value={fulfillmentFilter}
                 onChange={(e) =>
                   setParams({ fulfillment: e.target.value === "all" ? null : e.target.value })
                 }
-                className="mt-1 block rounded border border-slate-200 px-2 py-1 text-xs"
+                className="admin-order-workbench__filter-input"
               >
                 <option value="all">전체</option>
                 <option value="delivery">택배</option>
@@ -560,28 +560,28 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                 <option value="store_pickup_self">매장 수령</option>
               </select>
             </label>
-            <label className="text-[11px] font-bold text-slate-500">
+            <label className="admin-order-workbench__filter-label">
               회원유형
               <select
                 value={customerTypeFilter}
                 onChange={(e) =>
                   setParams({ customerType: e.target.value === "all" ? null : e.target.value })
                 }
-                className="mt-1 block rounded border border-slate-200 px-2 py-1 text-xs"
+                className="admin-order-workbench__filter-input"
               >
                 <option value="all">전체</option>
                 <option value="member">회원</option>
                 <option value="guest">비회원</option>
               </select>
             </label>
-            <label className="text-[11px] font-bold text-slate-500">
+            <label className="admin-order-workbench__filter-label">
               주문유형
               <select
                 value={orderTypeFilter}
                 onChange={(e) =>
                   setParams({ orderType: e.target.value === "all" ? null : e.target.value })
                 }
-                className="mt-1 block rounded border border-slate-200 px-2 py-1 text-xs"
+                className="admin-order-workbench__filter-input"
               >
                 <option value="all">전체</option>
                 <option value="commerce">자사몰</option>
@@ -594,7 +594,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="주문번호·고객명·연락처·상품명·배터리 규격 검색"
-          className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+          className="admin-order-workbench__search"
         />
       </div>
 
@@ -603,15 +603,14 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
       ) : null}
 
       <div className={`admin-order-workbench__layout ${hasSelection ? "has-detail" : "no-detail"}`}>
-        <div className="admin-data-table__wrap overflow-x-auto rounded-xl border border-slate-200 bg-white">
-          <table className="admin-table admin-order-workbench__table w-full min-w-[1040px] text-sm">
+        <div className="admin-data-table__wrap overflow-x-auto rounded-xl border border-slate-200 bg-white admin-workspace-table-wrap">
+          <table className="admin-table admin-order-workbench__table w-full min-w-[880px]">
             <thead>
               <tr>
-                <th>주문일</th>
                 <th>주문번호</th>
-                <th>고객명/연락처</th>
+                <th>고객</th>
                 <th>상품/규격</th>
-                <th>수령방식</th>
+                <th>수령</th>
                 <th>결제금액</th>
                 <th>상태</th>
                 <th>처리</th>
@@ -620,7 +619,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center">
+                  <td colSpan={7} className="py-12 text-center">
                     <p className="text-sm font-bold text-slate-700">조건에 맞는 주문이 없습니다.</p>
                     <p className="mt-2 text-xs text-slate-500">
                       {WORKBENCH_STATUS_BAR.find((t) => t.id === view)?.label ?? "해당"} 상태의 주문이 없습니다.
@@ -638,17 +637,9 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                     <tr
                       key={`${row.channel}:${row.id}`}
                       className={`admin-order-workbench__row ${selected ? "is-selected" : ""} ${needsAction ? "needs-action" : ""}`}
+                      onClick={() => selectRow(row)}
                     >
-                      <td className="admin-table__date whitespace-nowrap">
-                        {new Date(row.createdAt).toLocaleString("ko-KR", {
-                          year: "2-digit",
-                          month: "2-digit",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </td>
-                      <td className="admin-table__mono font-mono">
+                      <td className="admin-table__mono admin-order-workbench__order-cell">
                         {row.channel === "commerce" ? (
                           <AdminOrderNumberButton
                             orderId={row.id}
@@ -658,17 +649,27 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                         ) : (
                           <button
                             type="button"
-                            className="text-left text-blue-800 hover:underline"
-                            onClick={() => selectRow(row)}
+                            className="admin-order-workbench__order-link"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              selectRow(row);
+                            }}
                           >
                             {row.orderNumber}
                           </button>
                         )}
                         {row.isTestOrder ? (
-                          <span className="ml-1 rounded bg-violet-100 px-1 py-0.5 text-[10px] font-bold text-violet-800">
-                            테스트
-                          </span>
+                          <span className="admin-order-workbench__test-badge">테스트</span>
                         ) : null}
+                        <p className="admin-order-workbench__order-date">
+                          {new Date(row.createdAt).toLocaleString("ko-KR", {
+                            year: "2-digit",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
                       </td>
                       <td className="admin-table__customer">
                         <p className="admin-table__customer-name">{row.customerName}</p>
@@ -701,10 +702,10 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
         {hasSelection ? (
           <aside className="admin-order-workbench__detail xl:sticky xl:top-4">
             <div className="admin-order-workbench__detail-head">
-              <h3 className="text-sm font-black text-slate-900">주문 상세</h3>
+              <h3 className="admin-order-workbench__detail-title">주문 상세</h3>
               <button
                 type="button"
-                className="text-xs font-bold text-slate-500 hover:text-slate-800"
+                className="admin-order-workbench__detail-close"
                 onClick={() => setParams({ orderId: null, id: null })}
               >
                 닫기

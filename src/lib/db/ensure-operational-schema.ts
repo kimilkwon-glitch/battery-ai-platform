@@ -204,8 +204,18 @@ async function runMigration(): Promise<void> {
       admin_memo TEXT DEFAULT '',
       shipping_carrier TEXT,
       shipping_tracking_number TEXT,
+      courier_code TEXT,
+      shipped_at TIMESTAMPTZ,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `;
+  await sql`
+    ALTER TABLE commerce_order_admin_meta
+      ADD COLUMN IF NOT EXISTS courier_code TEXT
+  `;
+  await sql`
+    ALTER TABLE commerce_order_admin_meta
+      ADD COLUMN IF NOT EXISTS shipped_at TIMESTAMPTZ
   `;
 
   await sql`

@@ -10,11 +10,10 @@ export default async function AdminShippingPage() {
   return (
     <AdminShellLayout
       title="배송관리"
-      description="택배 주문의 송장등록·발송처리 대기 목록입니다. 경동택배 단일 사용 전제."
+      description="택배 주문 송장등록·발송처리 대기 목록"
+      frameClassName="admin-page-frame--workspace admin-page-frame--shipping"
     >
-      <div className="mt-4">
-        <AdminShippingClient summary={summary} />
-      </div>
+      <AdminShippingClient summary={summary} />
     </AdminShellLayout>
   );
 }

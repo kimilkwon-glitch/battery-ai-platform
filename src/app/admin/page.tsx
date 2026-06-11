@@ -10,7 +10,8 @@ export default async function AdminDashboardPage() {
   return (
     <AdminShellLayout
       title="대시보드"
-      description="판매·주문·정산·클레임·상품·상담 현황을 한눈에 확인합니다."
+      description="판매 · 주문 · 정산 · 클레임 · 상담 현황"
+      frameClassName="admin-page-frame--workspace admin-page-frame--dashboard"
     >
       <AdminSmartStoreDashboard
         orderFlowCards={snapshot.orderFlowCards}

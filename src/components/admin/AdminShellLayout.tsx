@@ -9,6 +9,7 @@ type Props = {
   description?: string;
   actions?: ReactNode;
   summary?: AdminSummaryItem[];
+  frameClassName?: string;
 };
 
 /** 서버에서 네비 배지를 로드하고 공통 페이지 프레임을 적용 */
@@ -18,6 +19,7 @@ export async function AdminShellLayout({
   description,
   actions,
   summary,
+  frameClassName,
 }: Props) {
   const navBadges = await loadAdminNavBadges();
   const framed =
@@ -27,6 +29,7 @@ export async function AdminShellLayout({
         description={description}
         actions={actions}
         summary={summary}
+        frameClassName={frameClassName}
       >
         {children}
       </AdminPageFrame>

@@ -10,11 +10,10 @@ export default async function AdminSettlementPage() {
   return (
     <AdminShellLayout
       title="정산관리"
-      description="주문·결제 데이터 기준 매출 요약입니다. 토스 정산 연동 후 실제 정산금이 반영됩니다."
+      description="주문·결제 기준 매출 요약"
+      frameClassName="admin-page-frame--workspace admin-page-frame--settlement"
     >
-      <div className="mt-4">
-        <AdminSettlementClient summary={summary} />
-      </div>
+      <AdminSettlementClient summary={summary} />
     </AdminShellLayout>
   );
 }

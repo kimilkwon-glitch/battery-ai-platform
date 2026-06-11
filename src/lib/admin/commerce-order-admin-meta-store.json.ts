@@ -6,6 +6,8 @@ export type CommerceOrderAdminMeta = {
   adminMemo?: string;
   shippingCarrier?: string;
   shippingTrackingNumber?: string;
+  courierCode?: string;
+  shippedAt?: string;
   updatedAt: string;
 };
 

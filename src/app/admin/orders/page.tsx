@@ -23,7 +23,9 @@ export default async function AdminOrdersPage() {
 
       title="주문관리"
 
-      description="신규주문부터 발주확인, 상품준비, 배송/출장 처리까지 관리합니다."
+      description="신규 · 준비 · 배송/출장 · 취소요청 상태별로 주문을 처리합니다."
+
+      frameClassName="admin-page-frame--orders admin-page-frame--workspace"
 
       summary={[
 

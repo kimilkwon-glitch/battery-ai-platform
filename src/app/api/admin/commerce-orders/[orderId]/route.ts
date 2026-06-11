@@ -62,6 +62,8 @@ export async function PATCH(
     adminMemo?: string;
     shippingCarrier?: string;
     shippingTrackingNumber?: string;
+    courierCode?: string;
+    shippedAt?: string;
     statusNote?: string;
   };
   try {
@@ -95,6 +97,8 @@ export async function PATCH(
     adminMemo: body.adminMemo,
     shippingCarrier: body.shippingCarrier,
     shippingTrackingNumber: body.shippingTrackingNumber,
+    courierCode: body.courierCode,
+    shippedAt: body.shippedAt,
   });
 
   const order = await getCommerceOrder(orderId);

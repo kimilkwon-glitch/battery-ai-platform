@@ -13,6 +13,8 @@ import { bm } from "@/lib/design-tokens";
 type Props = {
   order: CommerceOrderRecord;
   adminMeta?: CommerceOrderAdminMeta | null;
+  embedded?: boolean;
+  defaultOpen?: boolean;
 };
 
 function formatDt(iso: string): string {
@@ -41,8 +43,13 @@ function kindBadgeClass(kind: string): string {
   }
 }
 
-export function AdminOrderRelatedActivityPanel({ order, adminMeta }: Props) {
-  const [open, setOpen] = useState(true);
+export function AdminOrderRelatedActivityPanel({
+  order,
+  adminMeta,
+  embedded = false,
+  defaultOpen = true,
+}: Props) {
+  const [open, setOpen] = useState(defaultOpen);
   const [loading, setLoading] = useState(true);
   const [activity, setActivity] = useState<OrderRelatedCustomerActivity | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -89,37 +96,41 @@ export function AdminOrderRelatedActivityPanel({ order, adminMeta }: Props) {
   const operationalBadges = deriveOrderOperationalBadges(order, activity, adminMeta);
 
   return (
-    <section className={`${bm.card} ${bm.cardPad} space-y-2`}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 text-left"
-        aria-expanded={open}
-      >
-        <h3 className="text-xs font-black text-slate-900">관련 고객 활동</h3>
-        <span className="text-[10px] font-bold text-slate-500">{open ? "접기" : "펼치기"}</span>
-      </button>
+    <section className={embedded ? "admin-ops-embedded-panel space-y-2" : `${bm.card} ${bm.cardPad} space-y-2`}>
+      {!embedded ? (
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="flex w-full items-center justify-between gap-2 text-left"
+          aria-expanded={open}
+        >
+          <h3 className="text-sm font-black text-slate-900">관련 고객 활동</h3>
+          <span className="text-xs font-bold text-slate-500">{open ? "접기" : "펼치기"}</span>
+        </button>
+      ) : null}
 
-      <p className="text-[10px] leading-relaxed text-slate-500">
-        {order.customerName} · {customerPhone}
-        {orderNumber ? ` · ${orderNumber}` : ""} 기준 연결
-      </p>
+      {!embedded ? (
+        <p className="text-xs leading-relaxed text-slate-500">
+          {order.customerName} · {customerPhone}
+          {orderNumber ? ` · ${orderNumber}` : ""} 기준 연결
+        </p>
+      ) : null}
 
       <AdminOrderOperationalBadges badges={operationalBadges} />
 
       {loading ? (
-        <p className="text-[11px] font-medium text-slate-500">관련 활동 불러오는 중…</p>
+        <p className="text-sm font-medium text-slate-500">관련 활동 불러오는 중…</p>
       ) : error ? (
-        <p className="text-[11px] font-bold text-red-700">{error}</p>
+        <p className="text-sm font-bold text-red-700">{error}</p>
       ) : activity && totalCount === 0 ? (
-        <p className="text-[11px] font-medium text-slate-500">관련 문의/클레임 없음</p>
+        <p className="text-sm font-medium text-slate-500">관련 문의/클레임 없음</p>
       ) : activity ? (
         <>
           <div className="flex flex-wrap gap-1.5">
             {activity.counts.inquiryTotal > 0 ? (
               <Link
                 href={`${ADMIN_ROUTES.inquiries}?query=${phoneQuery}`}
-                className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-800 hover:bg-slate-200"
+                className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-800 hover:bg-slate-200"
               >
                 문의 {activity.counts.inquiryTotal}
               </Link>
@@ -127,7 +138,7 @@ export function AdminOrderRelatedActivityPanel({ order, adminMeta }: Props) {
             {activity.counts.batteryTalk > 0 ? (
               <Link
                 href={`${ADMIN_ROUTES.inquiries}?type=consultation&query=${phoneQuery}`}
-                className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold text-violet-900 hover:bg-violet-200"
+                className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-bold text-violet-900 hover:bg-violet-200"
               >
                 배터리톡 {activity.counts.batteryTalk}
               </Link>
@@ -135,42 +146,38 @@ export function AdminOrderRelatedActivityPanel({ order, adminMeta }: Props) {
             {activity.counts.claims > 0 ? (
               <Link
                 href={`${ADMIN_ROUTES.commerceClaims}?orderId=${encodeURIComponent(orderId)}&query=${orderQuery}`}
-                className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-950 hover:bg-amber-200"
+                className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-950 hover:bg-amber-200"
               >
                 클레임 {activity.counts.claims}
               </Link>
             ) : null}
           </div>
 
-          {open ? (
+          {open || embedded ? (
             <ul className="space-y-2 border-t border-slate-100 pt-2">
               {activity.recent.map((item) => (
                 <li key={`${item.kind}-${item.id}`}>
                   <Link
                     href={item.href}
-                    className="block rounded-lg border border-slate-100 bg-slate-50/80 px-2.5 py-2 hover:border-slate-200 hover:bg-white"
+                    className="block rounded-lg border border-slate-100 bg-slate-50/80 px-3 py-2.5 hover:border-slate-200 hover:bg-white"
                   >
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span
-                        className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${kindBadgeClass(item.kind)}`}
+                        className={`rounded-full px-2 py-0.5 text-xs font-bold ${kindBadgeClass(item.kind)}`}
                       >
                         {item.kindLabel}
                       </span>
-                      <span className="text-[10px] font-medium text-slate-500">{formatDt(item.updatedAt)}</span>
-                      <span className="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-bold text-slate-600 ring-1 ring-slate-200">
+                      <span className="text-xs font-medium text-slate-500">{formatDt(item.updatedAt)}</span>
+                      <span className="rounded-full bg-white px-2 py-0.5 text-xs font-bold text-slate-600 ring-1 ring-slate-200">
                         {item.statusLabel}
                       </span>
                       {item.matchReason === "both" ? (
-                        <span className="text-[10px] font-bold text-emerald-700">주문·전화 일치</span>
+                        <span className="text-xs font-bold text-emerald-700">주문·전화 일치</span>
                       ) : item.matchReason === "order_number" ? (
-                        <span className="text-[10px] font-bold text-blue-700">주문번호 연결</span>
+                        <span className="text-xs font-bold text-blue-700">주문번호 연결</span>
                       ) : null}
                     </div>
-                    <p className="mt-1 text-[11px] font-bold text-slate-800">{item.summary}</p>
-                    <p className="mt-0.5 text-[10px] text-slate-500">
-                      {item.customerName} · {item.customerPhone}
-                      {item.orderNumber ? ` · ${item.orderNumber}` : ""}
-                    </p>
+                    <p className="mt-1.5 text-sm font-bold text-slate-800">{item.summary}</p>
                   </Link>
                 </li>
               ))}

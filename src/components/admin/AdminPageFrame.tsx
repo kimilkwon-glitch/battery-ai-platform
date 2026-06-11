@@ -15,13 +15,21 @@ type Props = {
   description?: string;
   actions?: ReactNode;
   summary?: AdminSummaryItem[];
+  frameClassName?: string;
   children: ReactNode;
 };
 
 /** 관리자 페이지 공통: 제목 · 설명 · 요약 · 본문 */
-export function AdminPageFrame({ title, description, actions, summary, children }: Props) {
+export function AdminPageFrame({
+  title,
+  description,
+  actions,
+  summary,
+  frameClassName,
+  children,
+}: Props) {
   return (
-    <div className="admin-page-frame space-y-3">
+    <div className={`admin-page-frame space-y-3${frameClassName ? ` ${frameClassName}` : ""}`}>
       <header className="admin-page-frame__header">
         <div className="min-w-0 flex-1">
           <h1 className="admin-page-title">{title}</h1>
@@ -43,11 +51,13 @@ export function AdminPageFrame({ title, description, actions, summary, children 
                 sublabel={item.sublabel}
               />
             ) : (
-              <div key={item.label} className="admin-stat-card">
-                <p className="admin-stat-card__label">{item.label}</p>
-                <p className="admin-stat-card__value admin-stat-card__value--default">{item.value}</p>
-                {item.sublabel ? <p className="admin-stat-card__sublabel">{item.sublabel}</p> : null}
-              </div>
+              <AdminStatCard
+                key={item.label}
+                label={item.label}
+                value={item.value}
+                tone={item.tone}
+                sublabel={item.sublabel}
+              />
             ),
           )}
         </section>
