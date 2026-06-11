@@ -11,12 +11,12 @@ type Props = {
 
 export function AdminSettlementClient({ summary }: Props) {
   return (
-    <div className="space-y-5">
-      <div className="admin-panel border-amber-100 bg-amber-50/60 p-4">
-        <p className="text-sm font-semibold text-amber-900">
+    <div className="admin-settlement space-y-4">
+      <div className="admin-settlement__notice admin-panel">
+        <p className="admin-settlement__notice-text">
           토스 결제 연동 후 실제 정산 데이터와 연결됩니다.
         </p>
-        <p className="mt-1 text-sm font-medium text-amber-800">
+        <p className="admin-settlement__notice-sub">
           현재는 주문/결제 기록 기준으로 확인 가능한 금액만 표시합니다.
         </p>
       </div>
@@ -28,31 +28,46 @@ export function AdminSettlementClient({ summary }: Props) {
       ) : (
         <>
           <div className="admin-dashboard-section__grid admin-dashboard-section__grid--5">
-            <StatCard label="오늘 결제금액" value={formatPriceWon(summary.todayPaidAmount)} tone="info" />
-            <StatCard label="이번 달 결제금액" value={formatPriceWon(summary.monthPaidAmount)} tone="info" />
+            <StatCard
+              label="오늘 결제금액"
+              value={formatPriceWon(summary.todayPaidAmount)}
+              tone="info"
+              numericAmount={summary.todayPaidAmount}
+            />
+            <StatCard
+              label="이번 달 결제금액"
+              value={formatPriceWon(summary.monthPaidAmount)}
+              tone="info"
+              numericAmount={summary.monthPaidAmount}
+            />
             <StatCard
               label="취소/환불 금액"
               value={formatPriceWon(summary.canceledAmount + summary.refundedAmount)}
               tone="warn"
+              numericAmount={summary.canceledAmount + summary.refundedAmount}
             />
             <StatCard
               label="예상 정산금"
               value={formatPriceWon(summary.estimatedSettlement)}
               tone="primary"
+              numericAmount={summary.estimatedSettlement}
             />
-            <StatCard label="누적 결제 완료" value={formatPriceWon(summary.paidAmount)} tone="default" />
+            <StatCard
+              label="누적 결제 완료"
+              value={formatPriceWon(summary.paidAmount)}
+              tone="default"
+              numericAmount={summary.paidAmount}
+            />
           </div>
 
           <div className="admin-dashboard-section__grid admin-dashboard-section__grid--4">
-            <PlaceholderCard
-              label="결제수단별 내역"
-              note="토스 연동 후 표시"
-            />
+            <PlaceholderCard label="결제수단별 내역" note="토스 연동 후 표시" />
             <PlaceholderCard label="부가세 자료" note="토스 연동 후 표시" />
             <PlaceholderCard label="엑셀 다운로드" note="연동 후 제공" />
             <StatCard
               label="주문 건수(실제)"
               value={summary.orderCount.toLocaleString("ko-KR")}
+              variant="metric"
             />
           </div>
 
@@ -79,21 +94,29 @@ function StatCard({
   label,
   value,
   tone = "default",
+  variant = "money",
+  numericAmount,
 }: {
   label: string;
   value: string;
   tone?: "default" | "info" | "warn" | "primary";
+  variant?: "money" | "metric";
+  numericAmount?: number;
 }) {
+  const isZero = variant === "money" && numericAmount === 0;
   const toneClass =
-    tone === "info"
-      ? "admin-stat-card__value--info"
+    isZero
+      ? "admin-stat-card__value--zero"
       : tone === "warn"
         ? "admin-stat-card__value--warning"
         : tone === "primary"
-          ? "admin-stat-card__value--info"
-          : "admin-stat-card__value--default";
+          ? "admin-stat-card__value--primary"
+          : tone === "info"
+            ? "admin-stat-card__value--info"
+            : "admin-stat-card__value--default";
+
   return (
-    <div className="admin-stat-card">
+    <div className={variant === "metric" ? "admin-stat-card admin-stat-card--metric" : "admin-stat-card"}>
       <p className="admin-stat-card__label">{label}</p>
       <p className={`admin-stat-card__value ${toneClass}`}>{value}</p>
     </div>
@@ -102,9 +125,9 @@ function StatCard({
 
 function PlaceholderCard({ label, note }: { label: string; note: string }) {
   return (
-    <div className="admin-stat-card border-dashed border-slate-300 bg-slate-50/80">
+    <div className="admin-stat-card admin-stat-card--placeholder">
       <p className="admin-stat-card__label">{label}</p>
-      <p className="admin-stat-card__value admin-stat-card__value--default text-lg">준비중</p>
+      <p className="admin-settlement__status">연동 예정</p>
       <p className="admin-stat-card__desc">{note}</p>
     </div>
   );

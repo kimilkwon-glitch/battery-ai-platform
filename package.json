@@ -55,6 +55,7 @@
     "db:migrate:operational-data": "npx tsx scripts/migrate-operational-data-db.ts",
     "ux2:seed": "npx tsx scripts/seed-ux2-admin-review.ts",
     "ux2:cleanup": "npx tsx scripts/cleanup-ux2-admin-review.ts",
+    "admin:cleanup-noise-consultations": "npx tsx scripts/cleanup-admin-noise-consultations.ts",
     "ux2:report": "npx tsx scripts/generate-ux2-persona-report.ts",
     "ux2:reset": "npx tsx scripts/cleanup-ux2-admin-review.ts --dry-run && npx tsx scripts/cleanup-ux2-admin-review.ts && npx tsx scripts/seed-ux2-admin-review.ts && npx tsx scripts/generate-ux2-persona-report.ts",
     "retention:cleanup": "npx tsx scripts/retention-cleanup-operational-data.ts",

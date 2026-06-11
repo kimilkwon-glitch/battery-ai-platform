@@ -9,9 +9,11 @@ import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPrevie
 import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import {
   formatAdminCustomerName,
+  formatAdminInquiryListPreview,
   formatAdminInquiryMessage,
   formatBatteryTalkCardPreview,
 } from "@/lib/admin/admin-display-labels";
+import { shouldExcludeBatteryTalkSummaryFromAdmin } from "@/lib/battery-talk/battery-talk-store-shared";
 import type { BatteryTalkThreadDetail } from "@/lib/battery-talk/battery-talk-enrichment";
 import { BatteryTalkSseStatusBanner } from "@/components/batterytalk/BatteryTalkSseStatusBanner";
 import {
@@ -160,6 +162,7 @@ export function AdminBatteryTalkClient() {
 
   const streamDisconnected = useBatteryTalkAdminStream((event) => {
     if (event.type === "session") {
+      if (shouldExcludeBatteryTalkSummaryFromAdmin(event.session)) return;
       setItems((prev) => {
         const idx = prev.findIndex((i) => i.threadId === event.session.threadId);
         if (idx < 0) return [event.session, ...prev];
@@ -372,9 +375,9 @@ export function AdminBatteryTalkClient() {
               <p className="admin-battery-talk__list-empty">불러오는 중…</p>
             ) : items.length === 0 ? (
               <div className="admin-battery-talk__list-empty-wrap">
-                <p className="admin-battery-talk__list-empty-title">확인할 상담이 없습니다</p>
+                <p className="admin-battery-talk__list-empty-title">접수된 상담이 없습니다</p>
                 <p className="admin-battery-talk__list-empty-desc">
-                  새 상담이 접수되면 이곳에 표시됩니다.
+                  고객이 상담을 남기면 이곳에 표시됩니다.
                 </p>
               </div>
             ) : (
@@ -417,7 +420,7 @@ export function AdminBatteryTalkClient() {
             <div className="admin-battery-talk__chat-empty">
               <p className="admin-battery-talk__chat-empty-title">상담을 선택하세요</p>
               <p className="admin-battery-talk__chat-empty-desc">
-                왼쪽 목록에서 상담을 선택하면 대화와 답변창이 표시됩니다.
+                상담을 선택하면 상세 내용이 표시됩니다.
               </p>
             </div>
           ) : detailLoading && !thread ? (

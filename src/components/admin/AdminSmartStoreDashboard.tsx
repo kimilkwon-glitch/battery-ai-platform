@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import {
   formatAdminCustomerName,
@@ -85,57 +85,341 @@ function toClaimContext(ctx: Props["claimContext"]): OrderWorkbenchClaimContext 
   };
 }
 
-function DashboardCardGrid({
+function findCardCount(cards: AdminDashboardCard[], panel: AdminDashboardPanel): number {
+  return cards.find((c) => c.panel === panel)?.count ?? 0;
+}
+
+function SummaryMetricRow({
+  label,
+  count,
+  panel,
+  activePanel,
+  onSelect,
+  tone,
+}: {
+  label: string;
+  count: number;
+  panel: AdminDashboardPanel;
+  activePanel: AdminDashboardPanel;
+  onSelect: (panel: AdminDashboardPanel) => void;
+  tone?: AdminDashboardCardTone;
+}) {
+  const active = activePanel === panel;
+  const toneKey = toneClass(tone, count, active);
+  return (
+    <button
+      type="button"
+      className={`admin-dash-metric-row admin-dash-metric-row--${toneKey}${active ? " admin-dash-metric-row--active" : ""}`}
+      onClick={() => onSelect(panel)}
+      aria-pressed={active}
+    >
+      <span className="admin-dash-metric-row__label">{label}</span>
+      <span className="admin-dash-metric-row__count">{count.toLocaleString("ko-KR")}</span>
+    </button>
+  );
+}
+
+function OrderFlowStrip({
   cards,
   activePanel,
   onSelect,
-  columns = 5,
 }: {
   cards: AdminDashboardCard[];
   activePanel: AdminDashboardPanel;
   onSelect: (panel: AdminDashboardPanel) => void;
-  columns?: 4 | 5;
 }) {
-  const gridClass =
-    columns === 4
-      ? "admin-dashboard-section__grid admin-dashboard-section__grid--4"
-      : "admin-dashboard-section__grid admin-dashboard-section__grid--5";
-
   return (
-    <div className={gridClass}>
-      {cards.map((item) => {
+    <div className="admin-dash-flow" role="list" aria-label="주문 처리 흐름">
+      {cards.map((item, index) => {
         const active = activePanel === item.panel;
-        const tone = toneClass(item.tone, item.count, active);
+        const toneKey = toneClass(item.tone, item.count, active);
         return (
-          <button
-            key={item.panel}
-            type="button"
-            onClick={() => onSelect(item.panel)}
-            className="group block w-full text-left"
-            aria-pressed={active}
-          >
-            <div
-              className={`admin-stat-card admin-stat-card--${tone}${active ? " admin-stat-card--active" : ""} h-full`}
+          <div key={item.panel} className="admin-dash-flow__item">
+            {index > 0 ? <span className="admin-dash-flow__arrow" aria-hidden="true" /> : null}
+            <button
+              type="button"
+              role="listitem"
+              className={`admin-dash-flow__step admin-dash-flow__step--${toneKey}${active ? " admin-dash-flow__step--active" : ""}`}
+              onClick={() => onSelect(item.panel)}
+              aria-pressed={active}
+              title={item.description}
             >
-              <p className="admin-stat-card__label flex items-center justify-between gap-2">
-                <span>{item.label}</span>
-                {active ? (
-                  <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-black text-white">
-                    선택
-                  </span>
-                ) : null}
-              </p>
-              <p className={`admin-stat-card__value admin-stat-card__value--${tone}`}>
-                {item.count.toLocaleString("ko-KR")}
-              </p>
-              {item.description ? (
-                <p className="admin-stat-card__desc">{item.description}</p>
-              ) : null}
-            </div>
-          </button>
+              <span className="admin-dash-flow__count">{item.count.toLocaleString("ko-KR")}</span>
+              <span className="admin-dash-flow__label">{item.label}</span>
+            </button>
+          </div>
         );
       })}
     </div>
+  );
+}
+
+function SettlementCompactPanel({ settlement }: { settlement: AdminSettlementSummary }) {
+  const cancelRefund = settlement.canceledAmount + settlement.refundedAmount;
+  const amountClass = (value: number, variant: "info" | "warn" = "info") => {
+    if (value === 0) return "admin-dash-settle__amount admin-dash-settle__amount--zero";
+    return `admin-dash-settle__amount admin-dash-settle__amount--${variant}`;
+  };
+
+  return (
+    <div className="admin-dash-settle">
+      <div className="admin-dash-settle__row">
+        <span className="admin-dash-settle__label">오늘 결제금액</span>
+        <span className={amountClass(settlement.todayPaidAmount)}>{formatPriceWon(settlement.todayPaidAmount)}</span>
+      </div>
+      <div className="admin-dash-settle__row">
+        <span className="admin-dash-settle__label">이번 달 결제금액</span>
+        <span className={amountClass(settlement.monthPaidAmount)}>{formatPriceWon(settlement.monthPaidAmount)}</span>
+      </div>
+      <div className="admin-dash-settle__row admin-dash-settle__row--split">
+        <div>
+          <span className="admin-dash-settle__label">취소/환불</span>
+          <span className={amountClass(cancelRefund, "warn")}>{formatPriceWon(cancelRefund)}</span>
+        </div>
+        <div>
+          <span className="admin-dash-settle__label">예상 정산금</span>
+          <span className={amountClass(settlement.estimatedSettlement)}>{formatPriceWon(settlement.estimatedSettlement)}</span>
+        </div>
+      </div>
+      <p className="admin-dash-settle__notice">토스 결제 연동 후 실제 정산 데이터와 연결됩니다.</p>
+    </div>
+  );
+}
+
+function SummaryBox({
+  title,
+  href,
+  hrefLabel,
+  children,
+}: {
+  title: string;
+  href?: string;
+  hrefLabel?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="admin-dash-summary-box">
+      <div className="admin-dash-summary-box__head">
+        <h3 className="admin-dash-summary-box__title">{title}</h3>
+        {href && hrefLabel ? (
+          <Link href={href} className="admin-dash-summary-box__link">
+            {hrefLabel}
+          </Link>
+        ) : null}
+      </div>
+      <div className="admin-dash-summary-box__body">{children}</div>
+    </div>
+  );
+}
+
+type InquiryTab = "talk" | "order" | "product";
+
+function InquiryReviewPanels({
+  consultationCards,
+  reviewCards,
+  recentConsultations,
+  reviewRows,
+  productionInquiries,
+  batteryTalkThreads,
+  activePanel,
+  onSelect,
+  photoCheckCount,
+}: {
+  consultationCards: AdminDashboardCard[];
+  reviewCards: AdminDashboardCard[];
+  recentConsultations: AdminDashboardConsultationPreview[];
+  reviewRows: CustomerReviewRecord[];
+  productionInquiries: CustomerInquiryRecord[];
+  batteryTalkThreads: BatteryTalkThreadSummary[];
+  activePanel: AdminDashboardPanel;
+  onSelect: (panel: AdminDashboardPanel) => void;
+  photoCheckCount: number;
+}) {
+  const [inquiryTab, setInquiryTab] = useState<InquiryTab>("talk");
+
+  const recentReviews = useMemo(
+    () =>
+      reviewRows
+        .filter((r) => r.status === "active")
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 5),
+    [reviewRows],
+  );
+
+  const filteredConsultations = useMemo(() => {
+    if (inquiryTab === "talk") {
+      return recentConsultations.filter((c) => c.kind === "battery_talk");
+    }
+    if (inquiryTab === "order") {
+      return recentConsultations.filter(
+        (c) => c.kind === "inquiry" && (c.inquiryType.includes("주문") || c.inquiryType.includes("배송")),
+      );
+    }
+    return recentConsultations.filter(
+      (c) => c.kind === "inquiry" && !c.inquiryType.includes("주문") && !c.inquiryType.includes("배송"),
+    );
+  }, [recentConsultations, inquiryTab]);
+
+  const pendingInquiries =
+    findCardCount(consultationCards, "talk_pending") +
+    findCardCount(consultationCards, "inquiry_product") +
+    findCardCount(consultationCards, "inquiry_order");
+  const replyPending = findCardCount(reviewCards, "review_reply");
+  const photoReviews = findCardCount(reviewCards, "review_photo");
+
+  const consultTotal = productionInquiries.length + batteryTalkThreads.length;
+  const responseRate =
+    consultTotal > 0
+      ? Math.max(0, Math.min(100, Math.round(((consultTotal - pendingInquiries) / consultTotal) * 100)))
+      : null;
+
+  const tabPanels: { id: InquiryTab; label: string; panel: AdminDashboardPanel }[] = [
+    { id: "talk", label: "배터리톡", panel: "talk_pending" },
+    { id: "order", label: "주문 고객 문의", panel: "inquiry_order" },
+    { id: "product", label: "상품 Q&A", panel: "inquiry_product" },
+  ];
+
+  return (
+    <section className="admin-dash-inquiry-review">
+      <div className="admin-dash-inquiry-review__grid">
+        <div className="admin-dash-list-panel">
+          <div className="admin-dash-list-panel__head">
+            <h3 className="admin-dash-list-panel__title">확인 필요한 문의</h3>
+            <Link href={`${ADMIN_ROUTES.inquiries}?type=consultation`} className="admin-dash-list-panel__link">
+              배터리톡 상담관리
+            </Link>
+          </div>
+          <div className="admin-dash-list-panel__metrics">
+            {consultationCards.map((c) => (
+              <SummaryMetricRow
+                key={c.panel}
+                label={c.label}
+                count={c.count}
+                panel={c.panel}
+                activePanel={activePanel}
+                onSelect={onSelect}
+                tone={c.tone}
+              />
+            ))}
+          </div>
+          <div className="admin-dash-list-panel__tabs" role="tablist" aria-label="문의 유형">
+            {tabPanels.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={inquiryTab === tab.id}
+                className={`admin-dash-list-panel__tab${inquiryTab === tab.id ? " admin-dash-list-panel__tab--active" : ""}`}
+                onClick={() => {
+                  setInquiryTab(tab.id);
+                  onSelect(tab.panel);
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          {filteredConsultations.length > 0 ? (
+            <ul className="admin-dash-list-panel__list">
+              {filteredConsultations.map((c) => (
+                <li key={`${c.kind}-${c.id}`}>
+                  <Link href={c.href} className="admin-dash-list-panel__item">
+                    <div className="admin-dash-list-panel__item-main">
+                      <span className="admin-dash-list-panel__item-title">{c.summary.slice(0, 48)}</span>
+                      <span className="admin-dash-list-panel__item-meta">
+                        {c.customerName} · {c.inquiryType}
+                      </span>
+                    </div>
+                    <div className="admin-dash-list-panel__item-side">
+                      <span className="admin-dash-list-panel__item-status">{c.status}</span>
+                      <time className="admin-dash-list-panel__item-time">
+                        {new Date(c.createdAt).toLocaleString("ko-KR", {
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </time>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="admin-dash-list-panel__empty">확인할 문의가 없습니다.</p>
+          )}
+          {photoCheckCount > 0 ? (
+            <button
+              type="button"
+              className="admin-dash-list-panel__footer-link"
+              onClick={() => onSelect("inquiry_photo")}
+            >
+              사진확인 {photoCheckCount}건 · 자세히 확인하기
+            </button>
+          ) : null}
+        </div>
+
+        <div className="admin-dash-list-panel">
+          <div className="admin-dash-list-panel__head">
+            <h3 className="admin-dash-list-panel__title">확인 필요한 리뷰</h3>
+            <Link href={ADMIN_ROUTES.reviews} className="admin-dash-list-panel__link">
+              리뷰관리
+            </Link>
+          </div>
+          <div className="admin-dash-list-panel__metrics">
+            {reviewCards.map((c) => (
+              <SummaryMetricRow
+                key={c.panel}
+                label={c.label}
+                count={c.count}
+                panel={c.panel}
+                activePanel={activePanel}
+                onSelect={onSelect}
+                tone={c.tone}
+              />
+            ))}
+          </div>
+          {recentReviews.length > 0 ? (
+            <ul className="admin-dash-list-panel__list">
+              {recentReviews.map((r) => (
+                <li key={r.id}>
+                  <Link
+                    href={ADMIN_ROUTES.reviews}
+                    className="admin-dash-list-panel__item"
+                    onClick={() => onSelect("review_reply")}
+                  >
+                    <div className="admin-dash-list-panel__item-main">
+                      <span className="admin-dash-list-panel__item-title">
+                        {r.batteryCode ?? r.vehicleName ?? "상품"} · {r.rating}점
+                      </span>
+                      <span className="admin-dash-list-panel__item-meta">{r.content.slice(0, 56)}</span>
+                    </div>
+                    <div className="admin-dash-list-panel__item-side">
+                      <span
+                        className={`admin-dash-list-panel__item-status${!r.operatorReply?.trim() ? " admin-dash-list-panel__item-status--warn" : ""}`}
+                      >
+                        {r.operatorReply?.trim() ? "답글완료" : "답글대기"}
+                      </span>
+                      <time className="admin-dash-list-panel__item-time">
+                        {new Date(r.createdAt).toLocaleDateString("ko-KR")}
+                      </time>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="admin-dash-list-panel__empty">최근 리뷰가 없습니다.</p>
+          )}
+        </div>
+      </div>
+      <div className="admin-dash-inquiry-review__footer">
+        <span>상담 응답률 {responseRate != null ? `${responseRate}%` : "—"}</span>
+        <span>미답변 {pendingInquiries.toLocaleString("ko-KR")}건</span>
+        <span>답글 대기 {replyPending.toLocaleString("ko-KR")}건</span>
+        <span>사진 리뷰 {photoReviews.toLocaleString("ko-KR")}건</span>
+      </div>
+    </section>
   );
 }
 
@@ -246,175 +530,142 @@ export function AdminSmartStoreDashboard({
               ? photoCheckCount
               : filteredTalk.length + filteredInquiries.length;
 
-  const hasConsultationHighlight = consultationCards.some((c) => c.count > 0);
+  const productNeedCount = useMemo(
+    () =>
+      productCards
+        .filter((c) => c.panel !== "product_selling")
+        .reduce((sum, c) => sum + c.count, 0),
+    [productCards],
+  );
+
+  const productFixCards = useMemo(
+    () => productCards.filter((c) => c.panel !== "product_selling"),
+    [productCards],
+  );
 
   return (
-    <div className="admin-dashboard space-y-6">
+    <div className="admin-dashboard admin-dashboard--dense">
       <div className="admin-dashboard__top-grid">
-        <section className="admin-panel border-blue-100 bg-gradient-to-br from-slate-50 to-white">
-          <div className="admin-panel__header border-b border-slate-100">
+        <section className="admin-panel admin-dashboard__sales">
+          <div className="admin-panel__header admin-panel__header--compact">
             <div>
-              <h2 className="admin-panel__title text-xl">주문 처리 흐름</h2>
-              <p className="mt-1 text-base font-medium text-slate-500">
-                카드를 클릭하면 아래 목록이 해당 업무로 바뀝니다. 실제 주문만 집계합니다.
-              </p>
+              <h2 className="admin-panel__title">판매관리</h2>
+              <p className="admin-panel__subtitle">클릭하면 아래 업무 목록이 바뀝니다</p>
             </div>
+            <Link href={ADMIN_ROUTES.orders} className="admin-panel__link">
+              주문관리
+            </Link>
           </div>
-          <div className="p-3">
-            <DashboardCardGrid
-              cards={orderFlowCards}
-              activePanel={activePanel}
-              onSelect={setActivePanel}
-            />
+          <div className="admin-panel__body-compact">
+            <OrderFlowStrip cards={orderFlowCards} activePanel={activePanel} onSelect={setActivePanel} />
           </div>
         </section>
 
-        <aside className="admin-panel admin-dashboard__settlement">
-          <div className="admin-panel__header">
-            <h2 className="admin-panel__title text-lg">정산 요약</h2>
+        <aside className="admin-panel admin-dashboard__settlement-compact">
+          <div className="admin-panel__header admin-panel__header--compact">
+            <h2 className="admin-panel__title">정산관리</h2>
             <Link href={ADMIN_ROUTES.settlement} className="admin-panel__link">
               정산관리
             </Link>
           </div>
-          <div className="space-y-3 p-4 pt-0">
-            <div className="admin-stat-card">
-              <p className="admin-stat-card__label">오늘 결제금액</p>
-              <p className="admin-stat-card__value admin-stat-card__value--info">
-                {formatPriceWon(settlement.todayPaidAmount)}
-              </p>
-            </div>
-            <div className="admin-stat-card">
-              <p className="admin-stat-card__label">이번 달 결제금액</p>
-              <p className="admin-stat-card__value admin-stat-card__value--info">
-                {formatPriceWon(settlement.monthPaidAmount)}
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="admin-stat-card">
-                <p className="admin-stat-card__label text-xs">취소/환불</p>
-                <p className="admin-stat-card__value admin-stat-card__value--warning text-lg">
-                  {formatPriceWon(settlement.canceledAmount + settlement.refundedAmount)}
-                </p>
-              </div>
-              <div className="admin-stat-card">
-                <p className="admin-stat-card__label text-xs">예상 정산금</p>
-                <p className="admin-stat-card__value admin-stat-card__value--info text-lg">
-                  {formatPriceWon(settlement.estimatedSettlement)}
-                </p>
-              </div>
-            </div>
-            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold leading-relaxed text-amber-900">
-              토스 결제 연동 후 실제 정산 데이터와 연결됩니다.
-            </p>
+          <div className="admin-panel__body-compact">
+            <SettlementCompactPanel settlement={settlement} />
           </div>
         </aside>
       </div>
 
-      <section className="admin-panel">
-        <div className="admin-panel__header">
-          <h2 className="admin-panel__title text-lg">취소·반품·교환 클레임</h2>
-          <Link href={ADMIN_ROUTES.commerceClaims} className="admin-panel__link">
-            클레임관리
-          </Link>
-        </div>
-        <div className="p-3 pt-0">
-          <DashboardCardGrid
-            cards={claimCards}
+      <div className="admin-dashboard__mid-grid">
+        <SummaryBox title="취소·반품·교환" href={ADMIN_ROUTES.commerceClaims} hrefLabel="클레임관리">
+          {claimCards
+            .filter((c) => c.panel !== "claim_done")
+            .map((c) => (
+              <SummaryMetricRow
+                key={c.panel}
+                label={c.label}
+                count={c.count}
+                panel={c.panel}
+                activePanel={activePanel}
+                onSelect={setActivePanel}
+                tone={c.tone}
+              />
+            ))}
+        </SummaryBox>
+
+        <SummaryBox title="처리 지연">
+          <p className="admin-dash-summary-box__hint">24시간 이상 미처리</p>
+          {delayCards.map((c) => (
+            <SummaryMetricRow
+              key={c.panel}
+              label={c.label}
+              count={c.count}
+              panel={c.panel}
+              activePanel={activePanel}
+              onSelect={setActivePanel}
+              tone={c.tone}
+            />
+          ))}
+        </SummaryBox>
+
+        <SummaryBox title="상품관리" href={ADMIN_ROUTES.products} hrefLabel="상품관리">
+          <SummaryMetricRow
+            label="판매중"
+            count={findCardCount(productCards, "product_selling")}
+            panel="product_selling"
             activePanel={activePanel}
             onSelect={setActivePanel}
+            tone="info"
           />
-        </div>
-      </section>
-
-      <section className="admin-panel">
-        <div className="admin-panel__header">
-          <h2 className="admin-panel__title text-lg">처리 지연</h2>
-          <p className="text-sm font-medium text-slate-500">24시간 이상 미처리 기준</p>
-        </div>
-        <div className="p-3 pt-0">
-          <DashboardCardGrid
-            cards={delayCards}
+          <SummaryMetricRow
+            label="보완 필요"
+            count={productNeedCount}
+            panel="product_price"
             activePanel={activePanel}
             onSelect={setActivePanel}
-            columns={4}
+            tone={productNeedCount > 0 ? "warn" : undefined}
           />
-        </div>
-      </section>
+          <div className="admin-dash-product-fix">
+            {productFixCards.map((c) => (
+              <button
+                key={c.panel}
+                type="button"
+                className={`admin-dash-product-fix__chip admin-dash-product-fix__chip--${toneClass(c.tone, c.count, activePanel === c.panel)}${activePanel === c.panel ? " admin-dash-product-fix__chip--active" : ""}`}
+                onClick={() => setActivePanel(c.panel)}
+                aria-pressed={activePanel === c.panel}
+              >
+                {c.label.replace(" 누락", "")} {c.count}
+              </button>
+            ))}
+          </div>
+        </SummaryBox>
 
-      <section className="admin-panel">
-        <div className="admin-panel__header">
-          <h2 className="admin-panel__title text-lg">상품관리 요약</h2>
-          <Link href={ADMIN_ROUTES.products} className="admin-panel__link">
-            상품관리
-          </Link>
-        </div>
-        <div className="p-3 pt-0">
-          <DashboardCardGrid
-            cards={productCards}
-            activePanel={activePanel}
-            onSelect={setActivePanel}
-          />
-        </div>
-      </section>
+        <SummaryBox title="리뷰 현황" href={ADMIN_ROUTES.reviews} hrefLabel="리뷰관리">
+          {reviewCards.map((c) => (
+            <SummaryMetricRow
+              key={c.panel}
+              label={c.label}
+              count={c.count}
+              panel={c.panel}
+              activePanel={activePanel}
+              onSelect={setActivePanel}
+              tone={c.tone}
+            />
+          ))}
+        </SummaryBox>
+      </div>
 
-      <section className="admin-panel">
-        <div className="admin-panel__header">
-          <h2 className="admin-panel__title text-lg">리뷰관리</h2>
-          <Link href={ADMIN_ROUTES.reviews} className="admin-panel__link">
-            리뷰관리
-          </Link>
-        </div>
-        <div className="p-3 pt-0">
-          <DashboardCardGrid
-            cards={reviewCards}
-            activePanel={activePanel}
-            onSelect={setActivePanel}
-            columns={4}
-          />
-        </div>
-      </section>
+      <InquiryReviewPanels
+        consultationCards={consultationCards}
+        reviewCards={reviewCards}
+        recentConsultations={recentConsultations}
+        reviewRows={reviewRows}
+        productionInquiries={productionInquiries}
+        batteryTalkThreads={batteryTalkThreads}
+        activePanel={activePanel}
+        onSelect={setActivePanel}
+        photoCheckCount={photoCheckCount}
+      />
 
-      <section
-        className={`admin-panel admin-consultation-summary${hasConsultationHighlight ? " admin-consultation-summary--alert" : ""}`}
-      >
-        <div className="admin-panel__header">
-          <h2 className="admin-panel__title text-lg">상담·문의 현황</h2>
-          <Link href={`${ADMIN_ROUTES.inquiries}?type=consultation`} className="admin-panel__link">
-            배터리톡 상담관리
-          </Link>
-        </div>
-        <div className="p-3 pt-0 space-y-4">
-          <DashboardCardGrid
-            cards={consultationCards}
-            activePanel={activePanel}
-            onSelect={setActivePanel}
-            columns={4}
-          />
-          {recentConsultations.length > 0 ? (
-            <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-              <p className="mb-2 text-sm font-bold text-slate-700">최근 상담</p>
-              <ul className="space-y-2">
-                {recentConsultations.map((c) => (
-                  <li key={`${c.kind}-${c.id}`}>
-                    <Link
-                      href={c.href}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-white px-3 py-2 text-sm hover:border-blue-200 border border-transparent"
-                    >
-                      <span className="font-bold text-slate-800">
-                        {c.customerName}
-                        <span className="ml-2 font-medium text-slate-500">{c.inquiryType}</span>
-                      </span>
-                      <span className="text-slate-500">{c.summary.slice(0, 40)}…</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </div>
-      </section>
-
-      <section className="admin-panel">
+      <section className="admin-panel admin-dashboard__work-list">
         <div className="admin-panel__header">
           <div>
             <h2 className="admin-panel__title">{listTitle}</h2>

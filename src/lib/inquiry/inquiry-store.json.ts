@@ -4,7 +4,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { filterAdminTestInquiries } from "@/lib/admin/admin-test-data-filter";
+import { filterAdminTestInquiries, isAdminTestInquiry } from "@/lib/admin/admin-test-data-filter";
 import {
   isProductQnaSource,
   normalizeInquiryCategory,
@@ -57,6 +57,12 @@ async function writePayloadToDisk(payload: StorePayload): Promise<void> {
 async function loadRecords(): Promise<CustomerInquiryRecord[]> {
   if (globalCache.__bmInquiryStore) return globalCache.__bmInquiryStore;
   const payload = await readPayloadFromDisk();
+  const pruned = payload.records.filter((r) => !isAdminTestInquiry(r));
+  if (pruned.length !== payload.records.length) {
+    globalCache.__bmInquiryStore = pruned;
+    await writePayloadToDisk({ version: 1, records: pruned });
+    return pruned;
+  }
   globalCache.__bmInquiryStore = payload.records;
   return payload.records;
 }

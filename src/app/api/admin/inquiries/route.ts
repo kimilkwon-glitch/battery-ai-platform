@@ -14,9 +14,10 @@ export async function GET(request: Request) {
   const status = searchParams.get("status") as InquiryStatus | "all" | null;
   const category = searchParams.get("category") as InquiryCategory | "all" | null;
   const q = searchParams.get("q");
+  const includeTestData = searchParams.get("dataScope") === "test";
 
   try {
-    const items = await inquiryList({ status, category, q, productQnaOnly: false });
+    const items = await inquiryList({ status, category, q, productQnaOnly: false, includeTestData });
     return NextResponse.json({ ok: true, items });
   } catch {
     return NextResponse.json({ ok: false, message: "문의 목록을 불러오지 못했습니다." }, { status: 500 });

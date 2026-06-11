@@ -1,4 +1,4 @@
-import { filterAdminTestInquiries, isAdminTestInquiry } from "@/lib/admin/admin-test-data-filter";
+import { isAdminTestInquiry } from "@/lib/admin/admin-test-data-filter";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import {
   BATTERY_TALK_SYSTEM_WELCOME,
@@ -125,37 +125,41 @@ export function isAdminNoiseBatteryTalkSummary(summary: BatteryTalkThreadSummary
 }
 
 export function isAdminNoiseBatteryTalkThread(thread: BatteryTalkThread): boolean {
-  const summary = batteryTalkToSummary(thread);
-  const customerMsgs = thread.messages.filter((m) => m.sender === "customer");
-  if (customerMsgs.length === 0 && isAdminNoiseBatteryTalkSummary(summary)) {
+  const customerMsgs = thread.messages.filter((m) => m.sender === "customer" && m.body.trim());
+  if (customerMsgs.length === 0) {
+    const hasAdminReply = thread.messages.some((m) => m.sender === "admin" && !m.recalledAt);
+    const hasOrder = Boolean(thread.context.orderId || thread.context.orderNumber);
+    if (hasAdminReply || hasOrder) return false;
     return true;
   }
-  return isAdminNoiseBatteryTalkSummary(summary);
+  return isAdminNoiseBatteryTalkSummary(batteryTalkToSummary(thread));
+}
+
+/** 관리자 운영 목록에서 제외할 배터리톡 스레드 */
+export function shouldExcludeBatteryTalkThreadFromAdmin(thread: BatteryTalkThread): boolean {
+  if (isAdminNoiseBatteryTalkThread(thread)) return true;
+  return isAdminTestInquiry(threadToInquiryShape(thread));
+}
+
+export function shouldExcludeBatteryTalkSummaryFromAdmin(summary: BatteryTalkThreadSummary): boolean {
+  if (isAdminNoiseBatteryTalkSummary(summary)) return true;
+  return isAdminTestInquiry({
+    name: summary.customerName,
+    contact: summary.phone,
+    message: summary.lastMessagePreview,
+    vehicle: summary.vehicleName,
+    inquiryType: summary.pageType,
+  });
 }
 
 export function filterBatteryTalkThreadsForAdmin(threads: BatteryTalkThread[]): BatteryTalkThread[] {
-  const allowed = new Set(
-    filterAdminTestInquiries(threads.map(threadToInquiryShape)).map((r) => r.id),
-  );
-  return threads.filter((t) => allowed.has(t.threadId) && !isAdminNoiseBatteryTalkThread(t));
+  return threads.filter((t) => !shouldExcludeBatteryTalkThreadFromAdmin(t));
 }
 
 export function filterBatteryTalkSummariesForAdmin(
   summaries: BatteryTalkThreadSummary[],
 ): BatteryTalkThreadSummary[] {
-  const allowed = new Set(
-    filterAdminTestInquiries(
-      summaries.map((s) => ({
-        id: s.threadId,
-        name: s.customerName,
-        contact: s.phone,
-        message: s.lastMessagePreview,
-        vehicle: s.vehicleName,
-        inquiryType: s.pageType,
-      })),
-    ).map((r) => r.id),
-  );
-  return summaries.filter((s) => allowed.has(s.threadId) && !isAdminNoiseBatteryTalkSummary(s));
+  return summaries.filter((s) => !shouldExcludeBatteryTalkSummaryFromAdmin(s));
 }
 
 export function contextMatchesReuse(

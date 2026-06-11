@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   formatAdminContact,
   formatAdminCustomerName,
+  formatAdminInquiryListPreview,
   formatAdminInquiryMessage,
 } from "@/lib/admin/admin-display-labels";
 import { INQUIRY_STATUS_BADGE } from "@/lib/admin/admin-status-tokens";
@@ -265,8 +266,8 @@ export function AdminInquiriesClient() {
             <p className="admin-inquiries__empty">불러오는 중…</p>
           ) : filtered.length === 0 ? (
             <div className="admin-inquiries__empty">
-              <p className="font-bold text-slate-700">아직 등록된 내용이 없습니다.</p>
-              <p className="mt-1 text-slate-500">필터를 바꾸거나 새로고침해 보세요.</p>
+              <p className="font-bold text-slate-700">접수된 문의가 없습니다</p>
+              <p className="mt-1 text-slate-500">고객 문의가 접수되면 이곳에 표시됩니다.</p>
             </div>
           ) : (
             <>
@@ -293,7 +294,9 @@ export function AdminInquiriesClient() {
                       {row.vehicle ? (
                         <p className="admin-inquiries__list-vehicle">{row.vehicle}</p>
                       ) : null}
-                      <p className="admin-inquiries__list-message">{formatAdminInquiryMessage(row.message)}</p>
+                      <p className="admin-inquiries__list-message">
+                        {formatAdminInquiryListPreview(row.message) ?? "문의 내용 확인"}
+                      </p>
                       <p className="admin-inquiries__list-date">{formatDate(row.createdAt)}</p>
                     </button>
                   </li>
@@ -311,7 +314,7 @@ export function AdminInquiriesClient() {
                     lines={[
                       maskContact(row.contact),
                       formatDate(row.createdAt),
-                      row.vehicle ?? row.message.slice(0, 60),
+                      row.vehicle ?? formatAdminInquiryListPreview(row.message) ?? "문의 내용 확인",
                     ]}
                     actions={
                       <button

@@ -23,6 +23,7 @@ import {
   filterBatteryTalkThreadsForAdmin,
   newBatteryTalkId,
   normalizeOpenContext,
+  shouldExcludeBatteryTalkThreadFromAdmin,
   type BatteryTalkListFilters,
   type BatteryTalkOpenThreadInput,
 } from "@/lib/battery-talk/battery-talk-store-shared";
@@ -47,6 +48,7 @@ type StorePayload = {
 const globalCache = globalThis as typeof globalThis & {
   __bmBatteryTalkStore?: BatteryTalkThread[];
   __bmBatteryTalkMigrated?: boolean;
+  __bmBatteryTalkEphemeral?: Map<string, BatteryTalkThread>;
 };
 
 function emptyPayload(): StorePayload {
@@ -80,6 +82,12 @@ async function writePayloadToDisk(payload: StorePayload): Promise<void> {
 async function loadThreads(): Promise<BatteryTalkThread[]> {
   if (globalCache.__bmBatteryTalkStore) return globalCache.__bmBatteryTalkStore;
   const payload = await readPayloadFromDisk();
+  const pruned = payload.threads.filter((t) => !shouldExcludeBatteryTalkThreadFromAdmin(t));
+  if (pruned.length !== payload.threads.length) {
+    globalCache.__bmBatteryTalkStore = pruned;
+    await writePayloadToDisk({ version: 1, threads: pruned });
+    return pruned;
+  }
   globalCache.__bmBatteryTalkStore = payload.threads;
   return payload.threads;
 }
@@ -148,6 +156,24 @@ async function ensureLegacyMigration(): Promise<void> {
   globalCache.__bmBatteryTalkMigrated = true;
 }
 
+async function findThreadById(threadId: string): Promise<BatteryTalkThread | null> {
+  const ephemeral = globalCache.__bmBatteryTalkEphemeral?.get(threadId);
+  if (ephemeral) return ephemeral;
+  const threads = await loadThreads();
+  return threads.find((t) => t.threadId === threadId) ?? null;
+}
+
+function rememberEphemeralThread(thread: BatteryTalkThread): void {
+  if (!globalCache.__bmBatteryTalkEphemeral) {
+    globalCache.__bmBatteryTalkEphemeral = new Map();
+  }
+  globalCache.__bmBatteryTalkEphemeral.set(thread.threadId, thread);
+}
+
+function dropEphemeralThread(threadId: string): void {
+  globalCache.__bmBatteryTalkEphemeral?.delete(threadId);
+}
+
 async function findReusableOpenThread(
   phone: string,
   context?: BatteryTalkContext,
@@ -196,9 +222,15 @@ export async function batteryTalkOpenThread(
     adminMemo: "",
     unreadByAdmin: false,
   };
-  const threads = await loadThreads();
-  threads.unshift(thread);
-  await saveThreads(threads);
+
+  if (shouldExcludeBatteryTalkThreadFromAdmin(thread)) {
+    rememberEphemeralThread(thread);
+  } else {
+    const threads = await loadThreads();
+    threads.unshift(thread);
+    await saveThreads(threads);
+  }
+
   emitBatteryTalkSessionUpdate(batteryTalkToSummary(thread));
   return thread;
 }
@@ -210,11 +242,12 @@ export async function batteryTalkAddCustomerMessage(
 ): Promise<BatteryTalkThread | null> {
   if (!isValidBatteryTalkMessage(body)) return null;
   const sanitizedBody = sanitizeBatteryTalkMessage(body);
+  const ephemeral = globalCache.__bmBatteryTalkEphemeral?.get(threadId);
   const threads = await loadThreads();
   const idx = threads.findIndex((t) => t.threadId === threadId);
-  if (idx < 0) return null;
+  const prev = idx >= 0 ? threads[idx]! : ephemeral ?? null;
+  if (!prev) return null;
   const now = new Date().toISOString();
-  const prev = threads[idx]!;
   const message: BatteryTalkMessage = {
     id: newBatteryTalkId("btm"),
     sender: "customer",
@@ -231,7 +264,12 @@ export async function batteryTalkAddCustomerMessage(
     lastMessageAt: now,
     unreadByAdmin: true,
   };
-  threads[idx] = next;
+  dropEphemeralThread(threadId);
+  if (idx >= 0) {
+    threads[idx] = next;
+  } else {
+    threads.unshift(next);
+  }
   await saveThreads(threads);
   emitBatteryTalkMessage(threadId, message);
   emitBatteryTalkSessionUpdate(batteryTalkToSummary(next));
@@ -288,15 +326,14 @@ export async function batteryTalkList(
 
 export async function batteryTalkGetByIdPeek(threadId: string): Promise<BatteryTalkThread | null> {
   await ensureLegacyMigration();
-  const threads = await loadThreads();
-  return threads.find((t) => t.threadId === threadId) ?? null;
+  return findThreadById(threadId);
 }
 
 export async function batteryTalkGetById(threadId: string): Promise<BatteryTalkThread | null> {
   await ensureLegacyMigration();
-  const threads = await loadThreads();
-  const thread = threads.find((t) => t.threadId === threadId) ?? null;
+  const thread = await findThreadById(threadId);
   if (thread?.unreadByAdmin) {
+    const threads = await loadThreads();
     const idx = threads.findIndex((t) => t.threadId === threadId);
     if (idx >= 0) {
       const next = { ...thread, unreadByAdmin: false, updatedAt: new Date().toISOString() };

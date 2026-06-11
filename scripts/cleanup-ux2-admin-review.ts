@@ -214,15 +214,13 @@ async function main(): Promise<void> {
     (o) =>
       !isUx2OrderRow(o) &&
       !isLegacyUx1OrderRow(o) &&
-      (isUx2AdminReviewPhone(o.customer_phone) || isUx2AdminReviewOrderNumber(o.order_number)),
-  );
-  const suspiciousInquiries = inquiries.filter(
-    (i) => !isUx2InquiryRow(i) && isUx2AdminReviewPhone(i.contact),
+      isUx2AdminReviewOrderNumber(o.order_number) &&
+      !isUx2AdminReviewPhone(o.customer_phone),
   );
 
-  if (suspiciousOrders.length > 0 || suspiciousInquiries.length > 0) {
+  if (suspiciousOrders.length > 0) {
     console.error(
-      "ABORT: 010-9100-xxxx 또는 BM-UX2- 대역이지만 UX2 마커가 불완전한 레코드가 있습니다. 수동 확인 필요.",
+      "ABORT: BM-UX2- 주문번호이지만 UX2 전화 대역이 아닌 레코드가 있습니다. 수동 확인 필요.",
     );
     process.exit(2);
   }

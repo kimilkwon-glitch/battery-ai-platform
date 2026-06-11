@@ -25,6 +25,19 @@ export function formatAdminInquiryMessage(message: string | null | undefined): s
   return m;
 }
 
+/** 상담문의 목록 미리보기 — 빈 값이면 null (반복 placeholder 금지) */
+export function formatAdminInquiryListPreview(message: string | null | undefined): string | null {
+  const m = (message ?? "").trim();
+  if (!m) return null;
+  if (m === RETENTION_ANONYMIZED_INQUIRY_MESSAGE || m === RETENTION_ANONYMIZED_TALK_MESSAGE) {
+    return "개인정보 보관기간이 지나 고객 정보가 숨김 처리된 상담입니다.";
+  }
+  if (m.includes("retention_anonymized") || m.includes(RETENTION_ADMIN_MEMO_TAG)) {
+    return "보관기간 만료로 일부 정보가 숨김 처리되었습니다.";
+  }
+  return m.length > 80 ? `${m.slice(0, 80)}…` : m;
+}
+
 export function formatAdminContact(contact: string | null | undefined, masked?: string): string {
   const c = (contact ?? "").trim();
   if (c === "00000000000" || c.replace(/\D/g, "") === "00000000000") {

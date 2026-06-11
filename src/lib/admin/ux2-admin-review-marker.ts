@@ -52,7 +52,8 @@ export function isUx2AdminReviewRecord(parts: {
   email?: string | null;
 }): boolean {
   const phone = parts.phone ?? parts.contact;
-  if (!isUx2AdminReviewPhone(phone)) return false;
+  /** UX2 검수 전용 번호 대역 — 운영 실번호와 분리 */
+  if (isUx2AdminReviewPhone(phone)) return true;
 
   if (isUx2AdminReviewOrderNumber(parts.orderNumber)) return true;
 

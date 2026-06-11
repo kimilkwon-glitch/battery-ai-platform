@@ -15,15 +15,30 @@ const TEXT_MARKERS: RegExp[] = [
   /개발검수/,
   /기능검수/,
   /검수용/,
+  /마무리\s*검수/,
+  /마무리\s*확인/,
+  /P1\s*마무리/,
   /로컬\s*테스트/,
+  /페르소나/,
+  /persona/i,
+  /시나리오/,
+  /scenario/i,
   /\bfixture\b/i,
   /\bdummy\b/i,
   /\btest\b/i,
   /\bsample\b/i,
+  /\bdemo\b/i,
+  /\bseed\b/i,
   /\bUX\b/i,
 ];
 
-const TEST_NAME_EXACT = new Set(["API테스트", "김테스트", "테스트고객", "테스트 사용자"]);
+const TEST_NAME_EXACT = new Set([
+  "API테스트",
+  "김테스트",
+  "테스트고객",
+  "테스트 사용자",
+  "마무리검수",
+]);
 
 const TEST_PHONE_DIGITS = new Set([
   "01099990001",
