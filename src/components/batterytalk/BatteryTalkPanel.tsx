@@ -20,7 +20,7 @@ import {
   storeBatteryTalkThreadId,
   type BatteryTalkVisitorHistoryItem,
 } from "@/lib/battery-talk/battery-talk-client";
-import { registerBatteryTalkThreadForVisitor } from "@/lib/battery-talk/battery-talk-visitor";
+import { getOrCreateBatteryTalkVisitorId, registerBatteryTalkThreadForVisitor } from "@/lib/battery-talk/battery-talk-visitor";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import type { BatteryTalkOpenDetail } from "@/lib/batterytalk/batterytalk-constants";
 import { CONTACT } from "@/lib/contact-info";
@@ -74,6 +74,7 @@ export function BatteryTalkPanel({
   const [historyLoading, setHistoryLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pendingBodyRef = useRef<string | null>(null);
+  const bootstrapGenRef = useRef(0);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -108,7 +109,19 @@ export function BatteryTalkPanel({
     const items = await fetchBatteryTalkVisitorHistory();
     setVisitorHistory(items);
     setHistoryLoading(false);
+    return items;
   }, []);
+
+  const applyThread = useCallback(
+    (targetThreadId: string, existing: { messages: BatteryTalkMessage[]; phone?: string }) => {
+      storeBatteryTalkThreadId(targetThreadId, threadScope());
+      registerBatteryTalkThreadForVisitor(targetThreadId);
+      setThreadId(targetThreadId);
+      setMessages(existing.messages);
+      setPhone(existing.phone ?? "");
+    },
+    [threadScope],
+  );
 
   const switchToThread = useCallback(async (targetThreadId: string) => {
     setLoading(true);
@@ -116,35 +129,54 @@ export function BatteryTalkPanel({
     const existing = await fetchBatteryTalkThread(targetThreadId);
     setLoading(false);
     if (existing.ok && existing.messages) {
-      storeBatteryTalkThreadId(targetThreadId, threadScope());
-      registerBatteryTalkThreadForVisitor(targetThreadId);
-      setThreadId(targetThreadId);
-      setMessages(existing.messages);
-      setPhone(existing.phone ?? "");
+      applyThread(targetThreadId, { messages: existing.messages, phone: existing.phone });
     }
-  }, [threadScope]);
+  }, [applyThread]);
 
-  const initThread = useCallback(async () => {
+  const bootstrapPanel = useCallback(async () => {
+    const gen = ++bootstrapGenRef.current;
+    setHistoryLoading(true);
     setLoading(true);
     setInitError(null);
+
+    const visitorId = getOrCreateBatteryTalkVisitorId();
+    const history = await fetchBatteryTalkVisitorHistory();
+    if (gen !== bootstrapGenRef.current) return;
+    setVisitorHistory(history);
+    setHistoryLoading(false);
+
     const scope = threadScope();
     const stored = getStoredBatteryTalkThreadId(scope);
     if (stored) {
       const existing = await fetchBatteryTalkThread(stored);
+      if (gen !== bootstrapGenRef.current) return;
       if (existing.ok && existing.messages) {
-        setThreadId(stored);
-        setMessages(existing.messages);
-        setPhone(existing.phone ?? "");
-        registerBatteryTalkThreadForVisitor(stored);
+        registerBatteryTalkThreadForVisitor(stored, visitorId);
+        applyThread(stored, { messages: existing.messages, phone: existing.phone });
         setLoading(false);
         return;
       }
     }
-    const created = await openBatteryTalkThread({ context: buildContext() });
+
+    const restorable =
+      history.find((item) => item.lastMessagePreview.trim()) ?? history[0];
+    if (restorable) {
+      const existing = await fetchBatteryTalkThread(restorable.threadId);
+      if (gen !== bootstrapGenRef.current) return;
+      if (existing.ok && existing.messages) {
+        registerBatteryTalkThreadForVisitor(restorable.threadId, visitorId);
+        applyThread(restorable.threadId, { messages: existing.messages, phone: existing.phone });
+        setLoading(false);
+        return;
+      }
+    }
+
+    const created = await openBatteryTalkThread({ visitorId, context: buildContext() });
+    if (gen !== bootstrapGenRef.current) return;
     setLoading(false);
     if (created.ok && created.threadId && created.messages) {
       storeBatteryTalkThreadId(created.threadId, scope);
-      registerBatteryTalkThreadForVisitor(created.threadId);
+      registerBatteryTalkThreadForVisitor(created.threadId, visitorId);
       setThreadId(created.threadId);
       setMessages(created.messages);
       setPhone(created.phone ?? "");
@@ -152,7 +184,7 @@ export function BatteryTalkPanel({
     } else {
       setInitError("채팅을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     }
-  }, [buildContext, threadScope, loadVisitorHistory]);
+  }, [applyThread, buildContext, loadVisitorHistory, threadScope]);
 
   useEffect(() => {
     if (!open) {
@@ -163,9 +195,8 @@ export function BatteryTalkPanel({
     }
     setShowPhonePrompt(false);
     pendingBodyRef.current = null;
-    void loadVisitorHistory();
-    void initThread();
-  }, [open, initThread, loadVisitorHistory, preset?.batteryCode, preset?.productCode]);
+    void bootstrapPanel();
+  }, [open, bootstrapPanel, preset?.batteryCode, preset?.productCode]);
 
   const streamDisconnected = useBatteryTalkSessionStream(
     threadId,
@@ -314,8 +345,10 @@ export function BatteryTalkPanel({
                   <span className="text-[10px] font-semibold text-slate-400">불러오는 중…</span>
                 ) : null}
               </div>
-              {visitorHistory.length === 0 && !historyLoading ? (
+              {visitorHistory.length === 0 && !historyLoading && !loading ? (
                 <p className="text-[11px] font-medium text-slate-500">아직 남긴 문의가 없습니다.</p>
+              ) : visitorHistory.length === 0 && (historyLoading || loading) ? (
+                <p className="text-[11px] font-medium text-slate-400">문의 내역을 불러오는 중…</p>
               ) : (
                 <ul className="batterytalk-panel__history-list max-h-24 space-y-1 overflow-y-auto">
                   {visitorHistory.map((item) => (

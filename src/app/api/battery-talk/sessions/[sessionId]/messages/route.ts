@@ -16,6 +16,7 @@ type PostBody = {
   phone?: string;
   customerPhone?: string;
   customerName?: string;
+  visitorId?: string;
 };
 
 export async function GET(_request: Request, ctx: RouteCtx) {
@@ -49,6 +50,7 @@ export async function POST(request: Request, ctx: RouteCtx) {
     const thread = await batteryTalkAddCustomerMessage(sessionId, text, {
       phone: body.customerPhone ?? body.phone,
       customerName: body.customerName,
+      visitorId: body.visitorId?.trim(),
     });
     if (!thread) {
       return NextResponse.json({ ok: false, message: "상담을 찾을 수 없습니다." }, { status: 404 });

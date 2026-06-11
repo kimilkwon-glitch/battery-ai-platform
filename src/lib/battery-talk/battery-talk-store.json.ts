@@ -21,6 +21,7 @@ import {
   contextMatchesReuse,
   filterBatteryTalkSummariesForAdmin,
   filterBatteryTalkThreadsForAdmin,
+  shouldExcludeBatteryTalkThreadFromVisitorHistory,
   newBatteryTalkId,
   normalizeOpenContext,
   shouldExcludeBatteryTalkThreadFromAdmin,
@@ -221,7 +222,7 @@ export async function batteryTalkOpenThread(
 export async function batteryTalkAddCustomerMessage(
   threadId: string,
   body: string,
-  opts?: { phone?: string; customerName?: string },
+  opts?: { phone?: string; customerName?: string; visitorId?: string },
 ): Promise<BatteryTalkThread | null> {
   if (!isValidBatteryTalkMessage(body)) return null;
   const sanitizedBody = sanitizeBatteryTalkMessage(body);
@@ -240,6 +241,10 @@ export async function batteryTalkAddCustomerMessage(
     ...prev,
     customerName: opts?.customerName?.trim() || prev.customerName,
     phone: sanitizeBatteryTalkPhone(opts?.phone ?? "") || prev.phone,
+    context: {
+      ...prev.context,
+      visitorId: opts?.visitorId?.trim() || prev.context.visitorId,
+    },
     messages: [...prev.messages, message],
     status: prev.status === "done" ? "waiting" : prev.status,
     updatedAt: now,
@@ -411,12 +416,14 @@ export async function batteryTalkVisitorHistory(
   const vid = visitorId.trim();
   const idSet = new Set(threadIds.map((id) => id.trim()).filter(Boolean));
   let threads = (await loadThreads()).filter(
-    (t) => t.context.visitorId === vid || idSet.has(t.threadId),
+    (t) => (vid && t.context.visitorId === vid) || idSet.has(t.threadId),
   );
-  const metaByThreadId = Object.fromEntries(
-    threads.map((t) => [t.threadId, { customerMessageCount: countCustomerBatteryTalkMessages(t.messages) }]),
+  threads = threads.filter(
+    (t) =>
+      !shouldExcludeBatteryTalkThreadFromVisitorHistory(t, {
+        customerMessageCount: countCustomerBatteryTalkMessages(t.messages),
+      }),
   );
-  threads = filterBatteryTalkThreadsForAdmin(threads, metaByThreadId);
 
   return threads
     .sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime())

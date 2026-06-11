@@ -51,7 +51,7 @@ export async function batteryTalkOpenThread(
 export async function batteryTalkAddCustomerMessage(
   threadId: string,
   body: string,
-  opts?: { phone?: string; customerName?: string },
+  opts?: { phone?: string; customerName?: string; visitorId?: string },
 ): Promise<BatteryTalkThread | null> {
   const store = await getStoreImpl();
   return store.batteryTalkAddCustomerMessage(threadId, body, opts);

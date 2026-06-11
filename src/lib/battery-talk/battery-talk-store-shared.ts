@@ -148,6 +148,14 @@ export function isAdminNoiseBatteryTalkThread(thread: BatteryTalkThread): boolea
   return shouldExcludeBatteryTalkThreadFromAdmin(thread);
 }
 
+/** 고객 문의내역에서 제외할 스레드 — 시스템 환영만 있는 빈 껍데기만 숨김 */
+export function shouldExcludeBatteryTalkThreadFromVisitorHistory(
+  thread: BatteryTalkThread,
+  meta?: { customerMessageCount?: number },
+): boolean {
+  return isSystemOnlyBatteryTalkThread(thread, meta?.customerMessageCount);
+}
+
 /** 관리자 운영 목록에서 제외할 배터리톡 스레드 */
 export function shouldExcludeBatteryTalkThreadFromAdmin(
   thread: BatteryTalkThread,

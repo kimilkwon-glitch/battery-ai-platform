@@ -24,11 +24,11 @@ type PostBody = {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const visitorId = searchParams.get("visitorId")?.trim();
-  if (!visitorId) {
-    return NextResponse.json({ ok: false, message: "visitorId가 필요합니다." }, { status: 400 });
-  }
+  const visitorId = searchParams.get("visitorId")?.trim() ?? "";
   const threadIds = searchParams.get("threadIds")?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
+  if (!visitorId && threadIds.length === 0) {
+    return NextResponse.json({ ok: false, message: "visitorId 또는 threadIds가 필요합니다." }, { status: 400 });
+  }
   try {
     const items = await batteryTalkVisitorHistory(visitorId, threadIds);
     return NextResponse.json({ ok: true, items });

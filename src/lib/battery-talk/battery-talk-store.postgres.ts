@@ -21,7 +21,7 @@ import {
   lastNonSystemPreview,
   newBatteryTalkId,
   normalizeOpenContext,
-  shouldExcludeBatteryTalkThreadFromAdmin,
+  shouldExcludeBatteryTalkThreadFromVisitorHistory,
   type BatteryTalkListFilters,
   type BatteryTalkOpenThreadInput,
 } from "@/lib/battery-talk/battery-talk-store-shared";
@@ -152,6 +152,24 @@ async function insertMessages(
   }
 }
 
+async function mergeSessionContext(
+  sessionId: string,
+  patch: Partial<BatteryTalkContext>,
+): Promise<void> {
+  const sql = getSql();
+  const row = (await sql`
+    SELECT * FROM battery_talk_sessions WHERE id = ${sessionId} LIMIT 1
+  `) as SessionRow[];
+  const prev = row[0];
+  if (!prev) return;
+  const next = { ...mergeContext(prev), ...patch };
+  await sql`
+    UPDATE battery_talk_sessions
+    SET context_json = ${JSON.stringify(next)}, updated_at = NOW()
+    WHERE id = ${sessionId}
+  `;
+}
+
 async function updateSessionFields(
   sessionId: string,
   patch: {
@@ -222,9 +240,14 @@ export async function batteryTalkOpenThread(
   if (phone) {
     const reused = await findReusableOpenThread(phone, input.context);
     if (reused) {
-      const summary = batteryTalkToSummary(reused);
+      const visitorId = input.visitorId?.trim() || input.context?.visitorId?.trim();
+      if (visitorId && !reused.context.visitorId) {
+        await mergeSessionContext(reused.threadId, { visitorId });
+      }
+      const refreshed = (await loadThreadById(reused.threadId)) ?? reused;
+      const summary = batteryTalkToSummary(refreshed);
       await publishBatteryTalkRealtime(sql, sessionRealtimeEvent(summary));
-      return reused;
+      return refreshed;
     }
   }
 
@@ -269,7 +292,7 @@ export async function batteryTalkOpenThread(
 export async function batteryTalkAddCustomerMessage(
   threadId: string,
   body: string,
-  opts?: { phone?: string; customerName?: string },
+  opts?: { phone?: string; customerName?: string; visitorId?: string },
 ): Promise<BatteryTalkThread | null> {
   if (!isValidBatteryTalkMessage(body)) return null;
   await ensureOperationalSchema();
@@ -297,6 +320,11 @@ export async function batteryTalkAddCustomerMessage(
     phone: sanitizeBatteryTalkPhone(opts?.phone ?? "") || prev.phone,
     updatedAt: now,
   });
+
+  const visitorId = opts?.visitorId?.trim();
+  if (visitorId && !prev.context.visitorId) {
+    await mergeSessionContext(threadId, { visitorId });
+  }
 
   const thread = (await loadThreadById(threadId))!;
   await publishBatteryTalkRealtime(sql, messageRealtimeEvent(threadId, message));
@@ -426,7 +454,9 @@ export async function batteryTalkVisitorHistory(
   threadIds: string[] = [],
 ): Promise<import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[]> {
   const vid = visitorId.trim();
-  const rows = await loadSessionRowsWithCounts({ visitorId: vid, limit: 20 });
+  const rows = vid
+    ? await loadSessionRowsWithCounts({ visitorId: vid, limit: 20 })
+    : [];
   const seen = new Set(rows.map((row) => row.id));
   const extraIds = [...new Set(threadIds.map((id) => id.trim()).filter(Boolean))]
     .filter((id) => !seen.has(id))
@@ -460,7 +490,7 @@ export async function batteryTalkVisitorHistory(
   const items: import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[] = [];
   for (const row of merged) {
     const thread = rowToThread(row, await loadMessagesForSession(row.id));
-    if (shouldExcludeBatteryTalkThreadFromAdmin(thread, adminMetaFromRow(row))) continue;
+    if (shouldExcludeBatteryTalkThreadFromVisitorHistory(thread, adminMetaFromRow(row))) continue;
     const lastCustomer = [...thread.messages]
       .reverse()
       .find((m) => m.sender === "customer" && m.body.trim());

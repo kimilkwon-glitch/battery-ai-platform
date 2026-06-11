@@ -65,9 +65,10 @@ export async function openBatteryTalkThread(input: {
 
 export async function fetchBatteryTalkVisitorHistory(): Promise<BatteryTalkVisitorHistoryItem[]> {
   const visitorId = getOrCreateBatteryTalkVisitorId();
-  if (!visitorId) return [];
   const threadIds = getBatteryTalkThreadIdsForVisitor(visitorId);
-  const params = new URLSearchParams({ visitorId });
+  if (!visitorId && threadIds.length === 0) return [];
+  const params = new URLSearchParams();
+  if (visitorId) params.set("visitorId", visitorId);
   if (threadIds.length > 0) params.set("threadIds", threadIds.join(","));
   try {
     const res = await fetch(`/api/battery-talk/sessions?${params.toString()}`, { cache: "no-store" });
@@ -101,7 +102,9 @@ export async function sendBatteryTalkMessage(input: {
   body: string;
   phone?: string;
   customerName?: string;
+  visitorId?: string;
 }): Promise<BatteryTalkThreadResponse> {
+  const visitorId = input.visitorId?.trim() || getOrCreateBatteryTalkVisitorId();
   try {
     const res = await fetch(
       `/api/battery-talk/sessions/${encodeURIComponent(input.threadId)}/messages`,
@@ -112,11 +115,13 @@ export async function sendBatteryTalkMessage(input: {
           body: input.body,
           phone: input.phone,
           customerName: input.customerName,
+          visitorId,
         }),
       },
     );
     const data = (await res.json()) as BatteryTalkThreadResponse;
     if (res.ok && data.ok) {
+      registerBatteryTalkThreadForVisitor(input.threadId, visitorId);
       return { ...data, threadId: data.sessionId ?? data.threadId ?? input.threadId };
     }
   } catch {
