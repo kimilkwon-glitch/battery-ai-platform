@@ -411,13 +411,16 @@ export async function batteryTalkUpdateMemo(
 export async function batteryTalkVisitorHistory(
   visitorId: string,
   threadIds: string[] = [],
+  userId?: string,
 ): Promise<import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[]> {
   await ensureLegacyMigration();
+  const uid = userId?.trim();
   const vid = visitorId.trim();
   const idSet = new Set(threadIds.map((id) => id.trim()).filter(Boolean));
-  let threads = (await loadThreads()).filter(
-    (t) => (vid && t.context.visitorId === vid) || idSet.has(t.threadId),
-  );
+  let threads = (await loadThreads()).filter((t) => {
+    if (uid) return t.userId === uid;
+    return (vid && t.context.visitorId === vid) || idSet.has(t.threadId);
+  });
   threads = threads.filter(
     (t) =>
       !shouldExcludeBatteryTalkThreadFromVisitorHistory(t, {

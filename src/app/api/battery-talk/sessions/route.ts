@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import { sanitizeBatteryTalkPhone } from "@/lib/battery-talk/battery-talk-sanitize";
 import { batteryTalkErrorResponse } from "@/lib/battery-talk/battery-talk-api-errors";
@@ -23,9 +24,20 @@ type PostBody = {
 };
 
 export async function GET(request: Request) {
+  const customerSession = await getVerifiedCustomerSessionFromRequest(request);
   const { searchParams } = new URL(request.url);
   const visitorId = searchParams.get("visitorId")?.trim() ?? "";
   const threadIds = searchParams.get("threadIds")?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
+
+  if (customerSession?.userId) {
+    try {
+      const items = await batteryTalkVisitorHistory("", [], customerSession.userId);
+      return NextResponse.json({ ok: true, items });
+    } catch (err) {
+      return batteryTalkErrorResponse(err, "문의 내역을 불러오지 못했습니다.");
+    }
+  }
+
   if (!visitorId && threadIds.length === 0) {
     return NextResponse.json({ ok: false, message: "visitorId 또는 threadIds가 필요합니다." }, { status: 400 });
   }
@@ -45,6 +57,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "요청 형식이 올바르지 않습니다." }, { status: 400 });
   }
 
+  const customerSession = await getVerifiedCustomerSessionFromRequest(request);
+  const sessionUserId = customerSession?.userId;
+
   const context: BatteryTalkContext = {
     ...body.context,
     pageUrl: body.context?.pageUrl ?? body.sourcePage,
@@ -59,10 +74,10 @@ export async function POST(request: Request) {
     const thread = await batteryTalkOpenThread({
       customerName: body.customerName?.trim(),
       phone: sanitizeBatteryTalkPhone(body.customerPhone ?? body.phone ?? ""),
-      userId: body.userId,
-      isMember: body.isMember,
-      visitorId: body.visitorId?.trim(),
-      context,
+      userId: sessionUserId ?? body.userId,
+      isMember: sessionUserId ? true : body.isMember,
+      visitorId: sessionUserId ? undefined : body.visitorId?.trim(),
+      context: sessionUserId ? context : { ...context, visitorId: body.visitorId?.trim() || context.visitorId },
     });
     return NextResponse.json({
       ok: true,

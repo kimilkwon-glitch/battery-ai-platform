@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, Send, Store, X } from "lucide-react";
+import { Phone, Plus, Send, Store, X } from "lucide-react";
 import { BatteryTalkCarIcon } from "@/components/batterytalk/BatteryTalkCarIcon";
 import { BATTERY_TALK_QUICK_CHIPS } from "@/lib/battery-talk/battery-talk-chat-copy";
 import { BatteryTalkSseStatusBanner } from "@/components/batterytalk/BatteryTalkSseStatusBanner";
@@ -12,6 +12,7 @@ import {
   useBatteryTalkSessionStream,
 } from "@/lib/battery-talk/battery-talk-realtime-client";
 import {
+  clearStoredBatteryTalkThreadId,
   fetchBatteryTalkThread,
   fetchBatteryTalkVisitorHistory,
   getStoredBatteryTalkThreadId,
@@ -26,6 +27,7 @@ import type { BatteryTalkOpenDetail } from "@/lib/batterytalk/batterytalk-consta
 import { CONTACT } from "@/lib/contact-info";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import type { ConsultationChannelSettings } from "@/lib/consultation/consultation-settings";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { bm } from "@/lib/design-tokens";
 import type { BatteryTalkMessage } from "@/types/battery-talk";
 
@@ -58,14 +60,13 @@ export function BatteryTalkPanel({
   showProductOrderCta?: boolean;
   onThreadIdChange?: (threadId: string) => void;
 }) {
+  const { isLoggedIn, member, ready: authReady } = useCustomerAuth();
   const [threadId, setThreadId] = useState<string | null>(null);
   const [messages, setMessages] = useState<BatteryTalkMessage[]>([]);
-  const [phone, setPhone] = useState("");
+  const [isNewInquiryDraft, setIsNewInquiryDraft] = useState(false);
   const [internalDraft, setInternalDraft] = useState("");
   const draft = controlledDraft ?? internalDraft;
   const setDraft = onDraftChange ?? setInternalDraft;
-  const [phoneDraft, setPhoneDraft] = useState("");
-  const [showPhonePrompt, setShowPhonePrompt] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
@@ -73,7 +74,6 @@ export function BatteryTalkPanel({
   const [visitorHistory, setVisitorHistory] = useState<BatteryTalkVisitorHistoryItem[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const pendingBodyRef = useRef<string | null>(null);
   const bootstrapGenRef = useRef(0);
 
   const scrollToBottom = useCallback(() => {
@@ -112,15 +112,27 @@ export function BatteryTalkPanel({
     return items;
   }, []);
 
+  const enterNewInquiryDraft = useCallback(() => {
+    clearStoredBatteryTalkThreadId(threadScope());
+    setThreadId(null);
+    setMessages([]);
+    setIsNewInquiryDraft(true);
+    setDraft("");
+    setSendError(null);
+    setInitError(null);
+  }, [setDraft, threadScope]);
+
   const applyThread = useCallback(
-    (targetThreadId: string, existing: { messages: BatteryTalkMessage[]; phone?: string }) => {
+    (targetThreadId: string, existing: { messages: BatteryTalkMessage[] }) => {
       storeBatteryTalkThreadId(targetThreadId, threadScope());
-      registerBatteryTalkThreadForVisitor(targetThreadId);
+      if (!isLoggedIn) {
+        registerBatteryTalkThreadForVisitor(targetThreadId);
+      }
       setThreadId(targetThreadId);
       setMessages(existing.messages);
-      setPhone(existing.phone ?? "");
+      setIsNewInquiryDraft(false);
     },
-    [threadScope],
+    [isLoggedIn, threadScope],
   );
 
   const switchToThread = useCallback(async (targetThreadId: string) => {
@@ -129,11 +141,12 @@ export function BatteryTalkPanel({
     const existing = await fetchBatteryTalkThread(targetThreadId);
     setLoading(false);
     if (existing.ok && existing.messages) {
-      applyThread(targetThreadId, { messages: existing.messages, phone: existing.phone });
+      applyThread(targetThreadId, { messages: existing.messages });
     }
   }, [applyThread]);
 
   const bootstrapPanel = useCallback(async () => {
+    if (!authReady) return;
     const gen = ++bootstrapGenRef.current;
     setHistoryLoading(true);
     setLoading(true);
@@ -151,8 +164,8 @@ export function BatteryTalkPanel({
       const existing = await fetchBatteryTalkThread(stored);
       if (gen !== bootstrapGenRef.current) return;
       if (existing.ok && existing.messages) {
-        registerBatteryTalkThreadForVisitor(stored, visitorId);
-        applyThread(stored, { messages: existing.messages, phone: existing.phone });
+        if (!isLoggedIn) registerBatteryTalkThreadForVisitor(stored, visitorId);
+        applyThread(stored, { messages: existing.messages });
         setLoading(false);
         return;
       }
@@ -164,27 +177,17 @@ export function BatteryTalkPanel({
       const existing = await fetchBatteryTalkThread(restorable.threadId);
       if (gen !== bootstrapGenRef.current) return;
       if (existing.ok && existing.messages) {
-        registerBatteryTalkThreadForVisitor(restorable.threadId, visitorId);
-        applyThread(restorable.threadId, { messages: existing.messages, phone: existing.phone });
+        if (!isLoggedIn) registerBatteryTalkThreadForVisitor(restorable.threadId, visitorId);
+        applyThread(restorable.threadId, { messages: existing.messages });
         setLoading(false);
         return;
       }
     }
 
-    const created = await openBatteryTalkThread({ visitorId, context: buildContext() });
     if (gen !== bootstrapGenRef.current) return;
     setLoading(false);
-    if (created.ok && created.threadId && created.messages) {
-      storeBatteryTalkThreadId(created.threadId, scope);
-      registerBatteryTalkThreadForVisitor(created.threadId, visitorId);
-      setThreadId(created.threadId);
-      setMessages(created.messages);
-      setPhone(created.phone ?? "");
-      void loadVisitorHistory();
-    } else {
-      setInitError("채팅을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
-    }
-  }, [applyThread, buildContext, loadVisitorHistory, threadScope]);
+    enterNewInquiryDraft();
+  }, [applyThread, authReady, enterNewInquiryDraft, isLoggedIn, threadScope]);
 
   useEffect(() => {
     if (!open) {
@@ -193,8 +196,6 @@ export function BatteryTalkPanel({
       setLoading(false);
       return;
     }
-    setShowPhonePrompt(false);
-    pendingBodyRef.current = null;
     void bootstrapPanel();
   }, [open, bootstrapPanel, preset?.batteryCode, preset?.productCode]);
 
@@ -218,10 +219,39 @@ export function BatteryTalkPanel({
     if (threadId) onThreadIdChange?.(threadId);
   }, [threadId, onThreadIdChange]);
 
-  const doSend = async (body: string, contactPhone?: string) => {
-    if (!threadId || !body.trim()) return;
+  const ensureThreadForSend = useCallback(async (): Promise<string | null> => {
+    if (threadId) return threadId;
+
+    const visitorId = getOrCreateBatteryTalkVisitorId();
+    const created = await openBatteryTalkThread({
+      visitorId: isLoggedIn ? undefined : visitorId,
+      customerName: member?.name,
+      context: buildContext(),
+    });
+    if (!created.ok || !created.threadId) return null;
+
+    const scope = threadScope();
+    storeBatteryTalkThreadId(created.threadId, scope);
+    if (!isLoggedIn) {
+      registerBatteryTalkThreadForVisitor(created.threadId, visitorId);
+    }
+    setThreadId(created.threadId);
+    setMessages(created.messages ?? []);
+    setIsNewInquiryDraft(false);
+    return created.threadId;
+  }, [buildContext, isLoggedIn, member?.name, threadId, threadScope]);
+
+  const doSend = async (body: string) => {
+    if (!body.trim()) return;
     setSending(true);
     setSendError(null);
+
+    const activeThreadId = await ensureThreadForSend();
+    if (!activeThreadId) {
+      setSending(false);
+      setSendError("채팅을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
 
     const optimistic: BatteryTalkMessage = {
       id: `opt-${Date.now()}`,
@@ -232,10 +262,12 @@ export function BatteryTalkPanel({
     setMessages((prev) => [...prev, optimistic]);
     setDraft("");
 
+    const visitorId = getOrCreateBatteryTalkVisitorId();
     const result = await sendBatteryTalkMessage({
-      threadId,
+      threadId: activeThreadId,
       body: body.trim(),
-      phone: contactPhone?.trim() || phone || undefined,
+      customerName: member?.name,
+      visitorId: isLoggedIn ? undefined : visitorId,
     });
     setSending(false);
 
@@ -243,11 +275,8 @@ export function BatteryTalkPanel({
       if (result.messages) {
         setMessages(result.messages);
       }
-      if (result.phone) setPhone(result.phone);
-      if (threadId) registerBatteryTalkThreadForVisitor(threadId);
+      if (!isLoggedIn) registerBatteryTalkThreadForVisitor(activeThreadId, visitorId);
       void loadVisitorHistory();
-      setShowPhonePrompt(false);
-      pendingBodyRef.current = null;
     } else {
       setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
       setSendError("메시지 전송에 실패했습니다.");
@@ -257,25 +286,8 @@ export function BatteryTalkPanel({
 
   const handleSend = async () => {
     const body = draft.trim();
-    if (!body || sending) return;
-    if (!phone.trim()) {
-      pendingBodyRef.current = body;
-      setShowPhonePrompt(true);
-      return;
-    }
+    if (!body || sending || loading) return;
     await doSend(body);
-  };
-
-  const handlePhoneConfirm = async () => {
-    const contact = phoneDraft.trim();
-    if (!contact) {
-      setSendError("연락처를 입력해 주세요.");
-      return;
-    }
-    setPhone(contact);
-    const body = pendingBodyRef.current ?? draft.trim();
-    if (body) await doSend(body, contact);
-    else setShowPhonePrompt(false);
   };
 
   const handleChip = (message: string) => {
@@ -291,6 +303,10 @@ export function BatteryTalkPanel({
   const ext = settings?.externalChannelsEnabled;
   const naverUrl = settings?.naverTalkUrl?.trim();
   const kakaoUrl = settings?.kakaoChannelUrl?.trim();
+  const showQuickChips =
+    !loading &&
+    (isNewInquiryDraft ||
+      (messages.length > 0 && messages.every((m) => m.sender === "system")));
 
   return (
     <AnimatePresence>
@@ -341,9 +357,20 @@ export function BatteryTalkPanel({
             <div className="batterytalk-panel__history shrink-0 border-b border-slate-100 bg-slate-50/80 px-3 py-2">
               <div className="mb-1 flex items-center justify-between gap-2">
                 <p className="text-[11px] font-black text-slate-700">내 문의내역</p>
-                {historyLoading ? (
-                  <span className="text-[10px] font-semibold text-slate-400">불러오는 중…</span>
-                ) : null}
+                <div className="flex items-center gap-1.5">
+                  {historyLoading ? (
+                    <span className="text-[10px] font-semibold text-slate-400">불러오는 중…</span>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-0.5 rounded-md border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+                    disabled={loading || isNewInquiryDraft}
+                    onClick={() => enterNewInquiryDraft()}
+                  >
+                    <Plus className="size-3" />
+                    새 문의 시작
+                  </button>
+                </div>
               </div>
               {visitorHistory.length === 0 && !historyLoading && !loading ? (
                 <p className="text-[11px] font-medium text-slate-500">아직 남긴 문의가 없습니다.</p>
@@ -356,7 +383,7 @@ export function BatteryTalkPanel({
                       <button
                         type="button"
                         className={`batterytalk-panel__history-item w-full rounded-md px-2 py-1.5 text-left ${
-                          threadId === item.threadId ? "is-active" : ""
+                          threadId === item.threadId && !isNewInquiryDraft ? "is-active" : ""
                         }`}
                         onClick={() => void switchToThread(item.threadId)}
                       >
@@ -381,11 +408,29 @@ export function BatteryTalkPanel({
               )}
             </div>
 
+            {!loading && threadId && !isNewInquiryDraft ? (
+              <p className="shrink-0 border-b border-slate-100 bg-blue-50/60 px-3 py-1.5 text-[10px] font-semibold text-blue-800">
+                이전 문의를 이어가는 중입니다.
+              </p>
+            ) : null}
+
             <div className="batterytalk-chat__messages flex-1 overflow-y-auto px-3 py-3">
               {loading ? (
                 <p className="py-8 text-center text-sm font-medium text-slate-500">채팅 연결 중…</p>
-              ) : initError && messages.length === 0 ? (
+              ) : initError && messages.length === 0 && !isNewInquiryDraft ? (
                 <p className="py-6 text-center text-xs font-semibold text-red-600">{initError}</p>
+              ) : isNewInquiryDraft && messages.length === 0 ? (
+                <div className="py-6 text-center">
+                  <p className="text-sm font-bold text-slate-800">새 문의를 남겨주세요.</p>
+                  <p className="mt-2 text-[11px] font-medium leading-relaxed text-slate-500">
+                    {isLoggedIn
+                      ? "로그인한 계정에서 문의내역을 확인할 수 있습니다."
+                      : "이전 문의는 이 브라우저에서 다시 확인할 수 있습니다."}
+                  </p>
+                  <p className="mt-1 text-[10px] font-medium text-slate-400">
+                    새 문의를 시작하거나 기존 문의를 이어갈 수 있습니다.
+                  </p>
+                </div>
               ) : (
                 <>
                   {messages.map((msg) => (
@@ -404,7 +449,7 @@ export function BatteryTalkPanel({
               )}
             </div>
 
-            {!loading && messages.length > 0 && messages.every((m) => m.sender === "system") ? (
+            {showQuickChips ? (
               <div className="batterytalk-chat__chips shrink-0 border-t border-slate-100 px-3 py-2">
                 {BATTERY_TALK_QUICK_CHIPS.map((chip) => (
                   <button
@@ -419,44 +464,10 @@ export function BatteryTalkPanel({
               </div>
             ) : null}
 
-            {showPhonePrompt ? (
-              <div className="batterytalk-chat__phone-prompt shrink-0 border-t border-amber-100 bg-amber-50">
-                <p className="batterytalk-chat__phone-label">답변을 위해 연락처를 남겨주세요.</p>
-                <div className="batterytalk-chat__phone-form">
-                  <input
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    className="batterytalk-chat__input batterytalk-chat__phone-input"
-                    placeholder="010-0000-0000"
-                    value={phoneDraft}
-                    onChange={(e) => setPhoneDraft(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        void handlePhoneConfirm();
-                      }
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="batterytalk-chat__phone-submit"
-                    disabled={sending}
-                    onClick={() => void handlePhoneConfirm()}
-                  >
-                    등록
-                  </button>
-                </div>
-                {sendError ? (
-                  <p className="batterytalk-chat__phone-error" role="alert">
-                    {sendError}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
-
-            {sendError && !showPhonePrompt ? (
-              <p className="shrink-0 px-3 pb-1 text-xs font-semibold text-red-600">{sendError}</p>
+            {sendError ? (
+              <p className="shrink-0 px-3 pb-1 text-xs font-semibold text-red-600" role="alert">
+                {sendError}
+              </p>
             ) : null}
 
             {onResumeOrder && showProductOrderCta && productCode ? (

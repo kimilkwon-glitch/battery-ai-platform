@@ -131,9 +131,10 @@ export async function batteryTalkRecallAdminMessage(
 export async function batteryTalkVisitorHistory(
   visitorId: string,
   threadIds: string[] = [],
+  userId?: string,
 ): Promise<import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[]> {
   const store = await getStoreImpl();
-  return store.batteryTalkVisitorHistory(visitorId, threadIds);
+  return store.batteryTalkVisitorHistory(visitorId, threadIds, userId);
 }
 
 /** dev JSON 경로 — postgres 모드에서는 null */

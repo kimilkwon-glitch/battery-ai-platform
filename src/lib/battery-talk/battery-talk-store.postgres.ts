@@ -352,6 +352,25 @@ async function loadSessionRowsWithCounts(
   const status = filters.status?.trim();
   const limit = filters.limit ?? 500;
   const visitorId = filters.visitorId?.trim();
+  const userId = filters.userId?.trim();
+
+  if (userId) {
+    return (await sql`
+      SELECT s.*,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'customer' AND btrim(m.message) <> ''
+        ), 0) AS customer_message_count,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'admin' AND m.recalled_at IS NULL
+        ), 0) AS admin_message_count
+      FROM battery_talk_sessions s
+      WHERE s.user_id = ${userId}
+      ORDER BY s.updated_at DESC
+      LIMIT ${limit}
+    `) as SessionRowWithCounts[];
+  }
 
   if (visitorId) {
     return (await sql`
@@ -452,15 +471,21 @@ export async function batteryTalkList(
 export async function batteryTalkVisitorHistory(
   visitorId: string,
   threadIds: string[] = [],
+  userId?: string,
 ): Promise<import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[]> {
+  const uid = userId?.trim();
   const vid = visitorId.trim();
-  const rows = vid
-    ? await loadSessionRowsWithCounts({ visitorId: vid, limit: 20 })
-    : [];
+  const rows = uid
+    ? await loadSessionRowsWithCounts({ userId: uid, limit: 20 })
+    : vid
+      ? await loadSessionRowsWithCounts({ visitorId: vid, limit: 20 })
+      : [];
   const seen = new Set(rows.map((row) => row.id));
-  const extraIds = [...new Set(threadIds.map((id) => id.trim()).filter(Boolean))]
-    .filter((id) => !seen.has(id))
-    .slice(0, 10);
+  const extraIds = uid
+    ? []
+    : [...new Set(threadIds.map((id) => id.trim()).filter(Boolean))]
+        .filter((id) => !seen.has(id))
+        .slice(0, 10);
 
   await ensureOperationalSchema();
   const sql = getSql();

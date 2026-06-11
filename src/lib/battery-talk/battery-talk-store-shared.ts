@@ -33,6 +33,7 @@ export type BatteryTalkListFilters = {
   q?: string | null;
   limit?: number;
   visitorId?: string | null;
+  userId?: string | null;
 };
 
 export function buildSystemMessages(context: BatteryTalkContext, now: string): BatteryTalkMessage[] {
