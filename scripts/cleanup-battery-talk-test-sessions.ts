@@ -3,16 +3,23 @@
  *
  * npx tsx scripts/cleanup-battery-talk-test-sessions.ts --dry-run
  * npx tsx scripts/cleanup-battery-talk-test-sessions.ts --apply
+ * npx tsx scripts/cleanup-battery-talk-test-sessions.ts --dry-run --include-operator-test
+ * npx tsx scripts/cleanup-battery-talk-test-sessions.ts --dry-run --session=btt_a --session=btt_b
  *
  * 옵션:
- *   --from=2026-06-11   KST 날짜 시작 (포함)
- *   --to=2026-06-11     KST 날짜 끝 (포함)
- *   --session=id1,id2   명시 sessionId만 (추가 검증 후)
+ *   --from=YYYY-MM-DD     KST 날짜 시작 (기본: E2E=2026-06-11, operator-test=2026-06-01)
+ *   --to=YYYY-MM-DD       KST 날짜 끝 (기본: 오늘 KST)
+ *   --session=ID          명시 sessionId (여러 번 지정 가능, 쉼표 구분도 가능)
+ *   --include-operator-test  김일권/UX2검수/무의미문구/시스템-only shell 포함
  */
 import { existsSync, readFileSync } from "node:fs";
 import { neon } from "@neondatabase/serverless";
 import { isUx2AdminReviewRecord } from "../src/lib/admin/ux2-admin-review-marker";
-import type { BatteryTalkContext } from "../src/types/battery-talk";
+import {
+  countCustomerBatteryTalkMessages,
+  isSystemOnlyBatteryTalkThread,
+} from "../src/lib/battery-talk/battery-talk-store-shared";
+import type { BatteryTalkContext, BatteryTalkMessage, BatteryTalkThread } from "../src/types/battery-talk";
 
 function loadEnvLocal(): void {
   if (!existsSync(".env.local")) return;
@@ -34,23 +41,37 @@ loadEnvLocal();
 
 const args = process.argv.slice(2);
 const apply = args.includes("--apply");
-const dryRun = !apply || args.includes("--dry-run");
-const explicitIds = args
-  .find((a) => a.startsWith("--session="))
-  ?.slice("--session=".length)
-  .split(",")
-  .map((s) => s.trim())
-  .filter(Boolean);
+const dryRun = !apply;
+const includeOperatorTest = args.includes("--include-operator-test");
 
-function argDate(name: string, fallback: string): string {
-  const prefix = `--${name}=`;
-  return args.find((a) => a.startsWith(prefix))?.slice(prefix.length) ?? fallback;
+function parseExplicitSessionIds(argv: string[]): string[] {
+  const ids: string[] = [];
+  for (const a of argv) {
+    if (!a.startsWith("--session=")) continue;
+    const raw = a.slice("--session=".length).trim();
+    for (const part of raw.split(",")) {
+      const id = part.trim();
+      if (id) ids.push(id);
+    }
+  }
+  return [...new Set(ids)];
 }
 
-const fromKst = argDate("from", "2026-06-11");
-const toKst = argDate("to", "2026-06-11");
+const explicitIds = parseExplicitSessionIds(args);
 
-/** KST 자정 → UTC */
+function argDate(name: string): string | undefined {
+  const prefix = `--${name}=`;
+  const hit = args.find((a) => a.startsWith(prefix));
+  return hit ? hit.slice(prefix.length) : undefined;
+}
+
+function todayKstDate(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date());
+}
+
+const fromKst = argDate("from") ?? (includeOperatorTest ? "2026-06-01" : "2026-06-11");
+const toKst = argDate("to") ?? todayKstDate();
+
 function kstDayStartUtc(isoDate: string): string {
   return `${isoDate}T00:00:00+09:00`;
 }
@@ -69,8 +90,8 @@ const TEST_PHONE_DIGITS = new Set([
 ]);
 
 const REAL_ORDER_RE = /^BM-(?!UX2|LOCAL)/i;
+const OPERATOR_NAME = "김일권";
 
-/** 고객 메시지가 명백한 운영 테스트/감사 문구인지 */
 function isExplicitTestCustomerMessage(body: string): boolean {
   const text = body.trim();
   if (!text) return false;
@@ -84,6 +105,17 @@ function isExplicitTestCustomerMessage(body: string): boolean {
   if (/^AGM70L 문의드립니다(\s+\d{13})?$/.test(text)) return true;
   if (/^확인 후 안내드리겠습니다\.?(\s+\d{13})?$/.test(text)) return true;
   if (/^장착 가능 문의(\s+\d{13})?$/.test(text)) return true;
+  return false;
+}
+
+function isOperatorTestMessage(body: string): boolean {
+  const text = body.trim();
+  if (!text) return false;
+  if (isExplicitTestCustomerMessage(text)) return true;
+  if (/^(DJSKS|안녕하세요|ㅇㅇ)$/i.test(text)) return true;
+  if (/UX2\s*검수/i.test(text)) return true;
+  if (/^님아님아$/.test(text)) return true;
+  if (/^[ㄱ-ㅎㅏ-ㅣ]+$/.test(text) && text.length <= 8) return true;
   return false;
 }
 
@@ -125,97 +157,173 @@ type MessageRow = {
   created_at: string;
 };
 
-type Candidate = {
+type SessionEval = {
   sessionId: string;
+  action: "delete" | "skip";
   customerName: string;
+  visitorId: string | null;
+  userId: string | null;
   phone: string;
   status: string;
   createdAt: string;
+  messageCount: number;
+  customerMessageCount: number;
   lastMessagePreview: string;
   customerMessages: string[];
-  reasons: string[];
   hasOrderLink: boolean;
   hasRealPhone: boolean;
-  isUx2: boolean;
+  isUx2BatteryTalk: boolean;
+  reasons: string[];
+  skipReason?: string;
 };
+
+function rowToThread(row: SessionRow, messages: MessageRow[]): BatteryTalkThread {
+  const mapped: BatteryTalkMessage[] = messages.map((m, i) => ({
+    id: m.id || `m${i}`,
+    sender: m.sender_type as BatteryTalkMessage["sender"],
+    body: m.message,
+    createdAt: m.created_at,
+  }));
+  const ctx = (row.context_json ?? {}) as BatteryTalkContext;
+  return {
+    threadId: row.id,
+    source: "batterytalk",
+    status: row.status as BatteryTalkThread["status"],
+    customerName: row.customer_name?.trim() || "고객",
+    phone: row.customer_phone ?? "",
+    userId: row.user_id ?? undefined,
+    isMember: Boolean(row.user_id),
+    messages: mapped,
+    context: ctx,
+    createdAt: row.created_at,
+    updatedAt: row.created_at,
+    lastMessageAt: row.created_at,
+    unreadByAdmin: false,
+  };
+}
 
 function evaluateSession(
   row: SessionRow,
   messages: MessageRow[],
-  windowStart: Date,
-  windowEnd: Date,
-): { candidate: Candidate | null; excludedReason?: string } {
+  opts: {
+    explicitId: boolean;
+    includeOperatorTest: boolean;
+    inDateWindow: boolean;
+  },
+): SessionEval {
   const ctx = (row.context_json ?? {}) as BatteryTalkContext;
-  const createdAt = new Date(row.created_at);
+  const visitorId = ctx.visitorId?.trim() || null;
   const customerMessages = messages
     .filter((m) => m.sender_type === "customer" && m.message.trim())
     .map((m) => m.message.trim());
+  const nonSystemBodies = messages
+    .filter((m) => m.sender_type !== "system" && m.message.trim())
+    .map((m) => m.message.trim());
 
-  const ux2 = isUx2AdminReviewRecord({
+  const orderLink = hasRealOrderLink(ctx);
+  const realPhone = hasRealPhone(row.customer_phone);
+  const customerName = row.customer_name?.trim() || "고객";
+  const isKimIlkwon = customerName === OPERATOR_NAME;
+
+  const ux2BatteryTalk = isUx2AdminReviewRecord({
     name: row.customer_name,
     phone: row.customer_phone,
     adminMemo: row.admin_memo,
-    message: customerMessages.join(" "),
+    message: [...customerMessages, row.last_message ?? ""].join(" "),
   });
-  const orderLink = hasRealOrderLink(ctx);
-  const realPhone = hasRealPhone(row.customer_phone);
 
-  const base: Candidate = {
+  const thread = rowToThread(row, messages);
+  const customerMessageCount = countCustomerBatteryTalkMessages(thread.messages);
+  const systemOnlyShell = isSystemOnlyBatteryTalkThread(thread, customerMessageCount);
+
+  const testCustomerMessages = customerMessages.filter(isExplicitTestCustomerMessage);
+  const operatorMessages = nonSystemBodies.filter(isOperatorTestMessage);
+  const operatorMessageInPreview =
+    row.last_message?.trim() && isOperatorTestMessage(row.last_message)
+      ? [row.last_message.trim()]
+      : [];
+
+  const base: SessionEval = {
     sessionId: row.id,
-    customerName: row.customer_name?.trim() || "고객",
+    action: "skip",
+    customerName,
+    visitorId,
+    userId: row.user_id,
     phone: row.customer_phone ?? "",
     status: row.status,
     createdAt: row.created_at,
+    messageCount: messages.length,
+    customerMessageCount,
     lastMessagePreview: (row.last_message ?? customerMessages.at(-1) ?? "").slice(0, 120),
     customerMessages,
-    reasons: [],
     hasOrderLink: orderLink,
     hasRealPhone: realPhone,
-    isUx2: ux2,
+    isUx2BatteryTalk: ux2BatteryTalk,
+    reasons: [],
   };
 
-  if (ux2) {
-    return { candidate: null, excludedReason: "ux2_protected" };
-  }
   if (orderLink) {
-    return { candidate: null, excludedReason: "real_order_link" };
+    return { ...base, skipReason: "real_order_link_protected" };
   }
   if (realPhone) {
-    return { candidate: null, excludedReason: "real_phone" };
+    return { ...base, skipReason: "real_phone_protected" };
   }
 
-  const inWindow = createdAt >= windowStart && createdAt <= windowEnd;
-  const explicitId = explicitIds?.includes(row.id);
-
-  if (!explicitId && !inWindow) {
-    return { candidate: null, excludedReason: "outside_date_window" };
-  }
-
-  const testMessages = customerMessages.filter(isExplicitTestCustomerMessage);
-  const kimIlkwonNoise =
-    row.customer_name?.trim() === "김일권" &&
-    customerMessages.some((m) => /^(DJSKS|안녕하세요)$/i.test(m.trim())) &&
-    !realPhone;
-
-  if (testMessages.length > 0) {
-    base.reasons.push(`test_customer_messages:${testMessages.length}`);
-  }
-  if (kimIlkwonNoise) {
-    base.reasons.push("kim_ilkwon_manual_test");
-  }
-  if (explicitId) {
+  if (opts.explicitId) {
     base.reasons.push("explicit_session_id");
+    base.action = "delete";
+    return base;
   }
 
-  if (testMessages.length === 0 && !kimIlkwonNoise && !explicitId) {
-    return { candidate: null, excludedReason: "no_test_message_pattern" };
+  const deleteReasons: string[] = [];
+
+  if (opts.includeOperatorTest && isKimIlkwon) {
+    deleteReasons.push("operator_name_kim_ilkwon");
+  }
+  if (opts.includeOperatorTest && ux2BatteryTalk) {
+    deleteReasons.push("ux2_battery_talk_review");
+  }
+  if (opts.includeOperatorTest && systemOnlyShell) {
+    deleteReasons.push("system_only_shell");
+  }
+  if (testCustomerMessages.length > 0) {
+    deleteReasons.push(`audit_test_messages:${testCustomerMessages.length}`);
+  }
+  if (opts.includeOperatorTest && operatorMessages.length > 0) {
+    deleteReasons.push(`operator_test_messages:${operatorMessages.length}`);
+  }
+  if (
+    opts.includeOperatorTest &&
+    operatorMessageInPreview.length > 0 &&
+    operatorMessages.length === 0 &&
+    customerMessages.length === 0
+  ) {
+    deleteReasons.push("operator_test_last_message_preview");
   }
 
-  if (customerMessages.length > 0 && testMessages.length === 0 && !kimIlkwonNoise) {
-    return { candidate: null, excludedReason: "customer_messages_not_test_marked" };
+  if (deleteReasons.length === 0) {
+    if (!opts.inDateWindow && !opts.includeOperatorTest) {
+      return { ...base, skipReason: "outside_date_window" };
+    }
+    return { ...base, skipReason: "no_test_pattern_match" };
   }
 
-  return { candidate: base };
+  if (!opts.inDateWindow && !opts.includeOperatorTest) {
+    return { ...base, skipReason: "outside_date_window" };
+  }
+
+  base.reasons = deleteReasons;
+  base.action = "delete";
+  return base;
+}
+
+async function loadSessionById(sql: ReturnType<typeof neon>, id: string): Promise<SessionRow | null> {
+  const found = (await sql`
+    SELECT id, customer_name, customer_phone, admin_memo, context_json, user_id,
+           created_at, last_message, status
+    FROM battery_talk_sessions WHERE id = ${id} LIMIT 1
+  `) as SessionRow[];
+  return found[0] ?? null;
 }
 
 async function main(): Promise<void> {
@@ -229,7 +337,9 @@ async function main(): Promise<void> {
   const windowEnd = new Date(kstDayEndUtc(toKst));
   const sql = neon(url);
 
-  const sessionRows = (await sql`
+  const sessionMap = new Map<string, SessionRow>();
+
+  const ranged = (await sql`
     SELECT id, customer_name, customer_phone, admin_memo, context_json, user_id,
            created_at, last_message, status
     FROM battery_talk_sessions
@@ -238,22 +348,30 @@ async function main(): Promise<void> {
     ORDER BY created_at ASC
   `) as SessionRow[];
 
-  const extraRows: SessionRow[] = [];
-  if (explicitIds?.length) {
-    for (const id of explicitIds) {
-      if (sessionRows.some((r) => r.id === id)) continue;
-      const found = (await sql`
-        SELECT id, customer_name, customer_phone, admin_memo, context_json, user_id,
-               created_at, last_message, status
-        FROM battery_talk_sessions WHERE id = ${id} LIMIT 1
-      `) as SessionRow[];
-      if (found[0]) extraRows.push(found[0]);
-    }
+  for (const row of ranged) sessionMap.set(row.id, row);
+
+  if (includeOperatorTest) {
+    const operatorNamed = (await sql`
+      SELECT id, customer_name, customer_phone, admin_memo, context_json, user_id,
+             created_at, last_message, status
+      FROM battery_talk_sessions
+      WHERE customer_name = ${OPERATOR_NAME}
+      ORDER BY created_at ASC
+    `) as SessionRow[];
+    for (const row of operatorNamed) sessionMap.set(row.id, row);
   }
 
-  const allRows = [...sessionRows, ...extraRows];
-  const candidates: Candidate[] = [];
-  const excluded: Array<{ sessionId: string; reason: string; preview: string }> = [];
+  for (const id of explicitIds) {
+    if (sessionMap.has(id)) continue;
+    const row = await loadSessionById(sql, id);
+    if (row) sessionMap.set(row.id, row);
+  }
+
+  const allRows = [...sessionMap.values()].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+  );
+
+  const evaluations: SessionEval[] = [];
 
   for (const row of allRows) {
     const messages = (await sql`
@@ -263,19 +381,26 @@ async function main(): Promise<void> {
       ORDER BY created_at ASC
     `) as MessageRow[];
 
-    const { candidate, excludedReason } = evaluateSession(row, messages, windowStart, windowEnd);
-    if (candidate) {
-      candidates.push(candidate);
-    } else if (excludedReason && excludedReason !== "outside_date_window") {
-      excluded.push({
-        sessionId: row.id,
-        reason: excludedReason,
-        preview: (row.last_message ?? "").slice(0, 80),
-      });
-    }
+    const createdAt = new Date(row.created_at);
+    const inDateWindow = createdAt >= windowStart && createdAt <= windowEnd;
+    const explicitId = explicitIds.includes(row.id);
+
+    if (!explicitId && !inDateWindow && !includeOperatorTest) continue;
+    if (!explicitId && !includeOperatorTest && !inDateWindow) continue;
+
+    evaluations.push(
+      evaluateSession(row, messages, {
+        explicitId,
+        includeOperatorTest,
+        inDateWindow,
+      }),
+    );
   }
 
-  const sessionIds = candidates.map((c) => c.sessionId);
+  const toDelete = evaluations.filter((e) => e.action === "delete");
+  const skipped = evaluations.filter((e) => e.action === "skip");
+  const sessionIds = toDelete.map((e) => e.sessionId);
+
   let messageCount = 0;
   if (sessionIds.length) {
     const counted = (await sql`
@@ -284,23 +409,54 @@ async function main(): Promise<void> {
     messageCount = counted[0]?.c ?? 0;
   }
 
+  const kimDeleted = toDelete.filter((e) => e.customerName === OPERATOR_NAME);
+  const kimSkipped = skipped.filter((e) => e.customerName === OPERATOR_NAME);
+
   const report = {
     mode: dryRun ? "dry-run" : "apply",
+    flags: {
+      includeOperatorTest,
+      explicitSessionIds: explicitIds,
+    },
     windowKst: { from: fromKst, to: toKst },
-    scannedSessions: allRows.length,
-    deleteCandidates: candidates.length,
+    scannedSessions: evaluations.length,
+    deleteCandidateCount: toDelete.length,
+    skippedCount: skipped.length,
     messagesToDelete: messageCount,
-    candidates: candidates.map((c) => ({
-      sessionId: c.sessionId,
-      customerName: c.customerName,
-      phone: c.phone || "(empty)",
-      status: c.status,
-      createdAt: c.createdAt,
-      lastMessagePreview: c.lastMessagePreview,
-      customerMessages: c.customerMessages,
-      reasons: c.reasons,
+    kimIlkwon: {
+      deleteCandidates: kimDeleted.length,
+      skipped: kimSkipped.length,
+    },
+    candidatesToDelete: toDelete.map((e) => ({
+      sessionId: e.sessionId,
+      customerName: e.customerName,
+      visitorId: e.visitorId,
+      userId: e.userId,
+      phone: e.phone || "(empty)",
+      status: e.status,
+      createdAt: e.createdAt,
+      messageCount: e.messageCount,
+      customerMessageCount: e.customerMessageCount,
+      lastMessagePreview: e.lastMessagePreview,
+      customerMessages: e.customerMessages,
+      hasOrderLink: e.hasOrderLink,
+      hasRealPhone: e.hasRealPhone,
+      isUx2BatteryTalk: e.isUx2BatteryTalk,
+      reasons: e.reasons,
+      action: e.action,
     })),
-    excludedFromDelete: excluded,
+    skipped: skipped.map((e) => ({
+      sessionId: e.sessionId,
+      customerName: e.customerName,
+      visitorId: e.visitorId,
+      userId: e.userId,
+      phone: e.phone || "(empty)",
+      lastMessagePreview: e.lastMessagePreview,
+      hasOrderLink: e.hasOrderLink,
+      hasRealPhone: e.hasRealPhone,
+      skipReason: e.skipReason,
+      action: e.action,
+    })),
   };
 
   console.log(JSON.stringify(report, null, 2));
@@ -319,6 +475,11 @@ async function main(): Promise<void> {
   await sql`DELETE FROM battery_talk_sessions WHERE id = ANY(${sessionIds})`;
 
   console.log("\nDeleted sessions:", sessionIds.join(", "));
+  console.log("Deleted messages:", messageCount);
+  console.log(
+    "Kim Ilkwon sessions deleted:",
+    kimDeleted.map((e) => e.sessionId).join(", ") || "(none)",
+  );
   console.log("Battery talk test session cleanup complete.");
 }
 

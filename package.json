@@ -57,6 +57,7 @@
     "ux2:cleanup": "npx tsx scripts/cleanup-ux2-admin-review.ts",
     "admin:cleanup-noise-consultations": "npx tsx scripts/cleanup-admin-noise-consultations.ts",
     "battery-talk:cleanup-test-sessions": "npx tsx scripts/cleanup-battery-talk-test-sessions.ts --dry-run",
+    "battery-talk:cleanup-operator-test": "npx tsx scripts/cleanup-battery-talk-test-sessions.ts --dry-run --include-operator-test",
     "ux2:report": "npx tsx scripts/generate-ux2-persona-report.ts",
     "ux2:reset": "npx tsx scripts/cleanup-ux2-admin-review.ts --dry-run && npx tsx scripts/cleanup-ux2-admin-review.ts && npx tsx scripts/seed-ux2-admin-review.ts && npx tsx scripts/generate-ux2-persona-report.ts",
     "retention:cleanup": "npx tsx scripts/retention-cleanup-operational-data.ts",
