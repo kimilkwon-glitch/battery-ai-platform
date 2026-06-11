@@ -585,7 +585,7 @@ export function AdminSmartStoreDashboard({
                   mode="inTransit"
                   limit={20}
                   label="배송상태 재조회"
-                  hint="배송중 주문만 확인 · 최대 20건 · 조회 건수 사용"
+                  hint="배송중만 · 최대 20건 · 조회 건수 소모 · 반복 클릭 금지"
                   variant="secondary"
                 />
                 <Link href={ADMIN_ROUTES.orders} className="admin-panel__link">

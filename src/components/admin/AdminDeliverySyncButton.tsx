@@ -36,7 +36,7 @@ export function AdminDeliverySyncButton({
   orderIds,
   limit = 20,
   label,
-  confirmMessage = "배송중 주문을 다시 조회합니다. 조회 건수가 사용될 수 있습니다.",
+  confirmMessage = "배송중 주문을 다시 조회합니다. 조회 건수가 사용됩니다. 테스트 목적으로 여러 번 누르지 마세요.",
   hint,
   className,
   variant = "secondary",

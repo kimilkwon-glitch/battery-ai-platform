@@ -250,6 +250,12 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
     minute: "2-digit",
   });
   const phoneDigits = order.customerPhone.replace(/\D/g, "");
+  const deliverySyncStatuses = new Set(["shipping", "shipped", "in_transit"]);
+  const invoiceForSync = tracking.trim() || adminMeta?.shippingTrackingNumber?.trim() || "";
+  const courierForSync = courierCode.trim() || adminMeta?.courierCode?.trim() || "";
+  const canShowDeliverySync =
+    deliverySyncStatuses.has(order.orderStatus) &&
+    Boolean(invoiceForSync && courierForSync);
 
   return (
     <div className="admin-order-ops-panel">
@@ -429,7 +435,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
           </button>
           <div className="admin-ops-track-test">
             <p className="admin-ops-track-test__label">배송조회 테스트</p>
-            <p className="admin-ops-track-test__sublabel">화면 확인용 · DB 반영 없음</p>
+            <p className="admin-ops-track-test__sublabel">화면 확인용 · DB 반영 없음 · 1회만 확인 권장</p>
             <DeliveryTrackingPanel
               courierCode={courierCode}
               courierName={carrier || deliveryCarrierName(courierCode) || ""}
@@ -438,6 +444,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
               variant="admin"
             />
           </div>
+          {canShowDeliverySync ? (
           <div className="admin-ops-track-sync">
             <p className="admin-ops-track-sync__label">스윗트래커 조회 → DB 반영</p>
             {adminMeta?.lastDeliveryCheckedAt ? (
@@ -457,13 +464,14 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated }: Props) {
               mode="selected"
               orderIds={[order.orderId]}
               label="조회 후 상태 반영"
-              confirmMessage="이 주문을 조회합니다. 조회 건수가 사용될 수 있습니다."
-              hint="배송완료일 때만 DB 반영 · 조회 건수 사용"
+              confirmMessage="이 주문을 조회합니다. 조회 건수가 사용됩니다. 테스트 목적으로 여러 번 누르지 마세요."
+              hint="배송완료일 때만 DB 반영 · 조회 건수 소모"
               variant="primary"
               onReload={true}
               onComplete={() => onUpdated?.()}
             />
           </div>
+          ) : null}
         </OpsCard>
       ) : null}
 

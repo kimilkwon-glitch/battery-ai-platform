@@ -243,9 +243,16 @@ export async function runDeliveryStatusSync(
 
   let candidates: SyncCandidate[] = [];
   if (input.mode === "selected") {
-    candidates = await listSelectedCandidates(input.orderIds ?? []);
+    const ids = input.orderIds ?? [];
+    if (ids.length > DELIVERY_SYNC_MAX_LIMIT) {
+      throw new Error(`한 번에 최대 ${DELIVERY_SYNC_MAX_LIMIT}건까지 확인할 수 있습니다.`);
+    }
+    candidates = await listSelectedCandidates(ids);
   } else {
     candidates = await listInTransitCandidates(limit);
+    if (candidates.length > DELIVERY_SYNC_MAX_LIMIT) {
+      candidates = candidates.slice(0, DELIVERY_SYNC_MAX_LIMIT);
+    }
   }
 
   const results: DeliverySyncResultItem[] = [];

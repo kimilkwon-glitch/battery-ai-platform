@@ -26,6 +26,7 @@ export function isReviewImageRef(value: string): boolean {
     return approxBytes <= REVIEW_IMAGE_MAX_BYTES;
   }
   if (v.startsWith("/api/reviews/media/")) return true;
+  if (/^https:\/\/([a-z0-9-]+\.)?blob\.vercel-storage\.com\//i.test(v)) return true;
   try {
     const url = new URL(v);
     return url.protocol === "https:" || url.protocol === "http:";

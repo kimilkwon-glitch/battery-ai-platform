@@ -5,6 +5,7 @@ import {
   getOperationalStoreStatus,
   isOperationalStoreReady,
 } from "@/lib/db/operational-store-config";
+import { getReviewImageStorageStatus } from "@/lib/reviews/review-image-storage.server";
 import { RETENTION_POLICY_SUMMARY } from "@/lib/retention/operational-data-retention";
 
 const DOMAIN_LABELS: Record<string, string> = {
@@ -15,6 +16,7 @@ const DOMAIN_LABELS: Record<string, string> = {
   order_admin_meta: "결제주문 관리자 메모·송장",
   support_notices: "고객센터 공지",
   consultation_settings: "상담 채널 설정",
+  reply_templates: "관리자 답변 템플릿",
 };
 
 const POSTGRES_ALWAYS = [
@@ -51,6 +53,7 @@ export function AdminOperationalDataStatus() {
   const mode = getOperationalStoreMode();
   const ready = isOperationalStoreReady();
   const lastRetentionRun = readRetentionLastRun();
+  const reviewImageStorage = getReviewImageStorageStatus();
 
   return (
     <div className="space-y-3 text-xs text-slate-600">
@@ -104,6 +107,15 @@ export function AdminOperationalDataStatus() {
           실패합니다.
         </p>
       ) : null}
+
+      <div className="rounded border border-slate-200 bg-slate-50 px-2.5 py-2">
+        <p className="mb-1 font-semibold text-slate-600">리뷰 사진 저장</p>
+        <p className={reviewImageStorage.configured ? "text-emerald-700" : "text-red-700 font-semibold"}>
+          {reviewImageStorage.configured
+            ? `사용 중: ${reviewImageStorage.message}`
+            : reviewImageStorage.message}
+        </p>
+      </div>
 
       <div className="rounded border border-slate-200 bg-slate-50 px-2.5 py-2">
         <p className="mb-1 font-semibold text-slate-600">문의·상담 보관 정책</p>

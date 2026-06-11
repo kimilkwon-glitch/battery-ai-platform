@@ -53,6 +53,13 @@ export async function POST(request: Request) {
       ? Math.min(DELIVERY_SYNC_MAX_LIMIT, Math.max(1, body.limit ?? DELIVERY_SYNC_DEFAULT_LIMIT))
       : undefined;
 
+  if (body.mode === "inTransit" && body.limit != null && body.limit > DELIVERY_SYNC_MAX_LIMIT) {
+    return NextResponse.json(
+      { ok: false, message: `한 번에 최대 ${DELIVERY_SYNC_MAX_LIMIT}건까지 확인할 수 있습니다.` },
+      { status: 422 },
+    );
+  }
+
   try {
     const result = await runDeliveryStatusSync({
       mode: body.mode,
@@ -60,10 +67,11 @@ export async function POST(request: Request) {
       limit,
     });
     return NextResponse.json(result);
-  } catch {
-    return NextResponse.json(
-      { ok: false, message: "배송상태 동기화 중 오류가 발생했습니다." },
-      { status: 500 },
-    );
+  } catch (err) {
+    const message =
+      err instanceof Error && err.message.includes("최대")
+        ? err.message
+        : "배송상태 동기화 중 오류가 발생했습니다.";
+    return NextResponse.json({ ok: false, message }, { status: 500 });
   }
 }

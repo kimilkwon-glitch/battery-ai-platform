@@ -21,16 +21,23 @@ export async function POST(request: Request) {
   const saved = await saveReviewUploadFile(buffer, mime);
 
   if (!saved.ok) {
-    return NextResponse.json({ ok: false, message: saved.message }, { status: 400 });
+    return NextResponse.json(
+      {
+        ok: false,
+        message: saved.message,
+        storageStatus: "storageStatus" in saved ? saved.storageStatus : undefined,
+      },
+      { status: saved.storageStatus ? 503 : 400 },
+    );
   }
 
-  if (saved.storage === "filesystem") {
-    return NextResponse.json({ ok: true, url: saved.url, storage: saved.storage });
+  if ("dataUrl" in saved) {
+    return NextResponse.json({
+      ok: true,
+      dataUrl: saved.dataUrl,
+      storage: saved.storage,
+    });
   }
 
-  return NextResponse.json({
-    ok: true,
-    dataUrl: saved.dataUrl,
-    storage: saved.storage,
-  });
+  return NextResponse.json({ ok: true, url: saved.url, storage: saved.storage });
 }

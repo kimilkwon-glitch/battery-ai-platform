@@ -42,7 +42,25 @@ function testSourceFiles() {
   assert.match(submit, /normalizeReviewImages/);
   assert.match(submit, /reviewPrimaryImageUrl/);
 
-  console.log("✓ source wiring");
+  const upload = readFileSync(
+    path.join(process.cwd(), "src/lib/reviews/review-image-upload.server.ts"),
+    "utf8",
+  );
+  assert.match(upload, /saveReviewImageToBlob/);
+  assert.match(upload, /isProductionRuntime/);
+
+  const storage = readFileSync(
+    path.join(process.cwd(), "src/lib/reviews/review-image-storage.server.ts"),
+    "utf8",
+  );
+  assert.match(storage, /BLOB_READ_WRITE_TOKEN/);
+  assert.match(storage, /put\(/);
+
+  const blobUrl =
+    "https://abc123.public.blob.vercel-storage.com/reviews/test.jpg";
+  assert.equal(isReviewImageRef(blobUrl), true);
+
+  console.log("✓ source wiring + blob storage abstraction");
 }
 
 testImagePolicy();

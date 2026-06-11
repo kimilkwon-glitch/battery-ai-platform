@@ -3,10 +3,16 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { isProductionRuntime } from "@/lib/db/operational-store-config";
 import {
   isAllowedReviewImageMime,
   REVIEW_IMAGE_MAX_BYTES,
 } from "@/lib/reviews/review-image-policy";
+import {
+  getReviewImageStorageStatus,
+  saveReviewImageToBlob,
+  type ReviewImageStorageKind,
+} from "@/lib/reviews/review-image-storage.server";
 
 const UPLOAD_DIR = path.join(process.cwd(), "data", "review-uploads");
 
@@ -18,9 +24,9 @@ const EXT_BY_MIME: Record<string, string> = {
 };
 
 export type ReviewImageSaveResult =
-  | { ok: true; url: string; storage: "filesystem" }
+  | { ok: true; url: string; storage: ReviewImageStorageKind }
   | { ok: true; dataUrl: string; storage: "inline" }
-  | { ok: false; message: string };
+  | { ok: false; message: string; storageStatus?: string };
 
 export async function saveReviewUploadFile(
   buffer: Buffer,
@@ -36,8 +42,21 @@ export async function saveReviewUploadFile(
   const ext = EXT_BY_MIME[mime.toLowerCase()] ?? "jpg";
   const id = `${Date.now()}_${randomBytes(6).toString("hex")}`;
   const filename = `${id}.${ext}`;
-  const filePath = path.join(UPLOAD_DIR, filename);
 
+  const blobSaved = await saveReviewImageToBlob(buffer, mime, filename);
+  if (blobSaved.ok) {
+    return { ok: true, url: blobSaved.url, storage: "blob" };
+  }
+
+  if (isProductionRuntime()) {
+    return {
+      ok: false,
+      message: blobSaved.message,
+      storageStatus: getReviewImageStorageStatus().message,
+    };
+  }
+
+  const filePath = path.join(UPLOAD_DIR, filename);
   try {
     await mkdir(UPLOAD_DIR, { recursive: true });
     await writeFile(filePath, buffer);

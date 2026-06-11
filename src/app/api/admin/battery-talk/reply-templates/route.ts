@@ -5,7 +5,7 @@ import {
   listBatteryTalkReplyTemplates,
   saveBatteryTalkReplyTemplates,
   upsertBatteryTalkReplyTemplate,
-} from "@/lib/admin/battery-talk-reply-templates-store.json";
+} from "@/lib/admin/battery-talk-reply-templates-store";
 import type { BatteryTalkReplyTemplate } from "@/types/battery-talk-reply-template";
 
 export const dynamic = "force-dynamic";

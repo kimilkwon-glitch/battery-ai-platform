@@ -143,7 +143,7 @@ export function AdminShippingClient({ summary }: Props) {
       <div className="admin-workspace-notice admin-workspace-notice--shipping">
         <p className="admin-workspace-notice__title">경동택배 단일 사용 · 수동 배송상태 반영</p>
         <p className="admin-workspace-notice__text">
-          배송중 주문만 확인합니다. 조회 건수가 사용될 수 있습니다. 한 번에 최대 20건.
+          배송중 주문만 확인합니다. 조회 건수가 사용됩니다. 한 번에 최대 20건. 테스트 목적으로 반복 클릭하지 마세요.
         </p>
       </div>
 
