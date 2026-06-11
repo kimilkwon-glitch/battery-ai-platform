@@ -1,4 +1,9 @@
 import type { BatteryTalkContext, BatteryTalkMessage } from "@/types/battery-talk";
+import {
+  getBatteryTalkThreadIdsForVisitor,
+  getOrCreateBatteryTalkVisitorId,
+  registerBatteryTalkThreadForVisitor,
+} from "@/lib/battery-talk/battery-talk-visitor";
 
 export function getBatteryTalkThreadStorageKey(scope?: {
   pathname?: string;
@@ -20,30 +25,58 @@ export type BatteryTalkThreadResponse = {
   message?: string;
 };
 
+export type BatteryTalkVisitorHistoryItem = {
+  threadId: string;
+  status: string;
+  lastMessagePreview: string;
+  lastMessageAt: string;
+  hasAdminReply: boolean;
+};
+
 export async function openBatteryTalkThread(input: {
   customerName?: string;
   phone?: string;
   userId?: string;
   isMember?: boolean;
+  visitorId?: string;
   context?: BatteryTalkContext;
 }): Promise<BatteryTalkThreadResponse> {
+  const visitorId = input.visitorId?.trim() || getOrCreateBatteryTalkVisitorId();
   try {
     const res = await fetch("/api/battery-talk/sessions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ ...input, visitorId, context: { ...input.context, visitorId } }),
     });
     const data = (await res.json()) as BatteryTalkThreadResponse;
     if (res.ok && data.ok && (data.sessionId || data.threadId)) {
+      const threadId = data.sessionId ?? data.threadId!;
+      registerBatteryTalkThreadForVisitor(threadId, visitorId);
       return {
         ...data,
-        threadId: data.sessionId ?? data.threadId,
+        threadId,
       };
     }
   } catch {
     /* ignore */
   }
   return { ok: false };
+}
+
+export async function fetchBatteryTalkVisitorHistory(): Promise<BatteryTalkVisitorHistoryItem[]> {
+  const visitorId = getOrCreateBatteryTalkVisitorId();
+  if (!visitorId) return [];
+  const threadIds = getBatteryTalkThreadIdsForVisitor(visitorId);
+  const params = new URLSearchParams({ visitorId });
+  if (threadIds.length > 0) params.set("threadIds", threadIds.join(","));
+  try {
+    const res = await fetch(`/api/battery-talk/sessions?${params.toString()}`, { cache: "no-store" });
+    const data = (await res.json()) as { ok?: boolean; items?: BatteryTalkVisitorHistoryItem[] };
+    if (res.ok && data.ok && Array.isArray(data.items)) return data.items;
+  } catch {
+    /* ignore */
+  }
+  return [];
 }
 
 export async function fetchBatteryTalkThread(

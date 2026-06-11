@@ -5,6 +5,18 @@
   color: #fff;
 }
 
+.batterytalk-panel__history-item {
+  border: 1px solid transparent;
+  background: #fff;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.batterytalk-panel__history-item:hover,
+.batterytalk-panel__history-item.is-active {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
 .batterytalk-panel__head h2#batterytalk-title {
   color: #fff;
 }

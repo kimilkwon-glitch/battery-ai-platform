@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import { sanitizeBatteryTalkPhone } from "@/lib/battery-talk/battery-talk-sanitize";
 import { batteryTalkErrorResponse } from "@/lib/battery-talk/battery-talk-api-errors";
-import { batteryTalkOpenThread } from "@/lib/battery-talk/battery-talk-store";
+import { batteryTalkOpenThread, batteryTalkVisitorHistory } from "@/lib/battery-talk/battery-talk-store";
 import type { BatteryTalkContext } from "@/types/battery-talk";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +13,7 @@ type PostBody = {
   phone?: string;
   userId?: string;
   isMember?: boolean;
+  visitorId?: string;
   sourcePage?: string;
   productId?: string;
   productName?: string;
@@ -20,6 +21,21 @@ type PostBody = {
   carName?: string;
   context?: BatteryTalkContext;
 };
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const visitorId = searchParams.get("visitorId")?.trim();
+  if (!visitorId) {
+    return NextResponse.json({ ok: false, message: "visitorId가 필요합니다." }, { status: 400 });
+  }
+  const threadIds = searchParams.get("threadIds")?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
+  try {
+    const items = await batteryTalkVisitorHistory(visitorId, threadIds);
+    return NextResponse.json({ ok: true, items });
+  } catch (err) {
+    return batteryTalkErrorResponse(err, "문의 내역을 불러오지 못했습니다.");
+  }
+}
 
 export async function POST(request: Request) {
   let body: PostBody;
@@ -45,6 +61,7 @@ export async function POST(request: Request) {
       phone: sanitizeBatteryTalkPhone(body.customerPhone ?? body.phone ?? ""),
       userId: body.userId,
       isMember: body.isMember,
+      visitorId: body.visitorId?.trim(),
       context,
     });
     return NextResponse.json({

@@ -38,6 +38,8 @@ export type BatteryTalkContext = {
   orderNumber?: string;
   cartSummary?: string;
   region?: string;
+  /** 비로그인 고객 브라우저 식별자 (localStorage) */
+  visitorId?: string;
 };
 
 export type BatteryTalkThread = {

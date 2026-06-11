@@ -15,7 +15,7 @@ import { claimList } from "@/lib/claims/claim-store";
 import { listOrderRequests } from "@/lib/order-request/order-request-service";
 import { isCommerceOrderStoreEnabled } from "@/lib/payment/payment-config";
 import { storeCommerceOrderListItems } from "@/lib/payment/commerce-order-store";
-import { batteryTalkCountByStatus } from "@/lib/battery-talk/battery-talk-store";
+import { batteryTalkList } from "@/lib/battery-talk/battery-talk-store";
 import { inquiryList } from "@/lib/inquiry/inquiry-store";
 import type {
   AdminConsultationSummary,
@@ -79,12 +79,16 @@ function buildRecentUnifiedOrders(rows: UnifiedAdminOrderRow[]): AdminRecentUnif
 
 async function loadConsultationSummary(): Promise<AdminConsultationSummary> {
   try {
-    const [inquiries, btCounts] = await Promise.all([
+    const [inquiries, batteryTalkSummaries] = await Promise.all([
       inquiryList({ limit: 300 }),
-      batteryTalkCountByStatus(),
+      batteryTalkList({ limit: 500 }),
     ]);
-    const pendingInquiries = inquiries.filter((i) => i.status === "new").length;
-    const pendingBatteryTalk = (btCounts.waiting ?? 0) + (btCounts.active ?? 0);
+    const pendingInquiries = inquiries.filter(
+      (i) => i.status === "new" && i.source !== "batterytalk",
+    ).length;
+    const pendingBatteryTalk = batteryTalkSummaries.filter(
+      (s) => s.status === "waiting" || s.status === "active",
+    ).length;
     return { pendingInquiries, pendingBatteryTalk };
   } catch {
     return { pendingInquiries: 0, pendingBatteryTalk: 0 };

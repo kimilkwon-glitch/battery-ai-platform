@@ -24,6 +24,7 @@ import {
   newBatteryTalkId,
   normalizeOpenContext,
   shouldExcludeBatteryTalkThreadFromAdmin,
+  countCustomerBatteryTalkMessages,
   type BatteryTalkListFilters,
   type BatteryTalkOpenThreadInput,
 } from "@/lib/battery-talk/battery-talk-store-shared";
@@ -48,7 +49,6 @@ type StorePayload = {
 const globalCache = globalThis as typeof globalThis & {
   __bmBatteryTalkStore?: BatteryTalkThread[];
   __bmBatteryTalkMigrated?: boolean;
-  __bmBatteryTalkEphemeral?: Map<string, BatteryTalkThread>;
 };
 
 function emptyPayload(): StorePayload {
@@ -157,21 +157,8 @@ async function ensureLegacyMigration(): Promise<void> {
 }
 
 async function findThreadById(threadId: string): Promise<BatteryTalkThread | null> {
-  const ephemeral = globalCache.__bmBatteryTalkEphemeral?.get(threadId);
-  if (ephemeral) return ephemeral;
   const threads = await loadThreads();
   return threads.find((t) => t.threadId === threadId) ?? null;
-}
-
-function rememberEphemeralThread(thread: BatteryTalkThread): void {
-  if (!globalCache.__bmBatteryTalkEphemeral) {
-    globalCache.__bmBatteryTalkEphemeral = new Map();
-  }
-  globalCache.__bmBatteryTalkEphemeral.set(thread.threadId, thread);
-}
-
-function dropEphemeralThread(threadId: string): void {
-  globalCache.__bmBatteryTalkEphemeral?.delete(threadId);
 }
 
 async function findReusableOpenThread(
@@ -223,13 +210,9 @@ export async function batteryTalkOpenThread(
     unreadByAdmin: false,
   };
 
-  if (shouldExcludeBatteryTalkThreadFromAdmin(thread)) {
-    rememberEphemeralThread(thread);
-  } else {
-    const threads = await loadThreads();
-    threads.unshift(thread);
-    await saveThreads(threads);
-  }
+  const threads = await loadThreads();
+  threads.unshift(thread);
+  await saveThreads(threads);
 
   emitBatteryTalkSessionUpdate(batteryTalkToSummary(thread));
   return thread;
@@ -242,10 +225,9 @@ export async function batteryTalkAddCustomerMessage(
 ): Promise<BatteryTalkThread | null> {
   if (!isValidBatteryTalkMessage(body)) return null;
   const sanitizedBody = sanitizeBatteryTalkMessage(body);
-  const ephemeral = globalCache.__bmBatteryTalkEphemeral?.get(threadId);
   const threads = await loadThreads();
   const idx = threads.findIndex((t) => t.threadId === threadId);
-  const prev = idx >= 0 ? threads[idx]! : ephemeral ?? null;
+  const prev = idx >= 0 ? threads[idx]! : null;
   if (!prev) return null;
   const now = new Date().toISOString();
   const message: BatteryTalkMessage = {
@@ -264,12 +246,7 @@ export async function batteryTalkAddCustomerMessage(
     lastMessageAt: now,
     unreadByAdmin: true,
   };
-  dropEphemeralThread(threadId);
-  if (idx >= 0) {
-    threads[idx] = next;
-  } else {
-    threads.unshift(next);
-  }
+  threads[idx] = next;
   await saveThreads(threads);
   emitBatteryTalkMessage(threadId, message);
   emitBatteryTalkSessionUpdate(batteryTalkToSummary(next));
@@ -288,8 +265,18 @@ export async function batteryTalkList(
 ): Promise<BatteryTalkThreadSummary[]> {
   await ensureLegacyMigration();
   let threads = await loadThreads();
+  const visitorId = filters.visitorId?.trim();
+  if (visitorId) {
+    threads = threads.filter((t) => t.context.visitorId === visitorId);
+  }
   if (!filters.includeTestData) {
-    threads = filterBatteryTalkThreadsForAdmin(threads);
+    const metaByThreadId = Object.fromEntries(
+      threads.map((t) => [
+        t.threadId,
+        { customerMessageCount: countCustomerBatteryTalkMessages(t.messages) },
+      ]),
+    );
+    threads = filterBatteryTalkThreadsForAdmin(threads, metaByThreadId);
   }
 
   const status = filters.status?.trim();
@@ -416,21 +403,52 @@ export async function batteryTalkUpdateMemo(
   return next;
 }
 
-export async function batteryTalkCountByStatus(): Promise<Record<BatteryTalkThreadStatus, number>> {
+export async function batteryTalkVisitorHistory(
+  visitorId: string,
+  threadIds: string[] = [],
+): Promise<import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[]> {
   await ensureLegacyMigration();
-  const threads = await loadThreads();
+  const vid = visitorId.trim();
+  const idSet = new Set(threadIds.map((id) => id.trim()).filter(Boolean));
+  let threads = (await loadThreads()).filter(
+    (t) => t.context.visitorId === vid || idSet.has(t.threadId),
+  );
+  const metaByThreadId = Object.fromEntries(
+    threads.map((t) => [t.threadId, { customerMessageCount: countCustomerBatteryTalkMessages(t.messages) }]),
+  );
+  threads = filterBatteryTalkThreadsForAdmin(threads, metaByThreadId);
+
+  return threads
+    .sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime())
+    .slice(0, 20)
+    .map((thread) => {
+      const lastCustomer = [...thread.messages]
+        .reverse()
+        .find((m) => m.sender === "customer" && m.body.trim());
+      const lastAny = [...thread.messages].reverse().find((m) => m.sender !== "system");
+      return {
+        threadId: thread.threadId,
+        status: thread.status,
+        lastMessagePreview: (lastCustomer ?? lastAny)?.body.slice(0, 120) ?? "",
+        lastMessageAt: thread.lastMessageAt,
+        hasAdminReply: thread.messages.some((m) => m.sender === "admin" && !m.recalledAt),
+      };
+    });
+}
+
+export async function batteryTalkCountByStatus(): Promise<Record<BatteryTalkThreadStatus, number>> {
+  const summaries = await batteryTalkList({ limit: 5000 });
   return {
-    waiting: threads.filter((t) => t.status === "waiting").length,
-    active: threads.filter((t) => t.status === "active").length,
-    done: threads.filter((t) => t.status === "done").length,
-    hold: threads.filter((t) => t.status === "hold").length,
+    waiting: summaries.filter((s) => s.status === "waiting").length,
+    active: summaries.filter((s) => s.status === "active").length,
+    done: summaries.filter((s) => s.status === "done").length,
+    hold: summaries.filter((s) => s.status === "hold").length,
   };
 }
 
 export async function batteryTalkCountUnread(): Promise<number> {
-  await ensureLegacyMigration();
-  const threads = await loadThreads();
-  return threads.filter((t) => t.unreadByAdmin).length;
+  const summaries = await batteryTalkList({ limit: 5000 });
+  return summaries.filter((s) => s.unreadByAdmin).length;
 }
 
 export async function batteryTalkRecallAdminMessage(

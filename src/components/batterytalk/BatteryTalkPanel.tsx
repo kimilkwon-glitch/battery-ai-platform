@@ -13,11 +13,14 @@ import {
 } from "@/lib/battery-talk/battery-talk-realtime-client";
 import {
   fetchBatteryTalkThread,
+  fetchBatteryTalkVisitorHistory,
   getStoredBatteryTalkThreadId,
   openBatteryTalkThread,
   sendBatteryTalkMessage,
   storeBatteryTalkThreadId,
+  type BatteryTalkVisitorHistoryItem,
 } from "@/lib/battery-talk/battery-talk-client";
+import { registerBatteryTalkThreadForVisitor } from "@/lib/battery-talk/battery-talk-visitor";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import type { BatteryTalkOpenDetail } from "@/lib/batterytalk/batterytalk-constants";
 import { CONTACT } from "@/lib/contact-info";
@@ -67,6 +70,8 @@ export function BatteryTalkPanel({
   const [sending, setSending] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
+  const [visitorHistory, setVisitorHistory] = useState<BatteryTalkVisitorHistoryItem[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pendingBodyRef = useRef<string | null>(null);
 
@@ -98,6 +103,27 @@ export function BatteryTalkPanel({
     [preset?.batteryCode, preset?.productCode],
   );
 
+  const loadVisitorHistory = useCallback(async () => {
+    setHistoryLoading(true);
+    const items = await fetchBatteryTalkVisitorHistory();
+    setVisitorHistory(items);
+    setHistoryLoading(false);
+  }, []);
+
+  const switchToThread = useCallback(async (targetThreadId: string) => {
+    setLoading(true);
+    setInitError(null);
+    const existing = await fetchBatteryTalkThread(targetThreadId);
+    setLoading(false);
+    if (existing.ok && existing.messages) {
+      storeBatteryTalkThreadId(targetThreadId, threadScope());
+      registerBatteryTalkThreadForVisitor(targetThreadId);
+      setThreadId(targetThreadId);
+      setMessages(existing.messages);
+      setPhone(existing.phone ?? "");
+    }
+  }, [threadScope]);
+
   const initThread = useCallback(async () => {
     setLoading(true);
     setInitError(null);
@@ -109,6 +135,7 @@ export function BatteryTalkPanel({
         setThreadId(stored);
         setMessages(existing.messages);
         setPhone(existing.phone ?? "");
+        registerBatteryTalkThreadForVisitor(stored);
         setLoading(false);
         return;
       }
@@ -117,13 +144,15 @@ export function BatteryTalkPanel({
     setLoading(false);
     if (created.ok && created.threadId && created.messages) {
       storeBatteryTalkThreadId(created.threadId, scope);
+      registerBatteryTalkThreadForVisitor(created.threadId);
       setThreadId(created.threadId);
       setMessages(created.messages);
       setPhone(created.phone ?? "");
+      void loadVisitorHistory();
     } else {
       setInitError("채팅을 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     }
-  }, [buildContext, threadScope]);
+  }, [buildContext, threadScope, loadVisitorHistory]);
 
   useEffect(() => {
     if (!open) {
@@ -134,8 +163,9 @@ export function BatteryTalkPanel({
     }
     setShowPhonePrompt(false);
     pendingBodyRef.current = null;
+    void loadVisitorHistory();
     void initThread();
-  }, [open, initThread, preset?.batteryCode, preset?.productCode]);
+  }, [open, initThread, loadVisitorHistory, preset?.batteryCode, preset?.productCode]);
 
   const streamDisconnected = useBatteryTalkSessionStream(
     threadId,
@@ -183,6 +213,8 @@ export function BatteryTalkPanel({
         setMessages(result.messages);
       }
       if (result.phone) setPhone(result.phone);
+      if (threadId) registerBatteryTalkThreadForVisitor(threadId);
+      void loadVisitorHistory();
       setShowPhonePrompt(false);
       pendingBodyRef.current = null;
     } else {
@@ -274,6 +306,47 @@ export function BatteryTalkPanel({
             </header>
 
             <BatteryTalkSseStatusBanner show={streamDisconnected} variant="customer" />
+
+            <div className="batterytalk-panel__history shrink-0 border-b border-slate-100 bg-slate-50/80 px-3 py-2">
+              <div className="mb-1 flex items-center justify-between gap-2">
+                <p className="text-[11px] font-black text-slate-700">내 문의내역</p>
+                {historyLoading ? (
+                  <span className="text-[10px] font-semibold text-slate-400">불러오는 중…</span>
+                ) : null}
+              </div>
+              {visitorHistory.length === 0 && !historyLoading ? (
+                <p className="text-[11px] font-medium text-slate-500">아직 남긴 문의가 없습니다.</p>
+              ) : (
+                <ul className="batterytalk-panel__history-list max-h-24 space-y-1 overflow-y-auto">
+                  {visitorHistory.map((item) => (
+                    <li key={item.threadId}>
+                      <button
+                        type="button"
+                        className={`batterytalk-panel__history-item w-full rounded-md px-2 py-1.5 text-left ${
+                          threadId === item.threadId ? "is-active" : ""
+                        }`}
+                        onClick={() => void switchToThread(item.threadId)}
+                      >
+                        <span className="block truncate text-[11px] font-bold text-slate-800">
+                          {item.lastMessagePreview || "문의"}
+                        </span>
+                        <span className="mt-0.5 flex items-center justify-between gap-2 text-[10px] font-semibold text-slate-500">
+                          <span>
+                            {new Date(item.lastMessageAt).toLocaleString("ko-KR", {
+                              month: "2-digit",
+                              day: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                          <span>{item.hasAdminReply ? "답변완료" : "답변대기"}</span>
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
             <div className="batterytalk-chat__messages flex-1 overflow-y-auto px-3 py-3">
               {loading ? (

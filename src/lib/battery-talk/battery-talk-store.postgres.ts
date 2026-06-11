@@ -21,6 +21,7 @@ import {
   lastNonSystemPreview,
   newBatteryTalkId,
   normalizeOpenContext,
+  shouldExcludeBatteryTalkThreadFromAdmin,
   type BatteryTalkListFilters,
   type BatteryTalkOpenThreadInput,
 } from "@/lib/battery-talk/battery-talk-store-shared";
@@ -310,35 +311,87 @@ export async function batteryTalkGetMessages(
   return thread?.messages ?? null;
 }
 
-export async function batteryTalkList(
-  filters: BatteryTalkListFilters = {},
-): Promise<BatteryTalkThreadSummary[]> {
+type SessionRowWithCounts = SessionRow & {
+  customer_message_count?: number;
+  admin_message_count?: number;
+};
+
+async function loadSessionRowsWithCounts(
+  filters: BatteryTalkListFilters,
+): Promise<SessionRowWithCounts[]> {
   await ensureOperationalSchema();
   const sql = getSql();
   const status = filters.status?.trim();
   const limit = filters.limit ?? 500;
+  const visitorId = filters.visitorId?.trim();
 
-  let rows: SessionRow[];
-  if (status && status !== "all") {
-    rows = (await sql`
-      SELECT *
-      FROM battery_talk_sessions
-      WHERE status = ${status}
-      ORDER BY updated_at DESC
+  if (visitorId) {
+    return (await sql`
+      SELECT s.*,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'customer' AND btrim(m.message) <> ''
+        ), 0) AS customer_message_count,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'admin' AND m.recalled_at IS NULL
+        ), 0) AS admin_message_count
+      FROM battery_talk_sessions s
+      WHERE s.context_json->>'visitorId' = ${visitorId}
+      ORDER BY s.updated_at DESC
       LIMIT ${limit}
-    `) as SessionRow[];
-  } else {
-    rows = (await sql`
-      SELECT *
-      FROM battery_talk_sessions
-      ORDER BY updated_at DESC
-      LIMIT ${limit}
-    `) as SessionRow[];
+    `) as SessionRowWithCounts[];
   }
+
+  if (status && status !== "all") {
+    return (await sql`
+      SELECT s.*,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'customer' AND btrim(m.message) <> ''
+        ), 0) AS customer_message_count,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'admin' AND m.recalled_at IS NULL
+        ), 0) AS admin_message_count
+      FROM battery_talk_sessions s
+      WHERE s.status = ${status}
+      ORDER BY s.updated_at DESC
+      LIMIT ${limit}
+    `) as SessionRowWithCounts[];
+  }
+
+  return (await sql`
+    SELECT s.*,
+      COALESCE((
+        SELECT COUNT(*)::int FROM battery_talk_messages m
+        WHERE m.session_id = s.id AND m.sender_type = 'customer' AND btrim(m.message) <> ''
+      ), 0) AS customer_message_count,
+      COALESCE((
+        SELECT COUNT(*)::int FROM battery_talk_messages m
+        WHERE m.session_id = s.id AND m.sender_type = 'admin' AND m.recalled_at IS NULL
+      ), 0) AS admin_message_count
+    FROM battery_talk_sessions s
+    ORDER BY s.updated_at DESC
+    LIMIT ${limit}
+  `) as SessionRowWithCounts[];
+}
+
+function adminMetaFromRow(row: SessionRowWithCounts): { customerMessageCount: number } {
+  return { customerMessageCount: row.customer_message_count ?? 0 };
+}
+
+export async function batteryTalkList(
+  filters: BatteryTalkListFilters = {},
+): Promise<BatteryTalkThreadSummary[]> {
+  const rows = await loadSessionRowsWithCounts(filters);
+  const metaByThreadId = Object.fromEntries(
+    rows.map((row) => [row.id, adminMetaFromRow(row)]),
+  );
 
   let threads = rows.map((row) => rowToThread(row, []));
   if (!filters.includeTestData) {
-    threads = filterBatteryTalkThreadsForAdmin(threads);
+    threads = filterBatteryTalkThreadsForAdmin(threads, metaByThreadId);
   }
 
   const q = filters.q?.trim().toLowerCase();
@@ -366,6 +419,61 @@ export async function batteryTalkList(
     summaries = filterBatteryTalkSummariesForAdmin(summaries);
   }
   return summaries;
+}
+
+export async function batteryTalkVisitorHistory(
+  visitorId: string,
+  threadIds: string[] = [],
+): Promise<import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[]> {
+  const vid = visitorId.trim();
+  const rows = await loadSessionRowsWithCounts({ visitorId: vid, limit: 20 });
+  const seen = new Set(rows.map((row) => row.id));
+  const extraIds = [...new Set(threadIds.map((id) => id.trim()).filter(Boolean))]
+    .filter((id) => !seen.has(id))
+    .slice(0, 10);
+
+  await ensureOperationalSchema();
+  const sql = getSql();
+  const extraRows: SessionRowWithCounts[] = [];
+  for (const id of extraIds) {
+    const found = (await sql`
+      SELECT s.*,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'customer' AND btrim(m.message) <> ''
+        ), 0) AS customer_message_count,
+        COALESCE((
+          SELECT COUNT(*)::int FROM battery_talk_messages m
+          WHERE m.session_id = s.id AND m.sender_type = 'admin' AND m.recalled_at IS NULL
+        ), 0) AS admin_message_count
+      FROM battery_talk_sessions s
+      WHERE s.id = ${id}
+      LIMIT 1
+    `) as SessionRowWithCounts[];
+    if (found[0]) extraRows.push(found[0]);
+  }
+
+  const merged = [...rows, ...extraRows].sort(
+    (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+  );
+
+  const items: import("@/lib/battery-talk/battery-talk-store-shared").BatteryTalkVisitorHistoryItem[] = [];
+  for (const row of merged) {
+    const thread = rowToThread(row, await loadMessagesForSession(row.id));
+    if (shouldExcludeBatteryTalkThreadFromAdmin(thread, adminMetaFromRow(row))) continue;
+    const lastCustomer = [...thread.messages]
+      .reverse()
+      .find((m) => m.sender === "customer" && m.body.trim());
+    const lastAny = [...thread.messages].reverse().find((m) => m.sender !== "system");
+    items.push({
+      threadId: thread.threadId,
+      status: thread.status,
+      lastMessagePreview: (lastCustomer ?? lastAny)?.body.slice(0, 120) ?? "",
+      lastMessageAt: thread.lastMessageAt,
+      hasAdminReply: (row.admin_message_count ?? 0) > 0,
+    });
+  }
+  return items.slice(0, 20);
 }
 
 export async function batteryTalkRecallAdminMessage(
@@ -480,37 +588,18 @@ export async function batteryTalkUpdateMemo(
 }
 
 export async function batteryTalkCountByStatus(): Promise<Record<BatteryTalkThreadStatus, number>> {
-  await ensureOperationalSchema();
-  const sql = getSql();
-  const rows = (await sql`
-    SELECT status, COUNT(*)::int AS count
-    FROM battery_talk_sessions
-    GROUP BY status
-  `) as { status: string; count: number }[];
-
-  const counts: Record<BatteryTalkThreadStatus, number> = {
-    waiting: 0,
-    active: 0,
-    done: 0,
-    hold: 0,
+  const summaries = await batteryTalkList({ limit: 5000 });
+  return {
+    waiting: summaries.filter((s) => s.status === "waiting").length,
+    active: summaries.filter((s) => s.status === "active").length,
+    done: summaries.filter((s) => s.status === "done").length,
+    hold: summaries.filter((s) => s.status === "hold").length,
   };
-  for (const row of rows) {
-    if (row.status in counts) {
-      counts[row.status as BatteryTalkThreadStatus] = row.count;
-    }
-  }
-  return counts;
 }
 
 export async function batteryTalkCountUnread(): Promise<number> {
-  await ensureOperationalSchema();
-  const sql = getSql();
-  const rows = (await sql`
-    SELECT COUNT(*)::int AS count
-    FROM battery_talk_sessions
-    WHERE unread_by_admin = TRUE
-  `) as { count: number }[];
-  return rows[0]?.count ?? 0;
+  const summaries = await batteryTalkList({ limit: 5000 });
+  return summaries.filter((s) => s.unreadByAdmin).length;
 }
 
 export async function batteryTalkCountByPhone(phone: string): Promise<number> {

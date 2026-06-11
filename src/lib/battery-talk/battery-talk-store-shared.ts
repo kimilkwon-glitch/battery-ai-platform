@@ -22,6 +22,7 @@ export type BatteryTalkOpenThreadInput = {
   phone?: string;
   userId?: string;
   isMember?: boolean;
+  visitorId?: string;
   context?: BatteryTalkContext;
 };
 
@@ -31,6 +32,7 @@ export type BatteryTalkListFilters = {
   includeTestData?: boolean;
   q?: string | null;
   limit?: number;
+  visitorId?: string | null;
 };
 
 export function buildSystemMessages(context: BatteryTalkContext, now: string): BatteryTalkMessage[] {
@@ -84,6 +86,9 @@ export function batteryTalkToSummary(thread: BatteryTalkThread): BatteryTalkThre
 }
 
 export function threadToInquiryShape(t: BatteryTalkThread): CustomerInquiryRecord {
+  const lastCustomer = [...t.messages]
+    .reverse()
+    .find((m) => m.sender === "customer" && m.body.trim());
   return {
     id: t.threadId,
     createdAt: t.createdAt,
@@ -92,57 +97,68 @@ export function threadToInquiryShape(t: BatteryTalkThread): CustomerInquiryRecor
     category: "other",
     name: t.customerName,
     contact: t.phone,
-    message: t.messages[0]?.body ?? "",
+    message: lastCustomer?.body ?? t.messages.find((m) => m.sender === "customer")?.body ?? "",
     source: "batterytalk",
     adminMemo: t.adminMemo,
   };
 }
 
+export function countCustomerBatteryTalkMessages(messages: BatteryTalkMessage[]): number {
+  return messages.filter((m) => m.sender === "customer" && m.body.trim()).length;
+}
+
+/** 시스템 환영만 있고 고객/운영자 실입력이 없는 빈 껍데기 */
+export function isSystemOnlyBatteryTalkThread(
+  thread: BatteryTalkThread,
+  customerMessageCount?: number,
+): boolean {
+  const customerCount = customerMessageCount ?? countCustomerBatteryTalkMessages(thread.messages);
+  if (customerCount > 0) return false;
+  const hasAdminReply = thread.messages.some((m) => m.sender === "admin" && !m.recalledAt);
+  const hasOrder = Boolean(thread.context.orderId || thread.context.orderNumber);
+  return !hasAdminReply && !hasOrder;
+}
+
+function isSystemOnlyPreview(summary: BatteryTalkThreadSummary): boolean {
+  const preview = (summary.lastMessagePreview ?? "").trim();
+  return (
+    !preview ||
+    preview === BATTERY_TALK_SYSTEM_WELCOME ||
+    preview.startsWith("배터리매니저입니다.") ||
+    preview.startsWith("현재 보고 계신 상품")
+  );
+}
+
+/** @deprecated use isSystemOnlyBatteryTalkThread */
 export function isAdminNoiseBatteryTalkSummary(summary: BatteryTalkThreadSummary): boolean {
-  const shape = {
-    id: summary.threadId,
+  if (isAdminTestInquiry({
     name: summary.customerName,
     contact: summary.phone,
     message: summary.lastMessagePreview,
     vehicle: summary.vehicleName,
     inquiryType: summary.pageType,
-  };
-  if (isAdminTestInquiry(shape)) return true;
-
-  const name = (summary.customerName ?? "").trim();
-  const preview = (summary.lastMessagePreview ?? "").trim();
-  const isGenericName = name === "고객" || name === "비회원" || name === "고객님";
-  const isSystemOnlyPreview =
-    !preview ||
-    preview === BATTERY_TALK_SYSTEM_WELCOME ||
-    preview.startsWith("배터리매니저입니다.") ||
-    preview.startsWith("현재 보고 계신 상품");
-
-  if (isGenericName && isSystemOnlyPreview && !summary.hasOrder && !summary.unreadByAdmin) {
+  })) {
     return true;
   }
-  return false;
+  return isSystemOnlyPreview(summary) && !summary.unreadByAdmin && !summary.hasOrder;
 }
 
+/** @deprecated use isSystemOnlyBatteryTalkThread */
 export function isAdminNoiseBatteryTalkThread(thread: BatteryTalkThread): boolean {
-  const customerMsgs = thread.messages.filter((m) => m.sender === "customer" && m.body.trim());
-  if (customerMsgs.length === 0) {
-    const hasAdminReply = thread.messages.some((m) => m.sender === "admin" && !m.recalledAt);
-    const hasOrder = Boolean(thread.context.orderId || thread.context.orderNumber);
-    if (hasAdminReply || hasOrder) return false;
-    return true;
-  }
-  return isAdminNoiseBatteryTalkSummary(batteryTalkToSummary(thread));
+  return shouldExcludeBatteryTalkThreadFromAdmin(thread);
 }
 
 /** 관리자 운영 목록에서 제외할 배터리톡 스레드 */
-export function shouldExcludeBatteryTalkThreadFromAdmin(thread: BatteryTalkThread): boolean {
-  if (isAdminNoiseBatteryTalkThread(thread)) return true;
+export function shouldExcludeBatteryTalkThreadFromAdmin(
+  thread: BatteryTalkThread,
+  meta?: { customerMessageCount?: number },
+): boolean {
+  if (isSystemOnlyBatteryTalkThread(thread, meta?.customerMessageCount)) return true;
   return isAdminTestInquiry(threadToInquiryShape(thread));
 }
 
 export function shouldExcludeBatteryTalkSummaryFromAdmin(summary: BatteryTalkThreadSummary): boolean {
-  if (isAdminNoiseBatteryTalkSummary(summary)) return true;
+  if (isSystemOnlyPreview(summary) && !summary.unreadByAdmin && !summary.hasOrder) return true;
   return isAdminTestInquiry({
     name: summary.customerName,
     contact: summary.phone,
@@ -152,8 +168,14 @@ export function shouldExcludeBatteryTalkSummaryFromAdmin(summary: BatteryTalkThr
   });
 }
 
-export function filterBatteryTalkThreadsForAdmin(threads: BatteryTalkThread[]): BatteryTalkThread[] {
-  return threads.filter((t) => !shouldExcludeBatteryTalkThreadFromAdmin(t));
+export function filterBatteryTalkThreadsForAdmin(
+  threads: BatteryTalkThread[],
+  metaByThreadId?: Record<string, { customerMessageCount?: number }>,
+): BatteryTalkThread[] {
+  return threads.filter((t) => {
+    const meta = metaByThreadId?.[t.threadId];
+    return !shouldExcludeBatteryTalkThreadFromAdmin(t, meta);
+  });
 }
 
 export function filterBatteryTalkSummariesForAdmin(
@@ -175,9 +197,11 @@ export function contextMatchesReuse(
 }
 
 export function normalizeOpenContext(input: BatteryTalkOpenThreadInput): BatteryTalkContext {
+  const visitorId = input.visitorId?.trim() || input.context?.visitorId?.trim();
   return {
     ...input.context,
     pageType: input.context?.pageType ?? inferBatteryTalkPageType(input.context?.pageUrl),
+    visitorId: visitorId || undefined,
   };
 }
 
@@ -185,3 +209,11 @@ export function lastNonSystemPreview(messages: BatteryTalkMessage[]): string {
   const last = [...messages].reverse().find((m) => m.sender !== "system") ?? messages[messages.length - 1];
   return last?.body.slice(0, 200) ?? "";
 }
+
+export type BatteryTalkVisitorHistoryItem = {
+  threadId: string;
+  status: BatteryTalkThreadStatus;
+  lastMessagePreview: string;
+  lastMessageAt: string;
+  hasAdminReply: boolean;
+};
