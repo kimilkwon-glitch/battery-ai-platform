@@ -166,8 +166,19 @@ export function shouldExcludeBatteryTalkThreadFromAdmin(
   return isAdminTestInquiry(threadToInquiryShape(thread));
 }
 
-export function shouldExcludeBatteryTalkSummaryFromAdmin(summary: BatteryTalkThreadSummary): boolean {
-  if (isSystemOnlyPreview(summary) && !summary.unreadByAdmin && !summary.hasOrder) return true;
+export function shouldExcludeBatteryTalkSummaryFromAdmin(
+  summary: BatteryTalkThreadSummary,
+  meta?: { customerMessageCount?: number },
+): boolean {
+  const hasCustomerMessages = (meta?.customerMessageCount ?? 0) > 0;
+  if (
+    !hasCustomerMessages &&
+    isSystemOnlyPreview(summary) &&
+    !summary.unreadByAdmin &&
+    !summary.hasOrder
+  ) {
+    return true;
+  }
   return isAdminTestInquiry({
     name: summary.customerName,
     contact: summary.phone,
@@ -189,8 +200,12 @@ export function filterBatteryTalkThreadsForAdmin(
 
 export function filterBatteryTalkSummariesForAdmin(
   summaries: BatteryTalkThreadSummary[],
+  metaByThreadId?: Record<string, { customerMessageCount?: number }>,
 ): BatteryTalkThreadSummary[] {
-  return summaries.filter((s) => !shouldExcludeBatteryTalkSummaryFromAdmin(s));
+  return summaries.filter((s) => {
+    const meta = metaByThreadId?.[s.threadId];
+    return !shouldExcludeBatteryTalkSummaryFromAdmin(s, meta);
+  });
 }
 
 export function contextMatchesReuse(

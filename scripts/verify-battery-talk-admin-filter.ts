@@ -109,6 +109,15 @@ assert(
   ),
 );
 
+// 8. Postgres 목록: messages=[] + customerMessageCount>0 + unread=false → 표시 (summary 이중 필터 회귀)
+assert(
+  "empty preview with customer count meta still visible after admin read",
+  !shouldExcludeBatteryTalkSummaryFromAdmin(
+    baseSummary({ lastMessagePreview: "", unreadByAdmin: false }),
+    { customerMessageCount: 1 },
+  ),
+);
+
 if (process.exitCode === 1) {
   console.error("\nSome battery-talk filter checks failed.");
   process.exit(1);

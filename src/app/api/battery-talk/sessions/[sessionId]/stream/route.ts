@@ -1,4 +1,5 @@
 import { sessionChannel } from "@/lib/battery-talk/battery-talk-realtime-hub";
+import { awaitBatteryTalkPgListenerReady } from "@/lib/battery-talk/battery-talk-realtime-pg";
 import { subscribeBatteryTalkRealtime } from "@/lib/battery-talk/battery-talk-realtime-subscribe";
 import { createBatteryTalkSseResponse } from "@/lib/battery-talk/battery-talk-sse";
 
@@ -9,14 +10,21 @@ type RouteCtx = { params: Promise<{ sessionId: string }> };
 
 export async function GET(request: Request, ctx: RouteCtx) {
   const { sessionId } = await ctx.params;
-  if (!sessionId?.trim()) {
+  const sid = sessionId?.trim();
+  if (!sid) {
     return new Response("sessionId required", { status: 400 });
   }
 
+  await awaitBatteryTalkPgListenerReady();
+
   return createBatteryTalkSseResponse(
     (send) =>
-      subscribeBatteryTalkRealtime(sessionChannel(sessionId.trim()), (event) => {
-        if (event.type === "message" && event.sessionId === sessionId.trim()) {
+      subscribeBatteryTalkRealtime(sessionChannel(sid), (event) => {
+        if (event.type === "message" && event.sessionId === sid) {
+          send(event);
+          return;
+        }
+        if (event.type === "session" && event.session.threadId === sid) {
           send(event);
         }
       }),

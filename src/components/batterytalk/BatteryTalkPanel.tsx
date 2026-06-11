@@ -29,7 +29,7 @@ import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
 import type { ConsultationChannelSettings } from "@/lib/consultation/consultation-settings";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { bm } from "@/lib/design-tokens";
-import type { BatteryTalkMessage } from "@/types/battery-talk";
+import type { BatteryTalkMessage, BatteryTalkThreadSummary } from "@/types/battery-talk";
 
 function formatChatTime(iso: string): string {
   try {
@@ -75,6 +75,7 @@ export function BatteryTalkPanel({
   const [historyLoading, setHistoryLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const bootstrapGenRef = useRef(0);
+  const switchGenRef = useRef(0);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -136,9 +137,11 @@ export function BatteryTalkPanel({
   );
 
   const switchToThread = useCallback(async (targetThreadId: string) => {
+    const gen = ++switchGenRef.current;
     setLoading(true);
     setInitError(null);
     const existing = await fetchBatteryTalkThread(targetThreadId);
+    if (gen !== switchGenRef.current) return;
     setLoading(false);
     if (existing.ok && existing.messages) {
       applyThread(targetThreadId, { messages: existing.messages });
@@ -199,6 +202,33 @@ export function BatteryTalkPanel({
     void bootstrapPanel();
   }, [open, bootstrapPanel, preset?.batteryCode, preset?.productCode]);
 
+  const syncThreadMessagesOnce = useCallback(async (targetThreadId: string) => {
+    const existing = await fetchBatteryTalkThread(targetThreadId);
+    if (existing.ok && existing.messages) {
+      setMessages(existing.messages);
+    }
+  }, []);
+
+  const handleSessionEvent = useCallback((session: BatteryTalkThreadSummary) => {
+    setVisitorHistory((prev) => {
+      const idx = prev.findIndex((item) => item.threadId === session.threadId);
+      const existing = idx >= 0 ? prev[idx] : undefined;
+      const nextItem: BatteryTalkVisitorHistoryItem = {
+        threadId: session.threadId,
+        status: session.status,
+        lastMessagePreview: session.lastMessagePreview,
+        lastMessageAt: session.lastMessageAt,
+        hasAdminReply: existing?.hasAdminReply ?? false,
+      };
+      if (idx < 0) return [nextItem, ...prev].slice(0, 20);
+      const next = [...prev];
+      next[idx] = { ...existing!, ...nextItem };
+      return next.sort(
+        (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime(),
+      );
+    });
+  }, []);
+
   const streamDisconnected = useBatteryTalkSessionStream(
     threadId,
     (message) => {
@@ -207,8 +237,26 @@ export function BatteryTalkPanel({
           message.sender === "customer" ? prev.filter((m) => !m.id.startsWith("opt-")) : prev;
         return appendUniqueMessage(base, message);
       });
+      if (message.sender === "admin" && threadId) {
+        setVisitorHistory((prev) =>
+          prev.map((item) =>
+            item.threadId === threadId
+              ? {
+                  ...item,
+                  hasAdminReply: true,
+                  lastMessagePreview: message.body.slice(0, 120),
+                  lastMessageAt: message.createdAt,
+                }
+              : item,
+          ),
+        );
+      }
     },
     open && Boolean(threadId),
+    {
+      onSession: handleSessionEvent,
+      syncOnReconnect: threadId ? () => syncThreadMessagesOnce(threadId) : undefined,
+    },
   );
 
   useEffect(() => {

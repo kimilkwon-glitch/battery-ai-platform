@@ -428,6 +428,26 @@ function adminMetaFromRow(row: SessionRowWithCounts): { customerMessageCount: nu
   return { customerMessageCount: row.customer_message_count ?? 0 };
 }
 
+/** Postgres 목록은 messages를 일괄 로드하지 않으므로 session row의 last_message를 사용 */
+function batteryTalkSummaryFromSessionRow(row: SessionRow): BatteryTalkThreadSummary {
+  const ctx = mergeContext(row);
+  const preview = (row.last_message ?? "").trim();
+  return {
+    threadId: row.id,
+    status: row.status as BatteryTalkThreadStatus,
+    customerName: row.customer_name?.trim() || "고객",
+    phone: row.customer_phone ?? "",
+    lastMessagePreview: preview.slice(0, 80),
+    lastMessageAt: row.last_message_at ?? row.updated_at,
+    unreadByAdmin: row.unread_by_admin === true,
+    hasProduct: Boolean(ctx.productCode || ctx.batteryCode || ctx.productName),
+    hasOrder: Boolean(ctx.orderId || ctx.orderNumber),
+    vehicleName: ctx.vehicleName,
+    productName: ctx.productName,
+    pageType: ctx.pageType,
+  };
+}
+
 export async function batteryTalkList(
   filters: BatteryTalkListFilters = {},
 ): Promise<BatteryTalkThreadSummary[]> {
@@ -461,9 +481,12 @@ export async function batteryTalkList(
     });
   }
 
-  let summaries = threads.map(batteryTalkToSummary);
+  const filteredThreadIds = new Set(threads.map((t) => t.threadId));
+  let summaries = rows
+    .filter((row) => filteredThreadIds.has(row.id))
+    .map((row) => batteryTalkSummaryFromSessionRow(row));
   if (!filters.includeTestData) {
-    summaries = filterBatteryTalkSummariesForAdmin(summaries);
+    summaries = filterBatteryTalkSummariesForAdmin(summaries, metaByThreadId);
   }
   return summaries;
 }
@@ -520,10 +543,12 @@ export async function batteryTalkVisitorHistory(
       .reverse()
       .find((m) => m.sender === "customer" && m.body.trim());
     const lastAny = [...thread.messages].reverse().find((m) => m.sender !== "system");
+    const previewFromMessages = (lastCustomer ?? lastAny)?.body.slice(0, 120) ?? "";
+    const previewFromRow = (row.last_message ?? "").trim().slice(0, 120);
     items.push({
       threadId: thread.threadId,
       status: thread.status,
-      lastMessagePreview: (lastCustomer ?? lastAny)?.body.slice(0, 120) ?? "",
+      lastMessagePreview: previewFromMessages || previewFromRow,
       lastMessageAt: thread.lastMessageAt,
       hasAdminReply: (row.admin_message_count ?? 0) > 0,
     });

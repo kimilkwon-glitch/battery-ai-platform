@@ -160,6 +160,11 @@ export function AdminBatteryTalkClient() {
     else setDetail(null);
   }, [selectedId, loadDetail]);
 
+  const syncAdminRealtimeOnce = useCallback(async () => {
+    await loadList();
+    if (selectedId) await loadDetail(selectedId);
+  }, [loadList, loadDetail, selectedId]);
+
   const streamDisconnected = useBatteryTalkAdminStream((event) => {
     if (event.type === "session") {
       if (shouldExcludeBatteryTalkSummaryFromAdmin(event.session)) return;
@@ -209,7 +214,7 @@ export function AdminBatteryTalkClient() {
         });
       }
     }
-  });
+  }, true, { syncOnReconnect: syncAdminRealtimeOnce });
 
   const selectThread = (threadId: string) => {
     setSelectedId(threadId);

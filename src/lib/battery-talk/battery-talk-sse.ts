@@ -6,12 +6,16 @@ export function createBatteryTalkSseResponse(
 ): Response {
   const encoder = new TextEncoder();
   let cleanup: (() => void) | undefined;
+  let eventSeq = 0;
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
       const send = (event: BatteryTalkRealtimeEvent) => {
         try {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+          eventSeq += 1;
+          controller.enqueue(
+            encoder.encode(`id: ${eventSeq}\ndata: ${JSON.stringify(event)}\n\n`),
+          );
         } catch {
           /* stream closed */
         }
@@ -26,7 +30,7 @@ export function createBatteryTalkSseResponse(
         } catch {
           clearInterval(heartbeat);
         }
-      }, 25000);
+      }, 20000);
 
       signal.addEventListener(
         "abort",
@@ -49,9 +53,10 @@ export function createBatteryTalkSseResponse(
 
   return new Response(stream, {
     headers: {
-      "Content-Type": "text/event-stream",
+      "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
       Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
     },
   });
 }
