@@ -89,6 +89,17 @@ function findCardCount(cards: AdminDashboardCard[], panel: AdminDashboardPanel):
   return cards.find((c) => c.panel === panel)?.count ?? 0;
 }
 
+function reviewHasPhoto(r: CustomerReviewRecord): boolean {
+  return (r.images?.length ?? 0) > 0 || Boolean(r.imageUrl?.trim());
+}
+
+function reviewPrimaryPhoto(r: CustomerReviewRecord): string | null {
+  const fromList = r.images?.find((url) => url.trim());
+  if (fromList) return fromList;
+  const single = r.imageUrl?.trim();
+  return single || null;
+}
+
 function SummaryMetricRow({
   label,
   count,
@@ -381,16 +392,28 @@ function InquiryReviewPanels({
           </div>
           {recentReviews.length > 0 ? (
             <ul className="admin-dash-list-panel__list">
-              {recentReviews.map((r) => (
+              {recentReviews.map((r) => {
+                const hasPhoto = reviewHasPhoto(r);
+                const photoSrc = reviewPrimaryPhoto(r);
+                return (
                 <li key={r.id}>
                   <Link
                     href={ADMIN_ROUTES.reviews}
-                    className="admin-dash-list-panel__item"
+                    className={`admin-dash-list-panel__item admin-dash-list-panel__item--review${hasPhoto ? " admin-dash-list-panel__item--photo" : ""}`}
                     onClick={() => onSelect("review_reply")}
                   >
+                    {photoSrc ? (
+                      <span className="admin-dash-review-thumb" aria-hidden="true">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={photoSrc} alt="" loading="lazy" />
+                      </span>
+                    ) : null}
                     <div className="admin-dash-list-panel__item-main">
                       <span className="admin-dash-list-panel__item-title">
                         {r.batteryCode ?? r.vehicleName ?? "상품"} · {r.rating}점
+                        {hasPhoto ? (
+                          <span className="admin-dash-review-badge">포토리뷰</span>
+                        ) : null}
                       </span>
                       <span className="admin-dash-list-panel__item-meta">{r.content.slice(0, 56)}</span>
                     </div>
@@ -406,7 +429,8 @@ function InquiryReviewPanels({
                     </div>
                   </Link>
                 </li>
-              ))}
+              );
+              })}
             </ul>
           ) : (
             <p className="admin-dash-list-panel__empty">최근 리뷰가 없습니다.</p>
@@ -1003,7 +1027,12 @@ function ReviewListTable({
                 </td>
                 <td>{r.batteryCode ?? r.vehicleName ?? "—"}</td>
                 <td>{r.rating}점</td>
-                <td className="max-w-xs truncate text-sm">{r.content}</td>
+                <td className="max-w-xs truncate text-sm">
+                  {r.content}
+                  {reviewHasPhoto(r) ? (
+                    <span className="admin-dash-review-badge admin-dash-review-badge--inline">포토</span>
+                  ) : null}
+                </td>
                 <td>{r.operatorReply ? "완료" : "대기"}</td>
                 <td>{r.authorName}</td>
                 <td className="text-right">
