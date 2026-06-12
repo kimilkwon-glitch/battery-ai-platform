@@ -29,7 +29,6 @@ import type { OrderWorkbenchClaimContext } from "@/lib/admin/order-workbench";
 import type { UnifiedAdminOrderRow } from "@/lib/admin/unified-orders";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { AdminDashboardConsultationPreview } from "@/lib/admin/data/admin-dashboard-snapshot";
-import type { AdminSettlementSummary } from "@/lib/admin/data/settlement-summary";
 import type { CommerceClaimSummary } from "@/types/commerce-claim";
 import { CLAIM_TYPE_LABELS, ADMIN_CLAIM_STATUS_LABELS } from "@/types/commerce-claim";
 import type { CustomerInquiryRecord } from "@/types/customer-inquiry";
@@ -56,7 +55,6 @@ type Props = {
   batteryTalkThreads: BatteryTalkThreadSummary[];
   photoCheckCount: number;
   recentConsultations: AdminDashboardConsultationPreview[];
-  settlement: AdminSettlementSummary;
   claimContext: {
     cancelRequestOrderIds: string[];
     returnExchangeOrderIds: string[];
@@ -176,38 +174,6 @@ function OrderFlowStrip({
           </div>
         );
       })}
-    </div>
-  );
-}
-
-function SettlementCompactPanel({ settlement }: { settlement: AdminSettlementSummary }) {
-  const cancelRefund = settlement.canceledAmount + settlement.refundedAmount;
-  const amountClass = (value: number, variant: "info" | "warn" = "info") => {
-    if (value === 0) return "admin-dash-settle__amount admin-dash-settle__amount--zero";
-    return `admin-dash-settle__amount admin-dash-settle__amount--${variant}`;
-  };
-
-  return (
-    <div className="admin-dash-settle">
-      <div className="admin-dash-settle__row">
-        <span className="admin-dash-settle__label">오늘 결제금액</span>
-        <span className={amountClass(settlement.todayPaidAmount)}>{formatPriceWon(settlement.todayPaidAmount)}</span>
-      </div>
-      <div className="admin-dash-settle__row">
-        <span className="admin-dash-settle__label">이번 달 결제금액</span>
-        <span className={amountClass(settlement.monthPaidAmount)}>{formatPriceWon(settlement.monthPaidAmount)}</span>
-      </div>
-      <div className="admin-dash-settle__row admin-dash-settle__row--split">
-        <div>
-          <span className="admin-dash-settle__label">취소/환불</span>
-          <span className={amountClass(cancelRefund, "warn")}>{formatPriceWon(cancelRefund)}</span>
-        </div>
-        <div>
-          <span className="admin-dash-settle__label">예상 정산금</span>
-          <span className={amountClass(settlement.estimatedSettlement)}>{formatPriceWon(settlement.estimatedSettlement)}</span>
-        </div>
-      </div>
-      <p className="admin-dash-settle__notice">토스 결제 연동 후 실제 정산 데이터와 연결됩니다.</p>
     </div>
   );
 }
@@ -479,7 +445,6 @@ export function AdminSmartStoreDashboard({
   batteryTalkThreads,
   photoCheckCount,
   recentConsultations,
-  settlement,
   claimContext: claimContextProp,
 }: Props) {
   const [activePanel, setActivePanel] = useState<AdminDashboardPanel>("new_order");
@@ -587,46 +552,29 @@ export function AdminSmartStoreDashboard({
   return (
     <div className="admin-dashboard admin-dashboard--dense">
       <div className="admin-dashboard__primary">
-        <div className="admin-dashboard__top-grid">
-          <section className="admin-panel admin-dashboard__sales">
-            <div className="admin-panel__header admin-panel__header--dash">
-              <div className="admin-panel__header-main">
-                <h2 className="admin-panel__title">판매관리</h2>
-                <p className="admin-panel__subtitle">단계별 건수 · 클릭 시 주문관리로 이동</p>
-              </div>
-              <div className="admin-panel__header-actions">
-                <AdminDeliverySyncButton
-                  mode="inTransit"
-                  limit={20}
-                  label="배송상태 재조회"
-                  hint="배송중만 · 최대 20건 · 조회 건수 소모 · 반복 클릭 금지"
-                  variant="secondary"
-                />
-                <Link href={ADMIN_ROUTES.orders} className="admin-panel__link">
-                  주문관리
-                </Link>
-              </div>
+        <section className="admin-panel admin-dashboard__sales admin-dashboard__sales--hero">
+          <div className="admin-panel__header admin-panel__header--dash admin-panel__header--sales-hero">
+            <div className="admin-panel__header-main">
+              <h2 className="admin-panel__title">판매관리</h2>
+              <p className="admin-panel__subtitle">단계별 건수 · 클릭 시 주문관리로 이동</p>
             </div>
-            <div className="admin-panel__body-compact">
-              <OrderFlowStrip cards={orderFlowCards} activePanel={activePanel} onSelect={setActivePanel} />
-            </div>
-          </section>
-
-          <aside className="admin-panel admin-dashboard__settlement-compact">
-            <div className="admin-panel__header admin-panel__header--dash">
-              <div className="admin-panel__header-main">
-                <h2 className="admin-panel__title">정산관리</h2>
-                <p className="admin-panel__subtitle">오늘 · 이번 달 요약</p>
-              </div>
-              <Link href={ADMIN_ROUTES.settlement} className="admin-panel__link">
-                정산관리
+            <div className="admin-panel__header-actions">
+              <AdminDeliverySyncButton
+                mode="inTransit"
+                limit={20}
+                label="배송상태 재조회"
+                hint="배송중만 · 최대 20건 · 조회 건수 사용"
+                variant="secondary"
+              />
+              <Link href={ADMIN_ROUTES.orders} className="admin-panel__link">
+                주문관리
               </Link>
             </div>
-            <div className="admin-panel__body-compact">
-              <SettlementCompactPanel settlement={settlement} />
-            </div>
-          </aside>
-        </div>
+          </div>
+          <div className="admin-panel__body-sales">
+            <OrderFlowStrip cards={orderFlowCards} activePanel={activePanel} onSelect={setActivePanel} />
+          </div>
+        </section>
       </div>
 
       <div className="admin-dashboard__secondary">

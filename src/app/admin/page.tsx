@@ -10,7 +10,7 @@ export default async function AdminDashboardPage() {
   return (
     <AdminShellLayout
       title="대시보드"
-      description="판매 · 주문 · 정산 · 클레임 · 상담 현황"
+      description="판매 · 주문 · 클레임 · 상담 현황"
       frameClassName="admin-page-frame--dashboard"
     >
       <AdminSmartStoreDashboard
@@ -28,7 +28,6 @@ export default async function AdminDashboardPage() {
         batteryTalkThreads={snapshot.batteryTalkThreads}
         photoCheckCount={snapshot.photoCheckCount}
         recentConsultations={snapshot.recentConsultations}
-        settlement={snapshot.settlement}
         claimContext={{
           cancelRequestOrderIds: [...snapshot.claimContext.cancelRequestOrderIds],
           returnExchangeOrderIds: [...snapshot.claimContext.returnExchangeOrderIds],
