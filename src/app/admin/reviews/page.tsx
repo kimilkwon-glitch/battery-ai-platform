@@ -9,10 +9,11 @@ export default function AdminReviewsPage() {
     <AdminShellLayout
       title="리뷰 관리"
       description="고객 리뷰 현황을 확인하고 답글을 작성합니다."
+      frameClassName="admin-page-frame--reviews"
     >
-      <div className="space-y-8">
+      <div className="admin-reviews-page">
         <AdminReviewWorkbenchClient />
-        <details className="admin-panel">
+        <details className="admin-panel admin-reviews-advanced">
           <summary className="cursor-pointer p-4 text-sm font-bold text-slate-600">
             후기 등록·메인 노출 설정 (고급)
           </summary>
