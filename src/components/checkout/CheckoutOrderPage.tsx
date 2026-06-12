@@ -9,7 +9,7 @@ import { CheckoutProductSummary } from "@/components/checkout/CheckoutProductSum
 import { CheckoutSafetyChecklist } from "@/components/checkout/CheckoutSafetyChecklist";
 import { CheckoutSecurityNotice } from "@/components/checkout/CheckoutPaymentSection";
 import { CheckoutStoreSection } from "@/components/checkout/CheckoutStoreSection";
-import { CheckoutVehicleSection } from "@/components/checkout/CheckoutVehicleSection";
+import { CheckoutVehicleSection, checkoutVehicleInfoValid } from "@/components/checkout/CheckoutVehicleSection";
 import { CheckoutVisitAddressSection } from "@/components/checkout/CheckoutVisitAddressSection";
 import { CommercePrePaymentNotice } from "@/components/commerce/CommercePrePaymentNotice";
 import {
@@ -394,6 +394,7 @@ export function CheckoutOrderPage() {
   const canConfirm =
     optionsComplete &&
     checkoutContactValid(fulfillment, customer) &&
+    checkoutVehicleInfoValid(vehicle) &&
     isUsedBatterySelected(effectiveUsedBattery) &&
     fulfillment.method !== "undecided" &&
     fulfillmentAddressValid(fulfillment) &&
@@ -404,7 +405,9 @@ export function CheckoutOrderPage() {
     if (!canConfirm) {
       setValidationError(
         optionsComplete
-          ? "이름, 연락처, 주소·지점, 확인 항목을 점검해 주세요."
+          ? checkoutVehicleInfoValid(vehicle)
+            ? "이름, 연락처, 주소·지점, 확인 항목을 점검해 주세요."
+            : "공구 확인을 위해 차량명을 입력해 주세요."
           : "이전 단계에서 수령 방식과 폐배터리 반납을 선택한 뒤 다시 진행해 주세요.",
       );
       return;

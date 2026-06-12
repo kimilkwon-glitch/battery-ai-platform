@@ -4,6 +4,7 @@ import { Breadcrumb, PortalHeader } from "@/components/portal";
 import { CarGenerationImage } from "@/components/car/CarGenerationImage";
 import { VehicleActivityTracker } from "@/components/vehicle/VehicleActivityTracker";
 import { VehicleFuelBatterySection } from "@/components/vehicle/VehicleFuelBatterySection";
+import { VehicleDetailSearchBar } from "@/components/vehicle/VehicleDetailSearchBar";
 import { VehicleSearchCatalogFooter } from "@/components/vehicle/VehicleSearchCatalogFooter";
 import { SaveVehicleRegisterButton } from "@/components/vehicle/SaveVehicleRegisterButton";
 import { resolveDefaultSelectedFuel } from "@/lib/vehicle-fuel-selection";
@@ -91,6 +92,7 @@ export default async function VehicleDetailPage({
             { label: displayTitle },
           ]}
         />
+        <VehicleDetailSearchBar />
       </section>
 
       <section className={`${bm.pageContainerWide} mx-auto max-w-4xl space-y-4 px-4 pb-10`}>

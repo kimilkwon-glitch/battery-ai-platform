@@ -1,7 +1,9 @@
 import { PortalHeader } from "@/components/portal";
 import { SiteFooter } from "@/components/common/SiteFooter";
+import { FirstOrderMemberBanner } from "@/components/benefits/FirstOrderMemberBanner";
 import { HomeBenefitsCarousel } from "@/components/home/HomeBenefitsCarousel";
 import { HomeBrandLineupPair } from "@/components/home/HomeBrandLineupPair";
+import { HomeGuestOrderLookupLink } from "@/components/home/HomeGuestOrderLookupLink";
 import { HomePremiumHero } from "@/components/home/HomePremiumHero";
 import { HomeQuickIconMenu } from "@/components/home/HomeQuickIconMenu";
 import { HomeReplacementStoriesSection } from "@/components/home/HomeReplacementStoriesSection";
@@ -11,11 +13,13 @@ export function HomeSearchMain() {
   return (
     <main className="min-h-screen bg-white text-[var(--bm-text)]" data-page="home-search-main">
       <PortalHeader showSearch={false} />
+      <HomeGuestOrderLookupLink />
 
       <HomePremiumHero />
 
       <div className="home-main-content mx-auto w-full max-w-[1240px] px-4 sm:px-6">
-        <div className="home-main-section home-main-section--benefits" data-home-section="benefits">
+        <div className="home-main-section home-main-section--benefits space-y-3" data-home-section="benefits">
+          <FirstOrderMemberBanner />
           <HomeBenefitsCarousel />
         </div>
         <HomeQuickIconMenu />

@@ -320,7 +320,22 @@
 }
 
 .checkout-postcode-layer__embed {
-  min-height: 12rem;
+  min-height: min(60vh, 480px);
+}
+
+.vehicle-detail-search-bar {
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.vehicle-detail-search-bar__box {
+  max-width: 42rem;
+}
+
+@media (max-width: 390px) {
+  .vehicle-detail-search-bar {
+    margin-top: 0.625rem;
+  }
 }
 
 @media (max-width: 390px) {

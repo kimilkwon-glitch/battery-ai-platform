@@ -148,17 +148,15 @@ function OrderFlowStrip({
         return (
           <div key={item.panel} className="admin-dash-flow__item">
             {index > 0 ? <span className="admin-dash-flow__arrow" aria-hidden="true" /> : null}
-            <button
-              type="button"
+            <Link
+              href={`${ADMIN_ROUTES.orders}?view=${item.panel}`}
               role="listitem"
               className={`admin-dash-flow__step admin-dash-flow__step--${toneKey}${active ? " admin-dash-flow__step--active" : ""}`}
-              onClick={() => onSelect(item.panel)}
-              aria-pressed={active}
               title={item.description}
             >
               <span className="admin-dash-flow__count">{item.count.toLocaleString("ko-KR")}</span>
               <span className="admin-dash-flow__label">{item.label}</span>
-            </button>
+            </Link>
           </div>
         );
       })}
@@ -578,7 +576,7 @@ export function AdminSmartStoreDashboard({
             <div className="admin-panel__header admin-panel__header--dash">
               <div className="admin-panel__header-main">
                 <h2 className="admin-panel__title">판매관리</h2>
-                <p className="admin-panel__subtitle">클릭하면 아래 업무 목록이 바뀝니다</p>
+                <p className="admin-panel__subtitle">단계별 건수 · 클릭 시 주문관리로 이동</p>
               </div>
               <div className="admin-panel__header-actions">
                 <AdminDeliverySyncButton
@@ -613,87 +611,6 @@ export function AdminSmartStoreDashboard({
             </div>
           </aside>
         </div>
-
-        <section className="admin-panel admin-dashboard__work-list">
-          <div className="admin-panel__header admin-panel__header--dash">
-            <div className="admin-panel__header-main">
-              <h2 className="admin-panel__title">{listTitle}</h2>
-              <p className="admin-panel__subtitle">
-                {listCount.toLocaleString("ko-KR")}건 · 카드 숫자와 동일 기준
-                {activeCardCount !== listCount && listKind === "consultation" && activePanel === "delay_consultation"
-                  ? " (문의+배터리톡 합산)"
-                  : ""}
-              </p>
-            </div>
-          {listKind === "order" ? (
-            <Link
-              href={`${ADMIN_ROUTES.orders}?view=${activePanel}`}
-              className="admin-panel__link"
-            >
-              주문관리에서 열기
-            </Link>
-          ) : listKind === "claim" ? (
-            <Link href={ADMIN_ROUTES.commerceClaims} className="admin-panel__link">
-              클레임관리에서 열기
-            </Link>
-          ) : listKind === "product" ? (
-            <Link
-              href={`${ADMIN_ROUTES.products}?review=${activePanel.replace("product_", "")}`}
-              className="admin-panel__link"
-            >
-              상품관리에서 열기
-            </Link>
-          ) : listKind === "review" ? (
-            <Link href={ADMIN_ROUTES.reviews} className="admin-panel__link">
-              리뷰관리에서 열기
-            </Link>
-          ) : (
-            <Link
-              href={`${ADMIN_ROUTES.inquiries}?type=consultation`}
-              className="admin-panel__link"
-            >
-              상담관리에서 열기
-            </Link>
-          )}
-        </div>
-
-        {listKind === "order" ? (
-          <OrderListTable rows={filteredOrders} activePanel={activePanel} emptyMessage={emptyMessage} />
-        ) : null}
-        {listKind === "claim" ? (
-          <ClaimListTable rows={filteredClaims} emptyMessage={emptyMessage} />
-        ) : null}
-        {listKind === "product" ? (
-          <ProductIssueTable rows={filteredProducts} emptyMessage={emptyMessage} />
-        ) : null}
-        {listKind === "consultation" ? (
-          <ConsultationListTables
-            talkRows={filteredTalk}
-            inquiryRows={filteredInquiries}
-            emptyMessage={emptyMessage}
-          />
-        ) : null}
-        {listKind === "review" ? (
-          <ReviewListTable rows={filteredReviews} emptyMessage={emptyMessage} />
-        ) : null}
-        {listKind === "photo" ? (
-          <div className="admin-table__empty admin-table__empty--panel">
-            <p className="admin-table__empty-title">
-              {photoCheckCount > 0
-                ? `사진 확인이 필요한 접수 ${photoCheckCount}건이 있습니다.`
-                : emptyMessage}
-            </p>
-            {photoCheckCount > 0 ? (
-              <Link
-                href={ADMIN_ROUTES.photoRequests}
-                className="admin-btn admin-btn--primary admin-btn--md mt-4 inline-flex"
-              >
-                사진 확인 요청 열기
-              </Link>
-            ) : null}
-          </div>
-          ) : null}
-        </section>
       </div>
 
       <div className="admin-dashboard__secondary">

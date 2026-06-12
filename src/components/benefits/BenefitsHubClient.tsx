@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { PublicBenefitsCarousel } from "@/components/benefits/PublicBenefitsCarousel";
+import { FirstOrderMemberBanner } from "@/components/benefits/FirstOrderMemberBanner";
 import { BenefitCardVisual } from "@/components/benefits/BenefitCardVisual";
 import { BenefitsNotices } from "@/components/benefits/BenefitsNotices";
-import { FirstOrder3AutoApplyPanel } from "@/components/benefits/FirstOrder3AutoApplyPanel";
 import {
   BENEFIT_CARDS,
   FIRST_ORDER_3_BENEFIT,
@@ -15,11 +15,8 @@ export function BenefitsHubClient() {
   const coming = BENEFIT_CARDS.filter((c) => c.status === "coming_soon");
   return (
     <div className="bm-zone bm-zone--benefit space-y-8" data-page="benefits-hub">
+      <FirstOrderMemberBanner />
       <PublicBenefitsCarousel showHeader={false} variant="hub" filter="benefits" autoPlay={false} showMoreLink={false} />
-
-      <section className="border-t border-slate-100 pt-6" aria-label="첫 주문 혜택 안내">
-        <FirstOrder3AutoApplyPanel compact />
-      </section>
 
       {coming.length > 0 ? (
         <section>

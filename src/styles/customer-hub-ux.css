@@ -307,6 +307,14 @@
   justify-content: flex-start;
 }
 
+.vehicle-detail-search-bar {
+  margin-top: 0.75rem;
+}
+
+.vehicle-detail-search-bar__box {
+  width: 100%;
+}
+
 .vehicle-customer-battery {
   min-width: 0;
   overflow-wrap: break-word;

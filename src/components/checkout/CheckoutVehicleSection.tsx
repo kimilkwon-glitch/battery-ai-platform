@@ -36,17 +36,22 @@ function vehicleSummary(values: OrderRequestVehicle): string | null {
   return parts.length > 0 ? parts.join(" · ") : null;
 }
 
+export function checkoutVehicleInfoValid(vehicle: OrderRequestVehicle): boolean {
+  return Boolean(vehicle.name?.trim());
+}
+
 export function CheckoutVehicleSection({
   values,
   onChange,
   needsVehicleConfirm = false,
   vehicleConfirmHref = HUB_SEARCH,
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const loggedIn = isCustomerLoggedIn();
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
   const [defaultApplied, setDefaultApplied] = useState(false);
   const summary = vehicleSummary(values);
+  const missingRequired = !checkoutVehicleInfoValid(values);
 
   const vehicleChoices = useMemo(() => {
     if (!loggedIn || typeof window === "undefined") return [];
@@ -58,7 +63,6 @@ export function CheckoutVehicleSection({
       name: vehicle.displayName,
       year: vehicle.year ?? vehicle.yearRange,
       fuelType: vehicle.fuel ?? vehicle.fuelHint,
-      currentBatterySpec: vehicle.recommendedBattery,
     });
     setSelectedVehicleId(vehicle.id);
   };
@@ -77,7 +81,6 @@ export function CheckoutVehicleSection({
           name: row.displayName,
           year: row.year ?? row.yearRange,
           fuelType: row.fuel ?? row.fuelHint,
-          currentBatterySpec: row.recommendedBattery,
         });
       }
     }
@@ -88,16 +91,19 @@ export function CheckoutVehicleSection({
     <section className="checkout-card space-y-3" id="checkout-vehicle">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="checkout-card__title">차량 정보 (선택)</h2>
+          <h2 className="checkout-card__title">
+            차량 정보 <span className="text-red-600">(공구확인용)</span>
+          </h2>
           {summary ? (
             <p className="checkout-card__hint mt-1">{summary}</p>
-          ) : needsVehicleConfirm ? (
-            <p className="checkout-card__hint mt-1 text-amber-900">
-              차량 정보를 입력하면 호환 확인에 도움이 됩니다.
-            </p>
           ) : (
-            <p className="checkout-card__hint mt-1">필요할 때만 입력해 주세요.</p>
+            <p className="checkout-card__hint mt-1">
+              공구 확인을 위해 차량명을 입력해 주세요. 연식·연료도 함께 적어 주시면 확인에 도움이 됩니다.
+            </p>
           )}
+          {missingRequired && open ? (
+            <p className="mt-1 text-[11px] font-bold text-red-600">차량명은 필수입니다.</p>
+          ) : null}
         </div>
         <button
           type="button"
@@ -157,7 +163,9 @@ export function CheckoutVehicleSection({
       {open ? (
         <div className="grid gap-3">
           <label className="block">
-            <span className="checkout-label">차량명</span>
+            <span className="checkout-label">
+              차량명 <span className="text-red-600">*</span>
+            </span>
             <input
               type="text"
               className={inputClass}
@@ -183,34 +191,13 @@ export function CheckoutVehicleSection({
               value={values.fuelType ?? ""}
               onChange={(e) => onChange({ fuelType: e.target.value || undefined })}
             >
-              <option value="">선택 (선택사항)</option>
+              <option value="">선택</option>
               {FUEL_OPTIONS.map((f) => (
                 <option key={f} value={f}>
                   {f}
                 </option>
               ))}
             </select>
-          </label>
-          <label className="block">
-            <span className="checkout-label">차량번호 뒷자리</span>
-            <input
-              type="text"
-              className={inputClass}
-              value={values.plateSuffix ?? ""}
-              onChange={(e) => onChange({ plateSuffix: e.target.value })}
-              placeholder="예: 1234"
-              maxLength={4}
-            />
-          </label>
-          <label className="block">
-            <span className="checkout-label">현재 장착 배터리 규격</span>
-            <input
-              type="text"
-              className={inputClass}
-              value={values.currentBatterySpec ?? ""}
-              onChange={(e) => onChange({ currentBatterySpec: e.target.value })}
-              placeholder="예: AGM80L"
-            />
           </label>
         </div>
       ) : null}
