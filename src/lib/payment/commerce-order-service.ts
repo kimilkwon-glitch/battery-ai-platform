@@ -27,6 +27,7 @@ import {
   storeCommerceOrderGet,
   storeCommerceOrderUpdate,
 } from "@/lib/payment/commerce-order-store";
+import { hookAlimtalkOrderCreated } from "@/lib/notifications/alimtalk-hooks.server";
 import type {
   CommerceOrderRecord,
   CreateOrderRequestBody,
@@ -562,6 +563,13 @@ export async function confirmCommercePayment(
         at: now,
       },
     ],
+  });
+
+  hookAlimtalkOrderCreated({
+    ...order,
+    paymentStatus: "completed",
+    orderStatus: "payment_completed",
+    paidAmount: tossResult.totalAmount,
   });
 
   return {

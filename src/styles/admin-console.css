@@ -4074,6 +4074,62 @@
   text-decoration: underline;
 }
 
+[data-admin-console] .admin-alimtalk-panel {
+  margin-top: 0.75rem;
+}
+
+[data-admin-console] .admin-alimtalk-status-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+[data-admin-console] .admin-alimtalk-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+[data-admin-console] .admin-alimtalk-status-row__label {
+  color: #475569;
+}
+
+[data-admin-console] .admin-alimtalk-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+[data-admin-console] .admin-alimtalk-badge--sent {
+  background: #dcfce7;
+  color: #166534;
+}
+
+[data-admin-console] .admin-alimtalk-badge--failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+[data-admin-console] .admin-alimtalk-badge--none {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-alimtalk-footnote {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
 @media (max-width: 1279px) {
   [data-admin-console] .admin-order-workbench__layout.has-detail {
     grid-template-columns: minmax(0, 1fr);

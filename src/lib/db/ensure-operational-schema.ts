@@ -273,4 +273,34 @@ async function runMigration(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_admin_reply_templates_list
       ON admin_reply_templates (enabled, sort_order)
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS notification_logs (
+      id TEXT PRIMARY KEY,
+      channel TEXT NOT NULL DEFAULT 'alimtalk',
+      event_type TEXT NOT NULL,
+      template_id TEXT,
+      entity_type TEXT NOT NULL,
+      entity_id TEXT NOT NULL,
+      order_id TEXT,
+      user_id TEXT,
+      recipient_phone TEXT NOT NULL,
+      recipient_name TEXT,
+      status TEXT NOT NULL,
+      skip_reason TEXT,
+      provider TEXT NOT NULL DEFAULT 'solapi',
+      provider_message_id TEXT,
+      failed_reason TEXT,
+      sent_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_notification_logs_order_id
+      ON notification_logs (order_id, event_type, created_at DESC)
+  `;
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_notification_logs_entity_event
+      ON notification_logs (entity_type, entity_id, event_type, status)
+  `;
 }

@@ -8,6 +8,7 @@ import {
   storeCommerceOrderGet,
   storeCommerceOrderLookupByRef,
 } from "@/lib/payment/commerce-order-store";
+import { hookAlimtalkClaimStatusChange } from "@/lib/notifications/alimtalk-hooks.server";
 import type { ClaimReasonCode, ClaimType } from "@/types/commerce-claim";
 
 export const dynamic = "force-dynamic";
@@ -109,6 +110,11 @@ export async function POST(request: Request) {
       customerPhone: body.customerPhone.trim(),
       attachmentUrls: body.attachmentUrls,
       estimatedRefundAmount: estimateClaimRefundAmount(order),
+    });
+    hookAlimtalkClaimStatusChange({
+      order,
+      claimId: claim.id,
+      claimStatus: claim.claimStatus,
     });
     return NextResponse.json({ ok: true, claimId: claim.id });
   } catch (err) {

@@ -14,6 +14,7 @@ import {
   isValidPassword,
   isValidPhoneDigits,
 } from "@/lib/auth/signup-validation";
+import { hookAlimtalkSignup } from "@/lib/notifications/alimtalk-hooks.server";
 
 export const dynamic = "force-dynamic";
 
@@ -105,6 +106,8 @@ export async function POST(request: Request) {
       detailAddress,
       vehicleInfo,
     });
+
+    hookAlimtalkSignup(member);
 
     const response = NextResponse.json({
       ok: true,

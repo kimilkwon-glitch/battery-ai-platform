@@ -13,6 +13,11 @@ import {
 } from "@/lib/admin/order-workbench";
 import { commerceToUnifiedRow } from "@/lib/admin/unified-orders";
 import { commerceOrderToListItem } from "@/lib/payment/commerce-order-admin-mapper";
+import {
+  hookAlimtalkOrderCanceled,
+  hookAlimtalkOrderConfirmed,
+  hookAlimtalkOrderShipped,
+} from "@/lib/notifications/alimtalk-hooks.server";
 import { storeCommerceOrderGet, storeCommerceOrderUpdate } from "@/lib/payment/commerce-order-store";
 import type { CommerceOrderRecord } from "@/types/commerce-payment";
 
@@ -115,6 +120,9 @@ export async function executeBulkOrderAction(input: {
         shippedAt: now,
         adminMemo: input.adminMemo,
       });
+      if (updated) {
+        hookAlimtalkOrderShipped(updated, carrier, tracking);
+      }
       results.push({
         orderId: target.orderId,
         ok: Boolean(updated),
@@ -147,6 +155,15 @@ export async function executeBulkOrderAction(input: {
 
     if (input.adminMemo?.trim()) {
       await commerceOrderAdminMetaUpsert(target.orderId, { adminMemo: input.adminMemo.trim() });
+    }
+
+    if (updated) {
+      if (input.action === "confirm_order") {
+        hookAlimtalkOrderConfirmed(updated);
+      }
+      if (input.action === "cancel_order") {
+        hookAlimtalkOrderCanceled(updated);
+      }
     }
 
     results.push({

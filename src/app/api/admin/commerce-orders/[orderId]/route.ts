@@ -10,6 +10,13 @@ import {
 import { commerceOrderToAdminMeta } from "@/lib/payment/commerce-order-admin-mapper";
 import { getCommerceOrder } from "@/lib/payment/commerce-order-service";
 import { storeCommerceOrderGet, storeCommerceOrderUpdate } from "@/lib/payment/commerce-order-store";
+import {
+  hookAlimtalkOrderCanceled,
+  hookAlimtalkOrderConfirmed,
+  hookAlimtalkOrderRefunded,
+  hookAlimtalkOrderShipped,
+} from "@/lib/notifications/alimtalk-hooks.server";
+import { notificationLogListForOrder } from "@/lib/notifications/notification-log-store";
 import type { CommerceOrderStatus } from "@/types/commerce-payment";
 
 export const dynamic = "force-dynamic";
@@ -37,11 +44,14 @@ export async function GET(
 
   const adminMeta = await commerceOrderAdminMetaGet(orderId);
 
+  const notificationLogs = await notificationLogListForOrder(orderId);
+
   return NextResponse.json({
     ok: true,
     order,
     paymentMeta: commerceOrderToAdminMeta(order),
     adminMeta,
+    notificationLogs,
   });
 }
 
@@ -77,6 +87,9 @@ export async function PATCH(
     return NextResponse.json({ ok: false, message: "주문을 찾을 수 없습니다." }, { status: 404 });
   }
 
+  const prevStatus = current.orderStatus;
+  const prevTracking = (await commerceOrderAdminMetaGet(orderId))?.shippingTrackingNumber;
+
   if (body.orderStatus && body.orderStatus !== current.orderStatus) {
     const now = new Date().toISOString();
     await storeCommerceOrderUpdate(orderId, {
@@ -106,10 +119,28 @@ export async function PATCH(
     return NextResponse.json({ ok: false, message: "저장 후 조회에 실패했습니다." }, { status: 500 });
   }
 
+  if (body.orderStatus === "order_confirmed" && prevStatus !== "order_confirmed") {
+    hookAlimtalkOrderConfirmed(order);
+  }
+  if (body.orderStatus === "canceled" && prevStatus !== "canceled") {
+    hookAlimtalkOrderCanceled(order);
+  }
+  if (body.orderStatus === "refunded" && prevStatus !== "refunded") {
+    hookAlimtalkOrderRefunded(order);
+  }
+  const tracking = body.shippingTrackingNumber?.trim() ?? adminMeta.shippingTrackingNumber?.trim();
+  const carrier = body.shippingCarrier?.trim() ?? adminMeta.shippingCarrier?.trim();
+  if (tracking && carrier && tracking !== (prevTracking ?? "")) {
+    hookAlimtalkOrderShipped(order, carrier, tracking);
+  }
+
+  const notificationLogs = await notificationLogListForOrder(orderId);
+
   return NextResponse.json({
     ok: true,
     order,
     paymentMeta: commerceOrderToAdminMeta(order),
     adminMeta,
+    notificationLogs,
   });
 }

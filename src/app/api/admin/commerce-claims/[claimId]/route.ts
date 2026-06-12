@@ -7,6 +7,7 @@ import {
 } from "@/lib/claims/claim-store";
 import { isPgRefundIntegrated, requestTossPaymentRefund } from "@/lib/payment/toss-refund-stub";
 import { storeCommerceOrderGet, storeCommerceOrderUpdate } from "@/lib/payment/commerce-order-store";
+import { hookAlimtalkClaimStatusChange } from "@/lib/notifications/alimtalk-hooks.server";
 import type { ClaimStatus } from "@/types/commerce-claim";
 
 export const dynamic = "force-dynamic";
@@ -142,6 +143,16 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
     const claim = await claimUpdate(claimId, patch, history);
     if (!claim) {
       return NextResponse.json({ ok: false, message: "저장에 실패했습니다." }, { status: 500 });
+    }
+    if (body.claimStatus && body.claimStatus !== existing.claimStatus) {
+      const order = await storeCommerceOrderGet(claim.orderId);
+      if (order) {
+        hookAlimtalkClaimStatusChange({
+          order,
+          claimId: claim.id,
+          claimStatus: body.claimStatus,
+        });
+      }
     }
     const histories = await claimListHistories(claimId);
     return NextResponse.json({ ok: true, claim, histories });

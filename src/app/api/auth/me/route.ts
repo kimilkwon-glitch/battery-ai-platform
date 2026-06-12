@@ -15,6 +15,7 @@ import {
   isValidEmail,
   isValidPhoneDigits,
 } from "@/lib/auth/signup-validation";
+import { hookAlimtalkProfileCompleted } from "@/lib/notifications/alimtalk-hooks.server";
 
 export const dynamic = "force-dynamic";
 
@@ -154,12 +155,16 @@ export async function PATCH(request: Request) {
   }
 
   try {
+    const before = await store.findMemberById(session.userId);
     const member = await store.updateMemberProfile(session.userId, patch);
     if (!member) {
       return NextResponse.json(
         { ok: false, message: MEMBER_AUTH_MESSAGES.profileSaveFailed },
         { status: 404 },
       );
+    }
+    if (before) {
+      hookAlimtalkProfileCompleted(before, member);
     }
     return NextResponse.json({ ok: true, member: toMemberPublic(member) });
   } catch {

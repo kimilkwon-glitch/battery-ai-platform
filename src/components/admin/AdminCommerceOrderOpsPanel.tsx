@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { AdminCommerceOrderClaimsPanel } from "@/components/admin/AdminCommerceOrderClaimsPanel";
+import { AdminOrderAlimtalkPanel } from "@/components/admin/AdminOrderAlimtalkPanel";
+import type { NotificationLogRecord } from "@/lib/notifications/alimtalk-types";
 import { AdminOrderRelatedActivityPanel } from "@/components/admin/AdminOrderRelatedActivityPanel";
 import { CommercePaymentMetaPanel } from "@/components/admin/CommercePaymentMetaPanel";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
@@ -157,6 +159,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
   const [order, setOrder] = useState<CommerceOrderRecord | null>(null);
   const [paymentMeta, setPaymentMeta] = useState<AdminCommercePaymentMeta | null>(null);
   const [adminMeta, setAdminMeta] = useState<CommerceOrderAdminMeta | null>(null);
+  const [notificationLogs, setNotificationLogs] = useState<NotificationLogRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -182,6 +185,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
       setOrder(data.order);
       setPaymentMeta(data.paymentMeta);
       setAdminMeta(data.adminMeta ?? null);
+      setNotificationLogs(Array.isArray(data.notificationLogs) ? data.notificationLogs : []);
       setMemo(data.adminMeta?.adminMemo ?? "");
       setCourierCode(data.adminMeta?.courierCode ?? "");
       setCarrier(data.adminMeta?.shippingCarrier ?? "");
@@ -215,6 +219,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
       setOrder(data.order);
       setPaymentMeta(data.paymentMeta);
       setAdminMeta(data.adminMeta ?? null);
+      setNotificationLogs(Array.isArray(data.notificationLogs) ? data.notificationLogs : []);
       onUpdated?.();
     } catch {
       setError("저장에 실패했습니다.");
@@ -626,6 +631,8 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
           <CommercePaymentMetaPanel meta={paymentMeta} />
         </OpsCollapsible>
       ) : null}
+
+      <AdminOrderAlimtalkPanel logs={notificationLogs} />
     </>
   );
 
