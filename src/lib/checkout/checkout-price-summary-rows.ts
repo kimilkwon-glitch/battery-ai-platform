@@ -1,3 +1,4 @@
+import { CUSTOMER_PRICE_LABELS } from "@/lib/pricing/customer-price-labels";
 import type { CommerceOrderPriceSnapshot } from "@/types/commerce-order";
 import type { OrderRequestFulfillmentMethod } from "@/types/order-request";
 
@@ -14,57 +15,80 @@ export function buildCheckoutPriceSummaryRows(
   batteryReturnFee: number,
 ): CheckoutPriceSummaryRow[] {
   const rows: CheckoutPriceSummaryRow[] = [];
-  let goodsAmount = 0;
-  let hasGoods = false;
-
-  for (const line of priceLines) {
-    if (line.lineTotal == null) continue;
-    const qty = line.quantity ?? 1;
-    const unitProduct = line.productAmount ?? 0;
-    const internetUnit = line.internetPrice ?? unitProduct;
-
-    if (method === "delivery" || method === "store_pickup_self") {
-      goodsAmount += unitProduct * qty;
-      hasGoods = true;
-    } else if (method === "visit_install" || method === "store_install") {
-      goodsAmount += internetUnit * qty;
-      hasGoods = true;
-    }
-  }
-
-  rows.push({ label: "상품금액", amount: hasGoods ? goodsAmount : null });
 
   if (method === "delivery") {
-    let fee = 0;
+    let productTotal = 0;
+    let deliveryFee = 0;
+    let hasProduct = false;
     for (const line of priceLines) {
-      fee += (line.deliveryFee ?? 0) * (line.quantity ?? 1);
+      if (line.lineTotal == null) continue;
+      const qty = line.quantity ?? 1;
+      const unitProduct = line.internetPrice ?? line.productAmount ?? 0;
+      productTotal += unitProduct * qty;
+      deliveryFee += (line.deliveryFee ?? 0) * qty;
+      hasProduct = true;
     }
-    rows.push({ label: "택배비", amount: fee, prefix: "+" });
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.productPurchase,
+      amount: hasProduct ? productTotal : null,
+    });
+    rows.push({ label: CUSTOMER_PRICE_LABELS.deliveryFee, amount: deliveryFee, prefix: "+" });
   } else if (method === "visit_install") {
-    let fee = 0;
+    let onsiteTotal = 0;
+    let hasOnsite = false;
     for (const line of priceLines) {
       if (line.lineTotal == null) continue;
       const qty = line.quantity ?? 1;
-      const productUnit = line.internetPrice ?? line.productAmount ?? 0;
-      fee += line.lineTotal - productUnit * qty;
+      const onsiteUnit = line.onsitePrice ?? line.productAmount ?? 0;
+      onsiteTotal += onsiteUnit * qty;
+      hasOnsite = true;
     }
-    rows.push({ label: "출장/장착비", amount: fee, prefix: "+" });
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.mobileInstall,
+      amount: hasOnsite ? onsiteTotal : null,
+    });
   } else if (method === "store_install") {
-    let fee = 0;
+    let onsiteTotal = 0;
+    let discountTotal = 0;
+    let hasOnsite = false;
     for (const line of priceLines) {
       if (line.lineTotal == null) continue;
       const qty = line.quantity ?? 1;
-      const productUnit = line.internetPrice ?? line.productAmount ?? 0;
-      fee += line.lineTotal - productUnit * qty;
+      const onsiteUnit = line.onsitePrice ?? line.productAmount ?? 0;
+      onsiteTotal += onsiteUnit * qty;
+      discountTotal += (line.storeInstallDiscount ?? 0) * qty;
+      hasOnsite = true;
     }
-    rows.push({ label: "매장 교체비", amount: fee, prefix: "+" });
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.mobileInstall,
+      amount: hasOnsite ? onsiteTotal : null,
+    });
+    if (discountTotal > 0) {
+      rows.push({
+        label: CUSTOMER_PRICE_LABELS.storeVisitDiscount,
+        amount: discountTotal,
+        prefix: "-",
+      });
+    }
   } else if (method === "store_pickup_self") {
-    rows.push({ label: "수령비", amount: 0, prefix: "+" });
+    let productTotal = 0;
+    let hasProduct = false;
+    for (const line of priceLines) {
+      if (line.lineTotal == null) continue;
+      const qty = line.quantity ?? 1;
+      const unitProduct = line.internetPrice ?? line.productAmount ?? 0;
+      productTotal += unitProduct * qty;
+      hasProduct = true;
+    }
+    rows.push({
+      label: CUSTOMER_PRICE_LABELS.productPurchase,
+      amount: hasProduct ? productTotal : null,
+    });
   }
 
   if (batteryReturnFee > 0) {
     rows.push({
-      label: "폐배터리 미반납",
+      label: CUSTOMER_PRICE_LABELS.noReturnSurcharge,
       amount: batteryReturnFee,
       prefix: "+",
       highlight: true,

@@ -173,6 +173,14 @@ export function CheckoutPromotionSection({
       {appliedPromotions.length > 0 || (promotionDiscountTotal ?? 0) > 0 ? (
         <div className="space-y-1 border-t border-slate-100 pt-3">
           <p className="text-[11px] font-black text-slate-500">할인 내역</p>
+          {baseTotal != null ? (
+            <div className="flex justify-between text-xs font-medium text-slate-600">
+              <span>할인 전 주문금액</span>
+              <span className="tabular-nums font-semibold text-slate-800">
+                {formatPriceWon(baseTotal)}
+              </span>
+            </div>
+          ) : null}
           {appliedPromotions.map((p) => (
             <div key={p.promotionId} className="flex justify-between text-xs font-semibold text-slate-800">
               <span>{p.title}</span>

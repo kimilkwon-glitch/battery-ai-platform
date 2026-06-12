@@ -19,3 +19,14 @@ export function isUsedBatterySelected(
 ): value is Exclude<OrderRequestUsedBatteryOption, "unknown"> {
   return value === "return" || value === "no_return";
 }
+
+/** checkout — 폼 state와 장바구니 item.usedBatteryReturn.option을 하나로 맞춤 */
+export function resolveCheckoutUsedBatteryReturn(
+  usedBattery: UsedBatteryFormSelection,
+  items: BatteryCartItem[],
+): Exclude<OrderRequestUsedBatteryOption, "unknown"> | null {
+  if (isUsedBatterySelected(usedBattery)) return usedBattery;
+  const fromCart = initialUsedBatteryFromCart(items);
+  if (fromCart === "return" || fromCart === "no_return") return fromCart;
+  return null;
+}

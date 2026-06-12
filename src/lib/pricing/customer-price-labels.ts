@@ -5,14 +5,16 @@
 export const CUSTOMER_PRICE_LABELS = {
   productPurchase: "제품 구매가",
   deliveryOrder: "택배 주문",
-  mobileInstall: "출장 교체가",
+  mobileInstall: "출장교체가",
   storeInstall: "매장 교체가",
   storePickup: "매장 수령가",
   deliveryFee: "택배비",
+  /** @deprecated 고객 breakdown — mobileInstall 사용 */
   onsiteInstallFee: "출장/장착비",
+  /** @deprecated 고객 breakdown — storeVisitDiscount 사용 */
   storeInstallFee: "매장 교체비",
   pickupFee: "수령비",
-  storeVisitDiscount: "매장 방문 할인",
+  storeVisitDiscount: "내방할인",
   noReturnFee: "미반납 추가금",
   noReturnSurcharge: "폐배터리 미반납",
   noReturnFeeIfSelected: "폐배터리 미반납 추가금이 있으면",

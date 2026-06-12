@@ -52,6 +52,7 @@ function breakdownRows(
     includeBatteryReturnFee?: boolean;
     showOrderFees?: boolean;
     allItems?: BatteryCartItem[];
+    quantity?: number;
   },
 ): PriceRow[] {
   if (type === "undecided" || result.finalPrice == null) {
@@ -59,53 +60,41 @@ function breakdownRows(
   }
 
   const rows: PriceRow[] = [];
-  const productPrice = result.internetPrice ?? result.basePrice;
+  const quantity = Math.max(1, options.quantity ?? 1);
 
   switch (type) {
     case "delivery":
       rows.push({
         label: CUSTOMER_PRICE_LABELS.productPurchase,
-        value: formatPriceWon(result.basePrice),
+        value: formatPriceWon(result.basePrice != null ? result.basePrice * quantity : null),
       });
       rows.push({
         label: CUSTOMER_PRICE_LABELS.deliveryFee,
-        value: `+${formatPriceWon(result.deliveryFee)}`,
+        value: `+${formatPriceWon(result.deliveryFee * quantity)}`,
       });
       break;
-    case "onsite_install": {
-      const installFee =
-        result.basePrice != null && productPrice != null
-          ? Math.max(0, result.basePrice - productPrice)
-          : result.basePrice;
+    case "onsite_install":
       rows.push({
-        label: CUSTOMER_PRICE_LABELS.productPurchase,
-        value: formatPriceWon(productPrice),
-      });
-      rows.push({
-        label: CUSTOMER_PRICE_LABELS.onsiteInstallFee,
-        value: `+${formatPriceWon(installFee)}`,
+        label: CUSTOMER_PRICE_LABELS.mobileInstall,
+        value: formatPriceWon(result.basePrice != null ? result.basePrice * quantity : null),
       });
       break;
-    }
-    case "store_install": {
-      const storeFee =
-        result.basePrice != null && productPrice != null
-          ? Math.max(0, result.basePrice - productPrice - result.storeInstallDiscount)
-          : result.finalPrice;
+    case "store_install":
       rows.push({
-        label: CUSTOMER_PRICE_LABELS.productPurchase,
-        value: formatPriceWon(productPrice),
+        label: CUSTOMER_PRICE_LABELS.mobileInstall,
+        value: formatPriceWon(result.basePrice != null ? result.basePrice * quantity : null),
       });
-      rows.push({
-        label: CUSTOMER_PRICE_LABELS.storeInstallFee,
-        value: `+${formatPriceWon(storeFee)}`,
-      });
+      if (result.storeInstallDiscount > 0) {
+        rows.push({
+          label: CUSTOMER_PRICE_LABELS.storeVisitDiscount,
+          value: `-${formatPriceWon(result.storeInstallDiscount * quantity)}`,
+        });
+      }
       break;
-    }
     case "store_pickup_self":
       rows.push({
         label: CUSTOMER_PRICE_LABELS.productPurchase,
-        value: formatPriceWon(result.basePrice),
+        value: formatPriceWon(result.basePrice != null ? result.basePrice * quantity : null),
       });
       break;
   }
@@ -170,6 +159,7 @@ export function OrderPriceBreakdown({
     includeBatteryReturnFee,
     showOrderFees,
     allItems: allItems ?? [item],
+    quantity: item.quantity,
   });
 
   return (

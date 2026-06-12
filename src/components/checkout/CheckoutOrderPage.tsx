@@ -54,6 +54,7 @@ import { getSearchHref } from "@/lib/battery-search";
 import {
   initialUsedBatteryFromCart,
   isUsedBatterySelected,
+  resolveCheckoutUsedBatteryReturn,
   type UsedBatteryFormSelection,
 } from "@/lib/order-request/order-request-form-helpers";
 import { getCustomerProfile, type CustomerProfile } from "@/lib/customer-profile-storage";
@@ -342,8 +343,21 @@ export function CheckoutOrderPage() {
     }
   };
 
-  const totals = computeCheckoutTotal(items, fulfillment.method, usedBattery ?? undefined);
+  const effectiveUsedBattery = useMemo(
+    () => resolveCheckoutUsedBatteryReturn(usedBattery, items),
+    [usedBattery, items],
+  );
+
+  const totals = computeCheckoutTotal(items, fulfillment.method, effectiveUsedBattery ?? undefined);
   const displayTotal = promotionFinalTotal ?? totals.finalAmount;
+  const promotionDiscountLines = useMemo(
+    () =>
+      appliedPromotions.map((p) => ({
+        title: p.title,
+        amount: p.discountAmount,
+      })),
+    [appliedPromotions],
+  );
 
   const vehicleConfirmState = useMemo(() => {
     const primary = items[0];
@@ -357,7 +371,7 @@ export function CheckoutOrderPage() {
   const canConfirm =
     optionsComplete &&
     checkoutContactValid(fulfillment, customer) &&
-    isUsedBatterySelected(usedBattery) &&
+    isUsedBatterySelected(effectiveUsedBattery) &&
     fulfillment.method !== "undecided" &&
     fulfillmentAddressValid(fulfillment) &&
     checklistComplete;
@@ -420,7 +434,7 @@ export function CheckoutOrderPage() {
         visitMessage: fulfillment.visitMessage,
         storeMessage: fulfillment.storeMessage,
       },
-      usedBatteryReturn: usedBattery ?? "unknown",
+      usedBatteryReturn: effectiveUsedBattery ?? "unknown",
       memo: resolveRequestMemo(fulfillment),
       priceLines: totals.priceLines,
       batteryReturnFee: totals.batteryReturnFee,
@@ -464,17 +478,21 @@ export function CheckoutOrderPage() {
     <CheckoutPriceSummaryPanel
       items={items}
       fulfillment={fulfillment}
-      usedBattery={usedBattery}
+      usedBattery={effectiveUsedBattery}
       sticky
       panelPlacement="aside"
+      finalAmountOverride={displayTotal}
+      promotionDiscounts={promotionDiscountLines}
     />
   );
   const pricePanelInline = (
     <CheckoutPriceSummaryPanel
       items={items}
       fulfillment={fulfillment}
-      usedBattery={usedBattery}
+      usedBattery={effectiveUsedBattery}
       panelPlacement="inline"
+      finalAmountOverride={displayTotal}
+      promotionDiscounts={promotionDiscountLines}
     />
   );
 
@@ -511,15 +529,15 @@ export function CheckoutOrderPage() {
             checkoutStep="order"
             totalAmount={displayTotal}
             fulfillmentMethod={fulfillment.method}
-            usedBatteryReturn={usedBattery}
+            usedBatteryReturn={effectiveUsedBattery}
             items={items}
           />
 
           <CheckoutProductSummary
             items={items}
             fulfillmentMethod={fulfillment.method}
-            usedBattery={usedBattery}
-            totalAmount={displayTotal}
+            usedBattery={effectiveUsedBattery}
+            totalAmount={totals.finalAmount}
             optionsComplete={optionsComplete}
             isBuyNow={isBuyNow}
           />
@@ -581,7 +599,7 @@ export function CheckoutOrderPage() {
           <CheckoutPromotionSection
             items={items}
             fulfillmentType={fulfillment.method}
-            returnBatteryOption={usedBattery ?? "unknown"}
+            returnBatteryOption={effectiveUsedBattery ?? "unknown"}
             baseTotal={totals.finalAmount}
             couponCode={couponCode}
             onCouponCodeChange={setCouponCode}

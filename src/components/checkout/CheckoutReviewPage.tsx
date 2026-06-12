@@ -24,6 +24,7 @@ import {
   saveCheckoutOrderMeta,
 } from "@/lib/payment/checkout-session-storage";
 import { CHECKOUT_PAGE } from "@/lib/payment/payment-routes";
+import { checkoutSessionPreDiscountTotal } from "@/lib/checkout/checkout-session-totals";
 import { formatPriceWon } from "@/lib/pricing/order-price";
 import type { CheckoutSessionPayload, CreateOrderRequestBody, PaymentPrepareResponse } from "@/types/commerce-payment";
 import { bm } from "@/lib/design-tokens";
@@ -202,6 +203,7 @@ export function CheckoutReviewPage() {
   }
 
   const usedBattery = sessionUsedBattery(session.usedBatteryReturn);
+  const preDiscountTotal = checkoutSessionPreDiscountTotal(session);
   const promotionDiscounts = (session.appliedPromotions ?? []).map((p) => ({
     title: p.title,
     amount: p.discountAmount,
@@ -284,7 +286,7 @@ export function CheckoutReviewPage() {
             items={session.items}
             fulfillmentMethod={session.fulfillment.method}
             usedBattery={usedBattery}
-            totalAmount={session.estimatedTotal}
+            totalAmount={preDiscountTotal}
             optionsComplete
             isBuyNow={session.flow === "buy_now"}
           />
