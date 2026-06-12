@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import {
   HUB_BENEFITS,
   HUB_BRANDS,
-  HUB_REVIEWS,
   HUB_STORE_DETAIL,
   HUB_SUPPORT,
   HUB_VEHICLES,
@@ -21,7 +20,6 @@ export const portalNavPrimary = [
   ["브랜드 안내", HUB_BRANDS],
   ["매장·출장 안내", HUB_STORE_DETAIL],
   ["혜택", HUB_BENEFITS],
-  ["리뷰", HUB_REVIEWS],
   ["고객센터", HUB_SUPPORT],
 ] as const;
 
@@ -36,7 +34,6 @@ function isNavActive(pathname: string, label: string, href: string): boolean {
     return pathname === "/service-center" || pathname.startsWith("/service-center/");
   }
   if (label === "혜택") return pathname === "/benefits" || pathname.startsWith("/benefits/");
-  if (label === "리뷰") return pathname === "/reviews" || pathname.startsWith("/reviews/");
   if (label === "고객센터") {
     return pathname === "/support" || pathname.startsWith("/support/");
   }

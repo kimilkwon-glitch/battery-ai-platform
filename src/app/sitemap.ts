@@ -20,7 +20,6 @@ const STATIC_PATHS = [
   "/support/used-battery-return",
   "/service-center",
   "/benefits",
-  "/reviews",
   "/guides",
   "/terms",
   "/privacy",

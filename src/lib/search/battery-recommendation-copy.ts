@@ -23,7 +23,7 @@ export const PRIMARY_BATTERY_CTAS = (code: string): SearchCtaLink[] => [
   },
   { label: "배터리 규격 보기", href: batterySpecGuideHref(code) },
   { label: "사진으로 규격 확인", href: HUB_PHOTO },
-  { label: "리뷰 보기", href: `/reviews?battery=${encodeURIComponent(code)}` },
+  { label: "리뷰 보기", href: `${batteryProductDetailHref("rocket", code) ?? batterySpecGuideHref(code)}#battery-reviews` },
 ];
 
 export function buildDbRegistrationHref(vehicleLabel: string, query?: string): string {

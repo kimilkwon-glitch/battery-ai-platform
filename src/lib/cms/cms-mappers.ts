@@ -1,8 +1,7 @@
-import { HUB_REVIEWS } from "@/lib/customer-hub-routes";
+import { batteryReviewHref } from "@/lib/battery-product-routes";
 import type { HeroSlide } from "@/lib/hero-slides-data";
 import type { HomeReplacementStoryCard } from "@/lib/home-replacement-stories-data";
 import type { ReviewItem } from "@/lib/reviews-mock-data";
-import { batterySpecHref } from "@/lib/canonical-battery-code";
 import type { CustomerReviewRecord } from "@/types/customer-review";
 import type { MainBannerRecord, PublicMainBanner } from "@/types/main-banner";
 
@@ -52,8 +51,8 @@ export function reviewToStoryCard(record: CustomerReviewRecord): HomeReplacement
     badges[1] ?? "고객 만족",
   ];
   const href = record.batteryCode
-    ? `${HUB_REVIEWS}?battery=${encodeURIComponent(record.batteryCode)}`
-    : HUB_REVIEWS;
+    ? batteryReviewHref({ batteryCode: record.batteryCode })
+    : "/vehicles";
 
   return {
     id: record.id,
@@ -87,6 +86,8 @@ export function reviewToReviewItem(record: CustomerReviewRecord): ReviewItem {
     badges: record.badges,
     operatorReply: record.operatorReply ?? undefined,
     operatorSummary: record.operatorSummary ?? undefined,
-    productHref: record.productHref ?? (record.batteryCode ? batterySpecHref(record.batteryCode) : "/reviews"),
+    productHref:
+      record.productHref ??
+      (record.batteryCode ? batteryReviewHref({ batteryCode: record.batteryCode }) : "/vehicles"),
   };
 }

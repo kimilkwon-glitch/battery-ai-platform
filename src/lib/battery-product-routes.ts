@@ -74,14 +74,15 @@ export function batteryReviewHref(params: {
     : null;
   if (productHref) return `${productHref}#battery-reviews`;
   const code = canonicalBatteryCode(params.batteryCode) || params.batteryCode.trim();
-  return `/reviews?battery=${encodeURIComponent(code)}`;
+  const specHref = batterySpecGuideHref(code);
+  return `${specHref}#battery-reviews`;
 }
 
 /**
  * 배터리 상품 카드 CTA 링크 일괄 생성
  * - 규격 보기: /batteries/{code}
  * - 주문하기: /products/{brand}-{code}
- * - 리뷰: 상품 상세 #battery-reviews 또는 /reviews?battery=
+ * - 리뷰: 상품 상세 #battery-reviews
  */
 export function resolveBatteryProductCardLinks(params: {
   batteryCode: string;

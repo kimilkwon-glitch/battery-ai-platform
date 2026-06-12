@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { CheckCircle2, Star } from "lucide-react";
 import clsx from "clsx";
 import { ReviewWritePhotoAttach } from "@/components/reviews/ReviewWritePhotoAttach";
+import { batteryReviewHref } from "@/lib/battery-product-routes";
 import { bm } from "@/lib/design-tokens";
 import type { ReviewWriteOrderContext } from "@/lib/reviews/review-write-types";
 
@@ -79,8 +80,8 @@ export function ReviewWriteForm({
 
   const resolvedBattery = orderContext?.batteryCode ?? batteryCode;
   const productHref = resolvedBattery
-    ? `/batteries/${encodeURIComponent(resolvedBattery)}#battery-reviews`
-    : "/reviews";
+    ? batteryReviewHref({ batteryCode: resolvedBattery, brandId: "rocket" })
+    : "/vehicles";
 
   const summary = useMemo(() => {
     if (orderContext) return orderContext;

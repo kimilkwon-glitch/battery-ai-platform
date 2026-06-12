@@ -1,4 +1,5 @@
-import { HUB_REVIEWS, HUB_STORE_ANCHORS } from "@/lib/customer-hub-routes";
+import { batteryReviewHref } from "@/lib/battery-product-routes";
+import { HUB_STORE_ANCHORS, HUB_VEHICLES } from "@/lib/customer-hub-routes";
 import { storeLinks } from "@/lib/external-links";
 
 export type HomeReplacementStoryCard = {
@@ -36,7 +37,8 @@ export const HOME_REPLACEMENT_STORIES_PILLS = [
   "출장 · 매장 · 야간 무인",
 ] as const;
 
-export const HOME_REPLACEMENT_REVIEWS_HREF = HUB_REVIEWS;
+/** 후기 더보기 — 리뷰 모아보기 대신 차종검색으로 안내 */
+export const HOME_REPLACEMENT_REVIEWS_HREF = HUB_VEHICLES;
 
 /** 작업 사례 — 네이버 블로그(지점 운영 사례). 전용 사례 페이지 추가 시 교체 */
 export const HOME_REPLACEMENT_WORK_CASES_HREF = storeLinks.deokcheon.blog;
@@ -56,7 +58,7 @@ export const HOME_REPLACEMENT_STORY_CARDS: HomeReplacementStoryCard[] = [
       batteryLine: "AGM80L",
       servicesLine: "엔진룸 기본 클리닝 · 워셔액 · 공기압 점검",
     },
-    href: `${HUB_REVIEWS}?battery=AGM80L`,
+    href: batteryReviewHref({ batteryCode: "AGM80L", brandId: "rocket" }),
   },
   {
     id: "story-onsite",
@@ -71,7 +73,7 @@ export const HOME_REPLACEMENT_STORY_CARDS: HomeReplacementStoryCard[] = [
       batteryLine: "AGM70L",
       servicesLine: "출장 교체 · 기본 점검",
     },
-    href: `${HUB_REVIEWS}?battery=AGM70L`,
+    href: batteryReviewHref({ batteryCode: "AGM70L", brandId: "rocket" }),
   },
   {
     id: "story-delivery",
@@ -86,7 +88,7 @@ export const HOME_REPLACEMENT_STORY_CARDS: HomeReplacementStoryCard[] = [
       batteryLine: "AGM60L",
       servicesLine: "안전 포장 · 셀프 교체 안내",
     },
-    href: `${HUB_REVIEWS}?battery=AGM60L`,
+    href: batteryReviewHref({ batteryCode: "AGM60L", brandId: "rocket" }),
   },
   {
     id: "story-night",

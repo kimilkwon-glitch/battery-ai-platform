@@ -34,7 +34,7 @@ function StoryActions({ className }: { className?: string }) {
         href={HOME_REPLACEMENT_REVIEWS_HREF}
         className="home-replacement-stories__btn home-replacement-stories__btn--primary"
       >
-        후기 더보기
+        차량·배터리 검색
       </Link>
       <Link
         href={HOME_REPLACEMENT_WORK_CASES_HREF}
@@ -73,7 +73,7 @@ export function HomeReplacementStoriesSection() {
         <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
           <p className="text-sm font-bold text-slate-600">등록된 후기가 없습니다.</p>
           <Link href={HOME_REPLACEMENT_REVIEWS_HREF} className="mt-3 inline-block text-xs font-black text-blue-700 hover:underline">
-            후기 페이지 보기
+            차량·배터리 검색
           </Link>
         </div>
       </section>

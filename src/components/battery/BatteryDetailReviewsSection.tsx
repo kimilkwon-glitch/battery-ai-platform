@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { batteryReviewHref } from "@/lib/battery-product-routes";
 import { bm } from "@/lib/design-tokens";
 
 export function BatteryDetailReviewsSection({ code }: { code: string }) {
-  const href = `/reviews?battery=${encodeURIComponent(code)}`;
+  const href = batteryReviewHref({ batteryCode: code, brandId: "rocket" });
 
   return (
     <section
@@ -18,12 +18,12 @@ export function BatteryDetailReviewsSection({ code }: { code: string }) {
             리뷰
           </h2>
           <p className="mt-1 text-xs font-medium text-slate-500">
-            {code} 규격 장착·교체 후기를 확인하세요.
+            {code} 규격 장착·교체 후기를 상품 상세에서 확인하세요.
           </p>
         </div>
-        <Link href={href} className={`${bm.btnSecondary} shrink-0 text-xs`}>
+        <a href={href} className={`${bm.btnSecondary} shrink-0 text-xs`}>
           리뷰 보기
-        </Link>
+        </a>
       </div>
     </section>
   );

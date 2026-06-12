@@ -1,12 +1,10 @@
 import { BRAND_FOOTER, BRAND_NAME } from "@/lib/brand";
-import { HUB_REVIEWS } from "@/lib/customer-hub-routes";
 import { formatBusinessField, getBusinessInfo } from "@/lib/legal/business-info";
 import { LEGAL_FOOTER_LINKS } from "@/lib/legal/legal-routes";
 import { bm } from "@/lib/design-tokens";
 import { OfficialChannelsStrip } from "@/components/common/OfficialChannelsStrip";
 import { BUILD_STAMP } from "@/lib/build-stamp";
 
-const serviceLinks = [["리뷰", HUB_REVIEWS]] as const;
 
 export function SiteFooter({ className = "" }: { className?: string }) {
   const biz = getBusinessInfo();
@@ -82,15 +80,6 @@ export function SiteFooter({ className = "" }: { className?: string }) {
               className="font-bold text-slate-700 hover:text-[var(--bm-primary)] hover:underline"
             >
               {item.label}
-            </a>
-          ))}
-          {serviceLinks.map(([label, href]) => (
-            <a
-              key={href}
-              href={href}
-              className="font-bold text-slate-600 hover:text-[var(--bm-primary)] hover:underline"
-            >
-              {label}
             </a>
           ))}
         </nav>
