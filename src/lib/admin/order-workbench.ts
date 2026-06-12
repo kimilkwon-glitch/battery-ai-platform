@@ -6,10 +6,11 @@ import {
 } from "@/lib/admin/order-data-scope";
 import type { UnifiedAdminOrderRow } from "@/lib/admin/unified-orders";
 
-/** 스마트스토어식 주문 작업대 탭 (6개) */
+/** 스마트스토어식 주문 작업대 탭 + 대시보드 송장등록 필요 뷰 */
 export type OrderWorkbenchView =
   | "new_order"
   | "preparing"
+  | "needs_invoice"
   | "in_progress"
   | "completed"
   | "cancel_request"
@@ -74,6 +75,13 @@ function isCanceledPayment(ps: string): boolean {
   return ps === "canceled" || ps === "refunded";
 }
 
+/** 택배 주문 · 상품준비 중 · 송장 미등록 */
+export function matchCommerceNeedsInvoice(row: UnifiedAdminOrderRow): boolean {
+  if (row.channel !== "commerce" || row.fulfillmentType !== "delivery") return false;
+  const tracking = row.shippingTrackingNumber?.trim();
+  return PREPARING.has(row.orderStatus) && !tracking;
+}
+
 /**
  * 신규주문 = payment_status completed + order_status payment_completed (발주확인 전)
  */
@@ -103,6 +111,7 @@ export function parseWorkbenchView(
     order_created: "new_order",
     preparing: "preparing",
     shipping_prep: "preparing",
+    needs_invoice: "needs_invoice",
     in_progress: "in_progress",
     completed: "completed",
     canceled: "completed",
@@ -125,6 +134,9 @@ export function matchesWorkbenchView(
   }
   if (view === "return_exchange") {
     return row.channel === "commerce" && claimContext.returnExchangeOrderIds.has(row.id);
+  }
+  if (view === "needs_invoice") {
+    return matchCommerceNeedsInvoice(row);
   }
 
   if (row.channel === "commerce") {

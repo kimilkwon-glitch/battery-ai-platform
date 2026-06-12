@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
+import { dashboardClaimHref, dashboardOrderHref, adminOrderDetailHref } from "@/lib/admin/dashboard-links";
 import {
   formatAdminCustomerName,
   formatAdminContact,
@@ -108,25 +109,40 @@ function SummaryMetricRow({
   activePanel,
   onSelect,
   tone,
+  href,
 }: {
   label: string;
   count: number;
   panel: AdminDashboardPanel;
   activePanel: AdminDashboardPanel;
-  onSelect: (panel: AdminDashboardPanel) => void;
+  onSelect?: (panel: AdminDashboardPanel) => void;
   tone?: AdminDashboardCardTone;
+  href?: string | null;
 }) {
   const active = activePanel === panel;
   const toneKey = toneClass(tone, count, active);
+  const className = `admin-dash-metric-row admin-dash-metric-row--link admin-dash-metric-row--${toneKey}${active ? " admin-dash-metric-row--active" : ""}${count === 0 ? " admin-dash-metric-row--zero" : ""}`;
+  const content = (
+    <>
+      <span className="admin-dash-metric-row__label">{label}</span>
+      <span className="admin-dash-metric-row__count">{count.toLocaleString("ko-KR")}</span>
+    </>
+  );
+  if (href) {
+    return (
+      <Link href={href} className={className} title={`${label} — 클레임관리`}>
+        {content}
+      </Link>
+    );
+  }
   return (
     <button
       type="button"
       className={`admin-dash-metric-row admin-dash-metric-row--${toneKey}${active ? " admin-dash-metric-row--active" : ""}`}
-      onClick={() => onSelect(panel)}
+      onClick={() => onSelect?.(panel)}
       aria-pressed={active}
     >
-      <span className="admin-dash-metric-row__label">{label}</span>
-      <span className="admin-dash-metric-row__count">{count.toLocaleString("ko-KR")}</span>
+      {content}
     </button>
   );
 }
@@ -149,7 +165,7 @@ function OrderFlowStrip({
           <div key={item.panel} className="admin-dash-flow__item">
             {index > 0 ? <span className="admin-dash-flow__arrow" aria-hidden="true" /> : null}
             <Link
-              href={`${ADMIN_ROUTES.orders}?view=${item.panel}`}
+              href={dashboardOrderHref(item.panel) ?? `${ADMIN_ROUTES.orders}?view=${item.panel}`}
               role="listitem"
               className={`admin-dash-flow__step admin-dash-flow__step--${toneKey}${active ? " admin-dash-flow__step--active" : ""}`}
               title={item.description}
@@ -626,8 +642,8 @@ export function AdminSmartStoreDashboard({
                 count={c.count}
                 panel={c.panel}
                 activePanel={activePanel}
-                onSelect={setActivePanel}
                 tone={c.tone}
+                href={dashboardClaimHref(c.panel)}
               />
             ))}
         </SummaryBox>
@@ -749,7 +765,7 @@ function OrderListTable({
               const productPrimary = o.batteryCode || o.productName;
               const href =
                 o.channel === "commerce"
-                  ? `${ADMIN_ROUTES.orders}?view=${activePanel}&orderId=${encodeURIComponent(o.id)}`
+                  ? adminOrderDetailHref(o.id, `view=${activePanel}`)
                   : `${ADMIN_ROUTES.orders}?view=${activePanel}&id=${encodeURIComponent(o.id)}`;
               const actionLabel =
                 activePanel === "needs_invoice"

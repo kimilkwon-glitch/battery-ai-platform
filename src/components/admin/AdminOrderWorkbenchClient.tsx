@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AdminCommerceOrderOpsPanel } from "@/components/admin/AdminCommerceOrderOpsPanel";
-import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
+import { AdminOrderDetailModal } from "@/components/admin/AdminOrderDetailModal";
 import { OrderRequestDetailPanel } from "@/components/admin/order-requests/OrderRequestDetailPanel";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
+import { adminOrderDetailHref } from "@/lib/admin/dashboard-links";
 import {
   filterUnifiedRowsByDataScope,
   parseAdminOrderDataScope,
@@ -92,7 +92,13 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
   const selectedCommerceId = searchParams.get("orderId")?.trim() ?? "";
   const selectedConsultId = searchParams.get("id")?.trim() ?? "";
   const dataScope = parseAdminOrderDataScope(searchParams.get("dataScope"));
-  const hasSelection = Boolean(selectedCommerceId || selectedConsultId);
+
+  const listReturnQuery = useMemo(() => {
+    const p = new URLSearchParams(searchParams.toString());
+    p.delete("orderId");
+    p.delete("id");
+    return p.toString();
+  }, [searchParams]);
 
   const [rows, setRows] = useState(initialRows);
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
@@ -105,6 +111,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [consultDetail, setConsultDetail] = useState<OrderRequestRecord | null>(null);
   const [consultLoading, setConsultLoading] = useState(false);
+  const [consultModalOpen, setConsultModalOpen] = useState(false);
   const [orderModalId, setOrderModalId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -198,17 +205,20 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
   }, []);
 
   useEffect(() => {
-    if (selectedConsultId) void loadConsult(selectedConsultId);
-    else setConsultDetail(null);
-  }, [selectedConsultId, loadConsult]);
-
-  const selectRow = (row: UnifiedAdminOrderRow) => {
-    if (row.channel === "commerce") {
-      setParams({ orderId: row.id, id: null });
-    } else {
-      setParams({ id: row.id, orderId: null });
+    if (selectedCommerceId) {
+      router.replace(adminOrderDetailHref(selectedCommerceId, listReturnQuery));
     }
-  };
+  }, [selectedCommerceId, listReturnQuery, router]);
+
+  useEffect(() => {
+    if (selectedConsultId) {
+      setConsultModalOpen(true);
+      void loadConsult(selectedConsultId);
+    } else {
+      setConsultDetail(null);
+      setConsultModalOpen(false);
+    }
+  }, [selectedConsultId, loadConsult]);
 
   const runSingleAction = async (
     row: UnifiedAdminOrderRow,
@@ -302,6 +312,24 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
     });
   };
 
+  const openRowDetail = (row: UnifiedAdminOrderRow) => {
+    if (row.channel === "commerce") {
+      router.push(adminOrderDetailHref(row.id, listReturnQuery));
+      return;
+    }
+    setParams({ id: row.id, orderId: null });
+  };
+
+  const detailHref = (row: UnifiedAdminOrderRow) => {
+    if (row.channel === "commerce") {
+      return adminOrderDetailHref(row.id, listReturnQuery);
+    }
+    const p = new URLSearchParams(searchParams.toString());
+    p.set("id", row.id);
+    p.delete("orderId");
+    return `${ADMIN_ROUTES.orders}?${p.toString()}`;
+  };
+
   const claimHref = (row: UnifiedAdminOrderRow, type?: "CANCEL" | "RETURN") => {
     const base = ADMIN_ROUTES.commerceClaims;
     const p = new URLSearchParams();
@@ -319,9 +347,9 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
 
   const renderRowActions = (row: UnifiedAdminOrderRow) => {
     const detailBtn = (
-      <button type="button" className={`${actionBtnClass} ${actionBtnClass}--secondary`} onClick={() => selectRow(row)}>
+      <Link href={detailHref(row)} className={`${actionBtnClass} ${actionBtnClass}--secondary`} onClick={(e) => e.stopPropagation()}>
         상세
-      </button>
+      </Link>
     );
 
     if (view === "new_order") {
@@ -379,7 +407,7 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
             <button
               type="button"
               className={`${actionBtnClass} ${actionBtnClass}--secondary`}
-              onClick={() => selectRow(row)}
+              onClick={() => openRowDetail(row)}
             >
               수령대기
             </button>
@@ -602,7 +630,13 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
         <p className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700">{actionMessage}</p>
       ) : null}
 
-      <div className={`admin-order-workbench__layout ${hasSelection ? "has-detail" : "no-detail"}`}>
+      {view === "needs_invoice" ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-950">
+          송장등록이 필요한 택배 주문만 표시합니다.
+        </p>
+      ) : null}
+
+      <div className="admin-order-workbench__layout no-detail">
         <div className="admin-data-table__wrap overflow-x-auto rounded-xl border border-slate-200 bg-white admin-workspace-table-wrap">
           <table className="admin-table admin-order-workbench__table w-full min-w-[880px]">
             <thead>
@@ -611,9 +645,9 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                 <th>고객</th>
                 <th>상품/규격</th>
                 <th>수령</th>
-                <th>결제금액</th>
+                <th className="admin-order-workbench__th-amount">결제금액</th>
                 <th>상태</th>
-                <th>처리</th>
+                <th className="admin-order-workbench__th-actions">처리</th>
               </tr>
             </thead>
             <tbody>
@@ -622,37 +656,39 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                   <td colSpan={7} className="py-12 text-center">
                     <p className="text-sm font-bold text-slate-700">조건에 맞는 주문이 없습니다.</p>
                     <p className="mt-2 text-xs text-slate-500">
-                      {WORKBENCH_STATUS_BAR.find((t) => t.id === view)?.label ?? "해당"} 상태의 주문이 없습니다.
+                      {view === "needs_invoice"
+                        ? "송장등록 필요"
+                        : (WORKBENCH_STATUS_BAR.find((t) => t.id === view)?.label ?? "해당")}{" "}
+                      상태의 주문이 없습니다.
                     </p>
                   </td>
                 </tr>
               ) : (
                 filtered.map((row) => {
-                  const selected =
-                    (row.channel === "commerce" && row.id === selectedCommerceId) ||
-                    (row.channel === "consultation" && row.id === selectedConsultId);
                   const needsAction = rowNeedsOperatorAction(row);
                   const productPrimary = row.batteryCode || row.productName;
                   return (
                     <tr
                       key={`${row.channel}:${row.id}`}
-                      className={`admin-order-workbench__row ${selected ? "is-selected" : ""} ${needsAction ? "needs-action" : ""}`}
-                      onClick={() => selectRow(row)}
+                      className={`admin-order-workbench__row ${needsAction ? "needs-action" : ""}`}
+                      onClick={() => openRowDetail(row)}
                     >
                       <td className="admin-table__mono admin-order-workbench__order-cell">
                         {row.channel === "commerce" ? (
-                          <AdminOrderNumberButton
-                            orderId={row.id}
-                            orderNumber={row.orderNumber}
-                            onOpen={setOrderModalId}
-                          />
+                          <Link
+                            href={detailHref(row)}
+                            className="admin-order-workbench__order-link"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {row.orderNumber}
+                          </Link>
                         ) : (
                           <button
                             type="button"
                             className="admin-order-workbench__order-link"
                             onClick={(e) => {
                               e.stopPropagation();
-                              selectRow(row);
+                              openRowDetail(row);
                             }}
                           >
                             {row.orderNumber}
@@ -671,26 +707,28 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                           })}
                         </p>
                       </td>
-                      <td className="admin-table__customer">
+                      <td className="admin-table__customer admin-order-workbench__customer-cell">
                         <p className="admin-table__customer-name">{row.customerName}</p>
                         <p className="admin-table__customer-phone">{row.customerPhone}</p>
                       </td>
-                      <td className="admin-table__product min-w-[11rem]">
+                      <td className="admin-table__product admin-order-workbench__product-cell min-w-[11rem]">
                         <p className="admin-table__product-spec">{productPrimary}</p>
                         <p className="admin-table__product-name">{row.productName}</p>
                       </td>
-                      <td>{row.fulfillmentLabel}</td>
-                      <td className="admin-table__amount tabular-nums">
+                      <td className="admin-order-workbench__fulfillment-cell">{row.fulfillmentLabel}</td>
+                      <td className="admin-table__amount admin-order-workbench__amount-cell tabular-nums">
                         {row.finalAmount != null ? formatPriceWon(row.finalAmount) : "—"}
                       </td>
-                      <td>
+                      <td className="admin-order-workbench__status-cell">
                         <span
                           className={`admin-order-status-badge ${statusBadgeClass(row.orderStatus)} ${needsAction ? "admin-order-status-badge--urgent" : ""}`}
                         >
                           {row.orderStatusLabel}
                         </span>
                       </td>
-                      <td onClick={(e) => e.stopPropagation()}>{renderRowActions(row)}</td>
+                      <td className="admin-order-workbench__actions-cell" onClick={(e) => e.stopPropagation()}>
+                        {renderRowActions(row)}
+                      </td>
                     </tr>
                   );
                 })
@@ -698,37 +736,6 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
             </tbody>
           </table>
         </div>
-
-        {hasSelection ? (
-          <aside className="admin-order-workbench__detail xl:sticky xl:top-4">
-            <div className="admin-order-workbench__detail-head">
-              <h3 className="admin-order-workbench__detail-title">주문 상세</h3>
-              <button
-                type="button"
-                className="admin-order-workbench__detail-close"
-                onClick={() => setParams({ orderId: null, id: null })}
-              >
-                닫기
-              </button>
-            </div>
-            {selectedCommerceId ? (
-              <AdminCommerceOrderOpsPanel
-                orderId={selectedCommerceId}
-                onUpdated={() => router.refresh()}
-              />
-            ) : selectedConsultId && consultDetail ? (
-              <div className={`${bm.card} ${bm.cardPad}`}>
-                <OrderRequestDetailPanel
-                  record={consultDetail}
-                  detailLoading={consultLoading}
-                  onRecordChange={setConsultDetail}
-                />
-              </div>
-            ) : selectedConsultId && consultLoading ? (
-              <p className={`${bm.card} ${bm.cardPad} text-xs text-slate-500`}>상담 주문 불러오는 중…</p>
-            ) : null}
-          </aside>
-        ) : null}
       </div>
 
       {shipModalOpen ? (
@@ -775,6 +782,36 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
                 저장 및 발송처리
               </button>
             </div>
+          </div>
+        </div>
+      ) : null}
+
+      {consultModalOpen ? (
+        <div className="admin-order-workbench__modal-backdrop" role="presentation">
+          <div className="admin-order-workbench__modal admin-order-workbench__modal--consult" role="dialog" aria-labelledby="consult-modal-title">
+            <div className="flex items-center justify-between gap-3">
+              <h3 id="consult-modal-title" className="text-sm font-black text-slate-900">
+                상담 주문 상세
+              </h3>
+              <button
+                type="button"
+                className={bm.btnSecondary}
+                onClick={() => setParams({ id: null })}
+              >
+                닫기
+              </button>
+            </div>
+            {consultDetail ? (
+              <div className={`${bm.card} ${bm.cardPad} mt-4`}>
+                <OrderRequestDetailPanel
+                  record={consultDetail}
+                  detailLoading={consultLoading}
+                  onRecordChange={setConsultDetail}
+                />
+              </div>
+            ) : consultLoading ? (
+              <p className="mt-4 text-xs text-slate-500">상담 주문 불러오는 중…</p>
+            ) : null}
           </div>
         </div>
       ) : null}

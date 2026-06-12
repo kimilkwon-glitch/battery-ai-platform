@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
@@ -22,6 +22,7 @@ import {
   type CommerceClaimSummary,
 } from "@/types/commerce-claim";
 import type { CommerceOrderRecord } from "@/types/commerce-payment";
+import { CLAIM_REQUEST_OPEN_STATUSES } from "@/lib/admin/claim-dashboard-counts";
 
 const TYPE_FILTERS: { id: ClaimType | "all"; label: string }[] = [
   { id: "all", label: "전체" },
@@ -76,8 +77,28 @@ function parseClaimStatus(raw: string | null): ClaimStatus | "all" {
   return "all";
 }
 
+function parseClaimFilter(raw: string | null): "all" | "open" | "refund_required" {
+  if (raw === "open" || raw === "refund_required") return raw;
+  return "all";
+}
+
+function matchesDashboardClaimFilter(
+  row: CommerceClaimSummary,
+  filter: "all" | "open" | "refund_required",
+): boolean {
+  if (filter === "all") return true;
+  if (filter === "open") {
+    return CLAIM_REQUEST_OPEN_STATUSES.has(row.claimStatus);
+  }
+  return (
+    row.claimType === "REFUND" &&
+    (CLAIM_REQUEST_OPEN_STATUSES.has(row.claimStatus) || row.claimStatus === "APPROVED")
+  );
+}
+
 export function AdminCommerceClaimsClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialClaimId = searchParams.get("claimId")?.trim() ?? "";
   const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
 
@@ -88,6 +109,9 @@ export function AdminCommerceClaimsClient() {
   );
   const [statusFilter, setStatusFilter] = useState<ClaimStatus | "all">(
     parseClaimStatus(searchParams.get("status")),
+  );
+  const [dashboardFilter, setDashboardFilter] = useState<"all" | "open" | "refund_required">(
+    parseClaimFilter(searchParams.get("filter")),
   );
   const [query, setQuery] = useState(initialQuery);
   const [selectedId, setSelectedId] = useState<string | null>(initialClaimId || null);
@@ -106,17 +130,54 @@ export function AdminCommerceClaimsClient() {
   const [orderModalId, setOrderModalId] = useState<string | null>(null);
 
   const scopedItems = useMemo(() => {
-    if (dataScope === "all") return items;
-    const isTest = (row: CommerceClaimSummary) =>
-      isAdminTestCommerceOrder({
-        customerName: row.customerName,
-        customerPhone: row.customerPhone,
-        orderNumber: row.orderNumber,
-        productName: row.productName,
-      });
-    if (dataScope === "test") return items.filter(isTest);
-    return items.filter((row) => !isTest(row));
-  }, [items, dataScope]);
+    let list = items;
+    if (dataScope === "all") {
+      list = items;
+    } else {
+      const isTest = (row: CommerceClaimSummary) =>
+        isAdminTestCommerceOrder({
+          customerName: row.customerName,
+          customerPhone: row.customerPhone,
+          orderNumber: row.orderNumber,
+          productName: row.productName,
+        });
+      list = dataScope === "test" ? items.filter(isTest) : items.filter((row) => !isTest(row));
+    }
+    if (dashboardFilter !== "all") {
+      list = list.filter((row) => matchesDashboardClaimFilter(row, dashboardFilter));
+    }
+    return list;
+  }, [items, dataScope, dashboardFilter]);
+
+  const syncUrl = useCallback(
+    (patch: {
+      type?: ClaimType | "all";
+      status?: ClaimStatus | "all";
+      filter?: "all" | "open" | "refund_required";
+      q?: string;
+      claimId?: string | null;
+    }) => {
+      const p = new URLSearchParams(searchParams.toString());
+      const type = patch.type ?? typeFilter;
+      const status = patch.status ?? statusFilter;
+      const filter = patch.filter ?? dashboardFilter;
+      const q = patch.q ?? query;
+
+      if (type === "all") p.delete("type");
+      else p.set("type", type);
+      if (status === "all") p.delete("status");
+      else p.set("status", status);
+      if (filter === "all") p.delete("filter");
+      else p.set("filter", filter);
+      if (q.trim()) p.set("q", q.trim());
+      else p.delete("q");
+      if (patch.claimId === null) p.delete("claimId");
+      else if (patch.claimId) p.set("claimId", patch.claimId);
+
+      router.replace(`${ADMIN_ROUTES.commerceClaims}?${p.toString()}`);
+    },
+    [searchParams, router, typeFilter, statusFilter, dashboardFilter, query],
+  );
 
   const loadList = useCallback(async () => {
     setLoading(true);
@@ -223,7 +284,11 @@ export function AdminCommerceClaimsClient() {
             <button
               key={f.id}
               type="button"
-              onClick={() => setTypeFilter(f.id)}
+              onClick={() => {
+                setTypeFilter(f.id);
+                setDashboardFilter("all");
+                syncUrl({ type: f.id, filter: "all" });
+              }}
               className={`rounded-full px-3 py-1 text-xs font-bold ${
                 typeFilter === f.id ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"
               }`}
@@ -237,7 +302,11 @@ export function AdminCommerceClaimsClient() {
             <button
               key={f.id}
               type="button"
-              onClick={() => setStatusFilter(f.id)}
+              onClick={() => {
+                setStatusFilter(f.id);
+                setDashboardFilter("all");
+                syncUrl({ status: f.id, filter: "all" });
+              }}
               className={`rounded-full px-3 py-1 text-xs font-bold ${
                 statusFilter === f.id ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-800"
               }`}

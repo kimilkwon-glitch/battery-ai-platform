@@ -7,6 +7,7 @@ import {
 } from "@/lib/admin/claim-dashboard-counts";
 import {
   matchCommerceNewOrder,
+  matchCommerceNeedsInvoice,
   matchesWorkbenchView,
   type OrderWorkbenchClaimContext,
 } from "@/lib/admin/order-workbench";
@@ -71,11 +72,7 @@ export type AdminDashboardCard = {
   href?: string;
 };
 
-export function matchCommerceNeedsInvoice(row: UnifiedAdminOrderRow): boolean {
-  if (row.channel !== "commerce" || row.fulfillmentType !== "delivery") return false;
-  const tracking = row.shippingTrackingNumber?.trim();
-  return PREPARING.has(row.orderStatus) && !tracking;
-}
+export { matchCommerceNeedsInvoice } from "@/lib/admin/order-workbench";
 
 export function matchCommercePreparing(row: UnifiedAdminOrderRow): boolean {
   if (row.channel === "commerce") {
