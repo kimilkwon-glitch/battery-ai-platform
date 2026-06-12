@@ -1794,10 +1794,6 @@
   letter-spacing: -0.01em;
 }
 
-.home-quick-icon-card__title-wrap--mobile {
-  display: none;
-}
-
 @media (min-width: 640px) {
   .home-main-content .home-quick-icons {
     margin-top: 2.25rem;
@@ -2027,6 +2023,11 @@
   min-height: 2.75rem;
 }
 
+/* desktop/mobile wrap 분기 — .title-wrap display:flex 보다 뒤에 두어 PC에서 mobile 라벨 중복 노출 방지 */
+.home-quick-icon-card__title-wrap.home-quick-icon-card__title-wrap--mobile {
+  display: none;
+}
+
 .home-quick-icon-card__title {
   display: block;
   width: 100%;
@@ -2216,11 +2217,11 @@
     min-width: 0;
   }
 
-  .home-quick-icon-card__title-wrap--desktop {
+  .home-quick-icon-card__title-wrap.home-quick-icon-card__title-wrap--desktop {
     display: none;
   }
 
-  .home-quick-icon-card__title-wrap--mobile {
+  .home-quick-icon-card__title-wrap.home-quick-icon-card__title-wrap--mobile {
     display: flex;
     align-items: center;
     justify-content: center;
