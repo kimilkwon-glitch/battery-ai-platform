@@ -79,6 +79,9 @@ export function CheckoutProductSummary({
   const imageSet = code && brandKey ? batteryImageSetForCode(code, brandKey) : undefined;
   const imageSrc = primary ? resolveCartItemImageSrc(primary) : null;
   const specLabel = code ? `${code} 배터리` : primary?.productName?.trim() || "배터리";
+  const productTitle = primary
+    ? `${primary.brandName ? `${primary.brandName} ` : ""}${primary.batterySpec || primary.productName || "배터리"}`
+    : "";
 
   return (
     <section
@@ -103,57 +106,58 @@ export function CheckoutProductSummary({
       ) : null}
 
       {primary ? (
-        <div className="checkout-product-summary__body mt-3 flex flex-col gap-3 sm:flex-row sm:items-start">
-          {code && (imageSrc || imageSet?.main) ? (
-            <div className="checkout-product-summary__thumb h-[4rem] w-[4rem] shrink-0 overflow-hidden rounded-lg bg-slate-50 ring-1 ring-slate-100 sm:h-[4.5rem] sm:w-[4.5rem]">
-              {imageSrc ? (
-                <img src={imageSrc} alt="" className="size-full object-contain" />
-              ) : (
-                <BatteryThumbnail
-                  code={code}
-                  imageSet={imageSet}
-                  role="main"
-                  fit="contain"
-                  overlayLabel={false}
-                  surface="transparent"
-                  className="h-full w-full"
-                />
-              )}
-            </div>
-          ) : null}
-
-          <div className="checkout-product-summary__details min-w-0 flex-1">
-            <p className="text-sm font-black text-slate-950">
-              {primary.brandName ? `${primary.brandName} ` : ""}
-              {primary.batterySpec || primary.productName || "배터리"}
-            </p>
-            <p className="text-xs font-semibold text-slate-600">{specLabel}</p>
-
-            <dl className="checkout-product-summary__meta mt-2 grid grid-cols-1 gap-y-1 text-[11px] text-slate-600 sm:grid-cols-2 sm:gap-x-3 sm:text-xs">
-              <div>
-                <dt className="font-bold text-slate-500">수량</dt>
-                <dd className="font-black text-slate-800">{primary.quantity}</dd>
+        <div className="checkout-product-summary__body mt-3 space-y-3">
+          <div className="checkout-product-summary__top flex items-start gap-3">
+            {code && (imageSrc || imageSet?.main) ? (
+              <div className="checkout-product-summary__thumb h-[4.75rem] w-[4.75rem] shrink-0 overflow-hidden rounded-lg bg-slate-50 ring-1 ring-slate-100 sm:h-[5rem] sm:w-[5rem]">
+                {imageSrc ? (
+                  <img src={imageSrc} alt="" className="size-full object-contain" />
+                ) : (
+                  <BatteryThumbnail
+                    code={code}
+                    imageSet={imageSet}
+                    role="main"
+                    fit="contain"
+                    overlayLabel={false}
+                    surface="transparent"
+                    className="h-full w-full"
+                  />
+                )}
               </div>
-              {fulfillmentLabel ? (
-                <div>
-                  <dt className="font-bold text-slate-500">수령/장착</dt>
-                  <dd className="font-black text-slate-800">{fulfillmentLabel}</dd>
-                </div>
-              ) : null}
-              {returnLabel ? (
-                <div>
-                  <dt className="font-bold text-slate-500">폐배터리</dt>
-                  <dd className="font-black text-slate-800">{returnLabel}</dd>
-                </div>
-              ) : null}
-            </dl>
-
-            {totalAmount != null ? (
-              <p className="checkout-product-summary__amount mt-2 text-xs font-bold tabular-nums text-slate-600">
-                결제금액 {formatPriceWon(totalAmount)}
-              </p>
             ) : null}
+
+            <div className="checkout-product-summary__details min-w-0 flex-1">
+              <p className="text-sm font-black leading-snug text-slate-950">{productTitle}</p>
+              <p className="mt-0.5 text-xs font-semibold text-slate-600">{specLabel}</p>
+            </div>
           </div>
+
+          <dl className="checkout-product-summary__meta grid grid-cols-2 gap-x-3 gap-y-2 border-t border-slate-100 pt-3 text-[11px] text-slate-600 sm:text-xs">
+            <div>
+              <dt className="font-bold text-slate-500">수량</dt>
+              <dd className="mt-0.5 font-black text-slate-800">{primary.quantity}</dd>
+            </div>
+            {fulfillmentLabel ? (
+              <div>
+                <dt className="font-bold text-slate-500">수령/장착</dt>
+                <dd className="mt-0.5 font-black text-slate-800">{fulfillmentLabel}</dd>
+              </div>
+            ) : null}
+            {returnLabel ? (
+              <div>
+                <dt className="font-bold text-slate-500">폐배터리</dt>
+                <dd className="mt-0.5 font-black text-slate-800">{returnLabel}</dd>
+              </div>
+            ) : null}
+            {totalAmount != null ? (
+              <div className="checkout-product-summary__amount-row col-span-2 sm:col-span-1">
+                <dt className="font-bold text-slate-500">결제금액</dt>
+                <dd className="mt-0.5 text-sm font-black tabular-nums text-slate-900">
+                  {formatPriceWon(totalAmount)}
+                </dd>
+              </div>
+            ) : null}
+          </dl>
         </div>
       ) : null}
 

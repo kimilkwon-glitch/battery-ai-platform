@@ -730,7 +730,7 @@
 .bm-search-vehicles__grid {
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  gap: 1rem;
 }
 
 @media (min-width: 640px) {
@@ -794,8 +794,37 @@
 @media (max-width: 767px) {
   .bm-search-vehicle-card__media {
     width: 100%;
-    aspect-ratio: 16 / 9;
-    max-height: 12.5rem;
+    aspect-ratio: 16 / 10;
+    min-height: 10.5rem;
+    max-height: none;
+  }
+
+  .bm-search-vehicle-card__media .bm-vehicle-card-media {
+    min-height: 100%;
+  }
+
+  .bm-search-vehicle-card__body {
+    gap: 0.65rem;
+    padding: 0.875rem 1rem 1rem;
+  }
+
+  .bm-search-vehicle-card__main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .bm-search-vehicle-card__identity {
+    margin-top: 0.35rem;
+  }
+
+  .bm-search-vehicle-card__footer {
+    padding-top: 0.5rem;
+  }
+
+  .bm-search-vehicle-card__cta {
+    width: 100%;
+    justify-content: space-between;
   }
 }
 

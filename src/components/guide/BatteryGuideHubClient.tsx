@@ -55,7 +55,7 @@ export function BatteryGuideHubClient({ initialCategory }: { initialCategory?: s
         <span className="cp-hero__accent" aria-hidden />
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="battery-guide-cat-grid grid gap-3 sm:grid-cols-2">
         {GUIDE_HUB_ITEMS.map((item) => {
           const Icon = item.Icon;
           const selected = active === item.id;

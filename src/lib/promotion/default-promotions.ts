@@ -106,7 +106,7 @@ export const DEFAULT_PROMOTION_SEEDS: DefaultPromotionSeed[] = [
     bannerImageUrl: null,
     badgeText: "택배비 없음",
     showOnMain: false,
-    showOnBenefitsPage: true,
+    showOnBenefitsPage: false,
   },
 ];
 

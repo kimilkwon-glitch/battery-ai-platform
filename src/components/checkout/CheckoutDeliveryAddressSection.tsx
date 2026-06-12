@@ -12,8 +12,6 @@ type Props = {
   onChange: (patch: Partial<OrderRequestFulfillment>) => void;
   onApplyMemberProfile?: () => void;
   showMemberApply?: boolean;
-  showDefaultShipping?: boolean;
-  onApplyDefaultShipping?: () => void;
   saveAsDefaultAddress?: boolean;
   onSaveAsDefaultAddressChange?: (checked: boolean) => void;
   showSaveAsDefault?: boolean;
@@ -27,8 +25,6 @@ export function CheckoutDeliveryAddressSection({
   onChange,
   onApplyMemberProfile,
   showMemberApply,
-  showDefaultShipping,
-  onApplyDefaultShipping,
   saveAsDefaultAddress,
   onSaveAsDefaultAddressChange,
   showSaveAsDefault,
@@ -54,15 +50,6 @@ export function CheckoutDeliveryAddressSection({
             className="checkout-btn-secondary min-h-[2.5rem] px-4 text-xs font-black"
           >
             회원정보와 동일
-          </button>
-        ) : null}
-        {showDefaultShipping && onApplyDefaultShipping ? (
-          <button
-            type="button"
-            onClick={onApplyDefaultShipping}
-            className="checkout-btn-secondary min-h-[2.5rem] px-4 text-xs font-black"
-          >
-            기본 배송지 불러오기
           </button>
         ) : null}
       </div>

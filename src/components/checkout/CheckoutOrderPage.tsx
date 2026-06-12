@@ -244,11 +244,27 @@ export function CheckoutOrderPage() {
     if (!hydrated || items.length === 0) return;
     setVehicle((prev) => (prev.name ? prev : initialVehicleFromCart(items)));
     setUsedBattery((prev) => (prev != null ? prev : usedBatteryFromCart));
-    setFulfillment((prev) =>
-      prev.method !== "undecided" && prev.method !== "delivery"
-        ? prev
-        : initialFulfillmentFromCart(items),
-    );
+    setFulfillment((prev) => {
+      if (prev.method !== "undecided" && prev.method !== "delivery") return prev;
+      const fromCart = initialFulfillmentFromCart(items);
+      const hasUserShipping =
+        Boolean(prev.recipientName?.trim()) ||
+        Boolean(prev.recipientPhone?.trim()) ||
+        Boolean(prev.postalCode?.trim()) ||
+        Boolean(prev.address1?.trim()) ||
+        Boolean(prev.address2?.trim()) ||
+        Boolean(prev.deliveryMessage?.trim()) ||
+        Boolean(prev.visitMessage?.trim());
+      if (hasUserShipping) {
+        return {
+          ...fromCart,
+          ...prev,
+          method: fromCart.method ?? prev.method,
+          storeId: fromCart.storeId ?? prev.storeId,
+        };
+      }
+      return { ...fromCart, ...prev };
+    });
   }, [hydrated, items, usedBatteryFromCart]);
 
   const applyMemberFieldsToCheckout = useCallback(
@@ -338,7 +354,14 @@ export function CheckoutOrderPage() {
         phone: c.phone || next.recipientPhone || fulfillment.recipientPhone || "",
       }));
     }
-    if (next.method !== "undecided") {
+    const needsItemSync =
+      next.method !== "undecided" &&
+      (patch.method != null ||
+        patch.storeId != null ||
+        patch.region != null ||
+        patch.postalCode != null ||
+        patch.address1 != null);
+    if (needsItemSync) {
       applyFulfillmentToItems(next);
     }
   };
@@ -485,16 +508,6 @@ export function CheckoutOrderPage() {
       promotionDiscounts={promotionDiscountLines}
     />
   );
-  const pricePanelInline = (
-    <CheckoutPriceSummaryPanel
-      items={items}
-      fulfillment={fulfillment}
-      usedBattery={effectiveUsedBattery}
-      panelPlacement="inline"
-      finalAmountOverride={displayTotal}
-      promotionDiscounts={promotionDiscountLines}
-    />
-  );
 
   return (
     <div className="checkout-order pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] lg:pb-10" data-page="checkout">
@@ -548,8 +561,6 @@ export function CheckoutOrderPage() {
               onChange={onFulfillmentChange}
               showMemberApply={isLoggedIn}
               onApplyMemberProfile={applyMemberProfileToShipping}
-              showDefaultShipping={isLoggedIn}
-              onApplyDefaultShipping={applyMemberProfileToShipping}
               showSaveAsDefault={isLoggedIn}
               saveAsDefaultAddress={saveAddressToProfile}
               onSaveAsDefaultAddressChange={setSaveAddressToProfile}
@@ -593,8 +604,6 @@ export function CheckoutOrderPage() {
             needsVehicleConfirm={vehicleConfirmState.needsVehicleConfirm}
             vehicleConfirmHref={vehicleConfirmState.confirmHref}
           />
-
-          <div className="lg:hidden">{pricePanelInline}</div>
 
           <CheckoutPromotionSection
             items={items}

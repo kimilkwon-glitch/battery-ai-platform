@@ -23,6 +23,7 @@ import {
   SUPPORT_FAQ_ITEMS,
   type FaqCategory,
 } from "@/lib/support-faq-data";
+import { faqMatchesSearch } from "@/lib/support-faq-search";
 import {
   SUPPORT_HUB_CATEGORIES,
   SUPPORT_HUB_FAQ_INITIAL_LIMIT,
@@ -123,11 +124,7 @@ export function SupportCenterHubV2({ notices }: Props) {
     return SUPPORT_FAQ_ITEMS.filter((item) => {
       const hubCat = faqCategoryToHub(item.category as Exclude<FaqCategory, "전체">);
       if (category !== "all" && hubCat !== category) return false;
-      if (!q) return true;
-      return (
-        item.question.toLowerCase().includes(q) ||
-        item.answer.toLowerCase().includes(q)
-      );
+      return faqMatchesSearch(item, q);
     });
   }, [q, category]);
 
@@ -141,11 +138,13 @@ export function SupportCenterHubV2({ notices }: Props) {
     );
   }, [filteredFaq, useMobileFaqPriority]);
 
-  const visibleFaq = faqExpanded
+  const visibleFaq = q
     ? filteredFaq
-    : useMobileFaqPriority
-      ? priorityFaq
-      : filteredFaq.slice(0, faqInitialLimit);
+    : faqExpanded
+      ? filteredFaq
+      : useMobileFaqPriority
+        ? priorityFaq
+        : filteredFaq.slice(0, faqInitialLimit);
 
   const hiddenFaqCount = faqExpanded
     ? 0
@@ -304,10 +303,10 @@ export function SupportCenterHubV2({ notices }: Props) {
             </div>
             {filteredFaq.length === 0 ? (
               <p className="py-10 text-center text-sm font-medium text-slate-500">
-                검색 결과가 없습니다. 상담 문의로 연결해 주세요.
+                관련 질문을 찾지 못했습니다. 다른 키워드로 검색하거나 상담 문의를 이용해 주세요.
               </p>
             ) : null}
-            {!faqExpanded && hiddenFaqCount > 0 ? (
+            {!q && !faqExpanded && hiddenFaqCount > 0 ? (
               <button
                 type="button"
                 className={clsx(

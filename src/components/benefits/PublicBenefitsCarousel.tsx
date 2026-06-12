@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BenefitsPromoCarousel } from "@/components/benefits/BenefitsPromoCarousel";
 import { BENEFIT_CARDS, BENEFITS_HUB_TITLE, HUB_BENEFITS } from "@/lib/benefits-data";
+import { filterPublicBenefitCards } from "@/lib/benefits-display-filter";
 import { apiFetchPublicPromotionsPaginated } from "@/lib/cms/cms-client";
 import { CONTENT_DISPLAY_LIMITS } from "@/lib/content-display-limits";
 import { publicPromotionToBenefitCard } from "@/lib/promotion/promotion-to-benefit-card";
@@ -30,7 +31,7 @@ export function PublicBenefitsCarousel({
   ariaLabel = BENEFITS_HUB_TITLE,
   showMoreLink = variant === "main",
 }: Props) {
-  const [cards, setCards] = useState<BenefitCardConfig[]>(BENEFIT_CARDS);
+  const [cards, setCards] = useState<BenefitCardConfig[]>(() => filterPublicBenefitCards(BENEFIT_CARDS));
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -48,18 +49,18 @@ export function PublicBenefitsCarousel({
 
       if (!res.ok) return;
 
-      const fromDb = res.items.map(publicPromotionToBenefitCard);
+      const fromDb = filterPublicBenefitCards(res.items.map(publicPromotionToBenefitCard));
       if (fromDb.length === 0 && !isMain) return;
 
       if (isMain) {
-        setCards(fromDb.length ? fromDb : BENEFIT_CARDS.slice(0, CONTENT_DISPLAY_LIMITS.mainBenefits));
+        setCards(fromDb.length ? fromDb : filterPublicBenefitCards(BENEFIT_CARDS.slice(0, CONTENT_DISPLAY_LIMITS.mainBenefits)));
         setHasMore(res.hasMore || fromDb.length < (res.total || 0));
         return;
       }
 
       const merged =
         filter === "benefits"
-          ? [...fromDb, ...STATIC_EXTRAS.filter((c) => c.status === "coming_soon")]
+          ? [...fromDb, ...filterPublicBenefitCards(STATIC_EXTRAS.filter((c) => c.status === "coming_soon"))]
           : fromDb;
 
       if (merged.length) {
