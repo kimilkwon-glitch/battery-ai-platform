@@ -27,6 +27,7 @@ export type AdminCommerceOrderListItem = {
   orderId: string;
   orderNumber: string;
   createdAt: string;
+  approvedAt?: string;
   userId?: string;
   customerName: string;
   customerPhone: string;
@@ -57,6 +58,7 @@ export function commerceOrderToListItem(record: CommerceOrderRecord): AdminComme
     orderId: record.orderId,
     orderNumber: record.orderNumber,
     createdAt: record.createdAt,
+    approvedAt: record.approvedAt,
     userId: record.userId,
     customerName: record.customerName,
     customerPhone: record.customerPhone,

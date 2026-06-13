@@ -1,28 +1,50 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AdminReplyTemplateBar } from "@/components/admin/AdminReplyTemplateBar";
-import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
+import { Badge } from "@/components/ui/badge";
+import { INQUIRY_STATUS_BADGE } from "@/lib/admin/admin-status-tokens";
+import { brands, getBattery } from "@/lib/platform-data";
 import { INQUIRY_STATUS_LABELS, type CustomerInquiryRecord, type InquiryStatus } from "@/types/customer-inquiry";
 
 const STATUS_CHIPS = [
-  { id: "all", label: "전체" },
   { id: "new", label: "답변대기" },
-  { id: "done", label: "답변완료" },
+  { id: "in_progress", label: "진행중" },
+  { id: "done", label: "처리완료" },
+  { id: "on_hold", label: "보류" },
+  { id: "all", label: "전체" },
 ] as const;
+
+function productBrandLabel(batteryCode?: string): string {
+  if (!batteryCode) return "—";
+  try {
+    const battery = getBattery(batteryCode);
+    return brands.find((b) => b.id === battery.brandId)?.displayName ?? "—";
+  } catch {
+    return "—";
+  }
+}
+
+function productPageUrl(record: CustomerInquiryRecord): string | null {
+  if (record.pageUrl?.trim()) return record.pageUrl.trim();
+  if (record.batteryCode?.trim()) return `/batteries/${encodeURIComponent(record.batteryCode.trim())}`;
+  return null;
+}
 
 export function AdminProductQnaClient() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
   const [items, setItems] = useState<CustomerInquiryRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusChip, setStatusChip] = useState<string>("all");
+  const [statusChip, setStatusChip] = useState<string>("new");
   const [query, setQuery] = useState(initialQuery);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [memoDraft, setMemoDraft] = useState("");
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -39,13 +61,16 @@ export function AdminProductQnaClient() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return items.filter((row) => {
-      if (statusChip === "new" && row.status === "done") return false;
+      if (statusChip === "new" && row.status !== "new") return false;
+      if (statusChip === "in_progress" && row.status !== "in_progress") return false;
       if (statusChip === "done" && row.status !== "done") return false;
+      if (statusChip === "on_hold" && row.status !== "on_hold") return false;
       if (!q) return true;
       return (
         row.title?.toLowerCase().includes(q) ||
         row.message.toLowerCase().includes(q) ||
         row.batteryCode?.toLowerCase().includes(q) ||
+        row.productName?.toLowerCase().includes(q) ||
         row.name.toLowerCase().includes(q) ||
         row.contact.toLowerCase().includes(q)
       );
@@ -59,104 +84,205 @@ export function AdminProductQnaClient() {
   }, [selected?.id, selected?.adminMemo]);
 
   const patch = async (patchBody: { status?: InquiryStatus; adminMemo?: string; hidden?: boolean }) => {
-    if (!selected) return;
+    if (!selected) return false;
     setSaving(true);
-    await fetch(`/api/admin/inquiries/${selected.id}`, {
+    setError(null);
+    const res = await fetch(`/api/admin/inquiries/${selected.id}`, {
       method: "PATCH",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patchBody),
     });
+    const data = await res.json();
     setSaving(false);
-    void load();
+    if (!res.ok || !data.ok) {
+      setError(data.message ?? "저장에 실패했습니다.");
+      return false;
+    }
+    setItems((prev) => prev.map((i) => (i.id === selected.id ? data.item : i)));
+    if (patchBody.status === "done" && statusChip === "new") {
+      setSelectedId(null);
+    }
+    return true;
   };
 
+  const handleReply = async () => {
+    const memo = memoDraft.trim();
+    if (!memo) {
+      setError("답변 내용을 입력해 주세요.");
+      return;
+    }
+    await patch({ adminMemo: memo, status: "done" });
+  };
+
+  const selectedBrand = selected ? productBrandLabel(selected.batteryCode) : "—";
+  const selectedProductUrl = selected ? productPageUrl(selected) : null;
+
   return (
-    <div className="admin-product-qna admin-inquiry-reply-layout">
-      <div className="space-y-3">
-        <AdminQuickFilterChips
-          chips={STATUS_CHIPS.map((c) => ({ id: c.id, label: c.label }))}
-          activeId={statusChip}
-          onChange={(id) => setStatusChip(id ?? "all")}
-        />
-        <input
-          className="admin-toolbar__search w-full"
-          placeholder="상품명·규격·작성자·제목 검색"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+    <div className="admin-product-qna admin-inquiry-reply-layout admin-inquiry-reply-layout--wide">
+      <section className="admin-product-qna__list admin-panel p-0">
+        <div className="admin-product-qna__filters space-y-3 p-3">
+          <AdminQuickFilterChips
+            chips={STATUS_CHIPS.map((c) => ({ id: c.id, label: c.label }))}
+            activeId={statusChip}
+            onChange={(id) => setStatusChip(id ?? "new")}
+          />
+          <input
+            className="admin-toolbar__search w-full"
+            placeholder="상품명·규격·작성자·문의내용·주문번호 검색"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+
+        {error ? (
+          <p className="mx-3 mb-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-800">
+            {error}
+          </p>
+        ) : null}
+
         {loading ? (
-          <p className="text-sm text-slate-500">불러오는 중…</p>
+          <p className="admin-inquiries__empty">불러오는 중…</p>
         ) : filtered.length === 0 ? (
-          <div className="admin-panel rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
-            <p className="text-sm font-bold text-slate-700">답변 대기 중인 상품 문의가 없습니다.</p>
-            <p className="mt-2 text-xs font-medium text-slate-500">
-              새 상품 문의가 접수되면 이곳에서 확인할 수 있습니다.
+          <div className="admin-inquiries__empty">
+            <p className="font-bold text-slate-700">답변 대기 중인 상품 문의가 없습니다.</p>
+            <p className="mt-1 text-slate-500">상품 상세 Q&A에서 등록된 문의가 이곳에 표시됩니다.</p>
+          </div>
+        ) : (
+          <ul className="admin-product-qna__items">
+            {filtered.map((row) => {
+              const brand = productBrandLabel(row.batteryCode);
+              return (
+                <li key={row.id}>
+                  <button
+                    type="button"
+                    className={`admin-product-qna__item${row.id === selectedId ? " admin-product-qna__item--active" : ""}`}
+                    onClick={() => setSelectedId(row.id)}
+                  >
+                    <div className="admin-product-qna__item-badges">
+                      <Badge variant={INQUIRY_STATUS_BADGE[row.status]}>
+                        {row.status === "new" ? "답변대기" : INQUIRY_STATUS_LABELS[row.status]}
+                      </Badge>
+                      {row.isSecret ? <Badge variant="muted">비밀글</Badge> : null}
+                    </div>
+                    <p className="admin-product-qna__item-title">{row.productName ?? row.batteryCode ?? "상품 문의"}</p>
+                    <p className="admin-product-qna__item-meta">
+                      {brand} · {row.batteryCode ?? "—"}
+                    </p>
+                    <p className="admin-product-qna__item-preview">
+                      {row.title ?? row.message.slice(0, 60)}
+                    </p>
+                    <p className="admin-product-qna__item-foot">
+                      {row.name} · {formatDate(row.createdAt)}
+                    </p>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <section className="admin-product-qna__detail admin-panel">
+        {!selected ? (
+          <div className="admin-inquiries__detail-empty">
+            <p className="admin-inquiries__detail-empty-title">상품 문의를 선택하세요</p>
+            <p className="admin-inquiries__detail-empty-desc">
+              목록에서 문의를 선택하면 상품 정보와 답변을 확인할 수 있습니다.
             </p>
           </div>
         ) : (
-          <ul className="space-y-2">
-            {filtered.map((row) => (
-              <li key={row.id}>
-                <button
-                  type="button"
-                  className={`w-full text-left ${row.id === selectedId ? "ring-2 ring-blue-400" : ""}`}
-                  onClick={() => setSelectedId(row.id)}
-                >
-                  <AdminMobileCard
-                    title={row.title ?? row.message.slice(0, 40)}
-                    lines={[
-                      row.batteryCode ?? "—",
-                      `${row.name} · ${INQUIRY_STATUS_LABELS[row.status]}`,
-                      row.isSecret ? "비밀글" : "공개",
-                    ]}
-                  />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+          <div className="admin-product-qna__detail-inner">
+            <section className="admin-product-qna__product-card">
+              <h3 className="admin-inquiries__section-title">상품 정보</h3>
+              <dl className="admin-inquiries__dl">
+                <DetailRow label="상품명" value={selected.productName ?? selected.batteryCode ?? "—"} />
+                <DetailRow label="규격" value={selected.batteryCode ?? "—"} />
+                <DetailRow label="브랜드" value={selectedBrand} />
+              </dl>
+              {selectedProductUrl ? (
+                <Link href={selectedProductUrl} className="admin-panel__link mt-2 inline-block" target="_blank">
+                  상품 페이지 보기 →
+                </Link>
+              ) : null}
+            </section>
 
-      {selected ? (
-        <aside className="admin-detail-panel space-y-3 rounded-xl border border-slate-200 bg-white p-4">
-          <h3 className="text-sm font-black text-slate-900">{selected.title ?? "상품 문의"}</h3>
-          <p className="text-xs font-bold text-slate-500">
-            {selected.batteryCode} · {selected.name} · {selected.contact}
-          </p>
-          <p className="whitespace-pre-wrap text-sm text-slate-700">{selected.message}</p>
-          <AdminReplyTemplateBar
-            currentValue={memoDraft}
-            onInsert={setMemoDraft}
-            label="자주 쓰는 답변"
-          />
-          <textarea
-            className="admin-memo-input w-full"
-            rows={5}
-            value={memoDraft}
-            onChange={(e) => setMemoDraft(e.target.value)}
-            placeholder="관리자 답변"
-          />
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              disabled={saving}
-              className="admin-btn-primary text-xs"
-              onClick={() => void patch({ adminMemo: memoDraft, status: "done" })}
-            >
-              답변 저장
-            </button>
-            <button
-              type="button"
-              disabled={saving}
-              className="admin-btn-secondary text-xs"
-              onClick={() => void patch({ hidden: true })}
-            >
-              숨김
-            </button>
+            <section className="admin-inquiries__section">
+              <h3 className="admin-inquiries__section-title">고객 정보</h3>
+              <dl className="admin-inquiries__dl">
+                <DetailRow label="작성자" value={selected.name} />
+                <DetailRow label="연락처" value={selected.contact || "—"} />
+                <DetailRow label="접수일" value={formatDate(selected.createdAt)} />
+              </dl>
+            </section>
+
+            <section className="admin-inquiries__section">
+              <h3 className="admin-inquiries__section-title">문의 내용</h3>
+              <p className="admin-inquiries__message">{selected.message}</p>
+            </section>
+
+            <section className="admin-inquiries__section">
+              <h3 className="admin-inquiries__section-title">관리자 답변</h3>
+              <AdminReplyTemplateBar
+                currentValue={memoDraft}
+                onInsert={setMemoDraft}
+                label="답변 템플릿"
+              />
+              <textarea
+                className="admin-inquiries__textarea mt-2"
+                rows={5}
+                value={memoDraft}
+                onChange={(e) => setMemoDraft(e.target.value)}
+                placeholder="고객에게 표시될 답변을 입력하세요"
+              />
+            </section>
+
+            <div className="admin-inquiries__detail-actions">
+              <button
+                type="button"
+                disabled={saving}
+                className="admin-btn admin-btn--primary admin-btn--md"
+                onClick={() => void handleReply()}
+              >
+                답변 등록
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                className="admin-btn admin-btn--secondary admin-btn--md"
+                onClick={() => void patch({ adminMemo: memoDraft })}
+              >
+                임시 저장
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                className="admin-btn admin-btn--ghost admin-btn--md"
+                onClick={() => void patch({ hidden: true })}
+              >
+                숨김
+              </button>
+            </div>
           </div>
-        </aside>
-      ) : null}
+        )}
+      </section>
     </div>
   );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="admin-inquiries__dl-row">
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
+function formatDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleString("ko-KR");
+  } catch {
+    return iso;
+  }
 }

@@ -579,7 +579,8 @@ export async function pgStoreCommerceOrderListItems(
       return_battery_option,
       order_status,
       payment_status,
-      final_amount
+      final_amount,
+      approved_at
     FROM commerce_orders
     ORDER BY created_at DESC
     LIMIT ${limit}
@@ -600,12 +601,14 @@ export async function pgStoreCommerceOrderListItems(
     order_status: string;
     payment_status: string;
     final_amount: number | null;
+    approved_at: string | null;
   }[];
 
   return rows.map((row) => ({
     orderId: row.id,
     orderNumber: row.order_number,
     createdAt: new Date(row.created_at).toISOString(),
+    approvedAt: row.approved_at ? new Date(row.approved_at).toISOString() : undefined,
     userId: row.user_id ?? undefined,
     customerName: row.customer_name,
     customerPhone: row.customer_phone,

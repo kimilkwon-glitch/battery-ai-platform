@@ -259,15 +259,19 @@ export function AdminCommerceClaimsClient() {
   };
 
   return (
-    <div className={`admin-claims-layout ${selectedId ? "has-detail" : "no-detail"}`}>
-      <p className="admin-claims-layout__notice rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold leading-relaxed text-amber-950">
-        <strong className="font-black">PG 환불 미연동 안내:</strong> &quot;환불완료 상태로 변경&quot;은
-        클레임·주문 <span className="font-black">내부 상태</span>만 바꿉니다. 실제 결제 취소/환불은
-        토스페이먼츠 PG 관리자 또는 API 연동 후 별도로 처리해야 합니다. 결제상태는 PG 환불 성공 시에만
-        자동으로 환불완료로 바뀝니다.
-      </p>
-      <div className="admin-claims-layout__main space-y-3">
-        <label className="inline-flex items-center gap-2 text-sm font-bold text-slate-600">
+    <div className={`admin-claims-layout admin-claims-layout--workspace ${selectedId ? "has-detail" : "no-detail"}`}>
+      <div className="admin-claims-layout__notice admin-workspace-notice admin-workspace-notice--claims">
+        <p className="admin-workspace-notice__title">PG 환불 연동 안내</p>
+        <p className="admin-workspace-notice__text">
+          클레임 상태를 환불완료로 변경해도 실제 Toss 결제 취소·환불은 자동 처리되지 않습니다. 실제
+          결제 취소·환불은 Toss 관리자 또는 결제 API 연동 후 별도로 처리해야 합니다.
+        </p>
+        <p className="admin-workspace-notice__sub">
+          결제상태는 PG 환불 성공 시에만 환불완료로 변경됩니다.
+        </p>
+      </div>
+      <div className="admin-claims-layout__main space-y-4">
+        <label className="admin-claims-layout__scope inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
           데이터 범위
           <select
             value={dataScope}
@@ -289,9 +293,7 @@ export function AdminCommerceClaimsClient() {
                 setDashboardFilter("all");
                 syncUrl({ type: f.id, filter: "all" });
               }}
-              className={`rounded-full px-3 py-1 text-xs font-bold ${
-                typeFilter === f.id ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"
-              }`}
+              className={`admin-claims-filter-pill ${typeFilter === f.id ? "is-active" : ""}`}
             >
               {f.label}
             </button>
@@ -307,9 +309,7 @@ export function AdminCommerceClaimsClient() {
                 setDashboardFilter("all");
                 syncUrl({ status: f.id, filter: "all" });
               }}
-              className={`rounded-full px-3 py-1 text-xs font-bold ${
-                statusFilter === f.id ? "bg-blue-700 text-white" : "bg-blue-50 text-blue-800"
-              }`}
+              className={`admin-claims-filter-pill admin-claims-filter-pill--status ${statusFilter === f.id ? "is-active" : ""}`}
             >
               {f.label}
             </button>
@@ -320,7 +320,7 @@ export function AdminCommerceClaimsClient() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="주문번호, 고객명, 연락처, 상품명 검색"
-          className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+          className="admin-claims-layout__search w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
         />
 
         <div className={`${bm.card} overflow-hidden`}>

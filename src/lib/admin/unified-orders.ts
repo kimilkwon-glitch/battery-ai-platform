@@ -37,6 +37,7 @@ export type UnifiedAdminOrderRow = {
   shippingCarrier?: string;
   shippingTrackingNumber?: string;
   isTestOrder: boolean;
+  approvedAt?: string;
 };
 
 /** @deprecated — `view` 파라미터 사용 */
@@ -83,6 +84,7 @@ export function commerceToUnifiedRow(
     shippingCarrier: meta?.shippingCarrier,
     shippingTrackingNumber: meta?.shippingTrackingNumber,
     isTestOrder: false,
+    approvedAt: o.approvedAt,
   };
   row.isTestOrder = isAdminTestUnifiedOrder(row);
   return row;

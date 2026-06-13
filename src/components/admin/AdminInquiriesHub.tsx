@@ -55,6 +55,8 @@ function HubInner() {
             사진 확인 요청 바로가기 →
           </a>
         </div>
+      ) : tab === "order" ? (
+        <AdminInquiriesClient categoryFilter="order" />
       ) : (
         <AdminInquiriesClient />
       )}

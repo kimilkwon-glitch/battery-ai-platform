@@ -84,7 +84,7 @@ export function AdminBatteryTalkClient() {
   const [detail, setDetail] = useState<BatteryTalkThreadDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [statusTab, setStatusTab] = useState<BatteryTalkThreadStatus | "all">("all");
+  const [statusTab, setStatusTab] = useState<BatteryTalkThreadStatus | "all">("waiting");
   const [query, setQuery] = useState(initialQuery);
   const [selectedId, setSelectedId] = useState<string | null>(initialThreadId);
   const [replyDraft, setReplyDraft] = useState("");

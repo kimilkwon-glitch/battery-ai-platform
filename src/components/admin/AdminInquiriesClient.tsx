@@ -40,28 +40,37 @@ const CATEGORY_CHIPS = [
 ] as const;
 
 const STATUS_TABS: { id: InquiryStatus | "all"; label: string }[] = [
-  { id: "all", label: "전체" },
-  { id: "new", label: "신규" },
-  { id: "in_progress", label: "확인중" },
+  { id: "new", label: "답변대기" },
+  { id: "in_progress", label: "진행중" },
   { id: "done", label: "처리완료" },
   { id: "on_hold", label: "보류" },
+  { id: "all", label: "전체" },
 ];
 
-export function AdminInquiriesClient() {
+type Props = {
+  /** 주문문의 탭 등 유형 고정 필터 */
+  categoryFilter?: InquiryCategory | null;
+};
+
+export function AdminInquiriesClient({ categoryFilter = null }: Props) {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q")?.trim() || searchParams.get("query")?.trim() || "";
   const [items, setItems] = useState<CustomerInquiryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [statusTab, setStatusTab] = useState<InquiryStatus | "all">("all");
-  const [categoryChip, setCategoryChip] = useState<string | null>(null);
+  const [statusTab, setStatusTab] = useState<InquiryStatus | "all">("new");
+  const [categoryChip, setCategoryChip] = useState<string | null>(categoryFilter);
   const [query, setQuery] = useState(initialQuery);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [memoDraft, setMemoDraft] = useState("");
   const [saving, setSaving] = useState(false);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+
+  useEffect(() => {
+    if (categoryFilter) setCategoryChip(categoryFilter);
+  }, [categoryFilter]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -138,12 +147,30 @@ export function AdminInquiriesClient() {
       return false;
     }
     setItems((prev) => prev.map((i) => (i.id === id ? data.item : i)));
+    if (patch.status === "done" && statusTab === "new") {
+      setSelectedId(null);
+      setMobileDetailOpen(false);
+    }
     return true;
   };
 
   const handleStatusChange = async (status: InquiryStatus) => {
     if (!selected) return;
     await patchInquiry(selected.id, { status });
+  };
+
+  const handleReplySubmit = async () => {
+    if (!selected) return;
+    const memo = memoDraft.trim();
+    if (!memo) {
+      setError("답변 내용을 입력해 주세요.");
+      return;
+    }
+    const ok = await patchInquiry(selected.id, { adminMemo: memo, status: "done" });
+    if (ok) {
+      setSelectedId(null);
+      setMobileDetailOpen(false);
+    }
   };
 
   const handleMemoSave = async () => {
@@ -167,10 +194,10 @@ export function AdminInquiriesClient() {
 
   const resetFilters = () => {
     setQuery("");
-    setCategoryChip(null);
+    if (!categoryFilter) setCategoryChip(null);
     setDateFrom("");
     setDateTo("");
-    setStatusTab("all");
+    setStatusTab("new");
   };
 
   const selectInquiry = (id: string) => {
@@ -179,7 +206,11 @@ export function AdminInquiriesClient() {
   };
 
   const hasFilterActive =
-    statusTab !== "all" || categoryChip != null || query.trim() !== "" || dateFrom !== "" || dateTo !== "";
+    statusTab !== "new" ||
+    (categoryChip != null && categoryChip !== categoryFilter) ||
+    query.trim() !== "" ||
+    dateFrom !== "" ||
+    dateTo !== "";
 
   return (
     <div className="admin-inquiries space-y-4">
@@ -267,8 +298,14 @@ export function AdminInquiriesClient() {
             <p className="admin-inquiries__empty">불러오는 중…</p>
           ) : filtered.length === 0 ? (
             <div className="admin-inquiries__empty">
-              <p className="font-bold text-slate-700">접수된 문의가 없습니다</p>
-              <p className="mt-1 text-slate-500">고객 문의가 접수되면 이곳에 표시됩니다.</p>
+              <p className="font-bold text-slate-700">
+                {statusTab === "new" ? "답변 대기 중인 문의가 없습니다" : "접수된 문의가 없습니다"}
+              </p>
+              <p className="mt-1 text-slate-500">
+                {statusTab === "new"
+                  ? "새 문의가 접수되면 이곳에 표시됩니다."
+                  : "필터 조건에 맞는 문의가 없습니다."}
+              </p>
             </div>
           ) : (
             <>
@@ -444,17 +481,17 @@ export function AdminInquiriesClient() {
                   type="button"
                   className="admin-btn admin-btn--primary admin-btn--md"
                   disabled={saving}
-                  onClick={() => void handleMemoSave()}
+                  onClick={() => void handleReplySubmit()}
                 >
-                  저장
+                  답변 등록
                 </button>
                 <button
                   type="button"
                   className="admin-btn admin-btn--secondary admin-btn--md"
                   disabled={saving}
-                  onClick={() => void handleQuickStatus("done")}
+                  onClick={() => void handleMemoSave()}
                 >
-                  처리완료
+                  메모만 저장
                 </button>
                 <button
                   type="button"

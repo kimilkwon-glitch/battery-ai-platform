@@ -248,3 +248,16 @@ export async function inquirySetHidden(
 ): Promise<CustomerInquiryRecord | null> {
   return inquiryPatch(id, { hidden });
 }
+
+/** 운영 cleanup script 전용 — 명확한 테스트 레코드만 삭제 */
+export async function inquiryDeleteByIds(ids: string[]): Promise<number> {
+  if (ids.length === 0) return 0;
+  await ensureOperationalSchema();
+  const sql = getSql();
+  const rows = (await sql`
+    DELETE FROM customer_inquiries
+    WHERE id = ANY(${ids})
+    RETURNING id
+  `) as { id: string }[];
+  return rows.length;
+}
