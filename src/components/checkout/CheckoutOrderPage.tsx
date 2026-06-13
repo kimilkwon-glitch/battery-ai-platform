@@ -389,7 +389,7 @@ export function CheckoutOrderPage() {
   }, [items, vehicle]);
 
   const vehicleOk =
-    fulfillment.method === "store_pickup_self" || checkoutVehicleInfoValid(vehicle);
+    fulfillment.method === "undecided" || checkoutVehicleInfoValid(vehicle);
 
   const canConfirm =
     optionsComplete &&
@@ -586,6 +586,7 @@ export function CheckoutOrderPage() {
 
           {formPanels.vehicle ? (
             <CheckoutVehicleSection
+              fulfillmentMethod={fulfillment.method}
               values={vehicle}
               onChange={(p) => setVehicle((v) => ({ ...v, ...p }))}
               needsVehicleConfirm={vehicleConfirmState.needsVehicleConfirm}

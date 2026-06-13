@@ -140,13 +140,12 @@ export function CheckoutVisitAddressSection({
       </label>
 
       <label className="block">
-        <span className="checkout-label">방문 요청사항</span>
+        <span className="checkout-label">출장 요청사항 (선택)</span>
         <textarea
           rows={3}
           className={inputClass}
           value={values.visitMessage ?? ""}
           onChange={(e) => onChange({ visitMessage: e.target.value })}
-          placeholder="예: 지하주차장 B2층에 주차되어 있습니다. 시동이 걸리지 않습니다."
         />
       </label>
     </section>

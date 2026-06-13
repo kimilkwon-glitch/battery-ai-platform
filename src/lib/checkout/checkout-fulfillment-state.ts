@@ -67,7 +67,7 @@ export function shouldSyncCartItemsForFulfillmentPatch(
 }
 
 export function checkoutVehicleInfoRequired(method: OrderRequestFulfillmentMethod): boolean {
-  return method !== "store_pickup_self" && method !== "undecided";
+  return method !== "undecided";
 }
 
 export function checkoutFormPanelsForMethod(method: OrderRequestFulfillmentMethod): {

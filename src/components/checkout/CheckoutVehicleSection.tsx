@@ -10,7 +10,8 @@ import {
   resolveDefaultCheckoutVehicleId,
   type CheckoutVehicleChoice,
 } from "@/lib/checkout/checkout-vehicle-choices";
-import type { OrderRequestVehicle } from "@/types/order-request";
+import type { OrderRequestFulfillmentMethod, OrderRequestVehicle } from "@/types/order-request";
+import { checkoutVehicleSectionCopy } from "@/data/checkout-vehicle-copy";
 
 const inputClass =
   "checkout-input mt-1 w-full rounded-xl border px-3 py-2.5 text-sm font-medium";
@@ -18,6 +19,7 @@ const inputClass =
 const FUEL_OPTIONS = ["가솔린", "디젤", "LPG", "하이브리드", "전기"] as const;
 
 type Props = {
+  fulfillmentMethod: OrderRequestFulfillmentMethod;
   values: OrderRequestVehicle;
   onChange: (patch: Partial<OrderRequestVehicle>) => void;
   needsVehicleConfirm?: boolean;
@@ -41,6 +43,7 @@ export function checkoutVehicleInfoValid(vehicle: OrderRequestVehicle): boolean 
 }
 
 export function CheckoutVehicleSection({
+  fulfillmentMethod,
   values,
   onChange,
   needsVehicleConfirm = false,
@@ -52,6 +55,7 @@ export function CheckoutVehicleSection({
   const [defaultApplied, setDefaultApplied] = useState(false);
   const summary = vehicleSummary(values);
   const missingRequired = !checkoutVehicleInfoValid(values);
+  const sectionCopy = checkoutVehicleSectionCopy(fulfillmentMethod);
 
   const vehicleChoices = useMemo(() => {
     if (!loggedIn || typeof window === "undefined") return [];
@@ -92,15 +96,13 @@ export function CheckoutVehicleSection({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="checkout-card__title">
-            차량 정보 <span className="text-red-600">(공구확인용)</span>
+            차량 정보 <span className="text-red-600">({sectionCopy.titleSuffix})</span>
           </h2>
           {summary ? (
             <p className="checkout-card__hint mt-1">{summary}</p>
-          ) : (
-            <p className="checkout-card__hint mt-1">
-              공구 확인을 위해 차량명을 입력해 주세요. 연식·연료도 함께 적어 주시면 확인에 도움이 됩니다.
-            </p>
-          )}
+          ) : sectionCopy.emptyHint ? (
+            <p className="checkout-card__hint mt-1">{sectionCopy.emptyHint}</p>
+          ) : null}
           {missingRequired && open ? (
             <p className="mt-1 text-[11px] font-bold text-red-600">차량명은 필수입니다.</p>
           ) : null}

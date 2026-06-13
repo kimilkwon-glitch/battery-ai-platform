@@ -67,13 +67,12 @@ export function CheckoutStoreSection({ values, onChange }: Props) {
       </label>
 
       <label className="block">
-        <span className="checkout-label">{isPickup ? "요청사항" : "방문 요청사항"}</span>
+        <span className="checkout-label">방문 요청사항 (선택)</span>
         <textarea
           rows={3}
           className={inputClass}
           value={values.storeMessage ?? ""}
           onChange={(e) => onChange({ storeMessage: e.target.value })}
-          placeholder="예: 방문 전 연락 부탁드립니다. 차량정보는 현장에서 확인하겠습니다."
         />
       </label>
     </section>

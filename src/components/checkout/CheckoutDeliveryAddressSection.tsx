@@ -148,13 +148,12 @@ export function CheckoutDeliveryAddressSection({
       </div>
 
       <label className="block">
-        <span className="checkout-label">배송메시지</span>
+        <span className="checkout-label">배송메시지 (선택)</span>
         <textarea
           rows={3}
           className={inputClass}
           value={values.deliveryMessage ?? ""}
           onChange={(e) => onChange({ deliveryMessage: e.target.value })}
-          placeholder="예: 부재 시 문 앞에 놓아주세요. 차량정보를 모르시면 여기에 적어주세요."
         />
       </label>
     </section>
