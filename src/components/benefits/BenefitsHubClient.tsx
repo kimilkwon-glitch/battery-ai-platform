@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { PublicBenefitsCarousel } from "@/components/benefits/PublicBenefitsCarousel";
-import { FirstOrderMemberBanner } from "@/components/benefits/FirstOrderMemberBanner";
 import { BenefitCardVisual } from "@/components/benefits/BenefitCardVisual";
 import { BenefitsNotices } from "@/components/benefits/BenefitsNotices";
 import {
@@ -15,7 +14,6 @@ export function BenefitsHubClient() {
   const coming = BENEFIT_CARDS.filter((c) => c.status === "coming_soon");
   return (
     <div className="bm-zone bm-zone--benefit space-y-8" data-page="benefits-hub">
-      <FirstOrderMemberBanner />
       <PublicBenefitsCarousel showHeader={false} variant="hub" filter="benefits" autoPlay={false} showMoreLink={false} />
 
       {coming.length > 0 ? (

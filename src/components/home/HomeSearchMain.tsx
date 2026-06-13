@@ -1,6 +1,5 @@
 import { PortalHeader } from "@/components/portal";
 import { SiteFooter } from "@/components/common/SiteFooter";
-import { FirstOrderMemberBanner } from "@/components/benefits/FirstOrderMemberBanner";
 import { HomeBenefitsCarousel } from "@/components/home/HomeBenefitsCarousel";
 import { HomeBrandLineupPair } from "@/components/home/HomeBrandLineupPair";
 import { HomeGuestOrderLookupLink } from "@/components/home/HomeGuestOrderLookupLink";
@@ -19,7 +18,6 @@ export function HomeSearchMain() {
 
       <div className="home-main-content mx-auto w-full max-w-[1240px] px-4 sm:px-6">
         <div className="home-main-section home-main-section--benefits space-y-3" data-home-section="benefits">
-          <FirstOrderMemberBanner />
           <HomeBenefitsCarousel />
         </div>
         <HomeQuickIconMenu />

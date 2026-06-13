@@ -13,64 +13,100 @@
 @import "../styles/search-battery-card-mobile.css";
 @import "../styles/mobile-layout-fix.css";
 @import "../styles/review-write.css";
+@import "../styles/design-system-v2.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 /*---break--- */
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-body: "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  /** 섹션·페이지 제목 — 한글 선명도 우선 (GmarketSans 900 synthetic bold 방지) */
-  --font-section: "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: "GmarketSans", "Pretendard", system-ui, sans-serif;
-  --font-accent: "SCoreDream", "Pretendard", system-ui, sans-serif;
+  /* Typography — 4 roles */
+  --font-body: "Wanted Sans", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-section: "Freesentation", "Wanted Sans", system-ui, sans-serif;
+  --font-heading: "Freesentation", "Wanted Sans", system-ui, sans-serif;
+  --font-promo: "Paperlogy", "Wanted Sans", system-ui, sans-serif;
+  --font-price: "KBO Dia Gothic", "Wanted Sans", system-ui, sans-serif;
+  /** @deprecated accent — use --font-promo */
+  --font-accent: var(--font-promo);
 
-  /* Design System P2 — Premium Trust (white base + navy + cobalt) */
-  --bm-page-bg: #f3f6fa;
+  /* Design System V2 — white base + role colors */
+  --bm-page-bg: #ffffff;
   --bm-card: #ffffff;
   --bm-surface: #ffffff;
-  --bm-surface-soft: #f1f5f9;
-  --bm-surface-blue: #eff6ff;
-  --bm-surface-navy: #0f172a;
-  --bm-surface-muted: #f1f5f9;
-  --bm-brand-navy: #0b1220;
-  --bm-primary: #2563eb;
-  --bm-primary-hover: #1d4ed8;
-  --bm-primary-dark: #0f172a;
-  --bm-accent: #0ea5e9;
-  --bm-accent-soft: #e0f2fe;
-  --bm-navy: #0f172a;
-  --bm-navy-mid: #1e293b;
-  --bm-cobalt: #2563eb;
-  --bm-muted: #64748b;
-  --bm-text: #0f172a;
-  --bm-text-sub: #475569;
-  --bm-text-muted: #64748b;
-  --bm-text-on-dark: #f8fafc;
-  --bm-text-on-dark-sub: #cbd5e1;
-  --bm-border: #e2e8f0;
-  --bm-border-soft: #e2e8f0;
-  --bm-border-blue: #bfdbfe;
-  --bm-border-strong: #cbd5e1;
-  --bm-image-bg: #eef4fc;
-  /** 차종 카드 이미지 영역 — 노멀라이즈 PNG(흰 배경)와 동일 */
+  --bm-surface-soft: #f7f4f0;
+  --bm-surface-blue: #f2f6ff;
+  --bm-surface-navy: #25262b;
+  --bm-surface-muted: #f0edea;
+  --bm-brand-navy: #25262b;
+  --bm-primary: #2864dc;
+  --bm-primary-hover: #1f54c4;
+  --bm-primary-soft: #f2f6ff;
+  --bm-primary-dark: #25262b;
+  --bm-accent: #f29a62;
+  --bm-accent-soft: #fff4ea;
+  --bm-navy: #25262b;
+  --bm-navy-mid: #3d3f46;
+  --bm-cobalt: #2864dc;
+  --bm-muted: #8a8d94;
+  --bm-text: #25262b;
+  --bm-text-sub: #70737b;
+  --bm-text-muted: #8a8d94;
+  --bm-text-on-dark: #ffffff;
+  --bm-text-on-dark-sub: #e8e5e1;
+  --bm-border: #e8e5e1;
+  --bm-border-soft: #f0edea;
+  --bm-border-blue: #e8e5e1;
+  --bm-border-strong: #d8d4cf;
+  --bm-image-bg: #f7f4f0;
   --bm-vehicle-surface: #ffffff;
   --bm-vehicle-surface-top: #ffffff;
   --bm-vehicle-surface-bottom: #ffffff;
-  --bm-vehicle-surface-border: rgba(226, 232, 240, 0.9);
-  --bm-catalog-bg: #f8fafc;
-  --bm-success: #059669;
-  --bm-success-soft: #ecfdf5;
-  --bm-warning: #d97706;
-  --bm-warning-soft: #fffbeb;
-  --bm-info: #2563eb;
-  --bm-info-soft: #eff6ff;
-  --bm-indigo: #4f46e5;
-  --bm-indigo-soft: #eef2ff;
-  --bm-warning-bg: var(--bm-warning-soft);
-  --bm-success-bg: var(--bm-success-soft);
-  --bm-danger-bg: #fef2f2;
-  --bm-hero-from: #dbeafe;
+  --bm-vehicle-surface-border: rgba(232, 229, 225, 0.95);
+  --bm-catalog-bg: #ffffff;
+  --bm-coral: #ef675f;
+  --bm-coral-soft: #fff2f0;
+  --bm-apricot: #f29a62;
+  --bm-apricot-soft: #fff4ea;
+  --bm-yellow: #e9b849;
+  --bm-yellow-soft: #fff9e7;
+  --bm-sage: #5e8b70;
+  --bm-sage-soft: #f0f7f2;
+  --bm-success: #5e8b70;
+  --bm-success-soft: #f0f7f2;
+  --bm-warning: #c77700;
+  --bm-warning-soft: #fff9e7;
+  --bm-info: #70737b;
+  --bm-info-soft: #f0f7f2;
+  --bm-indigo: #2864dc;
+  --bm-indigo-soft: #f2f6ff;
+  --bm-warning-bg: var(--bm-yellow-soft);
+  --bm-success-bg: var(--bm-sage-soft);
+  --bm-danger-bg: var(--bm-coral-soft);
+  --bm-hero-from: #f2f6ff;
+
+  /* Brand identity (≠ site primary CTA) */
+  --brand-rocket-primary: #d94b45;
+  --brand-rocket-soft: #fff1f0;
+  --brand-rocket-border: #f3c8c5;
+  --brand-rocket-muted: #a85a56;
+  --brand-solite-primary: #356fd6;
+  --brand-solite-soft: #f2f6ff;
+  --brand-solite-border: #cbd9f4;
+  --brand-solite-muted: #607eb5;
+  --brand-atlas-primary: #4f806f;
+  --brand-atlas-soft: #f0f7f3;
+  --brand-atlas-border: #cde1d8;
+  --brand-atlas-muted: #66877b;
+  --brand-delkor-primary: #56616f;
+  --brand-delkor-soft: #f3f5f7;
+  --brand-delkor-border: #d7dce2;
+  --brand-delkor-muted: #77808a;
+
+  /* Admin */
+  --admin-page-bg: #f6f7f8;
+  --admin-surface: #ffffff;
+  --admin-table-header: #f7f4f0;
+  --admin-border: #e5e7eb;
   --bm-shadow-sm: 0 1px 3px rgba(11, 18, 36, 0.06);
   --bm-shadow-md: 0 8px 24px rgba(11, 18, 36, 0.09);
   --bm-shadow-lg: 0 16px 40px rgba(11, 18, 36, 0.12);
@@ -181,15 +217,16 @@ h3 {
   background: linear-gradient(to bottom, var(--bm-card) 88%, transparent);
 }
 
-.font-accent {
-  font-family: var(--font-accent);
+.font-accent,
+.font-promo {
+  font-family: var(--font-promo);
   letter-spacing: -0.01em;
 }
 
-/* 배터리 규격명·숫자 가독성 */
+/* 배터리 규격명·가격·숫자 */
 .spec-code,
 [data-spec-code] {
-  font-family: var(--font-body);
+  font-family: var(--font-price);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   font-weight: 700;
@@ -207,8 +244,8 @@ main {
 }
 
 ::selection {
-  background: #bfdbfe;
-  color: #0f172a;
+  background: var(--bm-primary-soft);
+  color: var(--bm-text);
 }
 
 button,

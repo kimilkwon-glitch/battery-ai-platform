@@ -3147,8 +3147,8 @@
 }
 
 .home-replacement-stories__intro-card {
-  --home-review-font-title: "GmarketSans", "Pretendard", var(--font-body);
-  --home-review-font-body: "Pretendard", var(--font-body);
+  --home-review-font-title: var(--font-section);
+  --home-review-font-body: var(--font-body);
   display: flex;
   flex: 1;
   width: 100%;
@@ -4344,7 +4344,7 @@
 }
 
 .portal-brand-lockup__title {
-  font-family: "Paperlogy", "GmarketSans", var(--font-body);
+  font-family: var(--font-promo);
   letter-spacing: -0.04em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
 }

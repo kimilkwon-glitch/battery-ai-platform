@@ -1,9 +1,9 @@
 /* 운영 콘솔 — 업무용 가독성 (고객 UI와 분리) */
 [data-admin-console] {
-  --admin-sidebar-bg: #0f172a;
+  --admin-sidebar-bg: #25262b;
   --admin-surface: #ffffff;
-  --admin-muted: #64748b;
-  --admin-border: #e2e8f0;
+  --admin-muted: var(--bm-text-muted);
+  --admin-border: #e5e7eb;
   --admin-text-title: 1.75rem;
   --admin-text-desc: 1rem;
   --admin-text-table-head: 0.9375rem;
@@ -15,13 +15,15 @@
   --admin-workspace-max: min(90rem, calc(100vw - 2.5rem));
   --admin-dashboard-max: min(85rem, calc(100vw - 2.5rem));
   font-size: 15px;
+  font-family: var(--font-body);
 }
 
 [data-admin-console] .admin-page-title {
+  font-family: var(--font-section);
   font-size: var(--admin-text-title);
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: #0f172a;
+  color: var(--bm-text);
   line-height: 1.25;
 }
 

@@ -6,23 +6,23 @@ import { getBatteryBrandBadges } from "@/lib/battery-alias-map";
 
 const toneClass: Record<BatteryBrandBadge["tone"], { default: string; onDark: string }> = {
   rocket: {
-    default: "bg-red-50 text-red-700 ring-red-100",
+    default: "bm-brand-badge--rocket ring-1",
     onDark: "bg-white/15 text-white ring-white/25",
   },
   solite: {
-    default: "bg-emerald-50 text-emerald-700 ring-emerald-100",
+    default: "bm-brand-badge--solite ring-1",
     onDark: "bg-white/15 text-emerald-100 ring-white/25",
   },
   delkor: {
-    default: "bg-slate-100 text-slate-700 ring-slate-200",
+    default: "bm-brand-badge--delkor ring-1",
     onDark: "bg-white/15 text-white ring-white/25",
   },
   neutral: {
-    default: "bg-slate-100 text-slate-600 ring-slate-200",
+    default: "bg-[var(--bm-surface-muted)] text-[var(--bm-text-sub)] ring-[var(--bm-border)] ring-1",
     onDark: "bg-white/10 text-slate-100 ring-white/20",
   },
   meta: {
-    default: "bg-blue-50 text-blue-700 ring-blue-100",
+    default: "bg-[var(--bm-primary-soft)] text-[var(--bm-primary)] ring-[var(--bm-border)] ring-1",
     onDark: "bg-white/15 text-blue-100 ring-white/25",
   },
 };

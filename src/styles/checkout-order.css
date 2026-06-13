@@ -1,14 +1,14 @@
 /* 주문/결제 페이지 — 대비 강화 */
 
 .checkout-order {
-  --checkout-bg: #f3f6fa;
-  --checkout-text: #0f172a;
-  --checkout-muted: #475569;
-  --checkout-faint: #64748b;
-  --checkout-border: #d8e1ec;
-  --checkout-navy: #0f1b33;
-  --checkout-blue: #2563eb;
-  --checkout-danger: #dc2626;
+  --checkout-bg: #ffffff;
+  --checkout-text: var(--bm-text);
+  --checkout-muted: var(--bm-text-sub);
+  --checkout-faint: var(--bm-text-muted);
+  --checkout-border: var(--bm-border);
+  --checkout-navy: var(--bm-text);
+  --checkout-blue: var(--bm-primary);
+  --checkout-danger: var(--bm-coral);
   background: var(--checkout-bg);
   margin: -0.5rem -0.25rem;
   padding: 0.5rem 0.25rem;

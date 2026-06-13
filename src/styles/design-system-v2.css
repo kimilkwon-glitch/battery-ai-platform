@@ -1,0 +1,340 @@
+/**
+ * Design System V2 — 색감·브랜드·역할별 토큰 (font-family / color only)
+ */
+
+/* ── 역할별 폰트 유틸 ── */
+.font-promo,
+.bm-font-promo {
+  font-family: var(--font-promo);
+}
+
+.font-price,
+.bm-font-price,
+[data-font-role="price"] {
+  font-family: var(--font-price);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-admin-console] .admin-page-title {
+  font-family: var(--font-section);
+}
+
+[data-admin-console] .admin-stat-card__value,
+[data-admin-console] .admin-table__amount,
+[data-admin-console] .admin-dash-settle__amount,
+[data-admin-console] .admin-order-workbench__amount-cell {
+  font-family: var(--font-price);
+}
+
+/* ── 최상단 3% 혜택 배너 ── */
+.first-order-member-banner--site-top {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--bm-border);
+  background: linear-gradient(
+    90deg,
+    var(--bm-coral-soft) 0%,
+    var(--bm-apricot-soft) 42%,
+    var(--bm-yellow-soft) 100%
+  );
+  box-shadow: none;
+}
+
+.first-order-member-banner--site-top p {
+  font-family: var(--font-promo);
+  font-weight: 800;
+}
+
+.first-order-member-banner--site-top .first-order-member-banner__lead {
+  color: var(--bm-text);
+}
+
+.first-order-member-banner--site-top .first-order-member-banner__accent {
+  color: var(--bm-coral);
+}
+
+.first-order-member-banner--site-top .first-order-member-banner__dot {
+  color: var(--bm-text-muted);
+}
+
+/* ── 브랜드 배지 (공통) ── */
+.bm-brand-badge--rocket {
+  background: var(--brand-rocket-soft);
+  color: var(--brand-rocket-primary);
+  --tw-ring-color: var(--brand-rocket-border);
+}
+
+.bm-brand-badge--solite {
+  background: var(--brand-solite-soft);
+  color: var(--brand-solite-primary);
+  --tw-ring-color: var(--brand-solite-border);
+}
+
+.bm-brand-badge--delkor,
+.bm-brand-badge--delco {
+  background: var(--brand-delkor-soft);
+  color: var(--brand-delkor-primary);
+  --tw-ring-color: var(--brand-delkor-border);
+}
+
+.bm-brand-badge--atlas {
+  background: var(--brand-atlas-soft);
+  color: var(--brand-atlas-primary);
+  --tw-ring-color: var(--brand-atlas-border);
+}
+
+/* ── 고객 역할별 soft zone ── */
+.bm-zone--search,
+[data-bm-zone="search"] {
+  --bm-zone-bg: var(--bm-primary-soft);
+}
+
+.bm-zone--benefit,
+[data-bm-zone="benefit"] {
+  --bm-zone-bg: var(--bm-coral-soft);
+}
+
+.bm-zone--warning,
+[data-bm-zone="warning"] {
+  --bm-zone-bg: var(--bm-yellow-soft);
+}
+
+.bm-zone--install,
+[data-bm-zone="install"] {
+  --bm-zone-bg: var(--bm-sage-soft);
+}
+
+.bm-zone--delivery,
+[data-bm-zone="delivery"] {
+  --bm-zone-bg: var(--bm-primary-soft);
+}
+
+.bm-zone--review,
+[data-bm-zone="review"] {
+  --bm-zone-bg: var(--bm-apricot-soft);
+}
+
+/* ── 메인 브랜드 라인업 — soft tone (구조·크기 유지) ── */
+.home-brand-lineup--rocket {
+  border-color: var(--brand-rocket-border);
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.home-brand-lineup--rocket .home-brand-lineup__header {
+  background: var(--brand-rocket-soft);
+  border-bottom-color: var(--brand-rocket-border);
+}
+
+.home-brand-lineup--rocket .home-brand-lineup__title {
+  font-family: var(--font-section);
+  color: var(--brand-rocket-primary);
+}
+
+.home-brand-lineup--rocket .home-brand-lineup__label {
+  color: var(--brand-rocket-muted);
+  background: #ffffff;
+  border: 1px solid var(--brand-rocket-border);
+}
+
+.home-brand-lineup--rocket .home-brand-lineup__tab--active {
+  border-color: var(--brand-rocket-primary);
+  background: var(--brand-rocket-primary);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.home-brand-lineup--rocket .home-brand-lineup__cta {
+  border-color: var(--bm-primary);
+  background: var(--bm-primary);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.home-brand-lineup--rocket .home-brand-lineup__cta:hover {
+  border-color: var(--bm-primary-hover);
+  background: var(--bm-primary-hover);
+}
+
+.home-brand-lineup--rocket .home-spec-card-action--order {
+  background: var(--bm-primary) !important;
+  color: #ffffff !important;
+}
+
+.home-brand-lineup--rocket .home-spec-card-action--order:hover {
+  background: var(--bm-primary-hover) !important;
+}
+
+.home-brand-lineup--solite {
+  border-color: var(--brand-solite-border);
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.home-brand-lineup--solite .home-brand-lineup__header {
+  background: var(--brand-solite-soft);
+  border-bottom-color: var(--brand-solite-border);
+}
+
+.home-brand-lineup--solite .home-brand-lineup__title {
+  font-family: var(--font-section);
+  color: var(--brand-solite-primary);
+}
+
+.home-brand-lineup--solite .home-brand-lineup__label {
+  color: var(--brand-solite-muted);
+  background: #ffffff;
+  border: 1px solid var(--brand-solite-border);
+}
+
+.home-brand-lineup--solite .home-brand-lineup__tab--active {
+  border-color: var(--brand-solite-primary);
+  background: var(--brand-solite-primary);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.home-brand-lineup--solite .home-brand-lineup__cta {
+  border-color: var(--bm-primary);
+  background: var(--bm-primary);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.home-brand-lineup--solite .home-spec-card-action--order {
+  background: var(--bm-primary) !important;
+  color: #ffffff !important;
+}
+
+.home-brand-lineup--solite .home-brand-lineup__track .home-spec-card.bm-card-unified,
+.home-brand-lineup--rocket .home-brand-lineup__track .home-spec-card.bm-card-unified {
+  border: 1px solid var(--bm-border);
+  background: #ffffff;
+  box-shadow: var(--bm-shadow-sm);
+}
+
+.home-brand-lineup__title {
+  font-family: var(--font-section);
+}
+
+.home-spec-card-price__amount,
+.checkout-summary-total__amount,
+.checkout-order__mobile-total-amount,
+.product-detail-price-summary__amount,
+.home-spec-card-price__amount {
+  font-family: var(--font-price);
+}
+
+/* ── 네비 — 장식 hover 블루 tint 완화 ── */
+.portal-nav-link:hover,
+.portal-nav-link:focus-visible {
+  color: var(--bm-primary);
+  background: var(--bm-primary-soft);
+  box-shadow: none;
+}
+
+.portal-nav-link--active {
+  color: var(--bm-primary-hover);
+  background: var(--bm-primary-soft);
+  box-shadow: none;
+}
+
+.portal-nav-link::after {
+  background: linear-gradient(90deg, var(--bm-primary), var(--bm-primary-hover));
+}
+
+/* ── 관리자 상태 색 ── */
+[data-admin-console] {
+  background-color: var(--admin-page-bg);
+}
+
+[data-admin-console] .admin-stat-card--active,
+[data-admin-console] button[aria-pressed="true"] .admin-stat-card {
+  border-color: var(--bm-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bm-primary) 14%, transparent);
+}
+
+[data-admin-console] .admin-stat-card__value--info {
+  color: var(--bm-primary);
+}
+
+[data-admin-console] .admin-stat-card__value--warning {
+  color: var(--bm-warning);
+}
+
+[data-admin-console] .admin-stat-card__value--danger {
+  color: var(--bm-coral);
+}
+
+[data-admin-console] .admin-status-tabs__tab--active {
+  color: var(--bm-primary-hover);
+  border-bottom-color: var(--bm-primary);
+}
+
+[data-admin-console] .admin-status-tabs__tab--active .admin-status-tabs__count {
+  background: var(--bm-primary-soft);
+  color: var(--bm-primary-hover);
+}
+
+[data-admin-console] .admin-panel__header,
+[data-admin-console] .admin-table thead th {
+  background: var(--admin-table-header);
+}
+
+[data-admin-console] .admin-btn--primary {
+  background: var(--bm-primary);
+  border-color: var(--bm-primary);
+}
+
+[data-admin-console] .admin-btn--primary:hover {
+  background: var(--bm-primary-hover);
+  border-color: var(--bm-primary-hover);
+}
+
+/* ── 혜택·프로모션 제목 ── */
+.home-benefits-section-title,
+.bm-zone--benefit .home-benefits-section-title {
+  font-family: var(--font-promo);
+  color: var(--bm-coral);
+}
+
+.home-benefits-carousel.home-benefits-carousel--promo.bm-zone--benefit {
+  background: linear-gradient(180deg, var(--bm-coral-soft) 0%, var(--bm-apricot-soft) 48%, #ffffff 100%);
+}
+
+/* ── 브랜드 허브 로고 plaque ── */
+.brand-hub-logo-badge[data-brand-logo-plaque="rocket"] {
+  background: var(--brand-rocket-soft);
+  border-color: var(--brand-rocket-border);
+}
+
+.brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
+  background: var(--brand-solite-soft);
+  border-color: var(--brand-solite-border);
+}
+
+.brand-hub[data-brand-hub-active="rocket"] .brand-hub-field-comment {
+  background: var(--brand-rocket-soft);
+  border-color: var(--brand-rocket-border);
+}
+
+.brand-hub[data-brand-hub-active="solite"] .brand-hub-field-comment {
+  background: var(--brand-solite-soft);
+  border-color: var(--brand-solite-border);
+}
+
+.checkout-card__title {
+  font-family: var(--font-section);
+}
+
+.checkout-summary-total__amount,
+.checkout-order__mobile-total-amount {
+  font-family: var(--font-price);
+}
+
+.product-detail-price-summary__amount {
+  font-family: var(--font-price);
+}
