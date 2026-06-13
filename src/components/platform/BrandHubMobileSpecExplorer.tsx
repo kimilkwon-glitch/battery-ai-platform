@@ -37,8 +37,8 @@ function SpecChip({
       className={clsx(
         "brand-hub-spec-chip inline-flex min-h-[2.25rem] shrink-0 items-center justify-center rounded-lg px-3 py-1.5 text-xs font-black transition",
         theme.id === "rocket"
-          ? "bg-[#1a2030] text-white ring-1 ring-[#2d3544] hover:bg-[#252b3a]"
-          : "bg-white text-slate-800 ring-1 ring-slate-200 hover:ring-blue-200 hover:bg-blue-50",
+          ? "bg-white text-slate-800 ring-1 ring-[var(--brand-rocket-border)] hover:bg-[var(--brand-rocket-soft)] hover:text-[var(--brand-rocket-primary)]"
+          : "bg-white text-slate-800 ring-1 ring-[var(--brand-solite-border)] hover:bg-[var(--brand-solite-soft)] hover:text-[var(--brand-solite-primary)]",
       )}
     >
       {card.displayCode}
@@ -84,9 +84,7 @@ function FamilyGroup({
             onClick={() => setExpanded(true)}
             className={clsx(
               "inline-flex min-h-[2.25rem] shrink-0 items-center rounded-lg px-3 py-1.5 text-xs font-black",
-              theme.id === "rocket"
-                ? "bg-[#111318] text-[#CBD5E1] ring-1 ring-dashed ring-[#3d4654]"
-                : "bg-slate-50 text-slate-600 ring-1 ring-dashed ring-slate-300",
+              "bg-slate-50 text-slate-600 ring-1 ring-dashed ring-slate-300",
             )}
           >
             +{hiddenCount} 더보기

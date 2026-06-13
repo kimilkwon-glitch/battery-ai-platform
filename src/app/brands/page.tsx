@@ -13,9 +13,9 @@ export default function BrandsPage() {
       searchPlaceholder="브랜드·규격 검색"
       showPageHeader={false}
     >
-      <header className="cp-hero brand-hub-page-hero cp-hero--navy mb-5">
+      <header className="cp-hero brand-hub-page-hero mb-5">
         <p className="cp-hero__kicker">Official Brands</p>
-        <h1 className="cp-hero__title">배터리 브랜드 안내</h1>
+        <h1 className="cp-hero__title bm-section-title">배터리 브랜드 안내</h1>
         <p className="cp-hero__desc">
           로케트·쏠라이트 제품 제원, 현장 안내, 규격별 상세를 브랜드별로 확인하세요.
         </p>

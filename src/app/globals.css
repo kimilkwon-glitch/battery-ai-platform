@@ -186,13 +186,6 @@ h3 {
   color: inherit;
 }
 
-.brand-hub[data-brand-hub-active="rocket"] {
-  --bm-dark-title: #e5e7eb;
-  --bm-dark-body: #cbd5e1;
-  --bm-dark-muted: #aeb8c6;
-  --bm-dark-accent: #f87171;
-}
-
 .font-heading {
   font-family: var(--font-heading);
   font-weight: 700;

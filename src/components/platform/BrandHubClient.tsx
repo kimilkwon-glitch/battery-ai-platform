@@ -119,7 +119,7 @@ export function BrandHubClient() {
     [active, familyTab],
   );
   const imageBrandKey: BatteryBrandKey = active === "solite" ? "solite" : "rocket";
-  const dividerBorder = theme.id === "rocket" ? "border-[#2d3544]" : "border-slate-200";
+  const dividerBorder = "border-slate-200";
   const labelMuted = theme.contentMuted;
 
   const selectBrand = (id: CustomerBrandHubId) => {
@@ -172,15 +172,6 @@ export function BrandHubClient() {
             transition={PANEL_TRANSITION}
             className={clsx(PANEL_INNER, "space-y-9 sm:space-y-11 lg:space-y-12", theme.panelBg)}
           >
-            <motion.div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 z-20"
-              initial={{ x: "-120%", opacity: 0.95 }}
-              animate={{ x: "120%", opacity: 0 }}
-              transition={{ duration: 0.82, ease: [0.4, 0, 0.2, 1] }}
-              style={{ background: theme.washGradient }}
-            />
-
             <div id={active} className="brand-section-anchor scroll-mt-[140px] md:scroll-mt-[120px]" />
 
             <BrandHeroBanner theme={theme} banner={banner} imageBrandKey={imageBrandKey} brandId={active} />
@@ -193,8 +184,13 @@ export function BrandHubClient() {
 
             <section className="pt-1">
               <header className="mb-5 sm:mb-6">
-                <h2 className={clsx("text-3xl font-black tracking-tight sm:text-4xl", theme.contentTitle)}>
-                  {theme.label} 전 제품
+                <h2
+                  className={clsx(
+                    "brand-hub-products__title text-3xl font-black tracking-tight sm:text-4xl",
+                    theme.contentTitle,
+                  )}
+                >
+                  <span className={theme.accent}>{theme.label}</span> 전 제품
                 </h2>
                 <p className={clsx("mt-3 text-lg font-medium", theme.contentMuted)}>
                   제원 DB 기준 · 일반형 / DIN / AGM 분류별 전체 규격
@@ -202,12 +198,7 @@ export function BrandHubClient() {
               </header>
 
               <nav
-                className={clsx(
-                  "mb-6 hidden flex-wrap gap-2 rounded-xl p-2 sm:gap-2.5 lg:flex",
-                  theme.id === "rocket"
-                    ? "bg-[#111318]/80 ring-1 ring-[#2d3544]"
-                    : "bg-slate-100/90 ring-1 ring-slate-200",
-                )}
+                className="mb-6 hidden flex-wrap gap-2 rounded-xl bg-slate-50/90 p-2 ring-1 ring-slate-200 sm:gap-2.5 lg:flex"
                 role="tablist"
                 aria-label="제품 분류"
               >
@@ -223,13 +214,7 @@ export function BrandHubClient() {
                       onClick={() => setFamilyTab(tab.id)}
                       className={clsx(
                         "min-h-[2.75rem] rounded-lg px-4 text-base font-black transition duration-200 sm:px-5 sm:text-lg",
-                        selected
-                          ? theme.id === "rocket"
-                            ? "bg-[#E53935] text-white shadow-md"
-                            : "bg-[#2563EB] text-white shadow-md"
-                          : theme.id === "rocket"
-                            ? "text-[#CBD5E1] hover:bg-[#1a2030] hover:text-white"
-                            : "text-slate-600 hover:bg-white hover:text-slate-900",
+                        selected ? theme.tabActive : "text-slate-600 hover:bg-white hover:text-slate-900",
                       )}
                     >
                       {tab.label}
@@ -256,10 +241,7 @@ export function BrandHubClient() {
               {products.length === 0 ? (
                 <p
                   className={clsx(
-                    "rounded-xl border border-dashed px-6 py-12 text-center text-lg font-semibold",
-                    theme.id === "rocket"
-                      ? "border-[#2d3544] text-[#AEB8C6]"
-                      : "border-slate-200 text-slate-500",
+                    "rounded-xl border border-dashed border-slate-200 px-6 py-12 text-center text-lg font-semibold text-slate-500",
                   )}
                 >
                   이 분류에 등록된 제품이 없습니다.
@@ -340,7 +322,7 @@ function BrandHubBannerLogo({
 
   return (
     <div
-      className="brand-hub-logo-badge shrink-0"
+      className={clsx("brand-hub-logo-badge brand-logo-plaque shrink-0", `brand-logo-plaque--${brandId}`)}
       data-brand-logo-plaque={brandId}
       data-logo-panel={presentation.panelVariant}
       data-logo-layout={assets.layout}
@@ -370,17 +352,10 @@ function BrandHeroBanner({
   return (
     <section
       className={clsx(
-        "brand-hub-hero-banner relative flex flex-col overflow-hidden rounded-2xl p-5 sm:flex-row sm:items-stretch sm:gap-8 sm:p-8 lg:gap-12 lg:p-10",
+        "brand-hub-hero-banner brand-detail-hero relative flex flex-col overflow-hidden rounded-2xl p-5 sm:flex-row sm:items-stretch sm:gap-8 sm:p-8 lg:gap-12 lg:p-10",
         theme.bannerBg,
       )}
     >
-      <div
-        aria-hidden
-        className={clsx(
-          "pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full blur-3xl lg:h-64 lg:w-64",
-          theme.id === "rocket" ? "bg-[#E53935]/20" : "bg-blue-400/20",
-        )}
-      />
       <div className="brand-hub-hero-banner__content relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-3 sm:gap-4">
         <BrandHubBannerLogo brandId={brandId} theme={theme} fallbackTitle={banner.title} />
         <p
@@ -391,14 +366,17 @@ function BrandHeroBanner({
         >
           {banner.headline}
         </p>
+        <p className={clsx("brand-hub-hero-banner__desc text-base font-medium leading-relaxed sm:text-lg", theme.bannerMuted)}>
+          {banner.description}
+        </p>
       </div>
       <div
         className={clsx(
-          "brand-hub-hero-banner__media relative z-10 mt-6 flex w-full shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:mt-0 sm:w-[min(54%,28rem)] lg:w-[min(52%,32rem)] xl:w-[min(50%,34rem)]",
+          "brand-hub-hero-banner__media relative z-10 mt-5 flex w-full shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:mt-0 sm:w-[min(54%,28rem)] lg:w-[min(52%,32rem)] xl:w-[min(50%,34rem)]",
           theme.bannerImageWrap,
         )}
       >
-        <div className="brand-hub-hero-banner__media-inner flex h-56 w-full items-center justify-center p-4 sm:h-64 sm:p-5 lg:h-[19rem] xl:h-[21rem]">
+        <div className="brand-hub-hero-banner__media-inner flex h-52 w-full items-center justify-center p-3 sm:h-64 sm:p-4 lg:h-[20rem] xl:h-[22rem]">
           <BatteryThumbnail
             code={banner.heroCode}
             imageSet={product.images}
@@ -407,7 +385,7 @@ function BrandHeroBanner({
             ratio="16/9"
             overlayLabel={false}
             darkOverlay={false}
-            className="h-full w-full max-h-full [&_img]:mx-auto [&_img]:max-h-[96%] [&_img]:max-w-[95%] [&_img]:w-auto [&_img]:object-contain"
+            className="h-full w-full max-h-full [&_img]:mx-auto [&_img]:max-h-[98%] [&_img]:max-w-[98%] [&_img]:w-auto [&_img]:object-contain"
           />
         </div>
       </div>
@@ -477,7 +455,14 @@ function BrandHubFieldCommentCard({
   field: BrandHubFieldSection;
 }) {
   return (
-    <article className={clsx("brand-hub-field-comment", theme.insightCard)}>
+    <article
+      className={clsx(
+        "brand-hub-field-comment brand-field-comment ring-1 shadow-[0_4px_14px_-10px_rgba(36,48,64,0.08)]",
+        theme.id === "rocket"
+          ? "border-l-[3px] border-l-[var(--brand-rocket-primary)] ring-[var(--brand-rocket-border)]"
+          : "border-l-[3px] border-l-[var(--brand-solite-primary)] ring-[var(--brand-solite-border)]",
+      )}
+    >
       <div className="brand-hub-field-comment__header">
         <div className={clsx("brand-hub-field-comment__badge", theme.insightIconWrap)}>
           <MessageSquareQuote className="brand-hub-strength-card__icon" strokeWidth={2} aria-hidden />

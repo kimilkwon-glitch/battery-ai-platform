@@ -4,11 +4,11 @@ import { HOME_QUICK_ICON_ITEMS } from "@/lib/home-quick-icons-data";
 
 function QuickIconTitle({ label, mobileLines }: { label: string; mobileLines?: [string, string] }) {
   if (!mobileLines) {
-    return <span className="home-quick-icon-card__title">{label}</span>;
+    return <span className="home-quick-icon-card__title quick-card__title">{label}</span>;
   }
 
   return (
-    <span className="home-quick-icon-card__title">
+    <span className="home-quick-icon-card__title quick-card__title">
       <span className="home-quick-icon-card__title-full">{label}</span>
       <span className="home-quick-icon-card__title-stacked">
         {mobileLines.map((line) => (
@@ -37,16 +37,13 @@ export function HomeQuickIconMenu() {
             <li key={item.id} className="home-quick-icons__item">
               <Link
                 href={item.href}
-                className="home-quick-icon-card"
+                className={`home-quick-icon-card quick-card quick-card--${item.accent}`}
                 data-quick-accent={item.accent}
                 data-quick-icon-variant={item.iconVariant ?? "default"}
                 aria-label={`${item.label}, ${item.description}`}
               >
                 <span className="home-quick-icon-card__icon-wrap" aria-hidden>
-                  <span
-                    className="home-quick-icon-card__icon-bg"
-                    style={{ backgroundColor: item.chipBg }}
-                  >
+                  <span className="home-quick-icon-card__icon-bg quick-card__icon">
                     <Image
                       src={item.imageSrc}
                       alt=""
@@ -62,13 +59,13 @@ export function HomeQuickIconMenu() {
                     <QuickIconTitle label={item.label} mobileLines={item.titleMobileLines} />
                   </span>
                   <span className="home-quick-icon-card__title-wrap home-quick-icon-card__title-wrap--mobile">
-                    <span className="home-quick-icon-card__title home-quick-icon-card__title--compact">
+                    <span className="home-quick-icon-card__title home-quick-icon-card__title--compact quick-card__title">
                       {item.mobileLabel}
                     </span>
                   </span>
                   <span className="home-quick-icon-card__title-accent" aria-hidden />
                   <span className="home-quick-icon-card__desc-wrap">
-                    <span className="home-quick-icon-card__desc">{item.description}</span>
+                    <span className="home-quick-icon-card__desc quick-card__desc">{item.description}</span>
                   </span>
                 </span>
               </Link>

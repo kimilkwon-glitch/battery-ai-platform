@@ -952,10 +952,12 @@
 
 .brand-hub-strengths__heading {
   margin: 0 0 0.75rem;
+  font-family: var(--font-section);
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1.35;
   letter-spacing: -0.01em;
+  color: var(--bm-text);
 }
 
 .brand-hub-strengths__grid {
@@ -1005,14 +1007,6 @@
   border-radius: 1rem;
   word-break: keep-all;
   overflow-wrap: break-word;
-}
-
-.brand-hub[data-brand-hub-active="rocket"] .brand-hub-field-comment {
-  background: #151b26;
-}
-
-.brand-hub[data-brand-hub-active="solite"] .brand-hub-field-comment {
-  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
 }
 
 .brand-hub-field-comment__header {
@@ -1118,6 +1112,7 @@
 }
 
 .brand-hub-hero-banner__headline {
+  font-family: var(--font-section);
   letter-spacing: -0.02em;
 }
 
@@ -1125,22 +1120,40 @@
   max-width: 42rem;
 }
 
+.brand-hub-products__title {
+  font-family: var(--font-section);
+}
+
 .brand-hub-hero-banner__media-inner {
   width: 100%;
 }
 
+@media (min-width: 640px) {
+  .brand-hub-hero-banner__media-inner {
+    min-height: 16rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .brand-hub-hero-banner {
-    min-height: 18rem;
+    min-height: 17rem;
   }
 
   .brand-hub-hero-banner__content {
     padding-right: 0.5rem;
   }
+
+  .brand-hub-hero-banner__media-inner {
+    min-height: 18rem;
+  }
 }
 
 @media (min-width: 1280px) {
   .brand-hub-hero-banner {
+    min-height: 18rem;
+  }
+
+  .brand-hub-hero-banner__media-inner {
     min-height: 20rem;
   }
 }

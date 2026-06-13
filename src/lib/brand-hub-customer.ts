@@ -96,82 +96,80 @@ export const BRAND_HUB_THEMES: Record<CustomerBrandHubId, BrandHubTheme> = {
     id: "rocket",
     label: "로케트",
     tabRail:
-      "rounded-2xl border border-slate-200/90 bg-white/95 p-3 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.12)] backdrop-blur-sm sm:p-4",
+      "rounded-2xl border border-slate-200/90 bg-white/95 p-3 shadow-[0_4px_16px_-12px_rgba(36,48,64,0.12)] sm:p-4",
     panelShell:
-      "bg-[#0B0D12] ring-1 ring-[#242A36] shadow-[0_20px_48px_-28px_rgba(0,0,0,0.55)]",
-    panelBg: "text-[#CBD5E1]",
-    bannerBg:
-      "bg-gradient-to-br from-[#111318] via-[#151922] to-[#1a0f10] ring-1 ring-[#2d3544] shadow-[0_20px_40px_-24px_rgba(229,57,53,0.28)]",
+      "bg-white ring-1 ring-slate-200/80 shadow-[0_8px_24px_-16px_rgba(36,48,64,0.08)]",
+    panelBg: "text-[var(--bm-text)]",
+    bannerBg: "brand-detail-hero brand-detail-hero--rocket",
     logoGlass:
-      "brand-hub-logo-glass brand-hub-logo-glass--safe logo-safe-box inline-flex max-w-full shrink-0 items-center justify-center rounded-xl",
-    bannerText: "!text-[#E5E7EB]",
-    bannerMuted: "text-[#CBD5E1]",
-    contentTitle: "text-[#E5E7EB]",
-    contentMuted: "text-[#AEB8C6]",
-    insightTitle: "text-[#F1F5F9]",
-    insightBody: "text-[#CBD5E1]",
-    insightBullet: "text-[#E5E7EB]",
-    bannerImageWrap: "bg-[#151922] ring-1 ring-[#2d3544]",
+      "brand-logo-plaque brand-logo-plaque--rocket inline-flex max-w-full shrink-0 items-center justify-center",
+    bannerText: "text-[var(--bm-text)]",
+    bannerMuted: "text-[var(--bm-text-sub)]",
+    contentTitle: "text-[var(--bm-text)]",
+    contentMuted: "text-[var(--bm-text-sub)]",
+    insightTitle: "text-[var(--bm-text)]",
+    insightBody: "text-[var(--bm-text-sub)]",
+    insightBullet: "text-[var(--bm-text)]",
+    bannerImageWrap: "brand-product-stage brand-product-stage--rocket",
     tabActive:
-      "bg-[#E53935] text-white shadow-[0_10px_28px_-10px_rgba(229,57,53,0.65)] ring-2 ring-[#F87171]/40 motion-safe:hover:-translate-y-0.5",
+      "bg-[var(--brand-rocket-primary)] text-white shadow-sm ring-1 ring-[var(--brand-rocket-border)] motion-safe:hover:-translate-y-0.5",
     tabIdle:
-      "bg-slate-50 text-slate-600 ring-1 ring-slate-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:text-slate-900 motion-safe:hover:shadow-[0_10px_24px_-14px_rgba(229,57,53,0.35)] motion-safe:hover:ring-red-200/80",
-    accent: "text-[#F87171]",
-    accentLine: "bg-[#E53935]",
+      "bg-white text-slate-600 ring-1 ring-slate-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:bg-[var(--brand-rocket-soft)] motion-safe:hover:text-[var(--brand-rocket-primary)] motion-safe:hover:ring-[var(--brand-rocket-border)]",
+    accent: "text-[var(--brand-rocket-primary)]",
+    accentLine: "bg-[var(--brand-rocket-primary)]",
     insightCard:
-      "border-l-4 border-[#E53935] bg-[#171c26] ring-1 ring-[#2d3544] shadow-[0_16px_40px_-24px_rgba(0,0,0,0.55)]",
-    insightIconWrap: "bg-[#3A1F28] text-[#FCA5A5] ring-1 ring-[#7F1D1D]/60",
+      "brand-strength-card bg-white ring-1 ring-[var(--brand-rocket-border)] border-l-[3px] border-l-[var(--brand-rocket-primary)] shadow-[0_4px_14px_-10px_rgba(36,48,64,0.08)]",
+    insightIconWrap:
+      "bg-[var(--brand-rocket-soft)] text-[var(--brand-rocket-primary)] ring-1 ring-[var(--brand-rocket-border)]",
     productCard:
-      "bg-[#171c26] ring-1 ring-[#2d3544] shadow-[0_12px_32px_-20px_rgba(0,0,0,0.5)]",
-    productImageBg: "bg-[#111318]",
+      "bg-white ring-1 ring-slate-200/90 shadow-[0_4px_16px_-12px_rgba(36,48,64,0.08)]",
+    productImageBg: "bg-gradient-to-b from-[var(--brand-rocket-soft)] to-white",
     productCardHover:
-      "motion-safe:hover:-translate-y-1 hover:ring-[#E53935]/60 hover:shadow-[0_16px_36px_-14px_rgba(229,57,53,0.4)]",
-    badgeAgm: "bg-[#3A1F28] text-[#FCA5A5] ring-1 ring-[#7F1D1D] font-semibold",
-    badgeDin: "bg-[#1E293B] text-[#93C5FD] ring-1 ring-[#334155] font-semibold",
-    badgeCmf: "bg-[#2A2F38] text-[#D1D5DB] ring-1 ring-[#475569] font-semibold",
-    badgeDefault: "bg-[#2A2F38] text-[#CBD5E1] ring-1 ring-[#475569] font-semibold",
-    washGradient:
-      "linear-gradient(100deg, transparent 0%, rgba(229,57,53,0.28) 42%, rgba(11,13,18,0.92) 100%)",
+      "motion-safe:hover:-translate-y-0.5 hover:ring-[var(--brand-rocket-border)] hover:shadow-[0_8px_20px_-12px_rgba(36,48,64,0.12)]",
+    badgeAgm: "bg-[var(--brand-rocket-soft)] text-[var(--brand-rocket-muted)] ring-1 ring-[var(--brand-rocket-border)] font-semibold",
+    badgeDin: "bg-slate-50 text-slate-700 ring-1 ring-slate-200 font-semibold",
+    badgeCmf: "bg-slate-50 text-slate-700 ring-1 ring-slate-200 font-semibold",
+    badgeDefault: "bg-slate-50 text-slate-700 ring-1 ring-slate-200 font-semibold",
+    washGradient: "transparent",
   },
   solite: {
     id: "solite",
     label: "쏠라이트",
     tabRail:
       "rounded-2xl border border-slate-200/90 bg-white p-3 shadow-sm sm:p-4",
-    panelShell: "bg-gradient-to-b from-[#F8FAFC] via-white to-[#EFF6FF] ring-1 ring-slate-200/80",
-    panelBg: "text-slate-800",
-    bannerBg:
-      "bg-gradient-to-br from-[#0c1220] via-[#111827] to-[#0f1a2e] ring-1 ring-[#1e3a5f]/80 shadow-[0_20px_40px_-24px_rgba(37,99,235,0.32)]",
+    panelShell: "bg-white ring-1 ring-slate-200/80 shadow-[0_8px_24px_-16px_rgba(36,48,64,0.08)]",
+    panelBg: "text-[var(--bm-text)]",
+    bannerBg: "brand-detail-hero brand-detail-hero--solite",
     logoGlass:
-      "brand-hub-logo-glass brand-hub-logo-glass--safe logo-safe-box inline-flex max-w-full shrink-0 items-center justify-center rounded-xl",
-    bannerText: "!text-[#E5E7EB]",
-    bannerMuted: "text-[#CBD5E1]",
-    contentTitle: "text-[#0F172A]",
-    contentMuted: "text-[#475569]",
-    insightTitle: "text-[#111827]",
-    insightBody: "text-[#334155]",
-    insightBullet: "text-[#1F2937]",
-    bannerImageWrap: "bg-[#111827]/90 ring-1 ring-[#1e3a5f]/70",
+      "brand-logo-plaque brand-logo-plaque--solite inline-flex max-w-full shrink-0 items-center justify-center",
+    bannerText: "text-[var(--bm-text)]",
+    bannerMuted: "text-[var(--bm-text-sub)]",
+    contentTitle: "text-[var(--bm-text)]",
+    contentMuted: "text-[var(--bm-text-sub)]",
+    insightTitle: "text-[var(--bm-text)]",
+    insightBody: "text-[var(--bm-text-sub)]",
+    insightBullet: "text-[var(--bm-text)]",
+    bannerImageWrap: "brand-product-stage brand-product-stage--solite",
     tabActive:
-      "bg-[#2563EB] text-white shadow-[0_10px_28px_-10px_rgba(37,99,235,0.45)] ring-2 ring-[#93C5FD]/50 motion-safe:hover:-translate-y-0.5",
+      "bg-[var(--brand-solite-primary)] text-white shadow-sm ring-1 ring-[var(--brand-solite-border)] motion-safe:hover:-translate-y-0.5",
     tabIdle:
-      "bg-slate-50 text-slate-700 ring-1 ring-slate-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:text-[#1D4ED8] motion-safe:hover:shadow-[0_10px_24px_-14px_rgba(37,99,235,0.28)] motion-safe:hover:ring-[#BFDBFE]",
-    accent: "text-[#2563EB]",
-    accentLine: "bg-[#3B82F6]",
+      "bg-white text-slate-600 ring-1 ring-slate-200 motion-safe:hover:-translate-y-0.5 motion-safe:hover:bg-[var(--brand-solite-soft)] motion-safe:hover:text-[var(--brand-solite-primary)] motion-safe:hover:ring-[var(--brand-solite-border)]",
+    accent: "text-[var(--brand-solite-primary)]",
+    accentLine: "bg-[var(--brand-solite-primary)]",
     insightCard:
-      "border-l-4 border-[#2563EB] bg-white ring-1 ring-slate-200/90 shadow-[0_12px_32px_-18px_rgba(15,23,42,0.1)]",
-    insightIconWrap: "bg-[#EFF6FF] text-[#2563EB] ring-1 ring-[#BFDBFE]",
+      "brand-strength-card bg-white ring-1 ring-[var(--brand-solite-border)] border-l-[3px] border-l-[var(--brand-solite-primary)] shadow-[0_4px_14px_-10px_rgba(36,48,64,0.08)]",
+    insightIconWrap:
+      "bg-[var(--brand-solite-soft)] text-[var(--brand-solite-primary)] ring-1 ring-[var(--brand-solite-border)]",
     productCard:
-      "bg-white ring-1 ring-slate-200/90 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.08)]",
-    productImageBg: "bg-gradient-to-b from-[#F0F9FF] to-white",
+      "bg-white ring-1 ring-slate-200/90 shadow-[0_4px_16px_-12px_rgba(36,48,64,0.08)]",
+    productImageBg: "bg-gradient-to-b from-[var(--brand-solite-soft)] to-white",
     productCardHover:
-      "motion-safe:hover:-translate-y-1 hover:ring-[#3B82F6]/55 hover:shadow-[0_14px_32px_-12px_rgba(37,99,235,0.22)]",
+      "motion-safe:hover:-translate-y-0.5 hover:ring-[var(--brand-solite-border)] hover:shadow-[0_8px_20px_-12px_rgba(36,48,64,0.12)]",
     badgeAgm: "bg-violet-50 text-violet-800 ring-1 ring-violet-200 font-semibold",
     badgeDin: "bg-sky-50 text-sky-800 ring-1 ring-sky-200 font-semibold",
     badgeCmf: "bg-slate-100 text-slate-700 ring-1 ring-slate-200 font-semibold",
     badgeDefault: "bg-slate-100 text-slate-700 ring-1 ring-slate-200 font-semibold",
-    washGradient:
-      "linear-gradient(100deg, transparent 0%, rgba(59,130,246,0.22) 40%, rgba(255,255,255,0.96) 100%)",
+    washGradient: "transparent",
   },
 };
 
@@ -185,16 +183,16 @@ export type BrandHubBannerCopy = {
 export const BRAND_HUB_BANNER: Record<CustomerBrandHubId, BrandHubBannerCopy> = {
   rocket: {
     title: "로케트 배터리",
-    headline: "국산 차량 교체 시장에서 가장 익숙한 대표 브랜드",
+    headline: "국산차 교체 현장에서 가장 익숙한 대표 브랜드",
     description:
-      "로케트는 일반형, DIN, AGM 계열까지 폭넓게 구성되어 있어 국산차 교체 상담에서 가장 자주 비교되는 브랜드입니다. 순정 장착 규격과 동일한 방향으로 안내하기 쉬워, 처음 배터리를 교체하는 고객도 이해하기 편한 편입니다.",
+      "일반형·DIN·AGM까지 폭넓게 구성되어 있어, 순정 규격과 맞춰 비교하기 좋습니다. 처음 교체하시는 분도 이해하기 쉬운 편이에요.",
     heroCode: "AGM80L",
   },
   solite: {
     title: "쏠라이트 배터리",
-    headline: "CMF 표기 중심의 깔끔한 국산 배터리 라인업",
+    headline: "CMF 규격 중심, 비교하기 쉬운 국산 배터리",
     description:
-      "쏠라이트는 현대·기아 순정 교체 흐름에서 익숙한 브랜드로, CMF 표기를 중심으로 일반형과 DIN 계열을 확인하기 좋습니다. 가격대와 규격 선택지를 함께 비교하기 쉬워 상담용 대체 브랜드로 활용하기 좋습니다.",
+      "현대·기아 순정 교체 흐름에서 익숙한 브랜드예요. CMF 표기를 중심으로 일반형·DIN을 함께 확인하고 가격대별로 비교하기 좋습니다.",
     heroCode: "CMF80L",
   },
 };

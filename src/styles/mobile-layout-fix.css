@@ -992,7 +992,16 @@
   }
 
   .brand-hub-hero-banner__content .brand-hub-logo-wrap {
-    height: 4.5rem;
+    height: 5rem;
+  }
+
+  .brand-hub-hero-banner__content .brand-hub-logo-image--stacked {
+    max-width: 68%;
+    max-height: 92%;
+  }
+
+  .brand-hub-hero-banner__media-inner {
+    min-height: 13rem;
   }
 
   .brand-hub-hero-banner__content .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {

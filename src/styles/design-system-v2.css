@@ -306,14 +306,34 @@
 }
 
 /* ── 브랜드 허브 로고 plaque ── */
+.brand-logo-plaque,
+.brand-hub-logo-badge[data-brand-logo-plaque] {
+  border: 1px solid transparent;
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(36, 48, 64, 0.05);
+}
+
+.brand-logo-plaque--rocket,
 .brand-hub-logo-badge[data-brand-logo-plaque="rocket"] {
   background: var(--brand-rocket-soft);
   border-color: var(--brand-rocket-border);
 }
 
+.brand-logo-plaque--solite,
 .brand-hub-logo-badge[data-brand-logo-plaque="solite"] {
   background: var(--brand-solite-soft);
   border-color: var(--brand-solite-border);
+}
+
+.brand-logo-plaque--atlas {
+  background: var(--brand-atlas-soft);
+  border-color: var(--brand-atlas-border);
+}
+
+.brand-logo-plaque--delkor,
+.brand-logo-plaque--delco {
+  background: var(--brand-delkor-soft);
+  border-color: var(--brand-delkor-border);
 }
 
 .brand-hub[data-brand-hub-active="rocket"] .brand-hub-field-comment {
@@ -324,6 +344,109 @@
 .brand-hub[data-brand-hub-active="solite"] .brand-hub-field-comment {
   background: var(--brand-solite-soft);
   border-color: var(--brand-solite-border);
+}
+
+/* ── 브랜드 상세 히어로 ── */
+.brand-detail-hero {
+  border: 1px solid var(--bm-border);
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(36, 48, 64, 0.05);
+}
+
+.brand-detail-hero--rocket {
+  border-color: var(--brand-rocket-border);
+  background: linear-gradient(135deg, #ffffff 0%, var(--brand-rocket-soft) 58%, #ffffff 100%);
+}
+
+.brand-detail-hero--solite {
+  border-color: var(--brand-solite-border);
+  background: linear-gradient(135deg, #ffffff 0%, var(--brand-solite-soft) 58%, #ffffff 100%);
+}
+
+.brand-detail-hero--atlas {
+  border-color: var(--brand-atlas-border);
+  background: linear-gradient(135deg, #ffffff 0%, var(--brand-atlas-soft) 58%, #ffffff 100%);
+}
+
+.brand-detail-hero--delkor,
+.brand-detail-hero--delco {
+  border-color: var(--brand-delkor-border);
+  background: linear-gradient(135deg, #ffffff 0%, var(--brand-delkor-soft) 58%, #ffffff 100%);
+}
+
+/* ── 대표 제품 스테이지 ── */
+.brand-product-stage {
+  border: 1px solid var(--bm-border);
+  background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.brand-product-stage--rocket {
+  border-color: var(--brand-rocket-border);
+  background: linear-gradient(180deg, var(--brand-rocket-soft) 0%, #ffffff 72%);
+}
+
+.brand-product-stage--solite {
+  border-color: var(--brand-solite-border);
+  background: linear-gradient(180deg, var(--brand-solite-soft) 0%, #ffffff 72%);
+}
+
+.brand-product-stage--atlas {
+  border-color: var(--brand-atlas-border);
+  background: linear-gradient(180deg, var(--brand-atlas-soft) 0%, #ffffff 72%);
+}
+
+.brand-product-stage--delkor,
+.brand-product-stage--delco {
+  border-color: var(--brand-delkor-border);
+  background: linear-gradient(180deg, var(--brand-delkor-soft) 0%, #ffffff 72%);
+}
+
+/* ── 장점 카드 · 현장 코멘트 ── */
+.brand-strength-card {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.brand-strength-card:hover,
+.brand-hub-field-comment:hover {
+  box-shadow: 0 8px 20px rgba(36, 48, 64, 0.07);
+}
+
+.brand-field-comment {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.brand-hub-field-comment__title {
+  font-family: var(--font-section);
+}
+
+.brand-hub-strength-card__text {
+  color: var(--bm-text-sub);
+}
+
+.brand-hub-field-comment__body {
+  color: var(--bm-text-sub);
+}
+
+.brand-hub-tabs-enhanced button[role="tab"][aria-selected="true"] {
+  transform: none;
+}
+
+.brand-hub-page-hero .cp-hero__title {
+  font-family: var(--font-section);
+}
+
+.brand-hub-page-hero .cp-hero__accent {
+  background: linear-gradient(90deg, var(--bm-primary), var(--bm-primary-hover));
+}
+
+.brand-hub-page-hero.cp-hero--navy .cp-hero__accent {
+  background: linear-gradient(90deg, var(--bm-primary), var(--bm-primary-hover));
 }
 
 .checkout-card__title {

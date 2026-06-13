@@ -49,7 +49,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.maintenance.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-maintenance-tip.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "mint",
-    chipBg: "#EAF8F3",
+    chipBg: "#E8F6F0",
   },
   {
     id: "symptoms",
@@ -59,7 +59,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.symptoms.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-symptom-diagnosis.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "teal",
-    chipBg: "#E8F7F7",
+    chipBg: "#E6F4FB",
   },
   {
     id: "fault",
@@ -69,7 +69,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.fault.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-battery-fault.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "coral",
-    chipBg: "#FFF2E8",
+    chipBg: "#FFF0E8",
   },
   {
     id: "as",
@@ -79,7 +79,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: guideById.as.href,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-as-warranty.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "lilac",
-    chipBg: "#F1ECFF",
+    chipBg: "#F2EEF9",
   },
   {
     id: "qa",
@@ -89,7 +89,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: HUB_QA,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-qna.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "sky",
-    chipBg: "#EAF4FF",
+    chipBg: "#EBF3FC",
   },
   {
     id: "deokcheon",
@@ -99,7 +99,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: HUB_STORE_ANCHORS.deokcheon,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-deokcheon-ray.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "skyblue",
-    chipBg: "#E0F2FE",
+    chipBg: "#E5F5F2",
     iconVariant: "vehicle",
   },
   {
@@ -110,7 +110,7 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: HUB_STORE_ANCHORS.hakjang,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-hakjang-starex.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "bluegray",
-    chipBg: "#E8EEF4",
+    chipBg: "#EEF2F6",
     iconVariant: "vehicle",
   },
   {
@@ -121,6 +121,6 @@ export const HOME_QUICK_ICON_ITEMS: HomeQuickIconItem[] = [
     href: CUSTOMER_CENTER_HUB,
     imageSrc: `${QUICK_ICON_BASE}/quick-icon-qna.png?v=${QUICK_ICON_ASSET_V}`,
     accent: "indigo",
-    chipBg: "#EEF0FF",
+    chipBg: "#EDF3FA",
   },
 ];
