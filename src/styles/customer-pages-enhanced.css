@@ -1113,11 +1113,16 @@
 
 .brand-hub-hero-banner__headline {
   font-family: var(--font-section);
+  font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1.35;
 }
 
 .brand-hub-hero-banner__desc {
   max-width: 42rem;
+  font-weight: 450;
+  line-height: 1.6;
+  color: #64748b;
 }
 
 .brand-hub-products__title {

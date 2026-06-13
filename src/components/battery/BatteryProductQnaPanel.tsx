@@ -114,26 +114,34 @@ export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
 
   return (
     <div className="battery-product-qna" data-battery-product-qna={batteryCode}>
-      <div className="battery-product-qna__head flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h3 className="battery-product-qna__title text-base font-black text-slate-900">상품 Q&A</h3>
-          <div className="battery-product-qna__stats mt-2">
+      <div className="battery-product-qna__head">
+        <div className="battery-product-qna__intro">
+          <h3 className="battery-product-qna__title">상품 Q&A</h3>
+          <p className="battery-product-qna__desc">
+            이 상품에 대해 궁금한 내용을 남겨주세요. 배송, 규격, 호환, 장착 관련 질문을 확인하실 수
+            있습니다.
+          </p>
+          <div className="battery-product-qna__stats" aria-label="문의 현황">
             <span className="battery-product-qna__stat">문의 {stats.total}</span>
-            <span className="battery-product-qna__stat">답변완료 {stats.answered}</span>
-            <span className="battery-product-qna__stat">답변대기 {stats.pending}</span>
+            <span className="battery-product-qna__stat battery-product-qna__stat--done">
+              답변완료 {stats.answered}
+            </span>
+            <span className="battery-product-qna__stat battery-product-qna__stat--pending">
+              답변대기 {stats.pending}
+            </span>
           </div>
         </div>
-        <button type="button" className={`${bm.btnNavy} text-xs`} onClick={openWrite}>
+        <button type="button" className="battery-product-qna__write-btn" onClick={openWrite}>
           상품 문의하기
         </button>
       </div>
 
       {loading ? (
-        <p className="battery-product-qna__loading mt-4 text-sm font-medium text-slate-500">불러오는 중…</p>
+        <p className="battery-product-qna__loading">불러오는 중…</p>
       ) : items.length === 0 ? (
-        <div className="battery-product-qna__empty mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 p-6 text-center">
-          <p className="text-sm font-black text-slate-800">등록된 상품 문의가 없습니다</p>
-          <button type="button" className={`${bm.btnSecondary} mt-3 text-xs`} onClick={openWrite}>
+        <div className="battery-product-qna__empty">
+          <p className="battery-product-qna__empty-title">이 상품에 등록된 문의가 아직 없습니다.</p>
+          <button type="button" className="battery-product-qna__empty-btn" onClick={openWrite}>
             첫 문의 남기기
           </button>
         </div>
@@ -166,7 +174,7 @@ export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
                         비밀글
                       </span>
                     ) : null}
-                    <span className="battery-product-qna__summary font-bold">{item.title}</span>
+                    <span className="battery-product-qna__summary">{item.title}</span>
                   </span>
                   <span className="battery-product-qna__meta">
                     <span>{item.authorMasked}</span>
@@ -201,6 +209,14 @@ export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
           })}
         </ul>
       )}
+
+      <p className="battery-product-qna__footnote">
+        일반 상담이나 주문 관련 문의는{" "}
+        <a href="/customer-center" className="battery-product-qna__footnote-link">
+          고객센터
+        </a>{" "}
+        또는 상담 버튼을 이용해 주세요.
+      </p>
 
       <CustomerActionModal
         open={writeOpen}

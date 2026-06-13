@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { MessageSquare } from "lucide-react";
 import { BatteryDetailBodyImages } from "@/components/battery/BatteryDetailBodyImages";
 import { BatteryProductQnaPanel } from "@/components/battery/BatteryProductQnaPanel";
 import { BatteryProductReviewsPanel } from "@/components/battery/BatteryProductReviewsPanel";
@@ -144,10 +143,6 @@ export function BatteryDetailProductTabs({ code }: Props) {
                 batteryCode={code}
                 productName={productDisplayName || code}
               />
-              <p className="battery-detail-qna-panel__hint mt-4 flex items-start gap-2 text-xs font-medium text-slate-500">
-                <MessageSquare className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-                일반 상담·주문 문의는 고객센터 또는 하단 상담 버튼을 이용해 주세요.
-              </p>
             </motion.div>
           ) : null}
         </AnimatePresence>
