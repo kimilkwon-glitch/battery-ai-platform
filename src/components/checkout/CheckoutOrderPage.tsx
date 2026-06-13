@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CheckoutDeliveryAddressSection } from "@/components/checkout/CheckoutDeliveryAddressSection";
 import { CheckoutPriceSummaryPanel } from "@/components/checkout/CheckoutPriceSummaryPanel";
 import { CheckoutProductSummary } from "@/components/checkout/CheckoutProductSummary";
@@ -60,9 +60,17 @@ import {
 import { getCustomerProfile, type CustomerProfile } from "@/lib/customer-profile-storage";
 import {
   checkoutContactFromFulfillment,
-  checkoutContactValid,
-  fulfillmentAddressValid,
+  checkoutFulfillmentStepValid,
 } from "@/lib/checkout/checkout-address";
+import {
+  buildCheckoutSessionFulfillment,
+  cartFulfillmentSignature,
+  checkoutFormPanelsForMethod,
+  fulfillmentFromCartItems,
+  mergeCheckoutFulfillmentState,
+  parseFulfillmentMethodFromQuery,
+  shouldSyncCartItemsForFulfillmentPatch,
+} from "@/lib/checkout/checkout-fulfillment-state";
 import type { OrderRequestFulfillment, OrderRequestVehicle } from "@/types/order-request";
 import type { BatteryCartItem, FulfillmentMethod } from "@/types/cart";
 import type { CheckoutSessionPayload } from "@/types/commerce-payment";
@@ -107,18 +115,6 @@ function initialVehicleFromCart(items: BatteryCartItem[]): OrderRequestVehicle {
   const line = items.find((i) => i.vehicle?.displayName || i.customerMemo?.trim());
   if (!line) return {};
   return orderVehicleFromCartItem(line);
-}
-
-function initialFulfillmentFromCart(items: BatteryCartItem[]): OrderRequestFulfillment {
-  const first = items.find((i) => i.fulfillment.method !== "undecided");
-  if (first?.fulfillment.method && first.fulfillment.method !== "undecided") {
-    return {
-      method: first.fulfillment.method,
-      storeId: first.fulfillment.storeId ?? "undecided",
-      region: first.fulfillment.requestedRegion,
-    };
-  }
-  return { method: "delivery", storeId: "undecided" };
 }
 
 function syncItemsWithFulfillment(
@@ -188,7 +184,8 @@ export function CheckoutOrderPage() {
           {
             batteryCode,
             brandName,
-            fulfillmentMethod: "delivery",
+            fulfillmentMethod:
+              parseFulfillmentMethodFromQuery(searchParams.get("fulfillment")) ?? "undecided",
             source: vehicleCtx ? "vehicle_detail" : "battery_detail",
             fitmentStatus: vehicleCtx ? "confirmed" : "needs_customer_confirm",
           },
@@ -217,9 +214,12 @@ export function CheckoutOrderPage() {
   const [vehicle, setVehicle] = useState<OrderRequestVehicle>({});
   const [usedBattery, setUsedBattery] = useState<UsedBatteryFormSelection>(null);
   const [fulfillment, setFulfillment] = useState<OrderRequestFulfillment>({
-    method: "delivery",
+    method: "undecided",
     storeId: "undecided",
   });
+  const fulfillmentInitRef = useRef(false);
+  const userSelectedFulfillmentRef = useRef(false);
+  const prevCartFulfillmentSigRef = useRef<string | null>(null);
   const [checklistComplete, setChecklistComplete] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [navigating, setNavigating] = useState(false);
@@ -240,32 +240,33 @@ export function CheckoutOrderPage() {
     [items, usedBatteryFromCart],
   );
 
+  const cartFulfillmentSig = useMemo(() => cartFulfillmentSignature(items), [items]);
+  const formPanels = checkoutFormPanelsForMethod(fulfillment.method);
+
   useEffect(() => {
     if (!hydrated || items.length === 0) return;
     setVehicle((prev) => (prev.name ? prev : initialVehicleFromCart(items)));
     setUsedBattery((prev) => (prev != null ? prev : usedBatteryFromCart));
-    setFulfillment((prev) => {
-      if (prev.method !== "undecided" && prev.method !== "delivery") return prev;
-      const fromCart = initialFulfillmentFromCart(items);
-      const hasUserShipping =
-        Boolean(prev.recipientName?.trim()) ||
-        Boolean(prev.recipientPhone?.trim()) ||
-        Boolean(prev.postalCode?.trim()) ||
-        Boolean(prev.address1?.trim()) ||
-        Boolean(prev.address2?.trim()) ||
-        Boolean(prev.deliveryMessage?.trim()) ||
-        Boolean(prev.visitMessage?.trim());
-      if (hasUserShipping) {
-        return {
-          ...fromCart,
-          ...prev,
-          method: fromCart.method ?? prev.method,
-          storeId: fromCart.storeId ?? prev.storeId,
-        };
-      }
-      return { ...fromCart, ...prev };
-    });
-  }, [hydrated, items, usedBatteryFromCart]);
+
+    const fromCart = fulfillmentFromCartItems(items);
+    const sigChanged =
+      prevCartFulfillmentSigRef.current != null &&
+      prevCartFulfillmentSigRef.current !== cartFulfillmentSig;
+    prevCartFulfillmentSigRef.current = cartFulfillmentSig;
+
+    if (!fulfillmentInitRef.current) {
+      fulfillmentInitRef.current = true;
+      setFulfillment((prev) => mergeCheckoutFulfillmentState(prev, fromCart, "init"));
+      return;
+    }
+
+    if (sigChanged && !userSelectedFulfillmentRef.current && fromCart.method !== "undecided") {
+      setFulfillment((prev) => {
+        if (prev.method === fromCart.method && prev.storeId === fromCart.storeId) return prev;
+        return mergeCheckoutFulfillmentState(prev, fromCart, "cart_external_sync");
+      });
+    }
+  }, [hydrated, items, usedBatteryFromCart, cartFulfillmentSig]);
 
   const applyMemberFieldsToCheckout = useCallback(
     (source: MemberPublic | CustomerProfile | null) => {
@@ -343,6 +344,9 @@ export function CheckoutOrderPage() {
   );
 
   const onFulfillmentChange = (patch: Partial<OrderRequestFulfillment>) => {
+    if (patch.method != null) {
+      userSelectedFulfillmentRef.current = true;
+    }
     const next = { ...fulfillment, ...patch };
     setFulfillment(next);
     if (
@@ -354,14 +358,7 @@ export function CheckoutOrderPage() {
         phone: c.phone || next.recipientPhone || fulfillment.recipientPhone || "",
       }));
     }
-    const needsItemSync =
-      next.method !== "undecided" &&
-      (patch.method != null ||
-        patch.storeId != null ||
-        patch.region != null ||
-        patch.postalCode != null ||
-        patch.address1 != null);
-    if (needsItemSync) {
+    if (shouldSyncCartItemsForFulfillmentPatch(patch, fulfillment)) {
       applyFulfillmentToItems(next);
     }
   };
@@ -391,13 +388,15 @@ export function CheckoutOrderPage() {
     return { needsVehicleConfirm: display.needsVehicleConfirm, confirmHref };
   }, [items, vehicle]);
 
+  const vehicleOk =
+    fulfillment.method === "store_pickup_self" || checkoutVehicleInfoValid(vehicle);
+
   const canConfirm =
     optionsComplete &&
-    checkoutContactValid(fulfillment, customer) &&
-    checkoutVehicleInfoValid(vehicle) &&
+    checkoutFulfillmentStepValid(fulfillment, customer, vehicle) &&
+    vehicleOk &&
     isUsedBatterySelected(effectiveUsedBattery) &&
     fulfillment.method !== "undecided" &&
-    fulfillmentAddressValid(fulfillment) &&
     checklistComplete;
 
   const handleGoToReview = () => {
@@ -405,7 +404,7 @@ export function CheckoutOrderPage() {
     if (!canConfirm) {
       setValidationError(
         optionsComplete
-          ? checkoutVehicleInfoValid(vehicle)
+          ? vehicleOk
             ? "이름, 연락처, 주소·지점, 확인 항목을 점검해 주세요."
             : "공구 확인을 위해 차량명을 입력해 주세요."
           : "이전 단계에서 수령 방식과 폐배터리 반납을 선택한 뒤 다시 진행해 주세요.",
@@ -443,23 +442,7 @@ export function CheckoutOrderPage() {
         userId: isLoggedIn ? (userId ?? undefined) : undefined,
       },
       vehicle,
-      fulfillment: {
-        method: fulfillment.method,
-        storeId:
-          fulfillment.storeId === "deokcheon" || fulfillment.storeId === "hakjang"
-            ? fulfillment.storeId
-            : undefined,
-        region: fulfillment.region,
-        preferredTime: fulfillment.preferredTime,
-        recipientName: fulfillment.recipientName,
-        recipientPhone: fulfillment.recipientPhone,
-        postalCode: fulfillment.postalCode,
-        address1: fulfillment.address1,
-        address2: fulfillment.address2,
-        deliveryMessage: fulfillment.deliveryMessage,
-        visitMessage: fulfillment.visitMessage,
-        storeMessage: fulfillment.storeMessage,
-      },
+      fulfillment: buildCheckoutSessionFulfillment(fulfillment),
       usedBatteryReturn: effectiveUsedBattery ?? "unknown",
       memo: resolveRequestMemo(fulfillment),
       priceLines: totals.priceLines,
@@ -558,7 +541,7 @@ export function CheckoutOrderPage() {
             isBuyNow={isBuyNow}
           />
 
-          {fulfillment.method === "delivery" ? (
+          {formPanels.deliveryAddress ? (
             <CheckoutDeliveryAddressSection
               values={fulfillment}
               onChange={onFulfillmentChange}
@@ -570,7 +553,7 @@ export function CheckoutOrderPage() {
             />
           ) : null}
 
-          {fulfillment.method === "visit_install" ? (
+          {formPanels.visitAddress ? (
             <CheckoutVisitAddressSection
               values={fulfillment}
               onChange={onFulfillmentChange}
@@ -579,7 +562,7 @@ export function CheckoutOrderPage() {
             />
           ) : null}
 
-          {fulfillment.method === "store_pickup_self" ? (
+          {formPanels.storePickup ? (
             <div className="space-y-5" data-checkout-info-panel="store_pickup_self">
               <CheckoutStoreSection values={fulfillment} onChange={onFulfillmentChange} />
               <OrderRequestCustomerFields
@@ -590,7 +573,7 @@ export function CheckoutOrderPage() {
             </div>
           ) : null}
 
-          {fulfillment.method === "store_install" ? (
+          {formPanels.storeInstall ? (
             <div className="space-y-5" data-checkout-info-panel="store_install">
               <CheckoutStoreSection values={fulfillment} onChange={onFulfillmentChange} />
               <OrderRequestCustomerFields
@@ -601,12 +584,14 @@ export function CheckoutOrderPage() {
             </div>
           ) : null}
 
-          <CheckoutVehicleSection
-            values={vehicle}
-            onChange={(p) => setVehicle((v) => ({ ...v, ...p }))}
-            needsVehicleConfirm={vehicleConfirmState.needsVehicleConfirm}
-            vehicleConfirmHref={vehicleConfirmState.confirmHref}
-          />
+          {formPanels.vehicle ? (
+            <CheckoutVehicleSection
+              values={vehicle}
+              onChange={(p) => setVehicle((v) => ({ ...v, ...p }))}
+              needsVehicleConfirm={vehicleConfirmState.needsVehicleConfirm}
+              vehicleConfirmHref={vehicleConfirmState.confirmHref}
+            />
+          ) : null}
 
           <CheckoutPromotionSection
             items={items}

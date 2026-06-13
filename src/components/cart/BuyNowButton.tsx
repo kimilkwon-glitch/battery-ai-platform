@@ -55,7 +55,10 @@ export function BuyNowButton({
           vehicleContext,
         );
         setBuyNowCheckoutItems([item]);
-        const checkoutUrl = appendVehicleCheckoutQuery(`${CHECKOUT_PAGE}?flow=buy_now`, vehicleContext);
+        let checkoutUrl = appendVehicleCheckoutQuery(`${CHECKOUT_PAGE}?flow=buy_now`, vehicleContext);
+        if (fulfillmentMethod !== "undecided") {
+          checkoutUrl += `${checkoutUrl.includes("?") ? "&" : "?"}fulfillment=${encodeURIComponent(fulfillmentMethod)}`;
+        }
         router.push(checkoutUrl);
       }}
     >

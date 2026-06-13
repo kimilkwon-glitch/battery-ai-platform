@@ -67,3 +67,16 @@ export function fulfillmentAddressValid(fulfillment: OrderRequestFulfillment): b
   }
   return true;
 }
+
+export function checkoutFulfillmentStepValid(
+  fulfillment: OrderRequestFulfillment,
+  customer: { name: string; phone: string },
+  vehicle: { name?: string },
+): boolean {
+  if (!checkoutContactValid(fulfillment, customer)) return false;
+  if (!fulfillmentAddressValid(fulfillment)) return false;
+  if (fulfillment.method === "visit_install" || fulfillment.method === "store_install") {
+    return Boolean(vehicle.name?.trim());
+  }
+  return true;
+}
