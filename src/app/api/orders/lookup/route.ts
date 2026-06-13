@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const NOT_FOUND_MESSAGE =
-  "주문번호와 연락처를 확인할 수 없습니다. 입력 정보를 다시 확인해 주세요.";
+  "입력하신 정보와 일치하는 주문을 찾지 못했습니다.";
 
 export async function POST(request: Request) {
   let body: unknown;

@@ -338,3 +338,77 @@
 .product-detail-price-summary__amount {
   font-family: var(--font-price);
 }
+
+/* ── 로그인 — 비회원 이용 ── */
+.bm-guest-checkout-options__inner {
+  border: 1px solid var(--bm-border);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, var(--bm-apricot-soft) 0%, #ffffff 72%);
+  padding: 1.125rem 1.25rem;
+}
+
+.bm-guest-checkout-options__title {
+  margin: 0;
+  font-family: var(--font-section);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bm-text);
+}
+
+.bm-guest-checkout-options__desc {
+  margin: 0.375rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--bm-text-sub);
+}
+
+.bm-guest-checkout-options__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
+}
+
+.bm-guest-checkout-options__btn {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.bm-guest-checkout-options__btn--primary {
+  border: 1px solid var(--bm-primary);
+  background: var(--bm-primary);
+  color: #ffffff;
+}
+
+.bm-guest-checkout-options__btn--primary:hover {
+  border-color: var(--bm-primary-hover);
+  background: var(--bm-primary-hover);
+  color: #ffffff;
+}
+
+.bm-guest-checkout-options__btn--outline {
+  border: 1px solid var(--bm-border);
+  background: #ffffff;
+  color: var(--bm-text);
+}
+
+.bm-guest-checkout-options__btn--outline:hover {
+  border-color: var(--bm-border-strong);
+  background: var(--bm-surface-muted);
+  color: var(--bm-text);
+}

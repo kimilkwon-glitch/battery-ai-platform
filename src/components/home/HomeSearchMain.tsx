@@ -2,7 +2,6 @@ import { PortalHeader } from "@/components/portal";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { HomeBenefitsCarousel } from "@/components/home/HomeBenefitsCarousel";
 import { HomeBrandLineupPair } from "@/components/home/HomeBrandLineupPair";
-import { HomeGuestOrderLookupLink } from "@/components/home/HomeGuestOrderLookupLink";
 import { HomePremiumHero } from "@/components/home/HomePremiumHero";
 import { HomeQuickIconMenu } from "@/components/home/HomeQuickIconMenu";
 import { HomeReplacementStoriesSection } from "@/components/home/HomeReplacementStoriesSection";
@@ -12,7 +11,6 @@ export function HomeSearchMain() {
   return (
     <main className="min-h-screen bg-white text-[var(--bm-text)]" data-page="home-search-main">
       <PortalHeader showSearch={false} />
-      <HomeGuestOrderLookupLink />
 
       <HomePremiumHero />
 

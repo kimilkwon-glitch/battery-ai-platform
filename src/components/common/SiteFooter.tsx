@@ -1,6 +1,7 @@
 import { BRAND_FOOTER, BRAND_NAME } from "@/lib/brand";
 import { formatBusinessField, getBusinessInfo } from "@/lib/legal/business-info";
 import { LEGAL_FOOTER_LINKS } from "@/lib/legal/legal-routes";
+import { COMMERCE_ORDER_LOOKUP_PAGE } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
 import { OfficialChannelsStrip } from "@/components/common/OfficialChannelsStrip";
 import { BUILD_STAMP } from "@/lib/build-stamp";
@@ -71,18 +72,30 @@ export function SiteFooter({ className = "" }: { className?: string }) {
           </div>
         </div>
 
-        <nav className="flex min-w-[12rem] flex-col gap-1.5">
-          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">정책·안내</p>
-          {LEGAL_FOOTER_LINKS.map((item) => (
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-8 lg:gap-10">
+          <nav className="flex min-w-[12rem] flex-col gap-1.5">
+            <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">고객지원</p>
             <a
-              key={item.href}
-              href={item.href}
+              href={COMMERCE_ORDER_LOOKUP_PAGE}
               className="font-bold text-slate-700 hover:text-[var(--bm-primary)] hover:underline"
             >
-              {item.label}
+              비회원 주문조회
             </a>
-          ))}
-        </nav>
+          </nav>
+
+          <nav className="flex min-w-[12rem] flex-col gap-1.5">
+            <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">정책·안내</p>
+            {LEGAL_FOOTER_LINKS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="font-bold text-slate-700 hover:text-[var(--bm-primary)] hover:underline"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </div>
       </div>
 
       <p className="mt-4 border-t border-slate-100 pt-4 text-[10px] text-slate-400">

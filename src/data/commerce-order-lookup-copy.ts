@@ -16,7 +16,7 @@ export const COMMERCE_ORDER_LOOKUP_COPY = {
   submitLabel: "조회하기",
   loading: "확인 중…",
   notFoundTitle: "주문을 찾을 수 없습니다",
-  notFoundBody: "입력 정보를 다시 확인해 주세요.",
+  notFoundBody: "입력하신 정보와 일치하는 주문을 찾지 못했습니다.",
   anotherLookup: "다른 주문 조회",
 } as const;
 
