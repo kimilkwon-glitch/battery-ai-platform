@@ -660,3 +660,32 @@ export async function pgStoreCommerceOrderLookupByRef(
   if (!id) return null;
   return pgStoreCommerceOrderGet(id);
 }
+
+export async function pgStoreCommerceOrderLookupByCustomerIdentity(
+  customerName: string,
+  phoneDigits: string,
+  limit = 50,
+): Promise<CommerceOrderRecord[]> {
+  await ensureDb();
+  const sql = getSql();
+  const name = customerName.trim();
+  if (!name || phoneDigits.length < 9) return [];
+
+  const ids = (await sql`
+    SELECT id FROM commerce_orders
+    WHERE trim(customer_name) = ${name}
+      AND regexp_replace(customer_phone, '[^0-9]', '', 'g') = ${phoneDigits}
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `) as { id: string }[];
+
+  if (ids.length === 0) return [];
+
+  const orderIds = ids.map((r) => r.id);
+  const [rows, logsByOrder] = await Promise.all([
+    fetchOrderRowsByIds(orderIds),
+    fetchStatusLogsByOrderIds(orderIds),
+  ]);
+  const byId = new Map(rows.map((row) => [row.id, rowToRecord(row, logsByOrder.get(row.id) ?? [])]));
+  return orderIds.map((id) => byId.get(id)).filter((r): r is CommerceOrderRecord => Boolean(r));
+}

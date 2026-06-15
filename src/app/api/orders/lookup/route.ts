@@ -2,17 +2,32 @@ import { NextResponse } from "next/server";
 import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
 import { commerceOrderAdminMetaGet } from "@/lib/admin/commerce-order-admin-meta-store";
 import { commerceOrderToGuestLookupResult } from "@/lib/orders/commerce-order-mine";
-import { normalizePhoneDigits } from "@/lib/order-request/order-request-lookup";
-import { storeCommerceOrderLookupByRef } from "@/lib/payment/commerce-order-store";
-import { attachGuestOrderAccessCookie } from "@/lib/security/guest-order-access.server";
+import {
+  isValidCustomerLookupInput,
+  normalizeCustomerLookupName,
+  normalizeCustomerLookupPhone,
+} from "@/lib/orders/customer-lookup-identity";
+import { storeCommerceOrderLookupByCustomerIdentity } from "@/lib/payment/commerce-order-store";
+import { attachGuestCustomerAccessCookie } from "@/lib/security/guest-order-access.server";
+import { checkIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const NOT_FOUND_MESSAGE =
-  "입력하신 정보와 일치하는 주문을 찾지 못했습니다.";
+const NOT_FOUND_MESSAGE = "입력하신 정보와 일치하는 주문을 찾을 수 없습니다.";
+const LOOKUP_RATE_LIMIT = 20;
+const LOOKUP_RATE_WINDOW_MS = 15 * 60 * 1000;
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rate = checkIpRateLimit(`orders-lookup:${ip}`, LOOKUP_RATE_LIMIT, LOOKUP_RATE_WINDOW_MS);
+  if (!rate.ok) {
+    return NextResponse.json(
+      { ok: false, message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요." },
+      { status: 429, headers: { "Retry-After": String(rate.retryAfterSec) } },
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -21,49 +36,51 @@ export async function POST(request: Request) {
   }
 
   const b = body as Record<string, unknown>;
-  const orderRef = String(b.orderId ?? b.orderNumber ?? "").trim();
-  const phone = String(b.phone ?? "").trim();
+  const customerName = normalizeCustomerLookupName(String(b.customerName ?? b.name ?? ""));
+  const phoneDigits = normalizeCustomerLookupPhone(String(b.phone ?? ""));
 
-  if (!orderRef || !phone) {
+  if (!isValidCustomerLookupInput(customerName, phoneDigits)) {
     return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 422 });
   }
 
-  const inputDigits = normalizePhoneDigits(phone);
-  if (inputDigits.length < 9) {
-    return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 422 });
+  const identityRate = checkIpRateLimit(
+    `orders-lookup-id:${ip}:${phoneDigits.slice(-4)}`,
+    10,
+    LOOKUP_RATE_WINDOW_MS,
+  );
+  if (!identityRate.ok) {
+    return NextResponse.json(
+      { ok: false, message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요." },
+      { status: 429, headers: { "Retry-After": String(identityRate.retryAfterSec) } },
+    );
   }
 
   try {
-    const record = await storeCommerceOrderLookupByRef(orderRef);
-    if (!record) {
+    const records = await storeCommerceOrderLookupByCustomerIdentity(customerName, phoneDigits);
+    const visible = records.filter(
+      (record) =>
+        !isAdminTestCommerceOrder({
+          orderNumber: record.orderNumber,
+          customerName: record.customerName,
+          customerPhone: record.customerPhone,
+          requestMemo: record.requestMemo,
+          productName: record.productName,
+        }),
+    );
+
+    if (visible.length === 0) {
       return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 404 });
     }
 
-    if (
-      isAdminTestCommerceOrder({
-        orderNumber: record.orderNumber,
-        customerName: record.customerName,
-        customerPhone: record.customerPhone,
-        requestMemo: record.requestMemo,
-        productName: record.productName,
-      })
-    ) {
-      return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 404 });
-    }
+    const orders = await Promise.all(
+      visible.map(async (record) => {
+        const adminMeta = await commerceOrderAdminMetaGet(record.orderId);
+        return commerceOrderToGuestLookupResult(record, adminMeta);
+      }),
+    );
 
-    const storedDigits = normalizePhoneDigits(record.customerPhone);
-    if (storedDigits !== inputDigits) {
-      return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 404 });
-    }
-
-    const adminMeta = await commerceOrderAdminMetaGet(record.orderId);
-
-    const response = NextResponse.json({
-      ok: true,
-      lookup: commerceOrderToGuestLookupResult(record, adminMeta),
-      orderId: record.orderId,
-    });
-    await attachGuestOrderAccessCookie(response, record.orderId);
+    const response = NextResponse.json({ ok: true, orders, count: orders.length });
+    await attachGuestCustomerAccessCookie(response, customerName, phoneDigits);
     return response;
   } catch {
     return NextResponse.json(

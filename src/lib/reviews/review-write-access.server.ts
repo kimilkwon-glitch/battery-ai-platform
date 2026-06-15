@@ -52,7 +52,7 @@ export async function resolveReviewWriteOrder(
     }
   }
 
-  if (await assertGuestOrderAccess(request, order.orderId)) {
+  if (await assertGuestOrderAccess(request, order.orderId, order)) {
     return { ok: true, order };
   }
 

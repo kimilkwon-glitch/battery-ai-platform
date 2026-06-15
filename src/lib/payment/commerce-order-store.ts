@@ -75,3 +75,13 @@ export async function storeCommerceOrderLookupByRef(
   const pg = await getPostgresStore();
   return pg.pgStoreCommerceOrderLookupByRef(orderRef);
 }
+
+export async function storeCommerceOrderLookupByCustomerIdentity(
+  customerName: string,
+  phoneDigits: string,
+  limit = 50,
+): Promise<CommerceOrderRecord[]> {
+  if (!isPostgresConfigured()) return [];
+  const pg = await getPostgresStore();
+  return pg.pgStoreCommerceOrderLookupByCustomerIdentity(customerName, phoneDigits, limit);
+}
