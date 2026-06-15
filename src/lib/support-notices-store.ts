@@ -14,6 +14,8 @@ export type {
   SupportNoticeInput,
 } from "@/lib/support-notices-store.postgres";
 
+export { NoticeBodyEmptyError } from "@/lib/support-notices-store.postgres";
+
 async function getStore() {
   assertOperationalStoreAvailable("support_notices");
   if (isOperationalDbMode()) return import("@/lib/support-notices-store.postgres");

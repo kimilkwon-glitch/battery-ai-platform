@@ -2,7 +2,24 @@ import "server-only";
 
 import { ensureOperationalSchema } from "@/lib/db/ensure-operational-schema";
 import { getSql } from "@/lib/db/postgres";
+import {
+  sanitizeNoticeHtml,
+  sanitizeNoticeHtmlForStorage,
+} from "@/lib/security/sanitize-notice-html.server";
 import { SUPPORT_NOTICES_SEED } from "@/lib/support-notices-seed";
+
+export class NoticeBodyEmptyError extends Error {
+  constructor() {
+    super("NOTICE_BODY_EMPTY");
+    this.name = "NoticeBodyEmptyError";
+  }
+}
+
+function requireSanitizedBodyHtml(raw: string): string {
+  const safe = sanitizeNoticeHtmlForStorage(raw);
+  if (!safe) throw new NoticeBodyEmptyError();
+  return safe;
+}
 
 export type SupportNoticeCategory = "shipping" | "event" | "order" | "general";
 
@@ -98,7 +115,7 @@ export async function getSupportNoticeById(id: string): Promise<SupportNoticeRec
   const rows = (await sql`SELECT * FROM support_notices WHERE id = ${id} LIMIT 1`) as NoticeRow[];
   const found = rows[0] ? rowToRecord(rows[0]) : undefined;
   if (!found || !found.visible) return undefined;
-  return found;
+  return { ...found, bodyHtml: sanitizeNoticeHtml(found.bodyHtml) };
 }
 
 export type SupportNoticeInput = {
@@ -140,7 +157,7 @@ export async function createSupportNotice(input: SupportNoticeInput): Promise<Su
     sortOrder: input.sortOrder ?? all.length,
     imageSrc: input.imageSrc?.trim() || undefined,
     imageAlt: input.imageAlt?.trim() || undefined,
-    bodyHtml: input.bodyHtml,
+    bodyHtml: requireSanitizedBodyHtml(input.bodyHtml),
     createdAt: now,
     updatedAt: now,
   };
@@ -173,6 +190,8 @@ export async function updateSupportNotice(
     ...patch,
     title: patch.title?.trim() ?? prev.title,
     date: patch.date?.trim() ?? prev.date,
+    bodyHtml:
+      patch.bodyHtml !== undefined ? requireSanitizedBodyHtml(patch.bodyHtml) : prev.bodyHtml,
     updatedAt: new Date().toISOString(),
   };
   await sql`

@@ -19,7 +19,8 @@ export type SupportNotice = {
   bodyHtml: string;
 };
 
-function toPublicNotice(record: SupportNoticeRecord): SupportNotice {
+async function toPublicNotice(record: SupportNoticeRecord): Promise<SupportNotice> {
+  const { sanitizeNoticeHtml } = await import("@/lib/security/sanitize-notice-html.server");
   return {
     id: record.id,
     title: record.title,
@@ -27,7 +28,7 @@ function toPublicNotice(record: SupportNoticeRecord): SupportNotice {
     important: record.important,
     imageSrc: record.imageSrc,
     imageAlt: record.imageAlt,
-    bodyHtml: record.bodyHtml,
+    bodyHtml: sanitizeNoticeHtml(record.bodyHtml),
   };
 }
 
@@ -45,7 +46,7 @@ export const SUPPORT_NOTICES: SupportNotice[] = SUPPORT_NOTICES_SEED.map((n) => 
 export async function getHubSupportNotices(): Promise<SupportNotice[]> {
   try {
     const records = await listHubSupportNotices();
-    if (records.length > 0) return records.map(toPublicNotice);
+    if (records.length > 0) return Promise.all(records.map(toPublicNotice));
   } catch {
     /* fallback */
   }
@@ -59,5 +60,8 @@ export async function getSupportNotice(id: string): Promise<SupportNotice | unde
   } catch {
     /* fallback */
   }
-  return SUPPORT_NOTICES.find((n) => n.id === id);
+  const fallback = SUPPORT_NOTICES.find((n) => n.id === id);
+  if (!fallback) return undefined;
+  const { sanitizeNoticeHtml } = await import("@/lib/security/sanitize-notice-html.server");
+  return { ...fallback, bodyHtml: sanitizeNoticeHtml(fallback.bodyHtml) };
 }

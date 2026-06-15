@@ -4,7 +4,24 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import {
+  sanitizeNoticeHtml,
+  sanitizeNoticeHtmlForStorage,
+} from "@/lib/security/sanitize-notice-html.server";
 import { SUPPORT_NOTICES_SEED } from "@/lib/support-notices-seed";
+
+export class NoticeBodyEmptyError extends Error {
+  constructor() {
+    super("NOTICE_BODY_EMPTY");
+    this.name = "NoticeBodyEmptyError";
+  }
+}
+
+function requireSanitizedBodyHtml(raw: string): string {
+  const safe = sanitizeNoticeHtmlForStorage(raw);
+  if (!safe) throw new NoticeBodyEmptyError();
+  return safe;
+}
 
 export type SupportNoticeCategory = "shipping" | "event" | "order" | "general";
 
@@ -116,7 +133,7 @@ export async function getSupportNoticeById(id: string): Promise<SupportNoticeRec
   const records = await loadRecords();
   const found = records.find((r) => r.id === id);
   if (!found || !found.visible) return undefined;
-  return found;
+  return { ...found, bodyHtml: sanitizeNoticeHtml(found.bodyHtml) };
 }
 
 export type SupportNoticeInput = {
@@ -156,7 +173,7 @@ export async function createSupportNotice(input: SupportNoticeInput): Promise<Su
     sortOrder: input.sortOrder ?? records.length,
     imageSrc: input.imageSrc?.trim() || undefined,
     imageAlt: input.imageAlt?.trim() || undefined,
-    bodyHtml: input.bodyHtml,
+    bodyHtml: requireSanitizedBodyHtml(input.bodyHtml),
     createdAt: now,
     updatedAt: now,
   };
@@ -178,6 +195,8 @@ export async function updateSupportNotice(
     ...patch,
     title: patch.title?.trim() ?? prev.title,
     date: patch.date?.trim() ?? prev.date,
+    bodyHtml:
+      patch.bodyHtml !== undefined ? requireSanitizedBodyHtml(patch.bodyHtml) : prev.bodyHtml,
     updatedAt: new Date().toISOString(),
   };
   records[idx] = next;

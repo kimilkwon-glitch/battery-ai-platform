@@ -3,6 +3,7 @@ import { adminUnauthorizedResponse, verifyAdminApiRequest } from "@/lib/admin/ad
 import {
   createSupportNotice,
   listAllSupportNotices,
+  NoticeBodyEmptyError,
   type SupportNoticeInput,
 } from "@/lib/support-notices-store";
 
@@ -42,7 +43,10 @@ export async function POST(request: Request) {
   try {
     const item = await createSupportNotice(body);
     return NextResponse.json({ ok: true, item });
-  } catch {
+  } catch (err) {
+    if (err instanceof NoticeBodyEmptyError) {
+      return NextResponse.json({ ok: false, message: "본문을 입력해 주세요." }, { status: 400 });
+    }
     return NextResponse.json({ ok: false, message: "공지를 저장하지 못했습니다." }, { status: 500 });
   }
 }

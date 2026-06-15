@@ -20,7 +20,7 @@ export const SUPPORT_NOTICES_SEED: SupportNoticeSeedItem[] = [
     imageAlt: "2026년 5월 신용카드 무이자 할부 안내",
     bodyHtml: `
       <p>2026년 5월 신용카드 무이자 할부 혜택을 안내드립니다. 카드사·조건별 적용 여부는 결제 전 확인해 주세요.</p>
-      <table class="support-notice-table">
+      <table>
         <thead><tr><th>카드사</th><th>할부</th><th>비고</th></tr></thead>
         <tbody>
           <tr><td>예시 카드</td><td>2~3개월</td><td>조건 확인 필요</td></tr>
