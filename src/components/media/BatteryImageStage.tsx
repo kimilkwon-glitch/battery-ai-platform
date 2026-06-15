@@ -87,6 +87,7 @@ export function BatteryImageStage({
           candidates={candidates}
           index={index}
           variant={variant}
+          preferBrand={preferBrand}
           onFail={() => setIndex((i) => i + 1)}
         />
       ) : strictBrand ? (

@@ -1020,7 +1020,7 @@ textarea.support-hub-v2__field {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 0.125rem 0.25rem;
+  padding: 0.125rem 0.1875rem;
   border-radius: 0.875rem;
 }
 
@@ -1035,7 +1035,7 @@ textarea.support-hub-v2__field {
   align-items: center;
   justify-content: center;
   border-radius: 0.625rem;
-  padding: 0.125rem 0.25rem;
+  padding: 0;
 }
 
 .brand-hub-logo-wrap {
@@ -1044,13 +1044,13 @@ textarea.support-hub-v2__field {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  height: 5.5rem;
-  min-height: 5rem;
+  height: 4.75rem;
+  min-height: 4.5rem;
 }
 
 .brand-hub-logo-image-surface--stacked {
   width: 100%;
-  padding: 0.0625rem 0.1875rem;
+  padding: 0;
 }
 
 .brand-hub-logo-image {
@@ -1068,9 +1068,9 @@ textarea.support-hub-v2__field {
 
 .brand-hub-logo-image--stacked {
   width: auto !important;
-  height: auto !important;
-  max-width: 82%;
-  max-height: 96%;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   min-width: 0;
 }
 
@@ -1079,64 +1079,73 @@ textarea.support-hub-v2__field {
   color: inherit;
 }
 
-/* 스택형 로고 — 세방전지·하이성능쏠라이트 */
+/* 스택형 로고 — display-trim asset + plaque 크기 (source of truth) */
 .brand-hub-logo-badge[data-logo-layout="stacked"] {
   width: auto;
-  max-width: min(100%, 17rem);
+  max-width: min(100%, 15rem);
 }
 
-.brand-hub-logo-badge[data-logo-layout="stacked"] .brand-hub-logo-glass {
+.brand-hub-logo-badge[data-logo-layout="stacked"] .brand-hub-logo-glass,
+.brand-hub-logo-badge[data-logo-layout="stacked"] .brand-logo-plaque {
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  padding: 0.1875rem 0.3125rem;
+  padding: 0.125rem 0.1875rem;
 }
 
 .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
-  max-width: min(100%, 16rem);
+  max-width: min(100%, 13.5rem);
 }
 
 .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-  max-width: min(100%, 19rem);
+  max-width: min(100%, 16.5rem);
 }
 
 @media (min-width: 640px) {
   .brand-hub-logo-wrap {
-    height: 6.25rem;
+    height: 5.5rem;
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"] {
-    max-width: min(100%, 19rem);
-  }
-
-  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
     max-width: min(100%, 17rem);
   }
 
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 15rem);
+  }
+
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 21rem);
-  }
-
-  .brand-hub-logo-badge[data-logo-layout="stacked"] .brand-hub-logo-glass,
-  .brand-hub-logo-badge[data-logo-layout="stacked"] .brand-logo-plaque {
-    padding: 0.1875rem 0.3125rem;
-  }
-
-  .brand-hub-logo-image--stacked {
-    max-width: 84%;
-    max-height: 96%;
+    max-width: min(100%, 18.5rem);
   }
 }
 
 @media (min-width: 768px) {
   .brand-hub-logo-wrap {
-    height: 7rem;
+    height: 6rem;
   }
 }
 
 @media (min-width: 1024px) {
   .brand-hub-logo-wrap {
-    height: 7.75rem;
+    height: 6.5rem;
+  }
+
+  .brand-hub-logo-badge[data-logo-layout="stacked"] {
+    max-width: min(100%, 19rem);
+  }
+
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
+    max-width: min(100%, 16.5rem);
+  }
+
+  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
+    max-width: min(100%, 20.5rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .brand-hub-logo-wrap {
+    height: 7rem;
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"] {
@@ -1144,38 +1153,11 @@ textarea.support-hub-v2__field {
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 19rem);
+    max-width: min(100%, 17.5rem);
   }
 
   .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 23rem);
-  }
-
-  .brand-hub-logo-image--stacked {
-    max-width: 86%;
-  }
-}
-
-@media (min-width: 1280px) {
-  .brand-hub-logo-wrap {
-    height: 8.75rem;
-  }
-
-  .brand-hub-logo-badge[data-logo-layout="stacked"] {
-    max-width: min(100%, 23rem);
-  }
-
-  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="solite"] {
-    max-width: min(100%, 20rem);
-  }
-
-  .brand-hub-logo-badge[data-logo-layout="stacked"][data-brand-logo-plaque="rocket"] {
-    max-width: min(100%, 25rem);
-  }
-
-  .brand-hub-logo-image--stacked {
-    max-width: 88%;
-    max-height: 97%;
+    max-width: min(100%, 22rem);
   }
 }
 

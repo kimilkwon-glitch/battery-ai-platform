@@ -314,7 +314,7 @@ function BrandHubBannerLogo({
       width={assets.width}
       height={assets.height}
       className={clsx("brand-hub-logo-image", presentation.imageClassName)}
-      sizes="(max-width: 639px) 18rem, (max-width: 1023px) 20rem, 24rem"
+      sizes="(max-width: 639px) 280px, (max-width: 1023px) 320px, 380px"
       loading="lazy"
       onError={() => setImgError(true)}
     />

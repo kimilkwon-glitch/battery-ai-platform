@@ -5092,7 +5092,8 @@
 }
 
 .home-spec-card-image [data-battery-image-stage="homeLineup"] [class*="scale-"] {
-  transform: none !important;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .home-spec-card-body {

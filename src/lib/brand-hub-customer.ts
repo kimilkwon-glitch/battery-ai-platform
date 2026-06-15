@@ -15,7 +15,7 @@ import { batterySpecHref } from "@/lib/canonical-battery-code";
 export const CUSTOMER_BRAND_HUB_IDS = ["rocket", "solite"] as const;
 
 /** 배너 로고 캐시 무효화 */
-export const BRAND_HUB_LOGO_REV = "20260609-logo-stacked-v1";
+export const BRAND_HUB_LOGO_REV = "20260615-display-trim-v1";
 export type CustomerBrandHubId = (typeof CUSTOMER_BRAND_HUB_IDS)[number];
 
 export type BrandHubLogoLayout = "stacked";
@@ -31,17 +31,17 @@ export type BrandHubLogoAssets = {
 
 export const BRAND_HUB_LOGOS: Record<CustomerBrandHubId, BrandHubLogoAssets> = {
   rocket: {
-    src: "/assets/brand/sebang-logo-stacked.png",
-    width: 235,
-    height: 102,
+    src: "/assets/brand/sebang-logo-stacked-display.png",
+    width: 190,
+    height: 74,
     alt: "세방전지 로고",
     fallbackText: "세방전지",
     layout: "stacked",
   },
   solite: {
-    src: "/assets/brand/solite-high-performance-logo-stacked.png",
-    width: 177,
-    height: 167,
+    src: "/assets/brand/solite-high-performance-logo-stacked-display.png",
+    width: 159,
+    height: 93,
     alt: "하이성능쏠라이트 로고",
     fallbackText: "하이성능쏠라이트",
     layout: "stacked",

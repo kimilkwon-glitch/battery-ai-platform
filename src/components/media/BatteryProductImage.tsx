@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MediaImageSlot } from "@/components/media/MediaImageSlot";
 import {
   batteryImageCandidates,
@@ -18,6 +18,8 @@ import {
   type BatteryImageCompactVariant,
   type BatteryImageStageVariant,
 } from "@/lib/battery-image-stage";
+import { resolveHomeLineupDisplaySrc } from "@/lib/battery-display-image";
+import type { BatteryBrandKey } from "@/lib/battery-alias-map";
 import { SEARCH_IMAGE_SLOTS } from "@/lib/media/image-slot-registry";
 import type { BatteryImageSet } from "@/lib/battery-alias-map";
 import { batteryThumbSurface } from "@/lib/design-tokens";
@@ -115,6 +117,7 @@ export function BatteryStagePhoto({
   index,
   onFail,
   variant,
+  preferBrand,
 }: {
   code: string;
   src: string;
@@ -122,16 +125,31 @@ export function BatteryStagePhoto({
   index: number;
   onFail: () => void;
   variant: BatteryImageStageVariant;
+  preferBrand?: BatteryBrandKey;
 }) {
+  const displaySrc =
+    variant === "homeLineup" ? resolveHomeLineupDisplaySrc(code, preferBrand) : null;
+  const [displayFailed, setDisplayFailed] = useState(false);
+
+  useEffect(() => {
+    setDisplayFailed(false);
+  }, [code, preferBrand, displaySrc]);
+
+  const effectiveSrc = displaySrc && !displayFailed ? displaySrc : src;
+
   return (
     <div className={batteryImageStageInset}>
       <div className={batteryImageStagePhotoScale[variant]}>
         <BatteryHeightImage
-          src={src}
+          src={effectiveSrc}
           alt={`${code} 배터리`}
           heightClass={batteryImageStageImgHeight[variant]}
           maxWidthClass={batteryImageStageImgMaxWidthByVariant[variant]}
           onError={() => {
+            if (displaySrc && !displayFailed) {
+              setDisplayFailed(true);
+              return;
+            }
             if (index < candidates.length - 1) onFail();
           }}
         />
