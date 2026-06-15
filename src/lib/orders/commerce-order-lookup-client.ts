@@ -12,6 +12,7 @@ export async function lookupCommerceOrderApi(
     const res = await fetch("/api/orders/lookup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({
         orderNumber: orderRef.trim(),
         orderId: orderRef.trim(),

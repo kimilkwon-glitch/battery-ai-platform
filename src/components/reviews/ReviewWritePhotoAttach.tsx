@@ -14,9 +14,19 @@ type Props = {
   images: string[];
   onChange: (images: string[]) => void;
   disabled?: boolean;
+  orderId?: string;
+  orderNumber?: string;
+  contact?: string;
 };
 
-export function ReviewWritePhotoAttach({ images, onChange, disabled }: Props) {
+export function ReviewWritePhotoAttach({
+  images,
+  onChange,
+  disabled,
+  orderId,
+  orderNumber,
+  contact,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +56,7 @@ export function ReviewWritePhotoAttach({ images, onChange, disabled }: Props) {
           setError("파일 용량은 10MB 이하여야 합니다.");
           continue;
         }
-        const url = await uploadReviewImage(file);
+        const url = await uploadReviewImage(file, { orderId, orderNumber, contact });
         next.push(url);
       }
       onChange(next);

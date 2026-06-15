@@ -33,10 +33,22 @@ export async function compressReviewImageFile(file: File): Promise<File> {
   }
 }
 
-export async function uploadReviewImage(file: File): Promise<string> {
+export type ReviewUploadContext = {
+  orderId?: string;
+  orderNumber?: string;
+  contact?: string;
+};
+
+export async function uploadReviewImage(
+  file: File,
+  context: ReviewUploadContext = {},
+): Promise<string> {
   const compressed = await compressReviewImageFile(file);
   const form = new FormData();
   form.append("file", compressed);
+  if (context.orderId) form.append("orderId", context.orderId);
+  if (context.orderNumber) form.append("orderNumber", context.orderNumber);
+  if (context.contact) form.append("contact", context.contact);
 
   const res = await fetch("/api/reviews/upload", {
     method: "POST",

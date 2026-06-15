@@ -5,6 +5,10 @@ import { operationalErrorResponse } from "@/lib/db/operational-api-errors";
 import { estimateClaimRefundAmount } from "@/lib/claims/claim-refund-estimate";
 import { normalizePhoneDigits } from "@/lib/order-request/order-request-lookup";
 import {
+  assertOrderGuestPhoneAccess,
+  assertOrderPaymentAccess,
+} from "@/lib/payment/order-payment-access.server";
+import {
   storeCommerceOrderGet,
   storeCommerceOrderLookupByRef,
 } from "@/lib/payment/commerce-order-store";
@@ -26,9 +30,17 @@ type PostBody = {
   attachmentUrls?: string[];
 };
 
-async function resolveOrder(body: PostBody) {
+async function resolveOrder(request: Request, body: PostBody, sessionUserId?: string) {
   if (body.orderId?.trim()) {
-    return storeCommerceOrderGet(body.orderId.trim());
+    const order = await storeCommerceOrderGet(body.orderId.trim());
+    if (!order) return null;
+    if (sessionUserId && order.userId && order.userId === sessionUserId) return order;
+    const access = await assertOrderPaymentAccess(request, order, {
+      phone: body.phone?.trim() || body.customerPhone?.trim(),
+      orderNumber: body.orderNumber?.trim(),
+    });
+    if (access.ok) return order;
+    return null;
   }
   const ref = body.orderNumber?.trim();
   const phone = body.phone?.trim();
@@ -57,6 +69,13 @@ export async function GET(request: Request) {
   if (session?.userId) {
     if (order.userId && order.userId !== session.userId) {
       return NextResponse.json({ ok: false, message: "권한이 없습니다." }, { status: 403 });
+    }
+  } else {
+    const access = await assertOrderPaymentAccess(request, order, {
+      phone: searchParams.get("phone")?.trim(),
+    });
+    if (!access.ok) {
+      return NextResponse.json({ ok: false, message: access.message }, { status: access.status });
     }
   }
 
@@ -89,14 +108,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "연락처를 입력해 주세요." }, { status: 400 });
   }
 
-  const order = await resolveOrder(body);
+  const session = await getVerifiedCustomerSessionFromRequest(request);
+  const order = await resolveOrder(request, body, session?.userId);
   if (!order) {
     return NextResponse.json({ ok: false, message: "주문을 확인할 수 없습니다." }, { status: 404 });
   }
 
-  const session = await getVerifiedCustomerSessionFromRequest(request);
   if (session?.userId && order.userId && order.userId !== session.userId) {
     return NextResponse.json({ ok: false, message: "권한이 없습니다." }, { status: 403 });
+  }
+
+  if (!session?.userId) {
+    const phoneCheck = await assertOrderGuestPhoneAccess(order, body.customerPhone.trim());
+    if (!phoneCheck.ok) {
+      return NextResponse.json({ ok: false, message: phoneCheck.message }, { status: phoneCheck.status });
+    }
   }
 
   try {

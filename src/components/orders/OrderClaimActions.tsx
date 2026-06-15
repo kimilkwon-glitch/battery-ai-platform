@@ -48,7 +48,8 @@ export function OrderClaimActions({ order }: Props) {
   const [modalAction, setModalAction] = useState<ClaimUiAction | null>(null);
 
   const loadClaims = useCallback(async () => {
-    const res = await fetch(`/api/orders/claims?orderId=${encodeURIComponent(order.orderId)}`, {
+    const params = new URLSearchParams({ orderId: order.orderId });
+    const res = await fetch(`/api/orders/claims?${params.toString()}`, {
       credentials: "include",
     });
     const data = await res.json();

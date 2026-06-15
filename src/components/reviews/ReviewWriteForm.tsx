@@ -318,6 +318,9 @@ export function ReviewWriteForm({
             images={images}
             onChange={setImages}
             disabled={submitting}
+            orderId={orderId ?? orderContext?.orderId}
+            orderNumber={orderNumber}
+            contact={contact.trim() || undefined}
           />
         </section>
 
