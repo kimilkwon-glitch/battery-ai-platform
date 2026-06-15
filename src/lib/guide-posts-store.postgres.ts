@@ -55,10 +55,15 @@ type GuideRow = {
   sort_order: number;
   seo_title: string | null;
   seo_description: string | null;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
+  created_at: string | Date;
+  updated_at: string | Date;
+  deleted_at: string | Date | null;
 };
+
+function toIsoString(value: string | Date): string {
+  if (typeof value === "string") return value;
+  return value.toISOString();
+}
 
 function rowToRecord(row: GuideRow): GuidePostRecord {
   return {
@@ -75,9 +80,9 @@ function rowToRecord(row: GuideRow): GuidePostRecord {
     sortOrder: row.sort_order,
     seoTitle: row.seo_title ?? undefined,
     seoDescription: row.seo_description ?? undefined,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-    deletedAt: row.deleted_at ?? undefined,
+    createdAt: toIsoString(row.created_at),
+    updatedAt: toIsoString(row.updated_at),
+    deletedAt: row.deleted_at ? toIsoString(row.deleted_at) : undefined,
   };
 }
 
