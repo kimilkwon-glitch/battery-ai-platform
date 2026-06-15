@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 /**
  * Checkout fulfillment flow 검증 — 실제 주문/결제/SOLAPI 호출 없음
- * Usage: npx tsx tools/verify-checkout-fulfillment-flow.mjs
+ * Usage: npm run verify:checkout-fulfillment
+ *        (node 직접 실행 시 tsx로 자동 재실행 — @/ alias 해석)
  */
-import "../scripts/register-server-only.mjs";
+import { ensureTsxVerify } from "../scripts/ensure-tsx-verify.mjs";
+
+ensureTsxVerify(import.meta.url);
+
+await import("../scripts/register-server-only.mjs");
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 

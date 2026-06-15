@@ -21,6 +21,11 @@
     "ux:audit:report": "playwright show-report tools/ux-audit/playwright-report",
     "ux:audit:clean": "node tools/ux-audit/cleanReports.js",
     "verify:porter2": "npx tsx scripts/verify-porter2-regression.mjs",
+    "verify:checkout-fulfillment": "node tools/verify-checkout-fulfillment-flow.mjs",
+    "verify:checkout-price": "node tools/verify-checkout-price-display.mjs",
+    "verify:order-pricing": "node scripts/verify-order-pricing.mjs",
+    "verify:security-access": "node tools/verify-security-access.mjs",
+    "verify:production-security": "node tools/verify-production-security-smoke.mjs",
     "verify:production": "node scripts/verify-production-evidence.mjs",
     "search:qa": "node tools/search-quality/run-search-quality.mjs",
     "verify:alias-v01": "node tools/verify-alias-v01-production.mjs",
@@ -109,6 +114,7 @@
     "pdf-to-img": "^6.1.0",
     "sharp": "^0.34.5",
     "tailwindcss": "latest",
+    "tsx": "^4.22.4",
     "typescript": "latest",
     "xlsx": "^0.18.5"
   }
