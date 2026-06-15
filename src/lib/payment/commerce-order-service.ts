@@ -21,6 +21,7 @@ import {
   isTossTestMode,
 } from "@/lib/payment/toss-payments.server";
 import { validateOrderForPayment } from "@/lib/payment/validate-order-for-payment";
+import { assertOrderPaymentAccess } from "@/lib/payment/order-payment-access.server";
 import {
   storeCommerceOrderCountByPrefix,
   storeCommerceOrderCreate,
@@ -68,7 +69,7 @@ export function generateCommerceOrderId(): string {
 }
 
 export function generatePaymentRequestId(): string {
-  return `pr_${Date.now()}_${randomBytes(4).toString("hex")}`;
+  return `pr_${Date.now()}_${randomBytes(16).toString("hex")}`;
 }
 
 export async function generateCommerceOrderNumber(date = new Date()): Promise<string> {
@@ -186,6 +187,7 @@ export async function createCommerceOrder(
   const now = new Date().toISOString();
   const orderId = generateCommerceOrderId();
   const orderNumber = await generateCommerceOrderNumber();
+  const paymentRequestId = generatePaymentRequestId();
   const amountBreakdown = buildOrderAmountBreakdown(
     body.cartItems,
     body.fulfillmentType,
@@ -227,6 +229,7 @@ export async function createCommerceOrder(
     store: resolveStore(body),
     selectedStore: body.selectedStore ?? body.addressInfo?.storeId,
     requestMemo: body.requestMemo?.trim() || body.customerInfo.orderMemo?.trim(),
+    paymentRequestId,
     itemsJson: body.cartItems,
     priceLines: amounts.priceLines,
     statusHistory: [
@@ -254,6 +257,7 @@ export async function createCommerceOrder(
 }
 
 export async function prepareCommercePayment(
+  request: Request,
   body: PaymentPrepareRequestBody,
   origin: string,
 ): Promise<
@@ -289,6 +293,15 @@ export async function prepareCommercePayment(
     };
   }
 
+  const access = await assertOrderPaymentAccess(request, order, {
+    paymentRequestId: body.paymentRequestId,
+    orderNumber: body.orderNumber,
+    phone: body.phone,
+  });
+  if (!access.ok) {
+    return { ok: false, status: access.status, message: access.message };
+  }
+
   const validation = validateOrderForPayment(order);
   if (!validation.ok) {
     return { ok: false, status: 400, message: validation.message };
@@ -313,10 +326,14 @@ export async function prepareCommercePayment(
     };
   }
 
+  const storedPrid = order.paymentRequestId?.trim();
+  const clientPrid = body.paymentRequestId?.trim();
   const paymentRequestId =
-    body.paymentRequestId?.trim() && order.paymentRequestId === body.paymentRequestId.trim()
-      ? order.paymentRequestId
-      : generatePaymentRequestId();
+    storedPrid && clientPrid && clientPrid === storedPrid
+      ? storedPrid
+      : storedPrid
+        ? storedPrid
+        : generatePaymentRequestId();
 
   const now = new Date().toISOString();
   const patch: Partial<CommerceOrderRecord> = {
@@ -399,16 +416,15 @@ export async function confirmCommercePayment(
     return { ok: false, status: 404, message: "주문 정보를 찾을 수 없습니다." };
   }
 
-  if (
-    body.paymentRequestId?.trim() &&
-    order.paymentRequestId &&
-    order.paymentRequestId !== body.paymentRequestId.trim()
-  ) {
-    return {
-      ok: false,
-      status: 403,
-      message: "결제 요청 정보가 일치하지 않습니다.",
-    };
+  if (order.paymentRequestId?.trim()) {
+    const clientPrid = body.paymentRequestId?.trim();
+    if (!clientPrid || clientPrid !== order.paymentRequestId.trim()) {
+      return {
+        ok: false,
+        status: 403,
+        message: "결제 요청 정보가 일치하지 않습니다.",
+      };
+    }
   }
 
   if (order.paymentStatus === "completed" && order.paymentKey === paymentKey) {

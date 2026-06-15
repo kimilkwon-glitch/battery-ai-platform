@@ -56,6 +56,7 @@ export async function POST(request: Request) {
       orderStatus: order.orderStatus,
       paymentStatus: order.paymentStatus,
       finalAmount: order.finalAmount,
+      paymentRequestId: order.paymentRequestId,
     },
   });
 }

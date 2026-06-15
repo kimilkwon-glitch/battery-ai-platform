@@ -4,6 +4,7 @@ import { commerceOrderAdminMetaGet } from "@/lib/admin/commerce-order-admin-meta
 import { commerceOrderToGuestLookupResult } from "@/lib/orders/commerce-order-mine";
 import { normalizePhoneDigits } from "@/lib/order-request/order-request-lookup";
 import { storeCommerceOrderLookupByRef } from "@/lib/payment/commerce-order-store";
+import { attachGuestOrderAccessCookie } from "@/lib/security/guest-order-access.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -57,11 +58,13 @@ export async function POST(request: Request) {
 
     const adminMeta = await commerceOrderAdminMetaGet(record.orderId);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       ok: true,
       lookup: commerceOrderToGuestLookupResult(record, adminMeta),
       orderId: record.orderId,
     });
+    await attachGuestOrderAccessCookie(response, record.orderId);
+    return response;
   } catch {
     return NextResponse.json(
       { ok: false, message: "조회 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." },

@@ -15,7 +15,13 @@ import type {
 import type { CommerceOrderRecord } from "@/types/commerce-payment";
 
 export type CreateOrderResponse =
-  | { ok: true; order: Pick<CommerceOrderRecord, "orderId" | "orderNumber" | "finalAmount" | "orderStatus" | "paymentStatus"> }
+  | {
+      ok: true;
+      order: Pick<
+        CommerceOrderRecord,
+        "orderId" | "orderNumber" | "finalAmount" | "orderStatus" | "paymentStatus" | "paymentRequestId"
+      >;
+    }
   | { ok: false; message: string; errors?: string[] };
 
 export async function apiCreateCommerceOrder(
@@ -43,6 +49,7 @@ export async function apiPrepareCommercePayment(
   const res = await fetch(API_PAYMENTS_PREPARE, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(body),
   });
   const data = await res.json();
@@ -124,7 +131,9 @@ export async function apiFetchOrderSummary(
   const sp = new URLSearchParams();
   if (paymentRequestId) sp.set("paymentRequestId", paymentRequestId);
   const q = sp.toString();
-  const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}${q ? `?${q}` : ""}`);
+  const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}${q ? `?${q}` : ""}`, {
+    credentials: "include",
+  });
   const data = await res.json();
   if (!res.ok || !data?.ok) {
     return { ok: false, message: data?.message ?? "주문 정보를 불러오지 못했습니다." };

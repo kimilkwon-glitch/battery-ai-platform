@@ -30,7 +30,14 @@ export async function POST(request: Request) {
 
   const origin = getSiteOrigin();
   const result = await prepareCommercePayment(
-    { orderId: b.orderId.trim(), clientAmount: b.clientAmount },
+    request,
+    {
+      orderId: b.orderId.trim(),
+      clientAmount: b.clientAmount,
+      paymentRequestId: b.paymentRequestId?.trim(),
+      orderNumber: b.orderNumber?.trim(),
+      phone: b.phone?.trim(),
+    },
     origin,
   );
 

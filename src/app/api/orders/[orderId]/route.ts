@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCommerceOrder } from "@/lib/payment/commerce-order-service";
+import { assertOrderPaymentAccess } from "@/lib/payment/order-payment-access.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -22,11 +23,9 @@ export async function GET(
     );
   }
 
-  if (paymentRequestId && order.paymentRequestId !== paymentRequestId) {
-    return NextResponse.json(
-      { ok: false, message: "주문 정보를 확인할 수 없습니다." },
-      { status: 403 },
-    );
+  const access = await assertOrderPaymentAccess(request, order, { paymentRequestId });
+  if (!access.ok) {
+    return NextResponse.json({ ok: false, message: access.message }, { status: access.status });
   }
 
   return NextResponse.json({

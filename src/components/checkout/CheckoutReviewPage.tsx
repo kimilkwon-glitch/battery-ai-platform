@@ -146,6 +146,7 @@ export function CheckoutReviewPage() {
     const prepareRes = await apiPrepareCommercePayment({
       orderId: createRes.order.orderId,
       clientAmount: session.estimatedTotal,
+      paymentRequestId: createRes.order.paymentRequestId,
     });
 
     if (!prepareRes.ok) {

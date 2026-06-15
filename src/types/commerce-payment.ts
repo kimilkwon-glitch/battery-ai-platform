@@ -131,6 +131,9 @@ export type PaymentPrepareRequestBody = {
   orderId: string;
   clientAmount?: number | null;
   paymentRequestId?: string;
+  /** legacy 비회원 주문 — 소유권 확인용 */
+  orderNumber?: string;
+  phone?: string;
 };
 
 export type PaymentPrepareResponse = {
