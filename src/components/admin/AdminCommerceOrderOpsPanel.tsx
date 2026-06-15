@@ -17,6 +17,16 @@ import type { AdminCommercePaymentMeta } from "@/types/commerce-payment";
 import type { CommerceOrderRecord, CommerceOrderStatus } from "@/types/commerce-payment";
 import { DeliveryTrackingPanel } from "@/components/delivery/DeliveryTrackingPanel";
 import { AdminDeliverySyncButton } from "@/components/admin/AdminDeliverySyncButton";
+import { AdminDangerActionDialog } from "@/components/admin/AdminDangerActionDialog";
+import type { AdminDangerActionConfig } from "@/components/admin/AdminDangerActionDialog";
+import {
+  commerceOrderToDangerSummary,
+  dangerConfigAdminStatusRollback,
+  dangerConfigOrderCancel,
+  dangerConfigTrackingChange,
+} from "@/lib/admin/admin-danger-action-presets";
+import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
+import { isAdminUxReviewTestOrder } from "@/lib/admin/admin-ux-review-test-order";
 import { DELIVERY_CARRIERS, deliveryCarrierName } from "@/lib/delivery/delivery-carriers";
 
 type Props = {
@@ -168,6 +178,9 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
   const [carrier, setCarrier] = useState("");
   const [tracking, setTracking] = useState("");
   const [showAdminCorrection, setShowAdminCorrection] = useState(false);
+  const [dangerConfig, setDangerConfig] = useState<AdminDangerActionConfig | null>(null);
+  const [dangerError, setDangerError] = useState<string | null>(null);
+  const [pendingPatch, setPendingPatch] = useState<Record<string, unknown> | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -201,7 +214,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
     void load();
   }, [load]);
 
-  const patch = async (body: Record<string, unknown>) => {
+  const patch = async (body: Record<string, unknown>): Promise<boolean> => {
     setSaving(true);
     setError(null);
     try {
@@ -213,19 +226,51 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        setError(data.message ?? "저장에 실패했습니다.");
-        return;
+        const msg = data.message ?? "저장에 실패했습니다.";
+        setError(msg);
+        setDangerError(msg);
+        return false;
       }
       setOrder(data.order);
       setPaymentMeta(data.paymentMeta);
       setAdminMeta(data.adminMeta ?? null);
       setNotificationLogs(Array.isArray(data.notificationLogs) ? data.notificationLogs : []);
       onUpdated?.();
+      return true;
     } catch {
-      setError("저장에 실패했습니다.");
+      const msg = "저장에 실패했습니다.";
+      setError(msg);
+      setDangerError(msg);
+      return false;
     } finally {
       setSaving(false);
     }
+  };
+
+  const openDangerPatch = (config: AdminDangerActionConfig, body: Record<string, unknown>) => {
+    setDangerError(null);
+    setDangerConfig(config);
+    setPendingPatch(body);
+  };
+
+  const handleStatusClick = (status: CommerceOrderStatus, label: string, isCorrection: boolean) => {
+    if (!order) return;
+    const summary = commerceOrderToDangerSummary(order);
+    if (status === "canceled") {
+      openDangerPatch(dangerConfigOrderCancel(summary), {
+        orderStatus: status,
+        statusNote: `관리자: ${label}`,
+      });
+      return;
+    }
+    if (isCorrection) {
+      openDangerPatch(dangerConfigAdminStatusRollback(summary, label), {
+        orderStatus: status,
+        statusNote: `관리자 보정: ${label}`,
+      });
+      return;
+    }
+    void patch({ orderStatus: status, statusNote: `관리자: ${label}` });
   };
 
   if (loading) {
@@ -261,7 +306,15 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
   const courierForSync = courierCode.trim() || adminMeta?.courierCode?.trim() || "";
   const canShowDeliverySync =
     deliverySyncStatuses.has(order.orderStatus) &&
-    Boolean(invoiceForSync && courierForSync);
+    Boolean(invoiceForSync && courierForSync) &&
+    !isAdminTestCommerceOrder({
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      customerPhone: order.customerPhone,
+      requestMemo: order.requestMemo,
+      productName: order.productName,
+    });
+  const isUxReviewTest = isAdminUxReviewTestOrder(order);
 
   const preDiscountAmount =
     (order.internetPrice ?? 0) + (order.deliveryFee ?? 0) + (order.batteryReturnFee ?? 0);
@@ -269,6 +322,11 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
 
   const heroCard = (
     <OpsCard variant="hero">
+      {isUxReviewTest ? (
+        <p className="admin-ops-test-banner" role="note">
+          운영 UX 검수용 테스트 주문 · 실제 결제·발송·알림·배송조회 대상이 아닙니다.
+        </p>
+      ) : null}
       <p className="admin-ops-hero__order">{order.orderNumber}</p>
       <div className="admin-ops-hero__badges">
         <span className={orderStatusBadgeClass(order.orderStatus)}>
@@ -280,6 +338,9 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
         <span className="admin-ops-status-badge admin-ops-status-badge--neutral">
           {order.customerType === "guest" ? "비회원" : "회원"}
         </span>
+        {isUxReviewTest ? (
+          <span className="admin-ops-status-badge admin-ops-status-badge--warning">테스트</span>
+        ) : null}
       </div>
       <div className="admin-ops-hero__meta">
         <OpsField label="주문일시" value={orderDate} />
@@ -315,12 +376,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
             key={`${a.status}-${a.label}`}
             type="button"
             disabled={saving || order.orderStatus === a.status}
-            onClick={() =>
-              void patch({
-                orderStatus: a.status,
-                statusNote: `관리자: ${a.label}`,
-              })
-            }
+            onClick={() => handleStatusClick(a.status, a.label, false)}
             className="admin-ops-action-btn admin-ops-action-btn--primary"
           >
             {a.label}
@@ -343,12 +399,7 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
                   key={`${a.status}-${a.label}`}
                   type="button"
                   disabled={saving || order.orderStatus === a.status}
-                  onClick={() =>
-                    void patch({
-                      orderStatus: a.status,
-                      statusNote: `관리자 보정: ${a.label}`,
-                    })
-                  }
+                  onClick={() => handleStatusClick(a.status, a.label, true)}
                   className="admin-ops-action-btn admin-ops-action-btn--secondary"
                 >
                   {a.label}
@@ -503,8 +554,8 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
         <button
           type="button"
           disabled={saving || !courierCode.trim() || !tracking.trim()}
-          onClick={() =>
-            void patch({
+          onClick={() => {
+            openDangerPatch(dangerConfigTrackingChange(commerceOrderToDangerSummary(order)), {
               adminMemo: memo,
               courierCode: courierCode.trim(),
               shippingCarrier: carrier.trim() || deliveryCarrierName(courierCode.trim()),
@@ -512,8 +563,8 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
               shippedAt: new Date().toISOString(),
               orderStatus: "shipping",
               statusNote: `송장 등록: ${carrier || deliveryCarrierName(courierCode)} ${tracking.trim()}`,
-            })
-          }
+            });
+          }}
           className="admin-ops-action-btn admin-ops-action-btn--ship"
         >
           저장 / 발송처리
@@ -550,7 +601,6 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
               mode="selected"
               orderIds={[order.orderId]}
               label="조회 후 상태 반영"
-              confirmMessage="이 주문을 조회합니다. 조회 건수가 사용됩니다. 테스트 목적으로 여러 번 누르지 마세요."
               hint="배송완료일 때만 DB 반영 · 조회 건수 소모"
               variant="primary"
               onReload={true}
@@ -636,39 +686,74 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
     </>
   );
 
+  const dangerDialog = (
+    <AdminDangerActionDialog
+      open={Boolean(dangerConfig && pendingPatch)}
+      config={dangerConfig}
+      loading={saving}
+      error={dangerError}
+      onClose={() => {
+        if (saving) return;
+        setDangerConfig(null);
+        setPendingPatch(null);
+        setDangerError(null);
+      }}
+      onConfirm={async (reason) => {
+        if (!pendingPatch) return;
+        const body = { ...pendingPatch };
+        if (reason && body.statusNote) {
+          body.statusNote = `${String(body.statusNote)} — ${reason}`;
+        } else if (reason) {
+          body.statusNote = reason;
+        }
+        const ok = await patch(body);
+        if (ok) {
+          setDangerConfig(null);
+          setPendingPatch(null);
+        }
+      }}
+    />
+  );
+
   if (layout === "page") {
     return (
-      <div className="admin-order-ops-panel admin-order-ops-panel--page">
-        {error ? <p className="admin-ops-inline-error">{error}</p> : null}
-        {heroCard}
-        <div className="admin-order-ops-page__grid">
-          <div className="admin-order-ops-page__col admin-order-ops-page__col--left">
-            {customerCard}
-            {productCard}
-            {paymentCard}
+      <>
+        <div className="admin-order-ops-panel admin-order-ops-panel--page">
+          {error ? <p className="admin-ops-inline-error">{error}</p> : null}
+          {heroCard}
+          <div className="admin-order-ops-page__grid">
+            <div className="admin-order-ops-page__col admin-order-ops-page__col--left">
+              {customerCard}
+              {productCard}
+              {paymentCard}
+            </div>
+            <div className="admin-order-ops-page__col admin-order-ops-page__col--right">
+              {statusCard}
+              {shippingCard}
+              {memoCard}
+            </div>
           </div>
-          <div className="admin-order-ops-page__col admin-order-ops-page__col--right">
-            {statusCard}
-            {shippingCard}
-            {memoCard}
-          </div>
+          <div className="admin-order-ops-page__extras">{collapsibles}</div>
         </div>
-        <div className="admin-order-ops-page__extras">{collapsibles}</div>
-      </div>
+        {dangerDialog}
+      </>
     );
   }
 
   return (
-    <div className="admin-order-ops-panel">
-      {error ? <p className="admin-ops-inline-error">{error}</p> : null}
+    <>
+      <div className="admin-order-ops-panel">
+        {error ? <p className="admin-ops-inline-error">{error}</p> : null}
 
-      {heroCard}
-      {statusCard}
-      {legacyOrderCard}
-      {shippingCard}
-      {legacyCustomerCard}
-      {memoCard}
-      {collapsibles}
-    </div>
+        {heroCard}
+        {statusCard}
+        {legacyOrderCard}
+        {shippingCard}
+        {legacyCustomerCard}
+        {memoCard}
+        {collapsibles}
+      </div>
+      {dangerDialog}
+    </>
   );
 }

@@ -4,6 +4,14 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
+import { AdminDangerActionDialog } from "@/components/admin/AdminDangerActionDialog";
+import type { AdminDangerActionConfig } from "@/components/admin/AdminDangerActionDialog";
+import {
+  commerceOrderToDangerSummary,
+  dangerConfigClaimApproved,
+  dangerConfigClaimRefunded,
+  dangerConfigClaimRejected,
+} from "@/lib/admin/admin-danger-action-presets";
 import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { fulfillmentTypeLabel, orderStatusLabel, paymentStatusLabel } from "@/lib/orders/commerce-order-mine";
@@ -128,6 +136,15 @@ export function AdminCommerceClaimsClient() {
   const [saving, setSaving] = useState(false);
   const [dataScope, setDataScope] = useState<"production" | "test" | "all">("production");
   const [orderModalId, setOrderModalId] = useState<string | null>(null);
+  const [dangerConfig, setDangerConfig] = useState<AdminDangerActionConfig | null>(null);
+  const [dangerError, setDangerError] = useState<string | null>(null);
+  const [pendingClaimPatch, setPendingClaimPatch] = useState<{
+    claimStatus: ClaimStatus;
+    adminMemo?: string;
+    customerReply?: string;
+  } | null>(null);
+
+  const DANGER_CLAIM_STATUSES = new Set<ClaimStatus>(["APPROVED", "REJECTED", "REFUNDED"]);
 
   const scopedItems = useMemo(() => {
     let list = items;
@@ -228,8 +245,8 @@ export function AdminCommerceClaimsClient() {
     customerReply?: string;
     needsCustomerNotice?: boolean;
     assignedTo?: string;
-  }) => {
-    if (!selectedId) return;
+  }): Promise<boolean> => {
+    if (!selectedId) return false;
     setSaving(true);
     const res = await fetch(`/api/admin/commerce-claims/${selectedId}`, {
       method: "PATCH",
@@ -246,7 +263,42 @@ export function AdminCommerceClaimsClient() {
         order: detail?.order ?? null,
       });
       void loadList();
+      return true;
     }
+    setDangerError(data.message ?? "저장에 실패했습니다.");
+    return false;
+  };
+
+  const openClaimDanger = (status: ClaimStatus, label: string) => {
+    if (!detail?.order) return;
+    setDangerError(null);
+    const summary = commerceOrderToDangerSummary(detail.order);
+    let config: AdminDangerActionConfig;
+    if (status === "REFUNDED") {
+      config = dangerConfigClaimRefunded(summary, detail.claim.estimatedRefundAmount);
+    } else if (status === "REJECTED") {
+      config = dangerConfigClaimRejected(summary);
+    } else if (status === "APPROVED") {
+      config = dangerConfigClaimApproved(summary, detail.claim.claimType);
+    } else {
+      config = dangerConfigClaimApproved(summary, detail.claim.claimType);
+    }
+    setDangerConfig(config);
+    setPendingClaimPatch({ claimStatus: status });
+  };
+
+  const handleClaimStatusClick = (status: ClaimStatus, label: string) => {
+    if (DANGER_CLAIM_STATUSES.has(status)) {
+      openClaimDanger(status, label);
+      return;
+    }
+    void patchClaim({
+      claimStatus: status,
+      adminMemo,
+      customerReply,
+      assignedTo,
+      needsCustomerNotice: needsNotice,
+    });
   };
 
   const saveMemo = () => {
@@ -464,7 +516,7 @@ export function AdminCommerceClaimsClient() {
                     type="button"
                     disabled={saving || detail.claim.claimStatus === a.status}
                     title={a.hint}
-                    onClick={() => void patchClaim({ claimStatus: a.status, adminMemo, customerReply, assignedTo, needsCustomerNotice: needsNotice })}
+                    onClick={() => handleClaimStatusClick(a.status, a.label)}
                     className={`rounded-lg border px-2 py-1 text-[11px] font-bold hover:bg-slate-50 disabled:opacity-40 ${
                       a.status === "REFUNDED"
                         ? "border-amber-300 bg-amber-50 text-amber-950"
@@ -552,6 +604,35 @@ export function AdminCommerceClaimsClient() {
       ) : null}
 
       <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
+
+      <AdminDangerActionDialog
+        open={Boolean(dangerConfig && pendingClaimPatch)}
+        config={dangerConfig}
+        loading={saving}
+        error={dangerError}
+        onClose={() => {
+          if (saving) return;
+          setDangerConfig(null);
+          setPendingClaimPatch(null);
+          setDangerError(null);
+        }}
+        onConfirm={async (reason) => {
+          if (!pendingClaimPatch) return;
+          const patch = {
+            claimStatus: pendingClaimPatch.claimStatus,
+            adminMemo: reason ? `${adminMemo ? `${adminMemo}\n` : ""}${reason}` : adminMemo,
+            customerReply:
+              pendingClaimPatch.claimStatus === "REJECTED" && reason ? reason : customerReply,
+            assignedTo,
+            needsCustomerNotice: needsNotice,
+          };
+          const ok = await patchClaim(patch);
+          if (ok) {
+            setDangerConfig(null);
+            setPendingClaimPatch(null);
+          }
+        }}
+      />
     </div>
   );
 }

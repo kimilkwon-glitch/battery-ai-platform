@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AdminOrderDetailModal } from "@/components/admin/AdminOrderDetailModal";
+import { AdminDangerActionDialog } from "@/components/admin/AdminDangerActionDialog";
+import type { AdminDangerActionConfig } from "@/components/admin/AdminDangerActionDialog";
+import { dangerConfigOrderCancel, unifiedRowToDangerSummary } from "@/lib/admin/admin-danger-action-presets";
 import { OrderRequestDetailPanel } from "@/components/admin/order-requests/OrderRequestDetailPanel";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import { adminOrderDetailHref } from "@/lib/admin/dashboard-links";
@@ -103,6 +106,13 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
   const [rows, setRows] = useState(initialRows);
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [busy, setBusy] = useState(false);
+  const [dangerConfig, setDangerConfig] = useState<AdminDangerActionConfig | null>(null);
+  const [dangerError, setDangerError] = useState<string | null>(null);
+  const [pendingDanger, setPendingDanger] = useState<{
+    row: UnifiedAdminOrderRow;
+    action: OrderBulkAction;
+    extra?: { shippingCarrier?: string; shippingTrackingNumber?: string };
+  } | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [shipModalOpen, setShipModalOpen] = useState(false);
   const [shipTargetId, setShipTargetId] = useState<string | null>(null);
@@ -224,15 +234,16 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
     row: UnifiedAdminOrderRow,
     action: OrderBulkAction,
     extra?: { shippingCarrier?: string; shippingTrackingNumber?: string },
-  ) => {
+    adminMemo?: string,
+  ): Promise<boolean> => {
     if (row.channel !== "commerce") {
       setActionMessage("자사몰 결제 주문만 처리할 수 있습니다.");
-      return;
+      return false;
     }
     const block = canBulkAction(row, action);
     if (block) {
       setActionMessage(block);
-      return;
+      return false;
     }
     setBusy(true);
     setActionMessage(null);
@@ -245,17 +256,24 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
           action,
           targets: [{ orderId: row.id, channel: row.channel }],
           ...extra,
+          adminMemo: adminMemo?.trim() || undefined,
         }),
       });
       const data = await res.json();
       if (data.results?.[0]?.ok) {
         setActionMessage("처리 완료");
         router.refresh();
-      } else {
-        setActionMessage(data.results?.[0]?.message ?? data.message ?? "처리에 실패했습니다.");
+        return true;
       }
+      const msg = data.results?.[0]?.message ?? data.message ?? "처리에 실패했습니다.";
+      setActionMessage(msg);
+      setDangerError(msg);
+      return false;
     } catch {
-      setActionMessage("처리 중 오류가 발생했습니다.");
+      const msg = "처리 중 오류가 발생했습니다.";
+      setActionMessage(msg);
+      setDangerError(msg);
+      return false;
     } finally {
       setBusy(false);
       setShipModalOpen(false);
@@ -370,7 +388,11 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
               type="button"
               disabled={busy}
               className={`${actionBtnClass} ${actionBtnClass}--secondary`}
-              onClick={() => void runSingleAction(row, "cancel_order")}
+              onClick={() => {
+                setDangerError(null);
+                setPendingDanger({ row, action: "cancel_order" });
+                setDangerConfig(dangerConfigOrderCancel(unifiedRowToDangerSummary(row)));
+              }}
             >
               취소처리
             </button>
@@ -817,6 +839,33 @@ export function AdminOrderWorkbenchClient({ rows: initialRows, dbReady, claimCon
       ) : null}
 
       <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
+
+      <AdminDangerActionDialog
+        open={Boolean(dangerConfig && pendingDanger)}
+        config={dangerConfig}
+        loading={busy}
+        error={dangerError}
+        onClose={() => {
+          if (busy) return;
+          setDangerConfig(null);
+          setPendingDanger(null);
+          setDangerError(null);
+        }}
+        onConfirm={async (reason) => {
+          if (!pendingDanger) return;
+          setDangerError(null);
+          const ok = await runSingleAction(
+            pendingDanger.row,
+            pendingDanger.action,
+            pendingDanger.extra,
+            reason,
+          );
+          if (ok) {
+            setDangerConfig(null);
+            setPendingDanger(null);
+          }
+        }}
+      />
     </div>
   );
 }

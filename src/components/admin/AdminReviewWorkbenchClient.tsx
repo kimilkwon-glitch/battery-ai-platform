@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
+import { AdminDangerActionDialog } from "@/components/admin/AdminDangerActionDialog";
+import { dangerConfigReviewReplyDelete } from "@/lib/admin/admin-danger-action-presets";
 import type { CustomerReviewRecord } from "@/types/customer-review";
 
 type Filter = "all" | "reply_pending" | "low_rating" | "photo" | "new";
@@ -150,6 +152,8 @@ export function AdminReviewWorkbenchClient() {
   const [selected, setSelected] = useState<CustomerReviewRecord | null>(null);
   const [replyDraft, setReplyDraft] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deleteReplyOpen, setDeleteReplyOpen] = useState(false);
+  const [deleteReplyError, setDeleteReplyError] = useState<string | null>(null);
   const [orderModalId, setOrderModalId] = useState<string | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
@@ -231,16 +235,22 @@ export function AdminReviewWorkbenchClient() {
   };
 
   const deleteReply = async () => {
-    if (!selected || !confirm("등록된 답글을 삭제하시겠습니까?")) return;
+    if (!selected) return;
     setSaving(true);
-    await fetch(`/api/admin/reviews/${selected.id}`, {
+    setDeleteReplyError(null);
+    const res = await fetch(`/api/admin/reviews/${selected.id}`, {
       method: "PATCH",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ operatorReply: null }),
     });
     setSaving(false);
+    if (!res.ok) {
+      setDeleteReplyError("답글 삭제에 실패했습니다.");
+      return;
+    }
     setReplyDraft("");
+    setDeleteReplyOpen(false);
     await load();
     setSelected(null);
   };
@@ -524,7 +534,7 @@ export function AdminReviewWorkbenchClient() {
                         type="button"
                         className="admin-btn admin-btn--ghost admin-btn--md text-red-600"
                         disabled={saving}
-                        onClick={() => void deleteReply()}
+                        onClick={() => setDeleteReplyOpen(true)}
                       >
                         답글 삭제
                       </button>
@@ -574,6 +584,19 @@ export function AdminReviewWorkbenchClient() {
       ) : null}
 
       <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
+
+      <AdminDangerActionDialog
+        open={deleteReplyOpen}
+        config={dangerConfigReviewReplyDelete()}
+        loading={saving}
+        error={deleteReplyError}
+        onClose={() => {
+          if (saving) return;
+          setDeleteReplyOpen(false);
+          setDeleteReplyError(null);
+        }}
+        onConfirm={() => void deleteReply()}
+      />
     </div>
   );
 }

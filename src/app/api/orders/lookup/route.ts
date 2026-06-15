@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
 import { commerceOrderAdminMetaGet } from "@/lib/admin/commerce-order-admin-meta-store";
 import { commerceOrderToGuestLookupResult } from "@/lib/orders/commerce-order-mine";
 import { normalizePhoneDigits } from "@/lib/order-request/order-request-lookup";
@@ -34,6 +35,18 @@ export async function POST(request: Request) {
   try {
     const record = await storeCommerceOrderLookupByRef(orderRef);
     if (!record) {
+      return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 404 });
+    }
+
+    if (
+      isAdminTestCommerceOrder({
+        orderNumber: record.orderNumber,
+        customerName: record.customerName,
+        customerPhone: record.customerPhone,
+        requestMemo: record.requestMemo,
+        productName: record.productName,
+      })
+    ) {
       return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 404 });
     }
 

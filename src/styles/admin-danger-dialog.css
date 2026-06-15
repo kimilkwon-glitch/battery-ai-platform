@@ -1,0 +1,170 @@
+
+/* Admin danger action dialog */
+[data-admin-console] .admin-danger-dialog__panel {
+  width: min(100%, 38rem);
+  max-height: min(92vh, 820px);
+}
+
+[data-admin-console] .admin-danger-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+[data-admin-console] .admin-danger-dialog__title {
+  margin-top: 0.35rem;
+}
+
+[data-admin-console] .admin-danger-dialog__badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+[data-admin-console] .admin-danger-dialog__badge--caution {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+[data-admin-console] .admin-danger-dialog__badge--warning {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+[data-admin-console] .admin-danger-dialog__badge--danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+[data-admin-console] .admin-danger-dialog__close {
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+}
+
+[data-admin-console] .admin-danger-dialog__body {
+  overflow-y: auto;
+}
+
+[data-admin-console] .admin-danger-dialog__summary {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 0.85rem;
+  padding: 0.75rem;
+  border-radius: 0.65rem;
+  background: #f8fafc;
+  font-size: 0.8125rem;
+}
+
+[data-admin-console] .admin-danger-dialog__summary-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.5rem;
+}
+
+[data-admin-console] .admin-danger-dialog__summary-row dt {
+  margin: 0;
+  font-weight: 700;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-danger-dialog__summary-row dd {
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+[data-admin-console] .admin-danger-dialog__warnings {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+  font-size: 0.8125rem;
+  color: #9a3412;
+  line-height: 1.45;
+}
+
+[data-admin-console] .admin-danger-dialog__note {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-danger-dialog__reason {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+[data-admin-console] .admin-danger-dialog__reason-input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+  resize: vertical;
+}
+
+[data-admin-console] .admin-danger-dialog__error {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+[data-admin-console] .admin-danger-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+[data-admin-console] .admin-danger-dialog__confirm--danger {
+  background: #e11d48;
+  border-color: #e11d48;
+  color: #fff;
+}
+
+[data-admin-console] .admin-danger-dialog__confirm--warning {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #fff;
+}
+
+[data-admin-console] .admin-danger-dialog__confirm--caution {
+  background: #d97706;
+  border-color: #d97706;
+  color: #fff;
+}
+
+[data-admin-console] .admin-ops-test-banner {
+  margin: 0 0 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9a3412;
+}
+
+@media (max-width: 639px) {
+  [data-admin-console] .admin-danger-dialog__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  [data-admin-console] .admin-danger-dialog__footer .admin-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

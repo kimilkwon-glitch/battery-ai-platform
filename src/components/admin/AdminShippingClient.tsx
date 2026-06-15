@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AdminDeliverySyncButton } from "@/components/admin/AdminDeliverySyncButton";
+import { AdminDangerActionDialog } from "@/components/admin/AdminDangerActionDialog";
+import type { AdminDangerActionConfig } from "@/components/admin/AdminDangerActionDialog";
+import { dangerConfigBulkShip } from "@/lib/admin/admin-danger-action-presets";
 import { AdminOrderDetailModal, AdminOrderNumberButton } from "@/components/admin/AdminOrderDetailModal";
 import { ADMIN_ROUTES } from "@/lib/admin/admin-nav";
 import type { AdminShippingSummary } from "@/lib/admin/data/shipping-summary";
@@ -43,6 +46,12 @@ export function AdminShippingClient({ summary }: Props) {
   const [orderModalId, setOrderModalId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [transitSelected, setTransitSelected] = useState<Set<string>>(new Set());
+  const [shipDialogOpen, setShipDialogOpen] = useState(false);
+  const [shipDialogCount, setShipDialogCount] = useState(0);
+  const [pendingShipTargets, setPendingShipTargets] = useState<{ orderId: string; tracking: string }[]>(
+    [],
+  );
+  const [shipDialogError, setShipDialogError] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     if (tab === "auto_complete") return [];
@@ -86,14 +95,8 @@ export function AdminShippingClient({ summary }: Props) {
       setMessage("송장번호가 입력된 주문을 선택해 주세요.");
       return;
     }
-    if (
-      !confirm(
-        `선택한 ${valid.length}건을 경동택배 기준으로 발송처리하시겠습니까?\n(내부 주문 상태만 변경됩니다)`,
-      )
-    ) {
-      return;
-    }
     setShipping(true);
+    setShipDialogError(null);
     setMessage(null);
     let ok = 0;
     let fail = 0;
@@ -114,9 +117,26 @@ export function AdminShippingClient({ summary }: Props) {
       else fail += 1;
     }
     setShipping(false);
-    setMessage(`${ok}건 발송처리 완료${fail > 0 ? `, ${fail}건 실패` : ""}`);
+    if (fail > 0) {
+      setShipDialogError(`${ok}건 처리, ${fail}건 실패`);
+      return;
+    }
+    setMessage(`${ok}건 발송처리 완료`);
     setSelected(new Set());
+    setShipDialogOpen(false);
     window.location.reload();
+  };
+
+  const requestShip = (targets: { orderId: string; tracking: string }[]) => {
+    const valid = targets.filter((t) => t.tracking.trim());
+    if (valid.length === 0) {
+      setMessage("송장번호가 입력된 주문을 선택해 주세요.");
+      return;
+    }
+    setShipDialogError(null);
+    setPendingShipTargets(valid);
+    setShipDialogCount(valid.length);
+    setShipDialogOpen(true);
   };
 
   const bulkShip = () => {
@@ -124,11 +144,11 @@ export function AdminShippingClient({ summary }: Props) {
       orderId: id,
       tracking: trackingById[id] ?? "",
     }));
-    void shipOrders(targets);
+    requestShip(targets);
   };
 
   const shipSingle = (orderId: string) => {
-    void shipOrders([{ orderId, tracking: trackingById[orderId] ?? "" }]);
+    requestShip([{ orderId, tracking: trackingById[orderId] ?? "" }]);
   };
 
   const kpiItems: { id: Tab; label: string; value: string | number }[] = [
@@ -371,6 +391,19 @@ export function AdminShippingClient({ summary }: Props) {
       )}
 
       <AdminOrderDetailModal orderId={orderModalId} onClose={() => setOrderModalId(null)} />
+
+      <AdminDangerActionDialog
+        open={shipDialogOpen}
+        config={dangerConfigBulkShip(shipDialogCount)}
+        loading={shipping}
+        error={shipDialogError}
+        onClose={() => {
+          if (shipping) return;
+          setShipDialogOpen(false);
+          setShipDialogError(null);
+        }}
+        onConfirm={() => void shipOrders(pendingShipTargets)}
+      />
     </div>
   );
 }

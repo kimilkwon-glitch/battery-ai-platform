@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminUnauthorizedResponse, verifyAdminApiRequest } from "@/lib/admin/adminApiAuth";
+import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
 import {
   claimGetById,
   claimListHistories,
@@ -80,12 +81,25 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
     if (body.claimStatus === "REFUNDED") {
       const order = await storeCommerceOrderGet(existing.orderId);
       if (order) {
-        const refundResult = await requestTossPaymentRefund({
-          orderId: order.orderId,
-          paymentKey: order.paymentKey,
-          cancelAmount: existing.estimatedRefundAmount ?? order.finalAmount ?? 0,
-          cancelReason: `클레임 ${existing.id}`,
+        const isTestOrder = isAdminTestCommerceOrder({
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          customerPhone: order.customerPhone,
+          requestMemo: order.requestMemo,
+          productName: order.productName,
         });
+        const refundResult = isTestOrder
+          ? {
+              ok: false as const,
+              stub: true as const,
+              message: "테스트/검수 주문 — PG 환불 skip",
+            }
+          : await requestTossPaymentRefund({
+              orderId: order.orderId,
+              paymentKey: order.paymentKey,
+              cancelAmount: existing.estimatedRefundAmount ?? order.finalAmount ?? 0,
+              cancelReason: `클레임 ${existing.id}`,
+            });
         const pgRefunded = refundResult.ok && !refundResult.stub;
         const historyNote = pgRefunded
           ? `PG 환불 완료 (${claimId})`

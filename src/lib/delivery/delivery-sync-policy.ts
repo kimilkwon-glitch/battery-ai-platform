@@ -1,3 +1,5 @@
+import { isAdminTestCommerceOrder } from "@/lib/admin/admin-test-data-filter";
+
 export const DELIVERY_SYNC_MAX_LIMIT = 20;
 export const DELIVERY_SYNC_DEFAULT_LIMIT = 10;
 
@@ -25,6 +27,11 @@ export type DeliverySyncOrderSnapshot = {
   orderStatus: string;
   paymentStatus: string;
   createdAt: string;
+  orderNumber?: string | null;
+  customerName?: string | null;
+  customerPhone?: string | null;
+  requestMemo?: string | null;
+  productName?: string | null;
 };
 
 /** Returns skip reason when order is not eligible; null when eligible (courier/invoice checked separately). */
@@ -32,6 +39,17 @@ export function getDeliverySyncSkipReason(
   order: DeliverySyncOrderSnapshot,
   withinDays = true,
 ): string | null {
+  if (
+    isAdminTestCommerceOrder({
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      customerPhone: order.customerPhone,
+      requestMemo: order.requestMemo,
+      productName: order.productName,
+    })
+  ) {
+    return "테스트/검수 주문입니다.";
+  }
   if (order.fulfillmentType !== "delivery") return "택배 주문이 아닙니다.";
   if (DELIVERY_SYNC_BLOCKED_ORDER_STATUSES.has(order.orderStatus)) return "종료·취소 상태입니다.";
   if (DELIVERY_SYNC_BLOCKED_PAYMENT_STATUSES.has(order.paymentStatus)) return "결제 취소·환불 상태입니다.";

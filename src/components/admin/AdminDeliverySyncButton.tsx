@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { AdminDangerActionDialog } from "@/components/admin/AdminDangerActionDialog";
+import { dangerConfigDeliverySync } from "@/lib/admin/admin-danger-action-presets";
 
 export type DeliverySyncSummary = {
   checked: number;
@@ -19,6 +21,7 @@ type Props = {
   variant?: "primary" | "secondary" | "ghost";
   onComplete?: (summary: DeliverySyncSummary) => void;
   onReload?: boolean;
+  disabled?: boolean;
 };
 
 function formatSummary(data: DeliverySyncSummary): string {
@@ -36,20 +39,21 @@ export function AdminDeliverySyncButton({
   orderIds,
   limit = 20,
   label,
-  confirmMessage = "배송중 주문을 다시 조회합니다. 조회 건수가 사용됩니다. 테스트 목적으로 여러 번 누르지 마세요.",
   hint,
   className,
   variant = "secondary",
   onComplete,
   onReload = true,
+  disabled = false,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const targetCount = mode === "selected" ? (orderIds?.length ?? 0) : limit;
 
   const run = async () => {
-    if (!confirm(confirmMessage)) return;
-
     setLoading(true);
     setError(null);
     setMessage(null);
@@ -80,6 +84,7 @@ export function AdminDeliverySyncButton({
       };
       setMessage(formatSummary(summary));
       onComplete?.(summary);
+      setDialogOpen(false);
       if (onReload && summary.updated > 0) {
         window.location.reload();
       }
@@ -98,12 +103,33 @@ export function AdminDeliverySyncButton({
 
   return (
     <div className={`admin-delivery-sync${className ? ` ${className}` : ""}`}>
-      <button type="button" className={btnClass} disabled={loading} onClick={() => void run()}>
+      <button
+        type="button"
+        className={btnClass}
+        disabled={loading || disabled}
+        onClick={() => {
+          setError(null);
+          setDialogOpen(true);
+        }}
+      >
         {loading ? "조회 중…" : label}
       </button>
       {hint ? <p className="admin-delivery-sync__hint">{hint}</p> : null}
       {message ? <p className="admin-delivery-sync__result">{message}</p> : null}
       {error ? <p className="admin-delivery-sync__error">{error}</p> : null}
+
+      <AdminDangerActionDialog
+        open={dialogOpen}
+        config={dangerConfigDeliverySync(targetCount)}
+        loading={loading}
+        error={error}
+        onClose={() => {
+          if (loading) return;
+          setDialogOpen(false);
+          setError(null);
+        }}
+        onConfirm={() => void run()}
+      />
     </div>
   );
 }

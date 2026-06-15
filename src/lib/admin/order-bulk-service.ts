@@ -140,6 +140,9 @@ export async function executeBulkOrderAction(input: {
     }
 
     const now = new Date().toISOString();
+    const cancelNote = input.adminMemo?.trim()
+      ? `${actionStatusNote(input.action)} — ${input.adminMemo.trim()}`
+      : actionStatusNote(input.action);
     const updated = await storeCommerceOrderUpdate(target.orderId, {
       orderStatus: nextStatus,
       statusHistory: [
@@ -147,7 +150,7 @@ export async function executeBulkOrderAction(input: {
         {
           status: nextStatus,
           paymentStatus: current.paymentStatus,
-          note: actionStatusNote(input.action),
+          note: input.action === "cancel_order" ? cancelNote : actionStatusNote(input.action),
           at: now,
         },
       ],

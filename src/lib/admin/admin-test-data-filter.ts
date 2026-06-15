@@ -3,6 +3,7 @@
  * 기본 목록/대시보드는 `order-data-scope`에서 production만 표시합니다.
  */
 
+import { isAdminUxReviewTestOrder } from "@/lib/admin/admin-ux-review-test-order";
 import { isUx2AdminReviewRecord } from "@/lib/admin/ux2-admin-review-marker";
 
 const TEXT_MARKERS: RegExp[] = [
@@ -185,6 +186,7 @@ export function isAdminTestCommerceOrder(record: {
   requestMemo?: string | null;
   productName?: string | null;
 }): boolean {
+  if (isAdminUxReviewTestOrder(record)) return true;
   if (
     isUx2OrSeedRecord({
       name: record.customerName,
