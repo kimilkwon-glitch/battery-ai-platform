@@ -10,6 +10,7 @@ export type OperationalStoreDomain =
   | "order_admin_meta"
   | "support_notices"
   | "guide_posts"
+  | "support_faq"
   | "consultation_settings"
   | "reply_templates"
   | "notification_logs";
@@ -90,6 +91,7 @@ export function getOperationalStoreStatus(): OperationalStoreStatus {
       order_admin_meta: domainMode,
       support_notices: domainMode,
       guide_posts: domainMode,
+      support_faq: domainMode,
       consultation_settings: domainMode,
       reply_templates: domainMode,
       notification_logs: domainMode,

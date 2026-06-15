@@ -27,6 +27,7 @@
     "verify:security-access": "node tools/verify-security-access.mjs",
     "verify:notice-sanitization": "node tools/verify-notice-html-sanitization.mjs",
     "verify:battery-guide-cms": "node tools/verify-battery-guide-cms.mjs",
+    "verify:cms-content": "node tools/verify-cms-content.mjs",
     "verify:guest-name-phone-lookup": "node tools/verify-guest-name-phone-lookup.mjs",
     "verify:production-security": "node tools/verify-production-security-smoke.mjs",
     "verify:production": "node scripts/verify-production-evidence.mjs",

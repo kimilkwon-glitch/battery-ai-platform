@@ -4,8 +4,11 @@ import { CustomerFaqAccordion } from "@/components/support/CustomerFaqAccordion"
 import { CustomerConsultCta } from "@/components/support/CustomerConsultCta";
 import { CUSTOMER_CENTER_HUB } from "@/lib/customer-center-routes";
 import { bm } from "@/lib/design-tokens";
+import { getPublishedSupportFaqItems } from "@/lib/support-faq-public.server";
 
-export default function SupportFaqPage() {
+export default async function SupportFaqPage() {
+  const faqItems = await getPublishedSupportFaqItems();
+
   return (
     <PageShell
       zone="support"
@@ -18,7 +21,7 @@ export default function SupportFaqPage() {
         <Link href={CUSTOMER_CENTER_HUB} className={`${bm.btnTertiary} text-xs`}>
           ← 고객센터
         </Link>
-        <CustomerFaqAccordion />
+        <CustomerFaqAccordion faqItems={faqItems} />
         <CustomerConsultCta />
       </div>
     </PageShell>

@@ -7,14 +7,17 @@ import {
   SUPPORT_FAQ_CATEGORIES,
   SUPPORT_FAQ_ITEMS,
   type FaqCategory,
+  type SupportFaqItem,
 } from "@/lib/support-faq-data";
 import { bm } from "@/lib/design-tokens";
 
 export function CustomerFaqAccordion({
+  faqItems = SUPPORT_FAQ_ITEMS,
   initialCategory = "전체" as FaqCategory,
   showSearch = true,
   externalQuery,
 }: {
+  faqItems?: SupportFaqItem[];
   initialCategory?: FaqCategory;
   showSearch?: boolean;
   /** 상위 검색창과 연동 (고객센터 메인) */
@@ -27,7 +30,7 @@ export function CustomerFaqAccordion({
   const q = (externalQuery ?? query).trim().toLowerCase();
 
   const filteredFaq = useMemo(() => {
-    return SUPPORT_FAQ_ITEMS.filter((item) => {
+    return faqItems.filter((item) => {
       if (faqCategory !== "전체" && item.category !== faqCategory) return false;
       if (!q) return true;
       return (
@@ -35,7 +38,7 @@ export function CustomerFaqAccordion({
         item.answer.toLowerCase().includes(q)
       );
     });
-  }, [q, faqCategory]);
+  }, [faqItems, q, faqCategory]);
 
   return (
     <section className="space-y-4" data-component="customer-faq-accordion">

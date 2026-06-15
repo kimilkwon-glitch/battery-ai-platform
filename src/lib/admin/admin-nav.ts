@@ -33,6 +33,7 @@ export const ADMIN_ROUTES = {
   banners: "/admin/banners",
   notices: "/admin/notices",
   guidePosts: "/admin/guide-posts",
+  faq: "/admin/faq",
   reviews: "/admin/reviews",
   settlement: "/admin/settlement",
   shipping: "/admin/shipping",
@@ -65,6 +66,7 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: ADMIN_ROUTES.photoRequests, label: "사진 확인 요청", group: "상품/DB" },
   { href: ADMIN_ROUTES.content, label: "콘텐츠 관리", group: "콘텐츠/마케팅" },
   { href: ADMIN_ROUTES.guidePosts, label: "배터리 가이드", group: "콘텐츠/마케팅" },
+  { href: ADMIN_ROUTES.faq, label: "FAQ 관리", group: "콘텐츠/마케팅" },
   { href: ADMIN_ROUTES.banners, label: "배너/에셋 관리", group: "콘텐츠/마케팅" },
   { href: ADMIN_ROUTES.settings, label: "설정", group: "시스템" },
 ];

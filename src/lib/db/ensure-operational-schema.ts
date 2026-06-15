@@ -330,4 +330,25 @@ async function runMigration(): Promise<void> {
       ON guide_posts (category, visible, sort_order)
       WHERE deleted_at IS NULL
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS support_faq_items (
+      id TEXT PRIMARY KEY,
+      category TEXT NOT NULL,
+      question TEXT NOT NULL,
+      answer_text TEXT NOT NULL,
+      search_keywords JSONB NOT NULL DEFAULT '[]'::jsonb,
+      visible BOOLEAN NOT NULL DEFAULT TRUE,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      deleted_at TIMESTAMPTZ
+    )
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_support_faq_items_list
+      ON support_faq_items (category, visible, sort_order)
+      WHERE deleted_at IS NULL
+  `;
 }
