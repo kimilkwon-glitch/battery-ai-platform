@@ -3,10 +3,12 @@ import { ContentAreaFallback } from "@/components/common/ContentAreaFallback";
 import { PortalLayout } from "@/components/portal";
 import { BatteryGuidePostsHub } from "@/components/guide/BatteryGuidePostsHub";
 import { GuideHubClient } from "@/components/platform/GuideHubClient";
+import { listPublishedGuidePosts } from "@/lib/guide/battery-guide-posts";
 import { compareHref, photoHref } from "@/lib/platform-data";
 
 export default async function SpecGuidePage({ searchParams }: { searchParams: Promise<{ guide?: string; q?: string }> }) {
   const { guide } = await searchParams;
+  const guidePosts = await listPublishedGuidePosts("battery_spec");
 
   return (
     <PortalLayout
@@ -25,7 +27,7 @@ export default async function SpecGuidePage({ searchParams }: { searchParams: Pr
         <GuideHubClient initialGuideId={guide} />
       </Suspense>
       <div className="mt-8">
-        <BatteryGuidePostsHub category="battery_spec" showHeader={false} />
+        <BatteryGuidePostsHub category="battery_spec" showHeader={false} posts={guidePosts} />
       </div>
     </PortalLayout>
   );

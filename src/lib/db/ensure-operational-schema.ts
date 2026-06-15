@@ -303,4 +303,31 @@ async function runMigration(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_notification_logs_entity_event
       ON notification_logs (entity_type, entity_id, event_type, status)
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS guide_posts (
+      id TEXT PRIMARY KEY,
+      slug TEXT NOT NULL UNIQUE,
+      category TEXT NOT NULL,
+      title TEXT NOT NULL,
+      summary TEXT NOT NULL DEFAULT '',
+      body_html TEXT NOT NULL,
+      tags JSONB NOT NULL DEFAULT '[]'::jsonb,
+      thumbnail TEXT,
+      visible BOOLEAN NOT NULL DEFAULT TRUE,
+      featured BOOLEAN NOT NULL DEFAULT FALSE,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      seo_title TEXT,
+      seo_description TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      deleted_at TIMESTAMPTZ
+    )
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_guide_posts_list
+      ON guide_posts (category, visible, sort_order)
+      WHERE deleted_at IS NULL
+  `;
 }

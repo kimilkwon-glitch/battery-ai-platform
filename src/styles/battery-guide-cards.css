@@ -1,0 +1,230 @@
+/* ── 배터리 가이드 CMS 카드 ── */
+
+.battery-guide-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.battery-guide-posts__list-title {
+  margin: 0;
+}
+
+.battery-guide-posts__desktop-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 1280px) {
+  .battery-guide-posts__desktop-grid {
+    gap: 1.25rem;
+  }
+}
+
+.battery-guide-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow: 0 4px 18px -12px rgba(15, 23, 42, 0.18);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.battery-guide-card:hover {
+  border-color: #bfdbfe;
+  box-shadow: 0 10px 28px -14px rgba(37, 99, 235, 0.22);
+  transform: translateY(-2px);
+}
+
+.battery-guide-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.battery-guide-card__img {
+  transition: transform 0.25s ease;
+}
+
+.battery-guide-card:hover .battery-guide-card__img {
+  transform: scale(1.02);
+}
+
+.battery-guide-card__media--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.battery-guide-card__media--battery_spec {
+  background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.battery-guide-card__media--symptom {
+  background: linear-gradient(145deg, #fff7ed 0%, #ffedd5 100%);
+}
+
+.battery-guide-card__media--order_check {
+  background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+.battery-guide-card__media--photo_check {
+  background: linear-gradient(145deg, #f5f3ff 0%, #ede9fe 100%);
+}
+
+.battery-guide-card__placeholder-label {
+  max-width: 12rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.battery-guide-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem 1rem;
+  text-align: center;
+}
+
+.battery-guide-card__title {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 0.9375rem;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.battery-guide-card__summary {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  flex: 1;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.battery-guide-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin-top: auto;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.battery-guide-card__cta-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* 모바일 가로 스와이프 */
+.battery-guide-posts__mobile-rail {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-inline: -0.25rem;
+  padding-inline: 0.25rem;
+  padding-bottom: 0.125rem;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+}
+
+.battery-guide-posts__mobile-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.battery-guide-posts__mobile-track {
+  display: flex;
+  gap: 0.75rem;
+  width: max-content;
+  padding-right: 0.25rem;
+}
+
+.battery-guide-posts__slide {
+  flex: 0 0 min(88vw, 18.5rem);
+  width: min(88vw, 18.5rem);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+@media (min-width: 360px) {
+  .battery-guide-posts__slide {
+    flex-basis: min(86vw, 19rem);
+    width: min(86vw, 19rem);
+  }
+}
+
+.battery-guide-posts__scroll-indicator,
+.hscroll-indicator {
+  display: none;
+  width: 2.75rem;
+  height: 3px;
+  margin: 0.375rem auto 0;
+  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.battery-guide-posts__scroll-indicator__thumb,
+.hscroll-indicator__thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(96, 165, 250, 0.58);
+  will-change: transform, width;
+  transition: transform 90ms linear, width 90ms linear;
+}
+
+.battery-guide-detail__hero--placeholder {
+  min-height: 12rem;
+}
+
+.battery-guide-detail__body {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1024px) {
+  .battery-guide-card__body {
+    min-height: 8.5rem;
+  }
+
+  .battery-guide-card__title {
+    font-size: 1rem;
+  }
+
+  .battery-guide-card__summary {
+    font-size: 0.875rem;
+  }
+}

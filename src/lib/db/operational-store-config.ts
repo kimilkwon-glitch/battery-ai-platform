@@ -9,6 +9,7 @@ export type OperationalStoreDomain =
   | "battery_talk"
   | "order_admin_meta"
   | "support_notices"
+  | "guide_posts"
   | "consultation_settings"
   | "reply_templates"
   | "notification_logs";
@@ -88,6 +89,7 @@ export function getOperationalStoreStatus(): OperationalStoreStatus {
       battery_talk: domainMode,
       order_admin_meta: domainMode,
       support_notices: domainMode,
+      guide_posts: domainMode,
       consultation_settings: domainMode,
       reply_templates: domainMode,
       notification_logs: domainMode,
