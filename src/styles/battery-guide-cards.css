@@ -291,6 +291,14 @@
   min-height: 12rem;
 }
 
+.battery-guide-detail {
+  padding-top: 0.125rem;
+}
+
+.battery-guide-detail > a {
+  margin-bottom: 0.125rem;
+}
+
 .battery-guide-detail__body {
   word-break: break-word;
   overflow-wrap: anywhere;

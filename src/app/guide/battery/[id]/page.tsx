@@ -30,8 +30,9 @@ export default async function BatteryGuidePostPage({ params }: Props) {
       pageLabel="배터리 가이드"
       title={post.title}
       description={post.summary}
+      showPageHeader={false}
     >
-      <article className="battery-guide-detail mx-auto max-w-2xl space-y-5">
+      <article className="battery-guide-detail mx-auto max-w-2xl space-y-4">
         <Link href={meta.hubPath} className={`${bm.btnTertiary} text-xs`}>
           ← {meta.label}
         </Link>
