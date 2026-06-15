@@ -1,6 +1,6 @@
 import "server-only";
 
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 const ALLOWED_TAGS = [
   "p",
@@ -32,17 +32,10 @@ const ALLOWED_TAGS = [
 
 const ALLOWED_ATTR = ["href", "title", "target", "rel", "src", "alt", "width", "height", "loading"] as const;
 
-const SANITIZE_CONFIG = {
-  ALLOWED_TAGS: [...ALLOWED_TAGS],
-  ALLOWED_ATTR: [...ALLOWED_ATTR],
-  ADD_ATTR: ["target"],
-  ALLOW_DATA_ATTR: false,
-  ALLOW_UNKNOWN_PROTOCOLS: false,
-  ALLOWED_URI_REGEXP:
-    /^(?:(?:https?):\/\/[^\s"'<>]+|mailto:[^\s"'<>]+|tel:[^\s"'<>]+|\/[^\s"'<>]*|#[\w\-./?=&%]*)$/i,
+const ALLOWED_ATTRIBUTES: Record<string, string[]> = {
+  a: ["href", "title", "target", "rel"],
+  img: ["src", "alt", "title", "width", "height", "loading"],
 };
-
-let hooksReady = false;
 
 function decodeForProtocolCheck(value: string): string {
   let decoded = value.trim();
@@ -68,48 +61,59 @@ function isBlockedUrl(value: string): boolean {
   );
 }
 
-function ensureDomPurifyHooks(): void {
-  if (hooksReady) return;
-  hooksReady = true;
+function normalizeUrl(value?: string): string | undefined {
+  if (!value) return undefined;
+  if (isBlockedUrl(value)) return undefined;
+  return value.trim();
+}
 
-  DOMPurify.addHook("uponSanitizeAttribute", (_node, data) => {
-    const name = data.attrName.toLowerCase();
-    if (name.startsWith("on")) {
-      data.keepAttr = false;
-      return;
-    }
-    if (name === "style" || name === "class" || name === "id" || name.startsWith("data-")) {
-      data.keepAttr = false;
-      return;
-    }
-    if (name === "href" || name === "src") {
-      if (isBlockedUrl(data.attrValue)) {
-        data.keepAttr = false;
-      }
-    }
-  });
+function stripUnsafeAttribs(attribs: Record<string, string>): Record<string, string> {
+  const next: Record<string, string> = {};
+  for (const [key, value] of Object.entries(attribs)) {
+    const lower = key.toLowerCase();
+    if (lower.startsWith("on") || lower === "style" || lower === "class" || lower === "id") continue;
+    if (lower.startsWith("data-")) continue;
+    next[key] = value;
+  }
+  return next;
+}
 
-  DOMPurify.addHook("afterSanitizeAttributes", (node) => {
-    if (node.tagName === "A") {
-      const href = node.getAttribute("href");
-      const target = node.getAttribute("target");
-      if (target === "_blank" || (href && /^https?:\/\//i.test(href))) {
-        node.setAttribute("rel", "noopener noreferrer");
-      }
-    }
-    if (node.tagName === "IMG") {
-      const src = node.getAttribute("src");
-      if (src && isBlockedUrl(src)) {
-        node.removeAttribute("src");
-      }
-    }
-  });
+function transformAnchor(tagName: string, attribs: Record<string, string>) {
+  const next = stripUnsafeAttribs(attribs);
+  const href = normalizeUrl(next.href);
+  if (href) next.href = href;
+  else delete next.href;
+
+  if (next.target === "_blank" || (next.href && /^https?:\/\//i.test(next.href))) {
+    next.rel = "noopener noreferrer";
+  }
+
+  return { tagName, attribs: next };
+}
+
+function transformImage(tagName: string, attribs: Record<string, string>) {
+  const next = stripUnsafeAttribs(attribs);
+  const src = normalizeUrl(next.src);
+  if (src) next.src = src;
+  else delete next.src;
+  return { tagName, attribs: next };
 }
 
 /** 공지 본문 HTML sanitize — 저장·출력 공통 */
 export function sanitizeNoticeHtml(html: string): string {
-  ensureDomPurifyHooks();
-  return DOMPurify.sanitize(html ?? "", SANITIZE_CONFIG).trim();
+  return sanitizeHtml(html ?? "", {
+    allowedTags: [...ALLOWED_TAGS],
+    allowedAttributes: ALLOWED_ATTRIBUTES,
+    allowProtocolRelative: false,
+    allowedSchemes: ["http", "https", "mailto", "tel"],
+    allowedSchemesByTag: {
+      img: ["http", "https"],
+    },
+    transformTags: {
+      a: transformAnchor,
+      img: transformImage,
+    },
+  }).trim();
 }
 
 /** sanitize 후 텍스트가 남는지 (저장 거부용) */

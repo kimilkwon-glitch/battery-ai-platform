@@ -46,7 +46,7 @@ export const SUPPORT_NOTICES: SupportNotice[] = SUPPORT_NOTICES_SEED.map((n) => 
 export async function getHubSupportNotices(): Promise<SupportNotice[]> {
   try {
     const records = await listHubSupportNotices();
-    if (records.length > 0) return Promise.all(records.map(toPublicNotice));
+    if (records.length > 0) return await Promise.all(records.map(toPublicNotice));
   } catch {
     /* fallback */
   }
