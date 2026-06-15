@@ -399,7 +399,26 @@
     border-color 0.22s ease,
     box-shadow 0.22s ease,
     background 0.22s ease;
+  transform: none;
   transform-origin: center top;
+}
+
+/* bm-card-unified 기본 transform transition 상속 차단 — 이미지 hover 깜빡임 방지 */
+.bm-store-card.bm-card-unified {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #94a3b8;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.05),
+    0 6px 20px -8px rgba(15, 23, 42, 0.18);
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+.bm-store-card.bm-card-unified:hover {
+  transform: none;
 }
 
 @media (min-width: 1024px) {
@@ -443,18 +462,25 @@
   .bm-store-cards-grid > .bm-store-card {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
+
+  .bm-store-card__photo img {
+    transition: none;
+  }
+}
+
+.bm-store-card__photo {
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+.bm-store-card__photo img {
+  transition: transform 0.28s ease;
+  transform: scale(1);
+  backface-visibility: hidden;
 }
 
 /* 지점 카드 — 모바일 우선 가독성(학장·덕천 공통) */
-.bm-store-card.bm-card-unified {
-  border-width: 2px;
-  border-style: solid;
-  border-color: #94a3b8;
-  box-shadow:
-    0 0 0 1px rgba(15, 23, 42, 0.05),
-    0 6px 20px -8px rgba(15, 23, 42, 0.18);
-}
-
 .bm-store-card--deokcheon.bm-card-unified:not(.bm-store-card--branch-active) {
   border-color: #60a5fa;
 }
@@ -468,6 +494,16 @@
   box-shadow:
     0 0 0 1px rgba(15, 23, 42, 0.06),
     0 10px 26px -10px rgba(15, 23, 42, 0.22);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bm-store-card:not(.bm-store-card--branch-active):hover .bm-store-card__photo img {
+    transform: scale(1.02);
+  }
+
+  .bm-store-card--branch-active:hover .bm-store-card__photo img {
+    transform: scale(1);
+  }
 }
 
 .bm-store-card--deokcheon:hover:not(.bm-store-card--branch-active) {
@@ -629,7 +665,7 @@
 /* 호버 미리보기 (선택 전·비선택 카드) */
 .bm-store-card--branch-hover:not(.bm-store-card--branch-active) {
   z-index: 2 !important;
-  opacity: 0.97;
+  opacity: 1;
 }
 
 @media (min-width: 1024px) {
