@@ -105,8 +105,7 @@ async function findExisting(pgOrder) {
   if (byNumber) return byNumber;
   const byId = await pgOrder.pgStoreCommerceOrderGet(ORDER_ID);
   if (byId && isAdminUxReviewTestOrder(byId)) return byId;
-  const all = await pgOrder.pgStoreCommerceOrderListItems(500);
-  return all.find((o) => isAdminUxReviewTestOrder(o)) ?? null;
+  return null;
 }
 
 async function main() {
@@ -132,6 +131,8 @@ async function main() {
   }
 
   const pgOrder = await import("../src/lib/payment/commerce-order-store.postgres.ts");
+  const { ensureCommerceSchema } = await import("../src/lib/db/ensure-commerce-schema.ts");
+  await ensureCommerceSchema();
   const existing = await findExisting(pgOrder);
 
   if (existing) {
