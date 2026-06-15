@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { MobileHorizontalScrollNav } from "@/components/common/MobileHorizontalScrollNav";
@@ -14,11 +14,17 @@ import {
   type HomeProductTypeTag,
 } from "@/lib/home-main-catalog-data";
 
-const BRAND_TYPE_TABS: HomeProductTypeTag[] = ["AGM", "DIN", "일반형"];
+const BRAND_TYPE_TABS = ["AGM", "DIN", "일반형"] as const satisfies readonly HomeProductTypeTag[];
+type BrandLineupTypeTab = (typeof BRAND_TYPE_TABS)[number];
+const BRAND_TYPE_TAB_LABELS: Record<BrandLineupTypeTab, string> = {
+  AGM: "AGM (스탑앤고 전용)",
+  DIN: "DIN (함몰형 단자)",
+  일반형: "일반형 (돌출형 단자)",
+};
 /** 기본 탭 우선순위 — 상품 있는 탭을 먼저 노출 */
-const DEFAULT_TAB_PRIORITY: HomeProductTypeTag[] = ["일반형", "DIN", "AGM"];
+const DEFAULT_TAB_PRIORITY = ["일반형", "DIN", "AGM"] as const satisfies readonly HomeProductTypeTag[];
 
-function pickDefaultTypeTab(brand: HomeCatalogBrandId): HomeProductTypeTag {
+function pickDefaultTypeTab(brand: HomeCatalogBrandId): BrandLineupTypeTab {
   const lineup = getCurrentLineup(brand);
   for (const tab of DEFAULT_TAB_PRIORITY) {
     if (filterCatalogProducts(lineup, tab).length > 0) return tab;
@@ -45,7 +51,7 @@ export function HomeBrandLineupSection({
   shopHref,
   shopLinkLabel,
 }: Props) {
-  const [typeTab, setTypeTab] = useState<HomeProductTypeTag>(() => pickDefaultTypeTab(brand));
+  const [typeTab, setTypeTab] = useState<BrandLineupTypeTab>(() => pickDefaultTypeTab(brand));
 
   const products = useMemo(() => {
     const filtered = filterCatalogProducts(getCurrentLineup(brand), typeTab);
@@ -66,6 +72,10 @@ export function HomeBrandLineupSection({
         <div className="home-brand-lineup__header-inner">
           <div className="home-brand-lineup__title-row">
             <h2 className="home-brand-lineup__title">{title}</h2>
+            <span className="home-brand-lineup__genuine-badge" aria-label="정품 배터리 취급">
+              <ShieldCheck className="home-brand-lineup__genuine-icon" strokeWidth={2.25} aria-hidden />
+              정품 배터리
+            </span>
             <span className="home-brand-lineup__label">{badge}</span>
           </div>
           <p className="home-brand-lineup__desc">{shortDescription}</p>
@@ -90,7 +100,7 @@ export function HomeBrandLineupSection({
               )}
               onClick={() => setTypeTab(tab)}
             >
-              {tab}
+              {BRAND_TYPE_TAB_LABELS[tab]}
             </button>
           ))}
         </div>

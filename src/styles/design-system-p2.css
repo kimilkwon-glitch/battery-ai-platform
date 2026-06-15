@@ -3050,16 +3050,16 @@
 }
 
 .home-brand-lineup--rocket .home-spec-card-price--onsite {
-  border-color: #e2e8f0;
-  background: #f8fafc;
+  border-color: #bfdbfe;
+  background: #eff6ff;
 }
 
 .home-brand-lineup--rocket .home-spec-card-price--onsite .home-spec-card-price__label {
-  color: #64748b;
+  color: #2563eb;
 }
 
 .home-brand-lineup--rocket .home-spec-card-price--onsite .home-spec-card-price__amount {
-  color: #1e293b;
+  color: #2563eb;
 }
 
 .home-brand-lineup--rocket .home-spec-card-price--internet {
@@ -3160,6 +3160,34 @@
 .home-brand-lineup--solite .home-brand-lineup__track .home-spec-card-image {
   border-bottom-color: #f1f5f9;
   background: #ffffff;
+}
+
+/* 쏠라이트 상품 카드 — 제품구매가 red / 출장교체가 blue (로케트와 동일 의미색) */
+.home-brand-lineup--solite .home-spec-card-price--onsite {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--onsite .home-spec-card-price__label {
+  color: #2563eb;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--onsite .home-spec-card-price__amount {
+  color: #2563eb;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--internet {
+  border-color: #fecaca;
+  background: linear-gradient(180deg, #fff9f8 0%, #fef2f2 100%);
+}
+
+.home-brand-lineup--solite .home-spec-card-price--internet .home-spec-card-price__label {
+  color: #b42318;
+  font-weight: 800;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--internet .home-spec-card-price__amount {
+  color: #d92d20;
 }
 
 /* 브랜드 컬럼 — 컴팩트 상품 카드 (메타·가격 포함) */
@@ -5037,11 +5065,11 @@
 /* 메인 라인업 — 규격명 타이포 (카드 최상위 시각 우선) */
 .home-spec-card .home-spec-code-title {
   margin: 0;
-  font-family: "Pretendard", var(--font-body);
+  font-family: var(--font-price, "KBO Dia Gothic", var(--font-body));
   font-weight: 900;
-  font-size: 1.3125rem;
+  font-size: clamp(1.25rem, 3.8vw, 1.5rem);
   letter-spacing: -0.04em;
-  line-height: 1.2;
+  line-height: 1.15;
   color: #0f172a;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
@@ -5049,11 +5077,19 @@
   text-overflow: clip;
   white-space: normal;
   word-break: keep-all;
+  text-align: center;
+}
+
+.home-spec-card-title-group .home-spec-code-title {
+  width: auto;
+  max-width: 100%;
+  flex: 0 1 auto;
+  text-align: left;
 }
 
 @media (min-width: 640px) {
   .home-spec-card .home-spec-code-title {
-    font-size: 1.375rem;
+    font-size: clamp(1.3125rem, 1.6vw, 1.5625rem);
   }
 }
 
@@ -5120,7 +5156,7 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  gap: 0.4375rem;
+  gap: 0;
   box-sizing: border-box;
   min-height: 2rem;
   margin-top: 0.5rem;
@@ -5128,6 +5164,15 @@
   padding: 0 0.125rem;
   overflow: visible;
   text-align: center;
+}
+
+.home-spec-card-title-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4375rem;
+  max-width: 100%;
 }
 
 @media (min-width: 640px) {
@@ -5245,6 +5290,11 @@
 }
 
 .home-spec-card-price--internet {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.home-spec-card-price--onsite {
   border-color: #bfdbfe;
   background: #eff6ff;
 }
@@ -5256,6 +5306,16 @@
   font-weight: 700;
   line-height: 1.2;
   color: #64748b;
+}
+
+.home-spec-card-price--internet .home-spec-card-price__label {
+  color: #b42318;
+  font-weight: 800;
+}
+
+.home-spec-card-price--onsite .home-spec-card-price__label {
+  color: #2563eb;
+  font-weight: 800;
 }
 
 .home-spec-card-price__amount {
@@ -5271,7 +5331,34 @@
 }
 
 .home-spec-card-price--internet .home-spec-card-price__amount {
+  color: #dc2626;
+}
+
+.home-spec-card-price--onsite .home-spec-card-price__amount {
   color: #2563eb;
+}
+
+.home-spec-card-price__inquiry-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.125rem;
+  margin-top: 0.125rem;
+  padding: 0;
+  text-decoration: none;
+  border: none;
+  border-bottom: none;
+  box-shadow: none;
+  color: #475569;
+  font-weight: 800;
+}
+
+.home-spec-card-price__inquiry-link:hover,
+.home-spec-card-price__inquiry-link:focus-visible {
+  color: #2563eb;
+  text-decoration: none;
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .home-spec-card-badge {
@@ -5457,21 +5544,21 @@
   }
 
   .portal-header-brand .portal-brand-lockup__logo-img {
-    height: 3.5rem;
+    height: 4rem;
   }
 
   .portal-header-brand .portal-brand-lockup__title {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
   }
 }
 
 @media (min-width: 1280px) {
   .portal-header-brand .portal-brand-lockup__logo-img {
-    height: 4rem;
+    height: 4.5rem;
   }
 
   .portal-header-brand .portal-brand-lockup__title {
-    font-size: 1.25rem;
+    font-size: 1.65rem;
   }
 }
 
@@ -6289,4 +6376,58 @@
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* —— UX refresh: brand lineup genuine badge, search shell, unified prices —— */
+.home-brand-lineup__genuine-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f766e;
+  background: #ecfdf5;
+  box-shadow: inset 0 0 0 1px #99f6e4;
+  white-space: nowrap;
+}
+
+.home-brand-lineup__genuine-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  .home-main-search-aura {
+    max-width: min(52rem, calc(100vw - 2rem));
+  }
+
+  .home-hero-search-compound--premium {
+    border-width: 3px;
+  }
+
+  .home-main-search-shell .home-hero-search-compound--premium .home-main-search-input {
+    text-align: center;
+  }
+
+  .home-main-search-shell
+    .home-hero-search-compound--premium
+    .home-main-search-input:not(:placeholder-shown) {
+    text-align: left;
+  }
+}
+
+@media (min-width: 1280px) {
+  .home-main-search-aura {
+    max-width: min(60rem, calc(100vw - 3rem));
+  }
+}
+
+@media (min-width: 1440px) {
+  .home-main-search-aura {
+    max-width: min(68rem, calc(100vw - 4rem));
+  }
 }

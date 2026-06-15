@@ -23,7 +23,7 @@ export function PortalHeaderClient({
       <header className="portal-site-header sticky top-0 z-50 w-full max-w-full overflow-x-clip border-b border-[var(--bm-border)] bg-white shadow-[var(--bm-shadow-sm)]">
       <div className="portal-header-inner relative mx-auto box-border w-full max-w-[1440px] px-4 py-2.5 sm:px-6 sm:py-3.5 lg:px-8 lg:py-4">
         <div className="portal-header-top-row flex min-h-[3.25rem] min-w-0 items-center gap-1.5 sm:min-h-[4.25rem] sm:gap-3 lg:min-h-20 lg:gap-4">
-          <BrandLogoLink className="portal-header-brand min-w-0 max-w-[9.25rem] shrink-0 sm:max-w-[13rem] lg:max-w-[15.5rem] xl:max-w-[17.5rem]" />
+          <BrandLogoLink className="portal-header-brand min-w-0 max-w-[10.5rem] shrink-0 sm:max-w-[14rem] lg:max-w-[17rem] xl:max-w-[19rem]" />
 
           <div className="portal-header-nav-slot hidden min-w-0 flex-1 justify-center overflow-hidden lg:flex">
             <PortalSiteNav variant="desktop" />

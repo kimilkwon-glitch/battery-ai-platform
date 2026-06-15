@@ -178,13 +178,13 @@
 }
 
 .vehicle-recommended-card__price--internet {
-  border: 1px solid #bfdbfe;
-  background: #eff6ff;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
 }
 
 .vehicle-recommended-card__price--onsite {
-  border: 1px solid #e2e8f0;
-  background: #fff;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
 }
 
 .vehicle-recommended-card__price dt {
@@ -198,7 +198,7 @@
 }
 
 .vehicle-recommended-card__price--internet dt {
-  color: #3b82f6;
+  color: #b91c1c;
 }
 
 .vehicle-recommended-card__price dd {
@@ -219,7 +219,15 @@
 }
 
 .vehicle-recommended-card__price--internet dd {
-  color: #1d4ed8;
+  color: #dc2626;
+}
+
+.vehicle-recommended-card__price--onsite dt {
+  color: #2563eb;
+}
+
+.vehicle-recommended-card__price--onsite dd {
+  color: #2563eb;
 }
 
 .vehicle-recommended-card__actions {

@@ -32,6 +32,7 @@ type Props = {
   optionalFields?: ("name" | "vehicle" | "region" | "title")[];
   vehiclePlaceholder?: string;
   initialVehicle?: string;
+  initialMessage?: string;
   onSubmit: (values: SimpleInquiryFormValues) => void | Promise<void>;
   submitClassName?: string;
   prefillUser?: boolean;
@@ -51,6 +52,7 @@ export function SimpleInquiryForm({
   optionalFields = ["name", "vehicle"],
   vehiclePlaceholder = "예: 쏘렌토 TM",
   initialVehicle,
+  initialMessage,
   onSubmit,
   submitClassName = "simple-inquiry-form__submit bg-gradient-to-r from-[#0F172A] via-[#2563EB] to-[#06B6D4] text-white shadow-md disabled:opacity-60",
   prefillUser = true,
@@ -71,7 +73,8 @@ export function SimpleInquiryForm({
   useEffect(() => {
     setVehicle(initialVehicle ?? "");
     if (defaultChipId) setChipId(defaultChipId);
-  }, [initialVehicle, defaultChipId]);
+    if (initialMessage) setMessage(initialMessage);
+  }, [initialVehicle, defaultChipId, initialMessage]);
 
   useEffect(() => {
     if (!prefillUser || prefillDone.current) return;
