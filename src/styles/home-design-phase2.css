@@ -104,11 +104,11 @@
 }
 
 .home-spec-card-price--internet .home-spec-card-price__amount {
-  color: #1d4ed8;
+  color: #dc2626;
 }
 
 .home-spec-card-price--onsite .home-spec-card-price__amount {
-  color: #0f172a;
+  color: #2563eb;
 }
 
 .home-spec-card.bm-card-unified {
@@ -133,11 +133,11 @@
   min-height: 2rem;
 }
 
-.home-spec-card .home-spec-code-title {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
+.home-spec-card-title-group .home-spec-code-title {
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  overflow: visible;
 }
 
 .home-spec-card-vehicles {
@@ -184,8 +184,8 @@
 }
 
 .battery-card-price--internet {
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
 }
 
 .battery-card-price--onsite {
@@ -217,11 +217,11 @@
 }
 
 .battery-card-price--internet .battery-card-price__amount {
-  color: #0f172a;
+  color: #dc2626;
 }
 
 .battery-card-price--onsite .battery-card-price__amount {
-  color: #1d4ed8;
+  color: #2563eb;
 }
 
 .battery-card-prices-actions {
@@ -310,6 +310,82 @@
     margin-top: 0.4375rem;
     margin-bottom: 0.4375rem;
   }
+}
+
+/* ── 상품 카드: 규격명+타입 배지 중앙 그룹 / 가격색 / 가격문의 ── */
+
+.home-spec-card-title-row {
+  justify-content: center;
+}
+
+.home-spec-card-title-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4375rem;
+  max-width: 100%;
+}
+
+.home-spec-card-title-group .home-spec-code-title {
+  width: auto;
+  max-width: 100%;
+  flex: 0 1 auto;
+  text-align: left;
+}
+
+.home-spec-card-price--internet .home-spec-card-price__label {
+  color: #b42318;
+  font-weight: 800;
+}
+
+.home-spec-card-price--onsite .home-spec-card-price__label {
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--internet {
+  border-color: #fecaca;
+  background: linear-gradient(180deg, #fff9f8 0%, #fef2f2 100%);
+}
+
+.home-brand-lineup--solite .home-spec-card-price--internet .home-spec-card-price__label,
+.home-brand-lineup--solite .home-spec-card-price--internet .home-spec-card-price__amount {
+  color: #d92d20;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--internet .home-spec-card-price__label {
+  color: #b42318;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--onsite {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.home-brand-lineup--solite .home-spec-card-price--onsite .home-spec-card-price__label,
+.home-brand-lineup--solite .home-spec-card-price--onsite .home-spec-card-price__amount {
+  color: #2563eb;
+}
+
+.home-spec-card-price__inquiry-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.125rem;
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  color: #475569;
+  font-weight: 800;
+}
+
+.home-spec-card-price__inquiry-link:hover,
+.home-spec-card-price__inquiry-link:focus-visible {
+  color: #2563eb;
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
 /* ── 3. 리뷰 섹션 압축 ── */

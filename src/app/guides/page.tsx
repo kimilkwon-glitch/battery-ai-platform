@@ -1,11 +1,8 @@
-import { Suspense } from "react";
 import { PageShell } from "@/components/common/PageShell";
-import { ContentAreaFallback } from "@/components/common/ContentAreaFallback";
-import { BatteryGuideHubClient } from "@/components/guide/BatteryGuideHubClient";
 import { BatteryGuidePostsHub } from "@/components/guide/BatteryGuidePostsHub";
 import { listPublishedGuidePosts } from "@/lib/guide/battery-guide-posts";
 
-/** 배터리 가이드 — 카테고리 4개 + CMS 가이드 카드 */
+/** 배터리 가이드 — CMS 카드 목록 */
 export default async function GuidesPage() {
   const guidePosts = await listPublishedGuidePosts();
 
@@ -14,20 +11,10 @@ export default async function GuidesPage() {
       zone="guide"
       pageLabel="배터리 가이드"
       title="배터리 가이드"
-      description="점검·증상·불량·AS 안내를 카테고리별로 확인하세요."
+      description="규격·증상·주문·사진 확인 등 실무 가이드를 모았습니다."
       searchPlaceholder="차량명, 연식, 배터리 규격 검색"
-      showPageHeader={false}
     >
-      <Suspense fallback={<ContentAreaFallback lines={6} />}>
-        <BatteryGuideHubClient />
-      </Suspense>
-      <div className="mt-8">
-        <BatteryGuidePostsHub
-          showHeader={false}
-          posts={guidePosts}
-          listTitle="가이드 글 모음"
-        />
-      </div>
+      <BatteryGuidePostsHub showHeader={false} posts={guidePosts} listTitle="가이드 글 모음" />
     </PageShell>
   );
 }

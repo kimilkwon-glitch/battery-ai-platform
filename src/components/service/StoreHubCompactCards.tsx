@@ -5,6 +5,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { BookOpen, MapPin, Navigation, Phone } from "lucide-react";
 import { BUSAN_STORES } from "@/lib/busan-service-hub-data";
+import { scrollElementIntoViewWithOffset } from "@/lib/dom/scroll-element-into-view-with-offset";
 import { storeLinks } from "@/lib/external-links";
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
 import { bm } from "@/lib/design-tokens";
@@ -43,28 +44,36 @@ export function StoreHubCompactCards({
 }) {
   const deokcheonCardRef = useRef<HTMLElement>(null);
   const hakjangCardRef = useRef<HTMLElement>(null);
+  const [emphasisBranch, setEmphasisBranch] = useState<BusanStoreId | null>(null);
 
   useEffect(() => {
-    if (!selectedBranch) return;
+    if (!selectedBranch) {
+      setEmphasisBranch(null);
+      return;
+    }
+
+    setEmphasisBranch(selectedBranch);
+    const emphasisTimer = window.setTimeout(() => setEmphasisBranch(null), 480);
+
     const target =
       selectedBranch === "deokcheon"
         ? deokcheonCardRef.current
         : hakjangCardRef.current;
-    if (!target) return;
+    if (!target) {
+      return () => window.clearTimeout(emphasisTimer);
+    }
+
     let innerId = 0;
     const outerId = requestAnimationFrame(() => {
       innerId = requestAnimationFrame(() => {
-        const mobile = window.matchMedia("(max-width: 1023px)").matches;
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: mobile ? "start" : "center",
-          inline: "nearest",
-        });
+        scrollElementIntoViewWithOffset(target, { behavior: "smooth" });
       });
     });
+
     return () => {
       cancelAnimationFrame(outerId);
       if (innerId) cancelAnimationFrame(innerId);
+      window.clearTimeout(emphasisTimer);
     };
   }, [selectedBranch]);
 
@@ -109,6 +118,7 @@ export function StoreHubCompactCards({
               `${bm.card} bm-card-unified bm-store-card flex h-full cursor-pointer flex-col overflow-hidden outline-none`,
               isDeokcheon ? "bm-store-card--deokcheon" : "bm-store-card--hakjang",
               isActive && "bm-store-card--branch-active",
+              emphasisBranch === store.id && "bm-store-card--branch-emphasis-once",
               isInactive && "bm-store-card--branch-inactive",
               isHover && "bm-store-card--branch-hover",
               selectedBranch == null && !isHover && "bm-store-card--branch-default",

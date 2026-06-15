@@ -14,6 +14,7 @@ import {
 } from "@/lib/inquiry/inquiry-form-shared";
 import { submitInquiry } from "@/lib/inquiry-storage";
 import { HUB_STORE_DETAIL } from "@/lib/customer-hub-routes";
+import { scrollElementIntoViewWithOffset } from "@/lib/dom/scroll-element-into-view-with-offset";
 import {
   COMMERCE_ORDER_LOOKUP_PAGE,
   ORDER_REQUEST_LOOKUP_PAGE,
@@ -22,6 +23,7 @@ import type { SupportNotice } from "@/lib/support-notices-data";
 import {
   SUPPORT_FAQ_ITEMS,
   type FaqCategory,
+  type SupportFaqItem,
 } from "@/lib/support-faq-data";
 import { faqMatchesSearch } from "@/lib/support-faq-search";
 import {
@@ -88,9 +90,11 @@ function useNoticeLimit() {
 
 type Props = {
   notices: SupportNotice[];
+  faqItems?: SupportFaqItem[];
 };
 
-export function SupportCenterHubV2({ notices }: Props) {
+export function SupportCenterHubV2({ notices, faqItems }: Props) {
+  const faqSource = faqItems ?? SUPPORT_FAQ_ITEMS;
   const searchParams = useSearchParams();
   const isMobile = useViewportMobile();
   const faqInitialLimit = useFaqInitialLimit();
@@ -104,8 +108,34 @@ export function SupportCenterHubV2({ notices }: Props) {
   const [inquirySubmitting, setInquirySubmitting] = useState(false);
 
   const scrollToInquiry = useCallback(() => {
-    document.getElementById("support-inquiry")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const el = document.getElementById("support-inquiry");
+    if (el) scrollElementIntoViewWithOffset(el, { behavior: "smooth" });
   }, []);
+
+  const priceInquiryPrefill = useMemo(() => {
+    if (searchParams.get("inquiryKind") !== "price") return null;
+    const productCode = searchParams.get("productCode")?.trim() ?? "";
+    const productName = searchParams.get("productName")?.trim() ?? "";
+    const brand = searchParams.get("brand")?.trim() ?? "";
+    const from = searchParams.get("from")?.trim() ?? "";
+    if (!productCode && !productName) return null;
+    const label = [brand, productName || productCode].filter(Boolean).join(" ");
+    const lines = [
+      "가격 문의드립니다.",
+      "",
+      productName ? `상품명: ${productName}` : null,
+      productCode ? `규격/상품코드: ${productCode}` : null,
+      brand ? `브랜드: ${brand}` : null,
+      from ? `참고 URL: ${from}` : null,
+    ].filter(Boolean);
+    return {
+      productCode: productCode || undefined,
+      productName: productName || productCode || undefined,
+      productHint: label,
+      initialMessage: lines.join("\n"),
+      pageUrl: from || undefined,
+    };
+  }, [searchParams]);
 
   useEffect(() => {
     if (searchParams.get("tab") === "inquiry") {
@@ -121,12 +151,12 @@ export function SupportCenterHubV2({ notices }: Props) {
   }, [q, category]);
 
   const filteredFaq = useMemo(() => {
-    return SUPPORT_FAQ_ITEMS.filter((item) => {
+    return faqSource.filter((item) => {
       const hubCat = faqCategoryToHub(item.category as Exclude<FaqCategory, "전체">);
       if (category !== "all" && hubCat !== category) return false;
       return faqMatchesSearch(item, q);
     });
-  }, [q, category]);
+  }, [faqSource, q, category]);
 
   const useMobileFaqPriority = isMobile && !q && category === "all" && !faqExpanded;
 
@@ -134,7 +164,7 @@ export function SupportCenterHubV2({ notices }: Props) {
     if (!useMobileFaqPriority) return [];
     const byId = new Map(filteredFaq.map((item) => [item.id, item]));
     return SUPPORT_HUB_MOBILE_FAQ_PRIORITY.map((id) => byId.get(id)).filter(
-      (item): item is (typeof SUPPORT_FAQ_ITEMS)[number] => Boolean(item),
+      (item): item is SupportFaqItem => Boolean(item),
     );
   }, [filteredFaq, useMobileFaqPriority]);
 
@@ -162,16 +192,19 @@ export function SupportCenterHubV2({ notices }: Props) {
 
   const handleInquirySubmit = async (values: SimpleInquiryFormValues) => {
     setInquirySubmitting(true);
-    const chip = values.chipId ?? SUPPORT_INQUIRY_CHIPS[0]?.id ?? "other";
+    const chip = values.chipId ?? (priceInquiryPrefill ? "spec" : SUPPORT_INQUIRY_CHIPS[0]?.id ?? "other");
     const result = await submitInquiry({
       name: values.name?.trim() || "고객",
       contact: values.contact.trim(),
       vehicle: values.vehicle?.trim() || undefined,
       message: values.message.trim(),
-      pageUrl: getInquiryPageUrl(),
+      pageUrl: priceInquiryPrefill?.pageUrl ?? getInquiryPageUrl(),
       source: "support",
-      inquiryType: chipLabel(chip, SUPPORT_INQUIRY_CHIPS),
+      inquiryType: priceInquiryPrefill ? "가격문의" : chipLabel(chip, SUPPORT_INQUIRY_CHIPS),
       category: chipCategory(chip, SUPPORT_INQUIRY_CHIPS),
+      productCode: priceInquiryPrefill?.productCode,
+      productName: priceInquiryPrefill?.productName,
+      batteryCode: priceInquiryPrefill?.productCode,
     });
     setInquirySubmitting(false);
     if (result.ok) setInquirySubmitted(true);
@@ -357,6 +390,7 @@ export function SupportCenterHubV2({ notices }: Props) {
               inquirySubmitted={inquirySubmitted}
               submitting={inquirySubmitting}
               onSubmit={handleInquirySubmit}
+              priceInquiryPrefill={priceInquiryPrefill}
             />
           </section>
         </div>
@@ -371,6 +405,7 @@ export function SupportCenterHubV2({ notices }: Props) {
               inquirySubmitted={inquirySubmitted}
               submitting={inquirySubmitting}
               onSubmit={handleInquirySubmit}
+              priceInquiryPrefill={priceInquiryPrefill}
             />
           </section>
         </aside>
@@ -460,16 +495,25 @@ function InquiryForm({
   inquirySubmitted,
   submitting,
   onSubmit,
+  priceInquiryPrefill,
 }: {
   inquirySubmitted: boolean;
   submitting: boolean;
   onSubmit: (values: SimpleInquiryFormValues) => void | Promise<void>;
+  priceInquiryPrefill?: {
+    productHint?: string;
+    initialMessage?: string;
+  } | null;
 }) {
   return (
     <div className="support-hub-v2__inquiry-card">
-      <h2 className="support-hub-v2__inquiry-title">문의 접수</h2>
+      <h2 className="support-hub-v2__inquiry-title">
+        {priceInquiryPrefill ? "상품·가격 문의" : "문의 접수"}
+      </h2>
       <p className="support-hub-v2__inquiry-lead">
-        문의 유형을 선택하고 연락처와 내용을 남겨주세요.
+        {priceInquiryPrefill
+          ? "선택하신 상품 정보가 미리 입력됩니다. 연락처와 문의 내용을 확인해 주세요."
+          : "문의 유형을 선택하고 연락처와 내용을 남겨주세요."}
       </p>
       {inquirySubmitted ? (
         <p className="support-hub-v2__inquiry-success">
@@ -480,6 +524,10 @@ function InquiryForm({
           <SimpleInquiryForm
             contactInputId="support-inquiry-contact"
             chips={SUPPORT_INQUIRY_CHIPS}
+            defaultChipId={priceInquiryPrefill ? "spec" : undefined}
+            productHint={priceInquiryPrefill?.productHint}
+            initialMessage={priceInquiryPrefill?.initialMessage}
+            messageFirst={Boolean(priceInquiryPrefill)}
             submitLabel="문의 접수하기"
             submitting={submitting}
             optionalFields={["name", "vehicle"]}
