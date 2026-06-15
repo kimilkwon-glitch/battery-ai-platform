@@ -88,7 +88,7 @@ function regionLine(gu: string, region: BusanGeoRegion): string {
   if (guHasDongLevelExceptions(gu)) {
     return "대저1동·대저2동 — 상담 시 지점 안내";
   }
-  return "고객센터 안내";
+  return BUSAN_OUTBOUND_FEE_NOTE;
 }
 
 function normalizeSearch(q: string): string {

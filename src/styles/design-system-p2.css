@@ -2321,6 +2321,28 @@
     display: none;
   }
 
+  .home-quick-icons__scroll-indicator {
+    display: none;
+    width: 2.75rem;
+    height: 3px;
+    margin: 0.5rem auto 0;
+    border-radius: 9999px;
+    background: rgba(148, 163, 184, 0.22);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-quick-icons__scroll-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: rgba(96, 165, 250, 0.58);
+    will-change: transform, width;
+    transition: transform 90ms linear, width 90ms linear;
+  }
+
   .home-quick-icons__item {
     flex: 0 0 4.375rem;
     min-width: 4.375rem;

@@ -89,6 +89,6 @@ export const BUSAN_REGION_DISPLAY = {
 } as const;
 
 export const BUSAN_STORE_MATCH_UNKNOWN = {
-  title: "가까운 직영점 안내",
-  body: "차량 위치와 일정에 따라 덕천점 또는 학장점으로 안내드립니다.",
+  title: "대표 권역 안내",
+  body: "대표 권역 밖은 거리와 일정에 따라 출장비가 달라질 수 있습니다. 가능 여부와 비용은 고객센터로 문의해 주세요.",
 } as const;

@@ -98,7 +98,9 @@ export function StoreNeighborhoodSearch({
             ) : (
               <>
                 <p className="text-sm font-black text-slate-900">{BUSAN_STORE_MATCH_UNKNOWN.title}</p>
-                <p className="mt-1 text-sm font-semibold text-slate-600">{BUSAN_STORE_MATCH_UNKNOWN.body}</p>
+                <p className="mt-1 text-sm font-semibold leading-relaxed text-slate-600">
+                  {BUSAN_STORE_MATCH_UNKNOWN.body}
+                </p>
               </>
             )}
           </motion.div>

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { HOME_QUICK_ICON_ITEMS } from "@/lib/home-quick-icons-data";
 
 function QuickIconTitle({ label, mobileLines }: { label: string; mobileLines?: [string, string] }) {
@@ -21,8 +24,56 @@ function QuickIconTitle({ label, mobileLines }: { label: string; mobileLines?: [
   );
 }
 
+type ScrollMetrics = {
+  thumbWidthPct: number;
+  thumbLeftPct: number;
+  show: boolean;
+};
+
+function readScrollMetrics(el: HTMLUListElement): ScrollMetrics {
+  const maxScroll = el.scrollWidth - el.clientWidth;
+  if (maxScroll <= 4) {
+    return { thumbWidthPct: 100, thumbLeftPct: 0, show: false };
+  }
+  const thumbWidthPct = Math.max(22, (el.clientWidth / el.scrollWidth) * 100);
+  const travelPct = 100 - thumbWidthPct;
+  const thumbLeftPct = (el.scrollLeft / maxScroll) * travelPct;
+  return { thumbWidthPct, thumbLeftPct, show: true };
+}
+
 /** 혜택 아래 — 퀵 카테고리 아이콘 (8개) */
 export function HomeQuickIconMenu() {
+  const gridRef = useRef<HTMLUListElement>(null);
+  const [scrollMetrics, setScrollMetrics] = useState<ScrollMetrics>({
+    thumbWidthPct: 100,
+    thumbLeftPct: 0,
+    show: false,
+  });
+
+  const syncScrollMetrics = useCallback(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    setScrollMetrics(readScrollMetrics(el));
+  }, []);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+
+    syncScrollMetrics();
+    el.addEventListener("scroll", syncScrollMetrics, { passive: true });
+    window.addEventListener("resize", syncScrollMetrics);
+
+    const ro = new ResizeObserver(syncScrollMetrics);
+    ro.observe(el);
+
+    return () => {
+      el.removeEventListener("scroll", syncScrollMetrics);
+      window.removeEventListener("resize", syncScrollMetrics);
+      ro.disconnect();
+    };
+  }, [syncScrollMetrics]);
+
   return (
     <nav
       className="home-quick-icons"
@@ -30,7 +81,7 @@ export function HomeQuickIconMenu() {
       aria-label="주요 안내 바로가기"
     >
       <h2 className="home-quick-icons__heading">빠른메뉴</h2>
-      <ul className="home-quick-icons__grid">
+      <ul ref={gridRef} className="home-quick-icons__grid">
         {HOME_QUICK_ICON_ITEMS.map((item) => {
           const isVehicle = item.iconVariant === "vehicle";
           return (
@@ -73,6 +124,21 @@ export function HomeQuickIconMenu() {
           );
         })}
       </ul>
+      {scrollMetrics.show ? (
+        <div
+          className="home-quick-icons__scroll-indicator"
+          aria-hidden
+          data-home-quick-scroll-indicator
+        >
+          <div
+            className="home-quick-icons__scroll-thumb"
+            style={{
+              width: `${scrollMetrics.thumbWidthPct}%`,
+              transform: `translateX(${scrollMetrics.thumbLeftPct}%)`,
+            }}
+          />
+        </div>
+      ) : null}
     </nav>
   );
 }

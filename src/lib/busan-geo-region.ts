@@ -1,4 +1,5 @@
 import type { BusanStoreId } from "@/lib/busan-store-matcher";
+import { BUSAN_OUTBOUND_FEE_NOTE } from "@/lib/busan-service-hub-data";
 
 /** 행정동 GeoJSON feature → 덕천점/학장점/기타 권역 (검색 로직과 분리) */
 
@@ -90,7 +91,7 @@ export function guTooltipHint(gu: string, region: BusanGeoRegion): string {
     return "대저1동·명지 등 동별 담당이 다를 수 있습니다 · 가까운 권역 기준 안내";
   }
   if (store) return "가까운 권역 기준 우선 안내";
-  return "고객센터 문의 시 가까운 직영점 안내";
+  return BUSAN_OUTBOUND_FEE_NOTE;
 }
 
 export function guPanelCoverage(gu: string, region: BusanGeoRegion): string {
@@ -108,7 +109,7 @@ export function guPanelCoverage(gu: string, region: BusanGeoRegion): string {
     if (gu === "부산진구") return "서면 · 부전 · 전포권 학장점 기준";
     return "사상 · 사하 · 강서 · 명지 · 서부산권";
   }
-  return "직영점 권역 밖일 수 있습니다 · 전화로 위치를 알려주시면 배정";
+  return BUSAN_OUTBOUND_FEE_NOTE;
 }
 
 /** 동·구 검색어 → 강조할 구 이름 (없으면 null) */

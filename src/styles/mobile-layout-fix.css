@@ -231,6 +231,10 @@
     min-width: 0;
   }
 
+  .home-quick-icons__scroll-indicator {
+    display: block;
+  }
+
   .home-brand-lineup__title {
     font-size: 1.1875rem;
   }
@@ -598,24 +602,26 @@
   }
 
   .bm-store-field-label {
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
   }
 
   .bm-store-field-label--phone {
-    display: none;
+    display: block;
+    font-size: 0.6875rem;
   }
 
   .bm-store-region-text {
-    margin-top: 0.25rem !important;
+    margin-top: 0.375rem !important;
     min-height: 0 !important;
-    font-size: 0.875rem !important;
-    font-weight: 700 !important;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
     line-height: 1.45 !important;
   }
 
   .bm-store-phone-link {
-    font-size: 1rem !important;
-    font-weight: 800 !important;
+    font-size: 1.1875rem !important;
+    font-weight: 900 !important;
   }
 
   .bm-store-actions {
@@ -631,8 +637,8 @@
 
   .bm-store-btn {
     min-height: 44px !important;
-    font-size: 0.8125rem !important;
-    padding: 0 0.75rem !important;
+    font-size: 0.9375rem !important;
+    padding: 0 0.875rem !important;
   }
 
   .bm-store-btn--aux {
@@ -647,6 +653,10 @@
 
   .bm-store-cards-grid {
     gap: 1rem;
+  }
+
+  .bm-store-cards-grid > .bm-store-card {
+    scroll-margin-top: 8.75rem;
   }
 
   .busan-service-contact {
