@@ -528,7 +528,12 @@ export async function batteryTalkVisitorHistory(
       WHERE s.id = ${id}
       LIMIT 1
     `) as SessionRowWithCounts[];
-    if (found[0]) extraRows.push(found[0]);
+    const row = found[0];
+    if (!row) continue;
+    const ctx = (row.context_json ?? {}) as BatteryTalkContext;
+    if (vid && ctx.visitorId?.trim() === vid) {
+      extraRows.push(row);
+    }
   }
 
   const merged = [...rows, ...extraRows].sort(

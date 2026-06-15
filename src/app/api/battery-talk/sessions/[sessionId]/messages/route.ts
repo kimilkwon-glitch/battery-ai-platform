@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { assertBatteryTalkThreadAccess } from "@/lib/battery-talk/battery-talk-access.server";
 import { isValidBatteryTalkMessage } from "@/lib/battery-talk/battery-talk-sanitize";
 import { batteryTalkErrorResponse } from "@/lib/battery-talk/battery-talk-api-errors";
 import {
@@ -19,9 +20,13 @@ type PostBody = {
   visitorId?: string;
 };
 
-export async function GET(_request: Request, ctx: RouteCtx) {
+export async function GET(request: Request, ctx: RouteCtx) {
   const { sessionId } = await ctx.params;
   try {
+    const access = await assertBatteryTalkThreadAccess(request, sessionId);
+    if (!access.ok) {
+      return NextResponse.json({ ok: false, message: access.message }, { status: access.status });
+    }
     const messages = await batteryTalkGetMessages(sessionId);
     if (!messages) {
       return NextResponse.json({ ok: false, message: "상담을 찾을 수 없습니다." }, { status: 404 });
@@ -39,6 +44,16 @@ export async function POST(request: Request, ctx: RouteCtx) {
     body = (await request.json()) as PostBody;
   } catch {
     return NextResponse.json({ ok: false, message: "요청 형식이 올바르지 않습니다." }, { status: 400 });
+  }
+
+  const access = await assertBatteryTalkThreadAccess(
+    request,
+    sessionId,
+    { visitorId: body.visitorId },
+    { allowLegacyVisitorClaim: true },
+  );
+  if (!access.ok) {
+    return NextResponse.json({ ok: false, message: access.message }, { status: access.status });
   }
 
   const text = body.message ?? body.body ?? "";

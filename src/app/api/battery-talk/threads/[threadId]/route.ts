@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
-import { batteryTalkGetByIdPeek } from "@/lib/battery-talk/battery-talk-store";
+import { assertBatteryTalkThreadAccess } from "@/lib/battery-talk/battery-talk-access.server";
 
 export const dynamic = "force-dynamic";
 
 type RouteCtx = { params: Promise<{ threadId: string }> };
 
-export async function GET(_request: Request, ctx: RouteCtx) {
+export async function GET(request: Request, ctx: RouteCtx) {
   const { threadId } = await ctx.params;
   try {
-    const thread = await batteryTalkGetByIdPeek(threadId);
-    if (!thread) {
-      return NextResponse.json({ ok: false, message: "상담을 찾을 수 없습니다." }, { status: 404 });
+    const access = await assertBatteryTalkThreadAccess(request, threadId);
+    if (!access.ok) {
+      return NextResponse.json({ ok: false, message: access.message }, { status: access.status });
     }
+    const thread = access.thread;
     return NextResponse.json({
       ok: true,
       threadId: thread.threadId,

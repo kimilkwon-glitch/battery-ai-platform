@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
 import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-context";
 import { batteryTalkOpenThread } from "@/lib/battery-talk/battery-talk-store";
 import type { BatteryTalkContext } from "@/types/battery-talk";
@@ -10,6 +11,7 @@ type PostBody = {
   phone?: string;
   userId?: string;
   isMember?: boolean;
+  visitorId?: string;
   context?: BatteryTalkContext;
 };
 
@@ -21,17 +23,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "요청 형식이 올바르지 않습니다." }, { status: 400 });
   }
 
+  const customerSession = await getVerifiedCustomerSessionFromRequest(request);
+  const sessionUserId = customerSession?.userId;
+
   const context: BatteryTalkContext = {
     ...body.context,
     pageType: body.context?.pageType ?? inferBatteryTalkPageType(body.context?.pageUrl),
+    visitorId: sessionUserId ? body.context?.visitorId : body.visitorId?.trim() || body.context?.visitorId,
   };
 
   try {
     const thread = await batteryTalkOpenThread({
       customerName: body.customerName?.trim(),
       phone: body.phone?.trim(),
-      userId: body.userId,
-      isMember: body.isMember,
+      userId: sessionUserId,
+      isMember: sessionUserId ? true : body.isMember,
+      visitorId: sessionUserId ? undefined : body.visitorId?.trim(),
       context,
     });
     return NextResponse.json({

@@ -416,10 +416,10 @@ export async function batteryTalkVisitorHistory(
   await ensureLegacyMigration();
   const uid = userId?.trim();
   const vid = visitorId.trim();
-  const idSet = new Set(threadIds.map((id) => id.trim()).filter(Boolean));
   let threads = (await loadThreads()).filter((t) => {
     if (uid) return t.userId === uid;
-    return (vid && t.context.visitorId === vid) || idSet.has(t.threadId);
+    if (vid && t.context.visitorId === vid) return true;
+    return false;
   });
   threads = threads.filter(
     (t) =>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { BatteryTalkRealtimeEvent } from "@/lib/battery-talk/battery-talk-realtime-hub";
 import type { BatteryTalkMessage, BatteryTalkThreadSummary } from "@/types/battery-talk";
 
@@ -122,9 +122,10 @@ export function useBatteryTalkSessionStream(
   const onSessionRef = useRef(options?.onSession);
   onSessionRef.current = options?.onSession;
 
-  const url = sessionId
-    ? `/api/battery-talk/sessions/${encodeURIComponent(sessionId)}/stream`
-    : null;
+  const url = useMemo(() => {
+    if (!sessionId) return null;
+    return `/api/battery-talk/sessions/${encodeURIComponent(sessionId)}/stream`;
+  }, [sessionId]);
 
   return useBatteryTalkEventSource(
     url,
@@ -138,7 +139,7 @@ export function useBatteryTalkSessionStream(
       }
     },
     enabled,
-    { syncOnReconnect: options?.syncOnReconnect },
+    { withCredentials: true, syncOnReconnect: options?.syncOnReconnect },
   );
 }
 

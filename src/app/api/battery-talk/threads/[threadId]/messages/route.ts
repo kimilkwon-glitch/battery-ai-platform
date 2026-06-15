@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
+import { assertBatteryTalkThreadAccess } from "@/lib/battery-talk/battery-talk-access.server";
+import { isValidBatteryTalkMessage } from "@/lib/battery-talk/battery-talk-sanitize";
 import { batteryTalkAddCustomerMessage } from "@/lib/battery-talk/battery-talk-store";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +12,7 @@ type PostBody = {
   body?: string;
   phone?: string;
   customerName?: string;
+  visitorId?: string;
 };
 
 export async function POST(request: Request, ctx: RouteCtx) {
@@ -24,10 +28,21 @@ export async function POST(request: Request, ctx: RouteCtx) {
     return NextResponse.json({ ok: false, message: "메시지를 입력해 주세요." }, { status: 400 });
   }
 
+  const access = await assertBatteryTalkThreadAccess(
+    request,
+    threadId,
+    { visitorId: body.visitorId },
+    { allowLegacyVisitorClaim: true },
+  );
+  if (!access.ok) {
+    return NextResponse.json({ ok: false, message: access.message }, { status: access.status });
+  }
+
   try {
     const thread = await batteryTalkAddCustomerMessage(threadId, body.body, {
       phone: body.phone?.trim(),
       customerName: body.customerName?.trim(),
+      visitorId: body.visitorId?.trim(),
     });
     if (!thread) {
       return NextResponse.json({ ok: false, message: "상담을 찾을 수 없습니다." }, { status: 404 });

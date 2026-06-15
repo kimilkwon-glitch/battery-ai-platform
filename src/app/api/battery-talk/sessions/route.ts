@@ -4,6 +4,11 @@ import { inferBatteryTalkPageType } from "@/lib/battery-talk/battery-talk-contex
 import { sanitizeBatteryTalkPhone } from "@/lib/battery-talk/battery-talk-sanitize";
 import { batteryTalkErrorResponse } from "@/lib/battery-talk/battery-talk-api-errors";
 import { batteryTalkOpenThread, batteryTalkVisitorHistory } from "@/lib/battery-talk/battery-talk-store";
+import {
+  createBatteryTalkVisitorId,
+  getBatteryTalkVisitorFromRequest,
+  setBatteryTalkVisitorCookie,
+} from "@/lib/battery-talk/battery-talk-visitor-cookie.server";
 import type { BatteryTalkContext } from "@/types/battery-talk";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +31,7 @@ type PostBody = {
 export async function GET(request: Request) {
   const customerSession = await getVerifiedCustomerSessionFromRequest(request);
   const { searchParams } = new URL(request.url);
-  const visitorId = searchParams.get("visitorId")?.trim() ?? "";
+  const visitorId = getBatteryTalkVisitorFromRequest(request);
   const threadIds = searchParams.get("threadIds")?.split(",").map((s) => s.trim()).filter(Boolean) ?? [];
 
   if (customerSession?.userId) {
@@ -71,15 +76,24 @@ export async function POST(request: Request) {
   };
 
   try {
+    const guestVisitorId = sessionUserId
+      ? undefined
+      : getBatteryTalkVisitorFromRequest(request) ||
+        body.visitorId?.trim() ||
+        context.visitorId?.trim() ||
+        createBatteryTalkVisitorId();
+
     const thread = await batteryTalkOpenThread({
       customerName: body.customerName?.trim(),
       phone: sanitizeBatteryTalkPhone(body.customerPhone ?? body.phone ?? ""),
-      userId: sessionUserId ?? body.userId,
+      userId: sessionUserId,
       isMember: sessionUserId ? true : body.isMember,
-      visitorId: sessionUserId ? undefined : body.visitorId?.trim(),
-      context: sessionUserId ? context : { ...context, visitorId: body.visitorId?.trim() || context.visitorId },
+      visitorId: sessionUserId ? undefined : guestVisitorId,
+      context: sessionUserId
+        ? context
+        : { ...context, visitorId: guestVisitorId },
     });
-    return NextResponse.json({
+    const response = NextResponse.json({
       ok: true,
       sessionId: thread.threadId,
       threadId: thread.threadId,
@@ -87,6 +101,10 @@ export async function POST(request: Request) {
       phone: thread.phone,
       status: thread.status,
     });
+    if (guestVisitorId) {
+      setBatteryTalkVisitorCookie(response, guestVisitorId);
+    }
+    return response;
   } catch (err) {
     return batteryTalkErrorResponse(err, "채팅을 시작하지 못했습니다.");
   }
