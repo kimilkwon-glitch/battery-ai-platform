@@ -1,35 +1,20 @@
+/**
+ * @deprecated 클라이언트 호출처 없음 — POST /api/order-requests/lookup 사용
+ * GET — 410 Gone
+ */
 import { NextResponse } from "next/server";
-import { getOrderRequestById } from "@/lib/order-request/order-request-service";
 
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
 
-/**
- * GET — 고객 단건 조회 (lookup token은 12차)
- */
-export async function GET(request: Request, { params }: Props) {
-  const { id } = await params;
-  const token = new URL(request.url).searchParams.get("token");
-  if (!token) {
-    return NextResponse.json(
-      { ok: false, message: "조회 토큰이 필요합니다." },
-      { status: 401 },
-    );
-  }
-
-  const record = await getOrderRequestById(id);
-  if (!record) {
-    return NextResponse.json({ ok: false, message: "요청을 찾을 수 없습니다." }, { status: 404 });
-  }
-
-  return NextResponse.json({
-    ok: true,
-    request: {
-      requestNumber: record.requestNumber,
-      status: record.status,
-      createdAt: record.createdAt,
-      batterySpecSummary: record.batterySpecSummary,
+export async function GET(_request: Request, _props: Props) {
+  return NextResponse.json(
+    {
+      ok: false,
+      message: "이 조회 API는 더 이상 사용되지 않습니다. 고객센터 상담 조회를 이용해 주세요.",
+      deprecated: true,
     },
-  });
+    { status: 410 },
+  );
 }
