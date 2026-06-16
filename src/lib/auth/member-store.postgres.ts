@@ -3,6 +3,10 @@ import "server-only";
 import { ensureMemberSchema } from "@/lib/db/ensure-member-schema";
 import { getSql } from "@/lib/db/postgres";
 import { hashMemberPassword } from "@/lib/auth/member-password.server";
+import {
+  normalizeMemberName,
+  normalizeMemberPhoneDigits,
+} from "@/lib/auth/member-normalize";
 import { isMemberPreferredStore } from "@/lib/auth/member-preferred-store";
 import { mergeVehicleInfo } from "@/lib/auth/member-profile-parse";
 import type {
@@ -29,6 +33,7 @@ type MemberRow = {
   detail_address: string | null;
   vehicle_info: MemberVehicleInfo | null;
   preferred_store: string | null;
+  session_epoch: number;
   created_at: string;
   updated_at: string;
 };
@@ -55,6 +60,7 @@ function rowToRecord(row: MemberRow): MemberRecord {
     detailAddress: row.detail_address,
     vehicleInfo: row.vehicle_info,
     preferredStore: parsePreferredStoreRow(row.preferred_store),
+    sessionEpoch: row.session_epoch ?? 0,
     createdAt: new Date(row.created_at).toISOString(),
     updatedAt: new Date(row.updated_at).toISOString(),
   };
@@ -100,8 +106,31 @@ export async function findMemberByEmail(email: string): Promise<MemberRecord | n
 export async function findMemberByPhone(phone: string): Promise<MemberRecord | null> {
   await ensureMemberSchema();
   const sql = getSql();
+  const phoneDigits = normalizeMemberPhoneDigits(phone);
   const rows = (await sql`
-    SELECT * FROM members WHERE phone = ${phone.trim()} LIMIT 1
+    SELECT * FROM members
+    WHERE regexp_replace(phone, '[^0-9]', '', 'g') = ${phoneDigits}
+    LIMIT 1
+  `) as MemberRow[];
+  const row = rows[0];
+  return row ? rowToRecord(row) : null;
+}
+
+export async function findMemberByNameAndPhone(
+  name: string,
+  phone: string,
+): Promise<MemberRecord | null> {
+  await ensureMemberSchema();
+  const normalizedName = normalizeMemberName(name);
+  const phoneDigits = normalizeMemberPhoneDigits(phone);
+  if (!normalizedName || phoneDigits.length < 10) return null;
+
+  const sql = getSql();
+  const rows = (await sql`
+    SELECT * FROM members
+    WHERE trim(regexp_replace(name, '\\s+', ' ', 'g')) = ${normalizedName}
+      AND regexp_replace(phone, '[^0-9]', '', 'g') = ${phoneDigits}
+    LIMIT 1
   `) as MemberRow[];
   const row = rows[0];
   return row ? rowToRecord(row) : null;
@@ -288,4 +317,31 @@ export async function updateMemberProfile(
 
   const row = rows[0];
   return row ? rowToRecord(row) : null;
+}
+
+export async function updateMemberPasswordHash(
+  memberId: string,
+  passwordHash: string,
+): Promise<MemberRecord | null> {
+  await ensureMemberSchema();
+  const sql = getSql();
+  const rows = (await sql`
+    UPDATE members SET
+      password_hash = ${passwordHash},
+      session_epoch = session_epoch + 1,
+      updated_at = NOW()
+    WHERE id = ${memberId}
+    RETURNING *
+  `) as MemberRow[];
+  const row = rows[0];
+  return row ? rowToRecord(row) : null;
+}
+
+export async function bumpMemberSessionEpoch(memberId: string): Promise<void> {
+  await ensureMemberSchema();
+  const sql = getSql();
+  await sql`
+    UPDATE members SET session_epoch = session_epoch + 1, updated_at = NOW()
+    WHERE id = ${memberId}
+  `;
 }

@@ -1743,6 +1743,94 @@ main:has(.bm-zone--legal) {
   text-decoration: underline;
 }
 
+.bm-auth-info {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.625rem;
+  background: #eff6ff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.bm-auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  border: none;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.bm-auth-back-link:hover,
+.bm-auth-back-link:focus-visible {
+  color: #2563eb;
+}
+
+.bm-auth-field__hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.bm-auth-field__hint--warn {
+  color: #b45309;
+}
+
+.bm-auth-result-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.bm-auth-result-box__label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.bm-auth-result-box__value {
+  margin: 0.375rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: 0.02em;
+}
+
+.bm-auth-result-box__meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.bm-auth-password-section {
+  margin-top: 0.5rem;
+}
+
+.bm-auth-password-section__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.bm-auth-password-section__desc {
+  margin: 0.375rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
 .bm-auth-guest-links {
   margin-top: 1.5rem;
   padding-top: 1.25rem;

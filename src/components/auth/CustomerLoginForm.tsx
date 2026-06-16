@@ -16,6 +16,10 @@ import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 
 import {
 
+  CUSTOMER_FIND_ID_PAGE,
+
+  CUSTOMER_FORGOT_PASSWORD_PAGE,
+
   CUSTOMER_MYPAGE,
 
   CUSTOMER_SIGNUP_PAGE,
@@ -306,7 +310,19 @@ function CustomerLoginFormInner({ redirect }: Props) {
 
         </span>
 
-        <Link href={`${HUB_SUPPORT}?tab=inquiry`} className="bm-auth-text-link">
+        <Link href={CUSTOMER_FIND_ID_PAGE} className="bm-auth-text-link">
+
+          아이디 찾기
+
+        </Link>
+
+        <span className="text-slate-300" aria-hidden>
+
+          ·
+
+        </span>
+
+        <Link href={CUSTOMER_FORGOT_PASSWORD_PAGE} className="bm-auth-text-link">
 
           비밀번호 찾기
 

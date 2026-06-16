@@ -2,6 +2,7 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { getCustomerSessionSecret } from "@/lib/auth/member-credentials";
+import { verifyCustomerSessionWithEpoch } from "@/lib/auth/customer-session-epoch.server";
 import {
   createCustomerSessionToken,
   CUSTOMER_SESSION_COOKIE,
@@ -26,18 +27,21 @@ export async function getCustomerSessionFromCookies(): Promise<string | undefine
 
 export async function getVerifiedCustomerSession(): Promise<VerifiedCustomerSession | null> {
   const token = await getCustomerSessionFromCookies();
-  return verifyCustomerSessionToken(token, getCustomerSessionSecret());
+  return verifyCustomerSessionWithEpoch(token);
 }
 
 export async function getVerifiedCustomerSessionFromRequest(
   request: Request,
 ): Promise<VerifiedCustomerSession | null> {
   const token = getCustomerSessionCookieFromHeader(request.headers.get("cookie"));
-  return verifyCustomerSessionToken(token, getCustomerSessionSecret());
+  return verifyCustomerSessionWithEpoch(token);
 }
 
-export async function mintCustomerSessionToken(userId: string): Promise<string> {
-  return createCustomerSessionToken(userId, getCustomerSessionSecret());
+export async function mintCustomerSessionToken(
+  userId: string,
+  sessionEpoch = 0,
+): Promise<string> {
+  return createCustomerSessionToken(userId, getCustomerSessionSecret(), sessionEpoch);
 }
 
 export function customerSessionCookieOptions(maxAge = CUSTOMER_SESSION_MAX_AGE_SEC) {

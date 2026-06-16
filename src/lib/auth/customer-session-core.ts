@@ -39,9 +39,10 @@ async function hmacSha256Base64Url(message: string, secret: string): Promise<str
 export async function createCustomerSessionToken(
   userId: string,
   secret: string,
+  sessionEpoch = 0,
 ): Promise<string> {
   const exp = Date.now() + CUSTOMER_SESSION_MAX_AGE_SEC * 1000;
-  const payload = `${userId}.${exp}`;
+  const payload = `${userId}.${sessionEpoch}.${exp}`;
   const sig = await hmacSha256Base64Url(payload, secret);
   return `${payload}.${sig}`;
 }
@@ -49,30 +50,63 @@ export async function createCustomerSessionToken(
 export type VerifiedCustomerSession = {
   userId: string;
   exp: number;
+  sessionEpoch: number;
+  legacyFormat: boolean;
 };
+
+function parseSessionTokenParts(token: string): {
+  userId: string;
+  sessionEpoch: number;
+  exp: number;
+  sig: string;
+  legacyFormat: boolean;
+} | null {
+  const parts = token.split(".");
+  if (parts.length === 3) {
+    const [userId, expStr, sig] = parts;
+    if (!userId || !expStr || !sig) return null;
+    return {
+      userId,
+      sessionEpoch: 0,
+      exp: Number(expStr),
+      sig,
+      legacyFormat: true,
+    };
+  }
+  if (parts.length === 4) {
+    const [userId, epochStr, expStr, sig] = parts;
+    if (!userId || !epochStr || !expStr || !sig) return null;
+    const sessionEpoch = Number(epochStr);
+    if (!Number.isFinite(sessionEpoch) || sessionEpoch < 0) return null;
+    return {
+      userId,
+      sessionEpoch,
+      exp: Number(expStr),
+      sig,
+      legacyFormat: false,
+    };
+  }
+  return null;
+}
 
 export async function verifyCustomerSessionToken(
   token: string | undefined | null,
   secret: string,
 ): Promise<VerifiedCustomerSession | null> {
   if (!token?.trim() || !secret) return null;
-  const lastDot = token.lastIndexOf(".");
-  const secondDot = token.lastIndexOf(".", lastDot - 1);
-  if (lastDot < 0 || secondDot < 0) return null;
+  const parsed = parseSessionTokenParts(token.trim());
+  if (!parsed || !parsed.userId) return null;
 
-  const userId = token.slice(0, secondDot);
-  const expStr = token.slice(secondDot + 1, lastDot);
-  const sig = token.slice(lastDot + 1);
-  if (!userId) return null;
-
-  const exp = Number(expStr);
+  const { userId, sessionEpoch, exp, sig, legacyFormat } = parsed;
   if (!Number.isFinite(exp) || Date.now() > exp) return null;
 
-  const payload = `${userId}.${expStr}`;
+  const payload = legacyFormat
+    ? `${userId}.${exp}`
+    : `${userId}.${sessionEpoch}.${exp}`;
   const expected = await hmacSha256Base64Url(payload, secret);
   if (!timingSafeEqualStr(sig, expected)) return null;
 
-  return { userId, exp };
+  return { userId, exp, sessionEpoch, legacyFormat };
 }
 
 export function getCustomerSessionCookieFromHeader(

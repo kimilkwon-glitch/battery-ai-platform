@@ -5,5 +5,8 @@ export const CUSTOMER_SIGNUP_PAGE = "/signup" as const;
 export const CUSTOMER_COMPLETE_PROFILE_PAGE = "/signup/complete-profile" as const;
 export const CUSTOMER_MYPAGE = "/mypage" as const;
 export const CUSTOMER_PROFILE_PAGE = "/mypage/profile" as const;
+export const CUSTOMER_FIND_ID_PAGE = "/find-id" as const;
+export const CUSTOMER_FORGOT_PASSWORD_PAGE = "/forgot-password" as const;
+export const CUSTOMER_RESET_PASSWORD_PAGE = "/reset-password" as const;
 
 export { HUB_PHOTO } from "@/lib/customer-hub-routes";

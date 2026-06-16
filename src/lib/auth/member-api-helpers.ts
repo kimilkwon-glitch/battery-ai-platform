@@ -9,6 +9,7 @@ import {
   customerSessionCookieOptions,
   mintCustomerSessionToken,
 } from "@/lib/auth/customer-session.server";
+import { getMemberStore } from "@/lib/auth/member-store";
 
 export function memberServiceUnavailable(): NextResponse {
   return NextResponse.json(
@@ -25,7 +26,23 @@ export async function attachCustomerSessionCookie(
   response: NextResponse,
   userId: string,
 ): Promise<NextResponse> {
-  const token = await mintCustomerSessionToken(userId);
+  let sessionEpoch = 0;
+  try {
+    const store = await getMemberStore();
+    const member = await store.findMemberById(userId);
+    sessionEpoch = member?.sessionEpoch ?? 0;
+  } catch {
+    sessionEpoch = 0;
+  }
+  const token = await mintCustomerSessionToken(userId, sessionEpoch);
   response.cookies.set(CUSTOMER_SESSION_COOKIE, token, customerSessionCookieOptions());
+  return response;
+}
+
+export function clearCustomerSessionCookie(response: NextResponse): NextResponse {
+  response.cookies.set(CUSTOMER_SESSION_COOKIE, "", {
+    ...customerSessionCookieOptions(0),
+    maxAge: 0,
+  });
   return response;
 }

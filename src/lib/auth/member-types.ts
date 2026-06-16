@@ -25,6 +25,7 @@ export type MemberRecord = {
   detailAddress: string | null;
   vehicleInfo: MemberVehicleInfo | null;
   preferredStore: MemberPreferredStore | null;
+  sessionEpoch: number;
   createdAt: string;
   updatedAt: string;
 };

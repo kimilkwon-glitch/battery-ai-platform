@@ -29,6 +29,8 @@
     "verify:battery-guide-cms": "node tools/verify-battery-guide-cms.mjs",
     "verify:cms-content": "node tools/verify-cms-content.mjs",
     "verify:guest-name-phone-lookup": "node tools/verify-guest-name-phone-lookup.mjs",
+    "verify:auth-recovery": "node tools/verify-auth-recovery.mjs",
+    "verify:auth-password-change": "node tools/verify-auth-password-change.mjs",
     "verify:production-security": "node tools/verify-production-security-smoke.mjs",
     "verify:production": "node scripts/verify-production-evidence.mjs",
     "search:qa": "node tools/search-quality/run-search-quality.mjs",

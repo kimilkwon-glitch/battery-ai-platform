@@ -60,4 +60,8 @@ async function runMigration(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_members_phone
       ON members (phone)
   `;
+
+  await sql`
+    ALTER TABLE members ADD COLUMN IF NOT EXISTS session_epoch INTEGER NOT NULL DEFAULT 0
+  `;
 }
