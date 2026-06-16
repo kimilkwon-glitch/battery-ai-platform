@@ -28,6 +28,7 @@
     "verify:notice-sanitization": "node tools/verify-notice-html-sanitization.mjs",
     "verify:battery-guide-cms": "node tools/verify-battery-guide-cms.mjs",
     "verify:cms-content": "node tools/verify-cms-content.mjs",
+    "verify:admin-faq-ui": "node tools/verify-admin-faq-ui.mjs",
     "verify:guest-name-phone-lookup": "node tools/verify-guest-name-phone-lookup.mjs",
     "verify:auth-recovery": "node tools/verify-auth-recovery.mjs",
     "verify:auth-password-change": "node tools/verify-auth-password-change.mjs",

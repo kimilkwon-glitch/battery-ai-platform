@@ -17,9 +17,18 @@ type FormState = {
   sortOrder: number;
 };
 
+type AdminFaqSort = "sortOrder" | "category" | "updatedAt" | "question";
+
 const CATEGORY_OPTIONS = SUPPORT_FAQ_CATEGORIES.filter(
   (c): c is Exclude<FaqCategory, "전체"> => c !== "전체",
 );
+
+const SORT_OPTIONS: { value: AdminFaqSort; label: string }[] = [
+  { value: "sortOrder", label: "현재 순서순" },
+  { value: "category", label: "카테고리순" },
+  { value: "updatedAt", label: "최근 수정순" },
+  { value: "question", label: "질문 가나다순" },
+];
 
 const EMPTY: FormState = {
   category: "규격",
@@ -30,6 +39,45 @@ const EMPTY: FormState = {
   sortOrder: 0,
 };
 
+function stripHtmlForSearch(html: string): string {
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function normalizeSearchText(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function sortFaqItems(records: SupportFaqRecord[], sortBy: AdminFaqSort): SupportFaqRecord[] {
+  const sorted = [...records];
+  switch (sortBy) {
+    case "category":
+      return sorted.sort(
+        (a, b) =>
+          a.category.localeCompare(b.category, "ko") ||
+          a.sortOrder - b.sortOrder ||
+          b.updatedAt.localeCompare(a.updatedAt),
+      );
+    case "updatedAt":
+      return sorted.sort(
+        (a, b) =>
+          b.updatedAt.localeCompare(a.updatedAt) ||
+          a.sortOrder - b.sortOrder,
+      );
+    case "question":
+      return sorted.sort(
+        (a, b) =>
+          a.question.localeCompare(b.question, "ko") ||
+          a.sortOrder - b.sortOrder,
+      );
+    case "sortOrder":
+    default:
+      return sorted.sort(
+        (a, b) =>
+          a.sortOrder - b.sortOrder || b.updatedAt.localeCompare(a.updatedAt),
+      );
+  }
+}
+
 export function AdminSupportFaqClient() {
   const [items, setItems] = useState<SupportFaqRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,9 +86,15 @@ export function AdminSupportFaqClient() {
   const [showForm, setShowForm] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [query, setQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<Exclude<FaqCategory, "전체"> | "all">("all");
+  const [categoryFilter, setCategoryFilter] = useState<FaqCategory>("전체");
+  const [sortBy, setSortBy] = useState<AdminFaqSort>("sortOrder");
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; question: string } | null>(
+    null,
+  );
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -58,18 +112,39 @@ export function AdminSupportFaqClient() {
     void load();
   }, [load]);
 
+  const categoryTabs = useMemo(() => {
+    const fromItems = new Set(items.map((item) => item.category));
+    const known = SUPPORT_FAQ_CATEGORIES.filter((cat) => cat === "전체" || fromItems.has(cat));
+    const extras = [...fromItems]
+      .filter((cat) => !SUPPORT_FAQ_CATEGORIES.includes(cat))
+      .sort((a, b) => a.localeCompare(b, "ko"));
+    return [...known, ...extras];
+  }, [items]);
+
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<FaqCategory, number>();
+    counts.set("전체", items.length);
+    for (const item of items) {
+      const cat = item.category as FaqCategory;
+      counts.set(cat, (counts.get(cat) ?? 0) + 1);
+    }
+    return counts;
+  }, [items]);
+
   const filteredItems = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return items.filter((item) => {
-      if (categoryFilter !== "all" && item.category !== categoryFilter) return false;
+    const q = normalizeSearchText(query);
+    const filtered = items.filter((item) => {
+      if (categoryFilter !== "전체" && item.category !== categoryFilter) return false;
       if (!q) return true;
+      const answerPlain = normalizeSearchText(stripHtmlForSearch(item.answerText));
       return (
-        item.question.toLowerCase().includes(q) ||
-        item.answerText.toLowerCase().includes(q) ||
-        item.searchKeywords.some((kw) => kw.toLowerCase().includes(q))
+        normalizeSearchText(item.question).includes(q) ||
+        answerPlain.includes(q) ||
+        item.searchKeywords.some((kw) => normalizeSearchText(kw).includes(q))
       );
     });
-  }, [items, query, categoryFilter]);
+    return sortFaqItems(filtered, sortBy);
+  }, [items, query, categoryFilter, sortBy]);
 
   const openCreate = () => {
     setEditingId(null);
@@ -77,6 +152,7 @@ export function AdminSupportFaqClient() {
     setShowForm(true);
     setShowPreview(false);
     setSaved(false);
+    setDeleted(false);
     setError(null);
   };
 
@@ -93,6 +169,7 @@ export function AdminSupportFaqClient() {
     setShowForm(true);
     setShowPreview(false);
     setSaved(false);
+    setDeleted(false);
     setError(null);
   };
 
@@ -145,28 +222,33 @@ export function AdminSupportFaqClient() {
     await load();
   };
 
-  const remove = async (id: string, question: string) => {
-    if (
-      !confirm(
-        `「${question}」 FAQ를 숨김(보관) 처리합니다.\n고객 화면에서 더 이상 노출되지 않습니다. 계속하시겠습니까?`,
-      )
-    ) {
-      return;
+  const confirmDelete = async () => {
+    if (!deleteTarget || deleting) return;
+    setDeleting(true);
+    setError(null);
+    setDeleted(false);
+    try {
+      const res = await fetch(`/api/admin/support-faq/${deleteTarget.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setError(data.message ?? "FAQ를 삭제하지 못했습니다.");
+        return;
+      }
+      setDeleted(true);
+      setDeleteTarget(null);
+      await load();
+    } catch {
+      setError("FAQ를 삭제하지 못했습니다.");
+    } finally {
+      setDeleting(false);
     }
-    const res = await fetch(`/api/admin/support-faq/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    const data = await res.json();
-    if (!res.ok || !data.ok) {
-      setError(data.message ?? "삭제 실패");
-      return;
-    }
-    await load();
   };
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-6xl space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-slate-600">
           고객센터 FAQ — 질문·답변·검색 키워드를 관리합니다. HTML은 저장·출력 시 sanitize됩니다.
@@ -176,31 +258,63 @@ export function AdminSupportFaqClient() {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <input
-          className="min-w-[12rem] flex-1 rounded border px-2.5 py-2 text-xs"
-          placeholder="질문·답변·키워드 검색"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <select
-          className="rounded border px-2.5 py-2 text-xs"
-          value={categoryFilter}
-          onChange={(e) =>
-            setCategoryFilter(e.target.value as Exclude<FaqCategory, "전체"> | "all")
-          }
-        >
-          <option value="all">전체 카테고리</option>
-          {CATEGORY_OPTIONS.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            type="search"
+            className="min-w-[12rem] flex-1 rounded border px-2.5 py-2 text-xs"
+            placeholder="질문·답변 검색"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <label className="flex items-center gap-2 text-xs text-slate-600">
+            <span className="whitespace-nowrap font-bold">정렬</span>
+            <select
+              className="rounded border px-2.5 py-2 text-xs"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as AdminFaqSort)}
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="-mx-1 overflow-x-auto px-1 pb-1">
+          <div className="flex min-w-max flex-wrap gap-1.5">
+            {categoryTabs.map((cat) => {
+              const count = categoryCounts.get(cat) ?? 0;
+              const active = categoryFilter === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setCategoryFilter(cat)}
+                  className={
+                    active
+                      ? "rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-black text-white"
+                      : "rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold text-slate-600 hover:bg-slate-200"
+                  }
+                >
+                  {cat}
+                  {cat === "전체" ? ` ${count}` : count > 0 ? ` ${count}` : ""}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <p className="text-[11px] font-semibold text-slate-500">
+          전체 {items.length}개 / 현재 표시 {filteredItems.length}개
+        </p>
       </div>
 
       {error ? <p className="text-xs font-bold text-red-700">{error}</p> : null}
       {saved ? <p className="text-xs font-bold text-emerald-700">저장되었습니다.</p> : null}
+      {deleted ? <p className="text-xs font-bold text-emerald-700">FAQ가 삭제되었습니다.</p> : null}
 
       {showForm ? (
         <section className={`${bm.card} ${bm.cardPad} grid gap-3 lg:grid-cols-2`}>
@@ -290,7 +404,15 @@ export function AdminSupportFaqClient() {
       ) : null}
 
       <div className={`${bm.card} overflow-x-auto`}>
-        <table className="w-full min-w-[720px] text-xs">
+        <table className="w-full table-fixed text-xs">
+          <colgroup>
+            <col className="w-[min(100%,36rem)]" />
+            <col className="w-24" />
+            <col className="w-14" />
+            <col className="w-14" />
+            <col className="w-24" />
+            <col className="w-36" />
+          </colgroup>
           <thead>
             <tr className="border-b bg-slate-50 text-left">
               <th className="p-3">질문</th>
@@ -312,44 +434,93 @@ export function AdminSupportFaqClient() {
             {!loading && filteredItems.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-6 text-center text-slate-500">
-                  등록된 FAQ가 없습니다.
+                  {items.length === 0 ? "등록된 FAQ가 없습니다." : "조건에 맞는 FAQ가 없습니다."}
                 </td>
               </tr>
             ) : null}
             {filteredItems.map((item) => (
-              <tr key={item.id} className="border-b last:border-0">
-                <td className="p-3 font-semibold">{item.question}</td>
-                <td className="p-3">{item.category}</td>
+              <tr key={item.id} className="border-b last:border-0 align-top">
+                <td className="p-3 font-semibold">
+                  <span className="line-clamp-2 break-words" title={item.question}>
+                    {item.question}
+                  </span>
+                </td>
+                <td className="p-3 whitespace-nowrap">{item.category}</td>
                 <td className="p-3">
                   <input
                     type="checkbox"
                     checked={item.visible}
+                    aria-label={`${item.question} 게시`}
                     onChange={(e) => void toggleVisible(item.id, e.target.checked)}
                   />
                 </td>
                 <td className="p-3">{item.sortOrder}</td>
                 <td className="p-3 whitespace-nowrap">{item.updatedAt.slice(0, 10)}</td>
-                <td className="p-3 space-x-2 whitespace-nowrap">
-                  <button
-                    type="button"
-                    className="font-bold text-blue-700"
-                    onClick={() => openEdit(item)}
-                  >
-                    편집
-                  </button>
-                  <button
-                    type="button"
-                    className="font-bold text-red-700"
-                    onClick={() => void remove(item.id, item.question)}
-                  >
-                    숨김
-                  </button>
+                <td className="p-3">
+                  <div className="flex flex-wrap gap-x-3 gap-y-1">
+                    <button
+                      type="button"
+                      className="font-bold text-blue-700"
+                      onClick={() => openEdit(item)}
+                    >
+                      편집
+                    </button>
+                    <button
+                      type="button"
+                      className="font-bold text-red-700 underline-offset-2 hover:underline"
+                      onClick={() => {
+                        setDeleteTarget({ id: item.id, question: item.question });
+                        setDeleted(false);
+                      }}
+                    >
+                      삭제
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {deleteTarget ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="faq-delete-title"
+        >
+          <div className={`${bm.card} ${bm.cardPad} w-full max-w-md space-y-4`}>
+            <h2 id="faq-delete-title" className="text-sm font-black text-slate-900">
+              FAQ 삭제
+            </h2>
+            <p className="text-xs text-slate-700">
+              <span className="font-bold">삭제할 FAQ:</span> {deleteTarget.question}
+            </p>
+            <p className="text-xs font-semibold text-red-700">
+              삭제한 FAQ는 복구할 수 없습니다.
+            </p>
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                className={bm.btnTertiary}
+                disabled={deleting}
+                onClick={() => setDeleteTarget(null)}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700 disabled:opacity-60"
+                disabled={deleting}
+                onClick={() => void confirmDelete()}
+              >
+                {deleting ? "삭제 중…" : "삭제 확인"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
