@@ -16,6 +16,7 @@ import { bm } from "@/lib/design-tokens";
 type Props = {
   batteryCode: string;
   productName?: string;
+  highlightId?: string;
 };
 
 function formatQnaDate(iso: string): string {
@@ -30,7 +31,7 @@ function formatQnaDate(iso: string): string {
   }
 }
 
-export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
+export function BatteryProductQnaPanel({ batteryCode, productName, highlightId }: Props) {
   const [items, setItems] = useState<ProductQnaPublicItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -48,7 +49,7 @@ export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
     try {
       const res = await fetch(
         `/api/support/inquiries?battery=${encodeURIComponent(batteryCode)}&public=1`,
-        { cache: "no-store" },
+        { cache: "no-store", credentials: "include" },
       );
       const data = (await res.json()) as { ok?: boolean; items?: ProductQnaPublicItem[] };
       if (res.ok && data.ok && Array.isArray(data.items)) {
@@ -66,6 +67,17 @@ export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
   useEffect(() => {
     void loadItems();
   }, [loadItems]);
+
+  useEffect(() => {
+    if (!highlightId || loading) return;
+    setExpandedId(highlightId);
+    requestAnimationFrame(() => {
+      document.getElementById(`product-qna-item-${highlightId}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  }, [highlightId, loading, items.length]);
 
   const stats = useMemo(() => {
     const answered = items.filter((i) => i.statusLabel === "답변완료").length;
@@ -150,7 +162,11 @@ export function BatteryProductQnaPanel({ batteryCode, productName }: Props) {
           {items.map((item) => {
             const open = expandedId === item.id;
             return (
-              <li key={item.id} className={clsx("battery-product-qna__item", open && "battery-product-qna__item--open")}>
+              <li
+                key={item.id}
+                id={`product-qna-item-${item.id}`}
+                className={clsx("battery-product-qna__item", open && "battery-product-qna__item--open")}
+              >
                 <button
                   type="button"
                   className="battery-product-qna__trigger"

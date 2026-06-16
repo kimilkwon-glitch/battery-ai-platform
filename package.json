@@ -32,6 +32,7 @@
     "verify:auth-recovery": "node tools/verify-auth-recovery.mjs",
     "verify:auth-password-change": "node tools/verify-auth-password-change.mjs",
     "verify:product-price-inquiry": "node tools/verify-product-price-inquiry.mjs",
+    "verify:product-qna-privacy": "node tools/verify-product-qna-privacy.mjs",
     "verify:product-pricing-storage": "node tools/verify-product-pricing-storage.mjs",
     "verify:admin-banners": "node tools/verify-admin-banners.mjs",
     "verify:production-security": "node tools/verify-production-security-smoke.mjs",

@@ -149,6 +149,15 @@ async function runMigration(): Promise<void> {
   `;
 
   await sql`
+    ALTER TABLE customer_inquiries
+      ADD COLUMN IF NOT EXISTS author_user_id TEXT
+  `;
+  await sql`
+    ALTER TABLE customer_inquiries
+      ADD COLUMN IF NOT EXISTS author_view_token_hash TEXT
+  `;
+
+  await sql`
     CREATE TABLE IF NOT EXISTS battery_talk_sessions (
       id TEXT PRIMARY KEY,
       customer_name TEXT,

@@ -93,6 +93,8 @@ export type InquiryCreateInput = {
   inquiryType?: string;
   couponCode?: string;
   isSecret?: boolean;
+  authorUserId?: string;
+  authorViewTokenHash?: string;
 };
 
 export type InquiryListFilters = {
@@ -134,6 +136,8 @@ export async function inquiryCreate(input: InquiryCreateInput): Promise<Customer
     adminMemo: "",
     isSecret: input.isSecret === true,
     hidden: false,
+    authorUserId: input.authorUserId?.trim() || undefined,
+    authorViewTokenHash: input.authorViewTokenHash?.trim() || undefined,
   };
   const records = await loadRecords();
   records.unshift(record);

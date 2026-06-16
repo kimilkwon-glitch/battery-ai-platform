@@ -34,7 +34,8 @@ function PriceInquiryLink({
     >
       <span className="home-spec-card-price__label">{label}</span>
       <span className="home-spec-card-price__amount home-spec-card-price__inquiry-link">
-        가격문의 <span className="home-spec-card-price__inquiry-hint">(클릭)</span>
+        <span className="home-spec-card-price__inquiry-text">가격문의</span>
+        <span className="home-spec-card-price__inquiry-hint">(클릭)</span>
       </span>
     </Link>
   );

@@ -61,6 +61,60 @@ export function listInquiries(): CustomerInquiryRecord[] {
   return readLocalFallback().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
+export type SubmitProductQnaInput = {
+  message: string;
+  title?: string;
+  batteryCode: string;
+  productCode?: string;
+  productName?: string;
+  pageUrl?: string;
+  source?: InquirySource;
+  inquiryType?: string;
+  category?: InquiryCategory;
+  isSecret?: boolean;
+};
+
+export async function submitProductQna(
+  input: SubmitProductQnaInput,
+): Promise<{ ok: boolean; id?: string }> {
+  try {
+    const res = await fetch("/api/support/inquiries", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...input,
+        source: input.source ?? "product_qna",
+      }),
+    });
+    const data = (await res.json()) as { ok?: boolean; id?: string };
+    if (res.ok && data.ok) {
+      return { ok: true, id: data.id };
+    }
+  } catch {
+    /* fallback below */
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    return submitInquiry({
+      name: "고객",
+      contact: "",
+      message: input.message,
+      title: input.title,
+      batteryCode: input.batteryCode,
+      productCode: input.productCode ?? input.batteryCode,
+      productName: input.productName,
+      pageUrl: input.pageUrl,
+      source: input.source ?? "product_qna",
+      inquiryType: input.inquiryType ?? "상품문의",
+      category: input.category ?? "battery",
+      isSecret: input.isSecret,
+    });
+  }
+
+  return { ok: false };
+}
+
 export async function submitInquiry(
   input: SubmitInquiryInput,
 ): Promise<{ ok: boolean; id?: string }> {

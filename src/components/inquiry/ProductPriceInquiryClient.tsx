@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { SimpleInquiryForm, type SimpleInquiryFormValues } from "@/components/inquiry/SimpleInquiryForm";
-import { getInquiryPageUrl, inquiryTitleFromMessage } from "@/lib/inquiry/inquiry-form-shared";
-import { submitInquiry } from "@/lib/inquiry-storage";
+import { inquiryTitleFromMessage } from "@/lib/inquiry/inquiry-form-shared";
+import { buildProductQnaDetailUrl } from "@/lib/inquiry/product-qna-url";
+import { submitProductQna } from "@/lib/inquiry-storage";
 import "@/styles/product-price-inquiry.css";
 
 function buildDefaultMessage(brand: string, spec: string): string {
@@ -27,33 +26,50 @@ export function ProductPriceInquiryClient() {
     [brand, productName, productCode],
   );
 
+  const [message, setMessage] = useState(initialMessage);
+  const [isSecret, setIsSecret] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
 
-  const handleSubmit = async (values: SimpleInquiryFormValues) => {
+  useEffect(() => {
+    setMessage(initialMessage);
+  }, [initialMessage]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!productCode) {
+      setError("상품 정보가 올바르지 않습니다.");
+      return;
+    }
+    const trimmed = message.trim();
+    if (!trimmed) {
+      setError("문의 내용을 입력해 주세요.");
+      return;
+    }
+
     setError(null);
     setSubmitting(true);
-    const title = values.title?.trim() || inquiryTitleFromMessage(values.message);
-    const result = await submitInquiry({
-      name: values.name?.trim() || "고객",
-      contact: values.contact.trim(),
+    const title = inquiryTitleFromMessage(trimmed);
+    const result = await submitProductQna({
+      message: trimmed,
       title,
-      message: values.message.trim(),
-      batteryCode: productCode || undefined,
-      productCode: productCode || undefined,
-      productName: productName || undefined,
-      pageUrl: sourceUrl || getInquiryPageUrl(),
+      batteryCode: productCode,
+      productCode,
+      productName: productName || productCode,
+      pageUrl: sourceUrl || undefined,
       source: "product_qna",
       inquiryType: "가격문의",
       category: "battery",
+      isSecret,
     });
     setSubmitting(false);
-    if (result.ok) {
-      setDone(true);
-    } else {
+
+    if (!result.ok || !result.id) {
       setError("문의 접수에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      return;
     }
+
+    router.push(buildProductQnaDetailUrl(productCode, result.id));
   };
 
   return (
@@ -94,31 +110,44 @@ export function ProductPriceInquiryClient() {
           </section>
         )}
 
-        {done ? (
-          <div className="product-price-inquiry__done" role="status">
-            <p className="font-bold text-emerald-800">문의가 접수되었습니다.</p>
-            <p className="mt-1 text-sm text-slate-600">빠른 시일 내에 연락드리겠습니다.</p>
-            <Link href="/" className="product-price-inquiry__home-link">
-              홈으로
-            </Link>
-          </div>
-        ) : (
-          <>
-            {error ? (
-              <p className="product-price-inquiry__error" role="alert">
-                {error}
-              </p>
-            ) : null}
-            <SimpleInquiryForm
-              optionalFields={["name"]}
-              initialMessage={initialMessage}
-              messageFirst
-              submitLabel="문의 등록"
-              submitting={submitting}
-              onSubmit={handleSubmit}
+        <form className="product-price-inquiry__form" onSubmit={(e) => void handleSubmit(e)}>
+          {error ? (
+            <p className="product-price-inquiry__error" role="alert">
+              {error}
+            </p>
+          ) : null}
+
+          <label className="product-price-inquiry__field">
+            <span className="product-price-inquiry__field-label">문의 내용</span>
+            <textarea
+              required
+              rows={4}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="product-price-inquiry__textarea"
             />
-          </>
-        )}
+          </label>
+
+          <label className="product-price-inquiry__secret">
+            <input
+              type="checkbox"
+              checked={isSecret}
+              onChange={(e) => setIsSecret(e.target.checked)}
+            />
+            <span className="product-price-inquiry__secret-label">비밀글로 등록</span>
+          </label>
+          <p className="product-price-inquiry__secret-hint">
+            비밀글은 작성자와 관리자만 내용을 확인할 수 있습니다.
+          </p>
+
+          <button
+            type="submit"
+            className="product-price-inquiry__submit"
+            disabled={submitting}
+          >
+            {submitting ? "등록 중…" : "문의 등록"}
+          </button>
+        </form>
       </div>
     </div>
   );

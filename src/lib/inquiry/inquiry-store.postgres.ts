@@ -33,6 +33,8 @@ type InquiryRow = {
   admin_memo: string | null;
   is_secret: boolean;
   hidden: boolean;
+  author_user_id: string | null;
+  author_view_token_hash: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -65,6 +67,8 @@ function rowToRecord(row: InquiryRow): CustomerInquiryRecord {
     adminMemo: row.admin_memo ?? "",
     isSecret: row.is_secret,
     hidden: row.hidden,
+    authorUserId: row.author_user_id ?? undefined,
+    authorViewTokenHash: row.author_view_token_hash ?? undefined,
   };
 }
 
@@ -85,6 +89,8 @@ export type InquiryCreateInput = {
   inquiryType?: string;
   couponCode?: string;
   isSecret?: boolean;
+  authorUserId?: string;
+  authorViewTokenHash?: string;
 };
 
 export type InquiryListFilters = {
@@ -127,20 +133,25 @@ export async function inquiryCreate(input: InquiryCreateInput): Promise<Customer
     adminMemo: "",
     isSecret: input.isSecret === true,
     hidden: false,
+    authorUserId: input.authorUserId?.trim() || undefined,
+    authorViewTokenHash: input.authorViewTokenHash?.trim() || undefined,
   };
 
   await sql`
     INSERT INTO customer_inquiries (
       id, status, category, name, contact, vehicle, region, message, title,
       battery_code, product_code, product_name, return_option, page_url, source,
-      inquiry_type, coupon_code, admin_memo, is_secret, hidden, created_at, updated_at
+      inquiry_type, coupon_code, admin_memo, is_secret, hidden,
+      author_user_id, author_view_token_hash, created_at, updated_at
     ) VALUES (
       ${record.id}, ${record.status}, ${record.category}, ${record.name}, ${record.contact},
       ${record.vehicle ?? null}, ${record.region ?? null}, ${record.message},
       ${record.title ?? null}, ${record.batteryCode ?? null}, ${record.productCode ?? null},
       ${record.productName ?? null}, ${record.returnOption ?? null}, ${record.pageUrl ?? null},
       ${record.source ?? null}, ${record.inquiryType ?? null}, ${record.couponCode ?? null},
-      ${record.adminMemo}, ${record.isSecret}, ${record.hidden}, ${record.createdAt}, ${record.updatedAt}
+      ${record.adminMemo}, ${record.isSecret}, ${record.hidden},
+      ${record.authorUserId ?? null}, ${record.authorViewTokenHash ?? null},
+      ${record.createdAt}, ${record.updatedAt}
     )
   `;
   return record;
@@ -222,6 +233,8 @@ async function inquiryPatch(
       admin_memo = ${next.adminMemo ?? ""},
       is_secret = ${next.isSecret === true},
       hidden = ${next.hidden === true},
+      author_user_id = ${next.authorUserId ?? null},
+      author_view_token_hash = ${next.authorViewTokenHash ?? null},
       updated_at = ${next.updatedAt}
     WHERE id = ${id}
   `;

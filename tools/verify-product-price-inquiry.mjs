@@ -69,6 +69,18 @@ assert(
   "inquiry source product_qna",
 );
 assert(
+  fileIncludes("src/components/inquiry/ProductPriceInquiryClient.tsx", "submitProductQna"),
+  "uses product qna submit",
+);
+assert(
+  !fileIncludes("src/components/inquiry/ProductPriceInquiryClient.tsx", "SimpleInquiryForm"),
+  "no generic inquiry form on price page",
+);
+assert(
+  fileIncludes("src/components/home/HomeSpecCardDisplayMeta.tsx", "home-spec-card-price__inquiry-text"),
+  "click label split for styling",
+);
+assert(
   fileIncludes("src/lib/pricing/price-inquiry-link.ts", "isCatalogPriceMissing"),
   "isCatalogPriceMissing helper exported",
 );

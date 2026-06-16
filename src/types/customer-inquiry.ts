@@ -47,6 +47,10 @@ export type CustomerInquiryRecord = {
   adminMemo?: string;
   isSecret?: boolean;
   hidden?: boolean;
+  /** 로그인 회원 작성자 — 비밀글 열람 권한 */
+  authorUserId?: string;
+  /** 익명 작성자 view token SHA-256 (원문은 HttpOnly 쿠키) */
+  authorViewTokenHash?: string;
 };
 
 export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, string> = {

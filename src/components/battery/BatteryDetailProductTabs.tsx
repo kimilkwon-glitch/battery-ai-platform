@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BatteryDetailBodyImages } from "@/components/battery/BatteryDetailBodyImages";
 import { BatteryProductQnaPanel } from "@/components/battery/BatteryProductQnaPanel";
@@ -22,7 +23,12 @@ type Props = {
 };
 
 export function BatteryDetailProductTabs({ code }: Props) {
-  const [tab, setTab] = useState<TabId>("detail");
+  const searchParams = useSearchParams();
+  const highlightId = searchParams.get("highlight")?.trim() || undefined;
+  const initialTab = searchParams.get("tab")?.trim();
+  const [tab, setTab] = useState<TabId>(
+    initialTab === "qna" || initialTab === "reviews" ? initialTab : "detail",
+  );
   const reduceMotion = useReducedMotion();
   const catalogBattery = getBattery(code);
   const brandLabel = brands.find((b) => b.id === catalogBattery.brandId)?.displayName ?? "";
@@ -50,8 +56,13 @@ export function BatteryDetailProductTabs({ code }: Props) {
     if (hash === "battery-reviews") {
       setTab("reviews");
       scrollToPanel("battery-reviews");
+      return;
     }
-  }, [scrollToPanel]);
+    if (hash === "battery-qna" || initialTab === "qna") {
+      setTab("qna");
+      scrollToPanel("battery-qna");
+    }
+  }, [scrollToPanel, initialTab]);
 
   return (
     <section
@@ -142,6 +153,7 @@ export function BatteryDetailProductTabs({ code }: Props) {
               <BatteryProductQnaPanel
                 batteryCode={code}
                 productName={productDisplayName || code}
+                highlightId={highlightId}
               />
             </motion.div>
           ) : null}

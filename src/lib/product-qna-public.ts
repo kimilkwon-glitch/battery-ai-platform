@@ -1,4 +1,8 @@
-import type { CustomerInquiryRecord, InquiryStatus } from "@/types/customer-inquiry";
+import type { CustomerInquiryRecord } from "@/types/customer-inquiry";
+import {
+  canViewSecretProductQna,
+  type ProductQnaViewerContext,
+} from "@/lib/inquiry/product-qna-viewer.server";
 
 export type ProductQnaPublicItem = {
   id: string;
@@ -8,6 +12,8 @@ export type ProductQnaPublicItem = {
   createdAt: string;
   statusLabel: "답변대기" | "답변완료";
   isSecret: boolean;
+  /** 작성자·관리자만 true — 비밀글 본문 열람 가능 */
+  canViewContent: boolean;
   question: string;
   answer?: string;
 };
@@ -38,28 +44,34 @@ function extractSummary(question: string): string {
   return `${oneLine.slice(0, 48)}…`;
 }
 
-export function toProductQnaPublicItem(record: CustomerInquiryRecord): ProductQnaPublicItem {
+export function toProductQnaPublicItem(
+  record: CustomerInquiryRecord,
+  viewer?: ProductQnaViewerContext,
+): ProductQnaPublicItem {
   const isSecret = record.isSecret === true;
+  const canViewContent = !isSecret || (viewer ? canViewSecretProductQna(record, viewer) : false);
   const title = record.title?.trim() || "상품 문의";
   const question = extractQuestionBody(record.message, record.title);
   const answered = record.status === "done" || Boolean(record.adminMemo?.trim());
-  const displayTitle = isSecret ? "비밀글입니다" : title;
-  const displayQuestion = isSecret
-    ? "작성자와 관리자만 확인할 수 있습니다."
-    : question;
+  const displayTitle = canViewContent ? title : "비밀글입니다";
+  const displayQuestion = canViewContent
+    ? question
+    : "작성자와 관리자만 확인할 수 있습니다.";
+  const answer = record.adminMemo?.trim() || undefined;
   return {
     id: record.id,
     title: displayTitle,
-    summary: isSecret ? displayTitle : extractSummary(title || question),
+    summary: canViewContent ? extractSummary(title || question) : "비밀글입니다",
     authorMasked: maskInquiryAuthor(record.name),
     createdAt: record.createdAt,
     statusLabel: answered ? "답변완료" : "답변대기",
     isSecret,
+    canViewContent,
     question: displayQuestion,
-    answer: isSecret ? undefined : record.adminMemo?.trim() || undefined,
+    answer: canViewContent ? answer : undefined,
   };
 }
 
-export function inquiryStatusForPublic(status: InquiryStatus): ProductQnaPublicItem["statusLabel"] {
+export function inquiryStatusForPublic(status: CustomerInquiryRecord["status"]): ProductQnaPublicItem["statusLabel"] {
   return status === "done" ? "답변완료" : "답변대기";
 }

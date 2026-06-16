@@ -360,17 +360,6 @@
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
 }
 
-.home-spec-card-price__inquiry-hint {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  color: #64748b;
-}
-
-.home-spec-card-price--clickable:hover .home-spec-card-price__inquiry-hint,
-.home-spec-card-price--clickable:focus-visible .home-spec-card-price__inquiry-hint {
-  color: #2563eb;
-}
-
 .home-spec-card-price--internet .home-spec-card-price__label {
   color: #b42318;
   font-weight: 800;
@@ -409,20 +398,37 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.3125rem;
   min-height: 1.125rem;
   text-decoration: none !important;
   border: none !important;
   border-bottom: none !important;
   box-shadow: none !important;
-  color: #475569;
   font-weight: 800;
 }
 
-.home-spec-card-price__inquiry-link:hover,
-.home-spec-card-price__inquiry-link:focus-visible {
+.home-spec-card-price--internet .home-spec-card-price__inquiry-text {
+  color: #dc2626;
+}
+
+.home-spec-card-price--onsite .home-spec-card-price__inquiry-text {
   color: #2563eb;
-  text-decoration: none !important;
-  border-bottom: none !important;
+}
+
+.home-spec-card-price__inquiry-hint {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.home-spec-card-price--clickable:hover .home-spec-card-price__inquiry-text,
+.home-spec-card-price--clickable:focus-visible .home-spec-card-price__inquiry-text {
+  color: #2563eb;
+}
+
+.home-spec-card-price--clickable:hover .home-spec-card-price__inquiry-hint,
+.home-spec-card-price--clickable:focus-visible .home-spec-card-price__inquiry-hint {
+  color: #334155;
 }
 
 /* ── 3. 리뷰 섹션 압축 ── */
