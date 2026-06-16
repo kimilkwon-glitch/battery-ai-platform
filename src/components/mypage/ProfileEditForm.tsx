@@ -11,6 +11,8 @@ import {
   uiPreferredStoreToMember,
 } from "@/lib/auth/member-preferred-store";
 import { isValidEmail, isValidPhoneDigits } from "@/lib/auth/signup-validation";
+import { ProfilePasswordChangeForm } from "@/components/mypage/ProfilePasswordChangeForm";
+import { oauthProviderLabel } from "@/lib/auth/member-normalize";
 import { CUSTOMER_LOGIN_PAGE, CUSTOMER_MYPAGE } from "@/lib/customer-auth-routes";
 import {
   getCustomerProfile,
@@ -228,6 +230,13 @@ export function ProfileEditForm() {
           마이페이지로
         </Link>
       </div>
+
+      <hr className="my-6 border-slate-200" />
+
+      <ProfilePasswordChangeForm
+        isCredentialsMember={member.provider === "credentials"}
+        providerLabel={member.provider !== "credentials" ? oauthProviderLabel(member.provider) : undefined}
+      />
     </form>
   );
 }
