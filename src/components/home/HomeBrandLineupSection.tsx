@@ -3,9 +3,11 @@
 import clsx from "clsx";
 import { ChevronRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MobileHorizontalScrollNav } from "@/components/common/MobileHorizontalScrollNav";
 import { HomeSpecExploreCard } from "@/components/home/HomeSpecExploreCard";
+import { encodeProductId } from "@/lib/admin/products/product-id";
+import type { HomeCatalogPriceOverride } from "@/lib/home-catalog-card-display";
 import {
   filterCatalogProducts,
   getCurrentLineup,
@@ -52,6 +54,24 @@ export function HomeBrandLineupSection({
   shopLinkLabel,
 }: Props) {
   const [typeTab, setTypeTab] = useState<BrandLineupTypeTab>(() => pickDefaultTypeTab(brand));
+  const [catalogPrices, setCatalogPrices] = useState<
+    Record<string, HomeCatalogPriceOverride>
+  >({});
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/public/catalog-prices", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data: { ok?: boolean; prices?: Record<string, HomeCatalogPriceOverride> }) => {
+        if (!cancelled && data.ok && data.prices) setCatalogPrices(data.prices);
+      })
+      .catch(() => {
+        /* catalog fallback uses static prices */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const products = useMemo(() => {
     const filtered = filterCatalogProducts(getCurrentLineup(brand), typeTab);
@@ -124,7 +144,11 @@ export function HomeBrandLineupSection({
               <div className="home-brand-lineup__track">
                 {products.map((item) => (
                   <div key={`${brand}-${typeTab}-${item.id}`} className="home-brand-lineup__slide">
-                    <HomeSpecExploreCard brand={brand} product={item} />
+                    <HomeSpecExploreCard
+                      brand={brand}
+                      product={item}
+                      priceOverride={catalogPrices[encodeProductId(brand, item.searchCode)]}
+                    />
                   </div>
                 ))}
               </div>

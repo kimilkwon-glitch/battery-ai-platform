@@ -1,9 +1,14 @@
+import Link from "next/link";
 import { BatteryCardImage } from "@/components/media/BatteryCardImage";
 import { HomeSpecCardDisplayMeta } from "@/components/home/HomeSpecCardDisplayMeta";
 import { BatteryProductCardActions } from "@/components/product/BatteryProductCardActions";
-import { getHomeCatalogCardDisplay } from "@/lib/home-catalog-card-display";
+import {
+  getHomeCatalogCardDisplay,
+  type HomeCatalogPriceOverride,
+} from "@/lib/home-catalog-card-display";
 import type { HomeCatalogBrandId, HomeCatalogProduct } from "@/lib/home-main-catalog-data";
 import { HOME_CATALOG_BRAND_KEY } from "@/lib/home-main-catalog-data";
+import { isCatalogPriceMissing } from "@/lib/pricing/price-inquiry-link";
 
 const HOME_BRAND_LABEL: Record<HomeCatalogBrandId, string> = {
   rocket: "로케트",
@@ -13,12 +18,16 @@ const HOME_BRAND_LABEL: Record<HomeCatalogBrandId, string> = {
 type Props = {
   product: HomeCatalogProduct;
   brand: HomeCatalogBrandId;
+  priceOverride?: HomeCatalogPriceOverride | null;
 };
 
-export function HomeSpecExploreCard({ product, brand }: Props) {
+export function HomeSpecExploreCard({ product, brand, priceOverride }: Props) {
   const { displayName, searchCode, imageKey, typeTag } = product;
   const preferBrand = HOME_CATALOG_BRAND_KEY[brand];
-  const cardDisplay = getHomeCatalogCardDisplay(product);
+  const cardDisplay = getHomeCatalogCardDisplay(product, priceOverride);
+  const allPricesMissing =
+    isCatalogPriceMissing(cardDisplay.internetPriceWon) &&
+    isCatalogPriceMissing(cardDisplay.onsitePriceWon);
 
   return (
     <article
@@ -42,7 +51,7 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
       <div className="home-spec-card-body flex flex-1 flex-col">
         <p className="home-spec-card-brand">{HOME_BRAND_LABEL[brand]}</p>
         <div className="home-spec-card-title-row" role="group" aria-label={`${displayName} 규격`}>
-          <div className="home-spec-card-title-group">
+          <div className="home-spec-card-title-anchor">
             <h3 className="home-spec-code-title">{displayName}</h3>
             <span className="home-spec-card-badge">{typeTag}</span>
           </div>
@@ -55,7 +64,13 @@ export function HomeSpecExploreCard({ product, brand }: Props) {
           brandLabel={HOME_BRAND_LABEL[brand]}
         />
 
-        <BatteryProductCardActions batteryCode={searchCode} brandId={brand} tone="catalog" compact />
+        <BatteryProductCardActions
+          batteryCode={searchCode}
+          brandId={brand}
+          tone="catalog"
+          compact
+          orderHref={allPricesMissing ? null : undefined}
+        />
       </div>
     </article>
   );

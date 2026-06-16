@@ -312,26 +312,63 @@
   }
 }
 
-/* ── 상품 카드: 규격명+타입 배지 중앙 그룹 / 가격색 / 가격문의 ── */
+/* ── 상품 카드: 규격명 중앙축 + 타입 배지 오버레이 / 가격색 / 가격문의 ── */
 
 .home-spec-card-title-row {
+  position: relative;
   justify-content: center;
 }
 
-.home-spec-card-title-group {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4375rem;
-  max-width: 100%;
+.home-spec-card-title-anchor {
+  position: relative;
+  display: inline-block;
+  max-width: calc(100% - 1rem);
+  text-align: center;
 }
 
-.home-spec-card-title-group .home-spec-code-title {
+.home-spec-card-title-anchor .home-spec-code-title {
+  display: block;
   width: auto;
   max-width: 100%;
-  flex: 0 1 auto;
-  text-align: left;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.home-spec-card-title-anchor .home-spec-card-badge {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-left: 0.4375rem;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+.home-spec-card-price--clickable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.home-spec-card-price--clickable:hover,
+.home-spec-card-price--clickable:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+.home-spec-card-price__inquiry-hint {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.home-spec-card-price--clickable:hover .home-spec-card-price__inquiry-hint,
+.home-spec-card-price--clickable:focus-visible .home-spec-card-price__inquiry-hint {
+  color: #2563eb;
 }
 
 .home-spec-card-price--internet .home-spec-card-price__label {

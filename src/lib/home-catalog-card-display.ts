@@ -61,7 +61,15 @@ function brandFromProduct(product: HomeCatalogProduct): HomeCatalogBrandId {
   return product.id.startsWith("solite") ? "solite" : "rocket";
 }
 
-export function getHomeCatalogCardDisplay(product: HomeCatalogProduct): HomeCatalogCardDisplay {
+export type HomeCatalogPriceOverride = {
+  internetPriceWon?: number | null;
+  onsitePriceWon?: number | null;
+};
+
+export function getHomeCatalogCardDisplay(
+  product: HomeCatalogProduct,
+  priceOverride?: HomeCatalogPriceOverride | null,
+): HomeCatalogCardDisplay {
   const brand = brandFromProduct(product);
   const prices = getBatteryPrices(brand, product.searchCode);
   const meta = META_BY_CODE[product.searchCode] ?? fallbackMeta(product);
@@ -73,8 +81,14 @@ export function getHomeCatalogCardDisplay(product: HomeCatalogProduct): HomeCata
   return {
     ...meta,
     representativeVehicles,
-    onsitePriceWon: prices.onsitePriceWon,
-    internetPriceWon: prices.internetPriceWon,
+    onsitePriceWon:
+      priceOverride && "onsitePriceWon" in priceOverride
+        ? priceOverride.onsitePriceWon ?? null
+        : prices.onsitePriceWon,
+    internetPriceWon:
+      priceOverride && "internetPriceWon" in priceOverride
+        ? priceOverride.internetPriceWon ?? null
+        : prices.internetPriceWon,
   };
 }
 

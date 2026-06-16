@@ -215,23 +215,29 @@ export function AdminProductEditClient({ initial, priceHistory }: Props) {
             <CardTitle className="text-base">가격 관리</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
+            <p className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-900">
+              가격을 비워 두면 고객 카드에 <strong>가격문의 (클릭)</strong>가 표시됩니다. 0원은 실제
+              가격으로 처리됩니다. 저장 시 메인 카드에 즉시 반영됩니다.
+            </p>
             <div className="grid grid-cols-2 gap-2">
               <label className="space-y-1">
-                <span className="text-xs font-bold text-slate-500">인터넷가 (원)</span>
+                <span className="text-xs font-bold text-slate-500">제품구매가 (원)</span>
                 <Input
                   value={internetInput}
                   onChange={(e) => setInternetInput(e.target.value)}
                   className="text-right tabular-nums"
                   inputMode="numeric"
+                  placeholder="미등록 시 가격문의"
                 />
               </label>
               <label className="space-y-1">
-                <span className="text-xs font-bold text-slate-500">출장가 (원)</span>
+                <span className="text-xs font-bold text-slate-500">출장교체가 (원)</span>
                 <Input
                   value={onsiteInput}
                   onChange={(e) => setOnsiteInput(e.target.value)}
                   className="text-right tabular-nums"
                   inputMode="numeric"
+                  placeholder="미등록 시 가격문의"
                 />
               </label>
             </div>

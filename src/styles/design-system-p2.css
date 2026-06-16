@@ -5116,13 +5116,6 @@
   text-align: center;
 }
 
-.home-spec-card-title-group .home-spec-code-title {
-  width: auto;
-  max-width: 100%;
-  flex: 0 1 auto;
-  text-align: left;
-}
-
 @media (min-width: 640px) {
   .home-spec-card .home-spec-code-title {
     font-size: clamp(1.3125rem, 1.6vw, 1.5625rem);
@@ -5188,6 +5181,7 @@
 }
 
 .home-spec-card-title-row {
+  position: relative;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -5202,13 +5196,28 @@
   text-align: center;
 }
 
-.home-spec-card-title-group {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4375rem;
+.home-spec-card-title-anchor {
+  position: relative;
+  display: inline-block;
+  max-width: calc(100% - 1rem);
+  text-align: center;
+}
+
+.home-spec-card-title-anchor .home-spec-code-title {
+  display: block;
+  width: auto;
   max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.home-spec-card-title-anchor .home-spec-card-badge {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-left: 0.4375rem;
+  transform: translateY(-50%);
+  white-space: nowrap;
 }
 
 @media (min-width: 640px) {
