@@ -83,6 +83,19 @@ function BannerImageField({
     if (!file) return;
     setUploadError(null);
     setAspectWarning(null);
+
+    const maxBytes = 5 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      setUploadError("파일 용량이 5MB를 초과했습니다.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    if (file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg")) {
+      setUploadError("JPG, PNG, WEBP 파일만 업로드할 수 있습니다.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
     setUploading(true);
     try {
       const form = new FormData();
@@ -93,6 +106,10 @@ function BannerImageField({
         body: form,
       });
       const data = (await res.json()) as { ok?: boolean; url?: string; message?: string };
+      if (res.status === 401) {
+        setUploadError("관리자 로그인이 필요합니다.");
+        return;
+      }
       if (!res.ok || !data.ok || !data.url) {
         setUploadError(data.message ?? "업로드에 실패했습니다.");
         return;
@@ -108,9 +125,10 @@ function BannerImageField({
       };
       img.src = objectUrl;
     } catch {
-      setUploadError("업로드 요청에 실패했습니다.");
+      setUploadError("업로드 요청에 실패했습니다. 네트워크 연결을 확인해 주세요.");
     } finally {
       setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
     }
   };
 

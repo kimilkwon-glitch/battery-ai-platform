@@ -89,6 +89,26 @@ assert(
   "PC recommended width documented",
 );
 assert(
+  fileIncludes("src/lib/cms/banner-image-storage.server.ts", "resolveBlobPutOptions"),
+  "banner storage resolves blob auth explicitly",
+);
+assert(
+  fileIncludes("src/lib/cms/blob-storage-auth.server.ts", "isValidBlobReadWriteToken"),
+  "blob token validation helper",
+);
+assert(
+  fileIncludes("src/app/api/admin/banners/upload/route.ts", 'runtime = "nodejs"'),
+  "upload route uses nodejs runtime",
+);
+assert(
+  fileIncludes("src/app/api/admin/banners/upload/route.ts", "isFormDataFile"),
+  "upload route accepts Blob/File form entries",
+);
+assert(
+  fileIncludes("src/components/admin/AdminBannersClient.tsx", "관리자 로그인이 필요합니다"),
+  "upload UI maps 401 message",
+);
+assert(
   fileIncludes("src/lib/cms/banner-image-specs.ts", "900"),
   "mobile recommended width documented",
 );

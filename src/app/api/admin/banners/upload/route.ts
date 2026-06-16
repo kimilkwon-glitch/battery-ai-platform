@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { adminUnauthorizedResponse, verifyAdminApiRequest } from "@/lib/admin/adminApiAuth";
+import {
+  isFormDataFile,
+  readUploadFile,
+} from "@/lib/cms/blob-storage-auth.server";
 import { saveBannerUploadFile } from "@/lib/cms/banner-image-storage.server";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   if (!(await verifyAdminApiRequest(request))) {
@@ -17,17 +22,25 @@ export async function POST(request: Request) {
   }
 
   const entry = form.get("file");
-  if (!(entry instanceof File) || entry.size === 0) {
+  if (!isFormDataFile(entry)) {
     return NextResponse.json({ ok: false, message: "이미지 파일을 선택해 주세요." }, { status: 400 });
   }
 
-  const buffer = Buffer.from(await entry.arrayBuffer());
-  const mime = entry.type || "image/jpeg";
+  const { buffer, mime } = await readUploadFile(entry);
   const saved = await saveBannerUploadFile(buffer, mime);
 
   if (!saved.ok) {
-    return NextResponse.json({ ok: false, message: saved.message }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, message: saved.message, code: saved.logCode },
+      { status: saved.status },
+    );
   }
 
-  return NextResponse.json({ ok: true, url: saved.url });
+  return NextResponse.json({
+    ok: true,
+    url: saved.url,
+    pathname: saved.pathname,
+    contentType: mime,
+    size: buffer.byteLength,
+  });
 }
