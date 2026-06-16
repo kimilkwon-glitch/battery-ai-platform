@@ -72,12 +72,12 @@ export async function GET(request: Request, ctx: RouteCtx) {
 
   const { productId: segment } = await ctx.params;
   const productId = pathSegmentToProductId(segment);
-  const detail = getAdminProductDetail(productId);
+  const detail = await getAdminProductDetail(productId);
   if (!detail) {
     return NextResponse.json({ ok: false, message: "제품을 찾을 수 없습니다." }, { status: 404 });
   }
 
-  const history = loadProductPriceHistory(productId);
+  const history = await loadProductPriceHistory(productId);
   return NextResponse.json({ ok: true, item: detail, priceHistory: history });
 }
 
@@ -88,7 +88,7 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
 
   const { productId: segment } = await ctx.params;
   const productId = pathSegmentToProductId(segment);
-  const existing = getAdminProductDetail(productId);
+  const existing = await getAdminProductDetail(productId);
   if (!existing) {
     return NextResponse.json({ ok: false, message: "제품을 찾을 수 없습니다." }, { status: 404 });
   }
@@ -97,11 +97,11 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
     const body = await request.json();
     const patch = parsePatchBody(body);
     const { reason, ...overridePatch } = patch;
-    const saved = saveProductOverride(productId, overridePatch, {
+    const saved = await saveProductOverride(productId, overridePatch, {
       changedBy: "admin",
       reason,
     });
-    const detail = getAdminProductDetail(productId);
+    const detail = await getAdminProductDetail(productId);
     return NextResponse.json({ ok: true, override: saved, item: detail });
   } catch {
     return NextResponse.json({ ok: false, message: "저장에 실패했습니다." }, { status: 500 });

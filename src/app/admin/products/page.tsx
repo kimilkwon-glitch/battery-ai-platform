@@ -6,8 +6,8 @@ import { buildAdminProductRows } from "@/lib/admin/products/products-admin-servi
 
 export const dynamic = "force-dynamic";
 
-export default function AdminProductsPage() {
-  const rows = buildAdminProductRows();
+export default async function AdminProductsPage() {
+  const rows = await buildAdminProductRows();
 
   return (
     <AdminShellLayout

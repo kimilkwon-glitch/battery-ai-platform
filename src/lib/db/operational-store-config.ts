@@ -13,7 +13,8 @@ export type OperationalStoreDomain =
   | "support_faq"
   | "consultation_settings"
   | "reply_templates"
-  | "notification_logs";
+  | "notification_logs"
+  | "product_pricing";
 
 export class OperationalStoreError extends Error {
   readonly code: "OPERATIONAL_DB_UNAVAILABLE" | "OPERATIONAL_STORE_ERROR";
@@ -95,6 +96,7 @@ export function getOperationalStoreStatus(): OperationalStoreStatus {
       consultation_settings: domainMode,
       reply_templates: domainMode,
       notification_logs: domainMode,
+      product_pricing: domainMode,
     },
   };
 }

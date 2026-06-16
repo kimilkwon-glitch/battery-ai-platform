@@ -351,4 +351,31 @@ async function runMigration(): Promise<void> {
       ON support_faq_items (category, visible, sort_order)
       WHERE deleted_at IS NULL
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS product_price_overrides (
+      product_id TEXT PRIMARY KEY,
+      override_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_by TEXT NOT NULL DEFAULT 'admin'
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS product_price_history (
+      id TEXT PRIMARY KEY,
+      product_id TEXT NOT NULL,
+      field TEXT NOT NULL,
+      previous_value JSONB,
+      next_value JSONB,
+      changed_by TEXT NOT NULL DEFAULT 'admin',
+      reason TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_product_price_history_product
+      ON product_price_history (product_id, created_at DESC)
+  `;
 }

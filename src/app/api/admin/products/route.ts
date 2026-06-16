@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         ? (body.saleStatus as AdminProductSaleStatus)
         : "selling";
 
-    saveProductOverride(
+    const saved = await saveProductOverride(
       productId,
       {
         displayName,
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       { changedBy: "admin", reason: "제품 등록" },
     );
 
-    const detail = getAdminProductDetail(productId);
+    const detail = await getAdminProductDetail(productId);
     return NextResponse.json({ ok: true, item: detail });
   } catch {
     return NextResponse.json({ ok: false, message: "제품 등록에 실패했습니다." }, { status: 500 });
@@ -80,7 +80,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const rows = buildAdminProductRows();
+    const rows = await buildAdminProductRows();
     return NextResponse.json({ ok: true, items: rows });
   } catch {
     return NextResponse.json(

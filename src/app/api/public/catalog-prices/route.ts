@@ -9,7 +9,7 @@ const HOME_CATALOG_BRANDS: HomeCatalogBrandId[] = ["rocket", "solite"];
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const overrides = loadProductOverrides();
+  const overrides = await loadProductOverrides();
   const prices: Record<string, { internetPriceWon: number | null; onsitePriceWon: number | null }> =
     {};
 

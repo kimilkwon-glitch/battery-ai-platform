@@ -129,7 +129,7 @@ async function loadAdminDashboardSnapshotImpl(): Promise<AdminDashboardSnapshot>
     (i) => i.status === "reviewing" || i.status === "received",
   ).length;
 
-  const productRows = buildAdminProductRows();
+  const productRows = await buildAdminProductRows();
 
   const recentConsultations: AdminDashboardConsultationPreview[] = [];
 

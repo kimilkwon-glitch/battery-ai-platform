@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   const filter = searchParams.get("filter");
 
   try {
-    let rows = buildAdminProductRows();
+    let rows = await buildAdminProductRows();
     if (filter === "price_missing") {
       rows = rows.filter((r) => r.reviewStatus === "price_missing");
     } else if (filter === "image_missing") {

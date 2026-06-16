@@ -18,6 +18,7 @@ export { decodeProductId, pathSegmentToProductId, productIdToPathSegment };
 import type {
   AdminProductBrand,
   AdminProductDetail,
+  AdminProductOverride,
   AdminProductReviewStatus,
   AdminProductRow,
   AdminProductSaleStatus,
@@ -89,7 +90,7 @@ function resolveReview(
 function buildRow(
   brand: AdminProductBrand,
   batteryCode: string,
-  overrides: ReturnType<typeof loadProductOverrides>,
+  overrides: Record<string, AdminProductOverride>,
 ): AdminProductRow {
   const productId = encodeProductId(brand, batteryCode);
   const override = overrides[productId];
@@ -148,8 +149,8 @@ function buildRow(
 }
 
 /** 카탈로그 키 + 브랜드별 규격 기준 제품 목록 */
-export function buildAdminProductRows(): AdminProductRow[] {
-  const overrides = loadProductOverrides();
+export async function buildAdminProductRows(): Promise<AdminProductRow[]> {
+  const overrides = await loadProductOverrides();
   const seen = new Set<string>();
   const rows: AdminProductRow[] = [];
 
@@ -178,16 +179,17 @@ export function buildAdminProductRows(): AdminProductRow[] {
   );
 }
 
-export function getAdminProductDetail(productId: string): AdminProductDetail | null {
+export async function getAdminProductDetail(productId: string): Promise<AdminProductDetail | null> {
   const parsed = decodeProductId(productId);
   if (!parsed) return null;
   const brand = parsed.brand as AdminProductBrand;
   if (!BRAND_LABELS[brand]) return null;
 
-  const row = buildRow(brand, parsed.batteryCode, loadProductOverrides());
+  const overrides = await loadProductOverrides();
+  const row = buildRow(brand, parsed.batteryCode, overrides);
   if (row.productId !== productId) return null;
 
-  const override = getProductOverride(productId);
+  const override = await getProductOverride(productId);
   return {
     ...row,
     description: override?.description ?? "",

@@ -14,10 +14,10 @@ type Props = { params: Promise<{ productId: string }> };
 export default async function AdminProductDetailPage({ params }: Props) {
   const { productId: segment } = await params;
   const productId = pathSegmentToProductId(segment);
-  const detail = getAdminProductDetail(productId);
+  const detail = await getAdminProductDetail(productId);
   if (!detail) notFound();
 
-  const priceHistory = loadProductPriceHistory(productId);
+  const priceHistory = await loadProductPriceHistory(productId);
 
   return (
     <AdminShellLayout

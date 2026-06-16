@@ -1,10 +1,21 @@
 import "server-only";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import {
+  assertOperationalStoreAvailable,
+  getOperationalStoreMode,
+  isOperationalJsonFallbackAllowed,
+} from "@/lib/db/operational-store-config";
 import type {
   AdminProductOverride,
   AdminProductPriceHistoryEntry,
 } from "@/types/admin-product";
+import {
+  getProductOverridePg,
+  loadProductOverridesPg,
+  loadProductPriceHistoryPg,
+  saveProductOverridePg,
+} from "@/lib/admin/products/product-overrides-store.postgres";
 
 const DATA_DIR = join(process.cwd(), "data", "admin");
 const OVERRIDES_PATH = join(DATA_DIR, "product-overrides.json");
@@ -25,21 +36,17 @@ function readJson<T>(path: string, fallback: T): T {
   }
 }
 
-export function loadProductOverrides(): OverrideMap {
+function loadProductOverridesJson(): OverrideMap {
   return readJson<OverrideMap>(OVERRIDES_PATH, {});
 }
 
-export function getProductOverride(productId: string): AdminProductOverride | undefined {
-  return loadProductOverrides()[productId];
-}
-
-export function saveProductOverride(
+function saveProductOverrideJson(
   productId: string,
   patch: AdminProductOverride,
   meta?: { changedBy?: string; reason?: string },
 ): AdminProductOverride {
   ensureDir();
-  const all = loadProductOverrides();
+  const all = loadProductOverridesJson();
   const prev = all[productId] ?? {};
   const next: AdminProductOverride = {
     ...prev,
@@ -69,8 +76,49 @@ export function saveProductOverride(
   return next;
 }
 
-export function loadProductPriceHistory(productId?: string): AdminProductPriceHistoryEntry[] {
+function loadProductPriceHistoryJson(productId?: string): AdminProductPriceHistoryEntry[] {
   const all = readJson<AdminProductPriceHistoryEntry[]>(HISTORY_PATH, []);
   if (!productId) return all;
   return all.filter((h) => h.productId === productId);
+}
+
+export async function loadProductOverrides(): Promise<OverrideMap> {
+  const mode = getOperationalStoreMode();
+  if (mode === "postgres") return loadProductOverridesPg();
+  if (isOperationalJsonFallbackAllowed()) return loadProductOverridesJson();
+  return {};
+}
+
+export async function getProductOverride(productId: string): Promise<AdminProductOverride | undefined> {
+  const mode = getOperationalStoreMode();
+  if (mode === "postgres") return getProductOverridePg(productId);
+  if (isOperationalJsonFallbackAllowed()) return loadProductOverridesJson()[productId];
+  return undefined;
+}
+
+export async function saveProductOverride(
+  productId: string,
+  patch: AdminProductOverride,
+  meta?: { changedBy?: string; reason?: string },
+): Promise<AdminProductOverride> {
+  assertOperationalStoreAvailable("product_pricing");
+  const mode = getOperationalStoreMode();
+  if (mode === "postgres") return saveProductOverridePg(productId, patch, meta);
+  if (isOperationalJsonFallbackAllowed()) return saveProductOverrideJson(productId, patch, meta);
+  throw new Error("PRODUCT_PRICING_STORE_UNAVAILABLE");
+}
+
+export async function loadProductPriceHistory(
+  productId?: string,
+): Promise<AdminProductPriceHistoryEntry[]> {
+  const mode = getOperationalStoreMode();
+  if (mode === "postgres") return loadProductPriceHistoryPg(productId);
+  if (isOperationalJsonFallbackAllowed()) return loadProductPriceHistoryJson(productId);
+  return [];
+}
+
+/** @deprecated sync — use loadProductOverrides() */
+export function loadProductOverridesSync(): OverrideMap {
+  if (getOperationalStoreMode() !== "json-dev") return {};
+  return loadProductOverridesJson();
 }

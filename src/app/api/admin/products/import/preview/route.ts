@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       );
     }
     const text = await file.text();
-    const rows = previewProductCsvImport(text, buildAdminProductRows());
+    const rows = previewProductCsvImport(text, await buildAdminProductRows());
     return NextResponse.json({ ok: true, rows });
   } catch {
     return NextResponse.json(
