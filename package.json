@@ -31,6 +31,8 @@
     "verify:guest-name-phone-lookup": "node tools/verify-guest-name-phone-lookup.mjs",
     "verify:auth-recovery": "node tools/verify-auth-recovery.mjs",
     "verify:auth-password-change": "node tools/verify-auth-password-change.mjs",
+    "verify:product-price-inquiry": "node tools/verify-product-price-inquiry.mjs",
+    "verify:admin-banners": "node tools/verify-admin-banners.mjs",
     "verify:production-security": "node tools/verify-production-security-smoke.mjs",
     "verify:production": "node scripts/verify-production-evidence.mjs",
     "search:qa": "node tools/search-quality/run-search-quality.mjs",

@@ -175,3 +175,58 @@ export async function toggleMainBannerStatus(id: string): Promise<MainBannerReco
   const next = existing.status === "active" ? "inactive" : "active";
   return updateMainBanner(id, { status: next });
 }
+
+export async function setMainBannerStatus(
+  id: string,
+  status: MainBannerStatus,
+): Promise<MainBannerRecord | null> {
+  const existing = await getMainBannerById(id);
+  if (!existing) return null;
+  if (existing.status === status) return existing;
+  return updateMainBanner(id, { status });
+}
+
+export async function deleteMainBanner(id: string): Promise<boolean> {
+  await ensureDb();
+  const sql = getSql();
+  const rows = (await sql`
+    DELETE FROM main_banners WHERE id = ${id} RETURNING id
+  `) as { id: string }[];
+  return rows.length > 0;
+}
+
+export async function reorderMainBanner(
+  id: string,
+  direction: "up" | "down",
+): Promise<MainBannerRecord[] | null> {
+  const all = await listMainBanners(500);
+  const idx = all.findIndex((b) => b.id === id);
+  if (idx < 0) return null;
+  const targetIdx = direction === "up" ? idx - 1 : idx + 1;
+  if (targetIdx < 0 || targetIdx >= all.length) return all;
+
+  const reordered = [...all];
+  const [item] = reordered.splice(idx, 1);
+  reordered.splice(targetIdx, 0, item);
+
+  const sql = getSql();
+  const now = new Date().toISOString();
+  for (let i = 0; i < reordered.length; i++) {
+    const sortOrder = reordered.length - i;
+    await sql`
+      UPDATE main_banners
+      SET sort_order = ${sortOrder}, updated_at = ${now}::timestamptz
+      WHERE id = ${reordered[i]!.id}
+    `;
+  }
+  return listMainBanners(500);
+}
+
+export async function countActiveMainBanners(): Promise<number> {
+  await ensureDb();
+  const sql = getSql();
+  const rows = (await sql`
+    SELECT COUNT(*)::int AS cnt FROM main_banners WHERE status = 'active' AND show_on_main = TRUE
+  `) as { cnt: number }[];
+  return rows[0]?.cnt ?? 0;
+}
