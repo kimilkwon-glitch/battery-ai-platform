@@ -1,6 +1,7 @@
 import "server-only";
 
 import { isProductionRuntime } from "@/lib/db/operational-store-config";
+import { getSiteOrigin } from "@/lib/site-url";
 
 export type EmailSendResult = { ok: true } | { ok: false; error: string };
 
@@ -21,17 +22,7 @@ export function isEmailLiveEnabled(): boolean {
 }
 
 export function getPublicSiteOrigin(): string {
-  const candidates = [
-    process.env.NEXT_PUBLIC_SITE_URL,
-    process.env.APP_URL,
-    process.env.AUTH_URL,
-    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
-  ];
-  for (const c of candidates) {
-    const trimmed = c?.trim();
-    if (trimmed) return trimmed.replace(/\/$/, "");
-  }
-  return "http://localhost:3000";
+  return getSiteOrigin();
 }
 
 export async function sendTransactionalEmail(input: {
