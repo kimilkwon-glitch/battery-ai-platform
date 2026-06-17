@@ -1,0 +1,19 @@
+-- =============================================================================
+-- Production commerce + rate limit migrations — RUNBOOK
+-- =============================================================================
+-- 적용 전: node scripts/migration-precheck.mjs (SELECT-only)
+-- 적용:    node scripts/apply-production-migrations.mjs
+--
+-- 순서:
+--   1) rate-limit-buckets.sql (transaction OK)
+--   2) commerce-checkout-attempt-id.sql (ALTER + lookup index)
+--   3) commerce-payment-key-unique.sql (lookup index)
+--   4) CONCURRENTLY (트랜잭션 밖, 개별 실행):
+--        idx_commerce_payments_payment_key_unique
+--        idx_commerce_orders_checkout_attempt_active
+--        idx_commerce_payments_one_completed_per_order
+--   5) members-phone-digits-unique.sql (사전검사 통과 시만)
+--
+-- CONCURRENTLY는 Neon SQL Editor / psql autocommit ON 상태에서 1문장씩 실행.
+-- 롤백: DROP INDEX CONCURRENTLY IF EXISTS <name>; (데이터 변경 없음)
+-- =============================================================================

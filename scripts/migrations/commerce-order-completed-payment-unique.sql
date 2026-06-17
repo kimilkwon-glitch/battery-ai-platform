@@ -1,0 +1,13 @@
+-- 주문당 completed payment 1건 보장 (partial UNIQUE)
+--
+-- === 적용 전 read-only 중복 검사 ===
+-- SELECT order_id, COUNT(*) AS cnt, array_agg(id) AS payment_ids
+-- FROM commerce_payments
+-- WHERE status = 'completed'
+-- GROUP BY order_id
+-- HAVING COUNT(*) > 1;
+--
+-- === Production UNIQUE (트랜잭션 밖, CONCURRENTLY) ===
+-- CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_commerce_payments_one_completed_per_order
+--   ON commerce_payments (order_id)
+--   WHERE status = 'completed';

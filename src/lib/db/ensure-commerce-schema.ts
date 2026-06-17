@@ -51,11 +51,19 @@ async function runMigration(): Promise<void> {
   `;
 
   await sql`ALTER TABLE commerce_orders ADD COLUMN IF NOT EXISTS user_id TEXT`;
+  await sql`ALTER TABLE commerce_orders ADD COLUMN IF NOT EXISTS checkout_attempt_id TEXT`;
 
   await sql`
     CREATE INDEX IF NOT EXISTS idx_commerce_orders_user_id_created
       ON commerce_orders (user_id, created_at DESC)
       WHERE user_id IS NOT NULL
+  `;
+
+  // checkout_attempt partial UNIQUE는 Production migration에서 CONCURRENTLY 적용 (ensure 부팅 시 위험 UNIQUE 생성 금지)
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_commerce_orders_checkout_attempt_lookup
+      ON commerce_orders (checkout_attempt_id)
+      WHERE checkout_attempt_id IS NOT NULL
   `;
 
   await sql`
