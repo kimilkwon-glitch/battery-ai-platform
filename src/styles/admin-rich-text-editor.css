@@ -1,0 +1,197 @@
+/* Admin rich text editor (TipTap) */
+
+[data-admin-console] .admin-rte {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #fff;
+  overflow: hidden;
+}
+
+[data-admin-console] .admin-rte--loading {
+  padding: 1rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+[data-admin-console] .admin-rte__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+[data-admin-console] .admin-rte__btn {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+}
+
+[data-admin-console] .admin-rte__btn:hover:not(:disabled) {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+[data-admin-console] .admin-rte__btn--active {
+  border-color: #2563eb;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+[data-admin-console] .admin-rte__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-admin-console] .admin-rte__content {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: #0f172a;
+  outline: none;
+}
+
+[data-admin-console] .admin-rte__content p {
+  margin: 0 0 0.75rem;
+}
+
+[data-admin-console] .admin-rte__content p:last-child {
+  margin-bottom: 0;
+}
+
+[data-admin-console] .admin-rte__content ul,
+[data-admin-console] .admin-rte__content ol {
+  margin: 0 0 0.75rem 1.25rem;
+  padding: 0;
+}
+
+[data-admin-console] .admin-rte__content blockquote {
+  margin: 0 0 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid #cbd5e1;
+  color: #475569;
+}
+
+[data-admin-console] .admin-rte__content h2 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+[data-admin-console] .admin-rte__content h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+[data-admin-console] .admin-rte__content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+[data-admin-console] .admin-rte__content a {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+[data-admin-console] .admin-rte__hint {
+  margin: 0;
+  padding: 0.375rem 0.75rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #94a3b8;
+  border-top: 1px solid #f1f5f9;
+}
+
+[data-admin-console] .admin-guide-form {
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+[data-admin-console] .admin-guide-form__section {
+  display: grid;
+  gap: 1rem;
+}
+
+[data-admin-console] .admin-guide-form__section-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: 0.02em;
+}
+
+[data-admin-console] .admin-guide-thumb-hint {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+[data-admin-console] .admin-guide-thumb-preview {
+  position: relative;
+  width: 100%;
+  max-width: 16rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+}
+
+[data-admin-console] .admin-guide-thumb-preview--hero {
+  max-width: 20rem;
+  aspect-ratio: 16 / 10;
+}
+
+[data-admin-console] .admin-guide-preview-panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background: #fff;
+}
+
+[data-admin-console] .admin-guide-preview-panel__hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 1rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+/* Customer-facing rich text */
+.rich-text-content--plain p {
+  margin: 0 0 0.5rem;
+}
+
+.rich-text-content--plain p:last-child {
+  margin-bottom: 0;
+}
+
+.battery-product-qna__answer .rich-text-content {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+
+.battery-product-qna__answer .rich-text-content p {
+  margin: 0 0 0.5rem;
+}
+
+.battery-product-qna__answer .rich-text-content p:last-child {
+  margin-bottom: 0;
+}
+
+.battery-product-qna__answer .rich-text-content--plain {
+  white-space: pre-wrap;
+}

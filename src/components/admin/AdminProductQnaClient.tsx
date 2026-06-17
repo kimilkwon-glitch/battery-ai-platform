@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AdminReplyTemplateBar } from "@/components/admin/AdminReplyTemplateBar";
+import {
+  AdminRichTextEditor,
+} from "@/components/admin/AdminRichTextEditor";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
+import { insertAdminReplyTemplate } from "@/lib/admin/insert-admin-reply-template";
 import { Badge } from "@/components/ui/badge";
 import { INQUIRY_STATUS_BADGE } from "@/lib/admin/admin-status-tokens";
 import { brands, getBattery } from "@/lib/platform-data";
@@ -42,7 +46,9 @@ export function AdminProductQnaClient() {
   const [statusChip, setStatusChip] = useState<string>("new");
   const [query, setQuery] = useState(initialQuery);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [memoDraft, setMemoDraft] = useState("");
+  const [memoEditorHtml, setMemoEditorHtml] = useState("");
+  const [memoDirty, setMemoDirty] = useState(false);
+  const storedMemoRef = useRef("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,8 +86,13 @@ export function AdminProductQnaClient() {
   const selected = filtered.find((i) => i.id === selectedId) ?? items.find((i) => i.id === selectedId) ?? null;
 
   useEffect(() => {
-    setMemoDraft(selected?.adminMemo ?? "");
+    const stored = selected?.adminMemo ?? "";
+    storedMemoRef.current = stored;
+    setMemoEditorHtml(stored);
+    setMemoDirty(false);
   }, [selected?.id, selected?.adminMemo]);
+
+  const resolveMemoPayload = () => (memoDirty ? memoEditorHtml.trim() : storedMemoRef.current);
 
   const patch = async (patchBody: { status?: InquiryStatus; adminMemo?: string; hidden?: boolean }) => {
     if (!selected) return false;
@@ -100,6 +111,11 @@ export function AdminProductQnaClient() {
       return false;
     }
     setItems((prev) => prev.map((i) => (i.id === selected.id ? data.item : i)));
+    if (patchBody.adminMemo !== undefined && data.item) {
+      storedMemoRef.current = data.item.adminMemo ?? "";
+      setMemoEditorHtml(data.item.adminMemo ?? "");
+      setMemoDirty(false);
+    }
     if (patchBody.status === "done" && statusChip === "new") {
       setSelectedId(null);
     }
@@ -107,12 +123,29 @@ export function AdminProductQnaClient() {
   };
 
   const handleReply = async () => {
-    const memo = memoDraft.trim();
-    if (!memo) {
+    const memo = resolveMemoPayload();
+    if (!memo.trim()) {
       setError("답변 내용을 입력해 주세요.");
       return;
     }
+    if (!memoDirty && storedMemoRef.current.trim()) {
+      await patch({ adminMemo: storedMemoRef.current, status: "done" });
+      return;
+    }
     await patch({ adminMemo: memo, status: "done" });
+  };
+
+  const handleMemoSave = async () => {
+    if (!memoDirty) return;
+    const memo = resolveMemoPayload();
+    await patch({ adminMemo: memo });
+  };
+
+  const handleTemplateInsert = (templateBody: string) => {
+    const current = memoDirty ? memoEditorHtml : storedMemoRef.current;
+    const next = insertAdminReplyTemplate(current, templateBody);
+    setMemoEditorHtml(next);
+    setMemoDirty(true);
   };
 
   const selectedBrand = selected ? productBrandLabel(selected.batteryCode) : "—";
@@ -224,16 +257,20 @@ export function AdminProductQnaClient() {
             <section className="admin-inquiries__section">
               <h3 className="admin-inquiries__section-title">관리자 답변</h3>
               <AdminReplyTemplateBar
-                currentValue={memoDraft}
-                onInsert={setMemoDraft}
+                currentValue={memoEditorHtml}
+                onInsert={handleTemplateInsert}
                 label="답변 템플릿"
               />
-              <textarea
-                className="admin-inquiries__textarea mt-2"
-                rows={5}
-                value={memoDraft}
-                onChange={(e) => setMemoDraft(e.target.value)}
+              <AdminRichTextEditor
+                variant="qna"
+                value={memoEditorHtml}
+                storedValue={storedMemoRef.current}
                 placeholder="고객에게 표시될 답변을 입력하세요"
+                disabled={saving}
+                onChange={(html, { dirty }) => {
+                  setMemoEditorHtml(html);
+                  setMemoDirty(dirty);
+                }}
               />
             </section>
 
@@ -250,7 +287,7 @@ export function AdminProductQnaClient() {
                 type="button"
                 disabled={saving}
                 className="admin-btn admin-btn--secondary admin-btn--md"
-                onClick={() => void patch({ adminMemo: memoDraft })}
+                onClick={() => void handleMemoSave()}
               >
                 임시 저장
               </button>

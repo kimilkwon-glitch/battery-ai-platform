@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown, Lock } from "lucide-react";
 import clsx from "clsx";
 import { CustomerActionModal } from "@/components/common/CustomerActionModal";
+import { RichTextContent } from "@/components/content/RichTextContent";
 import { SimpleInquiryForm, type SimpleInquiryFormValues } from "@/components/inquiry/SimpleInquiryForm";
 import {
   getInquiryPageUrl,
@@ -209,10 +210,10 @@ export function BatteryProductQnaPanel({ batteryCode, productName, highlightId }
                       {item.question}
                     </p>
                     {item.answer ? (
-                      <p className="battery-product-qna__answer">
+                      <div className="battery-product-qna__answer">
                         <span className="battery-product-qna__panel-label">답변</span>
-                        {item.answer}
-                      </p>
+                        <RichTextContent content={item.answer} mode="qna" />
+                      </div>
                     ) : (
                       <p className="battery-product-qna__answer-pending text-xs font-medium text-slate-500">
                         답변을 준비하고 있습니다.

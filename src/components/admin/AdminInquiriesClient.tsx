@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AdminReplyTemplateBar } from "@/components/admin/AdminReplyTemplateBar";
+import { AdminRichTextEditor } from "@/components/admin/AdminRichTextEditor";
+import { insertAdminReplyTemplate } from "@/lib/admin/insert-admin-reply-template";
 import { AdminCustomerPreviewLink } from "@/components/admin/AdminCustomerPreviewLink";
 import { AdminMobileCard } from "@/components/admin/AdminMobileCard";
 import { AdminQuickFilterChips } from "@/components/admin/AdminQuickFilterChips";
@@ -64,7 +66,9 @@ export function AdminInquiriesClient({ categoryFilter = null }: Props) {
   const [query, setQuery] = useState(initialQuery);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  const [memoDraft, setMemoDraft] = useState("");
+  const [memoEditorHtml, setMemoEditorHtml] = useState("");
+  const [memoDirty, setMemoDirty] = useState(false);
+  const storedMemoRef = useRef("");
   const [saving, setSaving] = useState(false);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
@@ -126,8 +130,13 @@ export function AdminInquiriesClient({ categoryFilter = null }: Props) {
   );
 
   useEffect(() => {
-    setMemoDraft(selected?.adminMemo ?? "");
+    const stored = selected?.adminMemo ?? "";
+    storedMemoRef.current = stored;
+    setMemoEditorHtml(stored);
+    setMemoDirty(false);
   }, [selected?.id, selected?.adminMemo]);
+
+  const resolveMemoPayload = () => (memoDirty ? memoEditorHtml.trim() : storedMemoRef.current);
 
   const patchInquiry = async (
     id: string,
@@ -147,6 +156,11 @@ export function AdminInquiriesClient({ categoryFilter = null }: Props) {
       return false;
     }
     setItems((prev) => prev.map((i) => (i.id === id ? data.item : i)));
+    if (patch.adminMemo !== undefined && data.item) {
+      storedMemoRef.current = data.item.adminMemo ?? "";
+      setMemoEditorHtml(data.item.adminMemo ?? "");
+      setMemoDirty(false);
+    }
     if (patch.status === "done" && statusTab === "new") {
       setSelectedId(null);
       setMobileDetailOpen(false);
@@ -161,12 +175,15 @@ export function AdminInquiriesClient({ categoryFilter = null }: Props) {
 
   const handleReplySubmit = async () => {
     if (!selected) return;
-    const memo = memoDraft.trim();
-    if (!memo) {
+    const memo = resolveMemoPayload();
+    if (!memo.trim()) {
       setError("답변 내용을 입력해 주세요.");
       return;
     }
-    const ok = await patchInquiry(selected.id, { adminMemo: memo, status: "done" });
+    const payload = !memoDirty && storedMemoRef.current.trim()
+      ? storedMemoRef.current
+      : memo;
+    const ok = await patchInquiry(selected.id, { adminMemo: payload, status: "done" });
     if (ok) {
       setSelectedId(null);
       setMobileDetailOpen(false);
@@ -174,8 +191,15 @@ export function AdminInquiriesClient({ categoryFilter = null }: Props) {
   };
 
   const handleMemoSave = async () => {
-    if (!selected) return;
-    await patchInquiry(selected.id, { adminMemo: memoDraft });
+    if (!selected || !memoDirty) return;
+    await patchInquiry(selected.id, { adminMemo: resolveMemoPayload() });
+  };
+
+  const handleTemplateInsert = (templateBody: string) => {
+    const current = memoDirty ? memoEditorHtml : storedMemoRef.current;
+    const next = insertAdminReplyTemplate(current, templateBody);
+    setMemoEditorHtml(next);
+    setMemoDirty(true);
   };
 
   const handleQuickStatus = async (status: InquiryStatus) => {
@@ -455,17 +479,23 @@ export function AdminInquiriesClient({ categoryFilter = null }: Props) {
                     답변 / 관리자 메모
                     <AdminReplyTemplateBar
                       className="mt-2"
-                      currentValue={memoDraft}
-                      onInsert={setMemoDraft}
+                      currentValue={memoEditorHtml}
+                      onInsert={handleTemplateInsert}
                       label="자주 쓰는 답변"
                     />
-                    <textarea
-                      value={memoDraft}
-                      onChange={(e) => setMemoDraft(e.target.value)}
-                      rows={4}
-                      className="admin-inquiries__textarea mt-2"
-                      placeholder="고객 답변 또는 내부 메모"
-                    />
+                    <div className="mt-2">
+                      <AdminRichTextEditor
+                        variant="qna"
+                        value={memoEditorHtml}
+                        storedValue={storedMemoRef.current}
+                        placeholder="고객 답변 또는 내부 메모"
+                        disabled={saving}
+                        onChange={(html, { dirty }) => {
+                          setMemoEditorHtml(html);
+                          setMemoDirty(dirty);
+                        }}
+                      />
+                    </div>
                   </label>
                 </section>
 

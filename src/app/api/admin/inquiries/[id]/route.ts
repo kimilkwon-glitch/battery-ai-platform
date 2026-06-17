@@ -6,6 +6,7 @@ import {
   inquiryUpdateMemo,
   inquiryUpdateStatus,
 } from "@/lib/inquiry/inquiry-store";
+import { sanitizeQnaAnswerForStorage } from "@/lib/content/sanitize-qna-answer";
 import type { InquiryStatus } from "@/types/customer-inquiry";
 
 export const dynamic = "force-dynamic";
@@ -50,7 +51,11 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
       return NextResponse.json({ ok: true, item });
     }
     if (body.adminMemo !== undefined) {
-      const item = await inquiryUpdateMemo(id, body.adminMemo);
+      const sanitized =
+        body.adminMemo.trim() === ""
+          ? ""
+          : (sanitizeQnaAnswerForStorage(body.adminMemo) ?? "");
+      const item = await inquiryUpdateMemo(id, sanitized);
       if (!item) {
         return NextResponse.json({ ok: false, message: "문의를 찾을 수 없습니다." }, { status: 404 });
       }

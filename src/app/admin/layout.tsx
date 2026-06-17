@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/admin-console.css";
+import "@/styles/admin-rich-text-editor.css";
 import "@/styles/admin-danger-dialog.css";
 
 export const metadata: Metadata = {
