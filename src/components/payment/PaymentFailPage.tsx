@@ -34,8 +34,10 @@ function PaymentFailContent() {
   useEffect(() => {
     if (recorded.current || !orderId) return;
     recorded.current = true;
+    const meta = loadCheckoutOrderMeta();
     void apiRecordPaymentFail({
       orderId,
+      paymentRequestId: meta?.paymentRequestId,
       errorCode: code || undefined,
       errorMessage: message || FAIL_REASONS[code] || undefined,
     });

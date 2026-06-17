@@ -77,6 +77,7 @@ function sessionToCreateBody(session: CheckoutSessionPayload): CreateOrderReques
     promotion: {
       couponCode: session.couponCode,
     },
+    checkoutAttemptId: session.checkoutAttemptId,
   };
 }
 
@@ -173,6 +174,7 @@ export function CheckoutReviewPage() {
       orderNumber: prepareRes.data.orderNumber,
       paymentRequestId: prepareRes.data.paymentRequestId,
       finalAmount: prepareRes.data.amount,
+      checkoutAttemptId: session.checkoutAttemptId,
     });
 
     setPrepare(prepareRes.data);

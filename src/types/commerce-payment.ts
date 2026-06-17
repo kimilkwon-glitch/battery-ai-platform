@@ -64,11 +64,14 @@ export type CreateOrderRequestBody = {
   requestMemo?: string;
   priceSummary?: CreateOrderPriceSummary;
   promotion?: CreateOrderPromotionInput;
+  /** 클라이언트 checkout 세션당 1회 생성 — 중복 주문 생성 방지 (PII 아님) */
+  checkoutAttemptId?: string;
 };
 
 export type CommerceOrderRecord = {
   orderId: string;
   orderNumber: string;
+  checkoutAttemptId?: string;
   orderStatus: CommerceOrderStatus;
   paymentStatus: CommercePaymentRecordStatus;
   customerName: string;
@@ -217,6 +220,8 @@ export type CheckoutSessionPayload = {
   appliedPromotions?: AppliedPromotion[];
   couponCode?: string | null;
   eligibleAutomaticTitles?: string[];
+  /** checkout review → 결제 시 동일 attempt로 중복 주문 방지 */
+  checkoutAttemptId?: string;
   savedAt: string;
 };
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { recordCommercePaymentFail } from "@/lib/payment/commerce-order-service";
 import type { PaymentFailRequestBody } from "@/types/commerce-payment";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -9,6 +10,9 @@ export const revalidate = 0;
  * POST — 결제 실패/취소 기록 (PG 연동 전 stub)
  */
 export async function POST(request: Request) {
+  const blocked = await enforceIpRateLimitOrNull(request, "payments.fail", 30, 15 * 60 * 1000);
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();
@@ -27,7 +31,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await recordCommercePaymentFail({
+  const result = await recordCommercePaymentFail(request, {
     orderId: b.orderId.trim(),
     paymentRequestId: b.paymentRequestId?.trim(),
     errorCode: b.errorCode?.trim(),
@@ -35,7 +39,10 @@ export async function POST(request: Request) {
   });
 
   if (!result.ok) {
-    return NextResponse.json({ ok: false, message: result.message }, { status: 404 });
+    return NextResponse.json(
+      { ok: false, message: result.message, code: result.code },
+      { status: result.status ?? 404 },
+    );
   }
 
   return NextResponse.json({ ok: true, message: result.message });

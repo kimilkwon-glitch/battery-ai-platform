@@ -249,4 +249,79 @@ export async function claimUpdate(
   return next;
 }
 
+export type ClaimTransitionResult =
+  | { ok: true; claim: CommerceClaimRecord; transitioned: boolean }
+  | { ok: false; code: string; message: string; status: number; claim?: CommerceClaimRecord };
+
+export async function claimTransitionStatus(
+  id: string,
+  input: {
+    expectedStatuses: ClaimStatus[];
+    nextStatus: ClaimStatus;
+    patch?: Partial<
+      Pick<
+        CommerceClaimRecord,
+        | "adminMemo"
+        | "customerReply"
+        | "needsCustomerNotice"
+        | "assignedTo"
+        | "reviewedAt"
+        | "completedAt"
+      >
+    >;
+    history?: {
+      previousStatus: ClaimStatus | null;
+      nextStatus: ClaimStatus;
+      memo?: string;
+      actorType: "admin" | "system";
+      actorName?: string;
+    };
+  },
+): Promise<ClaimTransitionResult> {
+  const payload = await loadPayload();
+  const idx = payload.claims.findIndex((c) => c.id === id);
+  if (idx < 0) {
+    return { ok: false, code: "NOT_FOUND", message: "요청을 찾을 수 없습니다.", status: 404 };
+  }
+  const prev = payload.claims[idx]!;
+  if (prev.claimStatus === input.nextStatus) {
+    return { ok: true, claim: prev, transitioned: false };
+  }
+  if (!input.expectedStatuses.includes(prev.claimStatus)) {
+    const refreshed = payload.claims[idx]!;
+    if (refreshed.claimStatus === input.nextStatus) {
+      return { ok: true, claim: refreshed, transitioned: false };
+    }
+    return {
+      ok: false,
+      code: "CLAIM_TRANSITION_CONFLICT",
+      message: "다른 관리자가 먼저 처리했거나 상태가 변경되었습니다.",
+      status: 409,
+      claim: refreshed,
+    };
+  }
+  const now = new Date().toISOString();
+  const next: CommerceClaimRecord = {
+    ...prev,
+    ...input.patch,
+    claimStatus: input.nextStatus,
+    updatedAt: now,
+  };
+  payload.claims[idx] = next;
+  if (input.history) {
+    payload.histories.unshift({
+      id: newId("clh"),
+      claimId: id,
+      previousStatus: input.history.previousStatus,
+      nextStatus: input.history.nextStatus,
+      memo: input.history.memo,
+      actorType: input.history.actorType,
+      actorName: input.history.actorName,
+      createdAt: now,
+    });
+  }
+  await savePayload(payload);
+  return { ok: true, claim: next, transitioned: true };
+}
+
 export const CLAIM_STORE_PATH = STORE_FILE;

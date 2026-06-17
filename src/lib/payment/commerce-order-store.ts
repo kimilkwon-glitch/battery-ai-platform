@@ -85,3 +85,11 @@ export async function storeCommerceOrderLookupByCustomerIdentity(
   const pg = await getPostgresStore();
   return pg.pgStoreCommerceOrderLookupByCustomerIdentity(customerName, phoneDigits, limit);
 }
+
+export async function storeCommerceOrderFindByCheckoutAttemptId(
+  checkoutAttemptId: string,
+): Promise<CommerceOrderRecord | null> {
+  if (!isPostgresConfigured()) return null;
+  const pg = await getPostgresStore();
+  return pg.pgStoreCommerceOrderFindByCheckoutAttemptId(checkoutAttemptId);
+}

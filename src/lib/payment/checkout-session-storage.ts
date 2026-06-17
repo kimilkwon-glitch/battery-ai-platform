@@ -44,6 +44,7 @@ export function saveCheckoutOrderMeta(meta: {
   orderNumber: string;
   paymentRequestId?: string;
   finalAmount: number | null;
+  checkoutAttemptId?: string;
 }): void {
   if (typeof window === "undefined") return;
   try {
@@ -58,6 +59,7 @@ export function loadCheckoutOrderMeta(): {
   orderNumber: string;
   paymentRequestId?: string;
   finalAmount: number | null;
+  checkoutAttemptId?: string;
 } | null {
   if (typeof window === "undefined") return null;
   try {

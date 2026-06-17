@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prepareCommercePayment } from "@/lib/payment/commerce-order-service";
 import { getSiteOrigin } from "@/lib/payment/payment-config";
 import type { PaymentPrepareRequestBody } from "@/types/commerce-payment";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -10,6 +11,9 @@ export const revalidate = 0;
  * POST — 결제 준비 (PG 연동 전: 준비 데이터만 반환)
  */
 export async function POST(request: Request) {
+  const blocked = await enforceIpRateLimitOrNull(request, "payments.prepare", 30, 15 * 60 * 1000);
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();

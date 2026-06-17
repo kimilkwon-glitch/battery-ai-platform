@@ -12,6 +12,8 @@ import type {
 } from "@/types/commerce-payment";
 import type { AppliedPromotion } from "@/types/promotion";
 import type { AdminCommerceOrderListItem } from "@/lib/payment/commerce-order-admin-mapper";
+import { normalizePaymentKey } from "@/lib/payment/payment-key-normalize.server";
+import { REUSABLE_CHECKOUT_PAYMENT_STATUSES } from "@/lib/payment/commerce-order-create-idempotency.server";
 
 type OrderRow = {
   id: string;
@@ -40,6 +42,7 @@ type OrderRow = {
   order_status: string;
   payment_status: string;
   payment_request_id: string | null;
+  checkout_attempt_id: string | null;
   user_id: string | null;
   items_json: BatteryCartItem[];
   price_lines_json: CommerceOrderPriceSnapshot[];
@@ -135,6 +138,7 @@ function rowToRecord(row: OrderRow, logs: StatusLogRow[]): CommerceOrderRecord {
     itemsJson: row.items_json ?? [],
     priceLines: row.price_lines_json ?? [],
     paymentRequestId: row.payment_request_id ?? undefined,
+    checkoutAttemptId: row.checkout_attempt_id ?? undefined,
     paymentProvider: row.payment_provider === "toss" ? "toss" : undefined,
     paymentKey: row.payment_key ?? undefined,
     pgTransactionId: row.payment_key ?? undefined,
@@ -228,6 +232,7 @@ async function upsertLatestPayment(
   },
 ): Promise<void> {
   const sql = getSql();
+  const paymentKey = normalizePaymentKey(patch.paymentKey);
   const existing = (await sql`
     SELECT id FROM commerce_payments
     WHERE order_id = ${orderId}
@@ -239,8 +244,8 @@ async function upsertLatestPayment(
     await sql`
       UPDATE commerce_payments SET
         payment_request_id = COALESCE(${patch.paymentRequestId ?? null}, payment_request_id),
-        payment_key = COALESCE(${patch.paymentKey ?? null}, payment_key),
-        toss_order_id = COALESCE(${patch.paymentKey ? orderId : null}, toss_order_id),
+        payment_key = COALESCE(${paymentKey}, payment_key),
+        toss_order_id = COALESCE(${paymentKey ? orderId : null}, toss_order_id),
         amount = COALESCE(${patch.amount ?? null}, amount),
         method = COALESCE(${patch.method ?? null}, method),
         status = ${patch.status},
@@ -257,7 +262,7 @@ async function upsertLatestPayment(
   if (existing[0]?.id && patch.status === "completed") {
     await sql`
       UPDATE commerce_payments SET
-        payment_key = ${patch.paymentKey ?? null},
+        payment_key = ${paymentKey},
         toss_order_id = ${orderId},
         amount = ${patch.amount ?? null},
         method = ${patch.method ?? null},
@@ -266,6 +271,16 @@ async function upsertLatestPayment(
         receipt_url = ${patch.receiptUrl ?? null},
         fail_code = NULL,
         fail_message = NULL,
+        updated_at = NOW()
+      WHERE id = ${existing[0].id}
+    `;
+    return;
+  }
+
+  if (existing[0]?.id && patch.status === "refunded") {
+    await sql`
+      UPDATE commerce_payments SET
+        status = ${patch.status},
         updated_at = NOW()
       WHERE id = ${existing[0].id}
     `;
@@ -281,8 +296,8 @@ async function upsertLatestPayment(
       ${orderId},
       'toss',
       ${patch.paymentRequestId ?? null},
-      ${patch.paymentKey ?? null},
-      ${patch.paymentKey ? orderId : null},
+      ${paymentKey},
+      ${paymentKey ? orderId : null},
       ${patch.amount ?? null},
       ${patch.method ?? null},
       ${patch.status},
@@ -327,7 +342,7 @@ export async function pgStoreCommerceOrderCreate(
       product_name, brand, battery_code, internet_price, onsite_price,
       fulfillment_type, return_battery_option, delivery_fee, store_install_discount,
       final_amount, address, selected_store, request_memo,
-      order_status, payment_status, payment_request_id, user_id, items_json, price_lines_json,
+      order_status, payment_status, payment_request_id, checkout_attempt_id, user_id, items_json, price_lines_json,
       promotion_discount_total, applied_promotions_json,
       created_at, updated_at
     ) VALUES (
@@ -357,6 +372,7 @@ export async function pgStoreCommerceOrderCreate(
       ${record.orderStatus},
       ${record.paymentStatus},
       ${record.paymentRequestId ?? null},
+      ${record.checkoutAttemptId ?? null},
       ${record.userId ?? null},
       ${JSON.stringify(record.itemsJson)}::jsonb,
       ${JSON.stringify(record.priceLines)}::jsonb,
@@ -461,10 +477,13 @@ export async function pgStoreCommerceOrderUpdate(
 
   if (
     patch.paymentStatus === "pending" ||
+    patch.paymentStatus === "processing" ||
+    patch.paymentStatus === "reconcile_needed" ||
     patch.paymentRequestId ||
     patch.paymentStatus === "completed" ||
     patch.paymentStatus === "failed" ||
-    patch.paymentStatus === "canceled"
+    patch.paymentStatus === "canceled" ||
+    patch.paymentStatus === "refunded"
   ) {
     await upsertLatestPayment(orderId, {
       paymentRequestId: next.paymentRequestId,
@@ -688,4 +707,25 @@ export async function pgStoreCommerceOrderLookupByCustomerIdentity(
   ]);
   const byId = new Map(rows.map((row) => [row.id, rowToRecord(row, logsByOrder.get(row.id) ?? [])]));
   return orderIds.map((id) => byId.get(id)).filter((r): r is CommerceOrderRecord => Boolean(r));
+}
+
+export async function pgStoreCommerceOrderFindByCheckoutAttemptId(
+  checkoutAttemptId: string,
+): Promise<CommerceOrderRecord | null> {
+  await ensureCommerceDb();
+  const sql = getSql();
+  const trimmed = checkoutAttemptId.trim();
+  if (!trimmed) return null;
+
+  const rows = (await sql`
+    SELECT id FROM commerce_orders
+    WHERE checkout_attempt_id = ${trimmed}
+      AND payment_status = ANY(${REUSABLE_CHECKOUT_PAYMENT_STATUSES})
+    ORDER BY created_at DESC
+    LIMIT 1
+  `) as { id: string }[];
+
+  const id = rows[0]?.id;
+  if (!id) return null;
+  return pgStoreCommerceOrderGet(id);
 }

@@ -1,9 +1,5 @@
 import { randomBytes } from "node:crypto";
 import { computeOrderAmountWithPromotions } from "@/lib/promotion/promotion-order-service";
-import {
-  hasPromotionUsagesForOrder,
-  recordPromotionUsages,
-} from "@/lib/promotion/promotion-store.postgres";
 import { buildOrderAmountBreakdown } from "@/lib/pricing/order-amount-breakdown";
 import {
   isCommerceOrderCreateEnabled,
@@ -15,7 +11,6 @@ import {
   paymentSuccessUrl,
 } from "@/lib/payment/payment-routes";
 import {
-  confirmTossPayment,
   getTossClientKeyPublic,
   isTossPaymentsConfigured,
   isTossTestMode,
@@ -23,21 +18,30 @@ import {
 import { validateOrderForPayment } from "@/lib/payment/validate-order-for-payment";
 import { assertOrderPaymentAccess } from "@/lib/payment/order-payment-access.server";
 import {
+  checkoutAttemptMemberMatches,
+  isCheckoutAttemptReusable,
+} from "@/lib/payment/commerce-order-create-idempotency.server";
+import {
+  isCheckoutAttemptUniqueViolation,
+  isOrderNumberUniqueViolation,
+  isPostgresUniqueViolation,
+  MAX_ORDER_NUMBER_CREATE_RETRIES,
+} from "@/lib/payment/commerce-order-create-retry.server";
+import {
   storeCommerceOrderCountByPrefix,
   storeCommerceOrderCreate,
+  storeCommerceOrderFindByCheckoutAttemptId,
   storeCommerceOrderGet,
   storeCommerceOrderUpdate,
 } from "@/lib/payment/commerce-order-store";
-import { hookAlimtalkOrderCreated } from "@/lib/notifications/alimtalk-hooks.server";
 import type {
   CommerceOrderRecord,
   CreateOrderRequestBody,
-  PaymentConfirmRequestBody,
-  PaymentConfirmResponse,
-  PaymentFailRequestBody,
   PaymentPrepareRequestBody,
   PaymentPrepareResponse,
 } from "@/types/commerce-payment";
+
+export { confirmCommercePayment, recordCommercePaymentFail } from "@/lib/payment/commerce-payment-confirm.server";
 
 function normalizeMobilePhone(phone: string): string {
   let digits = phone.replace(/\D/g, "");
@@ -183,10 +187,36 @@ export async function createCommerceOrder(
     };
   }
 
+  const checkoutAttemptId = body.checkoutAttemptId?.trim() || undefined;
+  if (checkoutAttemptId) {
+    const existing = await storeCommerceOrderFindByCheckoutAttemptId(checkoutAttemptId);
+    if (existing && isCheckoutAttemptReusable(existing)) {
+      if (!checkoutAttemptMemberMatches(existing, memberId)) {
+        return {
+          ok: false,
+          status: 403,
+          message: "주문 정보를 확인할 수 없습니다.",
+          errors: ["CHECKOUT_ATTEMPT_FORBIDDEN"],
+        };
+      }
+      if (
+        existing.finalAmount != null &&
+        Math.abs(existing.finalAmount - amounts.finalAmount) >= 1
+      ) {
+        return {
+          ok: false,
+          status: 400,
+          message: "결제 예정금액이 변경되었습니다. 주문서를 다시 확인해 주세요.",
+          errors: ["AMOUNT_MISMATCH"],
+        };
+      }
+      return { ok: true, order: existing };
+    }
+  }
+
   const primary = body.cartItems[0]!;
   const now = new Date().toISOString();
   const orderId = generateCommerceOrderId();
-  const orderNumber = await generateCommerceOrderNumber();
   const paymentRequestId = generatePaymentRequestId();
   const amountBreakdown = buildOrderAmountBreakdown(
     body.cartItems,
@@ -194,11 +224,11 @@ export async function createCommerceOrder(
     body.returnBatteryOption,
   );
 
-  const record: CommerceOrderRecord = {
+  const baseRecord = {
     orderId,
-    orderNumber,
-    orderStatus: "payment_pending",
-    paymentStatus: "not_started",
+    checkoutAttemptId,
+    orderStatus: "payment_pending" as const,
+    paymentStatus: "not_started" as const,
     customerName: body.customerInfo.name.trim(),
     customerPhone: body.customerInfo.phone.trim(),
     customerEmail: body.customerInfo.email?.trim(),
@@ -234,8 +264,8 @@ export async function createCommerceOrder(
     priceLines: amounts.priceLines,
     statusHistory: [
       {
-        status: "payment_pending",
-        paymentStatus: "not_started",
+        status: "payment_pending" as const,
+        paymentStatus: "not_started" as const,
         note: "결제 대기 주문 생성",
         at: now,
       },
@@ -244,16 +274,38 @@ export async function createCommerceOrder(
     updatedAt: now,
   };
 
-  try {
-    const saved = await storeCommerceOrderCreate(record);
-    return { ok: true, order: saved };
-  } catch {
-    return {
-      ok: false,
-      status: 503,
-      message: "주문 정보를 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.",
-    };
+  for (let attempt = 0; attempt < MAX_ORDER_NUMBER_CREATE_RETRIES; attempt += 1) {
+    const orderNumber = await generateCommerceOrderNumber();
+    const record: CommerceOrderRecord = { ...baseRecord, orderNumber };
+
+    try {
+      const saved = await storeCommerceOrderCreate(record);
+      return { ok: true, order: saved };
+    } catch (err) {
+      if (checkoutAttemptId && isCheckoutAttemptUniqueViolation(err)) {
+        const raced = await storeCommerceOrderFindByCheckoutAttemptId(checkoutAttemptId);
+        if (raced && isCheckoutAttemptReusable(raced) && checkoutAttemptMemberMatches(raced, memberId)) {
+          return { ok: true, order: raced };
+        }
+      }
+      if (isOrderNumberUniqueViolation(err) && attempt < MAX_ORDER_NUMBER_CREATE_RETRIES - 1) {
+        continue;
+      }
+      if (checkoutAttemptId && isPostgresUniqueViolation(err)) {
+        const raced = await storeCommerceOrderFindByCheckoutAttemptId(checkoutAttemptId);
+        if (raced && isCheckoutAttemptReusable(raced) && checkoutAttemptMemberMatches(raced, memberId)) {
+          return { ok: true, order: raced };
+        }
+      }
+      break;
+    }
   }
+
+  return {
+    ok: false,
+    status: 503,
+    message: "주문 정보를 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+  };
 }
 
 export async function prepareCommercePayment(
@@ -391,253 +443,6 @@ export async function prepareCommercePayment(
       message: "결제 준비가 완료되었습니다.",
     },
   };
-}
-
-export async function confirmCommercePayment(
-  body: PaymentConfirmRequestBody,
-): Promise<
-  | { ok: true; data: PaymentConfirmResponse }
-  | { ok: false; status: number; message: string; code?: string }
-> {
-  const paymentKey = body.paymentKey?.trim();
-  const orderId = body.orderId?.trim();
-  const amount = body.amount;
-
-  if (!paymentKey || !orderId || amount == null || Number.isNaN(Number(amount))) {
-    return {
-      ok: false,
-      status: 400,
-      message: "결제 확인에 필요한 정보가 없습니다.",
-    };
-  }
-
-  const order = await storeCommerceOrderGet(orderId);
-  if (!order) {
-    return { ok: false, status: 404, message: "주문 정보를 찾을 수 없습니다." };
-  }
-
-  if (order.paymentRequestId?.trim()) {
-    const clientPrid = body.paymentRequestId?.trim();
-    if (!clientPrid || clientPrid !== order.paymentRequestId.trim()) {
-      return {
-        ok: false,
-        status: 403,
-        message: "결제 요청 정보가 일치하지 않습니다.",
-      };
-    }
-  }
-
-  if (order.paymentStatus === "completed" && order.paymentKey === paymentKey) {
-    return {
-      ok: true,
-      data: {
-        ok: true,
-        orderId: order.orderId,
-        orderNumber: order.orderNumber,
-        amount: order.paidAmount ?? order.finalAmount ?? Number(amount),
-        paymentStatus: "completed",
-        orderStatus: order.orderStatus,
-        productName: order.productName,
-        brand: order.brand,
-        customerName: order.customerName,
-        vehicleName: order.vehicleName,
-        fulfillmentType: order.fulfillmentType,
-        alreadyConfirmed: true,
-      },
-    };
-  }
-
-  if (order.paymentStatus === "completed") {
-    return {
-      ok: false,
-      status: 409,
-      message: "이미 결제가 완료된 주문입니다.",
-      code: "ALREADY_PAID",
-    };
-  }
-
-  const validation = validateOrderForPayment(order);
-  if (!validation.ok) {
-    return { ok: false, status: 400, message: validation.message };
-  }
-
-  const serverAmount = validation.finalAmount;
-  if (Math.abs(serverAmount - Number(amount)) >= 1) {
-    await storeCommerceOrderUpdate(order.orderId, {
-      paymentStatus: "failed",
-      orderStatus: "payment_failed",
-      paymentFailCode: "AMOUNT_MISMATCH",
-      paymentFailReason: "결제 금액이 일치하지 않습니다.",
-      statusHistory: [
-        ...order.statusHistory,
-        {
-          status: "payment_failed",
-          paymentStatus: "failed",
-          note: "결제 금액 불일치",
-          at: new Date().toISOString(),
-        },
-      ],
-    });
-    return {
-      ok: false,
-      status: 400,
-      message: "결제 금액이 일치하지 않습니다.",
-      code: "AMOUNT_MISMATCH",
-    };
-  }
-
-  const tossResult = await confirmTossPayment({
-    paymentKey,
-    orderId,
-    amount: serverAmount,
-  });
-
-  if (!tossResult.ok) {
-    const failNote = tossResult.message;
-    await storeCommerceOrderUpdate(order.orderId, {
-      paymentStatus: "failed",
-      orderStatus: "payment_failed",
-      paymentFailCode: tossResult.code,
-      paymentFailReason: failNote,
-      statusHistory: [
-        ...order.statusHistory,
-        {
-          status: "payment_failed",
-          paymentStatus: "failed",
-          note: failNote,
-          at: new Date().toISOString(),
-        },
-      ],
-    });
-    return {
-      ok: false,
-      status: tossResult.httpStatus >= 400 ? tossResult.httpStatus : 402,
-      message: "결제 승인에 실패했습니다. 다시 시도해 주세요.",
-      code: tossResult.code,
-    };
-  }
-
-  if (Math.abs(tossResult.totalAmount - serverAmount) >= 1) {
-    await storeCommerceOrderUpdate(order.orderId, {
-      paymentStatus: "failed",
-      orderStatus: "payment_failed",
-      paymentFailCode: "AMOUNT_MISMATCH",
-      paymentFailReason: "토스 승인 금액이 주문 금액과 일치하지 않습니다.",
-      statusHistory: [
-        ...order.statusHistory,
-        {
-          status: "payment_failed",
-          paymentStatus: "failed",
-          note: "토스 승인 금액 불일치",
-          at: new Date().toISOString(),
-        },
-      ],
-    });
-    return {
-      ok: false,
-      status: 400,
-      message: "결제 금액이 일치하지 않습니다. 고객센터로 문의해 주세요.",
-      code: "AMOUNT_MISMATCH",
-    };
-  }
-
-  const approvedAt = tossResult.approvedAt;
-  const now = new Date().toISOString();
-
-  const alreadyRecorded = await hasPromotionUsagesForOrder(order.orderId);
-  if (!alreadyRecorded && order.appliedPromotions?.length) {
-    await recordPromotionUsages(
-      order.appliedPromotions.map((p) => ({
-        promotionId: p.promotionId,
-        memberId: order.userId ?? null,
-        orderId: order.orderId,
-        discountAmount: p.discountAmount,
-        couponCode: p.code,
-      })),
-    );
-  }
-
-  await storeCommerceOrderUpdate(order.orderId, {
-    paymentStatus: "completed",
-    orderStatus: "payment_completed",
-    paymentProvider: "toss",
-    paymentKey: tossResult.paymentKey,
-    pgTransactionId: tossResult.paymentKey,
-    paidAmount: tossResult.totalAmount,
-    paymentMethod: tossResult.method,
-    approvedAt,
-    receiptUrl: tossResult.receiptUrl,
-    tossPaymentStatus: tossResult.status,
-    paymentFailReason: undefined,
-    paymentFailCode: undefined,
-    statusHistory: [
-      ...order.statusHistory,
-      {
-        status: "payment_completed",
-        paymentStatus: "completed",
-        note: `토스 결제 승인 (${tossResult.method})`,
-        at: now,
-      },
-    ],
-  });
-
-  hookAlimtalkOrderCreated({
-    ...order,
-    paymentStatus: "completed",
-    orderStatus: "payment_completed",
-    paidAmount: tossResult.totalAmount,
-  });
-
-  return {
-    ok: true,
-    data: {
-      ok: true,
-      orderId: order.orderId,
-      orderNumber: order.orderNumber,
-      amount: tossResult.totalAmount,
-      paymentStatus: "completed",
-      orderStatus: "payment_completed",
-      productName: order.productName,
-      brand: order.brand,
-      customerName: order.customerName,
-      vehicleName: order.vehicleName,
-      fulfillmentType: order.fulfillmentType,
-    },
-  };
-}
-
-export async function recordCommercePaymentFail(
-  body: PaymentFailRequestBody,
-): Promise<{ ok: boolean; message: string }> {
-  const order = await storeCommerceOrderGet(body.orderId);
-  if (!order) return { ok: false, message: "주문 정보를 찾을 수 없습니다." };
-
-  const code = body.errorCode?.trim() ?? "";
-  const isCancel =
-    code === "PAY_PROCESS_CANCELED" || code === "USER_CANCEL" || /취소|cancel/i.test(code);
-  const reason =
-    body.errorMessage?.trim() ||
-    (isCancel ? "결제가 취소되었습니다." : "결제가 완료되지 않았습니다.");
-  const paymentStatus = isCancel ? "canceled" : "failed";
-  const orderStatus = isCancel ? "payment_failed" : "payment_failed";
-
-  await storeCommerceOrderUpdate(order.orderId, {
-    paymentStatus,
-    orderStatus,
-    paymentFailCode: code || undefined,
-    paymentFailReason: reason,
-    statusHistory: [
-      ...order.statusHistory,
-      {
-        status: orderStatus,
-        paymentStatus,
-        note: reason,
-        at: new Date().toISOString(),
-      },
-    ],
-  });
-
-  return { ok: true, message: "결제 실패 정보가 기록되었습니다." };
 }
 
 export async function getCommerceOrder(orderId: string): Promise<CommerceOrderRecord | null> {

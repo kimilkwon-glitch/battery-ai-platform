@@ -217,15 +217,39 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
   const patch = async (body: Record<string, unknown>): Promise<boolean> => {
     setSaving(true);
     setError(null);
+    const draftMemo = memo;
+    const draftCarrier = carrier;
+    const draftCourier = courierCode;
+    const draftTracking = tracking;
     try {
+      const payload = {
+        ...body,
+        ...(order?.updatedAt ? { expectedUpdatedAt: order.updatedAt } : {}),
+      };
       const res = await fetch(`/api/admin/commerce-orders/${encodeURIComponent(orderId)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(body),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
+        if (res.status === 409 && data.code === "STALE_UPDATE" && data.order) {
+          setOrder(data.order);
+          setPaymentMeta(data.paymentMeta ?? paymentMeta);
+          setAdminMeta(data.adminMeta ?? adminMeta);
+          setNotificationLogs(Array.isArray(data.notificationLogs) ? data.notificationLogs : notificationLogs);
+          setMemo(draftMemo);
+          setCarrier(draftCarrier);
+          setCourierCode(draftCourier);
+          setTracking(draftTracking);
+          const msg =
+            data.message ??
+            "다른 관리자에 의해 변경되었습니다. 최신 주문 정보를 확인한 뒤 다시 저장해 주세요.";
+          setError(msg);
+          setDangerError(msg);
+          return false;
+        }
         const msg = data.message ?? "저장에 실패했습니다.";
         setError(msg);
         setDangerError(msg);
@@ -235,6 +259,16 @@ export function AdminCommerceOrderOpsPanel({ orderId, onUpdated, layout = "panel
       setPaymentMeta(data.paymentMeta);
       setAdminMeta(data.adminMeta ?? null);
       setNotificationLogs(Array.isArray(data.notificationLogs) ? data.notificationLogs : []);
+      if (body.adminMemo === undefined) {
+        setMemo(draftMemo);
+      } else {
+        setMemo(data.adminMeta?.adminMemo ?? draftMemo);
+      }
+      if (body.shippingTrackingNumber === undefined) {
+        setTracking(draftTracking);
+        setCarrier(draftCarrier);
+        setCourierCode(draftCourier);
+      }
       onUpdated?.();
       return true;
     } catch {

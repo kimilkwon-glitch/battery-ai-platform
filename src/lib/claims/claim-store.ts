@@ -71,6 +71,15 @@ export async function claimUpdate(
   return (await getStore()).claimUpdate(id, patch, history);
 }
 
+export type { ClaimTransitionInput, ClaimTransitionResult } from "@/lib/claims/claim-store.postgres";
+
+export async function claimTransitionStatus(
+  id: string,
+  input: import("@/lib/claims/claim-store.postgres").ClaimTransitionInput,
+): Promise<import("@/lib/claims/claim-store.postgres").ClaimTransitionResult> {
+  return (await getStore()).claimTransitionStatus(id, input);
+}
+
 export const CLAIM_STORE_PATH = isOperationalDbMode()
   ? null
   : path.join(process.cwd(), ".data", "commerce-claims.json");

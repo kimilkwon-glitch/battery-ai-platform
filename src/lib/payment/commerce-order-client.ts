@@ -70,6 +70,7 @@ export async function apiConfirmCommercePayment(
   const res = await fetch(API_PAYMENTS_CONFIRM, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(body),
   });
   const data = await res.json();
@@ -89,6 +90,7 @@ export async function apiRecordPaymentFail(
   const res = await fetch(API_PAYMENTS_FAIL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(body),
   });
   const data = await res.json();

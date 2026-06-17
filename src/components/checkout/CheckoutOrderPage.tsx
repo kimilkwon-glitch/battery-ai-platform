@@ -434,6 +434,7 @@ export function CheckoutOrderPage() {
     const session: CheckoutSessionPayload = {
       version: 1,
       flow: isBuyNow ? "buy_now" : "cart",
+      checkoutAttemptId: crypto.randomUUID(),
       items,
       customer: {
         name: contact.name,

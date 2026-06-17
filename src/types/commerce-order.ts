@@ -29,10 +29,12 @@ export type CommercePaymentStatus =
   | "not_started"
   | "preparing"
   | "pending"
+  | "processing"
   | "completed"
   | "failed"
   | "canceled"
-  | "refunded";
+  | "refunded"
+  | "reconcile_needed";
 
 export type CommerceOrderPriceSnapshot = {
   internetPrice: number | null;
@@ -100,8 +102,10 @@ export const COMMERCE_PAYMENT_STATUS_LABELS: Record<CommercePaymentStatus, strin
   not_started: "결제전",
   preparing: "결제 준비",
   pending: "결제대기",
+  processing: "결제확인중",
   completed: "결제완료",
   failed: "결제실패",
   canceled: "결제취소",
   refunded: "환불완료",
+  reconcile_needed: "저장확인필요",
 };

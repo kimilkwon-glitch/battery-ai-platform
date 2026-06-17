@@ -336,3 +336,102 @@ export async function claimUpdate(
   }
   return next;
 }
+
+export type ClaimTransitionInput = {
+  expectedStatuses: ClaimStatus[];
+  nextStatus: ClaimStatus;
+  patch?: Partial<
+    Pick<
+      CommerceClaimRecord,
+      | "adminMemo"
+      | "customerReply"
+      | "needsCustomerNotice"
+      | "assignedTo"
+      | "reviewedAt"
+      | "completedAt"
+    >
+  >;
+  history?: {
+    previousStatus: ClaimStatus | null;
+    nextStatus: ClaimStatus;
+    memo?: string;
+    actorType: "admin" | "system";
+    actorName?: string;
+  };
+};
+
+export type ClaimTransitionResult =
+  | { ok: true; claim: CommerceClaimRecord; transitioned: boolean }
+  | { ok: false; code: string; message: string; status: number; claim?: CommerceClaimRecord };
+
+export async function claimTransitionStatus(
+  id: string,
+  input: ClaimTransitionInput,
+): Promise<ClaimTransitionResult> {
+  await ensureOperationalSchema();
+  const sql = getSql();
+  const prev = await claimGetById(id);
+  if (!prev) {
+    return { ok: false, code: "NOT_FOUND", message: "요청을 찾을 수 없습니다.", status: 404 };
+  }
+
+  if (prev.claimStatus === input.nextStatus) {
+    return { ok: true, claim: prev, transitioned: false };
+  }
+
+  const now = new Date().toISOString();
+  const merged = {
+    adminMemo: input.patch?.adminMemo ?? prev.adminMemo,
+    customerReply: input.patch?.customerReply ?? prev.customerReply,
+    needsCustomerNotice: input.patch?.needsCustomerNotice ?? prev.needsCustomerNotice,
+    assignedTo: input.patch?.assignedTo ?? prev.assignedTo,
+    reviewedAt: input.patch?.reviewedAt ?? prev.reviewedAt,
+    completedAt: input.patch?.completedAt ?? prev.completedAt,
+  };
+
+  const rows = (await sql`
+    UPDATE commerce_claims SET
+      claim_status = ${input.nextStatus},
+      admin_memo = ${merged.adminMemo ?? ""},
+      customer_reply = ${merged.customerReply ?? null},
+      needs_customer_notice = ${merged.needsCustomerNotice ?? false},
+      assigned_to = ${merged.assignedTo ?? null},
+      reviewed_at = ${merged.reviewedAt ?? null},
+      completed_at = ${merged.completedAt ?? null},
+      updated_at = ${now}
+    WHERE id = ${id}
+      AND claim_status = ANY(${input.expectedStatuses})
+    RETURNING id
+  `) as { id: string }[];
+
+  if (!rows[0]) {
+    const refreshed = await claimGetById(id);
+    if (refreshed?.claimStatus === input.nextStatus) {
+      return { ok: true, claim: refreshed, transitioned: false };
+    }
+    return {
+      ok: false,
+      code: "CLAIM_TRANSITION_CONFLICT",
+      message: "다른 관리자가 먼저 처리했거나 상태가 변경되었습니다.",
+      status: 409,
+      claim: refreshed ?? undefined,
+    };
+  }
+
+  if (input.history) {
+    await sql`
+      INSERT INTO commerce_claim_histories (
+        id, claim_id, previous_status, next_status, memo, actor_type, actor_name, created_at
+      ) VALUES (
+        ${newId("clh")}, ${id}, ${input.history.previousStatus}, ${input.history.nextStatus},
+        ${input.history.memo ?? null}, ${input.history.actorType}, ${input.history.actorName ?? null}, ${now}
+      )
+    `;
+  }
+
+  const claim = await claimGetById(id);
+  if (!claim) {
+    return { ok: false, code: "NOT_FOUND", message: "요청을 찾을 수 없습니다.", status: 404 };
+  }
+  return { ok: true, claim, transitioned: true };
+}

@@ -7,6 +7,10 @@ import {
   commerceOrderAdminMetaGet,
   commerceOrderAdminMetaUpsert,
 } from "@/lib/admin/commerce-order-admin-meta-store";
+import {
+  assertAdminOrderNotStale,
+  validateAdminOrderStatusChange,
+} from "@/lib/admin/commerce-admin-order-update.server";
 import { commerceOrderToAdminMeta } from "@/lib/payment/commerce-order-admin-mapper";
 import { getCommerceOrder } from "@/lib/payment/commerce-order-service";
 import { storeCommerceOrderGet, storeCommerceOrderUpdate } from "@/lib/payment/commerce-order-store";
@@ -75,6 +79,7 @@ export async function PATCH(
     courierCode?: string;
     shippedAt?: string;
     statusNote?: string;
+    expectedUpdatedAt?: string;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -90,7 +95,23 @@ export async function PATCH(
   const prevStatus = current.orderStatus;
   const prevTracking = (await commerceOrderAdminMetaGet(orderId))?.shippingTrackingNumber;
 
+  const stale = assertAdminOrderNotStale(current, body.expectedUpdatedAt);
+  if (!stale.ok) {
+    const latest = await getCommerceOrder(orderId);
+    return NextResponse.json(
+      { ok: false, message: stale.message, code: stale.code, order: latest ?? current },
+      { status: 409 },
+    );
+  }
+
   if (body.orderStatus && body.orderStatus !== current.orderStatus) {
+    const transition = validateAdminOrderStatusChange(current.orderStatus, body.orderStatus);
+    if (!transition.ok) {
+      return NextResponse.json(
+        { ok: false, message: transition.message, code: transition.code },
+        { status: 409 },
+      );
+    }
     const now = new Date().toISOString();
     await storeCommerceOrderUpdate(orderId, {
       orderStatus: body.orderStatus,

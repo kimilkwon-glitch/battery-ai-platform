@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { confirmCommercePayment } from "@/lib/payment/commerce-order-service";
 import type { PaymentConfirmRequestBody } from "@/types/commerce-payment";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -9,6 +10,9 @@ export const revalidate = 0;
  * POST — 토스페이먼츠 결제 승인 (서버 전용)
  */
 export async function POST(request: Request) {
+  const blocked = await enforceIpRateLimitOrNull(request, "payments.confirm", 30, 15 * 60 * 1000);
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();
@@ -20,7 +24,7 @@ export async function POST(request: Request) {
   }
 
   const b = body as Partial<PaymentConfirmRequestBody>;
-  const result = await confirmCommercePayment({
+  const result = await confirmCommercePayment(request, {
     orderId: b.orderId?.trim() ?? "",
     paymentRequestId: b.paymentRequestId?.trim(),
     paymentKey: b.paymentKey?.trim(),
