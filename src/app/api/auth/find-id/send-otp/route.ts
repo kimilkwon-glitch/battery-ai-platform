@@ -21,7 +21,9 @@ import {
 import { getMemberStore } from "@/lib/auth/member-store";
 import { isValidPhoneDigits } from "@/lib/auth/signup-validation";
 import { isSmsConfigured, sendPhoneOtpSms } from "@/lib/notifications/sms.server";
-import { checkIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
+import { getTrustedClientIp } from "@/lib/security/client-ip.server";
+import { hashRateLimitIdentity } from "@/lib/security/rate-limit-hash.server";
+import { enforceRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 
@@ -32,14 +34,15 @@ export async function POST(request: Request) {
     return memberServiceUnavailable();
   }
 
-  const ip = getClientIp(request);
-  const ipLimit = checkIpRateLimit(`find-id-send:${ip}`, 10, 15 * 60 * 1000);
-  if (!ipLimit.ok) {
-    return NextResponse.json(
-      { ok: false, message: ACCOUNT_RECOVERY_MESSAGES.rateLimited },
-      { status: 429, headers: { "Retry-After": String(ipLimit.retryAfterSec) } },
-    );
-  }
+  const ip = getTrustedClientIp(request);
+  const ipBlocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "auth.find_id_send",
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+    message: ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  });
+  if (ipBlocked) return ipBlocked;
 
   let body: unknown;
   try {
@@ -57,13 +60,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: GENERIC_FAIL }, { status: 400 });
   }
 
-  const phoneLimit = checkIpRateLimit(`find-id-phone:${phoneDigits}`, 5, 15 * 60 * 1000);
-  if (!phoneLimit.ok) {
-    return NextResponse.json(
-      { ok: false, message: ACCOUNT_RECOVERY_MESSAGES.rateLimited },
-      { status: 429, headers: { "Retry-After": String(phoneLimit.retryAfterSec) } },
-    );
-  }
+  const phoneHash = hashRateLimitIdentity("auth.find_id_send", "phone", phoneDigits);
+  const phoneBlocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "auth.find_id_send",
+    limit: 5,
+    windowMs: 15 * 60 * 1000,
+    ipOnly: false,
+    parts: ["phone", phoneHash],
+    message: ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  });
+  if (phoneBlocked) return phoneBlocked;
+
+  const cooldownBlocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "auth.find_id_cooldown",
+    limit: 1,
+    windowMs: 60 * 1000,
+    ipOnly: false,
+    parts: ["phone", phoneHash],
+    message: ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  });
+  if (cooldownBlocked) return cooldownBlocked;
 
   const store = await getMemberStore();
   const member = await store.findMemberByNameAndPhone(name, phoneDigits);

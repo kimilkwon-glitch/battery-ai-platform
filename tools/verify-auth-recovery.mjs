@@ -111,7 +111,7 @@ assert(
 
 // Rate limit
 assert(
-  fileIncludes("src/app/api/auth/find-id/send-otp/route.ts", "checkIpRateLimit"),
+  fileIncludes("src/app/api/auth/find-id/send-otp/route.ts", "enforceRateLimitOrNull"),
   "find-id rate limited",
 );
 

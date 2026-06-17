@@ -14,6 +14,8 @@ export function isValidPhoneDigits(digits: string): boolean {
   return digits.length >= 10 && digits.length <= 11;
 }
 
+export const MAX_PASSWORD_LENGTH = 128;
+
 export function isValidPassword(value: string): boolean {
-  return value.length >= 8;
+  return value.length >= 8 && value.length <= MAX_PASSWORD_LENGTH;
 }

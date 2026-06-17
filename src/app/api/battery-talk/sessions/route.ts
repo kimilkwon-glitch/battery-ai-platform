@@ -10,6 +10,7 @@ import {
   setBatteryTalkVisitorCookie,
 } from "@/lib/battery-talk/battery-talk-visitor-cookie.server";
 import type { BatteryTalkContext } from "@/types/battery-talk";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +56,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const blocked = await enforceIpRateLimitOrNull(request, "battery_talk.session_create", 10, 15 * 60 * 1000);
+  if (blocked) return blocked;
+
   let body: PostBody;
   try {
     body = (await request.json()) as PostBody;

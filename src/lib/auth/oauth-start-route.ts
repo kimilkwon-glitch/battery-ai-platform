@@ -5,10 +5,19 @@ import {
   oauthStateCookieName,
 } from "@/lib/auth/oauth-start";
 import type { OAuthProvider } from "@/lib/auth/oauth-config";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 const OAUTH_RETURN_COOKIE = "bm_oauth_return";
 
-export function handleOAuthStart(request: NextRequest, provider: OAuthProvider): NextResponse {
+export async function handleOAuthStart(request: NextRequest, provider: OAuthProvider): Promise<NextResponse> {
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    `oauth.${provider}.start`,
+    20,
+    15 * 60 * 1000,
+  );
+  if (blocked) return blocked;
+
   const state = crypto.randomUUID();
   const authorizeUrl = buildOAuthAuthorizeUrl(provider, state);
 

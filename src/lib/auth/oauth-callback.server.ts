@@ -7,6 +7,7 @@ import type { MemberRecord } from "@/lib/auth/member-types";
 import { buildCompleteProfileRedirectUrl } from "@/lib/customer-auth-redirect";
 import { CUSTOMER_MYPAGE } from "@/lib/customer-auth-routes";
 import { memberNeedsProfileComplete } from "@/lib/auth/social-oauth-login.server";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export function oauthLoginFailRedirect(
   request: NextRequest,
@@ -15,6 +16,22 @@ export function oauthLoginFailRedirect(
   const login = new URL("/login", request.url);
   login.searchParams.set("error", errorCode);
   return NextResponse.redirect(login);
+}
+
+export async function oauthCallbackRateLimitOrRedirect(
+  request: NextRequest,
+  provider: "google" | "kakao" | "naver",
+): Promise<NextResponse | null> {
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    `oauth.${provider}.callback`,
+    30,
+    15 * 60 * 1000,
+  );
+  if (blocked) {
+    return oauthLoginFailRedirect(request, `${provider}_login_rate_limited`);
+  }
+  return null;
 }
 
 export async function oauthLoginSuccessRedirect(
@@ -30,6 +47,6 @@ export async function oauthLoginSuccessRedirect(
     : safeReturn;
 
   const response = NextResponse.redirect(new URL(destination, request.url));
-  await attachCustomerSessionCookie(response, member.id);
+  await attachCustomerSessionCookie(response, member.id, { rotate: true });
   return response;
 }

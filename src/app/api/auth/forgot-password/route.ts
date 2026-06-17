@@ -20,7 +20,10 @@ import {
   isEmailConfigured,
   sendPasswordResetEmail,
 } from "@/lib/notifications/email.server";
-import { checkIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
+import { normalizeMemberLoginIdOrEmail } from "@/lib/auth/member-login-identity.server";
+import { getTrustedClientIp } from "@/lib/security/client-ip.server";
+import { hashRateLimitIdentity } from "@/lib/security/rate-limit-hash.server";
+import { enforceRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 import { CUSTOMER_RESET_PASSWORD_PAGE } from "@/lib/customer-auth-routes";
 
 export const dynamic = "force-dynamic";
@@ -30,14 +33,15 @@ export async function POST(request: Request) {
     return memberServiceUnavailable();
   }
 
-  const ip = getClientIp(request);
-  const ipLimit = checkIpRateLimit(`forgot-password:${ip}`, 10, 15 * 60 * 1000);
-  if (!ipLimit.ok) {
-    return NextResponse.json(
-      { ok: false, message: ACCOUNT_RECOVERY_MESSAGES.rateLimited },
-      { status: 429, headers: { "Retry-After": String(ipLimit.retryAfterSec) } },
-    );
-  }
+  const ip = getTrustedClientIp(request);
+  const ipBlocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "auth.forgot_password",
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+    message: ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  });
+  if (ipBlocked) return ipBlocked;
 
   let body: unknown;
   try {
@@ -47,7 +51,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, message: ACCOUNT_RECOVERY_MESSAGES.forgotPasswordOk });
   }
 
-  const idOrEmail = String((body as Record<string, unknown>).idOrEmail ?? "").trim();
+  const idOrEmail = normalizeMemberLoginIdOrEmail(
+    String((body as Record<string, unknown>).idOrEmail ?? ""),
+  );
   if (!idOrEmail) {
     await uniformRecoveryDelay();
     return NextResponse.json({ ok: true, message: ACCOUNT_RECOVERY_MESSAGES.forgotPasswordOk });
@@ -75,13 +81,17 @@ export async function POST(request: Request) {
   }
 
   const email = member.email.trim();
-  const emailLimit = checkIpRateLimit(`forgot-password-email:${email.toLowerCase()}`, 3, 15 * 60 * 1000);
-  if (!emailLimit.ok) {
-    return NextResponse.json(
-      { ok: false, message: ACCOUNT_RECOVERY_MESSAGES.rateLimited },
-      { status: 429, headers: { "Retry-After": String(emailLimit.retryAfterSec) } },
-    );
-  }
+  const emailHash = hashRateLimitIdentity("auth.forgot_password", "email", email);
+  const emailBlocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "auth.forgot_password",
+    limit: 3,
+    windowMs: 15 * 60 * 1000,
+    ipOnly: false,
+    parts: ["email", emailHash],
+    message: ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  });
+  if (emailBlocked) return emailBlocked;
 
   const resetToken = generateResetToken();
   const destinationHash = hashVerificationValue(`reset_password:${member.id}`);

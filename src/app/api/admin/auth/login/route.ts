@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { isAdminAuthConfigured, verifyAdminLogin } from "@/lib/admin/adminAccess";
-import { checkIpRateLimit, clearIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
 import {
   ADMIN_SESSION_COOKIE,
   ADMIN_SESSION_MAX_AGE_SEC,
   mintAdminSessionToken,
 } from "@/lib/admin/adminSession";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
+import { resetRateLimitBucket } from "@/lib/security/rate-limit.server";
+import { getTrustedClientIp } from "@/lib/security/client-ip.server";
+import { hashRateLimitIp } from "@/lib/security/rate-limit-hash.server";
 
 export const dynamic = "force-dynamic";
 
@@ -19,14 +22,13 @@ export async function POST(request: Request) {
     return NextResponse.json(LOGIN_FAIL, { status: 503 });
   }
 
-  const ip = getClientIp(request);
-  const rate = checkIpRateLimit(`admin-login:${ip}`, LOGIN_RATE_LIMIT, LOGIN_RATE_WINDOW_MS);
-  if (!rate.ok) {
-    return NextResponse.json(LOGIN_FAIL, {
-      status: 429,
-      headers: { "Retry-After": String(rate.retryAfterSec) },
-    });
-  }
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    "admin.auth.login",
+    LOGIN_RATE_LIMIT,
+    LOGIN_RATE_WINDOW_MS,
+  );
+  if (blocked) return blocked;
 
   let body: unknown;
   try {
@@ -43,8 +45,11 @@ export async function POST(request: Request) {
     return NextResponse.json(LOGIN_FAIL, { status: 401 });
   }
 
-  // 성공 시 동일 IP rate limit 버킷 초기화
-  clearIpRateLimit(`admin-login:${ip}`);
+  const ip = getTrustedClientIp(request);
+  await resetRateLimitBucket({
+    namespace: "admin.auth.login",
+    parts: ["ip", hashRateLimitIp(ip)],
+  });
 
   const token = await mintAdminSessionToken();
   const response = NextResponse.json({ ok: true });

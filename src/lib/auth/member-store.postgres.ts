@@ -6,7 +6,12 @@ import { hashMemberPassword } from "@/lib/auth/member-password.server";
 import {
   normalizeMemberName,
   normalizeMemberPhoneDigits,
+  formatPhoneForDisplay,
 } from "@/lib/auth/member-normalize";
+import {
+  normalizeMemberEmailForStorage,
+  normalizeMemberLoginIdOrEmail,
+} from "@/lib/auth/member-login-identity.server";
 import { isMemberPreferredStore } from "@/lib/auth/member-preferred-store";
 import { mergeVehicleInfo } from "@/lib/auth/member-profile-parse";
 import type {
@@ -137,7 +142,7 @@ export async function findMemberByNameAndPhone(
 }
 
 export async function findMemberByIdOrEmail(idOrEmail: string): Promise<MemberRecord | null> {
-  const trimmed = idOrEmail.trim();
+  const trimmed = normalizeMemberLoginIdOrEmail(idOrEmail);
   if (!trimmed) return null;
   if (trimmed.includes("@")) {
     return findMemberByEmail(trimmed);
@@ -168,6 +173,8 @@ export async function createCredentialsMember(
   const id = newMemberId();
   const passwordHash = hashMemberPassword(input.password);
   const vehicleInfo = input.vehicleInfo ?? null;
+  const email = normalizeMemberEmailForStorage(input.email);
+  const phone = formatPhoneForDisplay(normalizeMemberPhoneDigits(input.phone));
 
   const rows = (await sql`
     INSERT INTO members (
@@ -176,8 +183,8 @@ export async function createCredentialsMember(
     ) VALUES (
       ${id},
       ${input.loginId.trim()},
-      ${input.email.trim()},
-      ${input.phone.trim()},
+      ${email},
+      ${phone},
       ${input.name.trim()},
       ${passwordHash},
       'credentials',

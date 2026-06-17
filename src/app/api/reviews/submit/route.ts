@@ -8,6 +8,7 @@ import {
   reviewPrimaryImageUrl,
 } from "@/lib/reviews/review-image-policy";
 import { resolveReviewWriteOrder } from "@/lib/reviews/review-write-access.server";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,9 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   }
+
+  const blocked = await enforceIpRateLimitOrNull(request, "reviews.submit", 10, 15 * 60 * 1000);
+  if (blocked) return blocked;
 
   let body: SubmitBody;
   try {

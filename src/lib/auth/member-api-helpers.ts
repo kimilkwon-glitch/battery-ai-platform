@@ -22,13 +22,22 @@ export function isMemberAuthReady(): boolean {
   return isMemberStoreConfigured() && isCustomerAuthConfigured();
 }
 
+export type AttachCustomerSessionOptions = {
+  /** 로그인·OAuth 성공 시 세션 ID 회전(session_epoch bump) */
+  rotate?: boolean;
+};
+
 export async function attachCustomerSessionCookie(
   response: NextResponse,
   userId: string,
+  options?: AttachCustomerSessionOptions,
 ): Promise<NextResponse> {
   let sessionEpoch = 0;
   try {
     const store = await getMemberStore();
+    if (options?.rotate) {
+      await store.bumpMemberSessionEpoch(userId);
+    }
     const member = await store.findMemberById(userId);
     sessionEpoch = member?.sessionEpoch ?? 0;
   } catch {

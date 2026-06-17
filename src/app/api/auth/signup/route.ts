@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
+import { isMemberUniqueViolation } from "@/lib/auth/member-db-errors.server";
 import { MEMBER_AUTH_MESSAGES } from "@/lib/auth/member-auth-errors";
+import {
+  formatPhoneForDisplay,
+  normalizeMemberPhoneDigits,
+} from "@/lib/auth/member-normalize";
+import { normalizeMemberEmailForStorage } from "@/lib/auth/member-login-identity.server";
 import { toMemberPublic } from "@/lib/auth/member-public";
 import { getMemberStore } from "@/lib/auth/member-store";
 import { parseVehicleInfo } from "@/lib/auth/member-profile-parse";
@@ -15,8 +21,12 @@ import {
   isValidPhoneDigits,
 } from "@/lib/auth/signup-validation";
 import { hookAlimtalkSignup } from "@/lib/notifications/alimtalk-hooks.server";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
+
+const SIGNUP_RATE_LIMIT = 10;
+const SIGNUP_RATE_WINDOW_MS = 15 * 60 * 1000;
 
 type SignupBody = {
   loginId?: string;
@@ -28,12 +38,27 @@ type SignupBody = {
   address?: string;
   detailAddress?: string;
   vehicleInfo?: unknown;
+  agreeTerms?: boolean;
+  agreePrivacy?: boolean;
 };
+
+function isAgreed(value: unknown): boolean {
+  return value === true || value === "true" || value === 1 || value === "1";
+}
 
 export async function POST(request: Request) {
   if (!isMemberAuthReady()) {
     return memberServiceUnavailable();
   }
+
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    "auth.signup",
+    SIGNUP_RATE_LIMIT,
+    SIGNUP_RATE_WINDOW_MS,
+    MEMBER_AUTH_MESSAGES.signupConflict,
+  );
+  if (blocked) return blocked;
 
   let body: SignupBody;
   try {
@@ -45,11 +70,19 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!isAgreed(body.agreeTerms) || !isAgreed(body.agreePrivacy)) {
+    return NextResponse.json(
+      { ok: false, message: MEMBER_AUTH_MESSAGES.invalidInput },
+      { status: 400 },
+    );
+  }
+
   const loginId = String(body.loginId ?? "").trim();
   const password = String(body.password ?? "");
   const name = String(body.name ?? "").trim();
-  const phone = String(body.phone ?? "").trim();
-  const email = String(body.email ?? "").trim();
+  const phoneDigits = normalizeMemberPhoneDigits(String(body.phone ?? ""));
+  const phone = formatPhoneForDisplay(phoneDigits);
+  const email = normalizeMemberEmailForStorage(String(body.email ?? ""));
   const zonecode = String(body.zonecode ?? "").trim();
   const address = String(body.address ?? "").trim();
   const detailAddress = String(body.detailAddress ?? "").trim();
@@ -59,7 +92,7 @@ export async function POST(request: Request) {
     !isValidLoginId(loginId) ||
     !isValidPassword(password) ||
     !name ||
-    !isValidPhoneDigits(phone.replace(/\D/g, "")) ||
+    !isValidPhoneDigits(phoneDigits) ||
     !isValidEmail(email) ||
     !zonecode ||
     !address ||
@@ -73,23 +106,13 @@ export async function POST(request: Request) {
 
   const store = await getMemberStore();
 
-  if (await store.findMemberByLoginId(loginId)) {
+  if (
+    (await store.findMemberByLoginId(loginId)) ||
+    (await store.findMemberByEmail(email)) ||
+    (await store.findMemberByPhone(phoneDigits))
+  ) {
     return NextResponse.json(
-      { ok: false, message: MEMBER_AUTH_MESSAGES.loginIdTaken },
-      { status: 409 },
-    );
-  }
-
-  if (await store.findMemberByEmail(email)) {
-    return NextResponse.json(
-      { ok: false, message: MEMBER_AUTH_MESSAGES.emailTaken },
-      { status: 409 },
-    );
-  }
-
-  if (await store.findMemberByPhone(phone)) {
-    return NextResponse.json(
-      { ok: false, message: MEMBER_AUTH_MESSAGES.phoneTaken },
+      { ok: false, message: MEMBER_AUTH_MESSAGES.signupConflict },
       { status: 409 },
     );
   }
@@ -113,8 +136,14 @@ export async function POST(request: Request) {
       ok: true,
       member: toMemberPublic(member),
     });
-    return attachCustomerSessionCookie(response, member.id);
-  } catch {
+    return attachCustomerSessionCookie(response, member.id, { rotate: true });
+  } catch (err) {
+    if (isMemberUniqueViolation(err)) {
+      return NextResponse.json(
+        { ok: false, message: MEMBER_AUTH_MESSAGES.signupConflict },
+        { status: 409 },
+      );
+    }
     return NextResponse.json(
       { ok: false, message: MEMBER_AUTH_MESSAGES.serviceUnavailable },
       { status: 500 },

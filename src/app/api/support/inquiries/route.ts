@@ -11,6 +11,7 @@ import {
 import { submitProductQnaFromRequest } from "@/lib/inquiry/product-qna-submit.server";
 import { toProductQnaPublicItem } from "@/lib/product-qna-public";
 import { isProductQnaSource, type InquirySource } from "@/types/customer-inquiry";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const blocked = await enforceIpRateLimitOrNull(request, "support.inquiries", 15, 15 * 60 * 1000);
+  if (blocked) return blocked;
+
   let body: Record<string, unknown>;
   try {
     body = (await request.json()) as Record<string, unknown>;

@@ -27,6 +27,6 @@ export async function verifyCustomerSessionWithEpoch(
 
     return session;
   } catch {
-    return session;
+    return null;
   }
 }

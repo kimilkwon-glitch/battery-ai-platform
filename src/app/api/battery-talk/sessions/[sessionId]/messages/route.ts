@@ -6,6 +6,7 @@ import {
   batteryTalkAddCustomerMessage,
   batteryTalkGetMessages,
 } from "@/lib/battery-talk/battery-talk-store";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,14 @@ export async function GET(request: Request, ctx: RouteCtx) {
 }
 
 export async function POST(request: Request, ctx: RouteCtx) {
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    "battery_talk.message_send",
+    30,
+    15 * 60 * 1000,
+  );
+  if (blocked) return blocked;
+
   const { sessionId } = await ctx.params;
   let body: PostBody;
   try {

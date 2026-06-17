@@ -2,15 +2,27 @@ import { NextResponse } from "next/server";
 import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
 import { createCommerceOrder } from "@/lib/payment/commerce-order-service";
 import { validateCreateOrderBody } from "@/lib/payment/validate-order-payload";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+const ORDER_CREATE_RATE_LIMIT = 30;
+const ORDER_CREATE_RATE_WINDOW_MS = 15 * 60 * 1000;
 
 /**
  * POST — 자사몰 주문 생성 (PG 연동 전)
  * 실제 결제 완료 전까지 orderStatus=결제대기, paymentStatus=결제전
  */
 export async function POST(request: Request) {
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    "orders.create",
+    ORDER_CREATE_RATE_LIMIT,
+    ORDER_CREATE_RATE_WINDOW_MS,
+  );
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();
@@ -30,13 +42,21 @@ export async function POST(request: Request) {
   }
 
   const session = await getVerifiedCustomerSessionFromRequest(request);
+  const baseCustomer = validated.data.customerInfo;
+
   const orderBody = {
     ...validated.data,
-    customerInfo: {
-      ...validated.data.customerInfo,
-      userId: session?.userId,
-      customerType: session ? "member" : (validated.data.customerInfo.customerType ?? "guest"),
-    },
+    customerInfo: session?.userId
+      ? {
+          ...baseCustomer,
+          userId: session.userId,
+          customerType: "member" as const,
+        }
+      : {
+          ...baseCustomer,
+          userId: undefined,
+          customerType: "guest" as const,
+        },
   };
 
   const result = await createCommerceOrder(orderBody);

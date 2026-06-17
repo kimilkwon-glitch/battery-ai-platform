@@ -18,7 +18,7 @@ import {
 } from "@/lib/auth/member-api-helpers";
 import { getMemberStore } from "@/lib/auth/member-store";
 import { isValidPhoneDigits } from "@/lib/auth/signup-validation";
-import { checkIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 import { CUSTOMER_FORGOT_PASSWORD_PAGE, CUSTOMER_LOGIN_PAGE } from "@/lib/customer-auth-routes";
 
 export const dynamic = "force-dynamic";
@@ -30,14 +30,14 @@ export async function POST(request: Request) {
     return memberServiceUnavailable();
   }
 
-  const ip = getClientIp(request);
-  const ipLimit = checkIpRateLimit(`find-id-verify:${ip}`, 20, 15 * 60 * 1000);
-  if (!ipLimit.ok) {
-    return NextResponse.json(
-      { ok: false, message: ACCOUNT_RECOVERY_MESSAGES.rateLimited },
-      { status: 429, headers: { "Retry-After": String(ipLimit.retryAfterSec) } },
-    );
-  }
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    "auth.find_id_verify",
+    20,
+    15 * 60 * 1000,
+    ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  );
+  if (blocked) return blocked;
 
   let body: unknown;
   try {

@@ -139,6 +139,8 @@ function SignupFormInner({ redirect }: { redirect?: string | null }) {
           zonecode: postalCode.trim(),
           address: address1.trim(),
           detailAddress: address2.trim(),
+          agreeTerms: true,
+          agreePrivacy: true,
         }),
       });
 

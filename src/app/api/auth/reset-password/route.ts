@@ -9,7 +9,7 @@ import {
 import { getMemberStore } from "@/lib/auth/member-store";
 import { verifyResetTokenByUserId } from "@/lib/auth/verification-token.server";
 import { isValidPassword } from "@/lib/auth/signup-validation";
-import { checkIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 
@@ -18,14 +18,14 @@ export async function POST(request: Request) {
     return memberServiceUnavailable();
   }
 
-  const ip = getClientIp(request);
-  const ipLimit = checkIpRateLimit(`reset-password:${ip}`, 15, 15 * 60 * 1000);
-  if (!ipLimit.ok) {
-    return NextResponse.json(
-      { ok: false, message: ACCOUNT_RECOVERY_MESSAGES.rateLimited },
-      { status: 429, headers: { "Retry-After": String(ipLimit.retryAfterSec) } },
-    );
-  }
+  const blocked = await enforceIpRateLimitOrNull(
+    request,
+    "auth.reset_password",
+    15,
+    15 * 60 * 1000,
+    ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  );
+  if (blocked) return blocked;
 
   let body: unknown;
   try {

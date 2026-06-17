@@ -10,7 +10,8 @@ import { MEMBER_AUTH_MESSAGES } from "@/lib/auth/member-auth-errors";
 import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
 import { getMemberStore } from "@/lib/auth/member-store";
 import { isValidPassword } from "@/lib/auth/signup-validation";
-import { checkIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
+import { enforceRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
+import { hashRateLimitIdentity } from "@/lib/security/rate-limit-hash.server";
 
 export const dynamic = "force-dynamic";
 
@@ -27,14 +28,15 @@ export async function POST(request: Request) {
     );
   }
 
-  const ip = getClientIp(request);
-  const ipLimit = checkIpRateLimit(`change-password:${session.userId}:${ip}`, 10, 15 * 60 * 1000);
-  if (!ipLimit.ok) {
-    return NextResponse.json(
-      { ok: false, message: ACCOUNT_RECOVERY_MESSAGES.rateLimited },
-      { status: 429, headers: { "Retry-After": String(ipLimit.retryAfterSec) } },
-    );
-  }
+  const blocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "auth.change_password",
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+    parts: ["user", hashRateLimitIdentity("auth.change_password", session.userId)],
+    message: ACCOUNT_RECOVERY_MESSAGES.rateLimited,
+  });
+  if (blocked) return blocked;
 
   let body: unknown;
   try {

@@ -9,7 +9,8 @@ import {
 } from "@/lib/orders/customer-lookup-identity";
 import { storeCommerceOrderLookupByCustomerIdentity } from "@/lib/payment/commerce-order-store";
 import { attachGuestCustomerAccessCookie } from "@/lib/security/guest-order-access.server";
-import { checkIpRateLimit, getClientIp } from "@/lib/security/ip-rate-limit.server";
+import { hashRateLimitIdentity } from "@/lib/security/rate-limit-hash.server";
+import { enforceRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,14 +20,14 @@ const LOOKUP_RATE_LIMIT = 20;
 const LOOKUP_RATE_WINDOW_MS = 15 * 60 * 1000;
 
 export async function POST(request: Request) {
-  const ip = getClientIp(request);
-  const rate = checkIpRateLimit(`orders-lookup:${ip}`, LOOKUP_RATE_LIMIT, LOOKUP_RATE_WINDOW_MS);
-  if (!rate.ok) {
-    return NextResponse.json(
-      { ok: false, message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요." },
-      { status: 429, headers: { "Retry-After": String(rate.retryAfterSec) } },
-    );
-  }
+  const ipBlocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "orders.lookup",
+    limit: LOOKUP_RATE_LIMIT,
+    windowMs: LOOKUP_RATE_WINDOW_MS,
+    message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+  });
+  if (ipBlocked) return ipBlocked;
 
   let body: unknown;
   try {
@@ -43,17 +44,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: NOT_FOUND_MESSAGE }, { status: 422 });
   }
 
-  const identityRate = checkIpRateLimit(
-    `orders-lookup-id:${ip}:${phoneDigits.slice(-4)}`,
-    10,
-    LOOKUP_RATE_WINDOW_MS,
+  const identityHash = hashRateLimitIdentity(
+    "orders.lookup",
+    "identity",
+    customerName,
+    phoneDigits.slice(-4),
   );
-  if (!identityRate.ok) {
-    return NextResponse.json(
-      { ok: false, message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요." },
-      { status: 429, headers: { "Retry-After": String(identityRate.retryAfterSec) } },
-    );
-  }
+  const identityBlocked = await enforceRateLimitOrNull({
+    request,
+    namespace: "orders.lookup",
+    limit: 10,
+    windowMs: LOOKUP_RATE_WINDOW_MS,
+    ipOnly: false,
+    parts: ["identity", identityHash],
+    message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+  });
+  if (identityBlocked) return identityBlocked;
 
   try {
     const records = await storeCommerceOrderLookupByCustomerIdentity(customerName, phoneDigits);

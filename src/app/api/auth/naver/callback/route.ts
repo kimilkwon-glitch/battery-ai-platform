@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOAuthRedirectUri } from "@/lib/auth/oauth-config";
 import {
+  oauthCallbackRateLimitOrRedirect,
   oauthLoginFailRedirect,
   oauthLoginSuccessRedirect,
 } from "@/lib/auth/oauth-callback.server";
@@ -13,6 +14,9 @@ import { oauthStateCookieName } from "@/lib/auth/oauth-start";
 import { upsertSocialOAuthMember } from "@/lib/auth/social-oauth-login.server";
 
 export async function GET(request: NextRequest) {
+  const rateRedirect = await oauthCallbackRateLimitOrRedirect(request, "naver");
+  if (rateRedirect) return rateRedirect;
+
   const code = request.nextUrl.searchParams.get("code");
   const error = request.nextUrl.searchParams.get("error");
   const state = request.nextUrl.searchParams.get("state");

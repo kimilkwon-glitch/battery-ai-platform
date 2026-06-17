@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import {
+  oauthCallbackRateLimitOrRedirect,
   oauthLoginFailRedirect,
   oauthLoginSuccessRedirect,
 } from "@/lib/auth/oauth-callback.server";
@@ -12,6 +13,9 @@ import {
 import { upsertSocialOAuthMember } from "@/lib/auth/social-oauth-login.server";
 
 export async function GET(request: NextRequest) {
+  const rateRedirect = await oauthCallbackRateLimitOrRedirect(request, "kakao");
+  if (rateRedirect) return rateRedirect;
+
   const code = request.nextUrl.searchParams.get("code");
   const error = request.nextUrl.searchParams.get("error");
   const state = request.nextUrl.searchParams.get("state");

@@ -45,6 +45,6 @@ export async function GET(request: NextRequest) {
     member: toMemberPublic(member),
   });
   response.cookies.delete(GOOGLE_OAUTH_HANDOFF_COOKIE);
-  await attachCustomerSessionCookie(response, member.id);
+  await attachCustomerSessionCookie(response, member.id, { rotate: true });
   return response;
 }
