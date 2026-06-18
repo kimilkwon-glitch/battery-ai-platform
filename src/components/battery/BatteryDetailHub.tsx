@@ -61,9 +61,12 @@ function BatteryDetailMobileSticky({
               variant="navy"
               className="battery-detail-sticky-bar__btn min-h-[2.75rem] flex-1"
               batteryCode={code}
+              brandId={brandId}
+              brandName={brandName}
               vehicleSlug={vehicleContext.vehicleSlug}
               vehicleTitle={vehicleContext.vehicleTitle}
               fuelLabel={vehicleContext.fuel}
+              year={vehicleContext.year}
               usedBatteryReturnOption={returnOption}
             />
           ) : (

@@ -47,6 +47,31 @@ export function validateAdminOrderStatusChange(
     }
   }
 
+  const fulfillmentForward: Partial<Record<CommerceOrderLifecycleStatus, number>> = {
+    payment_completed: 1,
+    order_confirmed: 2,
+    preparing: 3,
+    in_transit: 4,
+    shipping: 5,
+    delivered: 6,
+    picked_up: 6,
+    work_completed: 6,
+  };
+  const curRank = fulfillmentForward[current];
+  const nextRank = fulfillmentForward[next];
+  if (
+    curRank != null &&
+    nextRank != null &&
+    nextRank < curRank &&
+    !TERMINAL_ORDER_STATUSES.has(next)
+  ) {
+    return {
+      ok: false,
+      message: "배송·완료 진행 중인 주문은 이전 단계로 되돌릴 수 없습니다.",
+      code: "STATUS_REGRESSION_BLOCKED",
+    };
+  }
+
   return { ok: true };
 }
 

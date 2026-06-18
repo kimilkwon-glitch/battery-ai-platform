@@ -21,6 +21,7 @@ export function SupportCenterClient() {
   const [query, setQuery] = useState("");
   const [inquiryKind, setInquiryKind] = useState<InquiryKind>("general");
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
+  const [submittingInquiry, setSubmittingInquiry] = useState(false);
   const [generalForm, setGeneralForm] = useState({
     name: "",
     contact: "",
@@ -55,35 +56,47 @@ export function SupportCenterClient() {
 
   const submitGeneral = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await submitInquiry({
-      name: generalForm.name.trim() || "고객",
-      contact: generalForm.contact.trim(),
-      vehicle: generalForm.vehicle.trim() || undefined,
-      message: generalForm.message.trim(),
-      pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
-      source: "support",
-      inquiryType: "일반문의",
-      category: "other",
-    });
-    if (result.ok) setInquirySubmitted(true);
+    if (submittingInquiry) return;
+    setSubmittingInquiry(true);
+    try {
+      const result = await submitInquiry({
+        name: generalForm.name.trim() || "고객",
+        contact: generalForm.contact.trim(),
+        vehicle: generalForm.vehicle.trim() || undefined,
+        message: generalForm.message.trim(),
+        pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
+        source: "support",
+        inquiryType: "일반문의",
+        category: "other",
+      });
+      if (result.ok) setInquirySubmitted(true);
+    } finally {
+      setSubmittingInquiry(false);
+    }
   };
 
   const submitReturn = async (e: React.FormEvent) => {
     e.preventDefault();
-    const region = returnForm.region.trim();
-    const body = returnForm.message.trim();
-    const result = await submitInquiry({
-      name: returnForm.name.trim() || "고객",
-      contact: returnForm.contact.trim(),
-      message: [region ? `회수 지역: ${region}` : null, body || "폐배터리 회수 신청"]
-        .filter(Boolean)
-        .join("\n"),
-      pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
-      source: "support",
-      inquiryType: "폐배터리회수",
-      category: "return",
-    });
-    if (result.ok) setInquirySubmitted(true);
+    if (submittingInquiry) return;
+    setSubmittingInquiry(true);
+    try {
+      const region = returnForm.region.trim();
+      const body = returnForm.message.trim();
+      const result = await submitInquiry({
+        name: returnForm.name.trim() || "고객",
+        contact: returnForm.contact.trim(),
+        message: [region ? `회수 지역: ${region}` : null, body || "폐배터리 회수 신청"]
+          .filter(Boolean)
+          .join("\n"),
+        pageUrl: typeof window !== "undefined" ? window.location.href : undefined,
+        source: "support",
+        inquiryType: "폐배터리회수",
+        category: "return",
+      });
+      if (result.ok) setInquirySubmitted(true);
+    } finally {
+      setSubmittingInquiry(false);
+    }
   };
 
   return (
@@ -261,8 +274,12 @@ export function SupportCenterClient() {
                       }
                     />
                   </label>
-                  <button type="submit" className={`${bm.btnPrimary} min-h-[3.25rem] w-full`}>
-                    문의 접수하기
+                  <button
+                    type="submit"
+                    disabled={submittingInquiry}
+                    className={`${bm.btnPrimary} min-h-[3.25rem] w-full disabled:cursor-not-allowed disabled:opacity-50`}
+                  >
+                    {submittingInquiry ? "접수 중…" : "문의 접수하기"}
                   </button>
                 </form>
               ) : (
@@ -314,8 +331,12 @@ export function SupportCenterClient() {
                       }
                     />
                   </label>
-                  <button type="submit" className={`${bm.btnPrimary} min-h-[3.25rem] w-full`}>
-                    회수 신청하기
+                  <button
+                    type="submit"
+                    disabled={submittingInquiry}
+                    className={`${bm.btnPrimary} min-h-[3.25rem] w-full disabled:cursor-not-allowed disabled:opacity-50`}
+                  >
+                    {submittingInquiry ? "접수 중…" : "회수 신청하기"}
                   </button>
                 </form>
               )}

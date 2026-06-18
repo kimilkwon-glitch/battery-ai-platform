@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { CheckoutPriceSummaryPanel } from "@/components/checkout/CheckoutPriceSummaryPanel";
 import { CheckoutProductSummary } from "@/components/checkout/CheckoutProductSummary";
 import {
@@ -105,6 +105,7 @@ export function CheckoutReviewPage() {
   const [payError, setPayError] = useState<string | null>(null);
   const [amountConfirmed, setAmountConfirmed] = useState(false);
   const [prepare, setPrepare] = useState<PaymentPrepareResponse | null>(null);
+  const startPaymentInFlight = useRef(false);
 
   const checkoutBackHref = useMemo(() => {
     if (session?.flow === "buy_now") return `${CHECKOUT_PAGE}?flow=buy_now`;
@@ -112,13 +113,14 @@ export function CheckoutReviewPage() {
   }, [session?.flow]);
 
   const handleStartPayment = async () => {
-    if (!session) return;
+    if (!session || startPaymentInFlight.current || submitting || prepare) return;
 
     if (!paymentLive) {
       setAmountConfirmed(true);
       return;
     }
 
+    startPaymentInFlight.current = true;
     setSubmitting(true);
     setError(null);
     setPayError(null);
@@ -127,6 +129,7 @@ export function CheckoutReviewPage() {
     if (!createRes.ok) {
       setError(createRes.message);
       setSubmitting(false);
+      startPaymentInFlight.current = false;
       return;
     }
 
@@ -141,6 +144,7 @@ export function CheckoutReviewPage() {
       });
       setError("결제 예정금액이 변경되었습니다. 주문서를 다시 확인해 주세요.");
       setSubmitting(false);
+      startPaymentInFlight.current = false;
       return;
     }
 
@@ -153,6 +157,7 @@ export function CheckoutReviewPage() {
     if (!prepareRes.ok) {
       setError(prepareRes.message);
       setSubmitting(false);
+      startPaymentInFlight.current = false;
       return;
     }
 
@@ -166,6 +171,7 @@ export function CheckoutReviewPage() {
       });
       setError("결제 금액이 일치하지 않습니다. 주문서를 다시 확인해 주세요.");
       setSubmitting(false);
+      startPaymentInFlight.current = false;
       return;
     }
 
@@ -179,6 +185,7 @@ export function CheckoutReviewPage() {
 
     setPrepare(prepareRes.data);
     setSubmitting(false);
+    startPaymentInFlight.current = false;
   };
 
   if (!session || session.items.length === 0) {
@@ -348,6 +355,17 @@ export function CheckoutReviewPage() {
             <p className="text-xs font-bold text-red-600" role="alert">
               {error}
             </p>
+          ) : null}
+
+          {prepare && paymentLive ? (
+            <div className="lg:hidden">
+              <CheckoutPaymentSection
+                prepare={prepare}
+                preparing={submitting}
+                payError={payError}
+                onPayError={setPayError}
+              />
+            </div>
           ) : null}
 
           <Link href={checkoutBackHref} className={`${bm.btnTertiary} hidden lg:inline-flex text-sm`}>

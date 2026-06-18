@@ -30,9 +30,12 @@ type Props = {
   | {
       mode: "vehicle";
       batteryCode: string;
+      brandId?: string;
+      brandName?: string;
       vehicleSlug: string;
       vehicleTitle: string;
       fuelLabel?: string;
+      year?: string;
       usedBatteryReturnOption?: BatteryReturnOption;
     }
 );
@@ -60,9 +63,12 @@ export function AddToCartButton({
       props.mode === "vehicle"
         ? createCartItemFromVehicleBattery({
             batteryCode: props.batteryCode,
+            brandId: props.brandId,
+            brandName: props.brandName,
             vehicleSlug: props.vehicleSlug,
             vehicleTitle: props.vehicleTitle,
             fuelLabel: props.fuelLabel,
+            year: props.year,
             usedBatteryReturnOption: props.usedBatteryReturnOption,
           })
         : createCartItemFromBattery({

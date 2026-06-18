@@ -219,9 +219,12 @@ export function BatteryDetailOrderPanel({
                 variant="navy"
                 className="w-full min-h-[3.25rem]"
                 batteryCode={code}
+                brandId={brandId}
+                brandName={brandName}
                 vehicleSlug={vehicleContext.vehicleSlug}
                 vehicleTitle={vehicleContext.vehicleTitle}
                 fuelLabel={vehicleContext.fuel}
+                year={vehicleContext.year}
                 usedBatteryReturnOption={returnOption}
               />
             ) : (

@@ -400,6 +400,7 @@ export function CheckoutOrderPage() {
     checklistComplete;
 
   const handleGoToReview = () => {
+    if (navigating) return;
     setValidationError(null);
     if (!canConfirm) {
       setValidationError(

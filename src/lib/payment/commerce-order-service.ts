@@ -16,6 +16,7 @@ import {
   isTossTestMode,
 } from "@/lib/payment/toss-payments.server";
 import { validateOrderForPayment } from "@/lib/payment/validate-order-for-payment";
+import { validateOrderCatalogForCreate } from "@/lib/payment/validate-order-catalog.server";
 import { assertOrderPaymentAccess } from "@/lib/payment/order-payment-access.server";
 import {
   checkoutAttemptMemberMatches,
@@ -171,6 +172,16 @@ export async function createCommerceOrder(
       ok: false,
       status: 400,
       message: "결제 예정금액을 계산할 수 없습니다. 수령/장착 방식을 확인해 주세요.",
+    };
+  }
+
+  const catalogValidation = await validateOrderCatalogForCreate(body);
+  if (!catalogValidation.ok) {
+    return {
+      ok: false,
+      status: catalogValidation.status,
+      message: catalogValidation.message,
+      errors: catalogValidation.code ? [catalogValidation.code] : undefined,
     };
   }
 

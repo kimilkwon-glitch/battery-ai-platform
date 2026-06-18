@@ -151,6 +151,10 @@ export function AdminBatteryTalkClient() {
   const streamDisconnected = useBatteryTalkAdminStream((event) => {
     if (event.type === "session") {
       if (shouldExcludeBatteryTalkSummaryFromAdmin(event.session)) return;
+      if (statusTab !== "all" && event.session.status !== statusTab) {
+        setItems((prev) => prev.filter((i) => i.threadId !== event.session.threadId));
+        return;
+      }
       setItems((prev) => {
         const idx = prev.findIndex((i) => i.threadId === event.session.threadId);
         if (idx < 0) return [event.session, ...prev];
@@ -210,7 +214,7 @@ export function AdminBatteryTalkClient() {
   };
 
   const sendReply = async () => {
-    if (!selectedId || !replyDraft.trim()) return;
+    if (!selectedId || !replyDraft.trim() || saving) return;
     setSaving(true);
     const res = await fetch(`/api/admin/battery-talk/${selectedId}/messages`, {
       method: "POST",
@@ -234,7 +238,7 @@ export function AdminBatteryTalkClient() {
   };
 
   const recallMessage = async (messageId: string) => {
-    if (!selectedId || !confirm("이 메시지를 회수하시겠습니까?")) return;
+    if (!selectedId || !confirm("이 메시지를 회수하시겠습니까?") || saving) return;
     setSaving(true);
     const res = await fetch(
       `/api/admin/battery-talk/${selectedId}/messages/${messageId}`,
@@ -259,7 +263,7 @@ export function AdminBatteryTalkClient() {
   };
 
   const patchStatus = async (status: BatteryTalkThreadStatus) => {
-    if (!selectedId) return;
+    if (!selectedId || saving) return;
     setSaving(true);
     const res = await fetch(`/api/admin/battery-talk/${selectedId}`, {
       method: "PATCH",
@@ -282,15 +286,28 @@ export function AdminBatteryTalkClient() {
   };
 
   const saveMemo = async () => {
-    if (!selectedId) return;
+    if (!selectedId || saving) return;
     setSaving(true);
-    await fetch(`/api/admin/battery-talk/${selectedId}`, {
-      method: "PATCH",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ adminMemo: memoDraft }),
-    });
-    setSaving(false);
+    try {
+      const res = await fetch(`/api/admin/battery-talk/${selectedId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminMemo: memoDraft }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        applyDetail({
+          thread: data.thread,
+          inquiryCount: data.inquiryCount,
+          order: data.order,
+          product: data.product,
+          vehicle: data.vehicle,
+        });
+      }
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleReplyKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

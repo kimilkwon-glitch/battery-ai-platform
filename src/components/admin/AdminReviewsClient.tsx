@@ -29,6 +29,8 @@ export function AdminReviewsClient() {
   const [form, setForm] = useState<CustomerReviewUpsertInput>(EMPTY);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const load = useCallback(async (p = 1, append = false) => {
     setLoading(true);
@@ -48,20 +50,34 @@ export function AdminReviewsClient() {
   }, [load]);
 
   const save = async () => {
-    const url = editingId ? `/api/admin/reviews/${editingId}` : "/api/admin/reviews";
-    await fetch(url, {
-      method: editingId ? "PATCH" : "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    setShowForm(false);
-    await load(1);
+    if (saving) return;
+    setSaving(true);
+    try {
+      const url = editingId ? `/api/admin/reviews/${editingId}` : "/api/admin/reviews";
+      const res = await fetch(url, {
+        method: editingId ? "PATCH" : "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setShowForm(false);
+        await load(1);
+      }
+    } finally {
+      setSaving(false);
+    }
   };
 
   const toggle = async (id: string) => {
-    await fetch(`/api/admin/reviews/${id}/toggle`, { method: "POST", credentials: "include" });
-    await load(1);
+    if (togglingId) return;
+    setTogglingId(id);
+    try {
+      await fetch(`/api/admin/reviews/${id}/toggle`, { method: "POST", credentials: "include" });
+      await load(1);
+    } finally {
+      setTogglingId(null);
+    }
   };
 
   return (
@@ -79,7 +95,7 @@ export function AdminReviewsClient() {
           <label className="text-xs block"><span className="font-bold">순서</span><input type="number" className="mt-1 w-full rounded border px-2 py-1.5" value={form.sortOrder ?? 0} onChange={(e) => setForm((f) => ({ ...f, sortOrder: Number(e.target.value) }))} /></label>
           <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={form.showOnMain} onChange={(e) => setForm((f) => ({ ...f, showOnMain: e.target.checked }))} />메인 노출</label>
           <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={form.featured} onChange={(e) => setForm((f) => ({ ...f, featured: e.target.checked }))} />대표 후기</label>
-          <div className="sm:col-span-2 flex justify-end gap-2"><button type="button" className={bm.btnTertiary} onClick={() => setShowForm(false)}>취소</button><button type="button" className={bm.btnNavy} onClick={() => void save()}>저장</button></div>
+          <div className="sm:col-span-2 flex justify-end gap-2"><button type="button" className={bm.btnTertiary} onClick={() => setShowForm(false)} disabled={saving}>취소</button><button type="button" className={bm.btnNavy} disabled={saving} onClick={() => void save()}>{saving ? "저장 중…" : "저장"}</button></div>
         </section>
       ) : null}
       <table className={`${bm.card} w-full text-xs`}>
@@ -93,7 +109,7 @@ export function AdminReviewsClient() {
               <td className="p-3">{r.status}</td>
               <td className="p-3 space-x-2">
                 <button type="button" className="font-bold text-blue-700" onClick={() => { setEditingId(r.id); setForm(r); setShowForm(true); }}>수정</button>
-                <button type="button" className="font-bold text-slate-600" onClick={() => void toggle(r.id)}>토글</button>
+                <button type="button" className="font-bold text-slate-600" disabled={togglingId === r.id} onClick={() => void toggle(r.id)}>{togglingId === r.id ? "처리 중…" : "토글"}</button>
               </td>
             </tr>
           ))}

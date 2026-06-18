@@ -98,8 +98,19 @@ export async function PATCH(
   const stale = assertAdminOrderNotStale(current, body.expectedUpdatedAt);
   if (!stale.ok) {
     const latest = await getCommerceOrder(orderId);
+    const resolved = latest ?? current;
+    const adminMetaOnStale = await commerceOrderAdminMetaGet(orderId);
+    const notificationLogsOnStale = await notificationLogListForOrder(orderId);
     return NextResponse.json(
-      { ok: false, message: stale.message, code: stale.code, order: latest ?? current },
+      {
+        ok: false,
+        message: stale.message,
+        code: stale.code,
+        order: resolved,
+        paymentMeta: commerceOrderToAdminMeta(resolved),
+        adminMeta: adminMetaOnStale,
+        notificationLogs: notificationLogsOnStale,
+      },
       { status: 409 },
     );
   }

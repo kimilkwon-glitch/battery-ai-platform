@@ -24,6 +24,7 @@
     "verify:checkout-fulfillment": "node tools/verify-checkout-fulfillment-flow.mjs",
     "verify:payment-confirm": "node tools/verify-payment-confirm-integration.mjs",
     "verify:payment-concurrency": "node tools/verify-payment-concurrency.mjs",
+    "verify:order-catalog-guard": "node tools/verify-order-catalog-guard.mjs",
     "verify:operational-stability": "node tools/verify-operational-stability.mjs",
     "verify:checkout-price": "node tools/verify-checkout-price-display.mjs",
     "verify:order-pricing": "node scripts/verify-order-pricing.mjs",

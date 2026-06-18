@@ -186,10 +186,10 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
         now,
       });
       void side;
-      const order = await storeCommerceOrderGet(transition.claim.orderId);
-      if (order) {
+      const orderForHook = await storeCommerceOrderGet(transition.claim.orderId);
+      if (orderForHook) {
         hookAlimtalkClaimStatusChange({
-          order,
+          order: orderForHook,
           claimId: transition.claim.id,
           claimStatus: "REFUNDED",
         });
@@ -197,7 +197,8 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
     }
 
     const histories = await claimListHistories(claimId);
-    return NextResponse.json({ ok: true, claim: transition.claim, histories });
+    const linkedOrder = await storeCommerceOrderGet(transition.claim.orderId);
+    return NextResponse.json({ ok: true, claim: transition.claim, histories, order: linkedOrder });
   }
 
   const patch: Parameters<typeof claimUpdate>[1] = {};
@@ -267,7 +268,8 @@ export async function PATCH(request: Request, ctx: RouteCtx) {
       }
     }
     const histories = await claimListHistories(claimId);
-    return NextResponse.json({ ok: true, claim, histories });
+    const order = await storeCommerceOrderGet(claim.orderId);
+    return NextResponse.json({ ok: true, claim, histories, order });
   } catch {
     return NextResponse.json({ ok: false, message: "저장에 실패했습니다." }, { status: 500 });
   }

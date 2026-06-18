@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getVerifiedCustomerSessionFromRequest } from "@/lib/auth/customer-session.server";
 import { assertBatteryTalkThreadAccess } from "@/lib/battery-talk/battery-talk-access.server";
 import { isValidBatteryTalkMessage } from "@/lib/battery-talk/battery-talk-sanitize";
 import { batteryTalkAddCustomerMessage } from "@/lib/battery-talk/battery-talk-store";
+import { enforceIpRateLimitOrNull } from "@/lib/security/rate-limit-guard.server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +16,14 @@ type PostBody = {
 };
 
 export async function POST(request: Request, ctx: RouteCtx) {
+  const ipBlocked = await enforceIpRateLimitOrNull(
+    request,
+    "battery-talk.message",
+    30,
+    15 * 60 * 1000,
+  );
+  if (ipBlocked) return ipBlocked;
+
   const { threadId } = await ctx.params;
   let body: PostBody;
   try {

@@ -20,6 +20,7 @@ export function TossPaymentWidget({ prepare, onPayError }: Props) {
   const [usePaymentWindow, setUsePaymentWindow] = useState(false);
   const widgetsRef = useRef<Awaited<ReturnType<TossPaymentsInstance["widgets"]>> | null>(null);
   const paymentRef = useRef<Awaited<ReturnType<TossPaymentsInstance["payment"]>> | null>(null);
+  const payingRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,7 +84,8 @@ export function TossPaymentWidget({ prepare, onPayError }: Props) {
   }, [prepare.clientKey, prepare.amount, prepare.paymentRequestId]);
 
   const handlePay = useCallback(async () => {
-    if (paying) return;
+    if (paying || payingRef.current) return;
+    payingRef.current = true;
     setPaying(true);
 
     try {
@@ -104,6 +106,7 @@ export function TossPaymentWidget({ prepare, onPayError }: Props) {
 
       if (!widgetsRef.current) {
         onPayError?.("결제 요청을 시작하지 못했습니다. 다시 시도해 주세요.");
+        payingRef.current = false;
         setPaying(false);
         return;
       }
@@ -123,6 +126,7 @@ export function TossPaymentWidget({ prepare, onPayError }: Props) {
           ? err.message
           : "결제 요청을 시작하지 못했습니다. 다시 시도해 주세요.";
       onPayError?.(message);
+      payingRef.current = false;
       setPaying(false);
     }
   }, [prepare, paying, onPayError, usePaymentWindow]);

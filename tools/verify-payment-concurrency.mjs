@@ -150,6 +150,11 @@ const shipCancel = validateAdminOrderStatusChange("shipping", "canceled");
 assert("shipping→canceled allowed", shipCancel.ok);
 const shipRegress = validateAdminOrderStatusChange("delivered", "shipping");
 assert("delivered→shipping blocked", !shipRegress.ok);
+const shipToConfirmed = validateAdminOrderStatusChange("shipping", "order_confirmed");
+assert(
+  "shipping→order_confirmed blocked",
+  !shipToConfirmed.ok && shipToConfirmed.code === "STATUS_REGRESSION_BLOCKED",
+);
 
 console.log("\n8. 환불 완료 재요청 (클레임 idempotency 패턴)");
 let claimStatus = "REVIEWING";

@@ -148,7 +148,28 @@ function buildRow(
   return { ...base, reviewStatus, reviewLabels: review.labels };
 }
 
-/** 카탈로그 키 + 브랜드별 규격 기준 제품 목록 */
+/** 주문 검증 — 카탈로그에 등록된 로케트/쏠라이트 상품인지 */
+export function isCatalogProductKnown(brand: AdminProductBrand, batteryCode: string): boolean {
+  const code = batteryCode.trim().toUpperCase();
+  if (!code) return false;
+  const key = `${brand}:${code}`;
+  if (INTERNET_PRICES_WON[key as keyof typeof INTERNET_PRICES_WON] != null) return true;
+  if (!BASE_BATTERY_SPECS.some((s) => s.code === code)) return false;
+  const prices = getBatteryPrices(brand, code);
+  return prices.internetPriceWon != null || prices.onsitePriceWon != null;
+}
+
+/** 주문 생성 시 판매 상태 확인용 단일 상품 row */
+export async function resolveAdminProductRowForOrder(
+  brand: AdminProductBrand,
+  batteryCode: string,
+): Promise<AdminProductRow | null> {
+  const code = batteryCode.trim().toUpperCase();
+  if (!isCatalogProductKnown(brand, code)) return null;
+  const overrides = await loadProductOverrides();
+  return buildRow(brand, code, overrides);
+}
+
 export async function buildAdminProductRows(): Promise<AdminProductRow[]> {
   const overrides = await loadProductOverrides();
   const seen = new Set<string>();

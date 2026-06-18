@@ -260,7 +260,7 @@ export function AdminCommerceClaimsClient() {
       setDetail({
         claim: data.claim,
         histories: data.histories ?? [],
-        order: detail?.order ?? null,
+        order: data.order ?? detail?.order ?? null,
       });
       void loadList();
       return true;
