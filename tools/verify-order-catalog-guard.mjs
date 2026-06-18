@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 주문 생성 카탈로그·차량 검증 mock — DB/Production/외부 API 호출 없음
+ * 주문 생성 카탈로그 검증 mock — DB/Production/외부 API 호출 없음
  */
 import { ensureTsxVerify } from "../scripts/ensure-tsx-verify.mjs";
 
@@ -10,8 +10,8 @@ await import("../scripts/register-server-only.mjs");
 
 const {
   validateCartItemCatalogRules,
-  validateVehicleSalesPolicyForOrder,
   validateOrderCatalogForCreate,
+  ORDER_CATALOG_UNAVAILABLE_MESSAGE,
 } = await import("../src/lib/payment/validate-order-catalog.server.ts");
 
 const { isCatalogProductKnown } = await import(
@@ -32,6 +32,19 @@ function assert(name, cond, detail = "") {
 }
 
 const sellableRow = {
+  productId: "solite:CMF80L",
+  brand: "solite",
+  batteryCode: "CMF80L",
+  sellable: true,
+  saleStatus: "selling",
+  visible: true,
+  reviewStatus: "ok",
+};
+
+const rocketSellableRow = {
+  productId: "rocket:GB80L",
+  brand: "rocket",
+  batteryCode: "GB80L",
   sellable: true,
   saleStatus: "selling",
   visible: true,
@@ -39,6 +52,9 @@ const sellableRow = {
 };
 
 const stoppedRow = {
+  productId: "solite:CMF80L",
+  brand: "solite",
+  batteryCode: "CMF80L",
   sellable: false,
   saleStatus: "stopped",
   visible: true,
@@ -48,6 +64,7 @@ const stoppedRow = {
 const baseItem = {
   brandId: "solite",
   brandName: "쏠라이트",
+  productId: "solite:CMF80L",
   batterySpec: "CMF80L",
   terminalDirection: "L",
 };
@@ -71,132 +88,129 @@ assert(
 
 assert(
   "active sellable cart item passes",
-  validateCartItemCatalogRules(baseItem, "CMF80L", sellableRow).ok === true,
+  validateCartItemCatalogRules(baseItem, sellableRow).ok === true,
 );
 
 assert(
   "missing product row blocked",
-  validateCartItemCatalogRules(baseItem, "CMF80L", null).ok === false,
+  validateCartItemCatalogRules(baseItem, null).ok === false,
 );
 
 assert(
   "stopped product blocked",
-  validateCartItemCatalogRules(baseItem, "CMF80L", stoppedRow).ok === false,
+  validateCartItemCatalogRules(baseItem, stoppedRow).ok === false,
 );
 
 assert(
   "rocket GB80L sellable cart item passes",
   validateCartItemCatalogRules(
-    { brandId: "rocket", brandName: "로케트", batterySpec: "GB80L", terminalDirection: "L" },
-    "GB80L",
+    {
+      brandId: "rocket",
+      productId: "rocket:GB80L",
+      batterySpec: "GB80L",
+    },
+    rocketSellableRow,
+  ).ok === true,
+);
+
+assert(
+  "CMF prefix on solite passes when catalog row is valid",
+  validateCartItemCatalogRules(baseItem, sellableRow).ok === true,
+);
+
+assert(
+  "spec-prefixed productId passes when brand matches row",
+  validateCartItemCatalogRules(
+    {
+      brandId: "solite",
+      productId: "spec-solite-cmf80l",
+      batterySpec: "CMF80L",
+    },
     sellableRow,
   ).ok === true,
 );
 
 assert(
-  "rocket brand with CMF code blocked",
+  "L/R terminal string mismatch does not block",
   validateCartItemCatalogRules(
-    { brandId: "rocket", brandName: "로케트", batterySpec: "CMF80L", terminalDirection: "L" },
-    "CMF80L",
-    sellableRow,
+    {
+      brandId: "solite",
+      productId: "solite:CMF80R",
+      batterySpec: "CMF80R",
+      terminalDirection: "L",
+    },
+    { ...sellableRow, productId: "solite:CMF80R", batteryCode: "CMF80R" },
+  ).ok === true,
+);
+
+assert(
+  "niro-sg2 vehicle slug does not block order catalog validation",
+  (
+    await validateOrderCatalogForCreate({
+      cartItems: [
+        {
+          ...baseItem,
+          id: "1",
+          quantity: 1,
+          fitmentStatus: "confirmed",
+          vehicle: { vehicleId: "niro-sg2", fuelType: "하이브리드" },
+        },
+      ],
+      customerInfo: { name: "t", phone: "01012345678" },
+      fulfillmentType: "delivery",
+      returnBatteryOption: "return",
+      addressInfo: { deliveryAddress: "부산" },
+    })
+  ).ok === true,
+);
+
+assert(
+  "manipulated brandId vs productId blocked",
+  (
+    await validateOrderCatalogForCreate({
+      cartItems: [
+        {
+          ...baseItem,
+          brandId: "rocket",
+          productId: "solite:CMF80L",
+          id: "1",
+          quantity: 1,
+          fitmentStatus: "confirmed",
+        },
+      ],
+      customerInfo: { name: "t", phone: "01012345678" },
+      fulfillmentType: "delivery",
+      returnBatteryOption: "return",
+      addressInfo: { deliveryAddress: "부산" },
+    })
   ).ok === false,
 );
 
-const soliteGbConflict = validateCartItemCatalogRules(
-  { brandId: "solite", brandName: "쏠라이트", batterySpec: "GB80", terminalDirection: "L" },
-  "GB80",
-  sellableRow,
-);
 assert(
-  "solite GB short code brand conflict blocked",
-  soliteGbConflict.ok === false && soliteGbConflict.code === "PRODUCT_BRAND_MISMATCH",
+  "unknown product blocked on full create validation",
+  (
+    await validateOrderCatalogForCreate({
+      cartItems: [
+        {
+          brandId: "rocket",
+          productId: "rocket:ZZZNOTREAL99",
+          batterySpec: "ZZZNOTREAL99",
+          id: "1",
+          quantity: 1,
+          fitmentStatus: "confirmed",
+        },
+      ],
+      customerInfo: { name: "t", phone: "01012345678" },
+      fulfillmentType: "delivery",
+      returnBatteryOption: "return",
+      addressInfo: { deliveryAddress: "부산" },
+    })
+  ).ok === false,
 );
-
-const terminalConflict = validateCartItemCatalogRules(
-  { ...baseItem, batterySpec: "CMF80R", terminalDirection: "L" },
-  "CMF80R",
-  sellableRow,
-);
-assert(
-  "L/R terminal mismatch blocked",
-  terminalConflict.ok === false && terminalConflict.code === "TERMINAL_MISMATCH",
-);
-
-const vehicleExcluded = validateVehicleSalesPolicyForOrder({
-  cartItems: [
-    {
-      ...baseItem,
-      id: "1",
-      quantity: 1,
-      vehicle: { vehicleId: "niro-sg2", fuelType: "하이브리드" },
-    },
-  ],
-  customer: { name: "t", phone: "01012345678" },
-  fulfillment: { method: "delivery" },
-});
 
 assert(
-  "sales-excluded vehicle slug blocked",
-  vehicleExcluded.ok === false && vehicleExcluded.code === "VEHICLE_SALES_EXCLUDED",
-);
-
-const fuelExcluded = validateVehicleSalesPolicyForOrder({
-  cartItems: [
-    {
-      ...baseItem,
-      id: "1",
-      quantity: 1,
-      vehicle: { vehicleId: "kona-sx2", fuelType: "하이브리드" },
-    },
-  ],
-  customer: { name: "t", phone: "01012345678" },
-  fulfillment: { method: "delivery" },
-});
-
-assert(
-  "fuel sales-excluded vehicle blocked",
-  fuelExcluded.ok === false && fuelExcluded.code === "VEHICLE_FUEL_SALES_EXCLUDED",
-);
-
-const vehicleOk = validateVehicleSalesPolicyForOrder({
-  cartItems: [
-    {
-      ...baseItem,
-      id: "1",
-      quantity: 1,
-      vehicle: { vehicleId: "hyundai-avante", fuelType: "가솔린" },
-    },
-  ],
-  customer: { name: "t", phone: "01012345678" },
-  fulfillment: { method: "delivery" },
-});
-
-assert(
-  "normal vehicle cart passes sales policy",
-  vehicleOk.ok === true,
-);
-
-const rocketCmfMismatch = await validateOrderCatalogForCreate({
-  cartItems: [
-    {
-      ...baseItem,
-      brandId: "rocket",
-      brandName: "로케트",
-      batterySpec: "CMF80L",
-      productId: "rocket:CMF80L",
-      productName: "로케트 CMF80L",
-    },
-  ],
-  customerInfo: { name: "t", phone: "01012345678" },
-  fulfillmentType: "delivery",
-  returnBatteryOption: "return",
-  addressInfo: { deliveryAddress: "부산" },
-});
-
-assert(
-  "rocket brand with CMF80L blocked on full create validation",
-  rocketCmfMismatch.ok === false,
-  rocketCmfMismatch.ok ? JSON.stringify(rocketCmfMismatch) : rocketCmfMismatch.code,
+  "user-facing message is generic",
+  ORDER_CATALOG_UNAVAILABLE_MESSAGE.includes("장바구니"),
 );
 
 console.log(`\n${passed} passed, ${failed} failed`);

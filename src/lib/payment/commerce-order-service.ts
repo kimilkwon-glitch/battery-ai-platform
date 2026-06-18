@@ -157,7 +157,6 @@ export async function createCommerceOrder(
       ok: false,
       status: catalogValidation.status,
       message: catalogValidation.message,
-      errors: catalogValidation.code ? [catalogValidation.code] : undefined,
     };
   }
 
