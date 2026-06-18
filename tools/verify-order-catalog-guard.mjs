@@ -11,6 +11,7 @@ await import("../scripts/register-server-only.mjs");
 const {
   validateCartItemCatalogRules,
   validateVehicleSalesPolicyForOrder,
+  validateOrderCatalogForCreate,
 } = await import("../src/lib/payment/validate-order-catalog.server.ts");
 
 const { isCatalogProductKnown } = await import(
@@ -173,6 +174,29 @@ const vehicleOk = validateVehicleSalesPolicyForOrder({
 assert(
   "normal vehicle cart passes sales policy",
   vehicleOk.ok === true,
+);
+
+const rocketCmfMismatch = await validateOrderCatalogForCreate({
+  cartItems: [
+    {
+      ...baseItem,
+      brandId: "rocket",
+      brandName: "로케트",
+      batterySpec: "CMF80L",
+      productId: "rocket:CMF80L",
+      productName: "로케트 CMF80L",
+    },
+  ],
+  customerInfo: { name: "t", phone: "01012345678" },
+  fulfillmentType: "delivery",
+  returnBatteryOption: "return",
+  addressInfo: { deliveryAddress: "부산" },
+});
+
+assert(
+  "rocket brand with CMF80L blocked on full create validation",
+  rocketCmfMismatch.ok === false,
+  rocketCmfMismatch.ok ? JSON.stringify(rocketCmfMismatch) : rocketCmfMismatch.code,
 );
 
 console.log(`\n${passed} passed, ${failed} failed`);

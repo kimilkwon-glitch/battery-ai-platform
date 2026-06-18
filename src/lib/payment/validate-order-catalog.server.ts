@@ -26,15 +26,21 @@ function brandKeyToAdminBrand(brandKey: "rocket" | "solite"): AdminProductBrand 
 
 function detectBrandCodeConflict(
   brand: AdminProductBrand,
-  canonical: string,
+  code: string,
 ): string | null {
-  if (brand === "rocket" && /^CMF/i.test(canonical)) {
+  const normalized = code.trim().toUpperCase();
+  if (!normalized) return null;
+  if (brand === "rocket" && /^CMF/i.test(normalized)) {
     return "선택하신 브랜드와 배터리 규격이 일치하지 않습니다.";
   }
-  if (brand === "solite" && /^GB\d/i.test(canonical) && !/^GB\d{5}/.test(canonical)) {
+  if (brand === "solite" && /^GB\d/i.test(normalized) && !/^GB\d{5}/.test(normalized)) {
     return "선택하신 브랜드와 배터리 규격이 일치하지 않습니다.";
   }
   return null;
+}
+
+function specPrefix(code: string): string | null {
+  return code.trim().toUpperCase().match(/^(CMF|GB|AGM|DIN)/)?.[1] ?? null;
 }
 
 function terminalFromSpec(code: string): "L" | "R" | null {
@@ -76,14 +82,31 @@ export function validateCartItemCatalogRules(
   }
 
   const brand = brandKeyToAdminBrand(brandKey);
-  const brandConflict = detectBrandCodeConflict(brand, canonical);
-  if (brandConflict) {
-    return {
-      ok: false,
-      status: 422,
-      code: "PRODUCT_BRAND_MISMATCH",
-      message: brandConflict,
-    };
+  const displayedSpec = item.batterySpec.trim().toUpperCase();
+  for (const code of [displayedSpec, canonical.trim().toUpperCase()]) {
+    const brandConflict = detectBrandCodeConflict(brand, code);
+    if (brandConflict) {
+      return {
+        ok: false,
+        status: 422,
+        code: "PRODUCT_BRAND_MISMATCH",
+        message: brandConflict,
+      };
+    }
+  }
+
+  const canonicalUpper = canonical.trim().toUpperCase();
+  if (displayedSpec && canonicalUpper && displayedSpec !== canonicalUpper) {
+    const displayPrefix = specPrefix(displayedSpec);
+    const canonicalPrefix = specPrefix(canonicalUpper);
+    if (displayPrefix && canonicalPrefix && displayPrefix !== canonicalPrefix) {
+      return {
+        ok: false,
+        status: 422,
+        code: "PRODUCT_SPEC_MISMATCH",
+        message: "선택하신 배터리 규격을 다시 확인해 주세요.",
+      };
+    }
   }
 
   if (!row) {
