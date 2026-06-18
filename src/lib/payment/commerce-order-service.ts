@@ -151,6 +151,16 @@ export async function createCommerceOrder(
   const couponCode = body.promotion?.couponCode?.trim() || undefined;
   const memberId = body.customerInfo.userId?.trim() || undefined;
 
+  const catalogValidation = await validateOrderCatalogForCreate(body);
+  if (!catalogValidation.ok) {
+    return {
+      ok: false,
+      status: catalogValidation.status,
+      message: catalogValidation.message,
+      errors: catalogValidation.code ? [catalogValidation.code] : undefined,
+    };
+  }
+
   const amounts = await computeOrderAmountWithPromotions(
     body.cartItems,
     body.fulfillmentType,
@@ -172,16 +182,6 @@ export async function createCommerceOrder(
       ok: false,
       status: 400,
       message: "결제 예정금액을 계산할 수 없습니다. 수령/장착 방식을 확인해 주세요.",
-    };
-  }
-
-  const catalogValidation = await validateOrderCatalogForCreate(body);
-  if (!catalogValidation.ok) {
-    return {
-      ok: false,
-      status: catalogValidation.status,
-      message: catalogValidation.message,
-      errors: catalogValidation.code ? [catalogValidation.code] : undefined,
     };
   }
 
